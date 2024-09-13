@@ -55,7 +55,7 @@ func NewConfirmedPrivateTransferRequest(_ Args, _ KWArgs) (*ConfirmedPrivateTran
 			nil,
 			0,
 		),
-		NoKWArgs,
+		NoKWArgs(),
 		WithConfirmedRequestSequenceExtension(c),
 	)
 	if err != nil {

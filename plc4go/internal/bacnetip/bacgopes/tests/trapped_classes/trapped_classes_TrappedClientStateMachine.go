@@ -27,15 +27,15 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
-type TrappedServerStateMachine struct {
+type TrappedClientStateMachine struct {
 	*TrappedServer
 	*TrappedStateMachine
 
 	log zerolog.Logger
 }
 
-func NewTrappedServerStateMachine(localLog zerolog.Logger) (*TrappedServerStateMachine, error) {
-	t := &TrappedServerStateMachine{log: localLog}
+func NewTrappedClientStateMachine(localLog zerolog.Logger) (*TrappedClientStateMachine, error) {
+	t := &TrappedClientStateMachine{log: localLog}
 	if _debug != nil {
 		_debug("__init__")
 	}
@@ -48,22 +48,24 @@ func NewTrappedServerStateMachine(localLog zerolog.Logger) (*TrappedServerStateM
 	return t, nil
 }
 
-func (t *TrappedServerStateMachine) Send(args Args, kwArgs KWArgs) error {
+func (t *TrappedClientStateMachine) Send(args Args, kwArgs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Send")
 
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
 		_debug("send %r", pdu)
 	}
+
 	return t.Response(args, kwArgs)
 }
 
-func (t *TrappedServerStateMachine) Indication(args Args, kwArgs KWArgs) error {
-	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
+func (t *TrappedClientStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
+	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
-		_debug("indication %r", pdu)
+		_debug("confirmation %r", pdu)
 	}
+
 	return t.Receive(args, kwArgs)
 }

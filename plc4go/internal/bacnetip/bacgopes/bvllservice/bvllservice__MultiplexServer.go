@@ -46,5 +46,5 @@ func _New_MultiplexServer(localLog zerolog.Logger, multiplexer *UDPMultiplexer) 
 }
 
 func (m *_MultiplexServer) Indication(args Args, kwArgs KWArgs) error {
-	return m.multiplexer.Indication(NA(m, args), NoKWArgs)
+	return m.multiplexer.Indication(NA(m, args), NoKWArgs())
 }

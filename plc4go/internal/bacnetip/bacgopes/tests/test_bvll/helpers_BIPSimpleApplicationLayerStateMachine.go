@@ -150,10 +150,10 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 
 func (b *BIPSimpleApplicationLayerStateMachine) Indication(args Args, kwArgs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
-	return b.Receive(args, NoKWArgs)
+	return b.Receive(args, NoKWArgs())
 }
 
 func (b *BIPSimpleApplicationLayerStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
-	return b.Receive(args, NoKWArgs)
+	return b.Receive(args, NoKWArgs())
 }

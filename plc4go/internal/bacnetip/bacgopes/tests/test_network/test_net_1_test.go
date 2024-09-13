@@ -129,7 +129,7 @@ func (t *TNetwork1) Run(timeLimit time.Duration) {
 	RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
-		t.log.Debug().Stringer("machine", machine).Strs("transactionLog", machine.GetTransactionLog()).Msg("Machine:")
+		t.log.Debug().Stringer("machine", machine).Stringers("transactionLog", ToStringers(machine.GetTransactionLog())).Msg("Machine:")
 	}
 
 	// check for success
@@ -175,14 +175,14 @@ func TestNet1(t *testing.T) {
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("1-2-0").
 				Receive(NA(PDUMatcher),
-					NKW(KWCPCIData, xtob(
+					NKW(KWTestPDUData, xtob(
 						"01.80"+ //version, network layer
 							"00", //message type, no network
 					),
 					),
 				).Doc("1-2-1").
 				Receive(NA(PDUMatcher),
-					NKW(KWCPCIData, xtob(
+					NKW(KWTestPDUData, xtob(
 						"01.80"+ //version, network layer
 							"01 0002 0003", //message type and network list
 					),
@@ -248,7 +248,7 @@ func TestNet1(t *testing.T) {
 			// sniffer on network 1 sees the request and the response
 			tnet.sniffer1.GetStartState().Doc("3-2-0").
 				Receive(NA(PDUMatcher),
-					NKW(KWCPCIData, xtob(
+					NKW(KWTestPDUData, xtob(
 						"01.80"+ //version, network layer
 							"00 0004", //message type, and network
 					)),
@@ -258,7 +258,7 @@ func TestNet1(t *testing.T) {
 			// sniffer on network 2 sees request forwarded by router
 			tnet.sniffer2.GetStartState().Doc("3-3-0").
 				Receive(NA(PDUMatcher),
-					NKW(KWCPCIData, xtob(
+					NKW(KWTestPDUData, xtob(
 						"01.88"+ //version, network layer
 							"0001 01 01"+ // snet/slen/sadr
 							"00 0004", //message type, and network

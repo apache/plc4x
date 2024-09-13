@@ -50,7 +50,7 @@ func NewWhoIsRequest() (*WhoIsRequest, error) {
 			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0),
 			0,
 		),
-		NoKWArgs,
+		NoKWArgs(),
 		WithUnconfirmedRequestSequenceExtension(w),
 	)
 	if err != nil {

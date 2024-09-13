@@ -30,6 +30,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/quick"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/trapped_classes"
@@ -112,12 +113,12 @@ func (suite *TestNPDUCodecSuite) TestWhoIsRouterToNetwork() { // Test the Result
 		}
 	}
 
-	err = suite.Request(NA(quick.WhoIsRouterToNetwork(1)), NoKWArgs)
+	err = suite.Request(NA(quick.WhoIsRouterToNetwork(1)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&WhoIsRouterToNetwork{}), NKW(KWWirtnNetwork, uint16(1)))
 }
@@ -138,12 +139,12 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworkEmpty() { // Test the Res
 		}
 	}
 
-	err = suite.Request(NA(quick.IAmRouterToNetwork(networkList...)), NoKWArgs)
+	err = suite.Request(NA(quick.IAmRouterToNetwork(networkList...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&IAmRouterToNetwork{}), NKW(KWIartnNetworkList, networkList))
 }
@@ -164,12 +165,12 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworks() { // Test the Result 
 		}
 	}
 
-	err = suite.Request(NA(quick.IAmRouterToNetwork(networkList...)), NoKWArgs)
+	err = suite.Request(NA(quick.IAmRouterToNetwork(networkList...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&IAmRouterToNetwork{}), NKW(KWIartnNetworkList, networkList))
 }
@@ -189,12 +190,12 @@ func (suite *TestNPDUCodecSuite) TestICouldBeRouterToNetworks() { // Test the Re
 		}
 	}
 
-	err = suite.Request(NA(quick.ICouldBeRouterToNetwork(1, 2)), NoKWArgs)
+	err = suite.Request(NA(quick.ICouldBeRouterToNetwork(1, 2)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&ICouldBeRouterToNetwork{}), NKW(KWIcbrtnNetwork, uint16(1), KWIcbrtnPerformanceIndex, uint8(2)))
 }
@@ -214,12 +215,12 @@ func (suite *TestNPDUCodecSuite) TestRejectMessageToNetwork() { // Test the Resu
 		}
 	}
 
-	err = suite.Request(NA(quick.RejectMessageToNetwork(1, 2)), NoKWArgs)
+	err = suite.Request(NA(quick.RejectMessageToNetwork(1, 2)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&RejectMessageToNetwork{}), NKW(KWRmtnRejectionReason, readWriteModel.NLMRejectMessageToNetworkRejectReason(1), KWRmtnDNET, uint16(2)))
 }
@@ -240,12 +241,12 @@ func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkEmpty() { // Test the Re
 		}
 	}
 
-	err = suite.Request(NA(quick.RouterBusyToNetwork(networkList...)), NoKWArgs)
+	err = suite.Request(NA(quick.RouterBusyToNetwork(networkList...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&RouterBusyToNetwork{}), NKW(KWRbtnNetworkList, networkList))
 }
@@ -266,12 +267,12 @@ func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkNetworks() { // Test the
 		}
 	}
 
-	err = suite.Request(NA(quick.RouterBusyToNetwork(networkList...)), NoKWArgs)
+	err = suite.Request(NA(quick.RouterBusyToNetwork(networkList...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&RouterBusyToNetwork{}), NKW(KWRbtnNetworkList, networkList))
 }
@@ -292,12 +293,12 @@ func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkEmpty() { // Test t
 		}
 	}
 
-	err = suite.Request(NA(quick.RouterAvailableToNetwork(networkList...)), NoKWArgs)
+	err = suite.Request(NA(quick.RouterAvailableToNetwork(networkList...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&RouterAvailableToNetwork{}), NKW(KWRatnNetworkList, networkList))
 }
@@ -318,12 +319,12 @@ func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkNetworks() { // Tes
 		}
 	}
 
-	err = suite.Request(NA(quick.RouterAvailableToNetwork(networkList...)), NoKWArgs)
+	err = suite.Request(NA(quick.RouterAvailableToNetwork(networkList...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&RouterAvailableToNetwork{}), NKW(KWRatnNetworkList, networkList))
 }
@@ -343,12 +344,12 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableEmpty() { // Test the
 		}
 	}
 
-	err = suite.Request(NA(quick.InitializeRoutingTable()), NoKWArgs)
+	err = suite.Request(NA(quick.InitializeRoutingTable()), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&InitializeRoutingTable{}), NKW(KWIrtTable, []*RoutingTableEntry{}))
 }
@@ -375,12 +376,12 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable01() { // Test the Re
 		}
 	}
 
-	err = suite.Request(NA(quick.InitializeRoutingTable(rtEntries...)), NoKWArgs)
+	err = suite.Request(NA(quick.InitializeRoutingTable(rtEntries...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&InitializeRoutingTable{}), NKW(KWIrtTable, rtEntries))
 }
@@ -407,12 +408,12 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable02() { // Test the Re
 		}
 	}
 
-	err = suite.Request(NA(quick.InitializeRoutingTable(rtEntries...)), NoKWArgs)
+	err = suite.Request(NA(quick.InitializeRoutingTable(rtEntries...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&InitializeRoutingTable{}), NKW(KWIrtTable, rtEntries))
 }
@@ -439,12 +440,12 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck01() { // Test the
 		}
 	}
 
-	err = suite.Request(NA(quick.InitializeRoutingTableAck(rtEntries...)), NoKWArgs)
+	err = suite.Request(NA(quick.InitializeRoutingTableAck(rtEntries...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&InitializeRoutingTableAck{}), NKW(KWIrtaTable, rtEntries))
 }
@@ -471,12 +472,12 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck02() { // Test the
 		}
 	}
 
-	err = suite.Request(NA(quick.InitializeRoutingTableAck(rtEntries...)), NoKWArgs)
+	err = suite.Request(NA(quick.InitializeRoutingTableAck(rtEntries...)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&InitializeRoutingTableAck{}), NKW(KWIrtaTable, rtEntries))
 }
@@ -496,12 +497,12 @@ func (suite *TestNPDUCodecSuite) TestEstablishConnectionToNetworks() { // Test t
 		}
 	}
 
-	err = suite.Request(NA(quick.EstablishConnectionToNetwork(5, 6)), NoKWArgs)
+	err = suite.Request(NA(quick.EstablishConnectionToNetwork(5, 6)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&EstablishConnectionToNetwork{}), NKW(KWEctnDNET, uint16(5), KWEctnTerminationTime, uint8(6)))
 }
@@ -521,12 +522,12 @@ func (suite *TestNPDUCodecSuite) TestDisconnectConnectionToNetwork() { // Test t
 		}
 	}
 
-	err = suite.Request(NA(quick.DisconnectConnectionToNetwork(7)), NoKWArgs)
+	err = suite.Request(NA(quick.DisconnectConnectionToNetwork(7)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&DisconnectConnectionToNetwork{}), NKW(KWDctnDNET, uint16(7)))
 }
@@ -546,14 +547,14 @@ func (suite *TestNPDUCodecSuite) TestWhatIsNetworkNumber() { // Test the Result 
 		}
 	}
 
-	err = suite.Request(NA(quick.WhatIsNetworkNumber(0)), NoKWArgs)
+	err = suite.Request(NA(quick.WhatIsNetworkNumber(0)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(NA(&WhatIsNetworkNumber{}), NoKWArgs)
+	err = suite.Confirmation(NA(&WhatIsNetworkNumber{}), NoKWArgs())
 }
 
 func (suite *TestNPDUCodecSuite) TestNetworkNumberIs() { // Test the Result encoding and decoding.
@@ -571,12 +572,12 @@ func (suite *TestNPDUCodecSuite) TestNetworkNumberIs() { // Test the Result enco
 		}
 	}
 
-	err = suite.Request(NA(quick.NetworkNumberIs(8, true)), NoKWArgs)
+	err = suite.Request(NA(quick.NetworkNumberIs(8, true)), NoKWArgs())
 	suite.Assert().NoError(err)
-	err = suite.Indication(NoArgs, NKW(KWCPCIData, pduBytes))
+	err = suite.Indication(NoArgs, NKW(KWTestPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs)), NoKWArgs)
+	err = suite.Response(NA(NewPDU(NA(pduBytes), NoKWArgs())), NoKWArgs())
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(NA(&NetworkNumberIs{}), NKW(KWNniNet, uint16(8), KWNniFlag, true))
 }

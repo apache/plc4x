@@ -45,7 +45,7 @@ func NewReadForeignDeviceTableAck(fdt []*FDTEntry, args Args, kwArgs KWArgs) (*R
 	if r.GetRootMessage() == nil {
 		r.SetRootMessage(readWriteModel.NewBVLCReadForeignDeviceTableAck(r.produceForeignDeviceTable()))
 	}
-	r.bvlciFunction = BVLCIReadBroadcastDistributionTableAck
+	r.bvlciFunction = BVLCIReadForeignDeviceTableAck
 	r.bvlciLength = uint16(4 + 10*len(fdt))
 	r.bvlciFDT = fdt
 	return r, nil

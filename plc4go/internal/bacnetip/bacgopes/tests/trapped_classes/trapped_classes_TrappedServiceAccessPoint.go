@@ -61,6 +61,11 @@ type TrappedServiceAccessPoint struct {
 	sapResponseSent         PDU
 	sapConfirmationReceived PDU
 
+	serviceID int // TODO: temporary where from?????????
+
+	// args
+	argSapId *int //TODO: hook up
+
 	log zerolog.Logger
 }
 
@@ -68,6 +73,9 @@ func NewTrappedServiceAccessPoint(localLog zerolog.Logger, requirements TrappedS
 	t := &TrappedServiceAccessPoint{
 		requirements: requirements,
 		log:          localLog,
+	}
+	if _debug != nil {
+		_debug("__init__(%s)", t.argSapId)
 	}
 	var err error
 	t.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog)
@@ -95,24 +103,40 @@ func (s *TrappedServiceAccessPoint) GetSapConfirmationReceived() PDU {
 
 func (s *TrappedServiceAccessPoint) SapRequest(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapRequest")
-	s.sapRequestSent = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("sap_request(%s) %r", s.serviceID, pdu)
+	}
+	s.sapRequestSent = pdu
 	return s.ServiceAccessPointContract.SapRequest(args, kwArgs)
 }
 
 func (s *TrappedServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapIndication")
-	s.sapIndicationReceived = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("sap_indication(%s) %r", s.serviceID, pdu)
+	}
+	s.sapIndicationReceived = pdu
 	return s.requirements.SapIndication(args, kwArgs)
 }
 
 func (s *TrappedServiceAccessPoint) SapResponse(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapResponse")
-	s.sapResponseSent = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("sap_response(%s) %r", s.serviceID, pdu)
+	}
+	s.sapResponseSent = pdu
 	return s.ServiceAccessPointContract.SapResponse(args, kwArgs)
 }
 
 func (s *TrappedServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapConfirmation")
-	s.sapConfirmationReceived = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("sap_confirmation(%s) %r", s.serviceID, pdu)
+	}
+	s.sapConfirmationReceived = pdu
 	return s.requirements.SapConfirmation(args, kwArgs)
 }

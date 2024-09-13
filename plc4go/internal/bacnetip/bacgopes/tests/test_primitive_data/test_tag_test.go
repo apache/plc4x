@@ -435,12 +435,11 @@ func TestGetContext(t *testing.T) {
 }
 
 func TestEndec0(t *testing.T) { // Test bracketed application tagged integer encoding and decoding.
-	t.Skip("currently broken") // TODO: fixme
 	tagList := quick.TagList()
 
 	data := quick.PDUData()
 	tagList.Encode(data)
-	assert.Equal(t, []byte{}, data.GetPduData())
+	assert.Nil(t, data.GetPduData())
 
 	tagList = quick.TagList()
 	err := tagList.Decode(data)

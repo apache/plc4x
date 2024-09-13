@@ -55,15 +55,15 @@ type _PDUData struct {
 var _ PDUData = (*_PDUData)(nil)
 
 func NewPDUData(args Args, kwArgs KWArgs) PDUData {
-	data := GAO[any](args, 0, nil)
+	data, ok := GAO[any](args, 0, nil)
+	if ok {
+		args = args[1:]
+	}
 	if _debug != nil {
 		_debug("__init__ %r %r %r", data, args, kwArgs)
 	}
 	p := &_PDUData{}
-	if len(args) == 0 {
-		return p
-	}
-	switch data := args[0].(type) {
+	switch data := data.(type) {
 	case []byte:
 		p.data = make([]byte, len(data))
 		copy(p.data, data)
@@ -173,5 +173,8 @@ func (d *_PDUData) PrintDebugContents(indent int, file io.Writer, _ids []uintptr
 }
 
 func (d *_PDUData) String() string {
+	if d == nil {
+		return ""
+	}
 	return Btox(d.data, ".")
 }

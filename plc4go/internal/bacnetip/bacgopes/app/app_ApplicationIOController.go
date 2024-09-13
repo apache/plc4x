@@ -147,7 +147,7 @@ func (a *ApplicationIOController) _AppRequest(apdu PDU) {
 	a.log.Debug().Stringer("apdu", apdu).Msg("_AppRequest")
 
 	// send it downstream, bypass the guard
-	if err := a.Application.Request(NA(apdu), NoKWArgs); err != nil {
+	if err := a.Application.Request(NA(apdu), NoKWArgs()); err != nil {
 		a.log.Error().Stack().Err(err).Msg("Uh oh")
 		return
 	}

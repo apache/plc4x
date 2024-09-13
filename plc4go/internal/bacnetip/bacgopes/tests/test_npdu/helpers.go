@@ -75,7 +75,7 @@ func (n *NPDUCodec) Indication(args Args, kwArgs KWArgs) error {
 	n.log.Debug().Stringer("ypdu", ypdu).Msg("encoded")
 
 	// send it downstream
-	return n.Request(NA(ypdu), NoKWArgs)
+	return n.Request(NA(ypdu), NoKWArgs())
 }
 
 func (n *NPDUCodec) Confirmation(args Args, kwArgs KWArgs) error {
@@ -104,5 +104,5 @@ func (n *NPDUCodec) Confirmation(args Args, kwArgs KWArgs) error {
 		return errors.Wrap(err, "error decoding ypdu")
 	}
 
-	return n.Response(NA(ypdu), NoKWArgs)
+	return n.Response(NA(ypdu), NoKWArgs())
 }

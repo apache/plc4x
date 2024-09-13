@@ -57,6 +57,9 @@ func NewTrappedClient(localLog zerolog.Logger, opts ...func(*TrappedClient)) (*T
 	for _, opt := range opts {
 		opt(t)
 	}
+	if _debug != nil {
+		_debug("__init__")
+	}
 	var err error
 	t.ClientContract, err = NewClient(localLog) // TODO: do we need to pass client id?
 	if err != nil {
@@ -82,7 +85,11 @@ func (t *TrappedClient) GetConfirmationReceived() PDU {
 func (t *TrappedClient) Request(args Args, kwArgs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Request")
 	// a reference for checking
-	t.requestSent = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("request %r", pdu)
+	}
+	t.requestSent = pdu
 
 	// continue with regular processing
 	return t.ClientContract.Request(args, kwArgs)
@@ -91,6 +98,10 @@ func (t *TrappedClient) Request(args Args, kwArgs KWArgs) error {
 func (t *TrappedClient) Confirmation(args Args, kwArgs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 	// a reference for checking
-	t.confirmationReceived = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", pdu)
+	}
+	t.confirmationReceived = pdu
 	return nil
 }

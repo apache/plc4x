@@ -60,7 +60,7 @@ type StateMachineContract interface {
 	EventSet(id string)
 	Run() error
 	Reset()
-	GetTransactionLog() []string
+	GetTransactionLog() []TransactionLogEntry
 	GetCurrentState() State
 	GetUnexpectedReceiveState() State
 	GetStartState() State
@@ -82,7 +82,7 @@ type StateMachineRequirements interface {
 	Send(args Args, kwArgs KWArgs) error
 }
 
-//go:generate plc4xGenerator -type=stateMachine -prefix=state_machine
+//go:generate plc4xGenerator -type=stateMachine -prefix=state_machine_
 type stateMachine struct {
 	requirements StateMachineRequirements `ignore:"true"`
 
@@ -107,9 +107,18 @@ type stateMachine struct {
 	isFailState            *bool
 	stateTransitioning     int
 	currentState           State
-	transactionLog         []string
+	transactionLog         []TransactionLogEntry
 
 	log zerolog.Logger
+}
+
+type TransactionLogEntry struct {
+	Direction string
+	Pdu       PDU
+}
+
+func (t TransactionLogEntry) String() string {
+	return t.Pdu.String() + t.Pdu.String()
 }
 
 var _ StateMachineContract = (*stateMachine)(nil)
@@ -162,11 +171,11 @@ func NewStateMachine(localLog zerolog.Logger, requirements StateMachineRequireme
 
 		s.transitionQueue = make(chan PDU, 100)
 
-		s.stateTimeoutTask = NewTimeoutTask(s.StateTimeout, NoArgs, NoKWArgs, nil)
+		s.stateTimeoutTask = NewTimeoutTask(s.StateTimeout, NoArgs, NoKWArgs(), nil)
 
 		if s.timeout != 0 {
 			s.timeoutState = s.NewState("state machine timeout").Fail("")
-			s.timeoutTask = NewTimeoutTask(s.StateMachineTimeout, NoArgs, NoKWArgs, s.stateMachineTimeout)
+			s.timeoutTask = NewTimeoutTask(s.StateMachineTimeout, NoArgs, NoKWArgs(), s.stateMachineTimeout)
 		}
 	}
 }
@@ -233,7 +242,7 @@ func (s *stateMachine) setMachineGroup(machineGroup *StateMachineGroup) {
 	s.machineGroup = machineGroup
 }
 
-func (s *stateMachine) GetTransactionLog() []string {
+func (s *stateMachine) GetTransactionLog() []TransactionLogEntry {
 	return s.transactionLog
 }
 
@@ -275,7 +284,7 @@ func (s *stateMachine) Reset() {
 
 	// no current state, empty transaction log
 	s.currentState = nil
-	s.transactionLog = make([]string, 0)
+	s.transactionLog = make([]TransactionLogEntry, 0)
 
 	// we are not starting up
 	s.startupFlag = false
@@ -599,14 +608,14 @@ func (s *stateMachine) gotoState(state State) error {
 }
 
 func (s *stateMachine) BeforeSend(pdu PDU) {
-	s.transactionLog = append(s.transactionLog, fmt.Sprintf(">>> %v", pdu))
+	s.transactionLog = append(s.transactionLog, TransactionLogEntry{">>>", pdu})
 }
 
 func (s *stateMachine) AfterSend(pdu PDU) {
 }
 
 func (s *stateMachine) BeforeReceive(pdu PDU) {
-	s.transactionLog = append(s.transactionLog, fmt.Sprintf("<<< %v", pdu))
+	s.transactionLog = append(s.transactionLog, TransactionLogEntry{"<<< %s", pdu})
 }
 
 func (s *stateMachine) Receive(args Args, kwArgs KWArgs) error {

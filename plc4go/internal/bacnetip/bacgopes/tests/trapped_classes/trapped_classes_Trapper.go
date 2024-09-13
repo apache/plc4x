@@ -52,12 +52,18 @@ func NewTrapper(localLog zerolog.Logger, requirements TrapperRequirements) *Trap
 		TrapperRequirements: requirements,
 		log:                 localLog,
 	}
+	if _debug != nil {
+		_debug("__init__ %r %r", nil, nil) //TODO: args and kwargs
+	}
 	// reset to initialize
 	trapper.reset()
 	return trapper
 }
 
 func (t *Trapper) reset() {
+	if _debug != nil {
+		_debug("reset")
+	}
 	t.log.Trace().Msg("Reset")
 	// flush the copies
 	t.beforeSendPdu = nil
@@ -69,6 +75,9 @@ func (t *Trapper) reset() {
 
 // BeforeSend is Called before each PDU about to be sent.
 func (t *Trapper) BeforeSend(pdu PDU) {
+	if _debug != nil {
+		_debug("before_send %r", pdu)
+	}
 	t.log.Debug().Stringer("pdu", pdu).Msg("BeforeSend")
 	//keep a copy
 	t.beforeSendPdu = pdu
@@ -83,6 +92,9 @@ func (t *Trapper) GetBeforeSendPdu() PDU {
 
 // AfterSend is Called after each PDU sent.
 func (t *Trapper) AfterSend(pdu PDU) {
+	if _debug != nil {
+		_debug("after_send %r", pdu)
+	}
 	t.log.Debug().Stringer("pdu", pdu).Msg("AfterSend")
 	//keep a copy
 	t.afterSendPdu = pdu
@@ -97,6 +109,9 @@ func (t *Trapper) GetAfterSendPdu() PDU {
 
 // BeforeReceive is Called with each PDU received before matching.
 func (t *Trapper) BeforeReceive(pdu PDU) {
+	if _debug != nil {
+		_debug("before_receive %r", pdu)
+	}
 	t.log.Debug().Stringer("pdu", pdu).Msg("BeforeReceive")
 	//keep a copy
 	t.beforeReceivePdu = pdu
@@ -111,6 +126,9 @@ func (t *Trapper) GetBeforeReceivePdu() PDU {
 
 // AfterReceive is Called with PDU received after match.
 func (t *Trapper) AfterReceive(pdu PDU) {
+	if _debug != nil {
+		_debug("after_receive %r", pdu)
+	}
 	t.log.Debug().Stringer("pdu", pdu).Msg("AfterReceive")
 	//keep a copy
 	t.afterReceivePdu = pdu
@@ -125,6 +143,9 @@ func (t *Trapper) GetAfterReceivePdu() PDU {
 
 // UnexpectedReceive is Called with PDU that did not match.  Unless this is trapped by the state, the default behaviour is to fail.
 func (t *Trapper) UnexpectedReceive(pdu PDU) {
+	if _debug != nil {
+		_debug("unexpected_receive %r", pdu)
+	}
 	t.log.Debug().Stringer("pdu", pdu).Msg("UnexpectedReceive")
 	//keep a copy
 	t.unexpectedReceivePdu = pdu

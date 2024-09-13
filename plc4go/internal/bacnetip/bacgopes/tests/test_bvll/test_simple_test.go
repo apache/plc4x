@@ -99,7 +99,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) {
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
 		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
 		for _, s := range machine.GetTransactionLog() {
-			t.log.Debug().Str("logEntry", s).Msg("logEntry")
+			t.log.Debug().Stringer("logEntry", s).Msg("logEntry")
 		}
 	}
 
@@ -110,7 +110,6 @@ func (t *TNetwork) Run(timeLimit time.Duration) {
 }
 
 func TestSimple(t *testing.T) {
-	t.Skip("currently broken")              // TODO: fixme
 	t.Run("test_idle", func(t *testing.T) { //Test an idle network, nothing happens is success.
 		ExclusiveGlobalTimeMachine(t)
 		tnet := NewTNetwork(t)
@@ -143,7 +142,7 @@ func TestSimple(t *testing.T) {
 		tnet.sniffer.GetStartState().Receive(NA((PDU)(nil)), NKW(
 			KWCPCISource, tnet.td.address.AddrTuple,
 			KWCPCIDestination, tnet.iut.address.AddrTuple,
-			KWCPCIData, pduData,
+			KWTestPDUData, pduData,
 		)).Timeout(1.0*time.Millisecond, nil).Success("")
 
 		// run the group
@@ -156,11 +155,11 @@ func TestSimple(t *testing.T) {
 		//make a PDU from node 1 to node 2
 		pduData, err := Xtob("dead.beef")
 		require.NoError(t, err)
-		pdu := NewPDU(NA(pduData), NKW(KWCPCISource, tnet.td.address, KWCPCIDestination, tnet.iut.address))
+		pdu := NewPDU(NA(pduData), NKW(KWCPCISource, tnet.td.address, KWCPCIDestination, NewLocalBroadcast(nil)))
 		t.Logf("pdu: %v", pdu)
 
 		// test device sends it, iut gets it
-		tnet.td.GetStartState().Send(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCISource, tnet.td.address, KWCPCIDestination, NewLocalBroadcast(nil))), nil).Success("")
+		tnet.td.GetStartState().Send(pdu, nil).Success("")
 		tnet.iut.GetStartState().Receive(NA((PDU)(nil)), NKW(
 			KWCPCISource, tnet.td.address,
 		)).Success("")
@@ -169,7 +168,7 @@ func TestSimple(t *testing.T) {
 		tnet.sniffer.GetStartState().Receive(NA((*OriginalBroadcastNPDU)(nil)), NKW(
 			KWCPCISource, tnet.td.address.AddrTuple,
 			//bacgopes.KWCPCIDestination, tnet.iut.address.AddrTuple,
-			KWCPCIData, pduData,
+			KWTestPDUData, pduData,
 		)).Timeout(1.0*time.Second, nil).Success("")
 
 		// run the group

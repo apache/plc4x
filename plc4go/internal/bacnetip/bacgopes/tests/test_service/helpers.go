@@ -144,10 +144,7 @@ func (a *ApplicationNetwork) Run(timeLimit time.Duration) error {
 	if a.log.Debug().Enabled() {
 		a.log.Debug().Msg("time machine finished")
 		for _, machine := range a.GetStateMachines() {
-			a.log.Debug().Stringer("machine", machine).Msg("machine")
-			for _, entry := range machine.GetTransactionLog() {
-				a.log.Debug().Str("entry", entry).Msg("transaction log entry")
-			}
+			a.log.Debug().Stringer("machine", machine).Stringers("entries", ToStringers(machine.GetTransactionLog())).Msg("machine")
 		}
 
 		a.trafficLog.Dump(a._debug)
@@ -337,7 +334,7 @@ func (s *SnifferStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
 	// TODO: print etc
 
 	// pass to the state machine
-	return s.Receive(args, NoKWArgs)
+	return s.Receive(args, NoKWArgs())
 }
 
 //go:generate plc4xGenerator -type=ApplicationStateMachine
@@ -440,14 +437,14 @@ func (a *ApplicationStateMachine) Send(args Args, kwArgs KWArgs) error {
 	if err != nil {
 		return errors.Wrap(err, "error creating iocb")
 	}
-	return a.Request(NA(iocb), NoKWArgs)
+	return a.Request(NA(iocb), NoKWArgs())
 }
 
 func (a *ApplicationStateMachine) Indication(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
 
 	// let the state machine know the request was received
-	err := a.Receive(args, NoKWArgs)
+	err := a.Receive(args, NoKWArgs())
 	if err != nil {
 		return errors.Wrap(err, "error receiving indication")
 	}
@@ -460,7 +457,7 @@ func (a *ApplicationStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 
 	// forward the confirmation to the state machine
-	err := a.Receive(args, NoKWArgs)
+	err := a.Receive(args, NoKWArgs())
 	if err != nil {
 		return errors.Wrap(err, "error receiving indication")
 	}

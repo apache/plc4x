@@ -46,6 +46,9 @@ type BIPStateMachine struct {
 
 func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *IPNetwork) (*BIPStateMachine, error) {
 	b := &BIPStateMachine{}
+	if _debug != nil {
+		_debug("__init__ %r %r", address, vlan)
+	}
 	var err error
 	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(b))
 	if err != nil {

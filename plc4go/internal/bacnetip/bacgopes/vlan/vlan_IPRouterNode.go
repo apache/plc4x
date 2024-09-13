@@ -102,7 +102,7 @@ func (n *IPRouterNode) ProcessPDU(pdu PDU) error {
 		_debug("process_pdu %r", pdu)
 	}
 	n.log.Debug().Stringer("pdu", pdu).Msg("ProcessPDU")
-	return n.Request(NA(pdu), NoKWArgs)
+	return n.Request(NA(pdu), NoKWArgs())
 }
 
 func (n *IPRouterNode) Format(s fmt.State, v rune) {

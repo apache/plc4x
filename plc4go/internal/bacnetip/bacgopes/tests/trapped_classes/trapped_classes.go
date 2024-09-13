@@ -18,3 +18,7 @@
  */
 
 package trapped_classes
+
+import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+
+var _debug = CreateDebugPrinter()

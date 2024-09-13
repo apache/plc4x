@@ -105,7 +105,7 @@ func (b *BIPSimple) Indication(args Args, kwArgs KWArgs) error {
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NA(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs())
 	case LOCAL_BROADCAST_ADDRESS:
 		// make an original broadcast _PDU
 		xpdu, err := NewOriginalBroadcastNPDU(NA(pdu), NKW(KWCPCIDestination, pdu.GetPDUDestination(), KWCPCIUserData, pdu.GetPDUUserData()))
@@ -119,7 +119,7 @@ func (b *BIPSimple) Indication(args Args, kwArgs KWArgs) error {
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NA(xpdu), NoKWArgs)
+		return b.Request(NA(xpdu), NoKWArgs())
 	default:
 		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
 	}

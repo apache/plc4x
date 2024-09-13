@@ -383,7 +383,7 @@ func (s *SSM) fillWindow(sequenceNumber uint8) error {
 		if err != nil {
 			return errors.Wrapf(err, "Error sending out segment %d", i)
 		}
-		if err := s.ssmSAP.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, apdu.GetRootMessage(), KWCPCIDestination, s.pduAddress))), NoKWArgs); err != nil {
+		if err := s.ssmSAP.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, apdu.GetRootMessage(), KWCPCIDestination, s.pduAddress))), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
 		if moreFollows {

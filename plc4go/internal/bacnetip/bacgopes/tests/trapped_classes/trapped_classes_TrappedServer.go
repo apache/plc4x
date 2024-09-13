@@ -57,6 +57,9 @@ func NewTrappedServer(localLog zerolog.Logger, opts ...func(*TrappedServer)) (*T
 	for _, opt := range opts {
 		opt(t)
 	}
+	if _debug != nil {
+		_debug("__init__")
+	}
 	var err error
 	t.ServerContract, err = NewServer(localLog) // TODO: do we need to pass server id
 	if err != nil {
@@ -81,16 +84,25 @@ func (t *TrappedServer) GetResponseSent() PDU {
 
 func (t *TrappedServer) Indication(args Args, kwArgs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
-	// a reference for checking
-	t.indicationReceived = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("indication %r", pdu)
+	}
 
+	// a reference for checking
+	t.indicationReceived = pdu
 	return nil
 }
 
 func (t *TrappedServer) Response(args Args, kwArgs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Response")
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("response %r", pdu)
+	}
+
 	// a reference for checking
-	t.responseSent = GA[PDU](args, 0)
+	t.responseSent = pdu
 
 	// continue with regular processing
 	return t.ServerContract.Response(args, kwArgs)

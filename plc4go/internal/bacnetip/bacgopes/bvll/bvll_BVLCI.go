@@ -75,7 +75,7 @@ func NewBVLCI(args Args, kwArgs KWArgs) BVLCI {
 		requirements: KW[BVLCIRequirements](kwArgs, KWCompBVLCIRequirements),
 	}
 	b.DebugContents = NewDebugContents(b, "bvlciType", "bvlciFunction", "bvlciLength")
-	b.PCI = NewPCI(NoArgs, kwArgs)
+	b.PCI = NewPCI(args, kwArgs)
 	b.AddExtraPrinters(b.PCI.(DebugContentPrinter))
 	if bvlc := KWO[readWriteModel.BVLC](kwArgs, KWCompRootMessage, nil); bvlc != nil {
 		b.bvlciFunction = bvlc.GetBvlcFunction()

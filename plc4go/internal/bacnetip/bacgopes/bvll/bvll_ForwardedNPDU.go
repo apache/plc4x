@@ -111,7 +111,6 @@ func (f *ForwardedNPDU) Decode(bvlpdu Arg) error {
 	case BVLPDU:
 		switch rm := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCForwardedNPDU:
-			_, _ = bvlpdu.GetData(6) // TODO: do we really want to discard that?
 			addr := rm.GetIp()
 			port := rm.GetPort()
 			var portArray = make([]byte, 2)
@@ -123,6 +122,16 @@ func (f *ForwardedNPDU) Decode(bvlpdu Arg) error {
 			}
 			f.bvlciAddress = address
 			f.SetRootMessage(rm)
+		}
+
+		// get the address
+		data, err := bvlpdu.GetData(6)
+		if err != nil {
+			return errors.Wrap(err, "error reading data")
+		}
+		f.bvlciAddress, err = NewAddress(NA(UnpackIpAddr(data)))
+		if err != nil {
+			return errors.Wrap(err, "error creating address")
 		}
 	}
 	switch bvlpdu := bvlpdu.(type) {

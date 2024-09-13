@@ -156,7 +156,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 					_debug("    - match: %r", node)
 				}
 				n.log.Debug().Stringer("node", node).Msg("match")
-				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
+				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs()); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")
 				}
 			}
@@ -172,7 +172,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 					_debug("    - match: %r", node)
 				}
 				n.log.Debug().Stringer("node", node).Msg("match")
-				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
+				if err := node.Response(NA(DeepCopy[PDU](pdu)), NoKWArgs()); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")
 				}
 			}

@@ -43,13 +43,13 @@ type TrappedApplicationServiceElementRequirements interface {
 //	To provide these functions, write a ServiceAccessPoint derived class and
 //	stuff it in the inheritance sequence:
 //
-//	    class Snort(ApplicationServiceElement):
-//	        def indication(self, pdu):
+//	    struct Snort(ApplicationServiceElement)
+//	        func indication(pdu):
 //	            ...do something...
-//	        def confirmation(self, pdu):
+//	        func confirmation(pdu)
 //	            ...do something...
 //
-//	    class TrappedSnort(TrappedApplicationServiceElement, Snort): pass
+//	    struct TrappedSnort(TrappedApplicationServiceElement, Snort)
 //
 //	The Snort functions will be called after the PDU is trapped.
 type TrappedApplicationServiceElement struct {
@@ -61,6 +61,11 @@ type TrappedApplicationServiceElement struct {
 	responseSent         PDU
 	confirmationReceived PDU
 
+	elementID int // TODO: temporary where from?????????
+
+	// args
+	argAseId *int //TODO: hook up
+
 	log zerolog.Logger
 }
 
@@ -70,6 +75,9 @@ func NewTrappedApplicationServiceElement(localLog zerolog.Logger, requirements T
 	t := &TrappedApplicationServiceElement{
 		requirements: requirements,
 		log:          localLog,
+	}
+	if _debug != nil {
+		_debug("__init__(%s)", t.argAseId)
 	}
 	var err error
 	t.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog)
@@ -101,24 +109,40 @@ func (s *TrappedApplicationServiceElement) String() string {
 
 func (s *TrappedApplicationServiceElement) Request(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Request")
-	s.requestSent = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("request(%s) %r", s.elementID, pdu)
+	}
+	s.requestSent = pdu
 	return s.ApplicationServiceElementContract.Request(args, kwArgs)
 }
 
 func (s *TrappedApplicationServiceElement) Indication(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
-	s.indicationReceived = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("indication(%s) %r", s.elementID, pdu)
+	}
+	s.indicationReceived = pdu
 	return s.requirements.Indication(args, kwArgs)
 }
 
 func (s *TrappedApplicationServiceElement) Response(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Response")
-	s.responseSent = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("response(%s) %r", s.elementID, pdu)
+	}
+	s.responseSent = pdu
 	return s.ApplicationServiceElementContract.Response(args, kwArgs)
 }
 
 func (s *TrappedApplicationServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
-	s.confirmationReceived = GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation(%s) %r", s.elementID, pdu)
+	}
+	s.confirmationReceived = pdu
 	return s.requirements.Confirmation(args, kwArgs)
 }

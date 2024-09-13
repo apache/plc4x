@@ -298,10 +298,10 @@ func (c *ClientSSM) segmentedRequest(apdu PDU) error {
 			if err != nil {
 				return errors.Wrap(err, "error creating abort")
 			}
-			if err := c.Request(NA(abort), NoKWArgs); err != nil { // send it ot the device
+			if err := c.Request(NA(abort), NoKWArgs()); err != nil { // send it ot the device
 				c.log.Debug().Err(err).Msg("error sending request")
 			}
-			if err := c.Response(NA(abort), NoKWArgs); err != nil { // send it ot the application
+			if err := c.Response(NA(abort), NoKWArgs()); err != nil { // send it ot the application
 				c.log.Debug().Err(err).Msg("error sending response")
 			}
 		} else {
@@ -317,10 +317,10 @@ func (c *ClientSSM) segmentedRequest(apdu PDU) error {
 			if err != nil {
 				return errors.Wrap(err, "error creating abort")
 			}
-			if err := c.Request(NA(abort), NoKWArgs); err != nil { // send it ot the device
+			if err := c.Request(NA(abort), NoKWArgs()); err != nil { // send it ot the device
 				c.log.Debug().Err(err).Msg("error sending request")
 			}
-			if err := c.Response(NA(abort), NoKWArgs); err != nil { // send it ot the application
+			if err := c.Response(NA(abort), NoKWArgs()); err != nil { // send it ot the application
 				c.log.Debug().Err(err).Msg("error sending response")
 			}
 		} else if !_apdu.GetSegmentedMessage() {
@@ -328,7 +328,7 @@ func (c *ClientSSM) segmentedRequest(apdu PDU) error {
 			if err := c.setState(SSMState_COMPLETED, nil); err != nil {
 				return errors.Wrap(err, "error switching state")
 			}
-			if err := c.Response(NA(apdu), NoKWArgs); err != nil {
+			if err := c.Response(NA(apdu), NoKWArgs()); err != nil {
 				c.log.Debug().Err(err).Msg("error sending response")
 			}
 		} else {
@@ -351,7 +351,7 @@ func (c *ClientSSM) segmentedRequest(apdu PDU) error {
 		if err := c.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "error switching state")
 		}
-		if err := c.Response(NA(apdu), NoKWArgs); err != nil {
+		if err := c.Response(NA(apdu), NoKWArgs()); err != nil {
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
 	default:
@@ -374,7 +374,7 @@ func (c *ClientSSM) segmentedRequestTimeout() error {
 			if err != nil {
 				return errors.Wrap(err, "error getting first segment")
 			}
-			if err := c.Request(NA(apdu), NoKWArgs); err != nil {
+			if err := c.Request(NA(apdu), NoKWArgs()); err != nil {
 				c.log.Debug().Err(err).Msg("error sending request")
 			}
 		} else {
@@ -389,7 +389,7 @@ func (c *ClientSSM) segmentedRequestTimeout() error {
 		if err != nil {
 			return errors.Wrap(err, "error creating abort")
 		}
-		if err := c.Response(NA(abort), NoKWArgs); err != nil {
+		if err := c.Response(NA(abort), NoKWArgs()); err != nil {
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
 	}
@@ -406,7 +406,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 		if err := c.setState(SSMState_ABORTED, nil); err != nil {
 			return errors.Wrap(err, "error switching state")
 		}
-		if err := c.Response(NA(apdu), NoKWArgs); err != nil {
+		if err := c.Response(NA(apdu), NoKWArgs()); err != nil {
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
 	case readWriteModel.APDUSimpleAck, readWriteModel.APDUError, readWriteModel.APDUReject:
@@ -415,7 +415,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 		if err := c.setState(SSMState_COMPLETED, nil); err != nil {
 			return errors.Wrap(err, "error switching state")
 		}
-		if err := c.Response(NA(apdu), NoKWArgs); err != nil {
+		if err := c.Response(NA(apdu), NoKWArgs()); err != nil {
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
 	case readWriteModel.APDUComplexAck:
@@ -427,7 +427,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 			if err := c.setState(SSMState_COMPLETED, nil); err != nil {
 				return errors.Wrap(err, "error switching state")
 			}
-			if err := c.Response(NA(apdu), NoKWArgs); err != nil {
+			if err := c.Response(NA(apdu), NoKWArgs()); err != nil {
 				c.log.Debug().Err(err).Msg("error sending response")
 			}
 		} else if c.segmentationSupported != readWriteModel.BACnetSegmentation_SEGMENTED_RECEIVE && c.segmentationSupported != readWriteModel.BACnetSegmentation_SEGMENTED_BOTH {
@@ -437,7 +437,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 			if err != nil {
 				return errors.Wrap(err, "error creating abort")
 			}
-			if err := c.Response(NA(abort), NoKWArgs); err != nil {
+			if err := c.Response(NA(abort), NoKWArgs()); err != nil {
 				c.log.Debug().Err(err).Msg("error sending response")
 			}
 		} else if *_apdu.GetSequenceNumber() == 0 {
@@ -457,7 +457,7 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 
 			// send back a segment ack
 			segmentAck := readWriteModel.NewAPDUSegmentAck(false, false, c.invokeId, c.initialSequenceNumber, *c.actualWindowSize, 0)
-			if err := c.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segmentAck))), NoKWArgs); err != nil {
+			if err := c.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segmentAck))), NoKWArgs()); err != nil {
 				c.log.Debug().Err(err).Msg("error sending request")
 			}
 		} else {
@@ -467,10 +467,10 @@ func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 			if err != nil {
 				return errors.Wrap(err, "error creating abort")
 			}
-			if err := c.Request(NA(abort), NoKWArgs); err != nil { // send it ot the device
+			if err := c.Request(NA(abort), NoKWArgs()); err != nil { // send it ot the device
 				c.log.Debug().Err(err).Msg("error sending request")
 			}
-			if err := c.Response(NA(abort), NoKWArgs); err != nil { // send it ot the application
+			if err := c.Response(NA(abort), NoKWArgs()); err != nil { // send it ot the application
 				c.log.Debug().Err(err).Msg("error sending response")
 			}
 		}
@@ -496,7 +496,7 @@ func (c *ClientSSM) awaitConfirmationTimeout() error {
 		// save the retry count, indication acts like the request is coming from the application so the retryCount gets
 		//            re-initialized.
 		saveCount := c.retryCount
-		if err := c.Indication(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, c.segmentAPDU.originalApdu, KWCPCIDestination, c.pduAddress))), NoKWArgs); err != nil { // TODO: check that it is really the intention to re-send the original apdu here
+		if err := c.Indication(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, c.segmentAPDU.originalApdu, KWCPCIDestination, c.pduAddress))), NoKWArgs()); err != nil { // TODO: check that it is really the intention to re-send the original apdu here
 			return err
 		}
 		c.retryCount = saveCount
@@ -510,7 +510,7 @@ func (c *ClientSSM) awaitConfirmationTimeout() error {
 		if err != nil {
 			return errors.Wrap(err, "error creating abort")
 		}
-		if err := c.Response(NA(abort), NoKWArgs); err != nil {
+		if err := c.Response(NA(abort), NoKWArgs()); err != nil {
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
 	}
@@ -529,10 +529,10 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error creating abort")
 		}
-		if err := c.Request(NA(abort), NoKWArgs); err != nil { // send it ot the device
+		if err := c.Request(NA(abort), NoKWArgs()); err != nil { // send it ot the device
 			c.log.Debug().Err(err).Msg("error sending request")
 		}
-		if err := c.Response(NA(abort), NoKWArgs); err != nil { // send it ot the application
+		if err := c.Response(NA(abort), NoKWArgs()); err != nil { // send it ot the application
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
 	}
@@ -543,10 +543,10 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error creating abort")
 		}
-		if err := c.Request(NA(abort), NoKWArgs); err != nil { // send it ot the device
+		if err := c.Request(NA(abort), NoKWArgs()); err != nil { // send it ot the device
 			c.log.Debug().Err(err).Msg("error sending request")
 		}
-		if err := c.Response(NA(abort), NoKWArgs); err != nil { // send it ot the application
+		if err := c.Response(NA(abort), NoKWArgs()); err != nil { // send it ot the application
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
 	}
@@ -561,7 +561,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 		// segment received out of order
 		c.RestartTimer(c.segmentTimeout)
 		segmentAck := readWriteModel.NewAPDUSegmentAck(true, false, c.invokeId, c.initialSequenceNumber, *c.actualWindowSize, 0)
-		if err := c.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segmentAck))), NoKWArgs); err != nil {
+		if err := c.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segmentAck))), NoKWArgs()); err != nil {
 			c.log.Debug().Err(err).Msg("error sending request")
 		}
 		return nil
@@ -581,7 +581,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 
 		// send final ack
 		segmentAck := readWriteModel.NewAPDUSegmentAck(false, false, c.invokeId, c.lastSequenceNumber, *c.actualWindowSize, 0)
-		if err := c.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segmentAck))), NoKWArgs); err != nil {
+		if err := c.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segmentAck))), NoKWArgs()); err != nil {
 			c.log.Debug().Err(err).Msg("error sending request")
 		}
 
@@ -595,7 +595,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}
-		if err := c.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, parse))), NoKWArgs); err != nil {
+		if err := c.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, parse))), NoKWArgs()); err != nil {
 			c.log.Debug().Err(err).Msg("error sending response")
 		}
 	} else if *apduComplexAck.GetSequenceNumber() == c.initialSequenceNumber+*c.actualWindowSize {
@@ -604,7 +604,7 @@ func (c *ClientSSM) segmentedConfirmation(apdu PDU) error {
 		c.initialSequenceNumber = c.lastSequenceNumber
 		c.RestartTimer(c.segmentTimeout)
 		segmentAck := readWriteModel.NewAPDUSegmentAck(false, false, c.invokeId, c.lastSequenceNumber, *c.actualWindowSize, 0)
-		if err := c.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segmentAck))), NoKWArgs); err != nil { // send it ot the device
+		if err := c.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segmentAck))), NoKWArgs()); err != nil { // send it ot the device
 			c.log.Debug().Err(err).Msg("error sending request")
 		}
 	} else {
@@ -623,5 +623,5 @@ func (c *ClientSSM) segmentedConfirmationTimeout() error {
 	if err != nil {
 		return errors.Wrap(err, "error creating abort")
 	}
-	return c.Response(NA(abort), NoKWArgs)
+	return c.Response(NA(abort), NoKWArgs())
 }
