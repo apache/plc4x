@@ -102,7 +102,7 @@ func (b *AnnexJCodec) Indication(args Args, kwArgs KWArgs) error {
 	}
 
 	// send it downstream
-	return b.Request(NA(pdu), NoKWArgs)
+	return b.Request(NA(pdu), NoKWArgs())
 }
 
 func (b *AnnexJCodec) Confirmation(args Args, kwArgs KWArgs) error {
@@ -125,5 +125,5 @@ func (b *AnnexJCodec) Confirmation(args Args, kwArgs KWArgs) error {
 	}
 
 	// send it upstream
-	return b.Response(NA(rpdu), NoKWArgs)
+	return b.Response(NA(rpdu), NoKWArgs())
 }

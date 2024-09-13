@@ -41,10 +41,9 @@ type _PDU struct {
 	PDUData
 }
 
-func NewCPDU(args Args, kwArgs KWArgs) CPDU {
-	data := GAO[any](args, 0, nil)
+func NewCPDU(data any, kwArgs KWArgs) CPDU {
 	if _debug != nil {
-		_debug("__init__ %r %r", args, kwArgs)
+		_debug("__init__ %r %r", data, kwArgs)
 	}
 
 	// pick up some optional kwArgs
@@ -63,9 +62,9 @@ func NewCPDU(args Args, kwArgs KWArgs) CPDU {
 
 	// now continue on
 	p := &_PDU{
-		PCI: NewPCI(args, NKW(KWCPCIUserData, userData, KWCPCISource, source, destination, KWCPCIDestination, destination)),
+		PCI: NewPCI(NoArgs, NKW(KWCPCIUserData, userData, KWCPCISource, source, destination, KWCPCIDestination, destination)),
 	}
-	p.PDUData = NewPDUData(NA(KWO[spi.Message](kwArgs, KWCompRootMessage, nil)), NoKWArgs)
+	p.PDUData = NewPDUData(NA(data), kwArgs)
 	return p
 }
 

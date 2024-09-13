@@ -357,7 +357,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 
 		// send it to all the adapters
 		for _, adapter := range n.adapters {
-			if err := n.SapIndication(NA(adapter, xnpdu), NoKWArgs); err != nil {
+			if err := n.SapIndication(NA(adapter, xnpdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error doing SapIndication")
 			}
 		}
@@ -504,7 +504,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			n.log.Debug().Stringer("pduDestination", apdu.GetPDUDestination()).Msg("apdu.pduDestination")
 
 			// pass upstream to the application layer
-			if err := n.Response(NA(apdu), NoKWArgs); err != nil {
+			if err := n.Response(NA(apdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error passing response")
 			}
 		}
@@ -526,7 +526,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// pass to the service element
-			if err := n.SapRequest(NA(adapter, xpdu), NoKWArgs); err != nil {
+			if err := n.SapRequest(NA(adapter, xpdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error passing sap _request")
 			}
 		}
@@ -658,7 +658,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// pass this along as if it came from the NSE
-			if err := n.SapIndication(NA(xadapter, NewPDU(NoArgs, NKW(KWCompRootMessage, xnpdu, KWCPCIDestination, pduDestination))), NoKWArgs); err != nil {
+			if err := n.SapIndication(NA(xadapter, NewPDU(NoArgs, NKW(KWCompRootMessage, xnpdu, KWCPCIDestination, pduDestination))), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error sending indication")
 			}
 		}

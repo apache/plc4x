@@ -188,7 +188,7 @@ func (i *IOQController) CompleteIO(iocb IOCBContract, msg PDU) error {
 		i.state = IOQControllerStates_CTRL_WAITING
 		i.stateLog.Debug().Timestamp().Str("name", i.name).Msg("waiting")
 
-		task := FunctionTask(i._waitTrigger, NoArgs, NoKWArgs)
+		task := FunctionTask(i._waitTrigger, NoArgs, NoKWArgs())
 		task.InstallTask(WithInstallTaskOptionsDelta(i.waitTime))
 	} else {
 		// change our state
@@ -196,7 +196,7 @@ func (i *IOQController) CompleteIO(iocb IOCBContract, msg PDU) error {
 		i.stateLog.Debug().Timestamp().Str("name", i.name).Msg("idle")
 
 		// look for more to do
-		Deferred(i._trigger, NoArgs, NoKWArgs)
+		Deferred(i._trigger, NoArgs, NoKWArgs())
 	}
 
 	return nil
@@ -225,7 +225,7 @@ func (i *IOQController) AbortIO(iocb IOCBContract, err error) error {
 	i.stateLog.Debug().Timestamp().Str("name", i.name).Msg("idle")
 
 	// look for more to do
-	Deferred(i._trigger, NoArgs, NoKWArgs)
+	Deferred(i._trigger, NoArgs, NoKWArgs())
 	return nil
 }
 
@@ -262,7 +262,7 @@ func (i *IOQController) _trigger(_ Args, _ KWArgs) error {
 
 	// if we're idle, call again
 	if i.state == IOQControllerStates_CTRL_IDLE {
-		Deferred(i._trigger, NoArgs, NoKWArgs)
+		Deferred(i._trigger, NoArgs, NoKWArgs())
 	}
 	return nil
 }

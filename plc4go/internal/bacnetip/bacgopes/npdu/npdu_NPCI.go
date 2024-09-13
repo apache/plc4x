@@ -87,7 +87,7 @@ func NewNPCI(nlm readWriteModel.NLM, apdu readWriteModel.APDU) NPCI {
 	npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
 	nkw := NKW(KWCompRootMessage, npdu)
 	if npdu == nil {
-		nkw = NoKWArgs
+		nkw = NoKWArgs()
 	}
 	n.PCI = NewPCI(NoArgs, nkw) // TODO: convert to args so we can solve all those todos
 	n.AddExtraPrinters(n.PCI.(DebugContentPrinter))

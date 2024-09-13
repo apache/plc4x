@@ -239,12 +239,12 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 		}
 
 		// let it run with the apdu
-		if err := tr.Indication(NA(apdu), NoKWArgs); err != nil {
+		if err := tr.Indication(NA(apdu), NoKWArgs()); err != nil {
 			return errors.Wrap(err, "error runnning indication")
 		}
 	case readWriteModel.APDUUnconfirmedRequest:
 		// deliver directly to the application
-		if err := s.SapRequest(NA(apdu), NoKWArgs); err != nil {
+		if err := s.SapRequest(NA(apdu), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
 	case readWriteModel.APDUSimpleAck, readWriteModel.APDUComplexAck, readWriteModel.APDUError, readWriteModel.APDUReject:
@@ -262,7 +262,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 		}
 
 		// send the packet on to the transaction
-		if err := tr.Confirmation(NA(apdu), NoKWArgs); err != nil {
+		if err := tr.Confirmation(NA(apdu), NoKWArgs()); err != nil {
 			return errors.Wrap(err, "error running confirmation")
 		}
 	case readWriteModel.APDUAbort:
@@ -280,7 +280,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 			}
 
 			// send the packet on to the transaction
-			if err := tr.Confirmation(NA(apdu), NoKWArgs); err != nil {
+			if err := tr.Confirmation(NA(apdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error running confirmation")
 			}
 		} else {
@@ -297,7 +297,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 			}
 
 			// send the packet on to the transaction
-			if err := tr.Indication(NA(apdu), NoKWArgs); err != nil {
+			if err := tr.Indication(NA(apdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error running indication")
 			}
 		}
@@ -316,7 +316,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 			}
 
 			// send the packet on to the transaction
-			if err := tr.Confirmation(NA(apdu), NoKWArgs); err != nil {
+			if err := tr.Confirmation(NA(apdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error running confirmation")
 			}
 		} else {
@@ -333,7 +333,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 			}
 
 			// send the packet on to the transaction
-			if err := tr.Indication(NA(apdu), NoKWArgs); err != nil {
+			if err := tr.Indication(NA(apdu), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error running indication")
 			}
 		}
@@ -371,7 +371,7 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwArgs KWArgs) error 
 	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUUnconfirmedRequest:
 		// deliver to the device
-		if err := s.Request(NA(apdu), NoKWArgs); err != nil {
+		if err := s.Request(NA(apdu), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending the request")
 		}
 	case readWriteModel.APDUConfirmedRequest:
@@ -397,7 +397,7 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwArgs KWArgs) error 
 		s.clientTransactions = append(s.clientTransactions, tr)
 
 		// let it run
-		if err := tr.Indication(NA(apdu), NoKWArgs); err != nil {
+		if err := tr.Indication(NA(apdu), NoKWArgs()); err != nil {
 			return errors.Wrap(err, "error doing indication")
 		}
 	default:
@@ -429,7 +429,7 @@ func (s *StateMachineAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) erro
 		}
 
 		// pass control to the transaction
-		if err := tr.Confirmation(NA(apdu), NoKWArgs); err != nil {
+		if err := tr.Confirmation(NA(apdu), NoKWArgs()); err != nil {
 			return errors.Wrap(err, "error running confirmation")
 		}
 	default:

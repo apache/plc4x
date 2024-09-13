@@ -57,7 +57,8 @@ func NewAPDU(apdu readWriteModel.APDU, opts ...func(*__APDU)) (APDU, error) {
 		opt(a)
 	}
 	a._APCI = NewAPCI(apdu).(*_APCI)
-	a.PDUData = NewPDUData(NoArgs, NoKWArgs)
+	a.PDUData = NewPDUData(NoArgs, NoKWArgs())
+	a.AddExtraPrinters(a.PDUData.(DebugContentPrinter))
 	// Do a post construct for a bit more easy initialization
 	for _, f := range a._postConstruct {
 		f()

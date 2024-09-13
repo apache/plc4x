@@ -132,10 +132,7 @@ func (a *ApplicationNetwork) Run(timeLimit time.Duration) error {
 	if a.log.Debug().Enabled() {
 		a.log.Debug().Msg("time machine finished")
 		for _, machine := range a.GetStateMachines() {
-			a.log.Debug().Stringer("machine", machine).Msg("machine")
-			for _, entry := range machine.GetTransactionLog() {
-				a.log.Debug().Str("entry", entry).Msg("transaction log entry")
-			}
+			a.log.Debug().Stringer("machine", machine).Stringers("entries", ToStringers(machine.GetTransactionLog())).Msg("machine")
 		}
 
 		a.trafficLog.Dump(a._debug)
@@ -339,7 +336,7 @@ func (a *ApplicationStateMachine) Indication(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
 
 	// let the state machine know the request was received
-	err := a.Receive(args, NoKWArgs)
+	err := a.Receive(args, NoKWArgs())
 	if err != nil {
 		return errors.Wrap(err, "error receiving indication")
 	}
@@ -436,7 +433,7 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 			KnownKey("serviceParameters"), requestString,
 			KnownKey("destination"), anet.iut.address,
 		)), nil).Doc(prefix+"-1").
-		Receive(NA((*apdu.ConfirmedPrivateTransferRequest)(nil)), NoKWArgs).Doc(prefix + "-2").
+		Receive(NA((*apdu.ConfirmedPrivateTransferRequest)(nil)), NoKWArgs()).Doc(prefix + "-2").
 		Success("")
 
 	// no IUT application layer matching

@@ -63,6 +63,15 @@ func (p *_PDU) DeepCopy() any {
 	return p.deepCopy()
 }
 
+func (p *_PDU) Format(s fmt.State, v rune) {
+	switch v {
+	case 's':
+		_, _ = fmt.Fprint(s, p.String())
+	default:
+		p.DefaultRFormatter.Format(s, v)
+	}
+}
+
 func (p *_PDU) String() string {
 	return fmt.Sprintf("<%T %s -> %s : %s>", p, p.GetPDUSource(), p.GetPDUDestination(), p._PDUData)
 }

@@ -65,15 +65,15 @@ func GA[T any](args Args, index int) T {
 }
 
 // GetFromArgsOptional gets a value from Args or return default if not present
-func GetFromArgsOptional[T any](args Args, index int, defaultValue T) T {
+func GetFromArgsOptional[T any](args Args, index int, defaultValue T) (T, bool) {
 	if index > len(args)-1 {
-		return defaultValue
+		return defaultValue, false
 	}
-	return args[index].(T)
+	return args[index].(T), true
 }
 
 // GAO is a shortcut for GetFromArgsOptional
-func GAO[T any](args Args, index int, defaultValue T) T {
+func GAO[T any](args Args, index int, defaultValue T) (T, bool) {
 	return GetFromArgsOptional(args, index, defaultValue)
 }
 
@@ -92,7 +92,7 @@ func (a Args) String() string {
 		case []byte:
 			ea = Btox(tea, ".")
 		case fmt.Stringer:
-			if tea != nil {
+			if !IsNil(tea) {
 				teaString := tea.String()
 				ea = teaString
 				if strings.Contains(teaString, "\n") {
@@ -110,7 +110,7 @@ func (a Args) String() string {
 
 type KWArgs map[KnownKey]any
 
-var NoKWArgs = NewKWArgs()
+var NoKWArgs = NewKWArgs
 
 func NewKWArgs(kw ...any) KWArgs {
 	if len(kw)%2 != 0 {
@@ -193,10 +193,9 @@ const (
 	////
 	// comm.PCI related keys
 
+	KWCPCIUserData    = KnownKey("user_data")
 	KWCPCISource      = KnownKey("source")
 	KWCPCIDestination = KnownKey("destination")
-	KWCPCIData        = KnownKey("data")
-	KWCPCIUserData    = KnownKey("user_data")
 
 	////
 	// PCI related keys
@@ -242,9 +241,9 @@ const (
 	KWCompBVLCIRequirements = KnownKey("compBVLCIRequirements")
 )
 
-// Nothing give NoArgs and NoKWArgs
+// Nothing give NoArgs and NoKWArgs()
 func Nothing() (Args, KWArgs) {
-	return NoArgs, NoKWArgs
+	return NoArgs, NoKWArgs()
 }
 
 // An PriorityItem is something we manage in a priority queue.
@@ -472,4 +471,30 @@ func Try1[T any](f func() (T, error)) (v T, err error) {
 		}
 	}()
 	return f()
+}
+
+// IsNil when nil checks aren'T enough
+func IsNil(v interface{}) bool {
+	if v == nil {
+		return true
+	}
+	valueOf := reflect.ValueOf(v)
+	switch valueOf.Kind() {
+	case reflect.Ptr, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
+		return valueOf.IsNil()
+	default:
+		return false
+	}
+}
+
+func ToStringers[I any](in []I) []fmt.Stringer {
+	return ConvertSlice[I, fmt.Stringer](in)
+}
+
+func ConvertSlice[I any, O any](in []I) (out []O) {
+	out = make([]O, len(in))
+	for i, v := range in {
+		out[i] = any(v).(O)
+	}
+	return
 }

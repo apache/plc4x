@@ -54,7 +54,7 @@ func NewEchoAccessPoint(localLog zerolog.Logger, requirements EchoAccessPointReq
 
 func (e *EchoAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
 	e.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapIndication")
-	return e.requirements.SapResponse(args, NoKWArgs)
+	return e.requirements.SapResponse(args, NoKWArgs())
 }
 
 func (e *EchoAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
@@ -120,7 +120,7 @@ func NewEchoServiceElement(localLog zerolog.Logger, requirements EchoServiceElem
 
 func (e *EchoServiceElement) Indication(args Args, kwArgs KWArgs) error {
 	e.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
-	return e.requirements.Response(args, NoKWArgs)
+	return e.requirements.Response(args, NoKWArgs())
 }
 
 func (e *EchoServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
@@ -199,7 +199,7 @@ func (suite *TestApplicationSuite) TestSapRequest() {
 	pdu := NewPDU(Nothing())
 
 	// service access point is going to request something
-	err := suite.sap.SapRequest(NA(pdu), NoKWArgs)
+	err := suite.sap.SapRequest(NA(pdu), NoKWArgs())
 	suite.Assert().NoError(err)
 
 	// make sure the request was sent and received
@@ -216,7 +216,7 @@ func (suite *TestApplicationSuite) TestAseRequest() {
 	pdu := NewPDU(Nothing())
 
 	// service access point is going to request something
-	err := suite.ase.Request(NA(pdu), NoKWArgs)
+	err := suite.ase.Request(NA(pdu), NoKWArgs())
 	suite.Assert().NoError(err)
 
 	// make sure the request was sent and received

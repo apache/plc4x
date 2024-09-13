@@ -117,7 +117,7 @@ func (s *FauxMultiplexer) Indication(args Args, kwArgs KWArgs) error {
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
-	return s.Request(NA(NewPDU(NewArgs(pdu), NKW(KWCPCISource, unicast, KWCPCIDestination, dest))), NoKWArgs)
+	return s.Request(NA(NewPDU(NewArgs(pdu), NKW(KWCPCISource, unicast, KWCPCIDestination, dest))), NoKWArgs())
 }
 
 func (s *FauxMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
@@ -144,5 +144,5 @@ func (s *FauxMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
 		dest = pdu.GetPDUDestination()
 	}
 
-	return s.Response(NA(NewPDU(NA(pdu), NKW(KWCompRootMessage, pdu, KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs)
+	return s.Response(NA(NewPDU(NA(pdu), NKW(KWCompRootMessage, pdu, KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs())
 }

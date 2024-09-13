@@ -106,7 +106,7 @@ func (n *NPDUCodec) Indication(args Args, kwArgs KWArgs) error {
 	n.log.Debug().Stringer("ypdu", ypdu).Msg("encoded")
 
 	// send it downstream
-	return n.Request(NA(ypdu), NoKWArgs)
+	return n.Request(NA(ypdu), NoKWArgs())
 }
 
 func (n *NPDUCodec) Confirmation(args Args, kwArgs KWArgs) error {
@@ -135,7 +135,7 @@ func (n *NPDUCodec) Confirmation(args Args, kwArgs KWArgs) error {
 		return errors.Wrap(err, "error decoding ypdu")
 	}
 
-	return n.Response(NA(ypdu), NoKWArgs)
+	return n.Response(NA(ypdu), NoKWArgs())
 }
 
 type SnifferStateMachine struct {
@@ -436,12 +436,12 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 
 func (a *ApplicationLayerStateMachine) Indication(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
-	return a.Receive(args, NoKWArgs)
+	return a.Receive(args, NoKWArgs())
 }
 
 func (a *ApplicationLayerStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
-	return a.Receive(args, NoKWArgs)
+	return a.Receive(args, NoKWArgs())
 }
 
 //go:generate plc4xGenerator -type=ApplicationNode

@@ -53,7 +53,7 @@ func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *U
 	// Add a timer
 	a.timeout = director.timeout
 	if a.timeout > 0 {
-		a.timer = FunctionTask(a.idleTimeout, NoArgs, NoKWArgs)
+		a.timer = FunctionTask(a.idleTimeout, NoArgs, NoKWArgs())
 		a.timer.InstallTask(WithInstallTaskOptionsWhen(GetTaskManagerTime().Add(time.Duration(a.timeout) * time.Millisecond)))
 	}
 

@@ -48,11 +48,11 @@ var BVLPDUTypes map[uint8]func() Decoder
 func init() {
 	BVLPDUTypes = map[uint8]func() Decoder{
 		BVLCIResult: func() Decoder {
-			v, _ := NewResult(nil, NoArgs, NoKWArgs)
+			v, _ := NewResult(nil, NoArgs, NoKWArgs())
 			return v
 		},
 		BVLCIWriteBroadcastDistributionTable: func() Decoder {
-			v, _ := NewWriteBroadcastDistributionTable(nil, NoArgs, NoKWArgs)
+			v, _ := NewWriteBroadcastDistributionTable(nil, NoArgs, NoKWArgs())
 			return v
 		},
 		BVLCIReadBroadcastDistributionTable: func() Decoder {
@@ -60,15 +60,15 @@ func init() {
 			return v
 		},
 		BVLCIReadBroadcastDistributionTableAck: func() Decoder {
-			v, _ := NewReadBroadcastDistributionTableAck(nil, NoArgs, NoKWArgs)
+			v, _ := NewReadBroadcastDistributionTableAck(nil, NoArgs, NoKWArgs())
 			return v
 		},
 		BVLCIForwardedNPDU: func() Decoder {
-			v, _ := NewForwardedNPDU(nil, NoArgs, NoKWArgs)
+			v, _ := NewForwardedNPDU(nil, NoArgs, NoKWArgs())
 			return v
 		},
 		BVLCIRegisterForeignDevice: func() Decoder {
-			v, _ := NewRegisterForeignDevice(nil, NoArgs, NoKWArgs)
+			v, _ := NewRegisterForeignDevice(nil, NoArgs, NoKWArgs())
 			return v
 		},
 		BVLCIReadForeignDeviceTable: func() Decoder {
@@ -76,11 +76,11 @@ func init() {
 			return v
 		},
 		BVLCIReadForeignDeviceTableAck: func() Decoder {
-			v, _ := NewReadForeignDeviceTableAck(nil, NoArgs, NoKWArgs)
+			v, _ := NewReadForeignDeviceTableAck(nil, NoArgs, NoKWArgs())
 			return v
 		},
 		BVLCIDeleteForeignDeviceTableEntry: func() Decoder {
-			v, _ := NewDeleteForeignDeviceTableEntry(nil, NoArgs, NoKWArgs)
+			v, _ := NewDeleteForeignDeviceTableEntry(nil, NoArgs, NoKWArgs())
 			return v
 		},
 		BVLCIDistributeBroadcastToNetwork: func() Decoder {

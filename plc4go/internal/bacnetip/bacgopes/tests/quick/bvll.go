@@ -27,7 +27,7 @@ import (
 )
 
 func Result(i uint16) *bvll.Result {
-	result, err := bvll.NewResult(ToPtr(readWriteModel.BVLCResultCode(i)), NoArgs, NoKWArgs)
+	result, err := bvll.NewResult(ToPtr(readWriteModel.BVLCResultCode(i)), NoArgs, NoKWArgs())
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +35,7 @@ func Result(i uint16) *bvll.Result {
 }
 
 func WriteBroadcastDistributionTable(bdt ...*pdu.Address) *bvll.WriteBroadcastDistributionTable {
-	writeBroadcastDistributionTable, err := bvll.NewWriteBroadcastDistributionTable(bdt, NoArgs, NoKWArgs)
+	writeBroadcastDistributionTable, err := bvll.NewWriteBroadcastDistributionTable(bdt, NoArgs, NoKWArgs())
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +51,7 @@ func ReadBroadcastDistributionTable() *bvll.ReadBroadcastDistributionTable {
 }
 
 func ReadBroadcastDistributionTableAck(bdt ...*pdu.Address) *bvll.ReadBroadcastDistributionTableAck {
-	readBroadcastDistributionTable, err := bvll.NewReadBroadcastDistributionTableAck(bdt, NoArgs, NoKWArgs)
+	readBroadcastDistributionTable, err := bvll.NewReadBroadcastDistributionTableAck(bdt, NoArgs, NoKWArgs())
 	if err != nil {
 		panic(err)
 	}
@@ -59,7 +59,7 @@ func ReadBroadcastDistributionTableAck(bdt ...*pdu.Address) *bvll.ReadBroadcastD
 }
 
 func ForwardedNPDU(addr *pdu.Address, pduBytes []byte) *bvll.ForwardedNPDU {
-	npdu, err := bvll.NewForwardedNPDU(addr, NA(pduBytes), NoKWArgs)
+	npdu, err := bvll.NewForwardedNPDU(addr, NA(pduBytes), NoKWArgs())
 	if err != nil {
 		panic(err)
 	}
@@ -67,15 +67,15 @@ func ForwardedNPDU(addr *pdu.Address, pduBytes []byte) *bvll.ForwardedNPDU {
 }
 
 func RegisterForeignDevice(ttl uint16) *bvll.RegisterForeignDevice {
-	registerForeignDevice, err := bvll.NewRegisterForeignDevice(&ttl, NoArgs, NoKWArgs)
+	registerForeignDevice, err := bvll.NewRegisterForeignDevice(&ttl, NoArgs, NoKWArgs())
 	if err != nil {
 		panic(err)
 	}
 	return registerForeignDevice
 }
 
-func ReadForeignDeviceTable() *bvll.ReadForeignDeviceTable {
-	readForeignDeviceTable, err := bvll.NewReadForeignDeviceTable(Nothing())
+func ReadForeignDeviceTable(addr *pdu.Address) *bvll.ReadForeignDeviceTable {
+	readForeignDeviceTable, err := bvll.NewReadForeignDeviceTable(NoArgs, NKW(KWCPCIDestination, addr))
 	if err != nil {
 		panic(err)
 	}
@@ -87,7 +87,7 @@ func FDTEntry() (entry *bvll.FDTEntry) {
 }
 
 func ReadForeignDeviceTableAck(fdts ...*bvll.FDTEntry) *bvll.ReadForeignDeviceTableAck {
-	readForeignDeviceTableAck, err := bvll.NewReadForeignDeviceTableAck(fdts, NoArgs, NoKWArgs)
+	readForeignDeviceTableAck, err := bvll.NewReadForeignDeviceTableAck(fdts, NoArgs, NoKWArgs())
 	if err != nil {
 		panic(err)
 	}
@@ -95,7 +95,7 @@ func ReadForeignDeviceTableAck(fdts ...*bvll.FDTEntry) *bvll.ReadForeignDeviceTa
 }
 
 func DeleteForeignDeviceTableEntry(address *pdu.Address) *bvll.DeleteForeignDeviceTableEntry {
-	deleteForeignDeviceTableEntry, err := bvll.NewDeleteForeignDeviceTableEntry(address, NoArgs, NoKWArgs)
+	deleteForeignDeviceTableEntry, err := bvll.NewDeleteForeignDeviceTableEntry(address, NoArgs, NoKWArgs())
 	if err != nil {
 		panic(err)
 	}
@@ -103,7 +103,7 @@ func DeleteForeignDeviceTableEntry(address *pdu.Address) *bvll.DeleteForeignDevi
 }
 
 func DistributeBroadcastToNetwork(pduBytes []byte) *bvll.DistributeBroadcastToNetwork {
-	distributeBroadcastToNetwork, err := bvll.NewDistributeBroadcastToNetwork(NA(pduBytes), NoKWArgs)
+	distributeBroadcastToNetwork, err := bvll.NewDistributeBroadcastToNetwork(NA(pduBytes), NoKWArgs())
 	if err != nil {
 		panic(err)
 	}
@@ -111,7 +111,7 @@ func DistributeBroadcastToNetwork(pduBytes []byte) *bvll.DistributeBroadcastToNe
 }
 
 func OriginalUnicastNPDU(pduBytes []byte) *bvll.OriginalUnicastNPDU {
-	npdu, err := bvll.NewOriginalUnicastNPDU(NA(pduBytes), NoKWArgs)
+	npdu, err := bvll.NewOriginalUnicastNPDU(NA(pduBytes), NoKWArgs())
 	if err != nil {
 		panic(err)
 	}
@@ -119,7 +119,7 @@ func OriginalUnicastNPDU(pduBytes []byte) *bvll.OriginalUnicastNPDU {
 }
 
 func OriginalBroadcastNPDU(pduBytes []byte) *bvll.OriginalBroadcastNPDU {
-	npdu, err := bvll.NewOriginalBroadcastNPDU(NA(pduBytes), NoKWArgs)
+	npdu, err := bvll.NewOriginalBroadcastNPDU(NA(pduBytes), NoKWArgs())
 	if err != nil {
 		panic(err)
 	}

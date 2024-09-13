@@ -109,7 +109,7 @@ func (t *TFNetwork) Run(timeLimit time.Duration) {
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
 		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
 		for _, s := range machine.GetTransactionLog() {
-			t.log.Debug().Str("logEntry", s).Msg("logEntry")
+			t.log.Debug().Stringer("logEntry", s).Msg("logEntry")
 		}
 	}
 
@@ -120,7 +120,6 @@ func (t *TFNetwork) Run(timeLimit time.Duration) {
 }
 
 func TestForeign(t *testing.T) {
-	t.Skip("currently broken")              // TODO: fixme
 	t.Run("test_idle", func(t *testing.T) { //Test an idle network, nothing happens is success.
 		ExclusiveGlobalTimeMachine(t)
 
@@ -144,7 +143,7 @@ func TestForeign(t *testing.T) {
 		tnet.fd.GetStartState().
 			Call(func(args Args, _ KWArgs) error {
 				return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
-			}, NA(tnet.bbmd.address, 30), NoKWArgs).
+			}, NA(tnet.bbmd.address, uint16(30)), NoKWArgs()).
 			Success("")
 
 		// remote sniffer node
@@ -154,8 +153,8 @@ func TestForeign(t *testing.T) {
 
 		// sniffer traffic
 		remoteSniffer.GetStartState().Doc("1-1-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs).Doc("1-1-1").
-			Receive(NA((*Result)(nil)), NoKWArgs).Doc("1-1-2").
+			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("1-1-1").
+			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("1-1-2").
 			SetEvent("fd-registered").Doc("1-1-3").
 			Success("")
 
@@ -167,12 +166,10 @@ func TestForeign(t *testing.T) {
 		tnet.Append(homeSnooper)
 
 		// snooper will read foreign device table
-		readForeignDeviceTable := quick.ReadForeignDeviceTable() // TODO: upstream sets this as kwArgs, check if we really want to propagate this here...
-		readForeignDeviceTable.SetPDUDestination(tnet.bbmd.address)
 		homeSnooper.GetStartState().Doc("1-2-0").
 			WaitEvent("fd-registered", nil).Doc("1-2-1").
-			Send(readForeignDeviceTable, nil).Doc("1-2-2").
-			Receive(NA((*ReadForeignDeviceTableAck)(nil)), NoKWArgs).Doc("1-2-3").
+			Send(quick.ReadForeignDeviceTable(tnet.bbmd.address), nil).Doc("1-2-2").
+			Receive(NA((*ReadForeignDeviceTableAck)(nil)), NoKWArgs()).Doc("1-2-3").
 			Success("")
 
 		// home sniffer node
@@ -182,10 +179,10 @@ func TestForeign(t *testing.T) {
 
 		// sniffer traffic
 		homeSniffer.GetStartState().Doc("1-3-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs).Doc("1-3-1").
-			Receive(NA((*Result)(nil)), NoKWArgs).Doc("1-3-2").
-			Receive(NA((*ReadForeignDeviceTable)(nil)), NoKWArgs).Doc("1-3-3").
-			Receive(NA((*ReadForeignDeviceTableAck)(nil)), NoKWArgs).Doc("1-3-4").
+			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("1-3-1").
+			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("1-3-2").
+			Receive(NA((*ReadForeignDeviceTable)(nil)), NoKWArgs()).Doc("1-3-3").
+			Receive(NA((*ReadForeignDeviceTableAck)(nil)), NoKWArgs()).Doc("1-3-4").
 			Success("")
 
 		//  run the group
@@ -202,7 +199,7 @@ func TestForeign(t *testing.T) {
 		tnet.fd.GetStartState().
 			Call(func(args Args, _ KWArgs) error {
 				return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
-			}, NA(tnet.bbmd.address, 10), NoKWArgs).
+			}, NA(tnet.bbmd.address, uint16(10)), NoKWArgs()).
 			Success("")
 
 		// the bbmd is idle
@@ -215,10 +212,10 @@ func TestForeign(t *testing.T) {
 
 		// sniffer traffic
 		remoteSniffer.GetStartState().Doc("2-1-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs).Doc("2-1-1").
-			Receive(NA((*Result)(nil)), NoKWArgs).Doc("2-1-1").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs).Doc("2-1-3").
-			Receive(NA((*Result)(nil)), NoKWArgs).Doc("2-1-4").
+			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("2-1-1").
+			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("2-1-1").
+			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("2-1-3").
+			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("2-1-4").
 			Success("")
 
 		//  run the group
@@ -240,14 +237,14 @@ func TestForeign(t *testing.T) {
 		tnet.fd.GetStartState().Doc("3-1-0").
 			Call(func(args Args, _ KWArgs) error {
 				return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
-			}, NA(tnet.bbmd.address, 60), NoKWArgs).Doc("3-1-1").
+			}, NA(tnet.bbmd.address, uint16(60)), NoKWArgs()).Doc("3-1-1").
 			WaitEvent("3-registered", nil).Doc("3-1-2").
 			Send(pdu, nil).Doc("3-1-3").
 			Success("")
 
 		// the bbmd is happy when it gets the pdu
 		tnet.bbmd.GetStartState().
-			Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWCPCIData, pduData)).
+			Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWTestPDUData, pduData)).
 			Success("")
 
 		// remote sniffer node
@@ -257,10 +254,10 @@ func TestForeign(t *testing.T) {
 
 		// sniffer traffic
 		remoteSniffer.GetStartState().Doc("3-2-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs).Doc("3-2-1").
-			Receive(NA((*Result)(nil)), NoKWArgs).Doc("3-2-2").
+			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("3-2-1").
+			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("3-2-2").
 			SetEvent("3-registered").Doc("3-2-3").
-			Receive(NA((*OriginalUnicastNPDU)(nil)), NoKWArgs).Doc("3-2-4").
+			Receive(NA((*OriginalUnicastNPDU)(nil)), NoKWArgs()).Doc("3-2-4").
 			Success("")
 
 		// run the group
@@ -283,14 +280,14 @@ func TestForeign(t *testing.T) {
 		tnet.fd.GetStartState().Doc("4-1-0").
 			Call(func(args Args, _ KWArgs) error {
 				return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
-			}, NA(tnet.bbmd.address, 60), NoKWArgs).Doc("4-1-1").
+			}, NA(tnet.bbmd.address, 60), NoKWArgs()).Doc("4-1-1").
 			WaitEvent("4-registered", nil).Doc("4-1-2").
 			Send(pdu, nil).Doc("4-1-3").
 			Success("")
 
 		// the bbmd is happy when it gets the pdu
 		tnet.bbmd.GetStartState().
-			Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWCPCIData, pduData)).Doc("4-2-1").
+			Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWTestPDUData, pduData)).Doc("4-2-1").
 			Success("")
 
 		// home simple node
@@ -299,7 +296,7 @@ func TestForeign(t *testing.T) {
 
 		// home node happy when getting the pdu, broadcast by the bbmd
 		homeNode.GetStartState().Doc("4-3-0").
-			Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWCPCIData, pduData)).Doc("4-3-1").
+			Receive(NA((PDU)(nil)), NKW(KWCPCISource, tnet.fd.address, KWTestPDUData, pduData)).Doc("4-3-1").
 			Success("")
 
 		// remote sniffer node
@@ -309,10 +306,10 @@ func TestForeign(t *testing.T) {
 
 		// sniffer traffic
 		remoteSniffer.GetStartState().Doc("4-4-0").
-			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs).Doc("4-4-1").
-			Receive(NA((*Result)(nil)), NoKWArgs).Doc("4-4-2").
+			Receive(NA((*RegisterForeignDevice)(nil)), NoKWArgs()).Doc("4-4-1").
+			Receive(NA((*Result)(nil)), NoKWArgs()).Doc("4-4-2").
 			SetEvent("4-registered").
-			Receive(NA((*DistributeBroadcastToNetwork)(nil)), NoKWArgs).Doc("4-4-3").
+			Receive(NA((*DistributeBroadcastToNetwork)(nil)), NoKWArgs()).Doc("4-4-3").
 			Success("")
 
 		// run the group

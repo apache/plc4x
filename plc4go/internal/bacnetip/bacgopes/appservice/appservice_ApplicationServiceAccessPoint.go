@@ -114,7 +114,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 		// no error so far, keep going
 		if errorFound == nil {
 			a.log.Trace().Msg("no decoding error")
-			if err := a.SapRequest(NA(xpdu), NoKWArgs); err != nil {
+			if err := a.SapRequest(NA(xpdu), NoKWArgs()); err != nil {
 				panic("if no abort or reject bubble up")
 				errorFound = err
 			}
@@ -126,7 +126,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 			a.log.Debug().Err(errorFound).Msg("got error")
 
 			// TODO: map it to a error... code temporary placeholder
-			return a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0)))), NoKWArgs)
+			return a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0)))), NoKWArgs())
 		}
 	case readWriteModel.APDUUnconfirmedRequest:
 		var apduService readWriteModel.BACnetUnconfirmedServiceChoice
@@ -147,7 +147,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 		}
 
 		// forward the decoded packet
-		if err := a.SapRequest(NA(xpdu), NoKWArgs); err != nil {
+		if err := a.SapRequest(NA(xpdu), NoKWArgs()); err != nil {
 			panic("if no abort or reject bubble up")
 		}
 	default:
@@ -189,7 +189,7 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) 
 	}
 
 	// forward the encoded packet
-	err := a.Request(NA(xpdu), NoKWArgs)
+	err := a.Request(NA(xpdu), NoKWArgs())
 	if err != nil {
 		return errors.Wrap(err, "error forwarding the request ")
 	}

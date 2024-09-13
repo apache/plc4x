@@ -34,7 +34,6 @@ import (
 )
 
 func TestServerStateMachine(t *testing.T) {
-	t.Skip("currently broken") // TODO: fixme
 	testingLogger := testutils.ProduceTestingLogger(t)
 	// create a client state machine, trapped server, and bind them together
 	client, err := NewTrappedClient(testingLogger)
@@ -63,5 +62,5 @@ func TestServerStateMachine(t *testing.T) {
 
 	// check the transaction log
 	assert.Len(t, server.GetTransactionLog(), 1)
-	assert.Contains(t, server.GetTransactionLog()[0], pdu.String())
+	assert.Equal(t, server.GetTransactionLog()[0].Pdu, pdu)
 }

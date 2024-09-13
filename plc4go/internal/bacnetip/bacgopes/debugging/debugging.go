@@ -96,6 +96,12 @@ func (d *DebugContents) AddDebugContents(debuggable Debuggable, contents ...stri
 }
 
 func (d *DebugContents) Format(s fmt.State, v rune) {
+	if d == nil {
+		if _debug != nil {
+			_debug("nil debug attempt") // TODO: this should no happen
+		}
+		return
+	}
 	switch v {
 	case 's', 'v':
 		// TODO: check if that hacky hacky makes sense
@@ -347,7 +353,7 @@ func (d *DefaultRFormatter) Format(s fmt.State, v rune) {
 		for _, printer := range d.extraPrinters {
 			printer.PrintDebugContents(1, s, nil)
 		}
-	case 'v':
+	case 'v', 's':
 		_, _ = s.Write([]byte(d.header))
 	}
 }

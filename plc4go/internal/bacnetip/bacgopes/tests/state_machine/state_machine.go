@@ -32,6 +32,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -192,7 +193,7 @@ func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[KnownK
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-		case KWCPCIData:
+		case KWTestPDUData:
 			got := pdu.(PDU).GetPduData()
 			var want []byte
 			switch attrValue := attrValue.(type) {

@@ -232,7 +232,7 @@ func (d *UDPDirector) handleRead() {
 		d.handleError(errors.Wrap(err, "error parsing destination address"))
 		return
 	}
-	pdu := NewCPDU(NoArgs, NKW(KWCompRootMessage, bvlc, KWCPCISource, saddr, KWCPCIDestination, daddr)) // TODO: why do we set the destination here??? This might be completely wrong
+	pdu := NewCPDU(readBytes, NKW(KWCompRootMessage, bvlc, KWCPCISource, saddr, KWCPCIDestination, daddr)) // TODO: why do we set the destination here??? This might be completely wrong
 	// send the _PDU up to the client
 	d.wg.Add(1)
 	go func() {
@@ -302,5 +302,5 @@ func (d *UDPDirector) _response(pdu PDU) error {
 	}
 
 	// send the message
-	return peer.Response(NA(pdu), NoKWArgs)
+	return peer.Response(NA(pdu), NoKWArgs())
 }

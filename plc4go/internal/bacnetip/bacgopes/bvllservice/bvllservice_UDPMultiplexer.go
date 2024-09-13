@@ -197,7 +197,7 @@ func (m *UDPMultiplexer) Indication(args Args, kwArgs KWArgs) error {
 		return errors.New("invalid destination address type")
 	}
 
-	return m.directPort.Indication(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCIDestination, dest))), NoKWArgs)
+	return m.directPort.Indication(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCIDestination, dest))), NoKWArgs())
 }
 
 func (m *UDPMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
@@ -265,7 +265,7 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
 
 	// TODO: we only support 0x81 at the moment
 	if m.AnnexJ != nil {
-		return m.AnnexJ.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu.GetRootMessage(), KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs)
+		return m.AnnexJ.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu.GetRootMessage(), KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs())
 	}
 
 	return nil

@@ -38,8 +38,8 @@ func AddressTuple[L any, R any](l L, r R) *pdu.AddressTuple[L, R] {
 
 func PDUData(args ...any) pdu.PDUData {
 	if args == nil {
-		return pdu.NewPDUData(NoArgs, NoKWArgs)
+		return pdu.NewPDUData(NoArgs, NoKWArgs())
 	} else {
-		return pdu.NewPDUData(NA(args[0].([]byte)), NoKWArgs)
+		return pdu.NewPDUData(NA(args[0].([]byte)), NoKWArgs())
 	}
 }

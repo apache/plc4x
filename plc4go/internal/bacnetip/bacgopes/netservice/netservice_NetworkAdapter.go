@@ -105,7 +105,7 @@ func (n *NetworkAdapter) ProcessNPDU(npdu NPDU) error {
 	if err := npdu.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding NPDU")
 	}
-	return n.Request(NA(pdu), NoKWArgs)
+	return n.Request(NA(pdu), NoKWArgs())
 }
 
 func (n *NetworkAdapter) EstablishConnectionToNetwork(net any) error {

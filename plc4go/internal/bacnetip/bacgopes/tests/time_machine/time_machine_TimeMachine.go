@@ -29,7 +29,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/core"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
@@ -44,9 +43,6 @@ func IsGlobalTimeMachineSet() bool {
 // Usually it is sufficient to use ExclusiveGlobalTimeMachine
 func NewGlobalTimeMachine(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
-	if !tests.LogTimeMachine {
-		testingLogger = zerolog.Nop()
-	}
 	if globalTimeMachine != nil {
 		testingLogger.Warn().Msg("global time machine set, overwriting")
 	}
@@ -304,9 +300,6 @@ func ResetTimeMachine(startTime time.Time) {
 func RunTimeMachine(localLog zerolog.Logger, duration time.Duration, stopTime time.Time) {
 	if globalTimeMachine == nil {
 		panic("no time machine")
-	}
-	if !tests.LogTimeMachine {
-		localLog = zerolog.Nop()
 	}
 	if _debug != nil {
 		_debug("run_time_machine %r %r", duration, stopTime)

@@ -172,7 +172,7 @@ func (n *Node) Indication(args Args, kwArgs KWArgs) error {
 	// actual network delivery is a zero-delay task
 	OneShotFunction(func(args Args, kwArgs KWArgs) error {
 		return n.lan.ProcessPDU(pdu)
-	}, args, NoKWArgs)
+	}, args, NoKWArgs())
 	return nil
 }
 

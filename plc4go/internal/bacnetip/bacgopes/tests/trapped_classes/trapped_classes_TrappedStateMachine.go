@@ -46,6 +46,9 @@ func NewTrappedStateMachine(localLog zerolog.Logger) *TrappedStateMachine {
 	t := &TrappedStateMachine{
 		log: localLog,
 	}
+	if _debug != nil {
+		_debug("__init__ %r", nil) //TODO: kwargs
+	}
 	var init func()
 	t.StateMachineContract, init = state_machine.NewStateMachine(localLog, t, state_machine.WithStateMachineStateInterceptor(t), state_machine.WithStateMachineStateDecorator(t.DecorateState))
 	t.Trapper = NewTrapper(localLog, t.StateMachineContract)
@@ -63,8 +66,13 @@ func (t *TrappedStateMachine) BeforeSend(pdu PDU) {
 
 func (t *TrappedStateMachine) Send(args Args, kwArgs KWArgs) error {
 	t.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Send")
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("send %r", pdu)
+	}
+
 	// keep a copy
-	t.sent = GA[PDU](args, 0)
+	t.sent = pdu
 	return nil
 }
 

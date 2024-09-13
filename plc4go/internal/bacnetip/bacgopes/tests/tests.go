@@ -19,6 +19,6 @@
 
 package tests
 
-import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 
-var _debug = CreateDebugPrinter()
+const KWTestPDUData = KnownKey("pduData")

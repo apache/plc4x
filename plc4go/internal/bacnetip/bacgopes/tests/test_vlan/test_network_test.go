@@ -329,10 +329,10 @@ func TestVLANEvents(t *testing.T) {
 		// node 2 receives dead_pdu, sets event, waits for beef_pdu
 		tnode2.GetStartState().
 			Receive(NA(NewPDU(Nothing())), NKW(
-				KWCPCIData, []byte{0xde, 0xad},
+				KWTestPDUData, []byte{0xde, 0xad},
 			)).SetEvent("e").
 			Receive(NA(NewPDU(Nothing())), NKW(
-				KWCPCIData, []byte{0xbe, 0xef},
+				KWTestPDUData, []byte{0xbe, 0xef},
 			)).Success("")
 
 		// run the group

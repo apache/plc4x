@@ -113,7 +113,7 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 	if !a._startupDisabled {
 		for fn := range a.CapabilityFunctions("startup") {
 			localLog.Debug().Interface("fn", fn).Msg("startup fn")
-			Deferred(fn, NoArgs, NoKWArgs)
+			Deferred(fn, NoArgs, NoKWArgs())
 		}
 	}
 	return a, nil
@@ -273,7 +273,7 @@ func (a *Application) Indication(args Args, kwArgs KWArgs) error {
 		a.log.Debug().Err(err).Msg("err result")
 		panic("do it")
 		// TODO: do proper mapping
-		if err := a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))), NoKWArgs); err != nil {
+		if err := a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))), NoKWArgs()); err != nil {
 			return err
 		}
 	}
