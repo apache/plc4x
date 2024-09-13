@@ -843,7 +843,7 @@
     ['91' M_VESTAMATIC ['130', '"Vestamatic"']]
     ['92' M_MDT_TECHNOLOGIES ['131', '"MDT technologies"']]
     ['93' M_WARENDORFER_KUECHEN_GMBH ['132', '"Warendorfer Küchen GmbH"']]
-    ['94' M_VIDEO_STAR ['133', '"Video-Star"']]
+    ['94' M_GVS ['133', '"GVS"']]
     ['95' M_SITEK ['134', '"Sitek"']]
     ['96' M_CONTROLTRONIC ['135', '"CONTROLtronic"']]
     ['97' M_FUNCTION_TECHNOLOGY ['136', '"function Technology"']]
@@ -1437,8 +1437,10 @@
     ['685' M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD ['743', '"Zhejiang FORICK, Intelligent Technology Co., LTD"']]
     ['686' M_VARNI_DIGITAL_PRIVATE_LIMITED ['744', '"Varni Digital Private Limited"']]
     ['687' M_3A_ENTREPRISE_APS ['745', '"3a entreprise aps"']]
-    ['688' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['689' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['688' M_ITALIANA_CONDUTTORI_SRL ['746', '"Italiana Conduttori srl"']]
+    ['689' M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_ ['747', '"Xiamen Leelen Technology Co.,Ltd."']]
+    ['690' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['691' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

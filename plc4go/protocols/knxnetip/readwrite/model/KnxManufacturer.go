@@ -137,7 +137,7 @@ const (
 	KnxManufacturer_M_VESTAMATIC                                         KnxManufacturer = 91
 	KnxManufacturer_M_MDT_TECHNOLOGIES                                   KnxManufacturer = 92
 	KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH                           KnxManufacturer = 93
-	KnxManufacturer_M_VIDEO_STAR                                         KnxManufacturer = 94
+	KnxManufacturer_M_GVS                                                KnxManufacturer = 94
 	KnxManufacturer_M_SITEK                                              KnxManufacturer = 95
 	KnxManufacturer_M_CONTROLTRONIC                                      KnxManufacturer = 96
 	KnxManufacturer_M_FUNCTION_TECHNOLOGY                                KnxManufacturer = 97
@@ -731,8 +731,10 @@ const (
 	KnxManufacturer_M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD   KnxManufacturer = 685
 	KnxManufacturer_M_VARNI_DIGITAL_PRIVATE_LIMITED                      KnxManufacturer = 686
 	KnxManufacturer_M_3A_ENTREPRISE_APS                                  KnxManufacturer = 687
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 688
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 689
+	KnxManufacturer_M_ITALIANA_CONDUTTORI_SRL                            KnxManufacturer = 688
+	KnxManufacturer_M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_                  KnxManufacturer = 689
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 690
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 691
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -834,7 +836,7 @@ func init() {
 		KnxManufacturer_M_VESTAMATIC,
 		KnxManufacturer_M_MDT_TECHNOLOGIES,
 		KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH,
-		KnxManufacturer_M_VIDEO_STAR,
+		KnxManufacturer_M_GVS,
 		KnxManufacturer_M_SITEK,
 		KnxManufacturer_M_CONTROLTRONIC,
 		KnxManufacturer_M_FUNCTION_TECHNOLOGY,
@@ -1428,6 +1430,8 @@ func init() {
 		KnxManufacturer_M_ZHEJIANG_FORICK__INTELLIGENT_TECHNOLOGY_CO___LTD,
 		KnxManufacturer_M_VARNI_DIGITAL_PRIVATE_LIMITED,
 		KnxManufacturer_M_3A_ENTREPRISE_APS,
+		KnxManufacturer_M_ITALIANA_CONDUTTORI_SRL,
+		KnxManufacturer_M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -4053,15 +4057,23 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 688:
 		{ /* '688' */
-			return 43954
+			return 746
 		}
 	case 689:
 		{ /* '689' */
-			return 43959
+			return 747
 		}
 	case 69:
 		{ /* '69' */
 			return 108
+		}
+	case 690:
+		{ /* '690' */
+			return 43954
+		}
+	case 691:
+		{ /* '691' */
+			return 43959
 		}
 	case 7:
 		{ /* '7' */
@@ -6831,15 +6843,23 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 688:
 		{ /* '688' */
-			return "ABB - reserved"
+			return "Italiana Conduttori srl"
 		}
 	case 689:
 		{ /* '689' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "Xiamen Leelen Technology Co.,Ltd."
 		}
 	case 69:
 		{ /* '69' */
 			return "Eelectron"
+		}
+	case 690:
+		{ /* '690' */
+			return "ABB - reserved"
+		}
+	case 691:
+		{ /* '691' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 7:
 		{ /* '7' */
@@ -6951,7 +6971,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 94:
 		{ /* '94' */
-			return "Video-Star"
+			return "GVS"
 		}
 	case 95:
 		{ /* '95' */
@@ -8299,11 +8319,15 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 687:
 		return KnxManufacturer_M_3A_ENTREPRISE_APS, true
 	case 688:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_ITALIANA_CONDUTTORI_SRL, true
 	case 689:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_, true
 	case 69:
 		return KnxManufacturer_M_EELECTRON, true
+	case 690:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 691:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 7:
 		return KnxManufacturer_M_GIRA_GIERSIEPEN, true
 	case 70:
@@ -8359,7 +8383,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 93:
 		return KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH, true
 	case 94:
-		return KnxManufacturer_M_VIDEO_STAR, true
+		return KnxManufacturer_M_GVS, true
 	case 95:
 		return KnxManufacturer_M_SITEK, true
 	case 96:
@@ -9684,12 +9708,16 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_VARNI_DIGITAL_PRIVATE_LIMITED, true
 	case "M_3A_ENTREPRISE_APS":
 		return KnxManufacturer_M_3A_ENTREPRISE_APS, true
+	case "M_ITALIANA_CONDUTTORI_SRL":
+		return KnxManufacturer_M_ITALIANA_CONDUTTORI_SRL, true
+	case "M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_":
+		return KnxManufacturer_M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_, true
+	case "M_EELECTRON":
+		return KnxManufacturer_M_EELECTRON, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
-	case "M_EELECTRON":
-		return KnxManufacturer_M_EELECTRON, true
 	case "M_GIRA_GIERSIEPEN":
 		return KnxManufacturer_M_GIRA_GIERSIEPEN, true
 	case "M_BELDEN_WIRE_AND_CABLE_B_V_":
@@ -9744,8 +9772,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_MDT_TECHNOLOGIES, true
 	case "M_WARENDORFER_KUECHEN_GMBH":
 		return KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH, true
-	case "M_VIDEO_STAR":
-		return KnxManufacturer_M_VIDEO_STAR, true
+	case "M_GVS":
+		return KnxManufacturer_M_GVS, true
 	case "M_SITEK":
 		return KnxManufacturer_M_SITEK, true
 	case "M_CONTROLTRONIC":
@@ -11142,12 +11170,16 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_VARNI_DIGITAL_PRIVATE_LIMITED"
 	case KnxManufacturer_M_3A_ENTREPRISE_APS:
 		return "M_3A_ENTREPRISE_APS"
+	case KnxManufacturer_M_ITALIANA_CONDUTTORI_SRL:
+		return "M_ITALIANA_CONDUTTORI_SRL"
+	case KnxManufacturer_M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_:
+		return "M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_"
+	case KnxManufacturer_M_EELECTRON:
+		return "M_EELECTRON"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-	case KnxManufacturer_M_EELECTRON:
-		return "M_EELECTRON"
 	case KnxManufacturer_M_GIRA_GIERSIEPEN:
 		return "M_GIRA_GIERSIEPEN"
 	case KnxManufacturer_M_BELDEN_WIRE_AND_CABLE_B_V_:
@@ -11202,8 +11234,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_MDT_TECHNOLOGIES"
 	case KnxManufacturer_M_WARENDORFER_KUECHEN_GMBH:
 		return "M_WARENDORFER_KUECHEN_GMBH"
-	case KnxManufacturer_M_VIDEO_STAR:
-		return "M_VIDEO_STAR"
+	case KnxManufacturer_M_GVS:
+		return "M_GVS"
 	case KnxManufacturer_M_SITEK:
 		return "M_SITEK"
 	case KnxManufacturer_M_CONTROLTRONIC:
