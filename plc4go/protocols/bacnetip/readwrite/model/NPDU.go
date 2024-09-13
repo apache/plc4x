@@ -342,6 +342,11 @@ func (m *_NPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, npduLeng
 	}
 	m.Control = control
 
+	// Validation
+	if !(bool((control) != (nil))) {
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "control required for further processing"})
+	}
+
 	var destinationNetworkAddress *uint16
 	destinationNetworkAddress, err = ReadOptionalField[uint16](ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)), control.GetDestinationSpecified())
 	if err != nil {

@@ -98,6 +98,7 @@
 [type NPDU(uint 16 npduLength)
     [simple   uint 8      protocolVersionNumber                                                                   ]
     [simple   NPDUControl control                                                                                 ]
+    [validation    'control != null'    "control required for further processing"                                 ]
     [optional uint 16     destinationNetworkAddress   'control.destinationSpecified'                              ]
     [optional uint 8      destinationLength           'control.destinationSpecified'                              ]
     [array    uint 8      destinationAddress count    'control.destinationSpecified ? destinationLength : 0'      ]
