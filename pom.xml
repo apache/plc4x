@@ -1362,15 +1362,14 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <!--
-          TODO: somehow the newer version (checked till 3.8.0) is broken as it reports dependencies which are compile in fact
-          e.g. plc4j-connection-pool:
-          [INFO] - maven-dependency-plugin:3.2.0:analyze-only (check-dependencies) @ plc4j-connection-pool -
-          [WARNING] Non-test scoped test only dependencies found:
-          [WARNING]    org.apache.commons:commons-pool2:jar:2.11.1:compile
-          [WARNING]    org.apache.plc4x:plc4j-api:jar:0.11.0-SNAPSHOT:compile
-          -->
-          <version>3.1.2</version>
+          <version>3.8.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.shared</groupId>
+              <artifactId>maven-dependency-analyzer</artifactId>
+              <version>1.14.1</version>
+            </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>

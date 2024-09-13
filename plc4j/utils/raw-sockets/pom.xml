@@ -103,6 +103,13 @@
           <usedDependencies>
             <usedDependency>org.pcap4j:pcap4j-packetfactory-static</usedDependency>
           </usedDependencies>
+          <ignoredDependencies combine.children="append">
+            <!--
+              For some reason we need to do this. The compiler needs it in order to compile,
+              but the plugin doesn't detect this.
+            -->
+            <ignoredDependency>io.netty:netty-common</ignoredDependency>
+          </ignoredDependencies>
         </configuration>
       </plugin>
 
