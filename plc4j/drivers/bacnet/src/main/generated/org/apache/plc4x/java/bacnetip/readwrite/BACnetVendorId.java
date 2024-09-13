@@ -1713,6 +1713,19 @@ public enum BACnetVendorId {
   ADVECO((int) 1490, (int) 1490, (String) "Adveco"),
   EURA_DRIVES_ELECTRIC_CO_LTD((int) 1491, (int) 1491, (String) "Eura Drives Electric Co., Ltd."),
   CALEB_CONTROLS((int) 1492, (int) 1492, (String) "Caleb Controls"),
+  IN_BIOT_MONITORINGSL((int) 1493, (int) 1493, (String) "InBiot Monitoring S.L"),
+  QINGDAO_HAIER_AIR_CONDITIONER_ELECTRIC_CO_LTD(
+      (int) 1494, (int) 1494, (String) "Qingdao Haier Air Conditioner Electric Co., Ltd."),
+  HANGZHOU_WEIYL_TECHNOLOGY_CO_LTD(
+      (int) 1495, (int) 1495, (String) "Hangzhou Weiyl Technology Co., Ltd."),
+  YORDSRL((int) 1496, (int) 1496, (String) "yord sàrl"),
+  INFINITUM_ELECTRIC((int) 1497, (int) 1497, (String) "Infinitum Electric"),
+  RED_BEAN_SYSTEMS_LIMITED((int) 1498, (int) 1498, (String) "Red Bean Systems Limited"),
+  BLUE_TIME_CONCEPTSA((int) 1499, (int) 1499, (String) "Blue Time Concept SA"),
+  SHENZHENINVT_ELECTRIC_CO_LTD((int) 1500, (int) 1500, (String) "Shenzhen INVT Electric Co., Ltd."),
+  MESSUNG_SYSTEMS_PVT_LTD((int) 1501, (int) 1501, (String) "Messung Systems Pvt Ltd."),
+  ABB_ELECTRIFICATION_CANADA_INC(
+      (int) 1502, (int) 1502, (String) "ABB Electrification Canada Inc."),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

@@ -300,6 +300,10 @@ public class NPDU implements Message {
     NPDUControl control =
         readSimpleField(
             "control", readComplex(() -> NPDUControl.staticParse(readBuffer), readBuffer));
+    // Validation
+    if (!((control) != (null))) {
+      throw new ParseValidationException("control required for further processing");
+    }
 
     Integer destinationNetworkAddress =
         readOptionalField(

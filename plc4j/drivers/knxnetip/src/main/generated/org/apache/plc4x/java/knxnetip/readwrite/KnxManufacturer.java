@@ -121,7 +121,7 @@ public enum KnxManufacturer {
   M_VESTAMATIC((int) 91, (int) 130, (String) "Vestamatic"),
   M_MDT_TECHNOLOGIES((int) 92, (int) 131, (String) "MDT technologies"),
   M_WARENDORFER_KUECHEN_GMBH((int) 93, (int) 132, (String) "Warendorfer Küchen GmbH"),
-  M_VIDEO_STAR((int) 94, (int) 133, (String) "Video-Star"),
+  M_GVS((int) 94, (int) 133, (String) "GVS"),
   M_SITEK((int) 95, (int) 134, (String) "Sitek"),
   M_CONTROLTRONIC((int) 96, (int) 135, (String) "CONTROLtronic"),
   M_FUNCTION_TECHNOLOGY((int) 97, (int) 136, (String) "function Technology"),
@@ -798,9 +798,12 @@ public enum KnxManufacturer {
       (int) 685, (int) 743, (String) "Zhejiang FORICK, Intelligent Technology Co., LTD"),
   M_VARNI_DIGITAL_PRIVATE_LIMITED((int) 686, (int) 744, (String) "Varni Digital Private Limited"),
   M_3A_ENTREPRISE_APS((int) 687, (int) 745, (String) "3a entreprise aps"),
-  M_ABB___RESERVED((int) 688, (int) 43954, (String) "ABB - reserved"),
+  M_ITALIANA_CONDUTTORI_SRL((int) 688, (int) 746, (String) "Italiana Conduttori srl"),
+  M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_(
+      (int) 689, (int) 747, (String) "Xiamen Leelen Technology Co.,Ltd."),
+  M_ABB___RESERVED((int) 690, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 689, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 691, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
