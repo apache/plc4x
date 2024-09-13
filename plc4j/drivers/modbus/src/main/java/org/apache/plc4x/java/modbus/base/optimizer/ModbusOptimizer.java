@@ -38,11 +38,15 @@ import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +62,7 @@ import java.util.TreeSet;
  * and reads larger arrays of data.
  */
 public class ModbusOptimizer extends SingleTagOptimizer {
+    private final Logger logger = LoggerFactory.getLogger(ModbusOptimizer.class);
 
     /**
      * Per default the number of registers that can be read are 125 registers.
@@ -142,61 +147,89 @@ public class ModbusOptimizer extends SingleTagOptimizer {
     @Override
     protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses, DriverContext driverContext) {
         ModbusContext modbusContext = (ModbusContext) driverContext;
+        try {
+            // Build an index of all the data returned by all requests.
+            // This data should contain all the bits needed to create the response of the original request.
+            Map<String, List<Response>> responses = new HashMap<>();
+            for (PlcReadRequest optimizedReadRequest : readResponses.keySet()) {
+                PlcReadResponse optimizedReadResponse = readResponses.get(optimizedReadRequest).getResponse();
+                if (optimizedReadResponse == null) {
+                    continue;
+                }
+                // Optimized read requests only contain one ModbusTag.
+                String tagName = optimizedReadRequest.getTagNames().stream().findFirst().orElse(null);
+                if (tagName == null) {
+                    continue;
+                }
+                ModbusTag modbusTag = (ModbusTag) optimizedReadRequest.getTag(tagName);
+                String tagType = modbusTag.getClass().getSimpleName().substring("ModbusTag".length());
+                if (!responses.containsKey(tagType)) {
+                    responses.put(tagType, new ArrayList<>());
+                }
+                responses.get(tagType).add(new Response(modbusTag.getAddress(), optimizedReadResponse.getPlcValue(tagName).getRaw()));
+            }
 
-        // Build an index of all the data returned by all requests.
-        // This data should contain all the bits needed to create the response of the original request.
-        Map<String, List<Response>> responses = new HashMap<>();
-        for (PlcReadRequest optimizedReadRequest : readResponses.keySet()) {
-            PlcReadResponse optimizedReadResponse = readResponses.get(optimizedReadRequest).getResponse();
-            if(optimizedReadResponse == null) {
-                continue;
-            }
-            // Optimized read requests only contain one ModbusTag.
-            String tagName = optimizedReadRequest.getTagNames().stream().findFirst().orElse(null);
-            if(tagName == null) {
-                continue;
-            }
-            ModbusTag modbusTag = (ModbusTag) optimizedReadRequest.getTag(tagName);
-            String tagType = modbusTag.getClass().getSimpleName().substring("ModbusTag".length());
-            if(!responses.containsKey(tagType)) {
-                responses.put(tagType, new ArrayList<>());
-            }
-            responses.get(tagType).add(new Response(modbusTag.getAddress(), optimizedReadResponse.getPlcValue(tagName).getRaw()));
-        }
-
-        // Now go through the original requests and try to answer them by using the raw data we now have.
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
-        for (String tagName : readRequest.getTagNames()) {
-            ModbusTag modbusTag = (ModbusTag) readRequest.getTag(tagName);
-            String tagType = modbusTag.getClass().getSimpleName().substring("ModbusTag".length());
-            if(!responses.containsKey(tagType)) {
-                values.put(tagName, new ResponseItem<>(PlcResponseCode.NOT_FOUND, null));
-                continue;
-            }
-            // Go through all responses till we find one where that contains the current tag's data.
-            for (Response response : responses.get(tagType)) {
-                if(response.matches(modbusTag)) {
-                    byte[] responseData = response.getResponseData(modbusTag);
-                    ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(responseData,
-                        modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
-                    try {
-                        PlcValue plcValue = DataItem.staticParse(readBufferByteBased, modbusTag.getDataType(),
-                            modbusTag.getNumberOfElements(),
-                            modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN);
-                        values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, plcValue));
-                    } catch (ParseException e) {
-                        values.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+            // Now go through the original requests and try to answer them by using the raw data we now have.
+            Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+            for (String tagName : readRequest.getTagNames()) {
+                ModbusTag modbusTag = (ModbusTag) readRequest.getTag(tagName);
+                String tagType = modbusTag.getClass().getSimpleName().substring("ModbusTag".length());
+                if (!responses.containsKey(tagType)) {
+                    values.put(tagName, new ResponseItem<>(PlcResponseCode.NOT_FOUND, null));
+                    continue;
+                }
+                // Go through all responses till we find one where that contains the current tag's data.
+                for (Response response : responses.get(tagType)) {
+                    if (response.matches(modbusTag)) {
+                        byte[] responseData = response.getResponseData(modbusTag);
+                        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(responseData,
+                            modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
+                        try {
+                            PlcValue plcValue = DataItem.staticParse(readBufferByteBased, modbusTag.getDataType(),
+                                modbusTag.getNumberOfElements(),
+                                modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN);
+                            values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, plcValue));
+                        } catch (ParseException e) {
+                            values.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+                        }
+                        break;
                     }
-                    break;
+                }
+                // If no response was found that contains the data, that's probably something we need to fix.
+                if (!values.containsKey(tagName)) {
+                    values.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
             }
-            // If no response was found that contains the data, that's probably something we need to fix.
-            if(!values.containsKey(tagName)) {
-                values.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
-            }
-        }
 
-        return new DefaultPlcReadResponse(readRequest, values);
+            return new DefaultPlcReadResponse(readRequest, values);
+        }
+        // TODO: Remove this part once the driver is more stable.
+        catch (Exception e) {
+            try {
+                logger.error("Error processing response:", e);
+                WriteBufferXmlBased wb = new WriteBufferXmlBased();
+                ((DefaultPlcReadRequest) readRequest).serialize(wb);
+                logger.error("Original Request:\n{}", wb.getXmlString(), e);
+                for (PlcReadRequest subRequest : readResponses.keySet()) {
+                    SubResponse<PlcReadResponse> subResponse = readResponses.get(subRequest);
+                    WriteBufferXmlBased wbSubRequest = new WriteBufferXmlBased();
+                    ((DefaultPlcReadRequest) subRequest).serialize(wbSubRequest);
+                    logger.error("Sub Request:\n{}", wbSubRequest.getXmlString());
+                    if(subResponse.isSuccess()) {
+                        PlcReadResponse plcReadResponse = subResponse.getResponse();
+                        WriteBufferXmlBased wbSubResponse = new WriteBufferXmlBased();
+                        ((DefaultPlcReadResponse) plcReadResponse).serialize(wbSubResponse);
+                        logger.error("Sub Response (Success):\n{}", wbSubResponse.getXmlString());
+                    } else {
+                        Throwable throwable = subResponse.getThrowable();
+                        logger.error("Sub Response (Error):", throwable);
+                    }
+                }
+            } catch (SerializationException ex) {
+                throw new RuntimeException(ex);
+            }
+            return null;
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -290,16 +323,19 @@ public class ModbusOptimizer extends SingleTagOptimizer {
 
     protected static class Response {
         private final int startingAddress;
+        private final int endingAddress;
         private final byte[] responseData;
 
         public Response(int startingAddress, byte[] responseData) {
             this.startingAddress = startingAddress;
             this.responseData = responseData;
+            this.endingAddress = startingAddress + (responseData.length / 2);
         }
 
         public boolean matches(ModbusTag modbusTag) {
-            //boolean isRegisterTag = !(modbusTag instanceof ModbusTagCoil);
-            return (modbusTag.getAddress() >= startingAddress) && (((modbusTag.getAddress() - startingAddress) * 2) + modbusTag.getLengthBytes() <= startingAddress + responseData.length);
+            int tagStartingAddress = modbusTag.getAddress();
+            int tagEndingAddress = modbusTag.getAddress() + (int) Math.ceil((double) modbusTag.getLengthBytes() / 2.0f);
+            return ((tagStartingAddress >= this.startingAddress) && (tagEndingAddress <= this.endingAddress));
         }
 
         public byte[] getResponseData(ModbusTag modbusTag) {
