@@ -54,28 +54,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <!--
-            As dynamic agent loading has been deprecated and was starting
-            to cause issues in more recent JDK versions, we now fetch the
-            agent manually and pass it in to surefire.
-          -->
-          <execution>
-            <id>copy</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>net.bytebuddy</groupId>
-                  <artifactId>byte-buddy-agent</artifactId>
-                  <version>${byte-buddy.version}</version>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <!--
             Even if Maven transitively pulls in dependencies, relying on these can
             quite often cause hard to find problems. So it's a good practice to make
             sure everything directly required is also directly added as a dependency.
@@ -266,7 +244,6 @@
             Also do we have to pass in the byte-buddy agent to work around issues
             with dynamic loading of jvm agents.
           -->
-          <!--argLine>-javaagent:${project.basedir}/target/byte-buddy-agent-${byte-buddy.version}.jar -Xmx512m @{surefireArgLine}</argLine-->
           <argLine>-Xmx512m @{surefireArgLine}</argLine>
           <includes>
             <include>**/*Test.java</include>
