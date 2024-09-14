@@ -120,10 +120,6 @@
       <artifactId>pcap4j-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.xmlunit</groupId>
-      <artifactId>xmlunit-matchers</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
@@ -136,6 +132,11 @@
       <artifactId>logback-classic</artifactId>
       <!-- Explicitly managing this back to "compile" -->
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>${groovy.version}</version>
     </dependency>
 
     <dependency>
@@ -167,6 +168,11 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-matchers</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

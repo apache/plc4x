@@ -24,8 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <!-- When updating to 32 the site build starts failing -->
-    <version>31</version>
+    <version>33</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -102,53 +101,54 @@
 
     <plc4x-code-generation.version>1.7.0</plc4x-code-generation.version>
 
-    <antlr.version>4.13.1</antlr.version>
+    <antlr.version>4.13.2</antlr.version>
     <apiguardian.version>1.1.2</apiguardian.version>
-    <assertj.version>3.26.0</assertj.version>
-    <awaitility.version>4.2.1</awaitility.version>
+    <assertj.version>3.26.3</assertj.version>
+    <awaitility.version>4.2.2</awaitility.version>
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.78.1</bouncycastle.version>
-    <byte-buddy.version>1.14.17</byte-buddy.version>
-    <cmake.version>3.29.3-b2</cmake.version>
+    <byte-buddy.version>1.15.1</byte-buddy.version>
+    <cmake.version>3.30.2-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
-    <commons-cli.version>1.8.0</commons-cli.version>
-    <commons-codec.version>1.17.0</commons-codec.version>
+    <commons-cli.version>1.9.0</commons-cli.version>
+    <commons-codec.version>1.17.1</commons-codec.version>
     <commons-collections4.version>4.4</commons-collections4.version>
-    <commons-compress.version>1.26.2</commons-compress.version>
+    <commons-compress.version>1.27.1</commons-compress.version>
     <commons-configuration2.version>2.11.0</commons-configuration2.version>
     <commons-io.version>2.16.1</commons-io.version>
-    <commons-lang3.version>3.14.0</commons-lang3.version>
+    <commons-lang3.version>3.17.0</commons-lang3.version>
     <commons-logging.version>1.3.3</commons-logging.version>
     <commons-math3.version>3.6.1</commons-math3.version>
     <commons-net.version>3.11.1</commons-net.version>
     <commons-text.version>1.12.0</commons-text.version>
     <commons-csv.version>1.11.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.16.1</equalsverifier.version>
+    <equalsverifier.version>3.16.2</equalsverifier.version>
+    <!-- It seems freemarker 2.3.32 was the last to support Java 11, 2.3.33 requires Java 16 -->
     <freemarker.version>2.3.32</freemarker.version>
-    <groovy.version>4.0.22</groovy.version>
+    <groovy.version>4.0.23</groovy.version>
     <guava.version>33.2.1-jre</guava.version>
-    <hamcrest.version>2.2</hamcrest.version>
+    <hamcrest.version>3.0</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <jackson.version>2.16.1</jackson.version>
-    <woodstox-core.version>6.5.1</woodstox-core.version>
+    <jackson.version>2.17.2</jackson.version>
+    <woodstox-core.version>7.0.0</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.4</jaxb.version>
     <!-- Starting with Jetty 12 Java 17 is required -->
     <jetty-util.version>11.0.20</jetty-util.version>
     <jna.version>5.14.0</jna.version>
     <jserialcom.version>2.11.0</jserialcom.version>
-    <junit.jupiter.version>5.10.3</junit.jupiter.version>
+    <junit.jupiter.version>5.11.0</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.5.6</logback.version>
+    <logback.version>1.5.8</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
-    <milo.version>0.6.13</milo.version>
-    <mockito.version>5.12.0</mockito.version>
-    <netty.version>4.1.111.Final</netty.version>
+    <milo.version>0.6.14</milo.version>
+    <mockito.version>5.13.0</mockito.version>
+    <netty.version>4.1.113.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
-    <slf4j.version>2.0.13</slf4j.version>
+    <slf4j.version>2.0.16</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
     <xmlunit.version>2.10.0</xmlunit.version>
 
@@ -217,11 +217,6 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils</artifactId>
-        <version>${commons-beanutils.version}</version>
-      </dependency>
-      <dependency>
         <groupId>commons-cli</groupId>
         <artifactId>commons-cli</artifactId>
         <version>${commons-cli.version}</version>
@@ -280,7 +275,7 @@
       <dependency>
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
-        <version>1.22.0</version>
+        <version>1.23.0</version>
       </dependency>
 
       <dependency>
@@ -535,8 +530,12 @@
         <artifactId>xmlunit-matchers</artifactId>
         <version>${xmlunit.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>1.3.0</version>
+      </dependency>
 
-      <!-- TODO: There's also 3.2.2, but the javacan dependency only seem to be poms with stuff in core and epoll sub-modules -->
       <dependency>
         <groupId>tel.schich</groupId>
         <artifactId>javacan-core</artifactId>
@@ -565,6 +564,12 @@
       ** plugin.                                                                      **
       **********************************************************************************
       ****************************************************************************** -->
+
+      <dependency>
+        <groupId>org.codehaus.woodstox</groupId>
+        <artifactId>stax2-api</artifactId>
+        <version>4.2.2</version>
+      </dependency>
 
       <dependency>
         <groupId>commons-logging</groupId>
@@ -688,7 +693,11 @@
         <executions>
           <execution>
             <id>license-check</id>
-            <phase>verify</phase>
+            <!--
+              Moved from the default validate phase to the test phase, as there are issues with newer
+              shade-plugin versions seem to interfere with the rat plugin.
+            -->
+            <phase>test</phase>
             <goals>
               <goal>check</goal>
             </goals>
@@ -1072,6 +1081,12 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>3.7.0</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
           <version>5.1.9</version>
@@ -1128,13 +1143,15 @@
             <dependency>
               <groupId>org.codehaus.plexus</groupId>
               <artifactId>plexus-compiler-eclipse</artifactId>
+              <!-- Starting with 2.14 java 17 is mandatory -->
               <version>2.13.0</version>
             </dependency>
             <!-- Redundant import, however we might need to bump this version more often -->
             <dependency>
               <groupId>org.eclipse.jdt</groupId>
               <artifactId>ecj</artifactId>
-              <version>3.32.0</version>
+              <!-- Starting with 3.34.0 java 17 is mandatory -->
+              <version>3.33.0</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -1142,7 +1159,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.5.0</version>
           <dependencies>
             <dependency>
               <groupId>org.junit.jupiter</groupId>
@@ -1158,8 +1175,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.3.0</version>
-          <!--version>2.22.2</version-->
+          <version>3.5.0</version>
           <dependencies>
             <dependency>
               <groupId>org.junit.jupiter</groupId>
@@ -1202,8 +1218,8 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <!-- It seems that when going to 3.3.0 the apache-rat-plugin fails when the shade plugin is also being run -->
-          <version>3.2.4</version>
+          <!-- Had to move the rat plugin execution to a phase before the shade plugin is executed to avoid errors -->
+          <version>3.6.0</version>
           <configuration>
             <outputFile>
               ${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.${project.packaging}
@@ -1239,7 +1255,7 @@
             is officially released in version 4. Till then, we would have to build our own version of the
             draft branch of the plugin. So for now, we'll stay at 3.x.
           -->
-          <version>3.12.1</version>
+          <version>3.20.0</version>
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>true</generateReports>
@@ -1287,7 +1303,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.7.0</version>
+          <version>3.10.0</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
@@ -1312,7 +1328,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.1</version>
         </plugin>
 
         <plugin>
@@ -1331,7 +1347,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.1.1</version>
           <configuration>
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -1348,15 +1364,14 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <!--
-          TODO: somehow the newer version (checked till 3.3.0) is broken as it reports dependencies which are compile in fact
-          e.g. plc4j-connection-pool:
-          [INFO] - maven-dependency-plugin:3.2.0:analyze-only (check-dependencies) @ plc4j-connection-pool -
-          [WARNING] Non-test scoped test only dependencies found:
-          [WARNING]    org.apache.commons:commons-pool2:jar:2.11.1:compile
-          [WARNING]    org.apache.plc4x:plc4j-api:jar:0.11.0-SNAPSHOT:compile
-          -->
-          <version>3.1.2</version>
+          <version>3.8.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.shared</groupId>
+              <artifactId>maven-dependency-analyzer</artifactId>
+              <version>1.14.1</version>
+            </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -329,6 +329,8 @@ public class ModbusOptimizer extends SingleTagOptimizer {
         public Response(int startingAddress, byte[] responseData) {
             this.startingAddress = startingAddress;
             this.responseData = responseData;
+            // In general a "Celil(responseData.length / 2)" would habe been more correct,
+            // but the data returned from the device should already be an even number.
             this.endingAddress = startingAddress + (responseData.length / 2);
         }
 

@@ -41,7 +41,6 @@
       <artifactId>plc4j-api</artifactId>
       <version>0.13.0-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
@@ -98,6 +97,19 @@
             <Bundle-Activator>org.apache.plc4x.java.osgi.TransportActivator</Bundle-Activator>
             <Export-Service>org.apache.plc4x.java.spi.transport.Transport,org.apache.plc4x.java.transport.serial.SerialTransport</Export-Service>
           </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <ignoredDependencies combine.children="append">
+            <!--
+              For some reason we need to do this. plc4j-api is indirectly needed by the spi
+              if we add it as a test-dependency, the build fails.
+            -->
+            <ignoredDependency>org.apache.plc4x:plc4j-api</ignoredDependency>
+          </ignoredDependencies>
         </configuration>
       </plugin>
     </plugins>

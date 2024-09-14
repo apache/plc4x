@@ -84,6 +84,19 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <ignoredDependencies combine.children="append">
+            <!--
+              For some reason we need to do this. The compiler needs it in order to compile,
+              but the plugin doesn't detect this.
+            -->
+            <ignoredDependency>io.netty:netty-buffer</ignoredDependency>
+          </ignoredDependencies>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
