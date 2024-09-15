@@ -1268,7 +1268,7 @@
           <version>3.12.1</version>
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
-            <generateReports>true</generateReports>
+            <generateReports>false</generateReports>
             <generateSitemap>true</generateSitemap>
             <relativizeDecorationLinks>false</relativizeDecorationLinks>
             <locales>en</locales>
