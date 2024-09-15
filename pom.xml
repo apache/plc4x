@@ -1260,8 +1260,12 @@
             The asciidoctor plugin support for the site plugin 4 will remain in draft until the site plugin
             is officially released in version 4. Till then, we would have to build our own version of the
             draft branch of the plugin. So for now, we'll stay at 3.x.
+            https://github.com/asciidoctor/asciidoctor-maven-plugin/pull/685
+
+            It also seems that as soon as we update to 3.20.0 (the next version) the asciidoctor plugin stops
+            generating output.
           -->
-          <version>3.20.0</version>
+          <version>3.12.1</version>
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>true</generateReports>
