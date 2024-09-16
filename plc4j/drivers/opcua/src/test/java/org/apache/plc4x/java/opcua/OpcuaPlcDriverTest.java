@@ -463,6 +463,7 @@ public class OpcuaPlcDriverTest {
         Test added to test the synchronized TransactionHandler. (This was disabled before being enabled again so it might be a candidate for those tests not running properly on different platforms)
      */
     @Test
+    @Disabled("Disabled flaky test. Tracking issue at https://github.com/apache/plc4x/issues/1764")
     public void multipleThreads() throws Exception {
         class ReadWorker extends Thread {
             private final PlcConnection connection;
