@@ -284,7 +284,6 @@ func TestState(t *testing.T) {
 }
 
 func TestStateMachine(t *testing.T) {
-	t.Skip("Something is competely broken") // TODO: fixme
 	t.Run("test_state_machine_run", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
 
@@ -392,7 +391,7 @@ func TestStateMachine(t *testing.T) {
 
 		// check the transaction log
 		require.Equal(t, 1, len(tsm.GetTransactionLog()))
-		assert.Contains(t, tsm.GetTransactionLog()[0].Pdu, pdu)
+		assert.Equal(t, tsm.GetTransactionLog()[0].Pdu, pdu)
 	})
 	t.Run("test_state_machine_unexpected", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
@@ -567,8 +566,8 @@ func TestStateMachine(t *testing.T) {
 		t.Log("callbacks passed")
 
 		// check the transaction log
-		assert.Contains(t, tsm.GetTransactionLog()[0].Pdu, firstPdu)
-		assert.Contains(t, tsm.GetTransactionLog()[1].Pdu, secondPdu)
+		assert.Equal(t, tsm.GetTransactionLog()[0].Pdu, firstPdu)
+		assert.Equal(t, tsm.GetTransactionLog()[1].Pdu, secondPdu)
 	})
 }
 

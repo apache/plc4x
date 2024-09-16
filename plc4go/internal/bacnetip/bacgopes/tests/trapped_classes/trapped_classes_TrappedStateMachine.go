@@ -61,7 +61,7 @@ func (t *TrappedStateMachine) GetSent() PDU {
 }
 
 func (t *TrappedStateMachine) BeforeSend(pdu PDU) {
-	t.StateMachineContract.BeforeSend(pdu)
+	t.Trapper.BeforeSend(pdu)
 }
 
 func (t *TrappedStateMachine) Send(args Args, kwArgs KWArgs) error {
@@ -77,19 +77,19 @@ func (t *TrappedStateMachine) Send(args Args, kwArgs KWArgs) error {
 }
 
 func (t *TrappedStateMachine) AfterSend(pdu PDU) {
-	t.StateMachineContract.AfterSend(pdu)
+	t.Trapper.AfterSend(pdu)
 }
 
 func (t *TrappedStateMachine) BeforeReceive(pdu PDU) {
-	t.StateMachineContract.BeforeReceive(pdu)
+	t.Trapper.BeforeReceive(pdu)
 }
 
 func (t *TrappedStateMachine) AfterReceive(pdu PDU) {
-	t.StateMachineContract.AfterReceive(pdu)
+	t.Trapper.AfterReceive(pdu)
 }
 
 func (t *TrappedStateMachine) UnexpectedReceive(pdu PDU) {
-	t.StateMachineContract.UnexpectedReceive(pdu)
+	t.Trapper.UnexpectedReceive(pdu)
 }
 
 func (t *TrappedStateMachine) DecorateState(state state_machine.State) state_machine.State {
