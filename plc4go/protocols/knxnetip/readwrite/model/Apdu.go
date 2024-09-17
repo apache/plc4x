@@ -143,7 +143,7 @@ func ApduParseWithBufferProducer[T Apdu](dataLength uint8) func(ctx context.Cont
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -153,7 +153,12 @@ func ApduParseWithBuffer[T Apdu](ctx context.Context, readBuffer utils.ReadBuffe
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_Apdu) parse(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (__apdu Apdu, err error) {

@@ -167,7 +167,7 @@ func BACnetCOVSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetCOVSubscription) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetCOVSubscription BACnetCOVSubscription, err error) {

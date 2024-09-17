@@ -113,7 +113,7 @@ func TwoByteNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TwoByteNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__twoByteNodeId TwoByteNodeId, err error) {

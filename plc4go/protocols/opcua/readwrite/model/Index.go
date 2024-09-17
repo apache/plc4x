@@ -91,7 +91,7 @@ func IndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ind
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Index) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__index Index, err error) {

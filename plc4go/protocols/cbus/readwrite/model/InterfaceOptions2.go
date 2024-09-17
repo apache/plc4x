@@ -148,7 +148,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_InterfaceOptions2) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__interfaceOptions2 InterfaceOptions2, err error) {

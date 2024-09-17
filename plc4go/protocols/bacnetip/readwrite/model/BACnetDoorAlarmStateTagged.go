@@ -159,7 +159,7 @@ func BACnetDoorAlarmStateTaggedParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDoorAlarmStateTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetDoorAlarmStateTagged BACnetDoorAlarmStateTagged, err error) {

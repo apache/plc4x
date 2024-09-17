@@ -145,7 +145,7 @@ func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_S7VarPayloadDataItem) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__s7VarPayloadDataItem S7VarPayloadDataItem, err error) {

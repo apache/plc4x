@@ -299,7 +299,7 @@ func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetWeekNDayTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetWeekNDayTagged BACnetWeekNDayTagged, err error) {

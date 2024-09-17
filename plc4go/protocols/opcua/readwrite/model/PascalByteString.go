@@ -125,7 +125,7 @@ func PascalByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_PascalByteString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__pascalByteString PascalByteString, err error) {

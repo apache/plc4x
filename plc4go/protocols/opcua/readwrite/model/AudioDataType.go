@@ -91,7 +91,7 @@ func AudioDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AudioDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__audioDataType AudioDataType, err error) {

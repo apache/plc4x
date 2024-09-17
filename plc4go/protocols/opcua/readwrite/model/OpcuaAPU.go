@@ -121,7 +121,7 @@ func OpcuaAPUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, r
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_OpcuaAPU) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__opcuaAPU OpcuaAPU, err error) {

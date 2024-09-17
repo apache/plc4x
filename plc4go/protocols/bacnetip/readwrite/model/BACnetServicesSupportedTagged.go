@@ -242,7 +242,7 @@ func BACnetServicesSupportedTaggedParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetServicesSupportedTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetServicesSupportedTagged BACnetServicesSupportedTagged, err error) {

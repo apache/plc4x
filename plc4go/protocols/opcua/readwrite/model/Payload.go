@@ -134,7 +134,7 @@ func PayloadParseWithBufferProducer[T Payload](extensible bool, byteCount uint32
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -144,7 +144,12 @@ func PayloadParseWithBuffer[T Payload](ctx context.Context, readBuffer utils.Rea
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (__payload Payload, err error) {

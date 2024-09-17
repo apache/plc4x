@@ -159,7 +159,7 @@ func BACnetAuthorizationExemptionTaggedParseWithBuffer(ctx context.Context, read
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAuthorizationExemptionTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAuthorizationExemptionTagged BACnetAuthorizationExemptionTagged, err error) {

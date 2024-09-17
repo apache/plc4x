@@ -146,7 +146,7 @@ func BACnetValueSourceParseWithBufferProducer[T BACnetValueSource]() func(ctx co
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +156,12 @@ func BACnetValueSourceParseWithBuffer[T BACnetValueSource](ctx context.Context, 
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetValueSource) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetValueSource BACnetValueSource, err error) {

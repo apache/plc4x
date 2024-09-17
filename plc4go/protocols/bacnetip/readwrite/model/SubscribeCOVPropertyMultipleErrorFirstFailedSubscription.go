@@ -171,7 +171,7 @@ func SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(ctx
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__subscribeCOVPropertyMultipleErrorFirstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription, err error) {

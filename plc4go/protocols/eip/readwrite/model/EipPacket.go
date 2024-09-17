@@ -167,7 +167,7 @@ func EipPacketParseWithBufferProducer[T EipPacket](response bool) func(ctx conte
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -177,7 +177,12 @@ func EipPacketParseWithBuffer[T EipPacket](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_EipPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__eipPacket EipPacket, err error) {

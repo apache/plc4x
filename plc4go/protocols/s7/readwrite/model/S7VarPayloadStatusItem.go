@@ -113,7 +113,7 @@ func S7VarPayloadStatusItemParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_S7VarPayloadStatusItem) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__s7VarPayloadStatusItem S7VarPayloadStatusItem, err error) {

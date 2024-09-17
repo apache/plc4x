@@ -247,7 +247,7 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACHumidityModeAndFlags) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACHumidityModeAndFlags HVACHumidityModeAndFlags, err error) {

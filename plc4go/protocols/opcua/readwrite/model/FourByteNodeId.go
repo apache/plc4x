@@ -123,7 +123,7 @@ func FourByteNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_FourByteNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__fourByteNodeId FourByteNodeId, err error) {

@@ -143,7 +143,7 @@ func BACnetReadAccessPropertyParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetReadAccessProperty) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (__bACnetReadAccessProperty BACnetReadAccessProperty, err error) {

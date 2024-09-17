@@ -156,7 +156,7 @@ func BACnetWriteAccessSpecificationParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetWriteAccessSpecification) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetWriteAccessSpecification BACnetWriteAccessSpecification, err error) {

@@ -129,7 +129,7 @@ func BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAuthenticationPolicyListEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAuthenticationPolicyListEntry BACnetAuthenticationPolicyListEntry, err error) {

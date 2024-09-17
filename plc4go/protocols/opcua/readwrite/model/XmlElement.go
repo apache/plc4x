@@ -125,7 +125,7 @@ func XmlElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_XmlElement) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__xmlElement XmlElement, err error) {

@@ -136,7 +136,7 @@ func ErrorReportingSystemCategoryParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ErrorReportingSystemCategory) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__errorReportingSystemCategory ErrorReportingSystemCategory, err error) {

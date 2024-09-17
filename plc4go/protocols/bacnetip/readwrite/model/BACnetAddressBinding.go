@@ -129,7 +129,7 @@ func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAddressBinding) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAddressBinding BACnetAddressBinding, err error) {

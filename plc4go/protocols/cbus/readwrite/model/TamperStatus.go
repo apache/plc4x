@@ -152,7 +152,7 @@ func TamperStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TamperStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__tamperStatus TamperStatus, err error) {

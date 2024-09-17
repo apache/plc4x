@@ -91,7 +91,7 @@ func CounterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (C
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Counter) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__counter Counter, err error) {

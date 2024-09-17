@@ -129,7 +129,7 @@ func BACnetNetworkSecurityPolicyParseWithBuffer(ctx context.Context, readBuffer 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetNetworkSecurityPolicy) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetNetworkSecurityPolicy BACnetNetworkSecurityPolicy, err error) {

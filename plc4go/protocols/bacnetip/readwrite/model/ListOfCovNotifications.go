@@ -156,7 +156,7 @@ func ListOfCovNotificationsParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ListOfCovNotifications) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__listOfCovNotifications ListOfCovNotifications, err error) {

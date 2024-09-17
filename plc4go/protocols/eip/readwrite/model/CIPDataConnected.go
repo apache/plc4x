@@ -123,7 +123,7 @@ func CIPDataConnectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CIPDataConnected) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cIPDataConnected CIPDataConnected, err error) {

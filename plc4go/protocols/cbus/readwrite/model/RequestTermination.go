@@ -113,7 +113,7 @@ func RequestTerminationParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_RequestTermination) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__requestTermination RequestTermination, err error) {

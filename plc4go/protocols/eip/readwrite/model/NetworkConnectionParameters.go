@@ -166,7 +166,7 @@ func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NetworkConnectionParameters) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__networkConnectionParameters NetworkConnectionParameters, err error) {

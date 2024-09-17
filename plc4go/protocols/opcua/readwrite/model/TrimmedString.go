@@ -91,7 +91,7 @@ func TrimmedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TrimmedString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__trimmedString TrimmedString, err error) {

@@ -129,7 +129,7 @@ func BACnetPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetPrescale) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetPrescale BACnetPrescale, err error) {

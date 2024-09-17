@@ -164,7 +164,7 @@ func VariantParseWithBufferProducer[T Variant]() func(ctx context.Context, readB
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -174,7 +174,12 @@ func VariantParseWithBuffer[T Variant](ctx context.Context, readBuffer utils.Rea
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_Variant) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__variant Variant, err error) {

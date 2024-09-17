@@ -143,7 +143,7 @@ func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetActionList) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetActionList BACnetActionList, err error) {

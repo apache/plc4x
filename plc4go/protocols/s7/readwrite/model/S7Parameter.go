@@ -110,7 +110,7 @@ func S7ParameterParseWithBufferProducer[T S7Parameter](messageType uint8) func(c
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -120,7 +120,12 @@ func S7ParameterParseWithBuffer[T S7Parameter](ctx context.Context, readBuffer u
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_S7Parameter) parse(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (__s7Parameter S7Parameter, err error) {

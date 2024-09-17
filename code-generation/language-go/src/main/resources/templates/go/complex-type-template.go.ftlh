@@ -803,9 +803,18 @@ func ${type.name}ParseWithBufferProducer<#if type.isDiscriminatedParentTypeDefin
 	v, err := ${type.name}ParseWithBuffer<#if type.isDiscriminatedParentTypeDefinition()>[T]</#if>(ctx , readBuffer<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
 	if err != nil {
 		var zero T
-		return zero,err
+		return zero, err
 	}
-	return v<#if !type.isDiscriminatedParentTypeDefinition()>.(T)</#if>, err
+	<#if !type.isDiscriminatedParentTypeDefinition()>
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))<@emitImport import="github.com/pkg/errors" />
+	}
+	return vc, nil
+	<#else>
+	return v, nil
+	</#if>
 <#else>
 	return ${type.name}ParseWithBuffer(ctx , readBuffer<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
 </#if>
@@ -823,7 +832,16 @@ func ${type.name}ParseWithBuffer<#if type.isDiscriminatedParentTypeDefinition()>
 		return zero,err
 	</#if>
 	}
-	return v<#if type.isDiscriminatedParentTypeDefinition()>.(T)</#if>, err
+	<#if type.isDiscriminatedParentTypeDefinition()>
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))<@emitImport import="github.com/pkg/errors" />
+	}
+	return vc, nil
+	<#else>
+	return v, nil
+	</#if>
 }
 
 </#if>

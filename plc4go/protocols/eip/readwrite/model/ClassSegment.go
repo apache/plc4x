@@ -143,7 +143,7 @@ func ClassSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ClassSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__classSegment ClassSegment, err error) {

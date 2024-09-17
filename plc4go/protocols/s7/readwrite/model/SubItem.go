@@ -133,7 +133,7 @@ func SubItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SubItem) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__subItem SubItem, err error) {

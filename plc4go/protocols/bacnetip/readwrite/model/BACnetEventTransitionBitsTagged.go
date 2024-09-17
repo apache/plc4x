@@ -172,7 +172,7 @@ func BACnetEventTransitionBitsTaggedParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventTransitionBitsTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetEventTransitionBitsTagged BACnetEventTransitionBitsTagged, err error) {

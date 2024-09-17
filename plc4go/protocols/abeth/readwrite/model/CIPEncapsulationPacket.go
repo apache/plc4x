@@ -170,7 +170,7 @@ func CIPEncapsulationPacketParseWithBufferProducer[T CIPEncapsulationPacket]() f
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -180,7 +180,12 @@ func CIPEncapsulationPacketParseWithBuffer[T CIPEncapsulationPacket](ctx context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_CIPEncapsulationPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cIPEncapsulationPacket CIPEncapsulationPacket, err error) {

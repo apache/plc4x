@@ -207,7 +207,7 @@ func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACStatusFlags) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACStatusFlags HVACStatusFlags, err error) {

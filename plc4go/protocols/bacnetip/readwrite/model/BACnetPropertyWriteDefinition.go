@@ -155,7 +155,7 @@ func BACnetPropertyWriteDefinitionParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetPropertyWriteDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (__bACnetPropertyWriteDefinition BACnetPropertyWriteDefinition, err error) {

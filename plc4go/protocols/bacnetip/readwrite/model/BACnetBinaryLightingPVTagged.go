@@ -159,7 +159,7 @@ func BACnetBinaryLightingPVTaggedParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetBinaryLightingPVTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetBinaryLightingPVTagged BACnetBinaryLightingPVTagged, err error) {

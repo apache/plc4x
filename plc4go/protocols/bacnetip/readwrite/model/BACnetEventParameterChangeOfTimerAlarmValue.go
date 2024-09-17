@@ -146,7 +146,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx context.Cont
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterChangeOfTimerAlarmValue BACnetEventParameterChangeOfTimerAlarmValue, err error) {

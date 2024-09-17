@@ -268,7 +268,7 @@ func ConfirmedEventNotificationRequestParseWithBuffer(ctx context.Context, readB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ConfirmedEventNotificationRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__confirmedEventNotificationRequest ConfirmedEventNotificationRequest, err error) {

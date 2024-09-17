@@ -145,7 +145,7 @@ func BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx context.Cont
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetDeviceObjectPropertyReferenceEnclosed BACnetDeviceObjectPropertyReferenceEnclosed, err error) {

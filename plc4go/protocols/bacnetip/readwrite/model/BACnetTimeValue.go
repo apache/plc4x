@@ -129,7 +129,7 @@ func BACnetTimeValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTimeValue) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTimeValue BACnetTimeValue, err error) {

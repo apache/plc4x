@@ -136,7 +136,7 @@ func DeviceConfigurationAckDataBlockParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DeviceConfigurationAckDataBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock, err error) {

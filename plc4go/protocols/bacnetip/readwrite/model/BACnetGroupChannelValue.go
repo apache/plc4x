@@ -141,7 +141,7 @@ func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetGroupChannelValue) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetGroupChannelValue BACnetGroupChannelValue, err error) {

@@ -159,7 +159,7 @@ func BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAccessCredentialDisableTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAccessCredentialDisableTagged BACnetAccessCredentialDisableTagged, err error) {

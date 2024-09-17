@@ -116,7 +116,7 @@ func InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.Context, readBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_InterfaceOptions1PowerUpSettings) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__interfaceOptions1PowerUpSettings InterfaceOptions1PowerUpSettings, err error) {

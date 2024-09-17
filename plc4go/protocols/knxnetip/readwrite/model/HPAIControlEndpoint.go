@@ -139,7 +139,7 @@ func HPAIControlEndpointParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HPAIControlEndpoint) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hPAIControlEndpoint HPAIControlEndpoint, err error) {

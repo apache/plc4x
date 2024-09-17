@@ -202,7 +202,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTagPayloadTime BACnetTagPayloadTime, err error) {

@@ -133,7 +133,7 @@ func KnxAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_KnxAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__knxAddress KnxAddress, err error) {

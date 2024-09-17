@@ -132,7 +132,7 @@ func ApplicationAddress2ParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ApplicationAddress2) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__applicationAddress2 ApplicationAddress2, err error) {

@@ -152,7 +152,7 @@ func S7PayloadUserDataItemParseWithBufferProducer[T S7PayloadUserDataItem](cpuFu
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -162,7 +162,12 @@ func S7PayloadUserDataItemParseWithBuffer[T S7PayloadUserDataItem](ctx context.C
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_S7PayloadUserDataItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (__s7PayloadUserDataItem S7PayloadUserDataItem, err error) {

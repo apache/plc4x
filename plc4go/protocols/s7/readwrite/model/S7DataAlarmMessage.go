@@ -134,7 +134,7 @@ func S7DataAlarmMessageParseWithBufferProducer[T S7DataAlarmMessage](cpuFunction
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -144,7 +144,12 @@ func S7DataAlarmMessageParseWithBuffer[T S7DataAlarmMessage](ctx context.Context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_S7DataAlarmMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (__s7DataAlarmMessage S7DataAlarmMessage, err error) {

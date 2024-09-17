@@ -113,7 +113,7 @@ func CEMIParseWithBufferProducer[T CEMI](size uint16) func(ctx context.Context, 
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -123,7 +123,12 @@ func CEMIParseWithBuffer[T CEMI](ctx context.Context, readBuffer utils.ReadBuffe
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_CEMI) parse(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (__cEMI CEMI, err error) {

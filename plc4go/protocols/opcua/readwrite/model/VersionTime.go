@@ -91,7 +91,7 @@ func VersionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_VersionTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__versionTime VersionTime, err error) {

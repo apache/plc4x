@@ -172,7 +172,7 @@ func DF1ResponseMessageParseWithBufferProducer[T DF1ResponseMessage](payloadLeng
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -182,7 +182,12 @@ func DF1ResponseMessageParseWithBuffer[T DF1ResponseMessage](ctx context.Context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_DF1ResponseMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (__dF1ResponseMessage DF1ResponseMessage, err error) {

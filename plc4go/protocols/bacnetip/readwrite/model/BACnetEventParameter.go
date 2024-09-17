@@ -146,7 +146,7 @@ func BACnetEventParameterParseWithBufferProducer[T BACnetEventParameter]() func(
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +156,12 @@ func BACnetEventParameterParseWithBuffer[T BACnetEventParameter](ctx context.Con
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetEventParameter) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetEventParameter BACnetEventParameter, err error) {

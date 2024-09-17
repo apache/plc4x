@@ -146,7 +146,7 @@ func BACnetSecurityKeySetKeyIdsParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetSecurityKeySetKeyIds) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetSecurityKeySetKeyIds BACnetSecurityKeySetKeyIds, err error) {

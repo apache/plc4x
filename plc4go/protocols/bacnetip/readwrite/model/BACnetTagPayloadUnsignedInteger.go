@@ -457,7 +457,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadUnsignedInteger) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadUnsignedInteger BACnetTagPayloadUnsignedInteger, err error) {

@@ -193,7 +193,7 @@ func GroupObjectDescriptorRealisationType2ParseWithBuffer(ctx context.Context, r
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_GroupObjectDescriptorRealisationType2) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__groupObjectDescriptorRealisationType2 GroupObjectDescriptorRealisationType2, err error) {

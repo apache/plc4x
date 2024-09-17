@@ -183,7 +183,7 @@ func StateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Sta
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_State) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__state State, err error) {

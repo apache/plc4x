@@ -130,7 +130,7 @@ func BACnetDoorSecuredStatusTaggedParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDoorSecuredStatusTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetDoorSecuredStatusTagged BACnetDoorSecuredStatusTagged, err error) {

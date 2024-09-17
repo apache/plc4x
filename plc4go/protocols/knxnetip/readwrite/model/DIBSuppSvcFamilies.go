@@ -130,7 +130,7 @@ func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DIBSuppSvcFamilies) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dIBSuppSvcFamilies DIBSuppSvcFamilies, err error) {

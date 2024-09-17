@@ -146,7 +146,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParseWithBuffer(ctx context.Co
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventParameterChangeOfStateListOfValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterChangeOfStateListOfValues BACnetEventParameterChangeOfStateListOfValues, err error) {

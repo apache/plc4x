@@ -121,7 +121,7 @@ func ResponseTerminationParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ResponseTermination) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__responseTermination ResponseTermination, err error) {

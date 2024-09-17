@@ -132,7 +132,7 @@ func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACRawLevels) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACRawLevels HVACRawLevels, err error) {

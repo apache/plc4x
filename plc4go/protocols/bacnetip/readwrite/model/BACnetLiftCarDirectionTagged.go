@@ -159,7 +159,7 @@ func BACnetLiftCarDirectionTaggedParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLiftCarDirectionTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetLiftCarDirectionTagged BACnetLiftCarDirectionTagged, err error) {

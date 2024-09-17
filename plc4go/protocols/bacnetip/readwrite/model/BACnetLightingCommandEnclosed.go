@@ -145,7 +145,7 @@ func BACnetLightingCommandEnclosedParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLightingCommandEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetLightingCommandEnclosed BACnetLightingCommandEnclosed, err error) {

@@ -91,7 +91,7 @@ func UtcTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (U
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_UtcTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__utcTime UtcTime, err error) {

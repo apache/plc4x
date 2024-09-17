@@ -166,7 +166,7 @@ func BACnetPropertyAccessResultParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetPropertyAccessResult) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetPropertyAccessResult BACnetPropertyAccessResult, err error) {

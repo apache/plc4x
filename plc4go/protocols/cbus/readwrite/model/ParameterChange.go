@@ -121,7 +121,7 @@ func ParameterChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ParameterChange) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__parameterChange ParameterChange, err error) {

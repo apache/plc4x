@@ -91,7 +91,7 @@ func NormalizedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NormalizedString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__normalizedString NormalizedString, err error) {

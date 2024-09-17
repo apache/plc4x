@@ -129,7 +129,7 @@ func ErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Err
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Error) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__error Error, err error) {

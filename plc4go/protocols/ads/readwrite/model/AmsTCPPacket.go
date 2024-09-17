@@ -126,7 +126,7 @@ func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AmsTCPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__amsTCPPacket AmsTCPPacket, err error) {

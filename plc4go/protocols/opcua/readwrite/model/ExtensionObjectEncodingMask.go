@@ -138,7 +138,7 @@ func ExtensionObjectEncodingMaskParseWithBuffer(ctx context.Context, readBuffer 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ExtensionObjectEncodingMask) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__extensionObjectEncodingMask ExtensionObjectEncodingMask, err error) {

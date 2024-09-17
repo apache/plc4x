@@ -130,7 +130,7 @@ func NPDUNetworkPriorityTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NPDUNetworkPriorityTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__nPDUNetworkPriorityTagged NPDUNetworkPriorityTagged, err error) {

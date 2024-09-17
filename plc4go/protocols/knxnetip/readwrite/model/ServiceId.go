@@ -108,7 +108,7 @@ func ServiceIdParseWithBufferProducer[T ServiceId]() func(ctx context.Context, r
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +118,12 @@ func ServiceIdParseWithBuffer[T ServiceId](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_ServiceId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__serviceId ServiceId, err error) {

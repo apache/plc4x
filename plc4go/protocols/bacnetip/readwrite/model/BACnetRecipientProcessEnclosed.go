@@ -145,7 +145,7 @@ func BACnetRecipientProcessEnclosedParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetRecipientProcessEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetRecipientProcessEnclosed BACnetRecipientProcessEnclosed, err error) {

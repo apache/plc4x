@@ -146,7 +146,7 @@ func BACnetScaleParseWithBufferProducer[T BACnetScale]() func(ctx context.Contex
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +156,12 @@ func BACnetScaleParseWithBuffer[T BACnetScale](ctx context.Context, readBuffer u
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetScale) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetScale BACnetScale, err error) {

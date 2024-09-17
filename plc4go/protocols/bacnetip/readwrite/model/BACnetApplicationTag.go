@@ -160,7 +160,7 @@ func BACnetApplicationTagParseWithBufferProducer[T BACnetApplicationTag]() func(
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -170,7 +170,12 @@ func BACnetApplicationTagParseWithBuffer[T BACnetApplicationTag](ctx context.Con
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetApplicationTag) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetApplicationTag BACnetApplicationTag, err error) {

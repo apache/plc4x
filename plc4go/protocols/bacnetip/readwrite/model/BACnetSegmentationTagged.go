@@ -130,7 +130,7 @@ func BACnetSegmentationTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetSegmentationTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetSegmentationTagged BACnetSegmentationTagged, err error) {

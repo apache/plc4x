@@ -110,7 +110,7 @@ func ModbusADUParseWithBufferProducer[T ModbusADU](driverType DriverType, respon
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -120,7 +120,12 @@ func ModbusADUParseWithBuffer[T ModbusADU](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_ModbusADU) parse(ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (__modbusADU ModbusADU, err error) {

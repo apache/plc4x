@@ -176,7 +176,7 @@ func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLightingCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetLightingCommand BACnetLightingCommand, err error) {

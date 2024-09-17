@@ -144,7 +144,7 @@ func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAbortReasonTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetAbortReasonTagged BACnetAbortReasonTagged, err error) {

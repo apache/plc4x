@@ -433,7 +433,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventParameterExtendedParameters) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterExtendedParameters BACnetEventParameterExtendedParameters, err error) {

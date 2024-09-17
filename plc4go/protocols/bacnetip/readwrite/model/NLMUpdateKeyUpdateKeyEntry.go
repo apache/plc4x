@@ -135,7 +135,7 @@ func NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NLMUpdateKeyUpdateKeyEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nLMUpdateKeyUpdateKeyEntry NLMUpdateKeyUpdateKeyEntry, err error) {

@@ -118,7 +118,7 @@ func BACnetTagPayloadOctetStringParseWithBuffer(ctx context.Context, readBuffer 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadOctetString) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadOctetString BACnetTagPayloadOctetString, err error) {

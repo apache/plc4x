@@ -146,7 +146,7 @@ func BACnetLogDataLogDataEntryParseWithBufferProducer[T BACnetLogDataLogDataEntr
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +156,12 @@ func BACnetLogDataLogDataEntryParseWithBuffer[T BACnetLogDataLogDataEntry](ctx c
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetLogDataLogDataEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetLogDataLogDataEntry BACnetLogDataLogDataEntry, err error) {

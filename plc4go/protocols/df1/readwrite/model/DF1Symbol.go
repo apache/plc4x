@@ -130,7 +130,7 @@ func DF1SymbolParseWithBufferProducer[T DF1Symbol]() func(ctx context.Context, r
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -140,7 +140,12 @@ func DF1SymbolParseWithBuffer[T DF1Symbol](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_DF1Symbol) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dF1Symbol DF1Symbol, err error) {

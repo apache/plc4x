@@ -145,7 +145,7 @@ func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AssociatedQueryValueType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__associatedQueryValueType AssociatedQueryValueType, err error) {

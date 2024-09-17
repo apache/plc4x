@@ -138,7 +138,7 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Services) parse(ctx context.Context, readBuffer utils.ReadBuffer, servicesLen uint16) (__services Services, err error) {

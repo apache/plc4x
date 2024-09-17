@@ -91,7 +91,7 @@ func HandleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ha
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Handle) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__handle Handle, err error) {

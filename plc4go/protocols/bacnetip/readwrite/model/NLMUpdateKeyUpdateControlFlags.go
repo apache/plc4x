@@ -183,7 +183,7 @@ func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NLMUpdateKeyUpdateControlFlags) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nLMUpdateKeyUpdateControlFlags NLMUpdateKeyUpdateControlFlags, err error) {

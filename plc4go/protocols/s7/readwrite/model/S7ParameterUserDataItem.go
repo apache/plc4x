@@ -108,7 +108,7 @@ func S7ParameterUserDataItemParseWithBufferProducer[T S7ParameterUserDataItem]()
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +118,12 @@ func S7ParameterUserDataItemParseWithBuffer[T S7ParameterUserDataItem](ctx conte
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_S7ParameterUserDataItem) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__s7ParameterUserDataItem S7ParameterUserDataItem, err error) {

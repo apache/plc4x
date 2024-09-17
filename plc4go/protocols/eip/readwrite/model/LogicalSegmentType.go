@@ -108,7 +108,7 @@ func LogicalSegmentTypeParseWithBufferProducer[T LogicalSegmentType]() func(ctx 
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +118,12 @@ func LogicalSegmentTypeParseWithBuffer[T LogicalSegmentType](ctx context.Context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_LogicalSegmentType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__logicalSegmentType LogicalSegmentType, err error) {

@@ -146,7 +146,7 @@ func ListOfCovNotificationsListParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ListOfCovNotificationsList) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__listOfCovNotificationsList ListOfCovNotificationsList, err error) {

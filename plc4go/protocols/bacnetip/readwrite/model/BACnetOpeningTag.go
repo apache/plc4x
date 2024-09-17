@@ -119,7 +119,7 @@ func BACnetOpeningTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetOpeningTag) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (__bACnetOpeningTag BACnetOpeningTag, err error) {

@@ -162,7 +162,7 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TemperatureBroadcastData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__temperatureBroadcastData TemperatureBroadcastData, err error) {

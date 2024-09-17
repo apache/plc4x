@@ -146,7 +146,7 @@ func BACnetEventSummariesListParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventSummariesList) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventSummariesList BACnetEventSummariesList, err error) {

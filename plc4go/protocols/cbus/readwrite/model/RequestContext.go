@@ -113,7 +113,7 @@ func RequestContextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_RequestContext) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__requestContext RequestContext, err error) {

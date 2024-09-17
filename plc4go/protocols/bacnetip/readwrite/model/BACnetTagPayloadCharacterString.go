@@ -146,7 +146,7 @@ func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadCharacterString BACnetTagPayloadCharacterString, err error) {

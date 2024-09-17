@@ -180,7 +180,7 @@ func BACnetNotificationParametersParseWithBufferProducer[T BACnetNotificationPar
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -190,7 +190,12 @@ func BACnetNotificationParametersParseWithBuffer[T BACnetNotificationParameters]
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetNotificationParameters) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetNotificationParameters BACnetNotificationParameters, err error) {

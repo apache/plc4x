@@ -164,7 +164,7 @@ func BACnetPriorityValueParseWithBufferProducer[T BACnetPriorityValue](objectTyp
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -174,7 +174,12 @@ func BACnetPriorityValueParseWithBuffer[T BACnetPriorityValue](ctx context.Conte
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetPriorityValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (__bACnetPriorityValue BACnetPriorityValue, err error) {

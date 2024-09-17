@@ -146,7 +146,7 @@ func BACnetTimeStampsEnclosedParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTimeStampsEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetTimeStampsEnclosed BACnetTimeStampsEnclosed, err error) {

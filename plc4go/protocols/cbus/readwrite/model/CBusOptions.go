@@ -193,7 +193,7 @@ func CBusOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CBusOptions) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cBusOptions CBusOptions, err error) {

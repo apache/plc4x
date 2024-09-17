@@ -182,7 +182,7 @@ func BACnetStatusFlagsTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetStatusFlagsTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetStatusFlagsTagged BACnetStatusFlagsTagged, err error) {

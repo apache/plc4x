@@ -325,7 +325,7 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDataTypeTableEntry AdsDataTypeTableEntry, err error) {

@@ -140,7 +140,7 @@ func NodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (No
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nodeId NodeId, err error) {

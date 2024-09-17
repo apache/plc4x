@@ -133,7 +133,7 @@ func SzlIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Szl
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SzlId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__szlId SzlId, err error) {

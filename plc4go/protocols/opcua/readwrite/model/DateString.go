@@ -91,7 +91,7 @@ func DateStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DateString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dateString DateString, err error) {

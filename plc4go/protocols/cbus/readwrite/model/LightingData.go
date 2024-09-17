@@ -146,7 +146,7 @@ func LightingDataParseWithBufferProducer[T LightingData]() func(ctx context.Cont
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +156,12 @@ func LightingDataParseWithBuffer[T LightingData](ctx context.Context, readBuffer
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_LightingData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__lightingData LightingData, err error) {

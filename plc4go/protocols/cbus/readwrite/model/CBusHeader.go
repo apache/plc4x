@@ -143,7 +143,7 @@ func CBusHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CBusHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cBusHeader CBusHeader, err error) {

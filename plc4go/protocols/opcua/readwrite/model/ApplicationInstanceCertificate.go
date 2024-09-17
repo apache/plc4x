@@ -91,7 +91,7 @@ func ApplicationInstanceCertificateParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ApplicationInstanceCertificate) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__applicationInstanceCertificate ApplicationInstanceCertificate, err error) {

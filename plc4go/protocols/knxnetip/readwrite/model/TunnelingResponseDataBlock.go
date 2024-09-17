@@ -136,7 +136,7 @@ func TunnelingResponseDataBlockParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TunnelingResponseDataBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__tunnelingResponseDataBlock TunnelingResponseDataBlock, err error) {

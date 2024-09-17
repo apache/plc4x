@@ -146,7 +146,7 @@ func BACnetFaultParameterFaultExtendedParametersParseWithBuffer(ctx context.Cont
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParameters) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetFaultParameterFaultExtendedParameters BACnetFaultParameterFaultExtendedParameters, err error) {

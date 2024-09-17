@@ -143,7 +143,7 @@ func SerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SerialNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__serialNumber SerialNumber, err error) {

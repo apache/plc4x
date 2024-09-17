@@ -128,7 +128,7 @@ func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ModbusDeviceInformationObject) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__modbusDeviceInformationObject ModbusDeviceInformationObject, err error) {

@@ -162,7 +162,7 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NPDUControl) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nPDUControl NPDUControl, err error) {

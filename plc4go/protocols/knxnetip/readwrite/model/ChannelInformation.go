@@ -123,7 +123,7 @@ func ChannelInformationParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ChannelInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__channelInformation ChannelInformation, err error) {

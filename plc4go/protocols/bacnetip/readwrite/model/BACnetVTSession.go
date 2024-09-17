@@ -142,7 +142,7 @@ func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetVTSession) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetVTSession BACnetVTSession, err error) {

@@ -141,7 +141,7 @@ func BACnetLogRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLogRecord) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetLogRecord BACnetLogRecord, err error) {

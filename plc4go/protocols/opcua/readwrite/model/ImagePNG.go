@@ -91,7 +91,7 @@ func ImagePNGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ImagePNG) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__imagePNG ImagePNG, err error) {

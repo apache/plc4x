@@ -145,7 +145,7 @@ func NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx context.Context, re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NLMInitializeRoutingTablePortMapping) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nLMInitializeRoutingTablePortMapping NLMInitializeRoutingTablePortMapping, err error) {

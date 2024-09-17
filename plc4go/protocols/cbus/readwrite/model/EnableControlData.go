@@ -152,7 +152,7 @@ func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_EnableControlData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__enableControlData EnableControlData, err error) {

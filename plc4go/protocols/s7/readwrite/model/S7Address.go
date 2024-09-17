@@ -108,7 +108,7 @@ func S7AddressParseWithBufferProducer[T S7Address]() func(ctx context.Context, r
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +118,12 @@ func S7AddressParseWithBuffer[T S7Address](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_S7Address) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__s7Address S7Address, err error) {

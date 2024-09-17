@@ -131,7 +131,7 @@ func ReplyParseWithBufferProducer[T Reply](cBusOptions CBusOptions, requestConte
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -141,7 +141,12 @@ func ReplyParseWithBuffer[T Reply](ctx context.Context, readBuffer utils.ReadBuf
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_Reply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (__reply Reply, err error) {

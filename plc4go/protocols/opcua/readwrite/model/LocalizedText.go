@@ -152,7 +152,7 @@ func LocalizedTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_LocalizedText) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__localizedText LocalizedText, err error) {

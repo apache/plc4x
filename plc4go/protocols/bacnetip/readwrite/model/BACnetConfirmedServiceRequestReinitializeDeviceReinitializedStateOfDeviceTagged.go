@@ -130,7 +130,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, err error) {

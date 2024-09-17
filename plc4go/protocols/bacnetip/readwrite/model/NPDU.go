@@ -318,7 +318,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, npduLength uint16) (__nPDU NPDU, err error) {

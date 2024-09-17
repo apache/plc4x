@@ -166,7 +166,7 @@ func BACnetAccessRuleParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAccessRule) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAccessRule BACnetAccessRule, err error) {

@@ -159,7 +159,7 @@ func BACnetLoggingTypeTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLoggingTypeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetLoggingTypeTagged BACnetLoggingTypeTagged, err error) {

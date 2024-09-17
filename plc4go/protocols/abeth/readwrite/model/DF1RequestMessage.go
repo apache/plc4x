@@ -163,7 +163,7 @@ func DF1RequestMessageParseWithBufferProducer[T DF1RequestMessage]() func(ctx co
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -173,7 +173,12 @@ func DF1RequestMessageParseWithBuffer[T DF1RequestMessage](ctx context.Context, 
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_DF1RequestMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dF1RequestMessage DF1RequestMessage, err error) {

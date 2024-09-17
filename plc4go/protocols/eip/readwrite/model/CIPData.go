@@ -128,7 +128,7 @@ func CIPDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, pa
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CIPData) parse(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (__cIPData CIPData, err error) {

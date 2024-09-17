@@ -222,7 +222,7 @@ func LevelInformationParseWithBufferProducer[T LevelInformation]() func(ctx cont
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -232,7 +232,12 @@ func LevelInformationParseWithBuffer[T LevelInformation](ctx context.Context, re
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_LevelInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__levelInformation LevelInformation, err error) {

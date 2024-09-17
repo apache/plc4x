@@ -113,7 +113,7 @@ func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alp
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Alpha) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alpha Alpha, err error) {

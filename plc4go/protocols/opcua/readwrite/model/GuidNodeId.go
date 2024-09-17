@@ -126,7 +126,7 @@ func GuidNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_GuidNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__guidNodeId GuidNodeId, err error) {

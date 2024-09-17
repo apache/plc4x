@@ -172,7 +172,7 @@ func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SecurityArmCode) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__securityArmCode SecurityArmCode, err error) {

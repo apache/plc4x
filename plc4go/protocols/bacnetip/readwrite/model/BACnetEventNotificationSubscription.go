@@ -154,7 +154,7 @@ func BACnetEventNotificationSubscriptionParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventNotificationSubscription) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetEventNotificationSubscription BACnetEventNotificationSubscription, err error) {

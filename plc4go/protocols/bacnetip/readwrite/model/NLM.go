@@ -136,7 +136,7 @@ func NLMParseWithBufferProducer[T NLM](apduLength uint16) func(ctx context.Conte
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -146,7 +146,12 @@ func NLMParseWithBuffer[T NLM](ctx context.Context, readBuffer utils.ReadBuffer,
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_NLM) parse(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (__nLM NLM, err error) {

@@ -159,7 +159,7 @@ func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetVendorIdTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetVendorIdTagged BACnetVendorIdTagged, err error) {

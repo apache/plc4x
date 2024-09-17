@@ -121,7 +121,7 @@ func PowerUpParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (P
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_PowerUp) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__powerUp PowerUp, err error) {
