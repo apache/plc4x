@@ -37,14 +37,17 @@ type InitializeRoutingTable struct {
 	irtTable []*RoutingTableEntry
 }
 
-func NewInitializeRoutingTable(opts ...func(*InitializeRoutingTable)) (*InitializeRoutingTable, error) {
+func NewInitializeRoutingTable(args Args, kwArgs KWArgs, opts ...func(*InitializeRoutingTable)) (*InitializeRoutingTable, error) {
 	i := &InitializeRoutingTable{
 		messageType: 0x06,
 	}
 	for _, opt := range opts {
 		opt(i)
 	}
-	npdu, err := NewNPDU(model.NewNLMInitializeRoutingTable(i.produceNLMInitializeRoutingTablePortMapping()), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMInitializeRoutingTable(i.produceNLMInitializeRoutingTablePortMapping())
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

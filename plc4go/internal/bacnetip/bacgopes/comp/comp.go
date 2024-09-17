@@ -79,18 +79,25 @@ func GAO[T any](args Args, index int, defaultValue T) (T, bool) {
 
 func (a Args) Format(s fmt.State, verb rune) {
 	switch verb {
-	case 's', 'v', 'r':
+	case 'r':
+		_, _ = fmt.Fprintf(s, "(%s)", a.string(false, false)[1:len(a.string(false, false))-1])
+	case 's', 'v':
 		_, _ = fmt.Fprintf(s, "(%s)", a.String()[1:len(a.String())-1])
 	}
 }
 
 func (a Args) String() string {
+	return a.string(true, true)
+}
+func (a Args) string(printIndex bool, printType bool) string {
 	r := ""
 	for i, ea := range a {
 		eat := fmt.Sprintf("%T", ea)
 		switch tea := ea.(type) {
 		case []byte:
 			ea = Btox(tea, ".")
+		case string:
+			ea = "'" + tea + "'"
 		case fmt.Stringer:
 			if !IsNil(tea) {
 				teaString := tea.String()
@@ -100,7 +107,14 @@ func (a Args) String() string {
 				}
 			}
 		}
-		r += fmt.Sprintf("%d: %v (%s), ", i, ea, eat)
+		if printIndex {
+			r += fmt.Sprintf("%d: ", i)
+		}
+		r += fmt.Sprintf("%v", ea)
+		if printType {
+			r += fmt.Sprintf(" (%s)", eat)
+		}
+		r += ", "
 	}
 	if r != "" {
 		r = r[:len(r)-2]
@@ -141,13 +155,16 @@ func (k KWArgs) String() string {
 	r := ""
 	for kk, ea := range k {
 		switch kk {
-		case KWCompRootMessage, KWCompBVLCIRequirements:
+		case KWCompRootMessage:
 			// TODO: figure out if we want to control that for the %r above and do something different here
 			continue
 		}
 		switch tea := ea.(type) {
 		case []byte:
 			ea = Btox(tea, ".")
+		}
+		if IsNil(ea) {
+			ea = fmt.Sprintf("<nil>(%T)", ea)
 		}
 		r += fmt.Sprintf("'%s'=%v, ", kk, ea)
 	}
@@ -163,20 +180,22 @@ func KW[T any](kwArgs KWArgs, key KnownKey) T {
 	if !ok {
 		panic(fmt.Sprintf("key %v not found in kwArgs", key))
 	}
+	delete(kwArgs, key) // usually that means this argument was consumed so we get rid of it
 	return r.(T)
 }
 
 // KWO gets a value from KWArgs and if not present returns the supplied default value
-func KWO[T any](kwArgs KWArgs, key KnownKey, defaultValue T) T {
+func KWO[T any](kwArgs KWArgs, key KnownKey, defaultValue T) (T, bool) {
 	r, ok := kwArgs[key]
 	if !ok {
-		return defaultValue
+		return defaultValue, false
 	}
 	v, ok := r.(T)
 	if !ok {
-		return defaultValue
+		return defaultValue, false
 	}
-	return v
+	delete(kwArgs, key) // usually that means this argument was consumed so we get rid of it
+	return v, true
 }
 
 type KnownKey string
@@ -235,10 +254,21 @@ const (
 	KWBvlciFDT        = KnownKey("bvlciFDT")
 
 	////
+	// APDU keys
+
+	KWConfirmedServiceChoice   = KnownKey("choice")
+	KWUnconfirmedServiceChoice = KnownKey("choice")
+	KWErrorClass               = KnownKey("errorClass")
+	KWErrorCode                = KnownKey("errorCode")
+	KWContext                  = KnownKey("context")
+	KWInvokedID                = KnownKey("invokeID")
+
+	////
 	// Compability layer keys
 
-	KWCompRootMessage       = KnownKey("compRootMessage")
-	KWCompBVLCIRequirements = KnownKey("compBVLCIRequirements")
+	KWCompRootMessage = KnownKey("compRootMessage")
+	KWCompNLM         = KnownKey("compNLM")
+	KWCompAPDU        = KnownKey("compAPDU")
 )
 
 // Nothing give NoArgs and NoKWArgs()
@@ -473,7 +503,7 @@ func Try1[T any](f func() (T, error)) (v T, err error) {
 	return f()
 }
 
-// IsNil when nil checks aren'T enough
+// IsNil when nil checks aren't enough
 func IsNil(v interface{}) bool {
 	if v == nil {
 		return true

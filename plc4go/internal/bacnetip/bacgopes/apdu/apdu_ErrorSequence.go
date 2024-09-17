@@ -19,8 +19,76 @@
 
 package apdu
 
-// TODO: implement it...
+import (
+	"github.com/pkg/errors"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
+
+// ErrorSequenceContract provides a set of functions which can be overwritten by a sub struct
+type ErrorSequenceContract interface {
+	APCISequenceContractRequirement
+	GetErrorChoice() *model.BACnetConfirmedServiceChoice
+}
+
+// ErrorSequenceContractRequirement is needed when one want to extend using SequenceContract
+type ErrorSequenceContractRequirement interface {
+	ErrorSequenceContract
+	// SetErrorSequence callback is needed as we work in the constructor already with the finished object // TODO: maybe we need to return as init again as it might not be finished constructing....
+	SetErrorSequence(es *ErrorSequence)
+}
+
 type ErrorSequence struct {
 	*APCISequence
 	*ErrorPDU
+
+	_contract ErrorSequenceContract
+}
+
+func NewErrorSequence(args Args, kwArgs KWArgs, opts ...func(*ErrorSequence)) (*ErrorSequence, error) {
+	e := &ErrorSequence{}
+	for _, opt := range opts {
+		opt(e)
+	}
+	if e._contract == nil {
+		e._contract = e
+	} else {
+		e._contract.(ErrorSequenceContractRequirement).SetErrorSequence(e)
+	}
+	var err error
+	kwArgs[KWConfirmedServiceChoice] = e._contract.GetErrorChoice()
+	e.ErrorPDU, err = NewErrorPDU(args, kwArgs)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating ErrorPDU")
+	}
+	e.APCISequence, err = NewAPCISequence(args, kwArgs, WithAPCISequenceExtension(e._contract))
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating _APCISequence")
+	}
+	// We need to set the APCI to the same objects...
+	e.APCISequence._APCI = e.ErrorPDU._APCI
+	return e, nil
+}
+
+func WithErrorSequenceExtension(contract ErrorSequenceContractRequirement) func(*ErrorSequence) {
+	return func(a *ErrorSequence) {
+		a._contract = contract
+	}
+}
+
+func (u *ErrorSequence) SetAPCISequence(a *APCISequence) {
+	u.APCISequence = a
+}
+
+func (*ErrorSequence) GetErrorChoice() *model.BACnetConfirmedServiceChoice {
+	return nil
+}
+
+func (u *ErrorSequence) DeepCopy() any {
+	panic("implement me")
+}
+
+func (u *ErrorSequence) String() string {
+	return u.APCISequence.String()
 }

@@ -21,6 +21,7 @@ package pdu
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
 
@@ -60,9 +61,8 @@ func new__PCI(args Args, kwArgs KWArgs) *__PCI {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
-	i := &__PCI{
-		rootMessage: KWO[spi.Message](kwArgs, KWCompRootMessage, nil),
-	}
+	i := &__PCI{}
+	i.rootMessage, _ = KWO[spi.Message](kwArgs, KWCompRootMessage, nil)
 	delete(kwArgs, KWCompRootMessage)
 	i.DebugContents = NewDebugContents(i, "pduUserData+", "pduSource", "pduDestination")
 	var myKwargs = make(KWArgs)
@@ -78,15 +78,15 @@ func new__PCI(args Args, kwArgs KWArgs) *__PCI {
 		}
 	}
 	if _debug != nil {
-		_debug("    - my_kwArgs: %r", myKwargs)
+		_debug("    - my_kwargs: %r", myKwargs)
 	}
 	if _debug != nil {
-		_debug("    - other_kwArgs: %r", otherKwargs)
+		_debug("    - other_kwargs: %r", otherKwargs)
 	}
 
-	i.pduUserData = KWO[spi.Message](kwArgs, KWCPCIUserData, nil)
-	i.pduSource = KWO[*Address](kwArgs, KWCPCISource, nil)
-	i.pduDestination = KWO[*Address](kwArgs, KWCPCIDestination, nil)
+	i.pduUserData, _ = KWO[spi.Message](kwArgs, KWCPCIUserData, nil)
+	i.pduSource, _ = KWO[*Address](kwArgs, KWCPCISource, nil)
+	i.pduDestination, _ = KWO[*Address](kwArgs, KWCPCIDestination, nil)
 	return i
 }
 
@@ -204,6 +204,9 @@ func (p *__PCI) GetLengthInBits(ctx context.Context) uint16 {
 func (p *__PCI) String() string {
 	if p.rootMessage == nil {
 		return "_PCI<nil>"
+	}
+	if IsDebuggingActive() {
+		return fmt.Sprintf("%s", p) // Delegate
 	}
 	return p.rootMessage.String()
 }

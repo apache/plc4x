@@ -80,7 +80,7 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *IPNetw
 	}
 
 	// continue with initialization
-	b.Application, err = NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	b.Application, err = NewApplication(localLog, WithApplicationLocalDeviceObject(localDevice.LocalDeviceObject)) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}

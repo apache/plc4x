@@ -24,6 +24,8 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+// NOTE: needs to reside here otherwise there is a circular dependency
+
 //go:generate plc4xGenerator -type=DeviceInfo -prefix=app_
 type DeviceInfo struct {
 	DeviceIdentifier readWriteModel.BACnetTagPayloadObjectIdentifier

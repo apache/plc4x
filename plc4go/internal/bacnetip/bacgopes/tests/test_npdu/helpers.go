@@ -59,7 +59,7 @@ func (n *NPDUCodec) Indication(args Args, kwArgs KWArgs) error {
 	npdu := GA[NPDU](args, 0)
 
 	// first a generic _NPDU
-	xpdu, err := NewNPDU(nil, nil)
+	xpdu, err := NewNPDU(Nothing())
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}
@@ -84,7 +84,7 @@ func (n *NPDUCodec) Confirmation(args Args, kwArgs KWArgs) error {
 	pdu := GA[PDU](args, 0)
 
 	// decode as generic _NPDU
-	xpdu, err := NewNPDU(nil, nil)
+	xpdu, err := NewNPDU(Nothing())
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}

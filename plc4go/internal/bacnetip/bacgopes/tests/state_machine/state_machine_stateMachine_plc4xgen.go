@@ -48,12 +48,9 @@ func (d *stateMachine) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.PushContext("stateMachine"); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.interceptor)
 
-		if err := writeBuffer.WriteString("interceptor", uint32(len(_value)*8), _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteString("interceptor", uint32(len(fmt.Sprintf("%p", d.interceptor))*8), fmt.Sprintf("%p", d.interceptor)); err != nil {
+		return err
 	}
 
 	if err := writeBuffer.WriteBit("stateDecorator", d.stateDecorator != nil); err != nil {

@@ -46,7 +46,7 @@ type ConfirmedRequestSequence struct {
 	_contract ConfirmedRequestSequenceContract
 }
 
-func NewConfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consistency, maybe we just convert it to args to be flexible*/ model.BACnetConfirmedServiceRequest, kwArgs KWArgs, opts ...func(*ConfirmedRequestSequence)) (*ConfirmedRequestSequence, error) {
+func NewConfirmedRequestSequence(args Args, kwArgs KWArgs, opts ...func(*ConfirmedRequestSequence)) (*ConfirmedRequestSequence, error) {
 	u := &ConfirmedRequestSequence{}
 	for _, opt := range opts {
 		opt(u)
@@ -57,16 +57,25 @@ func NewConfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consist
 		u._contract.(ConfirmedRequestSequenceContractRequirement).SetConfirmedRequestSequence(u)
 	}
 	var err error
-	u.APCISequence, err = NewAPCISequence(NA(model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil, 0)), kwArgs, WithAPCISequenceExtension(u._contract))
-	if err != nil {
-		return nil, errors.Wrap(err, "error creating _APCISequence")
-	}
-	u.ConfirmedRequestPDU, err = NewConfirmedRequestPDU(serviceRequest)
+	kwArgs[KWConfirmedServiceChoice] = u._contract.GetServiceChoice()
+	u.ConfirmedRequestPDU, err = NewConfirmedRequestPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating ConfirmedRequestPDU")
 	}
+	u.APCISequence, err = NewAPCISequence(args, kwArgs, WithAPCISequenceExtension(u._contract))
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating _APCISequence")
+	}
 	// We need to set the APCI to the same objects...
 	u.APCISequence._APCI = u.ConfirmedRequestPDU._APCI
+	if u.GetRootMessage() == nil {
+		panic("this should be set by NewConfirmedRequestPDU")
+		serviceRequest, _ := GAO[model.BACnetConfirmedServiceRequest](args, 0, nil)
+		if serviceRequest != nil {
+			apduConfirmedRequest := model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil, 0)
+			u.SetRootMessage(apduConfirmedRequest)
+		}
+	}
 	return u, nil
 }
 

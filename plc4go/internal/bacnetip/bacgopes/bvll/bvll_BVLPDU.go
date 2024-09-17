@@ -49,8 +49,7 @@ func NewBVLPDU(args Args, kwArgs KWArgs) BVLPDU {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
 	b := &_BVLPDU{}
-	kwArgs[KWCompBVLCIRequirements] = b
-	b._BVLCI = NewBVLCI(args, kwArgs).(*_BVLCI)
+	b._BVLCI = NewBVLCI(b, args, kwArgs).(*_BVLCI)
 	b.PDUData = NewPDUData(args, kwArgs)
 	b.AddExtraPrinters(b.PDUData.(DebugContentPrinter))
 	if b.GetRootMessage() != nil {

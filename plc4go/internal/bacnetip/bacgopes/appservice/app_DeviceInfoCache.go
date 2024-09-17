@@ -31,6 +31,8 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
+// NOTE: needs to reside here otherwise there is a circular dependency
+
 // DeviceInfoCacheKey caches by either Instance, PduSource of both
 type DeviceInfoCacheKey struct {
 	Instance  *uint32
@@ -58,6 +60,9 @@ type DeviceInfoCache struct {
 }
 
 func NewDeviceInfoCache(localLog zerolog.Logger) *DeviceInfoCache {
+	if _debug != nil {
+		_debug("__init__")
+	}
 	return &DeviceInfoCache{
 		cache: make(map[uint32]DeviceInfo),
 		log:   localLog,
@@ -66,6 +71,9 @@ func NewDeviceInfoCache(localLog zerolog.Logger) *DeviceInfoCache {
 
 // HasDeviceInfo Return true if cache has information about the device.
 func (d *DeviceInfoCache) HasDeviceInfo(key DeviceInfoCacheKey) bool {
+	if _debug != nil {
+		_debug("has_device_info %r", key)
+	}
 	_, ok := d.cache[key.HashKey()]
 	return ok
 }
@@ -73,6 +81,9 @@ func (d *DeviceInfoCache) HasDeviceInfo(key DeviceInfoCacheKey) bool {
 // IAmDeviceInfo Create a device information record based on the contents of an IAmRequest and put it in the cache.
 func (d *DeviceInfoCache) IAmDeviceInfo(iAm readWriteModel.BACnetUnconfirmedServiceRequestIAm, pduSource Address) {
 	d.log.Debug().Stringer("iAm", iAm).Msg("IAmDeviceInfo")
+	if _debug != nil {
+		_debug("iam_device_info %r", iAm)
+	}
 
 	deviceIdentifier := iAm.GetDeviceIdentifier()
 	// Get the device instance
@@ -106,10 +117,16 @@ func (d *DeviceInfoCache) IAmDeviceInfo(iAm readWriteModel.BACnetUnconfirmedServ
 // GetDeviceInfo gets a DeviceInfo from cache
 func (d *DeviceInfoCache) GetDeviceInfo(key DeviceInfoCacheKey) (DeviceInfo, bool) {
 	d.log.Debug().Stringer("key", key).Msg("GetDeviceInfo %s")
+	if _debug != nil {
+		_debug("get_device_info %r", key)
+	}
 
 	// get the info if it's there
 	deviceInfo, ok := d.cache[key.HashKey()]
 	d.log.Debug().Stringer("deviceInfo", &deviceInfo).Msg("deviceInfo")
+	if _debug != nil {
+		_debug("    - device_info: %r", deviceInfo)
+	}
 
 	return deviceInfo, ok
 }
@@ -120,16 +137,25 @@ func (d *DeviceInfoCache) GetDeviceInfo(key DeviceInfoCacheKey) (DeviceInfo, boo
 //	opportunity to update the database.
 func (d *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
 	d.log.Debug().Stringer("deviceInfo", &deviceInfo).Msg("UpdateDeviceInfo")
+	if _debug != nil {
+		_debug("update_device_info %r", deviceInfo)
+	}
 
 	// get the current key
 	cacheKey := deviceInfo._cacheKey
 	if cacheKey.Instance != nil && deviceInfo.DeviceIdentifier.GetInstanceNumber() != *cacheKey.Instance {
+		if _debug != nil {
+			_debug("    - device identifier updated")
+		}
 		instanceNumber := deviceInfo.DeviceIdentifier.GetInstanceNumber()
 		cacheKey.Instance = &instanceNumber
 		delete(d.cache, cacheKey.HashKey())
 		d.cache[DeviceInfoCacheKey{Instance: &instanceNumber}.HashKey()] = deviceInfo
 	}
 	if !deviceInfo.Address.Equals(cacheKey.PduSource) {
+		if _debug != nil {
+			_debug("    - device address updated")
+		}
 		cacheKey.PduSource = &deviceInfo.Address
 		delete(d.cache, cacheKey.HashKey())
 		d.cache[DeviceInfoCacheKey{PduSource: cacheKey.PduSource}.HashKey()] = deviceInfo
@@ -149,11 +175,21 @@ func (d *DeviceInfoCache) UpdateDeviceInfo(deviceInfo DeviceInfo) {
 //	machine.
 func (d *DeviceInfoCache) Acquire(key DeviceInfoCacheKey) (DeviceInfo, bool) {
 	d.log.Debug().Stringer("key", key).Msg("Acquire")
+	if _debug != nil {
+		_debug("acquire %r", key)
+	}
 
 	deviceInfo, ok := d.cache[key.HashKey()]
 	if ok {
+		if _debug != nil {
+			_debug("    - reference bump")
+		}
 		deviceInfo._refCount++
 		d.cache[key.HashKey()] = deviceInfo
+	}
+
+	if _debug != nil {
+		_debug("    - device_info: %r", deviceInfo)
 	}
 
 	return deviceInfo, ok
@@ -161,6 +197,9 @@ func (d *DeviceInfoCache) Acquire(key DeviceInfoCacheKey) (DeviceInfo, bool) {
 
 // Release This function is called by the segmentation state machine when it has finished with the device information.
 func (d *DeviceInfoCache) Release(deviceInfo DeviceInfo) error {
+	if _debug != nil {
+		_debug("release %r", deviceInfo)
+	}
 
 	//this information record might be used by more than one SSM
 	if deviceInfo._refCount == 0 {

@@ -28,7 +28,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -93,17 +92,16 @@ type _APCI struct {
 
 var _ APCI = (*_APCI)(nil)
 
-func NewAPCI(apdu readWriteModel.APDU) APCI {
+func NewAPCI(args Args, kwArgs KWArgs) APCI {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwArgs)
+	}
 	a := &_APCI{}
 	a.DebugContents = NewDebugContents(a, "apduType", "apduSeg", "apduMor", "apduSA", "apduSrv",
 		"apduNak", "apduSeq", "apduWin", "apduMaxSegs", "apduMaxResp",
 		"apduService", "apduInvokeID", "apduAbortRejectReason")
-	a.PCI = NewPCI(NoArgs, NKW(KWCompRootMessage, apdu)) // TODO: convert to args so we can solve all those todos
+	a.PCI = NewPCI(args, kwArgs)
 	a.AddExtraPrinters(a.PCI.(DebugContentPrinter))
-	if apdu != nil {
-		apduType := apdu.GetApduType()
-		a.apduType = &apduType
-	}
 	return a
 }
 
@@ -112,14 +110,29 @@ func (a *_APCI) GetDebugAttr(attr string) any {
 	case "apduType":
 		return a.apduType
 	case "apduSeg":
+		if !a.apduSeg {
+			return nil
+		}
 		return a.apduSeq
 	case "apduMor":
+		if !a.apduMor {
+			return nil
+		}
 		return a.apduMor
 	case "apduSA":
+		if !a.apduSA {
+			return nil
+		}
 		return a.apduSA
 	case "apduSrv":
+		if !a.apduSrv {
+			return nil
+		}
 		return a.apduSrv
 	case "apduNak":
+		if !a.apduNak {
+			return nil
+		}
 		return a.apduNak
 	case "apduSeq":
 		if a.apduSeq != nil {
@@ -149,7 +162,6 @@ func (a *_APCI) GetDebugAttr(attr string) any {
 		if a.apduAbortRejectReason != nil {
 			return *a.apduAbortRejectReason
 		}
-		panic("implement me")
 	default:
 		return nil
 	}
@@ -265,6 +277,9 @@ func (a *_APCI) Update(apci Arg) error {
 }
 
 func (a *_APCI) Encode(pdu Arg) error {
+	if _debug != nil {
+		_debug("encode %r", pdu)
+	}
 	switch pdu := pdu.(type) {
 	case PCI:
 		if err := pdu.GetPCI().Update(a); err != nil {
@@ -363,6 +378,9 @@ func (a *_APCI) Encode(pdu Arg) error {
 }
 
 func (a *_APCI) Decode(pdu Arg) error {
+	if _debug != nil {
+		_debug("decode %r", pdu)
+	}
 	if err := a.PCI.Update(pdu); err != nil {
 		return errors.Wrap(err, "error updating pdu")
 	}
@@ -486,27 +504,22 @@ func (a *_APCI) deepCopy() *_APCI {
 }
 
 func (a *_APCI) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("APCI{%s}", a.PCI) // TODO: add other fields
-	} else {
-		sname := fmt.Sprintf("%T", a)
+	sname := StructName()
 
-		// expand the type if possible
-
-		stype := ""
-		if a.apduType != nil {
-			if v, ok := APDUTypes[*a.apduType]; ok {
-				stype = fmt.Sprintf("%T", v)
-			} else {
-				stype = "?"
-			}
+	// expand the type if possible
+	stype := ""
+	if a.apduType != nil {
+		if v, ok := APDUTypes[*a.apduType]; ok {
+			stype = fmt.Sprintf("%T", v)
+		} else {
+			stype = "?"
 		}
-
-		// add the invoke ID if it has one
-		if a.apduInvokeID != nil {
-			stype += ", " + strconv.Itoa(int(*a.apduInvokeID))
-		}
-		// put it together
-		return fmt.Sprintf("<%s(%s instance at %p)>", sname, stype, a)
 	}
+
+	// add the invoke ID if it has one
+	if a.apduInvokeID != nil {
+		stype += ", " + strconv.Itoa(int(*a.apduInvokeID))
+	}
+	// put it together
+	return fmt.Sprintf("<%s(%s instance at %p)>", sname, stype, a)
 }

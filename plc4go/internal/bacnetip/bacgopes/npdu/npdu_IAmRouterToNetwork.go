@@ -37,14 +37,17 @@ type IAmRouterToNetwork struct {
 	iartnNetworkList []uint16
 }
 
-func NewIAmRouterToNetwork(opts ...func(*IAmRouterToNetwork)) (*IAmRouterToNetwork, error) {
+func NewIAmRouterToNetwork(args Args, kwArgs KWArgs, opts ...func(*IAmRouterToNetwork)) (*IAmRouterToNetwork, error) {
 	i := &IAmRouterToNetwork{
 		messageType: 0x01,
 	}
 	for _, opt := range opts {
 		opt(i)
 	}
-	npdu, err := NewNPDU(model.NewNLMIAmRouterToNetwork(i.iartnNetworkList, 0), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMIAmRouterToNetwork(i.iartnNetworkList, 0)
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

@@ -26,7 +26,7 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/capability"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -48,7 +48,8 @@ type Application struct {
 	objectName       map[string]*LocalDeviceObject
 	objectIdentifier map[string]*LocalDeviceObject
 	localDevice      *LocalDeviceObject
-	deviceInfoCache  *DeviceInfoCache
+	localAddress     *Address
+	deviceInfoCache  *appservice.DeviceInfoCache
 	controllers      map[string]any
 	helpers          map[string]func(apdu APDU) error `ignore:"true"`
 
@@ -61,7 +62,7 @@ type Application struct {
 	log zerolog.Logger
 }
 
-func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(*Application)) (*Application, error) {
+func NewApplication(localLog zerolog.Logger, opts ...func(*Application)) (*Application, error) {
 	a := &Application{
 		log:     localLog,
 		helpers: map[string]func(apdu APDU) error{},
@@ -70,10 +71,13 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 		opt(a)
 	}
 	localLog.Debug().
-		Stringer("localDevice", localDevice).
+		Stringer("localDevice", a.localDevice).
 		Stringer("deviceInfoCache", a.deviceInfoCache).
 		Interface("aseID", a.argAseID).
 		Msg("NewApplication")
+	if _debug != nil {
+		_debug("__init__ %r %r deviceInfoCache=%r aseID=%r", a.localDevice, a.localAddress, a.deviceInfoCache, a.argAse)
+	}
 	var err error
 	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(a.argAseID, a.argAse, WithApplicationServiceElementAseID))
 	if err != nil {
@@ -85,20 +89,18 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 	a.objectIdentifier = map[string]*LocalDeviceObject{}
 
 	// keep track of the local device
-	if localDevice != nil {
-		a.localDevice = localDevice
-
+	if a.localDevice != nil {
 		// bind the device object to this application
-		localDevice.App = a
+		a.localDevice.App = a
 
 		// local objects by ID and name
-		a.objectName[localDevice.ObjectName] = localDevice
-		a.objectName[localDevice.ObjectIdentifier] = localDevice
+		a.objectName[a.localDevice.ObjectName] = a.localDevice
+		a.objectName[a.localDevice.ObjectIdentifier] = a.localDevice
 	}
 
 	// use the provided cache or make a default one
 	if a.deviceInfoCache == nil {
-		a.deviceInfoCache = NewDeviceInfoCache(localLog)
+		a.deviceInfoCache = appservice.NewDeviceInfoCache(localLog)
 	}
 
 	// controllers for managing confirmed requests as a client
@@ -112,11 +114,20 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 	// if starting up is enabled, find all the startup functions
 	if !a._startupDisabled {
 		for fn := range a.CapabilityFunctions("startup") {
+			if _debug != nil {
+				_debug("    - startup fn: %t", fn != nil)
+			}
 			localLog.Debug().Interface("fn", fn).Msg("startup fn")
 			Deferred(fn, NoArgs, NoKWArgs())
 		}
 	}
 	return a, nil
+}
+
+func WithApplicationLocalDeviceObject(localDevice *LocalDeviceObject) func(*Application) {
+	return func(a *Application) {
+		a.localDevice = localDevice
+	}
 }
 
 func WithApplicationAseID(aseID int, ase ApplicationServiceElement) func(*Application) {
@@ -126,19 +137,22 @@ func WithApplicationAseID(aseID int, ase ApplicationServiceElement) func(*Applic
 	}
 }
 
-func WithApplicationDeviceInfoCache(deviceInfoCache *DeviceInfoCache) func(*Application) {
+func WithApplicationDeviceInfoCache(deviceInfoCache *appservice.DeviceInfoCache) func(*Application) {
 	return func(a *Application) {
 		a.deviceInfoCache = deviceInfoCache
 	}
 }
 
-func (a *Application) GetDeviceInfoCache() *DeviceInfoCache {
+func (a *Application) GetDeviceInfoCache() *appservice.DeviceInfoCache {
 	return a.deviceInfoCache
 }
 
 // AddObject adds an object to the local collection
 func (a *Application) AddObject(obj *LocalDeviceObject) error {
 	a.log.Debug().Stringer("obj", obj).Msg("AddObject")
+	if _debug != nil {
+		_debug("add_object %r", obj)
+	}
 
 	// extract the object name and identifier
 	objectName := obj.ObjectName
@@ -176,6 +190,9 @@ func (a *Application) AddObject(obj *LocalDeviceObject) error {
 // DeleteObject deletes an object from the local collection
 func (a *Application) DeleteObject(obj *LocalDeviceObject) error {
 	a.log.Debug().Stringer("obj", obj).Msg("DeleteObject")
+	if _debug != nil {
+		_debug("delete_object %r", obj)
+	}
 
 	// extract the object name and identifier
 	objectName := obj.ObjectName
@@ -229,6 +246,9 @@ func (a *Application) IterObjects() []*LocalDeviceObject {
 //
 // TODO: match that with readWriteModel.BACnetServicesSupported
 func (a *Application) GetServicesSupported() []string {
+	if _debug != nil {
+		_debug("get_services_supported")
+	}
 	servicesSupported := make([]string, 0, len(a.helpers))
 	for key := range a.helpers {
 		servicesSupported = append(servicesSupported, key)
@@ -238,10 +258,13 @@ func (a *Application) GetServicesSupported() []string {
 
 func (a *Application) Request(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Request")
-	pdu := GA[PDU](args, 0)
+	apdu := GA[APDU](args, 0)
+	if _debug != nil {
+		_debug("request %r", apdu)
+	}
 
 	// double-check the input is the right kind of APDU
-	switch pdu.GetRootMessage().(type) {
+	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUUnconfirmedRequest, readWriteModel.APDUConfirmedRequest:
 	default:
 		return errors.New("APDU expected")
@@ -252,6 +275,9 @@ func (a *Application) Request(args Args, kwArgs KWArgs) error {
 func (a *Application) Indication(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	apdu := GA[APDU](args, 0)
+	if _debug != nil {
+		_debug("indication %r", apdu)
+	}
 
 	// get a helper function
 	helperName := fmt.Sprintf("Do_%T", apdu)
@@ -260,6 +286,9 @@ func (a *Application) Indication(args Args, kwArgs KWArgs) error {
 		Str("helperName", helperName).
 		Bool("helperFn", helperFn != nil).
 		Msg("working with helper")
+	if _debug != nil {
+		_debug("    - helperFn: %t", helperFn != nil)
+	}
 
 	// send back a reject for unrecognized services
 	if helperFn == nil {
@@ -271,10 +300,15 @@ func (a *Application) Indication(args Args, kwArgs KWArgs) error {
 
 	if err := helperFn(apdu); err != nil {
 		a.log.Debug().Err(err).Msg("err result")
-		panic("do it")
 		// TODO: do proper mapping
-		if err := a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0)))), NoKWArgs()); err != nil {
-			return err
+		if _, ok := apdu.(readWriteModel.APDUConfirmedRequest); ok {
+			resp, err := NewError(NoArgs, NKW(KWErrorClass, "device", KWErrorCode, "operationalProblem", KWContext, apdu))
+			if err != nil {
+				return errors.Wrap(err, "error creating error")
+			}
+			if err := a.Response(NA(resp), NoKWArgs()); err != nil {
+				return errors.Wrap(err, "error sending response")
+			}
 		}
 	}
 

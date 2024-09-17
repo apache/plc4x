@@ -29,43 +29,43 @@ var NPDUTypes map[uint8]func() Decoder
 func init() {
 	NPDUTypes = map[uint8]func() Decoder{
 		0x00: func() Decoder {
-			v, _ := NewWhoIsRouterToNetwork()
+			v, _ := NewWhoIsRouterToNetwork(Nothing())
 			return v
 		},
 		0x01: func() Decoder {
-			v, _ := NewIAmRouterToNetwork()
+			v, _ := NewIAmRouterToNetwork(Nothing())
 			return v
 		},
 		0x02: func() Decoder {
-			v, _ := NewICouldBeRouterToNetwork()
+			v, _ := NewICouldBeRouterToNetwork(Nothing())
 			return v
 		},
 		0x03: func() Decoder {
-			v, _ := NewRejectMessageToNetwork()
+			v, _ := NewRejectMessageToNetwork(Nothing())
 			return v
 		},
 		0x04: func() Decoder {
-			v, _ := NewRouterBusyToNetwork()
+			v, _ := NewRouterBusyToNetwork(Nothing())
 			return v
 		},
 		0x05: func() Decoder {
-			v, _ := NewRouterAvailableToNetwork()
+			v, _ := NewRouterAvailableToNetwork(Nothing())
 			return v
 		},
 		0x06: func() Decoder {
-			v, _ := NewInitializeRoutingTable()
+			v, _ := NewInitializeRoutingTable(Nothing())
 			return v
 		},
 		0x07: func() Decoder {
-			v, _ := NewInitializeRoutingTableAck()
+			v, _ := NewInitializeRoutingTableAck(Nothing())
 			return v
 		},
 		0x08: func() Decoder {
-			v, _ := NewEstablishConnectionToNetwork()
+			v, _ := NewEstablishConnectionToNetwork(Nothing())
 			return v
 		},
 		0x09: func() Decoder {
-			v, _ := NewDisconnectConnectionToNetwork()
+			v, _ := NewDisconnectConnectionToNetwork(Nothing())
 			return v
 		},
 		// 0x0A: NewChallengeRequest, // TODO: not present upstream
@@ -77,11 +77,11 @@ func init() {
 		// 0x10: NewRequestMasterKey, // TODO: not present upstream
 		// 0x11: NewSetMasterKey, // TODO: not present upstream
 		0x12: func() Decoder {
-			v, _ := NewWhatIsNetworkNumber()
+			v, _ := NewWhatIsNetworkNumber(Nothing())
 			return v
 		},
 		0x13: func() Decoder {
-			v, _ := NewNetworkNumberIs()
+			v, _ := NewNetworkNumberIs(Nothing())
 			return v
 		},
 	}

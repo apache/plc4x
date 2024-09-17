@@ -32,9 +32,9 @@ import (
 
 //go:generate plc4xGenerator -type=FauxMultiplexer -prefix=helpers_
 type FauxMultiplexer struct {
-	*DefaultRFormatter `ignore:"true"`
 	ClientContract
 	ServerContract
+	*DefaultRFormatter `ignore:"true"`
 
 	address        *Address
 	unicastTuple   *AddressTuple[string, uint16]

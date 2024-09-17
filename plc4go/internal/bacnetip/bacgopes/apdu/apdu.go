@@ -21,19 +21,22 @@ package apdu
 
 import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
+
+var _debug = CreateDebugPrinter()
 
 var APDUTypes map[readWriteModel.ApduType]func() Decoder
 
 func init() {
 	APDUTypes = map[readWriteModel.ApduType]func() Decoder{
 		readWriteModel.ApduType_CONFIRMED_REQUEST_PDU: func() Decoder {
-			pdu, _ := NewConfirmedRequestPDU(nil)
+			pdu, _ := NewConfirmedRequestPDU(Nothing())
 			return pdu
 		},
 		readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU: func() Decoder {
-			pdu, _ := NewUnconfirmedRequestPDU(nil)
+			pdu, _ := NewUnconfirmedRequestPDU(Nothing())
 			return pdu
 		},
 		readWriteModel.ApduType_SIMPLE_ACK_PDU: func() Decoder {
@@ -110,7 +113,7 @@ func init() {
 			panic("implement me")
 		},
 		readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS: func() Decoder {
-			request, _ := NewWhoIsRequest()
+			request, _ := NewWhoIsRequest(Nothing())
 			return request
 		},
 		readWriteModel.BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION: func() Decoder {

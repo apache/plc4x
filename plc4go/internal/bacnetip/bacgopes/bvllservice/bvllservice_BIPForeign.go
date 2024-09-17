@@ -185,7 +185,7 @@ func (b *BIPForeign) Indication(args Args, kwArgs KWArgs) error {
 		}
 
 		// make an original broadcast _PDU
-		xpdu, err := NewOriginalBroadcastNPDU(NA(pdu), NKW(KWCPCIDestination, b.bbmdAddress, KWCPCIUserData, pdu.GetPDUUserData()))
+		xpdu, err := NewDistributeBroadcastToNetwork(NA(pdu), NKW(KWCPCIDestination, b.bbmdAddress, KWCPCIUserData, pdu.GetPDUUserData()))
 		if err != nil {
 			return errors.Wrap(err, "error creating original unicast NPDU")
 		}

@@ -17,38 +17,8 @@
  * under the License.
  */
 
-package basetypes
+package constructeddata
 
-import (
-	"github.com/pkg/errors"
-
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
-)
-
-type Segmentation struct {
-	*Enumerated
-	vendorRange  vendorRange
-	enumerations map[string]uint64
-}
-
-func NewSegmentation(arg Arg) (*Segmentation, error) {
-	s := &Segmentation{
-		enumerations: map[string]uint64{
-			"segmentedBoth":     0,
-			"segmentedTransmit": 1,
-			"segmentedReceive":  2,
-			"noSegmentation":    3,
-		},
-	}
-	var err error
-	args := NoArgs
-	if !IsNil(arg) {
-		args = append(args, arg)
-	}
-	s.Enumerated, err = NewEnumerated(args)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create enumerated")
-	}
-	return s, nil
+// TODO: finish
+type Choice struct {
 }

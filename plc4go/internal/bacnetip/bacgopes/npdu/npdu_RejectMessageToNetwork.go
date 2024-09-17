@@ -38,14 +38,17 @@ type RejectMessageToNetwork struct {
 	rmtnDNET            uint16
 }
 
-func NewRejectMessageToNetwork(opts ...func(*RejectMessageToNetwork)) (*RejectMessageToNetwork, error) {
+func NewRejectMessageToNetwork(args Args, kwArgs KWArgs, opts ...func(*RejectMessageToNetwork)) (*RejectMessageToNetwork, error) {
 	i := &RejectMessageToNetwork{
 		messageType: 0x03,
 	}
 	for _, opt := range opts {
 		opt(i)
 	}
-	npdu, err := NewNPDU(model.NewNLMRejectMessageToNetwork(i.rmtnRejectionReason, i.rmtnDNET, 0), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMRejectMessageToNetwork(i.rmtnRejectionReason, i.rmtnDNET, 0)
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

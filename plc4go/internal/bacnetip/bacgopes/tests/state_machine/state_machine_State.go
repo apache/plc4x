@@ -28,7 +28,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
@@ -574,9 +573,8 @@ func (s *state) String() string {
 	if s == nil {
 		return "<nil>(*state)"
 	}
-	if ExtendedGeneralOutput {
-		return fmt.Sprintf("state(doc: %s, successState: %t, isFailState: %t)", s.docString, s.isSuccessState, s.isFailState)
-	} else {
-		return fmt.Sprintf("<%T(%s) at %p>", s, s.docString, s)
+	if IsDebuggingActive() {
+		return fmt.Sprintf("%s", s) // Delegate to format
 	}
+	return fmt.Sprintf("state(doc: %s, successState: %t, isFailState: %t)", s.docString, s.isSuccessState, s.isFailState)
 }

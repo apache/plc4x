@@ -37,8 +37,9 @@ type BIPSAPRequirements interface {
 }
 
 type BIPSAP struct {
-	*DefaultRFormatter `ignore:"true"`
 	ServiceAccessPointContract
+	*DefaultRFormatter `ignore:"true"`
+
 	requirements BIPSAPRequirements
 
 	// pass through args

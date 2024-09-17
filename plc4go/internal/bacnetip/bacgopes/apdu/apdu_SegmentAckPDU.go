@@ -23,3 +23,7 @@ package apdu
 type SegmentAckPDU struct {
 	*___APDU
 }
+
+func (s *SegmentAckPDU) GetServer() any {
+	panic("implement me")
+}

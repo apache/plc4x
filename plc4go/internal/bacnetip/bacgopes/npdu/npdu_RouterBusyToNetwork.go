@@ -37,14 +37,17 @@ type RouterBusyToNetwork struct {
 	rbtnNetworkList []uint16
 }
 
-func NewRouterBusyToNetwork(opts ...func(*RouterBusyToNetwork)) (*RouterBusyToNetwork, error) {
+func NewRouterBusyToNetwork(args Args, kwArgs KWArgs, opts ...func(*RouterBusyToNetwork)) (*RouterBusyToNetwork, error) {
 	i := &RouterBusyToNetwork{
 		messageType: 0x04,
 	}
 	for _, opt := range opts {
 		opt(i)
 	}
-	npdu, err := NewNPDU(model.NewNLMRouterBusyToNetwork(i.rbtnNetworkList, 0), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMRouterBusyToNetwork(i.rbtnNetworkList, 0)
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

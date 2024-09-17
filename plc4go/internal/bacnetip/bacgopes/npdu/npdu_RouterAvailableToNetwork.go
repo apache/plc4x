@@ -37,14 +37,17 @@ type RouterAvailableToNetwork struct {
 	ratnNetworkList []uint16
 }
 
-func NewRouterAvailableToNetwork(opts ...func(*RouterAvailableToNetwork)) (*RouterAvailableToNetwork, error) {
+func NewRouterAvailableToNetwork(args Args, kwArgs KWArgs, opts ...func(*RouterAvailableToNetwork)) (*RouterAvailableToNetwork, error) {
 	i := &RouterAvailableToNetwork{
 		messageType: 0x05,
 	}
 	for _, opt := range opts {
 		opt(i)
 	}
-	npdu, err := NewNPDU(model.NewNLMRouterAvailableToNetwork(i.ratnNetworkList, 0), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMRouterAvailableToNetwork(i.ratnNetworkList, 0)
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

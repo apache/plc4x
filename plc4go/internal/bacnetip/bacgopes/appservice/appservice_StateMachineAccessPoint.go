@@ -20,12 +20,15 @@
 package appservice
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -35,6 +38,7 @@ import (
 type StateMachineAccessPoint struct {
 	ClientContract
 	ServiceAccessPointContract
+	*DefaultRFormatter `ignore:"true"`
 
 	localDevice           *LocalDeviceObject
 	deviceInfoCache       *DeviceInfoCache
@@ -61,6 +65,7 @@ type StateMachineAccessPoint struct {
 
 func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(*StateMachineAccessPoint)) (*StateMachineAccessPoint, error) {
 	s := &StateMachineAccessPoint{
+		DefaultRFormatter: NewDefaultRFormatter(),
 		// save a reference to the device information cache
 		localDevice: localDevice,
 
@@ -94,14 +99,15 @@ func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDevic
 	for _, opt := range opts {
 		opt(s)
 	}
-	if LogAppService {
-		s.log.Debug().
-			Stringer("localDevice", localDevice).
-			Stringer("deviceInfoCache", s.deviceInfoCache).
-			Interface("sapID", s.argSapID).
-			Interface("cid", s.argCid).
-			Msg("NewStateMachineAccessPoint")
+	if _debug != nil {
+		_debug("__init__ localDevice=%r deviceInfoCache=%r sap=%r cid=%r", localDevice, s.deviceInfoCache, s.argSap, s.argCid)
 	}
+	s.log.Debug().
+		Stringer("localDevice", localDevice).
+		Stringer("deviceInfoCache", s.deviceInfoCache).
+		Interface("sapID", s.argSapID).
+		Interface("cid", s.argCid).
+		Msg("NewStateMachineAccessPoint")
 	// basic initialization
 	var err error
 	s.ClientContract, err = NewClient(s.log, OptionalOption2(s.argCid, ToPtr[ClientRequirements](s), WithClientCID))
@@ -111,9 +117,6 @@ func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDevic
 	s.ServiceAccessPointContract, err = NewServiceAccessPoint(s.log, OptionalOption2(s.argSapID, s.argSap, WithServiceAccessPointSapID))
 	if err != nil {
 		return nil, errors.Wrapf(err, "error building serviceAccessPoint for %d", s.argSapID)
-	}
-	if !LogAppService {
-		s.log = zerolog.Nop()
 	}
 	return s, nil
 }
@@ -139,6 +142,9 @@ func WithStateMachineAccessPointCid(cid int) func(*StateMachineAccessPoint) {
 
 // getNextInvokeId Called by clients to get an unused invoke ID
 func (s *StateMachineAccessPoint) getNextInvokeId(address Address) (uint8, error) {
+	if _debug != nil {
+		_debug("get_next_invoke_id")
+	}
 	s.log.Debug().Msg("getNextInvokeId")
 
 	initialID := s.nextInvokeId
@@ -188,42 +194,77 @@ func (s *StateMachineAccessPoint) GetDefaultMaximumApduLengthAccepted() readWrit
 // Confirmation Packets coming up the stack are APDU's
 func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error { // TODO: note we need a special method here as we don't contain src in the apdu
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
-	apdu := GA[PDU](args, 0)
+	pdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", pdu)
+	}
 
 	// check device communication control
 	switch s.dccEnableDisable {
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE:
+		if _debug != nil {
+			_debug("    - communications enabled")
+		}
 		s.log.Debug().Msg("communications enabled")
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE:
-		apduType := apdu.GetRootMessage().(interface {
+		apduType := pdu.GetRootMessage().(interface {
 			GetApduType() readWriteModel.ApduType
 		}).GetApduType()
 		switch {
 		case apduType == readWriteModel.ApduType_CONFIRMED_REQUEST_PDU &&
-			apdu.GetRootMessage().(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL:
+			pdu.GetRootMessage().(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL:
+			if _debug != nil {
+				_debug("    - continue with DCC request")
+			}
 			s.log.Debug().Msg("continue with DCC request")
 		case apduType == readWriteModel.ApduType_CONFIRMED_REQUEST_PDU &&
-			apdu.GetRootMessage().(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE:
+			pdu.GetRootMessage().(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE:
+			if _debug != nil {
+				_debug("    - continue with reinitialize device")
+			}
 			s.log.Debug().Msg("continue with reinitialize device")
 		case apduType == readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU &&
-			apdu.GetRootMessage().(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS:
+			pdu.GetRootMessage().(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS:
+			if _debug != nil {
+				_debug("    - continue with Who-Is")
+			}
 			s.log.Debug().Msg("continue with Who-Is")
 		default:
+			if _debug != nil {
+				_debug("    - not a Who-Is, dropped")
+			}
 			s.log.Debug().Msg("not a Who-Is, dropped")
 			return nil
 		}
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION:
+		if _debug != nil {
+			_debug("    - initiation disabled")
+		}
 		s.log.Debug().Msg("initiation disabled")
 	}
 
-	var pduSource = apdu.GetPDUSource()
+	// make a more focused interpretation
+	atype := APDUTypes[pdu.(APDU).GetApduType()] // TODO: why are we suddenly assuming apdu now here...
+	if atype == nil {
+		s.log.Warn().Msgf("    - unknown apduType: %s", pdu.(APDU).GetApduType())
+		return nil
+	}
 
-	switch _apdu := apdu.GetRootMessage().(type) {
-	case readWriteModel.APDUConfirmedRequest:
+	// decode it
+	apdu := atype()
+	if err := apdu.Decode(pdu); err != nil {
+		return errors.Wrap(err, "apdu decode failed")
+	}
+	if _debug != nil {
+		_debug("    - apdu: %r", apdu)
+	}
+
+	switch apdu := apdu.(type) {
+	case *ConfirmedRequestPDU:
 		// Find duplicates of this request
 		var tr *ServerSSM
 		for _, serverTransactionElement := range s.serverTransactions {
-			if _apdu.GetInvokeId() == serverTransactionElement.invokeId && pduSource.Equals(serverTransactionElement.pduAddress) {
+			if apdu.GetInvokeId() == serverTransactionElement.invokeId && apdu.GetPDUSource().Equals(serverTransactionElement.pduAddress) {
 				tr = serverTransactionElement
 				break
 			}
@@ -231,7 +272,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 		if tr == nil {
 			// build a server transaction
 			var err error
-			tr, err = NewServerSSM(s.log, s, pduSource)
+			tr, err = NewServerSSM(s.log, s, apdu.GetPDUSource())
 			if err != nil {
 				return errors.Wrap(err, "Error building server ssm")
 			}
@@ -242,7 +283,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 		if err := tr.Indication(NA(apdu), NoKWArgs()); err != nil {
 			return errors.Wrap(err, "error runnning indication")
 		}
-	case readWriteModel.APDUUnconfirmedRequest:
+	case *UnconfirmedRequestPDU:
 		// deliver directly to the application
 		if err := s.SapRequest(NA(apdu), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending request")
@@ -251,7 +292,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 		// find the client transaction this is acking
 		var tr *ClientSSM
 		for _, _tr := range s.clientTransactions {
-			if _apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == _tr.invokeId && pduSource.Equals(_tr.pduAddress) {
+			if apdu.(interface{ GetInvokeId() uint8 }).GetInvokeId() == _tr.invokeId && apdu.(interface{ GetPDUSource() *Address }).GetPDUSource().Equals(_tr.pduAddress) {
 				tr = _tr
 				break
 			}
@@ -265,12 +306,12 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 		if err := tr.Confirmation(NA(apdu), NoKWArgs()); err != nil {
 			return errors.Wrap(err, "error running confirmation")
 		}
-	case readWriteModel.APDUAbort:
+	case *AbortPDU:
 		// find the transaction being aborted
-		if _apdu.GetServer() {
+		if apdu.GetAPDUSrv() != nil {
 			var tr *ClientSSM
 			for _, tr := range s.clientTransactions {
-				if apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == tr.invokeId && pduSource.Equals(tr.pduAddress) {
+				if *apdu.GetApduInvokeID() == tr.invokeId && apdu.GetPDUSource().Equals(tr.pduAddress) {
 					break
 				}
 			}
@@ -286,7 +327,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 		} else {
 			var tr *ServerSSM
 			for _, serverTransactionElement := range s.serverTransactions {
-				if _apdu.GetOriginalInvokeId() == serverTransactionElement.invokeId && pduSource.Equals(serverTransactionElement.pduAddress) {
+				if *apdu.GetApduInvokeID() == serverTransactionElement.invokeId && apdu.GetPDUSource().Equals(serverTransactionElement.pduAddress) {
 					tr = serverTransactionElement
 					break
 				}
@@ -301,12 +342,12 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 				return errors.Wrap(err, "error running indication")
 			}
 		}
-	case readWriteModel.APDUSegmentAck:
+	case *SegmentAckPDU:
 		// find the transaction being aborted
-		if _apdu.GetServer() {
+		if apdu.GetServer() != nil {
 			var tr *ClientSSM
 			for _, tr := range s.clientTransactions {
-				if apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == tr.invokeId && pduSource.Equals(tr.pduAddress) {
+				if *apdu.GetApduInvokeID() == tr.invokeId && apdu.GetPDUSource().Equals(tr.pduAddress) {
 					break
 				}
 			}
@@ -322,7 +363,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 		} else {
 			var tr *ServerSSM
 			for _, serverTransactionElement := range s.serverTransactions {
-				if _apdu.GetOriginalInvokeId() == serverTransactionElement.invokeId && pduSource.Equals(serverTransactionElement.pduAddress) {
+				if *apdu.GetApduInvokeID() == serverTransactionElement.invokeId && apdu.GetPDUSource().Equals(serverTransactionElement.pduAddress) {
 					tr = serverTransactionElement
 					break
 				}
@@ -346,7 +387,10 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 // SapIndication This function is called when the application is requesting a new transaction as a client.
 func (s *StateMachineAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapIndication")
-	apdu := GA[PDU](args, 0)
+	apdu := GA[APDU](args, 0)
+	if _debug != nil {
+		_debug("sap_indication %r", apdu)
+	}
 
 	pduDestination := apdu.GetPDUDestination()
 
@@ -354,21 +398,36 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwArgs KWArgs) error 
 	switch s.dccEnableDisable {
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE:
 		s.log.Debug().Msg("communications enabled")
+		if _debug != nil {
+			_debug("    - communications enabled")
+		}
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE:
 		s.log.Debug().Msg("communications disabled")
+		if _debug != nil {
+			_debug("    - communications disabled")
+		}
 		return nil
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION:
+		if _debug != nil {
+			_debug("    - initiation disabled")
+		}
 		s.log.Debug().Msg("initiation disabled")
 		// TODO: this should be quarded
 		if apdu.GetRootMessage().(readWriteModel.APDU).GetApduType() == readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU && apdu.(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_I_AM {
 			s.log.Debug().Msg("continue with I-Am")
+			if _debug != nil {
+				_debug("    - continue with I-Am")
+			}
 		} else {
 			s.log.Debug().Msg("not an I-Am")
+			if _debug != nil {
+				_debug("    - not an I-Am")
+			}
 			return nil
 		}
 	}
 
-	switch _apdu := apdu.GetRootMessage().(type) {
+	switch _apdu := apdu.(type) {
 	case readWriteModel.APDUUnconfirmedRequest:
 		// deliver to the device
 		if err := s.Request(NA(apdu), NoKWArgs()); err != nil {
@@ -392,6 +451,9 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwArgs KWArgs) error 
 		if err != nil {
 			return errors.Wrap(err, "error creating client ssm")
 		}
+		if _debug != nil {
+			_debug("    - client segmentation state machine: %r", tr)
+		}
 
 		// add it to our transactions to track it
 		s.clientTransactions = append(s.clientTransactions, tr)
@@ -413,6 +475,10 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwArgs KWArgs) error 
 func (s *StateMachineAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapConfirmation")
 	apdu := GA[PDU](args, 0)
+	if _debug != nil {
+		_debug("sap_confirmation %r", apdu)
+	}
+
 	pduDestination := apdu.GetPDUDestination()
 	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUSimpleAck, readWriteModel.APDUComplexAck, readWriteModel.APDUError, readWriteModel.APDUReject:
@@ -486,4 +552,11 @@ func (s *StateMachineAccessPoint) RemoveServerTransaction(sssm *ServerSSM) {
 
 func (s *StateMachineAccessPoint) GetApplicationTimeout() uint {
 	return s.applicationTimeout
+}
+
+func (s *StateMachineAccessPoint) AlternateString() (string, bool) {
+	if IsDebuggingActive() {
+		return fmt.Sprintf("%s", s), true
+	}
+	return "", false
 }

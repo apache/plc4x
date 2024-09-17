@@ -28,7 +28,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -48,10 +47,9 @@ type _NPDU struct {
 
 var _ = (NPDU)(nil)
 
-// TODO: optimize with options and smart non-recoding...
-func NewNPDU(nlm readWriteModel.NLM, apdu readWriteModel.APDU) (NPDU, error) {
+func NewNPDU(args Args, kwArgs KWArgs) (NPDU, error) {
 	n := &_NPDU{}
-	n._NPCI = NewNPCI(nlm, apdu).(*_NPCI)
+	n._NPCI = NewNPCI(args, kwArgs).(*_NPCI)
 	n.PDUData = NewPDUData(NoArgs, NoKWArgs())
 	n.AddExtraPrinters(n.PDUData.(DebugContentPrinter))
 	if n.GetRootMessage() != nil {
@@ -229,10 +227,9 @@ func (n *_NPDU) DeepCopy() any {
 }
 
 func (n *_NPDU) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("NPDU{%s}", n._NPCI)
-	} else {
+	if IsDebuggingActive() {
 		npci := "\t" + strings.Join(strings.Split(n._NPCI.String(), "\n"), "\n\t")
 		return fmt.Sprintf("<NPDU instance at %p>%s\n\tpduData = %s", n, npci, Btox(n.GetPduData(), "."))
 	}
+	return fmt.Sprintf("NPDU{%s}", n._NPCI)
 }

@@ -19,6 +19,41 @@
 
 package apdu
 
-// TODO: implement it...
+import (
+	"fmt"
+
+	"github.com/pkg/errors"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/constructeddata"
+)
+
 type Error struct {
+	*ErrorSequence
+}
+
+func NewError(args Args, kwArgs KWArgs) (*Error, error) {
+	e := &Error{}
+	var err error
+	e.ErrorSequence, err = NewErrorSequence(args, kwArgs, WithErrorSequenceExtension(e))
+	if err != nil {
+		return e, errors.Wrap(err, "Error creating new ErrorSequence")
+	}
+	return e, nil
+}
+
+func (e *Error) SetErrorSequence(es *ErrorSequence) {
+	e.ErrorSequence = es
+}
+
+func (e *Error) GetSequenceElements() []Element {
+	errorType, _ := basetypes.NewErrorType(nil) // TODO: check if is meant to be like that
+	return errorType.GetSequenceElements()
+}
+
+func (e *Error) String() string {
+	errorClass, _ := e.GetAttr("errorClass")
+	errorCode, _ := e.GetAttr("errorCode")
+	return fmt.Sprintf("%s:%s", errorClass, errorCode)
 }

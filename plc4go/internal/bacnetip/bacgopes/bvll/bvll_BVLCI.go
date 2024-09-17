@@ -54,7 +54,7 @@ type _BVLCI struct {
 	PCI
 	*DebugContents
 
-	requirements BVLCIRequirements
+	_requirements BVLCIRequirements
 
 	bvlciType     uint8
 	bvlciFunction uint8
@@ -66,18 +66,19 @@ type _BVLCI struct {
 
 var _ BVLCI = (*_BVLCI)(nil)
 
-func NewBVLCI(args Args, kwArgs KWArgs) BVLCI {
+func NewBVLCI(requirements BVLCIRequirements, args Args, kwArgs KWArgs) BVLCI {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
 	b := &_BVLCI{
-		bvlciType:    0x81,
-		requirements: KW[BVLCIRequirements](kwArgs, KWCompBVLCIRequirements),
+		_requirements: requirements,
+
+		bvlciType: 0x81,
 	}
 	b.DebugContents = NewDebugContents(b, "bvlciType", "bvlciFunction", "bvlciLength")
 	b.PCI = NewPCI(args, kwArgs)
 	b.AddExtraPrinters(b.PCI.(DebugContentPrinter))
-	if bvlc := KWO[readWriteModel.BVLC](kwArgs, KWCompRootMessage, nil); bvlc != nil {
+	if bvlc, ok := KWO[readWriteModel.BVLC](kwArgs, KWCompRootMessage, nil); ok {
 		b.bvlciFunction = bvlc.GetBvlcFunction()
 		b.bvlciLength = bvlc.GetLengthInBytes(context.Background())
 	}
@@ -126,8 +127,8 @@ func (b *_BVLCI) Encode(pdu Arg) error {
 		pdu.Put(b.bvlciType)
 		pdu.Put(b.bvlciFunction)
 
-		if int(b.bvlciLength) != len(b.requirements.GetPduData())+4 {
-			return errors.Errorf("invalid BVLCI length %d != %d", b.bvlciLength, len(b.requirements.GetPduData())+4)
+		if int(b.bvlciLength) != len(b._requirements.GetPduData())+4 {
+			return errors.Errorf("invalid BVLCI length %d != %d", b.bvlciLength, len(b._requirements.GetPduData())+4)
 		}
 
 		pdu.PutShort(b.bvlciLength)

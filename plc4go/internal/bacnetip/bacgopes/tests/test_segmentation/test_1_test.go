@@ -264,7 +264,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	a.log.Debug().Stringer("address", a.address).Msg("address")
 
 	// continue with initialization
-	a.Application, err = NewApplication(a.log, localDevice)
+	a.Application, err = NewApplication(a.log, WithApplicationLocalDeviceObject(localDevice))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application io controller")
 	}

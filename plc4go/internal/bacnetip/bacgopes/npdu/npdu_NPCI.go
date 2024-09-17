@@ -29,7 +29,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -78,19 +77,22 @@ type _NPCI struct {
 
 var _ NPCI = (*_NPCI)(nil)
 
-func NewNPCI(nlm readWriteModel.NLM, apdu readWriteModel.APDU) NPCI {
+func NewNPCI(args Args, kwArgs KWArgs) NPCI {
 	n := &_NPCI{
 		npduVersion: 1,
 	}
 	n.DebugContents = NewDebugContents(n, "npduVersion", "npduControl", "npduDADR", "npduSADR",
 		"npduHopCount", "npduNetMessage", "npduVendorID")
-	npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
-	nkw := NKW(KWCompRootMessage, npdu)
-	if npdu == nil {
-		nkw = NoKWArgs()
-	}
-	n.PCI = NewPCI(NoArgs, nkw) // TODO: convert to args so we can solve all those todos
+	n.PCI = NewPCI(args, kwArgs)
 	n.AddExtraPrinters(n.PCI.(DebugContentPrinter))
+	if n.GetRootMessage() == nil {
+		nlm, nlmOk := KWO[readWriteModel.NLM](kwArgs, KWCompNLM, nil)
+		apdu, apduOk := KWO[readWriteModel.APDU](kwArgs, KWCompAPDU, nil)
+		if nlmOk || apduOk {
+			npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
+			n.SetRootMessage(npdu)
+		}
+	}
 	return n
 }
 
@@ -521,9 +523,7 @@ func (n *_NPCI) DeepCopy() any {
 }
 
 func (n *_NPCI) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("NPCI{%s}", n.PCI)
-	} else {
+	if IsDebuggingActive() {
 		npduDADRStr := ""
 		if n.npduDADR != nil {
 			npduDADRStr = "\nnpduDADR = " + n.npduDADR.String()
@@ -557,4 +557,5 @@ func (n *_NPCI) String() string {
 			npduVendorIDStr,
 		)
 	}
+	return fmt.Sprintf("NPCI{%s}", n.PCI)
 }

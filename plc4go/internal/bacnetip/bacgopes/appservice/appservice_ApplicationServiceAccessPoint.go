@@ -20,12 +20,15 @@
 package appservice
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -34,6 +37,7 @@ import (
 type ApplicationServiceAccessPoint struct {
 	ApplicationServiceElementContract
 	ServiceAccessPointContract
+	*DefaultRFormatter `ignore:"true"`
 
 	// pass through args
 	argAseID        *int                       `ignore:"true"`
@@ -46,10 +50,14 @@ type ApplicationServiceAccessPoint struct {
 
 func NewApplicationServiceAccessPoint(localLog zerolog.Logger, opts ...func(*ApplicationServiceAccessPoint)) (*ApplicationServiceAccessPoint, error) {
 	a := &ApplicationServiceAccessPoint{
-		log: localLog,
+		DefaultRFormatter: NewDefaultRFormatter(),
+		log:               localLog,
 	}
 	for _, opt := range opts {
 		opt(a)
+	}
+	if _debug != nil {
+		_debug("__init__ aseID=%r sapID=%r", a.argAseID, a.argSapID)
 	}
 	var err error
 	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(a.argAseID, a.argASEExtension, WithApplicationServiceElementAseID))
@@ -80,6 +88,9 @@ func WithApplicationServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) f
 func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Indication")
 	apdu := GA[APDU](args, 0)
+	if _debug != nil {
+		_debug("indication %r", apdu)
+	}
 
 	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequest:
@@ -97,6 +108,9 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 		cr, ok := ConfirmedRequestTypes[apduService]
 		if !ok {
 			a.log.Debug().Stringer("apduService", apduService).Msg("unknown service type")
+			if _debug != nil {
+				_debug("    - no confirmed request decoder")
+			}
 			errorFound = errors.New("unrecognized service")
 		}
 
@@ -108,6 +122,9 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 				// TODO: add advanced error check for  reject and abort
 				panic("do it")
 				errorFound = err
+				if _debug != nil {
+					_debug("    - no decoding error")
+				}
 			}
 		}
 
@@ -159,15 +176,17 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 // TODO: big WIP
 func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapIndication")
-
 	apdu := GA[APDU](args, 0)
+	if _debug != nil {
+		_debug("sap_indication %r", apdu)
+	}
 
 	isConfirmed := false
 	var xpdu APDU
-	switch apdu.GetRootMessage().(type) {
+	switch apdu.(type) {
 	case readWriteModel.APDUConfirmedRequest:
 		var err error
-		xpdu, err = NewConfirmedRequestPDU(nil)
+		xpdu, err = NewConfirmedRequestPDU(Nothing())
 		if err != nil {
 			return errors.Wrap(err, "error creating unconfirmed request")
 		}
@@ -177,7 +196,7 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) 
 		isConfirmed = true
 	case readWriteModel.APDUUnconfirmedRequest:
 		var err error
-		xpdu, err = NewUnconfirmedRequestPDU(nil)
+		xpdu, err = NewUnconfirmedRequestPDU(Nothing())
 		if err != nil {
 			return errors.Wrap(err, "error creating unconfirmed request")
 		}
@@ -205,6 +224,10 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) 
 // TODO: big WIP
 func (a *ApplicationServiceAccessPoint) Confirmation(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("Confirmation")
+	apdu := GA[APDU](args, 0)
+	if _debug != nil {
+		_debug("confirmation %r", apdu)
+	}
 
 	// TODO: check if we need to check apdu here
 
@@ -215,8 +238,19 @@ func (a *ApplicationServiceAccessPoint) Confirmation(args Args, kwArgs KWArgs) e
 // TODO: big WIP
 func (a *ApplicationServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapConfirmation")
+	apdu := GA[APDU](args, 0)
+	if _debug != nil {
+		_debug("sap_confirmation %r", apdu)
+	}
 
 	// TODO: check if we need to check apdu here
 
 	return a.Response(args, kwArgs)
+}
+
+func (a *ApplicationServiceAccessPoint) AlternateString() (string, bool) {
+	if IsDebuggingActive() {
+		return fmt.Sprintf("%s", a), true
+	}
+	return "", false
 }

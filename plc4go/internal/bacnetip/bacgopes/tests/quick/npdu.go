@@ -20,12 +20,13 @@
 package quick
 
 import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 func WhoIsRouterToNetwork(net uint16) *npdu.WhoIsRouterToNetwork {
-	network, err := npdu.NewWhoIsRouterToNetwork(npdu.WithWhoIsRouterToNetworkNet(net))
+	network, err := npdu.NewWhoIsRouterToNetwork(NoArgs, NoKWArgs(), npdu.WithWhoIsRouterToNetworkNet(net))
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +34,7 @@ func WhoIsRouterToNetwork(net uint16) *npdu.WhoIsRouterToNetwork {
 }
 
 func IAmRouterToNetwork(netList ...uint16) *npdu.IAmRouterToNetwork {
-	network, err := npdu.NewIAmRouterToNetwork(npdu.WithIAmRouterToNetworkNetworkList(netList...))
+	network, err := npdu.NewIAmRouterToNetwork(NoArgs, NoKWArgs(), npdu.WithIAmRouterToNetworkNetworkList(netList...))
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +42,7 @@ func IAmRouterToNetwork(netList ...uint16) *npdu.IAmRouterToNetwork {
 }
 
 func ICouldBeRouterToNetwork(net uint16, perf uint8) *npdu.ICouldBeRouterToNetwork {
-	network, err := npdu.NewICouldBeRouterToNetwork(npdu.WithICouldBeRouterToNetworkNetwork(net), npdu.WithICouldBeRouterToNetworkPerformanceIndex(perf))
+	network, err := npdu.NewICouldBeRouterToNetwork(NoArgs, NoKWArgs(), npdu.WithICouldBeRouterToNetworkNetwork(net), npdu.WithICouldBeRouterToNetworkPerformanceIndex(perf))
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +50,7 @@ func ICouldBeRouterToNetwork(net uint16, perf uint8) *npdu.ICouldBeRouterToNetwo
 }
 
 func RejectMessageToNetwork(reason uint8, dnet uint16) *npdu.RejectMessageToNetwork {
-	network, err := npdu.NewRejectMessageToNetwork(npdu.WithRejectMessageToNetworkRejectionReason(readWriteModel.NLMRejectMessageToNetworkRejectReason(reason)), npdu.WithRejectMessageToNetworkDnet(dnet))
+	network, err := npdu.NewRejectMessageToNetwork(NoArgs, NoKWArgs(), npdu.WithRejectMessageToNetworkRejectionReason(readWriteModel.NLMRejectMessageToNetworkRejectReason(reason)), npdu.WithRejectMessageToNetworkDnet(dnet))
 	if err != nil {
 		panic(err)
 	}
@@ -57,7 +58,7 @@ func RejectMessageToNetwork(reason uint8, dnet uint16) *npdu.RejectMessageToNetw
 }
 
 func RouterBusyToNetwork(netList ...uint16) *npdu.RouterBusyToNetwork {
-	network, err := npdu.NewRouterBusyToNetwork(npdu.WithRouterBusyToNetworkDnet(netList))
+	network, err := npdu.NewRouterBusyToNetwork(NoArgs, NoKWArgs(), npdu.WithRouterBusyToNetworkDnet(netList))
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +66,7 @@ func RouterBusyToNetwork(netList ...uint16) *npdu.RouterBusyToNetwork {
 }
 
 func RouterAvailableToNetwork(netList ...uint16) *npdu.RouterAvailableToNetwork {
-	network, err := npdu.NewRouterAvailableToNetwork(npdu.WithRouterAvailableToNetworkDnet(netList))
+	network, err := npdu.NewRouterAvailableToNetwork(NoArgs, NoKWArgs(), npdu.WithRouterAvailableToNetworkDnet(netList))
 	if err != nil {
 		panic(err)
 	}
@@ -73,7 +74,7 @@ func RouterAvailableToNetwork(netList ...uint16) *npdu.RouterAvailableToNetwork 
 }
 
 func InitializeRoutingTable(irtTable ...*npdu.RoutingTableEntry) *npdu.InitializeRoutingTable {
-	network, err := npdu.NewInitializeRoutingTable(npdu.WithInitializeRoutingTableIrtTable(irtTable...))
+	network, err := npdu.NewInitializeRoutingTable(NoArgs, NoKWArgs(), npdu.WithInitializeRoutingTableIrtTable(irtTable...))
 	if err != nil {
 		panic(err)
 	}
@@ -89,7 +90,7 @@ func RoutingTableEntry(address uint16, portId uint8, portInfo []byte) *npdu.Rout
 }
 
 func InitializeRoutingTableAck(irtaTable ...*npdu.RoutingTableEntry) *npdu.InitializeRoutingTableAck {
-	network, err := npdu.NewInitializeRoutingTableAck(npdu.WithInitializeRoutingTableAckIrtaTable(irtaTable...))
+	network, err := npdu.NewInitializeRoutingTableAck(NoArgs, NoKWArgs(), npdu.WithInitializeRoutingTableAckIrtaTable(irtaTable...))
 	if err != nil {
 		panic(err)
 	}
@@ -97,7 +98,7 @@ func InitializeRoutingTableAck(irtaTable ...*npdu.RoutingTableEntry) *npdu.Initi
 }
 
 func EstablishConnectionToNetwork(dnet uint16, terminationTime uint8) *npdu.EstablishConnectionToNetwork {
-	network, err := npdu.NewEstablishConnectionToNetwork(npdu.WithEstablishConnectionToNetworkDNET(dnet), npdu.WithEstablishConnectionToNetworkTerminationTime(terminationTime))
+	network, err := npdu.NewEstablishConnectionToNetwork(NoArgs, NoKWArgs(), npdu.WithEstablishConnectionToNetworkDNET(dnet), npdu.WithEstablishConnectionToNetworkTerminationTime(terminationTime))
 	if err != nil {
 		panic(err)
 	}
@@ -105,7 +106,7 @@ func EstablishConnectionToNetwork(dnet uint16, terminationTime uint8) *npdu.Esta
 }
 
 func DisconnectConnectionToNetwork(dnet uint16) *npdu.DisconnectConnectionToNetwork {
-	network, err := npdu.NewDisconnectConnectionToNetwork(npdu.WithDisconnectConnectionToNetworkDNET(dnet))
+	network, err := npdu.NewDisconnectConnectionToNetwork(NoArgs, NoKWArgs(), npdu.WithDisconnectConnectionToNetworkDNET(dnet))
 	if err != nil {
 		panic(err)
 	}
@@ -113,7 +114,7 @@ func DisconnectConnectionToNetwork(dnet uint16) *npdu.DisconnectConnectionToNetw
 }
 
 func WhatIsNetworkNumber(dnet uint16) *npdu.WhatIsNetworkNumber {
-	network, err := npdu.NewWhatIsNetworkNumber()
+	network, err := npdu.NewWhatIsNetworkNumber(NoArgs, NoKWArgs()) // TODO: something is odd here...
 	if err != nil {
 		panic(err)
 	}
@@ -121,7 +122,7 @@ func WhatIsNetworkNumber(dnet uint16) *npdu.WhatIsNetworkNumber {
 }
 
 func NetworkNumberIs(net uint16, flag bool) *npdu.NetworkNumberIs {
-	network, err := npdu.NewNetworkNumberIs(npdu.WithNetworkNumberIsNET(net), npdu.WithNetworkNumberIsTerminationConfigured(flag))
+	network, err := npdu.NewNetworkNumberIs(NoArgs, NoKWArgs(), npdu.WithNetworkNumberIsNET(net), npdu.WithNetworkNumberIsTerminationConfigured(flag))
 	if err != nil {
 		panic(err)
 	}

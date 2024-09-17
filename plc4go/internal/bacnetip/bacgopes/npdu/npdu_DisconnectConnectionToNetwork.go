@@ -37,14 +37,17 @@ type DisconnectConnectionToNetwork struct {
 	dctnDNET uint16
 }
 
-func NewDisconnectConnectionToNetwork(opts ...func(*DisconnectConnectionToNetwork)) (*DisconnectConnectionToNetwork, error) {
+func NewDisconnectConnectionToNetwork(args Args, kwArgs KWArgs, opts ...func(*DisconnectConnectionToNetwork)) (*DisconnectConnectionToNetwork, error) {
 	i := &DisconnectConnectionToNetwork{
 		messageType: 0x09,
 	}
 	for _, opt := range opts {
 		opt(i)
 	}
-	npdu, err := NewNPDU(model.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0)
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

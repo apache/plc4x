@@ -25,6 +25,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -43,6 +44,9 @@ func NewClientSSM(localLog zerolog.Logger, sap SSMSAPRequirements, pduAddress *A
 	c := &ClientSSM{
 		log: localLog,
 	}
+	if _debug != nil {
+		_debug("__init__ %s %r", sap, pduAddress)
+	}
 	ssm, err := NewSSM(localLog, struct {
 		SSMSAPRequirements
 		SSMProcessingRequirements
@@ -50,10 +54,13 @@ func NewClientSSM(localLog zerolog.Logger, sap SSMSAPRequirements, pduAddress *A
 	if err != nil {
 		return nil, err
 	}
-	// TODO: if deviceEntry is not there get it now...
-	if ssm.deviceInfo == nil {
-		// TODO: get entry for device, store it in inventory
+	// acquire the device info
+	if ssm.deviceInfo != nil {
+		if _debug != nil {
+			_debug("    - acquire device information")
+		}
 		localLog.Debug().Msg("Accquire device information")
+		c.ssmSAP.GetDeviceInfoCache().Acquire(c.deviceInfo._cacheKey)
 	}
 	c.SSM = ssm
 	return c, nil
@@ -95,7 +102,7 @@ func (c *ClientSSM) Request(args Args, kwArgs KWArgs) error {
 //	rolling
 func (c *ClientSSM) Indication(args Args, kwArgs KWArgs) error {
 	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("indication")
-	apdu := GA[PDU](args, 0)
+	apdu := GA[APDU](args, 0)
 	// make sure we're getting confirmed requests
 	var apduConfirmedRequest readWriteModel.APDUConfirmedRequest
 	if apduCasted, ok := apdu.GetRootMessage().(readWriteModel.APDUConfirmedRequest); !ok {

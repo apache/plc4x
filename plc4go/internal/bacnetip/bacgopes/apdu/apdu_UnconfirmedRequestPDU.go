@@ -20,6 +20,9 @@
 package apdu
 
 import (
+	"github.com/pkg/errors"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
@@ -31,23 +34,33 @@ type UnconfirmedRequestPDU struct {
 
 var _ readWriteModel.APDUUnconfirmedRequest = (*UnconfirmedRequestPDU)(nil)
 
-func NewUnconfirmedRequestPDU(serviceRequest readWriteModel.BACnetUnconfirmedServiceRequest, opts ...func(*UnconfirmedRequestPDU)) (*UnconfirmedRequestPDU, error) {
-	u := &UnconfirmedRequestPDU{
-		serviceRequest: serviceRequest,
+func NewUnconfirmedRequestPDU(args Args, kwArgs KWArgs) (*UnconfirmedRequestPDU, error) {
+	u := &UnconfirmedRequestPDU{}
+	choice, ok := KWO[*readWriteModel.BACnetUnconfirmedServiceChoice](kwArgs, KWUnconfirmedServiceChoice, nil)
+	if _debug != nil {
+		_debug("__init__ %r %r %r", choice, args, kwArgs)
 	}
-	for _, opt := range opts {
-		opt(u)
+	apdu, err := New_APDU(args, kwArgs)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating _APDU")
 	}
-	apdu, _ := new_APDU(buildUnconfirmedServiceRequest(serviceRequest))
 	u.___APDU = apdu.(*___APDU)
-	if serviceRequest != nil {
-		serviceChoice := uint8(serviceRequest.GetServiceChoice())
+	u.apduType = ToPtr(readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU)
+	if ok {
+		serviceChoice := uint8(*choice)
 		u.apduService = &serviceChoice
 	}
+	switch rm := u.GetRootMessage().(type) {
+	case readWriteModel.BACnetUnconfirmedServiceRequest:
+		u.serviceRequest = rm
+		serviceChoice := rm.GetServiceChoice()
+		u.apduService = ToPtr(uint8(serviceChoice))
+	}
+	u.SetRootMessage(u.buildUnconfirmedServiceRequest(u.serviceRequest))
 	return u, nil
 }
 
-func buildUnconfirmedServiceRequest(serviceRequest readWriteModel.BACnetUnconfirmedServiceRequest) readWriteModel.APDUUnconfirmedRequest {
+func (u *UnconfirmedRequestPDU) buildUnconfirmedServiceRequest(serviceRequest readWriteModel.BACnetUnconfirmedServiceRequest) readWriteModel.APDUUnconfirmedRequest {
 	if serviceRequest == nil {
 		return nil
 	}

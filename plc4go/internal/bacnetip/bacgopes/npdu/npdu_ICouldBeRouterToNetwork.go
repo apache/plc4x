@@ -38,14 +38,17 @@ type ICouldBeRouterToNetwork struct {
 	icbrtnPerformanceIndex uint8
 }
 
-func NewICouldBeRouterToNetwork(opts ...func(*ICouldBeRouterToNetwork)) (*ICouldBeRouterToNetwork, error) {
+func NewICouldBeRouterToNetwork(args Args, kwArgs KWArgs, opts ...func(*ICouldBeRouterToNetwork)) (*ICouldBeRouterToNetwork, error) {
 	i := &ICouldBeRouterToNetwork{
 		messageType: 0x02,
 	}
 	for _, opt := range opts {
 		opt(i)
 	}
-	npdu, err := NewNPDU(model.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex, 0), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex, 0)
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

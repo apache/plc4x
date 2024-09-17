@@ -173,9 +173,8 @@ func TestNet2(t *testing.T) {
 			tnet := NewTNetwork2(t)
 
 			// test device sends request, sees response
-			whois, err := NewWhoIsRouterToNetwork()
+			whois, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil)))
 			require.NoError(t, err)
-			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
 			tnet.td.GetStartState().Doc("1-1-0").
 				Send(whois, nil).Doc("1-1-1").
 				Receive(NA((*IAmRouterToNetwork)(nil)), NKW(KWIartnNetworkList, []uint16{2})).Doc("1-1-2").
@@ -217,9 +216,8 @@ func TestNet2(t *testing.T) {
 			tnet := NewTNetwork2(t)
 
 			// test device sends request, sees response
-			whois, err := NewWhoIsRouterToNetwork(WithWhoIsRouterToNetworkNet(2))
+			whois, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil)), WithWhoIsRouterToNetworkNet(2))
 			require.NoError(t, err)
-			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
 			tnet.td.GetStartState().Doc("2-1-0").
 				Send(whois, nil).Doc("2-1-1").
 				Receive(NA((*IAmRouterToNetwork)(nil)), NKW(KWIartnNetworkList, []uint16{2})).Doc("2-1-2").
@@ -247,9 +245,8 @@ func TestNet2(t *testing.T) {
 			tnet := NewTNetwork2(t)
 
 			// test device sends request, sees response
-			whois, err := NewWhoIsRouterToNetwork(WithWhoIsRouterToNetworkNet(4))
+			whois, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIDestination, NewLocalBroadcast(nil)), WithWhoIsRouterToNetworkNet(4))
 			require.NoError(t, err)
-			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
 			tnet.td.GetStartState().Doc("3-1-0").
 				Send(whois, nil).Doc("3-1-1").
 				Timeout(3*time.Second, nil).Doc("3-1-2").

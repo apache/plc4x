@@ -264,7 +264,6 @@ func TestForeign(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_broadcast", func(t *testing.T) { //Test a broadcast message from TD to IUT.
-		t.Skip("needs more work before it can do something") // TODO: implement me
 		ExclusiveGlobalTimeMachine(t)
 		testingLogger := testutils.ProduceTestingLogger(t)
 
@@ -280,7 +279,7 @@ func TestForeign(t *testing.T) {
 		tnet.fd.GetStartState().Doc("4-1-0").
 			Call(func(args Args, _ KWArgs) error {
 				return tnet.fd.bip.Register(args[0].(*Address), args[1].(uint16))
-			}, NA(tnet.bbmd.address, 60), NoKWArgs()).Doc("4-1-1").
+			}, NA(tnet.bbmd.address, uint16(60)), NoKWArgs()).Doc("4-1-1").
 			WaitEvent("4-registered", nil).Doc("4-1-2").
 			Send(pdu, nil).Doc("4-1-3").
 			Success("")

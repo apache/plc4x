@@ -34,9 +34,9 @@ type PDU interface {
 }
 
 type _PDU struct {
-	*DefaultRFormatter
 	*_PCI
 	*_PDUData
+	*DefaultRFormatter
 }
 
 func NewPDU(args Args, kwArgs KWArgs) PDU {
@@ -55,7 +55,7 @@ func (p *_PDU) GetRootMessage() spi.Message {
 }
 
 func (p *_PDU) deepCopy() *_PDU {
-	pduCopy := &_PDU{p.DefaultRFormatter, p._PCI.deepCopy(), p._PDUData.deepCopy()}
+	pduCopy := &_PDU{p._PCI.deepCopy(), p._PDUData.deepCopy(), p.DefaultRFormatter}
 	return pduCopy
 }
 
@@ -73,5 +73,5 @@ func (p *_PDU) Format(s fmt.State, v rune) {
 }
 
 func (p *_PDU) String() string {
-	return fmt.Sprintf("<%T %s -> %s : %s>", p, p.GetPDUSource(), p.GetPDUDestination(), p._PDUData)
+	return fmt.Sprintf("<%s %s -> %s : %s>", StructName(), p.GetPDUSource(), p.GetPDUDestination(), p._PDUData)
 }

@@ -42,6 +42,7 @@ type NetworkNode interface {
 
 type Network struct {
 	*DefaultRFormatter
+
 	name string
 
 	nodes []NetworkNode
@@ -65,7 +66,6 @@ func NewNetwork(localLog zerolog.Logger, opts ...func(*Network)) *Network {
 	if _debug != nil {
 		_debug("__init__ name=%r broadcast_address=%r drop_percent=%r", n.name, n.broadcastAddress, n.dropPercent)
 	}
-	n.DefaultRFormatter = NewDefaultRFormatter()
 	return n
 }
 

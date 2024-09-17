@@ -23,7 +23,7 @@ import (
 	"fmt"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"github.com/apache/plc4x/plc4go/spi"
 )
@@ -47,9 +47,9 @@ func NewCPDU(data any, kwArgs KWArgs) CPDU {
 	}
 
 	// pick up some optional kwArgs
-	userData := KWO[spi.Message](kwArgs, KWCPCIUserData, nil)
-	source := KWO[*Address](kwArgs, KWCPCISource, nil)
-	destination := KWO[*Address](kwArgs, KWCPCIDestination, nil)
+	userData, _ := KWO[spi.Message](kwArgs, KWCPCIUserData, nil)
+	source, _ := KWO[*Address](kwArgs, KWCPCISource, nil)
+	destination, _ := KWO[*Address](kwArgs, KWCPCIDestination, nil)
 
 	// carry source and destination from another PDU
 	// so this can act like a copy constructor
@@ -82,8 +82,8 @@ func (p *_PDU) GetName() string {
 }
 
 func (p *_PDU) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("_PDU{%s}", p.PCI)
+	if debugging.IsDebuggingActive() {
+		return fmt.Sprintf("<%T %s -> %s : %s>", p, p.GetPDUSource(), p.GetPDUDestination(), p.PDUData)
 	}
-	return fmt.Sprintf("<%T %s -> %s : %s>", p, p.GetPDUSource(), p.GetPDUDestination(), p.PDUData)
+	return fmt.Sprintf("_PDU{%s}", p.PCI)
 }

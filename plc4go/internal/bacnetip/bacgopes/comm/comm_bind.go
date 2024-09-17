@@ -139,10 +139,10 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 				Msg("cast states")
 			return errors.New("Bind() requires a client and a server")
 		}
+		if _debug != nil {
+			_debug("    - bound")
+		}
+		localLog.Trace().Msg("bound")
 	}
-	if _debug != nil {
-		_debug("    - bound")
-	}
-	localLog.Trace().Msg("bound")
 	return nil
 }

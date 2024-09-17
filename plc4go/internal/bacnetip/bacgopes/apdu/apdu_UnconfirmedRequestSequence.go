@@ -46,7 +46,7 @@ type UnconfirmedRequestSequence struct {
 	_contract UnconfirmedRequestSequenceContract
 }
 
-func NewUnconfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consistency, maybe we just convert it to args to be flexible*/ model.BACnetUnconfirmedServiceRequest, kwArgs KWArgs, opts ...func(*UnconfirmedRequestSequence)) (*UnconfirmedRequestSequence, error) {
+func NewUnconfirmedRequestSequence(args Args, kwArgs KWArgs, opts ...func(*UnconfirmedRequestSequence)) (*UnconfirmedRequestSequence, error) {
 	u := &UnconfirmedRequestSequence{}
 	for _, opt := range opts {
 		opt(u)
@@ -57,16 +57,25 @@ func NewUnconfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consi
 		u._contract.(UnconfirmedRequestSequenceContractRequirement).SetUnconfirmedRequestSequence(u)
 	}
 	var err error
-	u.APCISequence, err = NewAPCISequence(NA(model.NewAPDUUnconfirmedRequest(serviceRequest, 0)), kwArgs, WithAPCISequenceExtension(u._contract))
-	if err != nil {
-		return nil, errors.Wrap(err, "error creating _APCISequence")
-	}
-	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU(serviceRequest)
+	kwArgs[KWUnconfirmedServiceChoice] = u._contract.GetServiceChoice()
+	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating UnconfirmedRequestPDU")
 	}
+	u.APCISequence, err = NewAPCISequence(args, kwArgs, WithAPCISequenceExtension(u._contract))
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating _APCISequence")
+	}
 	// We need to set the APCI to the same objects...
 	u.APCISequence._APCI = u.UnconfirmedRequestPDU._APCI
+	if u.GetRootMessage() == nil {
+		panic("this should be set by NewConfirmedRequestPDU")
+		serviceRequest, _ := GAO[model.BACnetConfirmedServiceRequest](args, 0, nil)
+		if serviceRequest != nil {
+			apduConfirmedRequest := model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil, 0)
+			u.SetRootMessage(apduConfirmedRequest)
+		}
+	}
 	return u, nil
 }
 

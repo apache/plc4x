@@ -794,114 +794,16 @@ func (a *Address) Equals(other any) bool {
 }
 
 func (a *Address) Format(s fmt.State, v rune) {
+	if a == nil {
+		_, _ = fmt.Fprint(s, "<nil>")
+		return
+	}
 	switch v {
 	case 'r':
 		_, _ = fmt.Fprintf(s, "<%s %s>", StructName(), a.String())
 	case 'v', 's':
 		_, _ = fmt.Fprint(s, a.String())
 	}
-}
-
-func (a *Address) AlternateString() (string, bool) {
-	if a == nil {
-		return "None", true
-	}
-	result := ""
-	if a.AddrType == NULL_ADDRESS {
-		result = "Null"
-	} else if a.AddrType == LOCAL_BROADCAST_ADDRESS {
-		result = "*"
-	} else if a.AddrType == LOCAL_STATION_ADDRESS {
-		if a.AddrLen != nil && *a.AddrLen == 1 {
-			result += fmt.Sprintf("%v", a.AddrAddress[0])
-		} else {
-			port := binary.BigEndian.Uint16(a.AddrAddress[len(a.AddrAddress)-2:])
-			if len(a.AddrAddress) == 6 && port >= 47808 && port <= 47823 {
-				var octests = make([]string, 4)
-				for i, address := range a.AddrAddress[0:4] {
-					octests[i] = fmt.Sprintf("%d", address)
-				}
-				result += fmt.Sprintf("%v", strings.Join(octests, "."))
-				if port != 47808 {
-					result += fmt.Sprintf(":%v", port)
-				}
-			} else {
-				result += fmt.Sprintf("0x%x", a.AddrAddress)
-			}
-		}
-	} else if a.AddrType == REMOTE_BROADCAST_ADDRESS {
-		result = fmt.Sprintf("%d:*", *a.AddrNet)
-	} else if a.AddrType == REMOTE_STATION_ADDRESS {
-		result = fmt.Sprintf("%d:", *a.AddrNet)
-		if a.AddrLen != nil && *a.AddrLen == 1 {
-			result += fmt.Sprintf("%v", a.AddrAddress[0])
-		} else {
-			port := binary.BigEndian.Uint16(a.AddrAddress[len(a.AddrAddress)-2:])
-			if len(a.AddrAddress) == 6 && port >= 47808 && port <= 47823 {
-				var octests = make([]string, 4)
-				for i, address := range a.AddrAddress[0:4] {
-					octests[i] = fmt.Sprintf("%d", address)
-				}
-				result += fmt.Sprintf("%v", strings.Join(octests, "."))
-				if port != 47808 {
-					result += fmt.Sprintf(":%v", port)
-				}
-			} else {
-				result += fmt.Sprintf("0x%x", a.AddrAddress)
-			}
-		}
-	} else if a.AddrType == GLOBAL_BROADCAST_ADDRESS {
-		result = "*:*"
-	} else {
-		panic("Unknown address type: " + a.AddrType.String())
-	}
-
-	if a.AddrRoute != nil {
-		result += fmt.Sprintf("@%s", a.AddrRoute)
-	}
-	return result, true
-}
-
-func (a *Address) GoString() string { //TODO: not valid yet, needs adjustments to have proper output syntax
-	if a == nil {
-		return "<nil>"
-	}
-	var sb strings.Builder
-	sb.WriteString(a.AddrType.String())
-	if a.AddrNet != nil {
-		_, _ = fmt.Fprintf(&sb, ", net: %d", *a.AddrNet)
-	}
-	if len(a.AddrAddress) > 0 {
-		_, _ = fmt.Fprintf(&sb, ", address: %d", a.AddrAddress)
-	}
-	if a.AddrLen != nil {
-		_, _ = fmt.Fprintf(&sb, " with len %d", *a.AddrLen)
-	}
-	if a.AddrRoute != nil {
-		_, _ = fmt.Fprintf(&sb, ", route: %s", a.AddrRoute)
-	}
-	if a.AddrIP != nil {
-		_, _ = fmt.Fprintf(&sb, ", ip: %d", *a.AddrIP)
-	}
-	if a.AddrMask != nil {
-		_, _ = fmt.Fprintf(&sb, ", mask: %d", *a.AddrMask)
-	}
-	if a.AddrHost != nil {
-		_, _ = fmt.Fprintf(&sb, ", host: %d", *a.AddrHost)
-	}
-	if a.AddrSubnet != nil {
-		_, _ = fmt.Fprintf(&sb, ", subnet: %d", *a.AddrSubnet)
-	}
-	if a.AddrPort != nil {
-		_, _ = fmt.Fprintf(&sb, ", port: %d", *a.AddrPort)
-	}
-	if a.AddrTuple != nil {
-		_, _ = fmt.Fprintf(&sb, ", tuple: %s", a.AddrTuple)
-	}
-	if a.AddrBroadcastTuple != nil {
-		_, _ = fmt.Fprintf(&sb, ", broadcast tuple: %s", a.AddrBroadcastTuple)
-	}
-	return sb.String()
 }
 
 func (a *Address) deepCopy() *Address {
@@ -926,4 +828,67 @@ func (a *Address) deepCopy() *Address {
 
 func (a *Address) DeepCopy() any {
 	return a.deepCopy()
+}
+
+func (a *Address) AlternateString() (string, bool) {
+	if IsDebuggingActive() || true { // TODO: figure out what to do when we want the below string in testing etc...
+		if a == nil {
+			return "<nil>", true
+		}
+		result := ""
+		if a.AddrType == NULL_ADDRESS {
+			result = "Null"
+		} else if a.AddrType == LOCAL_BROADCAST_ADDRESS {
+			result = "*"
+		} else if a.AddrType == LOCAL_STATION_ADDRESS {
+			if a.AddrLen != nil && *a.AddrLen == 1 {
+				result += fmt.Sprintf("%v", a.AddrAddress[0])
+			} else {
+				port := binary.BigEndian.Uint16(a.AddrAddress[len(a.AddrAddress)-2:])
+				if len(a.AddrAddress) == 6 && port >= 47808 && port <= 47823 {
+					var octests = make([]string, 4)
+					for i, address := range a.AddrAddress[0:4] {
+						octests[i] = fmt.Sprintf("%d", address)
+					}
+					result += fmt.Sprintf("%v", strings.Join(octests, "."))
+					if port != 47808 {
+						result += fmt.Sprintf(":%v", port)
+					}
+				} else {
+					result += fmt.Sprintf("0x%x", a.AddrAddress)
+				}
+			}
+		} else if a.AddrType == REMOTE_BROADCAST_ADDRESS {
+			result = fmt.Sprintf("%d:*", *a.AddrNet)
+		} else if a.AddrType == REMOTE_STATION_ADDRESS {
+			result = fmt.Sprintf("%d:", *a.AddrNet)
+			if a.AddrLen != nil && *a.AddrLen == 1 {
+				result += fmt.Sprintf("%v", a.AddrAddress[0])
+			} else {
+				port := binary.BigEndian.Uint16(a.AddrAddress[len(a.AddrAddress)-2:])
+				if len(a.AddrAddress) == 6 && port >= 47808 && port <= 47823 {
+					var octests = make([]string, 4)
+					for i, address := range a.AddrAddress[0:4] {
+						octests[i] = fmt.Sprintf("%d", address)
+					}
+					result += fmt.Sprintf("%v", strings.Join(octests, "."))
+					if port != 47808 {
+						result += fmt.Sprintf(":%v", port)
+					}
+				} else {
+					result += fmt.Sprintf("0x%x", a.AddrAddress)
+				}
+			}
+		} else if a.AddrType == GLOBAL_BROADCAST_ADDRESS {
+			result = "*:*"
+		} else {
+			panic("Unknown address type: " + a.AddrType.String())
+		}
+
+		if a.AddrRoute != nil {
+			result += fmt.Sprintf("@%s", a.AddrRoute)
+		}
+		return result, true
+	}
+	return "", false
 }

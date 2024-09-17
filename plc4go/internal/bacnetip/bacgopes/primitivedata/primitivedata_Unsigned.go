@@ -28,19 +28,19 @@ import (
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type Unsigned struct {
 	*Atomic[uint32]
 	*CommonMath
 
-	_appTag model.BACnetDataType
+	_appTag readWriteModel.BACnetDataType
 }
 
 func NewUnsigned(arg Arg) (*Unsigned, error) {
 	i := &Unsigned{
-		_appTag: model.BACnetDataType_UNSIGNED_INTEGER,
+		_appTag: readWriteModel.BACnetDataType_UNSIGNED_INTEGER,
 	}
 	i.Atomic = NewAtomic[uint32](i)
 
@@ -54,6 +54,10 @@ func NewUnsigned(arg Arg) (*Unsigned, error) {
 			return nil, errors.Wrap(err, "error decoding")
 		}
 		return i, nil
+	case uint8:
+		i.value = uint32(arg)
+	case uint16:
+		i.value = uint32(arg)
 	case uint32:
 		i.value = arg
 	case uint:
@@ -73,6 +77,10 @@ func NewUnsigned(arg Arg) (*Unsigned, error) {
 		i.value = uint32(arg)
 	case *Unsigned:
 		i.value = arg.value
+	case *readWriteModel.MaxApduLengthAccepted:
+		if arg != nil {
+			i.value = uint32(*arg)
+		}
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
@@ -80,7 +88,7 @@ func NewUnsigned(arg Arg) (*Unsigned, error) {
 	return i, nil
 }
 
-func (u *Unsigned) GetAppTag() model.BACnetDataType {
+func (u *Unsigned) GetAppTag() readWriteModel.BACnetDataType {
 	return u._appTag
 }
 
@@ -106,7 +114,7 @@ func (u *Unsigned) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(u._appTag) {
+	if tag.GetTagClass() != readWriteModel.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(u._appTag) {
 		return errors.New("Unsigned application tag required")
 	}
 	if len(tag.GetTagData()) == 0 {

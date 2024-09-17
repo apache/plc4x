@@ -26,6 +26,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -35,6 +36,7 @@ type BIPSimple struct {
 	*BIPSAP
 	ClientContract
 	ServerContract
+	*debugging.DefaultRFormatter `ignore:"true"`
 
 	// pass through args
 	argSapID *int `ignore:"true"`
@@ -46,7 +48,8 @@ type BIPSimple struct {
 
 func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BIPSimple, error) {
 	b := &BIPSimple{
-		log: localLog,
+		DefaultRFormatter: debugging.NewDefaultRFormatter(),
+		log:               localLog,
 	}
 	for _, opt := range opts {
 		opt(b)

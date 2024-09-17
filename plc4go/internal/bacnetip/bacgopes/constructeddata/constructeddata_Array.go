@@ -17,23 +17,8 @@
  * under the License.
  */
 
-package globals
+package constructeddata
 
-import "os"
-
-var (
-	// ExtendedGeneralOutput switches extended output on for general items
-	ExtendedGeneralOutput bool
-
-	// ExtendedPDUOutput switches the PDU output to an extended format for debugging
-	ExtendedPDUOutput bool
-
-	// LogAppService enables logging for application services
-	LogAppService bool
-)
-
-func init() {
-	ExtendedGeneralOutput = os.Getenv("ExtendedGeneralOutput") == "true"
-	ExtendedPDUOutput = os.Getenv("ExtendedPDUOutput") == "true"
-	LogAppService = os.Getenv("LogAppService") == "true"
+// TODO: finish
+type Array struct {
 }

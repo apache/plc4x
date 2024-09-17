@@ -86,7 +86,7 @@ type StateMachineRequirements interface {
 type stateMachine struct {
 	requirements StateMachineRequirements `ignore:"true"`
 
-	interceptor    StateInterceptor
+	interceptor    StateInterceptor `asPtr:"true"`
 	stateDecorator func(state State) State
 
 	states                 []State
@@ -841,26 +841,6 @@ func (s *stateMachine) IsFailState() bool {
 	return *s.isFailState
 }
 
-func (s *stateMachine) AlternateString() (string, bool) {
-	var stateText = ""
-	if s.currentState == nil {
-		stateText = "not started"
-	} else if s.isSuccessState != nil && *s.isSuccessState {
-		stateText = "success"
-	} else if s.isFailState != nil && *s.isFailState {
-		stateText = "fail"
-	} else if !s.running {
-		stateText = "idle"
-	} else {
-		stateText = "in"
-	}
-	if s.currentState != nil {
-		stateText += " " + s.currentState.String()
-	}
-
-	return fmt.Sprintf("<%s(%s) %s at %p>", TypeName(s.requirements), s.name, stateText, s), true
-}
-
 func (s *stateMachine) Format(state fmt.State, verb rune) {
 	switch verb {
 	case 's', 'v':
@@ -869,4 +849,27 @@ func (s *stateMachine) Format(state fmt.State, verb rune) {
 		alternateString, _ := s.AlternateString()
 		_, _ = state.Write([]byte(alternateString))
 	}
+}
+
+func (s *stateMachine) AlternateString() (string, bool) {
+	if IsDebuggingActive() {
+		var stateText = ""
+		if s.currentState == nil {
+			stateText = "not started"
+		} else if s.isSuccessState != nil && *s.isSuccessState {
+			stateText = "success"
+		} else if s.isFailState != nil && *s.isFailState {
+			stateText = "fail"
+		} else if !s.running {
+			stateText = "idle"
+		} else {
+			stateText = "in"
+		}
+		if s.currentState != nil {
+			stateText += " " + s.currentState.String()
+		}
+
+		return fmt.Sprintf("<%s(%s) %s at %p>", TypeName(s.requirements), s.name, stateText, s), true
+	}
+	return "", false
 }

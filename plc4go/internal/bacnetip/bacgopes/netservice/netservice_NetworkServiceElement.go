@@ -20,6 +20,7 @@
 package netservice
 
 import (
+	"fmt"
 	"slices"
 	"time"
 
@@ -29,6 +30,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/core"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -37,6 +39,7 @@ import (
 //go:generate plc4xGenerator -type=NetworkServiceElement -prefix=netservice_
 type NetworkServiceElement struct {
 	ApplicationServiceElementContract
+	*DefaultRFormatter `ignore:"true"`
 
 	networkNumberIsTask time.Time
 
@@ -52,7 +55,8 @@ type NetworkServiceElement struct {
 
 func NewNetworkServiceElement(localLog zerolog.Logger, opts ...func(*NetworkServiceElement)) (*NetworkServiceElement, error) {
 	n := &NetworkServiceElement{
-		log: localLog,
+		DefaultRFormatter: NewDefaultRFormatter(),
+		log:               localLog,
 	}
 	for _, opt := range opts {
 		opt(n)
@@ -147,7 +151,7 @@ func (n *NetworkServiceElement) Indication(args Args, kwArgs KWArgs) error {
 	case model.NPDU:
 		switch nlm := message.GetNlm().(type) {
 		case model.NLMWhoIsRouterToNetwork:
-			return n.WhoIsRouteToNetwork(adapter, npdu, nlm)
+			return n.WhoIsRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMIAmRouterToNetwork:
 			return n.IAmRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMICouldBeRouterToNetwork:
@@ -189,7 +193,7 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwArgs KWArgs) error {
 	case model.NPDU:
 		switch nlm := message.GetNlm().(type) {
 		case model.NLMWhoIsRouterToNetwork:
-			return n.WhoIsRouteToNetwork(adapter, npdu, nlm)
+			return n.WhoIsRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMIAmRouterToNetwork:
 			return n.IAmRouterToNetwork(adapter, npdu, nlm)
 		case model.NLMICouldBeRouterToNetwork:
@@ -320,7 +324,7 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 		}
 
 		// build a response
-		iamrtn, err := NewIAmRouterToNetwork()
+		iamrtn, err := NewIAmRouterToNetwork(Nothing())
 		if err != nil {
 			return errors.Wrap(err, "error creating IAM router to network")
 		}
@@ -336,7 +340,7 @@ func (n *NetworkServiceElement) iamRouterToNetwork(args Args, _ KWArgs) error {
 	return nil
 }
 
-func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMWhoIsRouterToNetwork) error {
+func (n *NetworkServiceElement) WhoIsRouterToNetwork(adapter *NetworkAdapter, npdu NPDU, nlm model.NLMWhoIsRouterToNetwork) error {
 	n.log.Debug().Stringer("adapter", adapter).Stringer("npdu", npdu).Stringer("nlm", nlm).Msg("WhoIsRouteToNetwork")
 
 	// reference the service access point
@@ -370,11 +374,10 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 			n.log.Debug().Uints16("netlist", netlist).Msg("found these")
 
 			// build a response
-			iamrtn, err := NewIAmRouterToNetwork(WithIAmRouterToNetworkNetworkList(netlist...))
+			iamrtn, err := NewIAmRouterToNetwork(NoArgs, NewKWArgs(KWCPCIUserData, npdu.GetPDUUserData()), WithIAmRouterToNetworkNetworkList(netlist...))
 			if err != nil {
 				return errors.Wrap(err, "error building IAmRouterToNetwork")
 			}
-			iamrtn.SetPDUUserData(npdu.GetPDUUserData()) // TODO: upstream does this inline
 			iamrtn.SetPDUDestination(npdu.GetPDUSource())
 
 			// send it back
@@ -399,11 +402,10 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 			}
 
 			// build a response
-			iamrtn, err := NewIAmRouterToNetwork(WithIAmRouterToNetworkNetworkList(dnet))
+			iamrtn, err := NewIAmRouterToNetwork(NoArgs, NewKWArgs(KWCPCIUserData, npdu.GetPDUUserData()), WithIAmRouterToNetworkNetworkList(dnet))
 			if err != nil {
 				return errors.Wrap(err, "error building IAmRouterToNetwork")
 			}
-			iamrtn.SetPDUUserData(npdu.GetPDUUserData()) // TODO: upstream does this inline
 			iamrtn.SetPDUDestination(npdu.GetPDUSource())
 
 			// send it back
@@ -432,11 +434,10 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 			}
 
 			// build a response
-			iamrtn, err := NewIAmRouterToNetwork(WithIAmRouterToNetworkNetworkList(dnet))
+			iamrtn, err := NewIAmRouterToNetwork(NoArgs, NewKWArgs(KWCPCIUserData, npdu.GetPDUUserData()), WithIAmRouterToNetworkNetworkList(dnet))
 			if err != nil {
 				return errors.Wrap(err, "error building IAmRouterToNetwork")
 			}
-			iamrtn.SetPDUUserData(npdu.GetPDUUserData()) // TODO: upstream does this inline
 			iamrtn.SetPDUDestination(npdu.GetPDUSource())
 
 			// send it back
@@ -444,11 +445,10 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 		} else {
 			n.log.Trace().Msg("forwarding to other adapters")
 
-			whoisrtn, err := NewWhoIsRouterToNetwork(WithWhoIsRouterToNetworkNet(dnet))
+			whoisrtn, err := NewWhoIsRouterToNetwork(NoArgs, NewKWArgs(KWCPCIUserData, npdu.GetPDUUserData()), WithWhoIsRouterToNetworkNet(dnet))
 			if err != nil {
 				return errors.Wrap(err, "error building WhoIsRouterToNetwork")
 			}
-			whoisrtn.SetPDUUserData(npdu.GetPDUUserData()) // TODO: upstream does this inline
 			whoisrtn.SetPDUDestination(NewLocalBroadcast(nil))
 
 			// if the request had a source forward it along
@@ -495,7 +495,7 @@ func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, npdu
 		n.log.Trace().Msg("forwarding other adapters")
 
 		// Build a broadcast announcement
-		iamrtn, err := NewIAmRouterToNetwork(WithIAmRouterToNetworkNetworkList(nlm.GetDestinationNetworkAddresses()...))
+		iamrtn, err := NewIAmRouterToNetwork(NoArgs, NoKWArgs(), WithIAmRouterToNetworkNetworkList(nlm.GetDestinationNetworkAddresses()...))
 		if err != nil {
 			return errors.Wrap(err, "error building IAmRouterToNetwork")
 		}
@@ -576,4 +576,11 @@ func (n *NetworkServiceElement) WhatIsNetworkNumber(adapter *NetworkAdapter, nlm
 
 func (n *NetworkServiceElement) NetworkNumberIs(adapter *NetworkAdapter, nlm model.NLMNetworkNumberIs) error {
 	panic("not implemented") // TODO: implement me
+}
+
+func (n *NetworkServiceElement) AlternateString() (string, bool) {
+	if IsDebuggingActive() {
+		return fmt.Sprintf("%s", n), true // Delegate to format
+	}
+	return "", false
 }

@@ -23,7 +23,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/iocb"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
@@ -39,8 +39,8 @@ type ApplicationIOController struct {
 	queueByAddress map[string]*SieveQueue
 
 	// pass through args
-	argDeviceInfoCache *DeviceInfoCache `ignore:"true"`
-	argAseID           *int             `ignore:"true"`
+	argDeviceInfoCache *appservice.DeviceInfoCache `ignore:"true"`
+	argAseID           *int                        `ignore:"true"`
 
 	log zerolog.Logger
 }
@@ -59,7 +59,8 @@ func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDevic
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
-	a.Application, err = NewApplication(localLog, localDevice, func(application *Application) {
+	a.Application, err = NewApplication(localLog, func(application *Application) {
+		application.localDevice = localDevice
 		application.deviceInfoCache = a.argDeviceInfoCache
 		application.argAseID = a.argAseID
 	})
@@ -69,7 +70,7 @@ func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDevic
 	return a, nil
 }
 
-func WithApplicationIOControllerDeviceInfoCache(deviceInfoCache *DeviceInfoCache) func(*ApplicationIOController) {
+func WithApplicationIOControllerDeviceInfoCache(deviceInfoCache *appservice.DeviceInfoCache) func(*ApplicationIOController) {
 	return func(a *ApplicationIOController) {
 		a.argDeviceInfoCache = deviceInfoCache
 	}

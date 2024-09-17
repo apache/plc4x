@@ -32,9 +32,9 @@ import (
 
 //go:generate plc4xGenerator -type=AnnexJCodec -prefix=bvllservice_
 type AnnexJCodec struct {
-	*DefaultRFormatter `ignore:"true"`
 	ClientContract
 	ServerContract
+	*DefaultRFormatter `ignore:"true"`
 
 	// pass through args
 	argCid *int `ignore:"true"`

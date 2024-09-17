@@ -27,7 +27,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -116,8 +116,8 @@ func (s *ClientStateMachine) Confirmation(args Args, kwArgs KWArgs) error {
 }
 
 func (s *ClientStateMachine) AlternateString() (string, bool) {
-	if ExtendedGeneralOutput {
-		return "", false
+	if IsDebuggingActive() {
+		return s.StateMachineContract.String(), true
 	}
-	return s.StateMachineContract.String(), true
+	return "", false
 }

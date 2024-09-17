@@ -22,4 +22,10 @@ package apdu
 // TODO: implement it...
 type AbortPDU struct {
 	*___APDU
+
+	apduSrv any
+}
+
+func (a *AbortPDU) GetAPDUSrv() any {
+	panic("implement me")
 }

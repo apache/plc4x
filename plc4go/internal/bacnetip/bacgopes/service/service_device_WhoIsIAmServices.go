@@ -30,6 +30,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
@@ -56,8 +57,14 @@ func NewWhoIsIAmServices(localLog zerolog.Logger, whoIsIAmServicesRequirements W
 	for _, opt := range opts {
 		opt(w)
 	}
+	if _debug != nil {
+		_debug("__init__")
+	}
 	w.Capability = NewCapability()
 	if err := w._requirements.RegisterHelperFn(fmt.Sprintf("Do_%T", &WhoIsRequest{}), w.DoWhoIsRequest); err != nil {
+		return nil, errors.Wrap(err, "registering function failed")
+	}
+	if err := w._requirements.RegisterHelperFn(fmt.Sprintf("Do_%T", &IAmRequest{}), w.DoIAmRequest); err != nil {
 		return nil, errors.Wrap(err, "registering function failed")
 	}
 	return w, nil
@@ -70,6 +77,9 @@ func WithWhoIsIAmServicesLocalDevice(localDevice *LocalDeviceObject) func(*WhoIs
 }
 
 func (w *WhoIsIAmServices) Startup() error {
+	if _debug != nil {
+		_debug("startup")
+	}
 	w.log.Debug().Msg("Startup")
 
 	// send a global broadcast I-Am
@@ -77,6 +87,9 @@ func (w *WhoIsIAmServices) Startup() error {
 }
 
 func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) error {
+	if _debug != nil {
+		_debug("who_is")
+	}
 	w.log.Debug().Msg("WhoIs")
 
 	var deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit uint
@@ -106,6 +119,9 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 	// Build a request
 	whoIs := readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(readWriteModel.CreateBACnetContextTagUnsignedInteger(0, deviceInstanceRangeLowLimit), readWriteModel.CreateBACnetContextTagUnsignedInteger(1, deviceInstanceRangeHighLimit), 0)
 
+	if _debug != nil {
+		_debug("    - whoIs: %r", whoIs)
+	}
 	w.log.Debug().Stringer("whoIs", whoIs).Msg("WhoIs")
 
 	return w._requirements.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, whoIs, KWCPCIDestination, address))), NoKWArgs())
@@ -113,11 +129,18 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 
 // DoWhoIsRequest respond to a Who-Is request.
 func (w *WhoIsIAmServices) DoWhoIsRequest(apdu APDU) error {
+	if _debug != nil {
+		_debug("do_WhoIsRequest %r", apdu)
+	}
 	w.log.Debug().Stringer("apdu", apdu).Msg("DoWhoIsRequest")
 
 	// ignore this if there's no local device
 	if w.localDevice == nil {
+		if _debug != nil {
+			_debug("    - no local device")
+		}
 		w.log.Debug().Msg("No local device")
+		return nil
 	}
 
 	// TODO: ugly hacky hacky, better feat from the orginal api
@@ -168,10 +191,16 @@ func (w *WhoIsIAmServices) DoWhoIsRequest(apdu APDU) error {
 }
 
 func (w *WhoIsIAmServices) IAm(address *Address) error {
+	if _debug != nil {
+		_debug("i_am")
+	}
 	w.log.Debug().Msg("IAm")
 
 	// this requires a local device
 	if w.localDevice == nil {
+		if _debug != nil {
+			_debug("    - no local device")
+		}
 		w.log.Debug().Msg("no local device")
 		return nil
 	}
@@ -194,13 +223,48 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 		address = NewGlobalBroadcast(nil)
 	}
 	iAm.SetPDUDestination(address)
+	if _debug != nil {
+		_debug("    - iAm: %r", iAm)
+	}
 	w.log.Debug().Stringer("iAm", iAm).Msg("IAm")
 
-	return w._requirements.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, iAm, KWCPCIDestination, address))), NoKWArgs())
+	return w._requirements.Request(NA(iAm), NoKWArgs())
 }
 
 // DoIAmRequest responds to an I-Am request.
-func (w *WhoIsIAmServices) DoIAmRequest(apdu PDU) error {
-	// TODO: implement me... upstream impl empty
+func (w *WhoIsIAmServices) DoIAmRequest(apdu APDU) error {
+	if _debug != nil {
+		_debug("do_IAmRequest %r", apdu)
+	}
+	iam := apdu.(*IAmRequest)
+	// check for required parameters
+	if _, ok := iam.GetAttr("iAmDeviceIdentifier"); !ok {
+		return MissingRequiredParameter{Message: "iAmDeviceIdentifier required"}
+	}
+	if _, ok := iam.GetAttr("maxAPDULengthAccepted"); !ok {
+		return MissingRequiredParameter{Message: "maxAPDULengthAccepted required"}
+	}
+	if _, ok := iam.GetAttr("segmentationSupported"); !ok {
+		return MissingRequiredParameter{Message: "segmentationSupported required"}
+	}
+	if _, ok := iam.GetAttr("vendorID"); !ok {
+		return MissingRequiredParameter{Message: "vendorID required"}
+	}
+
+	// extract the device instance number
+	deviceIdentifier, _ := iam.GetAttr("iAmDeviceIdentifier")
+	deviceInstance := deviceIdentifier.(*primitivedata.ObjectIdentifier).GetValue().Right
+	if _debug != nil {
+		_debug("    - device_instance: %r", deviceInstance)
+	}
+
+	// extract the source address
+	deviceAddress := apdu.GetPDUSource()
+	if _debug != nil {
+		_debug("    - device_address: %r", deviceAddress)
+	}
+
+	////// check to see if the application is looking for this device
+	////// and update the device info cache if it is
 	return nil
 }

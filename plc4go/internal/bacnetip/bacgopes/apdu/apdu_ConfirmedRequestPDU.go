@@ -22,6 +22,7 @@ package apdu
 import (
 	"github.com/pkg/errors"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
@@ -33,26 +34,32 @@ type ConfirmedRequestPDU struct {
 
 var _ readWriteModel.APDUConfirmedRequest = (*ConfirmedRequestPDU)(nil)
 
-func NewConfirmedRequestPDU(serviceRequest readWriteModel.BACnetConfirmedServiceRequest, opts ...func(*ConfirmedRequestPDU)) (*ConfirmedRequestPDU, error) {
-	u := &ConfirmedRequestPDU{
-		serviceRequest: serviceRequest,
+func NewConfirmedRequestPDU(args Args, kwArgs KWArgs) (*ConfirmedRequestPDU, error) {
+	c := &ConfirmedRequestPDU{}
+	choice, ok := KWO[*readWriteModel.BACnetConfirmedServiceChoice](kwArgs, KWConfirmedServiceChoice, nil)
+	if _debug != nil {
+		_debug("__init__ %r %r %r", choice, args, kwArgs)
 	}
-	for _, opt := range opts {
-		opt(u)
-	}
-	apdu, err := new_APDU(nil)
+	apdu, err := New_APDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}
-	u.___APDU = apdu.(*___APDU)
-	if serviceRequest != nil {
-		serviceChoice := uint8(serviceRequest.GetServiceChoice())
-		u.apduService = &serviceChoice
+	c.___APDU = apdu.(*___APDU)
+	c.apduType = ToPtr(readWriteModel.ApduType_CONFIRMED_REQUEST_PDU)
+	if ok {
+		serviceChoice := uint8(*choice)
+		c.apduService = &serviceChoice
 	}
-	u.SetExpectingReply(true)
-	u.SetRootMessage(u.buildConfirmedRequest(serviceRequest))
+	c.SetExpectingReply(true)
+	switch rm := c.GetRootMessage().(type) {
+	case readWriteModel.BACnetConfirmedServiceRequest:
+		c.serviceRequest = rm
+		serviceChoice := rm.GetServiceChoice()
+		c.apduService = ToPtr(uint8(serviceChoice))
+	}
+	c.SetRootMessage(c.buildConfirmedRequest(c.serviceRequest))
 
-	return u, nil
+	return c, nil
 }
 
 func (c *ConfirmedRequestPDU) buildConfirmedRequest(serviceRequest readWriteModel.BACnetConfirmedServiceRequest) readWriteModel.APDUConfirmedRequest {

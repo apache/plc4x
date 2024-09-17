@@ -57,7 +57,7 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 	return i, nil
 }
 
-//go:generate plc4xGenerator -type=NPDUCodec -prefix=
+//go:generate plc4xGenerator -type=NPDUCodec -prefix=helpers_
 type NPDUCodec struct {
 	ClientContract
 	ServerContract
@@ -90,7 +90,7 @@ func (n *NPDUCodec) Indication(args Args, kwArgs KWArgs) error {
 	npdu := GA[NPDU](args, 0)
 
 	// first a generic _NPDU
-	xpdu, err := NewNPDU(nil, nil)
+	xpdu, err := NewNPDU(Nothing())
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}
@@ -115,7 +115,7 @@ func (n *NPDUCodec) Confirmation(args Args, kwArgs KWArgs) error {
 	pdu := GA[PDU](args, 0)
 
 	// decode as generic _NPDU
-	xpdu, err := NewNPDU(nil, nil)
+	xpdu, err := NewNPDU(Nothing())
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}
@@ -323,7 +323,7 @@ type TestDeviceObject struct {
 	*LocalDeviceObject
 }
 
-//go:generate plc4xGenerator -type=ApplicationLayerStateMachine
+//go:generate plc4xGenerator -type=ApplicationLayerStateMachine -prefix=helpers_
 type ApplicationLayerStateMachine struct {
 	ApplicationServiceElementContract
 	*ClientStateMachine `ignore:"true"` // TODO: add support
@@ -444,7 +444,7 @@ func (a *ApplicationLayerStateMachine) Confirmation(args Args, kwArgs KWArgs) er
 	return a.Receive(args, NoKWArgs())
 }
 
-//go:generate plc4xGenerator -type=ApplicationNode
+//go:generate plc4xGenerator -type=ApplicationNode -prefix=helpers_
 type ApplicationNode struct {
 	*Application
 	*WhoIsIAmServices
@@ -484,7 +484,7 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *Network) 
 	}
 
 	// continue with initialization
-	a.Application, err = NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	a.Application, err = NewApplication(localLog, WithApplicationLocalDeviceObject(localDevice.LocalDeviceObject)) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}

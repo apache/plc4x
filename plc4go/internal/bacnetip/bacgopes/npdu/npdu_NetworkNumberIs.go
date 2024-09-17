@@ -38,14 +38,17 @@ type NetworkNumberIs struct {
 	nniFlag bool
 }
 
-func NewNetworkNumberIs(opts ...func(*NetworkNumberIs)) (*NetworkNumberIs, error) {
+func NewNetworkNumberIs(args Args, kwArgs KWArgs, opts ...func(*NetworkNumberIs)) (*NetworkNumberIs, error) {
 	n := &NetworkNumberIs{
 		messageType: 0x13,
 	}
 	for _, opt := range opts {
 		opt(n)
 	}
-	npdu, err := NewNPDU(model.NewNLMNetworkNumberIs(n.nniNet, n.nniFlag, 0), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMNetworkNumberIs(n.nniNet, n.nniFlag, 0)
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

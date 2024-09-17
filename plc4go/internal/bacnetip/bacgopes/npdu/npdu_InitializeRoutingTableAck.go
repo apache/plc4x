@@ -37,14 +37,17 @@ type InitializeRoutingTableAck struct {
 	irtaTable []*RoutingTableEntry
 }
 
-func NewInitializeRoutingTableAck(opts ...func(*InitializeRoutingTableAck)) (*InitializeRoutingTableAck, error) {
+func NewInitializeRoutingTableAck(args Args, kwArgs KWArgs, opts ...func(*InitializeRoutingTableAck)) (*InitializeRoutingTableAck, error) {
 	i := &InitializeRoutingTableAck{
 		messageType: 0x07,
 	}
 	for _, opt := range opts {
 		opt(i)
 	}
-	npdu, err := NewNPDU(model.NewNLMInitializeRoutingTableAck(i.produceNLMInitializeRoutingTableAckPortMapping()), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMInitializeRoutingTableAck(i.produceNLMInitializeRoutingTableAckPortMapping())
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

@@ -30,7 +30,6 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
-// TODO: implement it...
 type ConfirmedPrivateTransferRequest struct {
 	*ConfirmedRequestSequence
 
@@ -38,7 +37,7 @@ type ConfirmedPrivateTransferRequest struct {
 	sequenceElements []Element
 }
 
-func NewConfirmedPrivateTransferRequest(_ Args, _ KWArgs) (*ConfirmedPrivateTransferRequest, error) {
+func NewConfirmedPrivateTransferRequest(args Args, kwArgs KWArgs) (*ConfirmedPrivateTransferRequest, error) {
 	c := &ConfirmedPrivateTransferRequest{
 		serviceChoice: readWriteModel.BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER,
 		sequenceElements: []Element{
@@ -47,17 +46,16 @@ func NewConfirmedPrivateTransferRequest(_ Args, _ KWArgs) (*ConfirmedPrivateTran
 			NewElement("serviceParameters", Vs2E(NewAny), WithElementContext(2), WithElementOptional(true)),
 		},
 	}
-	var err error
-	c.ConfirmedRequestSequence, err = NewConfirmedRequestSequence(
-		readWriteModel.NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(
-			readWriteModel.CreateBACnetVendorIdContextTagged(0, 0),
-			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0),
+	if _, ok := kwArgs[KWCompRootMessage]; !ok {
+		kwArgs[KWCompRootMessage] = readWriteModel.NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(
+			readWriteModel.CreateBACnetVendorIdContextTagged(0, 0),     // TODO: get right values
+			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: get right values
 			nil,
 			0,
-		),
-		NoKWArgs(),
-		WithConfirmedRequestSequenceExtension(c),
-	)
+		)
+	}
+	var err error
+	c.ConfirmedRequestSequence, err = NewConfirmedRequestSequence(args, kwArgs, WithConfirmedRequestSequenceExtension(c))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building confirmed request")
 	}

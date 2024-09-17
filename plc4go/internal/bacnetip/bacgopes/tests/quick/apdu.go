@@ -33,7 +33,7 @@ func ConfirmedPrivateTransferRequest(kwArgs KWArgs) *apdu.ConfirmedPrivateTransf
 }
 
 func WhoIsRequest(kwArgs KWArgs) *apdu.WhoIsRequest {
-	whoIsRequest, err := apdu.NewWhoIsRequest()
+	whoIsRequest, err := apdu.NewWhoIsRequest(NoArgs, kwArgs)
 	if err != nil {
 		panic(err)
 	}

@@ -34,6 +34,7 @@ import (
 	"unsafe"
 )
 
+var _isDebuggingActive = false
 var _debug = CreateDebugPrinter()
 
 func Btox(data []byte, sep string) string {
@@ -107,15 +108,16 @@ func (d *DebugContents) Format(s fmt.State, v rune) {
 		// TODO: check if that hacky hacky makes sense
 		if len(d.debuggables) > 0 {
 			debuggable := d.debuggables[0]
-			_, _ = fmt.Fprintf(s, "<%s at %p>", TypeName(debuggable), debuggable)
+			_, _ = fmt.Fprintf(s, "<%s at %p>", QualifiedTypeName(debuggable), debuggable)
 		}
 	case 'r':
 		// TODO: check if that hacky hacky makes sense
 		if len(d.debuggables) > 0 {
 			debuggable := d.debuggables[0]
-			_, _ = fmt.Fprintf(s, "<%s at %p>\n", TypeName(debuggable), debuggable)
+			_, _ = fmt.Fprintf(s, "<%s at %p>\n", QualifiedTypeName(debuggable), debuggable)
+			_, _ = fmt.Fprintf(s, "    <%s at %p>\n", QualifiedTypeName(debuggable), debuggable) // TODO: why is this duplicated?
 		}
-		d.PrintDebugContents(0, s, nil)
+		d.PrintDebugContents(2, s, nil)
 	}
 }
 
@@ -199,7 +201,7 @@ func (d *DebugContents) PrintDebugContents(indent int, file io.Writer, _ids []ui
 		value := debuggable.GetDebugAttr(attr)
 
 		// skip nil
-		if value == nil {
+		if isNil(value) {
 			continue
 		}
 
@@ -225,7 +227,27 @@ func (d *DebugContents) PrintDebugContents(indent int, file io.Writer, _ids []ui
 			indent -= 1
 			_, _ = fmt.Fprintf(file, "%s    ]\n", strings.Repeat("    ", indent))
 		} else if goListDict && isDict(value) {
-			panic("add support for map") // TODO: add map support
+			_map, ok := toMap(value)
+			if !ok {
+				panic("impossible")
+			}
+			_, _ = fmt.Fprintf(file, "%s%s = {\n", strings.Repeat("    ", indent), attr)
+			indent += 1
+			for key, elem := range _map {
+				keyPrintVerb := verbForType(key, 'r')
+				elemPrintVerb := verbForType(elem, 'r')
+				_, _ = fmt.Fprintf(file, "%s"+string(keyPrintVerb)+" : "+string(elemPrintVerb)+"\n", strings.Repeat("    ", indent), key, elem)
+				if deepDebugContent, ok := elem.(interface {
+					DebugContents(int, io.Writer, []uintptr)
+				}); goDeep && ok {
+					if slices.Contains(_ids, uintptr(unsafe.Pointer(&deepDebugContent))) {
+						_ids = append(_ids, uintptr(unsafe.Pointer(&deepDebugContent)))
+						deepDebugContent.DebugContents(indent+1, file, _ids)
+					}
+				}
+			}
+			indent -= 1
+			_, _ = fmt.Fprintf(file, "%s    }\n", strings.Repeat("    ", indent))
 		} else if goHexed && isString(value) { // TODO: add support
 			panic("add support")
 		} else {
@@ -312,6 +334,18 @@ func TypeName(anything any) string {
 	return typeOf.Name()
 }
 
+func QualifiedTypeName(anything any) string {
+	typeOf := reflect.TypeOf(anything)
+	if typeOf.Kind() == reflect.Ptr {
+		typeOf = typeOf.Elem()
+	}
+	typeNameString := "bacgopes." + typeOf.String()
+	if customProjectName != "" {
+		typeNameString = strings.ReplaceAll(typeNameString, projectName, customProjectName)
+	}
+	return typeNameString
+}
+
 // TODO: migrate comp debug logger to here...
 type LoggingFormatter struct {
 	// TODO: implement me
@@ -334,8 +368,13 @@ func NewDefaultRFormatter(extraPrinters ...DebugContentPrinter) *DefaultRFormatt
 	base := path.Base(file)
 	prefix := strings.TrimSuffix(base, ".go")
 	prefix = strings.TrimPrefix(prefix, dirPrefix)
+	qualifier := strings.ReplaceAll(dirPrefix, "_", ".")
+	header := fmt.Sprintf("<%s at 0x%x>", "bacgopes."+qualifier+prefix, pc)
+	if customProjectName != "" {
+		header = strings.ReplaceAll(header, projectName, customProjectName)
+	}
 	return &DefaultRFormatter{
-		header:        fmt.Sprintf("<%s at 0x%x>", prefix, pc),
+		header:        header,
 		extraPrinters: extraPrinters,
 	}
 }
@@ -406,6 +445,7 @@ func CreateDebugPrinter() DebugPrinter {
 
 	bacgopesDebug := os.Getenv("BACGOPES_DEBUG")
 	if strings.Contains(bacgopesDebug, qualifier) {
+		_isDebuggingActive = true
 		return func(format string, a ...any) {
 			pc, file, _, ok := runtime.Caller(1)
 			if !ok {
@@ -438,6 +478,10 @@ func CreateDebugPrinter() DebugPrinter {
 		}
 	}
 	return nil
+}
+
+func IsDebuggingActive() bool {
+	return _isDebuggingActive
 }
 
 func cleanupFormatString(s string) string {
@@ -491,4 +535,18 @@ func verbForType(value any, printVerb rune) rune {
 		printVerb = 'v'
 	}
 	return printVerb
+}
+
+// clone from comp to avoid circular dependencies // TODO: maybe move Btox somewhere else or come up with something smarter there
+func isNil(v interface{}) bool {
+	if v == nil {
+		return true
+	}
+	valueOf := reflect.ValueOf(v)
+	switch valueOf.Kind() {
+	case reflect.Ptr, reflect.Interface, reflect.Slice, reflect.Map, reflect.Func, reflect.Chan:
+		return valueOf.IsNil()
+	default:
+		return false
+	}
 }

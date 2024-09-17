@@ -38,14 +38,17 @@ type EstablishConnectionToNetwork struct {
 	ectnTerminationTime uint8
 }
 
-func NewEstablishConnectionToNetwork(opts ...func(*EstablishConnectionToNetwork)) (*EstablishConnectionToNetwork, error) {
+func NewEstablishConnectionToNetwork(args Args, kwArgs KWArgs, opts ...func(*EstablishConnectionToNetwork)) (*EstablishConnectionToNetwork, error) {
 	i := &EstablishConnectionToNetwork{
 		messageType: 0x08,
 	}
 	for _, opt := range opts {
 		opt(i)
 	}
-	npdu, err := NewNPDU(model.NewNLMEstablishConnectionToNetwork(i.ectnDNET, i.ectnTerminationTime, 0), nil)
+	if _, ok := kwArgs[KWCompNLM]; ok {
+		kwArgs[KWCompNLM] = model.NewNLMEstablishConnectionToNetwork(i.ectnDNET, i.ectnTerminationTime, 0)
+	}
+	npdu, err := NewNPDU(args, kwArgs)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}

@@ -28,7 +28,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -43,43 +42,25 @@ type APDU interface {
 type __APDU struct {
 	*_APCI
 	PDUData
-
-	// post construct function
-	_postConstruct []func()
 }
 
 var _ APDU = (*__APDU)(nil)
 
-// TODO: optimize with options and smart non-recoding...
-func NewAPDU(apdu readWriteModel.APDU, opts ...func(*__APDU)) (APDU, error) {
+func NewAPDU(args Args, kwArgs KWArgs) (APDU, error) {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwArgs)
+	}
 	a := &__APDU{}
-	for _, opt := range opts {
-		opt(a)
-	}
-	a._APCI = NewAPCI(apdu).(*_APCI)
-	a.PDUData = NewPDUData(NoArgs, NoKWArgs())
+	a._APCI = NewAPCI(args, kwArgs).(*_APCI)
+	a.PDUData = NewPDUData(args, kwArgs)
 	a.AddExtraPrinters(a.PDUData.(DebugContentPrinter))
-	// Do a post construct for a bit more easy initialization
-	for _, f := range a._postConstruct {
-		f()
-	}
-	a._postConstruct = nil
-	if a.GetRootMessage() != nil {
-		data, _ := a.GetRootMessage().Serialize()
-		a.SetPduData(data)
-	}
 	return a, nil
 }
 
-func WithAPDUUserData(userData spi.Message) func(*__APDU) {
-	return func(apdu *__APDU) {
-		apdu._postConstruct = append(apdu._postConstruct, func() {
-			apdu.SetPDUUserData(userData)
-		})
-	}
-}
-
 func (a *__APDU) Encode(pdu Arg) error {
+	if _debug != nil {
+		_debug("encode %s", pdu)
+	}
 	if err := a._APCI.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding APCI")
 	}
@@ -91,11 +72,16 @@ func (a *__APDU) Encode(pdu Arg) error {
 }
 
 func (a *__APDU) Decode(pdu Arg) error {
+	if _debug != nil {
+		_debug("decode %s", pdu)
+	}
 	var rootMessage spi.Message
 	switch pdu := pdu.(type) { // Save a root message as long as we have enough data
 	case PDUData:
 		data := pdu.GetPduData()
-		rootMessage, _ = readWriteModel.APDUParse[readWriteModel.APDU](context.Background(), data, uint16(len(data)))
+		rootMessage, _ = Try1(func() (readWriteModel.APDU, error) {
+			return readWriteModel.APDUParse[readWriteModel.APDU](context.Background(), data, uint16(len(data)))
+		})
 	}
 	switch pdu := pdu.(type) {
 	case IPCI:
@@ -147,10 +133,9 @@ func (a *__APDU) DeepCopy() any {
 }
 
 func (a *__APDU) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("APDU{%s}", a.PCI)
-	} else {
+	if IsDebuggingActive() {
 		pci := "\t" + strings.Join(strings.Split(a.PCI.String(), "\n"), "\n\t")
 		return fmt.Sprintf("<APDU instance at %p>\n%s\n\tpduData = x'%s'", a, pci, Btox(a.GetPduData(), "."))
 	}
+	return fmt.Sprintf("APDU{%s}", a.PCI)
 }

@@ -35,7 +35,9 @@ type WhoIsRequest struct {
 	sequenceElements []Element
 }
 
-func NewWhoIsRequest() (*WhoIsRequest, error) {
+var _ readWriteModel.APDUUnconfirmedRequest = (*WhoIsRequest)(nil)
+
+func NewWhoIsRequest(args Args, kwArgs KWArgs) (*WhoIsRequest, error) {
 	w := &WhoIsRequest{
 		serviceChoice: readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS,
 		sequenceElements: []Element{
@@ -43,20 +45,25 @@ func NewWhoIsRequest() (*WhoIsRequest, error) {
 			NewElement("deviceInstanceRangeHighLimit", V2E(NewUnsigned), WithElementContext(1), WithElementOptional(true)),
 		},
 	}
-	var err error
-	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(
-		readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(
-			readWriteModel.CreateBACnetContextTagUnsignedInteger(0, 0),
-			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0),
+	if _, ok := kwArgs[KWCompRootMessage]; !ok {
+		kwArgs[KWCompRootMessage] = readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(
+			readWriteModel.CreateBACnetContextTagUnsignedInteger(0, 0), // TODO: set the right values
+			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: set the right values
 			0,
-		),
-		NoKWArgs(),
-		WithUnconfirmedRequestSequenceExtension(w),
-	)
+		)
+	}
+	var err error
+	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(args, kwArgs, WithUnconfirmedRequestSequenceExtension(w))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating UnconfirmedRequestSequence")
 	}
-
+	if w.GetRootMessage() == nil {
+		w.SetRootMessage(readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(
+			readWriteModel.CreateBACnetContextTagUnsignedInteger(0, 0), // TODO: set the right values
+			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: set the right values
+			0,
+		))
+	}
 	return w, nil
 }
 

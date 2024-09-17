@@ -62,15 +62,17 @@ func NewPCI(args Args, kwArgs KWArgs) *_PCI {
 		}
 	}
 	if _debug != nil {
-		_debug("    - my_kwArgs: %r", myKwargs)
+		_debug("    - my_kwargs: %r", myKwargs)
 	}
 	if _debug != nil {
-		_debug("    - other_kwArgs: %r", otherKwargs)
+		_debug("    - other_kwargs: %r", otherKwargs)
 	}
+	expectingReply, _ := KWO(kwArgs, KWPCIExpectingReply, false)
+	networkPriority, _ := KWO(kwArgs, KWPCINetworkPriority, model.NPDUNetworkPriority_NORMAL_MESSAGE)
 	i := &_PCI{
-		new__PCI(args, otherKwargs),
-		KWO(myKwargs, KWPCIExpectingReply, false),
-		KWO(myKwargs, KWPCINetworkPriority, model.NPDUNetworkPriority_NORMAL_MESSAGE),
+		new__PCI(args, kwArgs),
+		expectingReply,
+		networkPriority,
 	}
 	i.AddDebugContents(i, "pduExpectingReply", "pduNetworkPriority")
 	return i

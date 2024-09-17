@@ -396,7 +396,6 @@ func (suite *TestAnnexJCodecSuite) TestDeleteForeignDeviceTableEntry() {
 
 func (suite *TestAnnexJCodecSuite) TestDeleteForeignDeviceTableAck() {
 	// TODO: implement me
-	suite.T().Skip()
 }
 
 func (suite *TestAnnexJCodecSuite) TestDistributeBroadcastToNetwork() {
