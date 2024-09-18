@@ -224,7 +224,7 @@
     <dependency>
       <groupId>com.google.cloud.tools</groupId>
       <artifactId>jib-core</artifactId>
-      <version>0.22.0</version>
+      <version>0.27.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
