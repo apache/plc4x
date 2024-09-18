@@ -42,6 +42,8 @@ type Example struct {
 	jField TestStruct1
 	kField *TestStruct1
 	lField TestStruct2
+	mField *time.Time
+	nField *time.Duration
 }
 
 type ExampleDelegate1 struct {
