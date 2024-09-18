@@ -223,8 +223,6 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     }
 
     protected PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, ModbusDataType dataType, ModbusByteOrder byteOrder) throws ParseException {
-        short tagDataTypeSize = dataType.getDataTypeSize();
-
         if (request instanceof ModbusPDUReadDiscreteInputsRequest) {
             if (!(response instanceof ModbusPDUReadDiscreteInputsResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -349,7 +347,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
         return Arrays.copyOf(reverse.toByteArray(), 1)[0];
     }
 
-    protected PlcValue readCoilBooleanList(int count, byte[] data) throws ParseException {
+    /*protected PlcValue readCoilBooleanList(int count, byte[] data) throws ParseException {
         ReadBuffer io = new ReadBufferByteBased(data);
         if (count == 1) {
             // Skip the first 7 bits.
@@ -377,35 +375,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             }
         }
         return new PlcList(Arrays.asList(values));
-    }
-
-    private ReadBuffer getReadBuffer(byte[] data, ModbusByteOrder byteOrder) {
-        switch (byteOrder) {
-            case LITTLE_ENDIAN: {
-                // [4, 3, 2, 1]
-                // [8, 7, 6, 5, 4, 3, 2, 1]
-                return new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
-            }
-            case BIG_ENDIAN_BYTE_SWAP: {
-                // [2, 1, 4, 3]
-                // [2, 1, 4, 3, 6, 5, 8, 7]
-                byte[] reordered = byteSwap(data);
-                return new ReadBufferByteBased(reordered, ByteOrder.BIG_ENDIAN);
-            }
-            case LITTLE_ENDIAN_BYTE_SWAP: {
-                // [3, 4, 1, 2]
-                // [7, 8, 5, 6, 3, 4, 1, 2]
-                byte[] reordered = byteSwap(data);
-                return new ReadBufferByteBased(reordered, ByteOrder.LITTLE_ENDIAN);
-            }
-            default:
-                // 16909060
-                // [1, 2, 3, 4]
-                // 72623859790382856
-                // [1, 2, 3, 4, 5, 6, 7, 8]
-                return new ReadBufferByteBased(data, ByteOrder.BIG_ENDIAN);
-        }
-    }
+    }*/
 
     private WriteBufferByteBased getWriteBuffer(int size, ModbusByteOrder byteOrder) {
         switch (byteOrder) {

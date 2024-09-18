@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.base.context.ModbusContext;
+import org.apache.plc4x.java.modbus.base.protocol.ModbusProtocolLogic;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagCoil;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagDiscreteInput;
@@ -37,6 +38,7 @@ import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
@@ -45,6 +47,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
+import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,12 +183,27 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                 }
                 // Go through all responses till we find one where that contains the current tag's data.
                 for (Response response : responses.get(tagType)) {
-                    if (response.matches(modbusTag)) {
-                        byte[] responseData = response.getResponseData(modbusTag);
-                        ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(responseData,
-                            modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
+                    if(modbusTag instanceof ModbusTagCoil) {
+                        if(response.matchesCoil(modbusTag)) {
+                            // Coils are read completely different from registers.
+                            ModbusTagCoil coilTag = (ModbusTagCoil) modbusTag;
+
+                            // Calculate the byte that contains the response for this Coil
+                            byte[] responseData = response.getResponseData();
+                            int bitPosition = coilTag.getAddress() - response.startingAddress;
+                            int bytePosition = bitPosition / 8;
+                            int bitPositionInByte = bitPosition % 8;
+                            boolean isBitSet = (responseData[bytePosition] & (1 << bitPositionInByte)) != 0;
+                            values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, new PlcBOOL(isBitSet)));
+                            break;
+                        }
+                    }
+                    // Read a normal register.
+                    else if (response.matchesRegister(modbusTag)) {
+                        byte[] responseData = response.getResponseDataForTag(modbusTag);
+                        ReadBuffer readBuffer = getReadBuffer(responseData, modbusContext.getByteOrder());
                         try {
-                            PlcValue plcValue = DataItem.staticParse(readBufferByteBased, modbusTag.getDataType(),
+                            PlcValue plcValue = DataItem.staticParse(readBuffer, modbusTag.getDataType(),
                                 modbusTag.getNumberOfElements(),
                                 modbusContext.getByteOrder() == ModbusByteOrder.BIG_ENDIAN);
                             values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, plcValue));
@@ -323,24 +341,36 @@ public class ModbusOptimizer extends SingleTagOptimizer {
 
     protected static class Response {
         private final int startingAddress;
-        private final int endingAddress;
+        private final int endingAddressCoil;
+        private final int endingAddressRegister;
         private final byte[] responseData;
 
         public Response(int startingAddress, byte[] responseData) {
             this.startingAddress = startingAddress;
             this.responseData = responseData;
-            // In general a "Celil(responseData.length / 2)" would habe been more correct,
+            this.endingAddressCoil = responseData.length * 8;
+            // In general a "Celil(responseData.length / 2)" would have been more correct,
             // but the data returned from the device should already be an even number.
-            this.endingAddress = startingAddress + (responseData.length / 2);
+            this.endingAddressRegister = startingAddress + (responseData.length / 2);
         }
 
-        public boolean matches(ModbusTag modbusTag) {
+        public boolean matchesCoil(ModbusTag modbusTag) {
+            int tagStartingAddress = modbusTag.getAddress();
+            int tagEndingAddress = modbusTag.getAddress() + modbusTag.getNumberOfElements();
+            return ((tagStartingAddress >= this.startingAddress) && (tagEndingAddress <= this.endingAddressCoil));
+        }
+
+        public boolean matchesRegister(ModbusTag modbusTag) {
             int tagStartingAddress = modbusTag.getAddress();
             int tagEndingAddress = modbusTag.getAddress() + (int) Math.ceil((double) modbusTag.getLengthBytes() / 2.0f);
-            return ((tagStartingAddress >= this.startingAddress) && (tagEndingAddress <= this.endingAddress));
+            return ((tagStartingAddress >= this.startingAddress) && (tagEndingAddress <= this.endingAddressRegister));
         }
 
-        public byte[] getResponseData(ModbusTag modbusTag) {
+        public byte[] getResponseData() {
+            return responseData;
+        }
+
+        public byte[] getResponseDataForTag(ModbusTag modbusTag) {
             byte[] itemData = new byte[modbusTag.getLengthBytes()];
             System.arraycopy(responseData, (modbusTag.getAddress() - startingAddress) * 2, itemData, 0, modbusTag.getLengthBytes());
             return itemData;
@@ -349,6 +379,34 @@ public class ModbusOptimizer extends SingleTagOptimizer {
 
     protected interface TagFactory {
         PlcTag createTag(int address, int count, ModbusDataType dataType);
+    }
+
+    private ReadBuffer getReadBuffer(byte[] data, ModbusByteOrder byteOrder) {
+        switch (byteOrder) {
+            case LITTLE_ENDIAN: {
+                // [4, 3, 2, 1]
+                // [8, 7, 6, 5, 4, 3, 2, 1]
+                return new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
+            }
+            case BIG_ENDIAN_BYTE_SWAP: {
+                // [2, 1, 4, 3]
+                // [2, 1, 4, 3, 6, 5, 8, 7]
+                byte[] reordered = ModbusProtocolLogic.byteSwap(data);
+                return new ReadBufferByteBased(reordered, ByteOrder.BIG_ENDIAN);
+            }
+            case LITTLE_ENDIAN_BYTE_SWAP: {
+                // [3, 4, 1, 2]
+                // [7, 8, 5, 6, 3, 4, 1, 2]
+                byte[] reordered = ModbusProtocolLogic.byteSwap(data);
+                return new ReadBufferByteBased(reordered, ByteOrder.LITTLE_ENDIAN);
+            }
+            default:
+                // 16909060
+                // [1, 2, 3, 4]
+                // 72623859790382856
+                // [1, 2, 3, 4, 5, 6, 7, 8]
+                return new ReadBufferByteBased(data, ByteOrder.BIG_ENDIAN);
+        }
     }
 
 }
