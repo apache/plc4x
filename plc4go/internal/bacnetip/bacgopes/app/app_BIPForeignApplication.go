@@ -28,7 +28,6 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
 )
@@ -49,7 +48,7 @@ type BIPForeignApplication struct {
 	log zerolog.Logger
 }
 
-func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, localAddress Address, bbmdAddress *Address, bbmdTTL *uint16, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPForeignApplication, error) {
+func NewBIPForeignApplication(localLog zerolog.Logger, localDevice LocalDeviceObject, localAddress Address, bbmdAddress *Address, bbmdTTL *uint16, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPForeignApplication, error) {
 	b := &BIPForeignApplication{
 		log: localLog,
 	}

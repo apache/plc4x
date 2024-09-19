@@ -19,6 +19,12 @@
 
 package apdu
 
+import "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+
 // TODO: implement it...
 type ReadAccessSpecification struct {
+}
+
+func NewReadAccessSpecification(arg comp.Arg) (*ReadAccessSpecification, error) {
+	panic("implement me")
 }

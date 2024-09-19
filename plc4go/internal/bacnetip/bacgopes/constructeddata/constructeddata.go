@@ -55,15 +55,25 @@ func Vs2E[T any](b func(args Args) (*T, error)) func(Args, KWArgs) (ElementKlass
 }
 
 // TODO: finish
-func SequenceOf[T any](b func(arg Arg) (*T, error)) func(Args, KWArgs) (ElementKlass, error) {
+func SequenceOfE[T any](b func(arg Arg) (*T, error)) func(Args, KWArgs) (ElementKlass, error) {
 	panic("finish me")
 }
 
-func SequenceOfs[T any](b func(args Args) (*T, error)) func(Args, KWArgs) (ElementKlass, error) {
+func SequenceOfsE[T any](b func(args Args) (*T, error)) func(Args, KWArgs) (ElementKlass, error) {
 	panic("finish me")
 }
 
 // TODO: finish // convert to kwArgs and check wtf we are doing here...
-func ArrayOf[T any](b func(arg Arg) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (ElementKlass, error) {
+func ArrayOfE[T any](b func(arg Arg) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (ElementKlass, error) {
+	panic("finish me")
+}
+
+// TODO: finish // convert to kwArgs and check wtf we are doing here...
+func ArrayOfsE[T any](b func(args Args) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (ElementKlass, error) {
+	panic("finish me")
+}
+
+// TODO: finish // convert to kwArgs and check wtf we are doing here...
+func ListOfE[T any](b func(arg Arg) (*T, error)) func(Args) (*T, error) {
 	panic("finish me")
 }

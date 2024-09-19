@@ -38,9 +38,11 @@ type WriteBroadcastDistributionTable struct {
 
 var _ BVLPDU = (*WriteBroadcastDistributionTable)(nil)
 
-func NewWriteBroadcastDistributionTable(bdt []*Address, args Args, kwArgs KWArgs) (*WriteBroadcastDistributionTable, error) {
+// TODO: check this arg desaster
+func NewWriteBroadcastDistributionTable(bdt []*Address, args Args, kwArgs KWArgs, options ...Option) (*WriteBroadcastDistributionTable, error) {
 	w := &WriteBroadcastDistributionTable{}
-	w._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, w)
+	w._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	w.AddDebugContents(w, "bvlciBDT")
 	if w.GetRootMessage() == nil {
 		w.SetRootMessage(readWriteModel.NewBVLCWriteBroadcastDistributionTable(w.produceBroadcastDistributionTable()))

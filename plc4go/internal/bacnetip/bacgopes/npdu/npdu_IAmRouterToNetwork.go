@@ -37,17 +37,14 @@ type IAmRouterToNetwork struct {
 	iartnNetworkList []uint16
 }
 
-func NewIAmRouterToNetwork(args Args, kwArgs KWArgs, opts ...func(*IAmRouterToNetwork)) (*IAmRouterToNetwork, error) {
+func NewIAmRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*IAmRouterToNetwork, error) {
 	i := &IAmRouterToNetwork{
 		messageType: 0x01,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMIAmRouterToNetwork(i.iartnNetworkList, 0)
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMIAmRouterToNetwork(i.iartnNetworkList, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -57,10 +54,9 @@ func NewIAmRouterToNetwork(args Args, kwArgs KWArgs, opts ...func(*IAmRouterToNe
 	return i, nil
 }
 
-func WithIAmRouterToNetworkNetworkList(iartnNetworkList ...uint16) func(*IAmRouterToNetwork) {
-	return func(n *IAmRouterToNetwork) {
-		n.iartnNetworkList = iartnNetworkList
-	}
+// TODO: check if this is rather a KWArgs
+func WithIAmRouterToNetworkNetworkList(iartnNetworkList ...uint16) GenericApplier[*IAmRouterToNetwork] {
+	return WrapGenericApplier(func(n *IAmRouterToNetwork) { n.iartnNetworkList = iartnNetworkList })
 }
 
 func (i *IAmRouterToNetwork) GetIartnNetworkList() []uint16 {

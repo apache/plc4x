@@ -40,7 +40,7 @@ type StateMachineAccessPoint struct {
 	ServiceAccessPointContract
 	*DefaultRFormatter `ignore:"true"`
 
-	localDevice           *LocalDeviceObject
+	localDevice           LocalDeviceObject
 	deviceInfoCache       *DeviceInfoCache
 	nextInvokeId          uint8
 	clientTransactions    []*ClientSSM
@@ -63,7 +63,7 @@ type StateMachineAccessPoint struct {
 	log zerolog.Logger
 }
 
-func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(*StateMachineAccessPoint)) (*StateMachineAccessPoint, error) {
+func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice LocalDeviceObject, opts ...func(*StateMachineAccessPoint)) (*StateMachineAccessPoint, error) {
 	s := &StateMachineAccessPoint{
 		DefaultRFormatter: NewDefaultRFormatter(),
 		// save a reference to the device information cache
@@ -189,6 +189,10 @@ func (s *StateMachineAccessPoint) GetDefaultMaxSegmentsAccepted() readWriteModel
 
 func (s *StateMachineAccessPoint) GetDefaultMaximumApduLengthAccepted() readWriteModel.MaxApduLengthAccepted {
 	return s.maxApduLengthAccepted
+}
+
+func (s *StateMachineAccessPoint) SetDeviceInfoCache(cache *DeviceInfoCache) {
+	s.deviceInfoCache = cache
 }
 
 // Confirmation Packets coming up the stack are APDU's
@@ -508,7 +512,7 @@ func (s *StateMachineAccessPoint) GetDeviceInfoCache() *DeviceInfoCache {
 	return s.deviceInfoCache
 }
 
-func (s *StateMachineAccessPoint) GetLocalDevice() *LocalDeviceObject {
+func (s *StateMachineAccessPoint) GetLocalDevice() LocalDeviceObject {
 	return s.localDevice
 }
 

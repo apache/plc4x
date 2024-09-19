@@ -34,7 +34,7 @@ func NewSpecialEvent(arg Arg) (*SpecialEvent, error) {
 	s := &SpecialEvent{
 		sequenceElements: []Element{
 			NewElement("period", V2E(NewSpecialEventPeriod)),
-			NewElement("listOfTimeValues", SequenceOf(NewTimeValue), WithElementContext(2)),
+			NewElement("listOfTimeValues", SequenceOfE(NewTimeValue), WithElementContext(2)),
 			NewElement("eventPriority", V2E(NewUnsigned), WithElementContext(3)),
 		},
 	}

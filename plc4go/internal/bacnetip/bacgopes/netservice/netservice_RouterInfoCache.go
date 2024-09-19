@@ -23,6 +23,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -59,7 +60,7 @@ type Router struct {
 type RouterInfo struct {
 	snet    netKey   `stringer:"true"`
 	address *Address `stringer:"true"`
-	dnets   map[netKey]*RouterStatus
+	dnets   map[netKey]RouterStatus
 	status  RouterStatus `stringer:"true"`
 }
 
@@ -95,6 +96,9 @@ func (n *RouterInfoCache) GetRouterInfo(snet, dnet netKey) *RouterInfo {
 }
 
 func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets []uint16, status *RouterStatus) error {
+	if status == nil {
+		status = ToPtr(ROUTER_AVAILABLE)
+	}
 	n.log.Debug().Stringer("snet", snet).Stringer("dnet", address).Uints16("dnets", dnets).Msg("UpdateRouterInfo")
 
 	var existingRouterInfo *RouterInfo
@@ -134,7 +138,7 @@ func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets 
 
 	// update current router info if there is one
 	if existingRouterInfo == nil {
-		routerInfo := &RouterInfo{snet: snet, address: address, dnets: make(map[netKey]*RouterStatus)}
+		routerInfo := &RouterInfo{snet: snet, address: address, dnets: make(map[netKey]RouterStatus)}
 		if _, ok := n.routers[snet]; !ok {
 			n.routers[snet] = &Router{addresses: map[string]*RouterInfo{
 				address.String(): routerInfo,
@@ -150,7 +154,7 @@ func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets 
 				Uint16("dnet", dnet).
 				Stringer("routerInfoAddress", routerInfo.address).
 				Msg("add path: snet -> dnet via routerInfoAddress")
-			routerInfo.dnets[nk(&dnet)] = status
+			routerInfo.dnets[nk(&dnet)] = *status
 		}
 	} else {
 		for _, dnet := range dnets {
@@ -161,7 +165,7 @@ func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets 
 					Uint16("dnet", dnet).
 					Msg("add path: snet -> dnet")
 			}
-			existingRouterInfo.dnets[nk(&dnet)] = status
+			existingRouterInfo.dnets[nk(&dnet)] = *status
 		}
 	}
 	return nil

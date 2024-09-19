@@ -37,7 +37,7 @@ type ConfirmedPrivateTransferRequest struct {
 	sequenceElements []Element
 }
 
-func NewConfirmedPrivateTransferRequest(args Args, kwArgs KWArgs) (*ConfirmedPrivateTransferRequest, error) {
+func NewConfirmedPrivateTransferRequest(args Args, kwArgs KWArgs, options ...Option) (*ConfirmedPrivateTransferRequest, error) {
 	c := &ConfirmedPrivateTransferRequest{
 		serviceChoice: readWriteModel.BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER,
 		sequenceElements: []Element{
@@ -46,16 +46,15 @@ func NewConfirmedPrivateTransferRequest(args Args, kwArgs KWArgs) (*ConfirmedPri
 			NewElement("serviceParameters", Vs2E(NewAny), WithElementContext(2), WithElementOptional(true)),
 		},
 	}
-	if _, ok := kwArgs[KWCompRootMessage]; !ok {
-		kwArgs[KWCompRootMessage] = readWriteModel.NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(
-			readWriteModel.CreateBACnetVendorIdContextTagged(0, 0),     // TODO: get right values
-			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: get right values
-			nil,
-			0,
-		)
-	}
+	options = AddRootMessageIfAbundant(options, readWriteModel.NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(
+		readWriteModel.CreateBACnetVendorIdContextTagged(0, 0),     // TODO: get right values
+		readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: get right values
+		nil,
+		0,
+	))
+	options = AddLeafTypeIfAbundant(options, c)
 	var err error
-	c.ConfirmedRequestSequence, err = NewConfirmedRequestSequence(args, kwArgs, WithConfirmedRequestSequenceExtension(c))
+	c.ConfirmedRequestSequence, err = NewConfirmedRequestSequence(args, kwArgs, Combine(options, WithConfirmedRequestSequenceExtension(c))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building confirmed request")
 	}

@@ -38,14 +38,19 @@ type _APDU interface {
 
 type ___APDU struct {
 	*__APDU
+
+	_leafType string
 }
 
 var _ _APDU = (*___APDU)(nil)
 
-func New_APDU(args Args, kwArgs KWArgs) (_APDU, error) {
-	i := &___APDU{}
+func New_APDU(args Args, kwArgs KWArgs, options ...Option) (_APDU, error) {
+	i := &___APDU{
+		_leafType: ExtractLeafName(options, "APDU"),
+	}
+	options = AddLeafTypeIfAbundant(options, i)
 	var err error
-	apdu, err := NewAPDU(args, kwArgs)
+	apdu, err := NewAPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating APDU")
 	}
@@ -102,7 +107,7 @@ func (a *___APDU) SetContext(context APDU) {
 func (a *___APDU) Format(s fmt.State, v rune) {
 	switch v {
 	case 'v', 's', 'r':
-		sname := fmt.Sprintf("%T", a)
+		sname := a._leafType
 
 		// the type is the service
 		stype := ""
@@ -117,6 +122,7 @@ func (a *___APDU) Format(s fmt.State, v rune) {
 			stype += ", " + strconv.Itoa(int(*a.apduInvokeID))
 		}
 		// put it together
-		_, _ = fmt.Fprintf(s, "<%s(%s) instance at %p>", sname, stype, a)
+		_, _ = fmt.Fprintf(s, "<%s(%s) instance at %p>\n", sname, stype, a)
 	}
+	a.PrintDebugContents(2, s, nil)
 }

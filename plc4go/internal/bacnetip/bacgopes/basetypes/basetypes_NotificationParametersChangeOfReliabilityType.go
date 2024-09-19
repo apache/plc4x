@@ -34,7 +34,7 @@ func NewNotificationParametersChangeOfReliabilityType(arg Arg) (*NotificationPar
 		sequenceElements: []Element{
 			NewElement("reliability", V2E(NewReliability), WithElementContext(0)),
 			NewElement("statusFlags", V2E(NewStatusFlags), WithElementContext(1)),
-			NewElement("propertyValues", SequenceOf(NewPropertyValue), WithElementContext(2)),
+			NewElement("propertyValues", SequenceOfE(NewPropertyValue), WithElementContext(2)),
 		},
 	}
 	panic("implementchoice")

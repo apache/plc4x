@@ -66,11 +66,14 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 
 	// build a local device object
 	localDevice := &TestDeviceObject{
-		LocalDeviceObject: &LocalDeviceObject{
-			ObjectName:       b.name,
-			ObjectIdentifier: "device:998",
-			VendorIdentifier: 999,
-		},
+		LocalDeviceObject: NewLocalDeviceObject(
+			NoArgs,
+			NKW(
+				KWObjectName, b.name,
+				KWObjectIdentifier, "device:998",
+				KWVendorIdentifier, 999,
+			),
+		),
 	}
 
 	// continue with initialization

@@ -35,7 +35,7 @@ func NewFaultParameterExtended(arg Arg) (*FaultParameterExtended, error) {
 		sequenceElements: []Element{
 			NewElement("vendorId", V2E(NewUnsigned), WithElementContext(0)),
 			NewElement("extendedFaultType", V2E(NewUnsigned), WithElementContext(1)),
-			NewElement("parameters", SequenceOf(NewFaultParameterExtendedParameters), WithElementContext(2)),
+			NewElement("parameters", SequenceOfE(NewFaultParameterExtendedParameters), WithElementContext(2)),
 		},
 	}
 	panic("implementchoice")

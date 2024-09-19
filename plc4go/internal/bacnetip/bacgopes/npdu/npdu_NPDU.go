@@ -47,10 +47,11 @@ type _NPDU struct {
 
 var _ = (NPDU)(nil)
 
-func NewNPDU(args Args, kwArgs KWArgs) (NPDU, error) {
+func NewNPDU(args Args, kwArgs KWArgs, options ...Option) (NPDU, error) {
 	n := &_NPDU{}
-	n._NPCI = NewNPCI(args, kwArgs).(*_NPCI)
-	n.PDUData = NewPDUData(NoArgs, NoKWArgs())
+	options = AddLeafTypeIfAbundant(options, n)
+	n._NPCI = NewNPCI(args, kwArgs, options...).(*_NPCI)
+	n.PDUData = NewPDUData(NoArgs, NoKWArgs(), options...)
 	n.AddExtraPrinters(n.PDUData.(DebugContentPrinter))
 	if n.GetRootMessage() != nil {
 		data, _ := n.GetRootMessage().Serialize()

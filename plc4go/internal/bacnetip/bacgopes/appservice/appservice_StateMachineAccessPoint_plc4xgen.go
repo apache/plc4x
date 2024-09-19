@@ -54,13 +54,11 @@ func (d *StateMachineAccessPoint) SerializeWithWriteBuffer(ctx context.Context, 
 	if err := d.ServiceAccessPointContract.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	if d.localDevice != nil {
-		{
-			_value := fmt.Sprintf("%v", d.localDevice)
+	{
+		_value := fmt.Sprintf("%v", d.localDevice)
 
-			if err := writeBuffer.WriteString("localDevice", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("localDevice", uint32(len(_value)*8), _value); err != nil {
+			return err
 		}
 	}
 	if d.deviceInfoCache != nil {

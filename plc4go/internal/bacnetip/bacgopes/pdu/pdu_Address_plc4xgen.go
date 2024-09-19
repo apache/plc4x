@@ -106,6 +106,10 @@ func (d *Address) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 			return err
 		}
 	}
+
+	if err := writeBuffer.WriteString("_leafName", uint32(len(d._leafName)*8), d._leafName); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("Address"); err != nil {
 		return err
 	}

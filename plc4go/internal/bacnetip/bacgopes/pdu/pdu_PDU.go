@@ -39,13 +39,13 @@ type _PDU struct {
 	*DefaultRFormatter
 }
 
-func NewPDU(args Args, kwArgs KWArgs) PDU {
+func NewPDU(args Args, kwArgs KWArgs, options ...Option) PDU {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
 	p := &_PDU{}
-	p._PCI = NewPCI(args, kwArgs)
-	p._PDUData = NewPDUData(args, kwArgs).(*_PDUData)
+	p._PCI = NewPCI(args, kwArgs, options...)
+	p._PDUData = NewPDUData(args, kwArgs, options...).(*_PDUData)
 	p.DefaultRFormatter = NewDefaultRFormatter(p._PCI, p._PDUData)
 	return p
 }

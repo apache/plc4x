@@ -45,9 +45,9 @@ type Application struct {
 	ApplicationServiceElementContract
 	Collector
 
-	objectName       map[string]*LocalDeviceObject
-	objectIdentifier map[string]*LocalDeviceObject
-	localDevice      *LocalDeviceObject
+	objectName       map[string]LocalDeviceObject
+	objectIdentifier map[string]LocalDeviceObject
+	localDevice      LocalDeviceObject
 	localAddress     *Address
 	deviceInfoCache  *appservice.DeviceInfoCache
 	controllers      map[string]any
@@ -85,17 +85,17 @@ func NewApplication(localLog zerolog.Logger, opts ...func(*Application)) (*Appli
 	}
 
 	// local objects by ID and name
-	a.objectName = map[string]*LocalDeviceObject{}
-	a.objectIdentifier = map[string]*LocalDeviceObject{}
+	a.objectName = map[string]LocalDeviceObject{}
+	a.objectIdentifier = map[string]LocalDeviceObject{}
 
 	// keep track of the local device
 	if a.localDevice != nil {
 		// bind the device object to this application
-		a.localDevice.App = a
+		a.localDevice.SetApp(a)
 
 		// local objects by ID and name
-		a.objectName[a.localDevice.ObjectName] = a.localDevice
-		a.objectName[a.localDevice.ObjectIdentifier] = a.localDevice
+		a.objectName[a.localDevice.GetObjectName()] = a.localDevice
+		a.objectName[a.localDevice.GetObjectIdentifier()] = a.localDevice
 	}
 
 	// use the provided cache or make a default one
@@ -124,7 +124,7 @@ func NewApplication(localLog zerolog.Logger, opts ...func(*Application)) (*Appli
 	return a, nil
 }
 
-func WithApplicationLocalDeviceObject(localDevice *LocalDeviceObject) func(*Application) {
+func WithApplicationLocalDeviceObject(localDevice LocalDeviceObject) func(*Application) {
 	return func(a *Application) {
 		a.localDevice = localDevice
 	}
@@ -148,18 +148,18 @@ func (a *Application) GetDeviceInfoCache() *appservice.DeviceInfoCache {
 }
 
 // AddObject adds an object to the local collection
-func (a *Application) AddObject(obj *LocalDeviceObject) error {
+func (a *Application) AddObject(obj LocalDeviceObject) error {
 	a.log.Debug().Stringer("obj", obj).Msg("AddObject")
 	if _debug != nil {
 		_debug("add_object %r", obj)
 	}
 
 	// extract the object name and identifier
-	objectName := obj.ObjectName
+	objectName := obj.GetObjectName()
 	if objectName == "" {
 		return errors.New("object name required")
 	}
-	objectIdentifier := obj.ObjectIdentifier
+	objectIdentifier := obj.GetObjectIdentifier()
 	if objectIdentifier == "" {
 		return errors.New("object identifier required")
 	}
@@ -178,25 +178,25 @@ func (a *Application) AddObject(obj *LocalDeviceObject) error {
 
 	// append the new object's identifier to the local device's object list if there is one and has an object list property
 	if a.localDevice != nil {
-		a.localDevice.ObjectList = append(a.localDevice.ObjectList, objectIdentifier)
+		a.localDevice.SetObjectList(append(a.localDevice.GetObjectList(), objectIdentifier))
 	}
 
 	// let the object know which application stack it belongs to
-	obj.App = a
+	obj.SetApp(a)
 
 	return nil
 }
 
 // DeleteObject deletes an object from the local collection
-func (a *Application) DeleteObject(obj *LocalDeviceObject) error {
+func (a *Application) DeleteObject(obj LocalDeviceObject) error {
 	a.log.Debug().Stringer("obj", obj).Msg("DeleteObject")
 	if _debug != nil {
 		_debug("delete_object %r", obj)
 	}
 
 	// extract the object name and identifier
-	objectName := obj.ObjectName
-	objectIdentifier := obj.ObjectIdentifier
+	objectName := obj.GetObjectName()
+	objectIdentifier := obj.GetObjectIdentifier()
 
 	// delete it from the application
 	delete(a.objectName, objectName)
@@ -205,35 +205,35 @@ func (a *Application) DeleteObject(obj *LocalDeviceObject) error {
 	// remove the object's identifier from the device's object list if there is one and has an object list property
 	if a.localDevice != nil {
 		foundIndex := -1
-		for i, s := range a.localDevice.ObjectList {
+		for i, s := range a.localDevice.GetObjectList() {
 			if s == objectIdentifier {
 				foundIndex = i
 			}
 		}
 		if foundIndex >= 0 {
-			a.localDevice.ObjectList = append(a.localDevice.ObjectList[0:foundIndex], a.localDevice.ObjectList[foundIndex+1:]...)
+			a.localDevice.SetObjectList(append(a.localDevice.GetObjectList()[0:foundIndex], a.localDevice.GetObjectList()[foundIndex+1:]...))
 		}
 	}
 
 	// make sure the object knows it's detached from an application
-	obj.App = nil
+	obj.SetApp(nil)
 
 	return nil
 }
 
 // GetObjectId returns a local object or None.
-func (a *Application) GetObjectId(objectId string) *LocalDeviceObject {
+func (a *Application) GetObjectId(objectId string) LocalDeviceObject {
 	return a.objectIdentifier[objectId]
 }
 
 // GetObjectName returns a local object or None.
-func (a *Application) GetObjectName(objectName string) *LocalDeviceObject {
+func (a *Application) GetObjectName(objectName string) LocalDeviceObject {
 	return a.objectName[objectName]
 }
 
 // IterObjects iterates over the objects
-func (a *Application) IterObjects() []*LocalDeviceObject {
-	localDeviceObjects := make([]*LocalDeviceObject, 0, len(a.objectIdentifier))
+func (a *Application) IterObjects() []LocalDeviceObject {
+	localDeviceObjects := make([]LocalDeviceObject, 0, len(a.objectIdentifier))
 	for _, object := range a.objectIdentifier {
 		localDeviceObjects = append(localDeviceObjects, object)
 	}

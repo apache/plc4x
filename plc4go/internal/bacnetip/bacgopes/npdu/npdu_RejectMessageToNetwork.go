@@ -38,17 +38,14 @@ type RejectMessageToNetwork struct {
 	rmtnDNET            uint16
 }
 
-func NewRejectMessageToNetwork(args Args, kwArgs KWArgs, opts ...func(*RejectMessageToNetwork)) (*RejectMessageToNetwork, error) {
+func NewRejectMessageToNetwork(args Args, kwArgs KWArgs, options ...Option) (*RejectMessageToNetwork, error) {
 	i := &RejectMessageToNetwork{
 		messageType: 0x03,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMRejectMessageToNetwork(i.rmtnRejectionReason, i.rmtnDNET, 0)
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMRejectMessageToNetwork(i.rmtnRejectionReason, i.rmtnDNET, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -58,16 +55,14 @@ func NewRejectMessageToNetwork(args Args, kwArgs KWArgs, opts ...func(*RejectMes
 	return i, nil
 }
 
-func WithRejectMessageToNetworkRejectionReason(reason model.NLMRejectMessageToNetworkRejectReason) func(*RejectMessageToNetwork) {
-	return func(n *RejectMessageToNetwork) {
-		n.rmtnRejectionReason = reason
-	}
+// TODO: check if this is rather a KWArgs
+func WithRejectMessageToNetworkRejectionReason(reason model.NLMRejectMessageToNetworkRejectReason) GenericApplier[*RejectMessageToNetwork] {
+	return WrapGenericApplier(func(n *RejectMessageToNetwork) { n.rmtnRejectionReason = reason })
 }
 
-func WithRejectMessageToNetworkDnet(dnet uint16) func(*RejectMessageToNetwork) {
-	return func(n *RejectMessageToNetwork) {
-		n.rmtnDNET = dnet
-	}
+// TODO: check if this is rather a KWArgs
+func WithRejectMessageToNetworkDnet(dnet uint16) GenericApplier[*RejectMessageToNetwork] {
+	return WrapGenericApplier(func(n *RejectMessageToNetwork) { n.rmtnDNET = dnet })
 }
 
 func (r *RejectMessageToNetwork) GetRmtnRejectionReason() model.NLMRejectMessageToNetworkRejectReason {

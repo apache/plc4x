@@ -45,7 +45,7 @@ type _PCI struct {
 
 var _ PCI = (*_PCI)(nil)
 
-func NewPCI(args Args, kwArgs KWArgs) *_PCI {
+func NewPCI(args Args, kwArgs KWArgs, options ...Option) *_PCI {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
@@ -70,7 +70,7 @@ func NewPCI(args Args, kwArgs KWArgs) *_PCI {
 	expectingReply, _ := KWO(kwArgs, KWPCIExpectingReply, false)
 	networkPriority, _ := KWO(kwArgs, KWPCINetworkPriority, model.NPDUNetworkPriority_NORMAL_MESSAGE)
 	i := &_PCI{
-		new__PCI(args, kwArgs),
+		new__PCI(args, kwArgs, options...),
 		expectingReply,
 		networkPriority,
 	}

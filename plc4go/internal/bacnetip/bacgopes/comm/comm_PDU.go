@@ -41,7 +41,7 @@ type _PDU struct {
 	PDUData
 }
 
-func NewCPDU(data any, kwArgs KWArgs) CPDU {
+func NewCPDU(data any, kwArgs KWArgs, options ...Option) CPDU {
 	if _debug != nil {
 		_debug("__init__ %r %r", data, kwArgs)
 	}
@@ -62,9 +62,9 @@ func NewCPDU(data any, kwArgs KWArgs) CPDU {
 
 	// now continue on
 	p := &_PDU{
-		PCI: NewPCI(NoArgs, NKW(KWCPCIUserData, userData, KWCPCISource, source, destination, KWCPCIDestination, destination)),
+		PCI: NewPCI(NoArgs, NKW(KWCPCIUserData, userData, KWCPCISource, source, destination, KWCPCIDestination, destination), options...),
 	}
-	p.PDUData = NewPDUData(NA(data), kwArgs)
+	p.PDUData = NewPDUData(NA(data), kwArgs, options...)
 	return p
 }
 

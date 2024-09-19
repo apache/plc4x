@@ -29,7 +29,7 @@ type PriorityArray struct {
 
 func NewPriorityArray(arg Arg) (*PriorityArray, error) {
 	s := &PriorityArray{}
-	ArrayOf(NewPriorityValue, 16, PriorityValue{})
+	ArrayOfE(NewPriorityValue, 16, PriorityValue{})
 	panic("implementchoice")
 	return s, nil
 }

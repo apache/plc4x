@@ -33,7 +33,7 @@ type LiftCarCallList struct {
 func NewLiftCarCallList(arg Arg) (*LiftCarCallList, error) {
 	s := &LiftCarCallList{
 		sequenceElements: []Element{
-			NewElement("floorNumbers", SequenceOf(NewUnsigned8), WithElementContext(0)),
+			NewElement("floorNumbers", SequenceOfE(NewUnsigned8), WithElementContext(0)),
 		},
 	}
 	panic("implementchoice")

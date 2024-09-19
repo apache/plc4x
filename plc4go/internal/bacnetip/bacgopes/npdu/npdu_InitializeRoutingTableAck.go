@@ -37,17 +37,14 @@ type InitializeRoutingTableAck struct {
 	irtaTable []*RoutingTableEntry
 }
 
-func NewInitializeRoutingTableAck(args Args, kwArgs KWArgs, opts ...func(*InitializeRoutingTableAck)) (*InitializeRoutingTableAck, error) {
+func NewInitializeRoutingTableAck(args Args, kwArgs KWArgs, options ...Option) (*InitializeRoutingTableAck, error) {
 	i := &InitializeRoutingTableAck{
 		messageType: 0x07,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMInitializeRoutingTableAck(i.produceNLMInitializeRoutingTableAckPortMapping())
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMInitializeRoutingTableAck(i.produceNLMInitializeRoutingTableAckPortMapping()))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -57,10 +54,9 @@ func NewInitializeRoutingTableAck(args Args, kwArgs KWArgs, opts ...func(*Initia
 	return i, nil
 }
 
-func WithInitializeRoutingTableAckIrtaTable(irtaTable ...*RoutingTableEntry) func(*InitializeRoutingTableAck) {
-	return func(r *InitializeRoutingTableAck) {
-		r.irtaTable = irtaTable
-	}
+// TODO: check if this is rather a KWArgs
+func WithInitializeRoutingTableAckIrtaTable(irtaTable ...*RoutingTableEntry) GenericApplier[*InitializeRoutingTableAck] {
+	return WrapGenericApplier(func(r *InitializeRoutingTableAck) { r.irtaTable = irtaTable })
 }
 
 func (i *InitializeRoutingTableAck) GetIrtaTable() []*RoutingTableEntry {

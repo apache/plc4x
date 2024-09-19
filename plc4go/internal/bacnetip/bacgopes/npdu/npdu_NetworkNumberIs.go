@@ -38,17 +38,14 @@ type NetworkNumberIs struct {
 	nniFlag bool
 }
 
-func NewNetworkNumberIs(args Args, kwArgs KWArgs, opts ...func(*NetworkNumberIs)) (*NetworkNumberIs, error) {
+func NewNetworkNumberIs(args Args, kwArgs KWArgs, options ...Option) (*NetworkNumberIs, error) {
 	n := &NetworkNumberIs{
 		messageType: 0x13,
 	}
-	for _, opt := range opts {
-		opt(n)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMNetworkNumberIs(n.nniNet, n.nniFlag, 0)
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, n)
+	options = AddLeafTypeIfAbundant(options, n)
+	options = AddNLMIfAbundant(options, model.NewNLMNetworkNumberIs(n.nniNet, n.nniFlag, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -58,16 +55,14 @@ func NewNetworkNumberIs(args Args, kwArgs KWArgs, opts ...func(*NetworkNumberIs)
 	return n, nil
 }
 
-func WithNetworkNumberIsNET(net uint16) func(*NetworkNumberIs) {
-	return func(n *NetworkNumberIs) {
-		n.nniNet = net
-	}
+// TODO: check if this is rather a KWArgs
+func WithNetworkNumberIsNET(net uint16) GenericApplier[*NetworkNumberIs] {
+	return WrapGenericApplier(func(n *NetworkNumberIs) { n.nniNet = net })
 }
 
-func WithNetworkNumberIsTerminationConfigured(configured bool) func(*NetworkNumberIs) {
-	return func(n *NetworkNumberIs) {
-		n.nniFlag = configured
-	}
+// TODO: check if this is rather a KWArgs
+func WithNetworkNumberIsTerminationConfigured(configured bool) GenericApplier[*NetworkNumberIs] {
+	return WrapGenericApplier(func(n *NetworkNumberIs) { n.nniFlag = configured })
 }
 
 func (n *NetworkNumberIs) GetNniNet() uint16 {

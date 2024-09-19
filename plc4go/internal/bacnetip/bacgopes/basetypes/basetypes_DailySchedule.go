@@ -32,7 +32,7 @@ type DailySchedule struct {
 func NewDailySchedule(arg Arg) (*DailySchedule, error) {
 	s := &DailySchedule{
 		sequenceElements: []Element{
-			NewElement("daySchedule", SequenceOf(NewTimeValue), WithElementContext(0)),
+			NewElement("daySchedule", SequenceOfE(NewTimeValue), WithElementContext(0)),
 		},
 	}
 	panic("implementchoice")

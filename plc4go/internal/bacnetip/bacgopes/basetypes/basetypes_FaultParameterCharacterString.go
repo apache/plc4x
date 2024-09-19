@@ -33,7 +33,7 @@ type FaultParameterCharacterString struct {
 func NewFaultParameterCharacterString(arg Arg) (*FaultParameterCharacterString, error) {
 	s := &FaultParameterCharacterString{
 		sequenceElements: []Element{
-			NewElement("listOfFaultValues", SequenceOf(NewCharacterString), WithElementContext(0)),
+			NewElement("listOfFaultValues", SequenceOfE(NewCharacterString), WithElementContext(0)),
 		},
 	}
 	panic("implementchoice")

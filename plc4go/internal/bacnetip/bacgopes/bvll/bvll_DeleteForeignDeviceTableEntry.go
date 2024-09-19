@@ -38,9 +38,11 @@ type DeleteForeignDeviceTableEntry struct {
 
 var _ BVLPDU = (*DeleteForeignDeviceTableEntry)(nil)
 
-func NewDeleteForeignDeviceTableEntry(addr *Address, args Args, kwArgs KWArgs) (*DeleteForeignDeviceTableEntry, error) {
+// TODO: check this args no args desaster...
+func NewDeleteForeignDeviceTableEntry(addr *Address, args Args, kwArgs KWArgs, options ...Option) (*DeleteForeignDeviceTableEntry, error) {
 	d := &DeleteForeignDeviceTableEntry{}
-	d._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, d)
+	d._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	d.AddDebugContents(d, "bvlciAddress")
 	if d.GetRootMessage() == nil {
 		d.SetRootMessage(readWriteModel.NewBVLCDeleteForeignDeviceTableEntry(d.buildIPArgs()))

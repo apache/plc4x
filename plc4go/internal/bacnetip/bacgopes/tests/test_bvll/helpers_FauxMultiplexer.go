@@ -144,5 +144,5 @@ func (s *FauxMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
 		dest = pdu.GetPDUDestination()
 	}
 
-	return s.Response(NA(NewPDU(NA(pdu), NKW(KWCompRootMessage, pdu, KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs())
+	return s.Response(NA(NewPDU(NA(pdu), NKW(KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs())
 }

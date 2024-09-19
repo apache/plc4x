@@ -66,7 +66,7 @@ type _BVLCI struct {
 
 var _ BVLCI = (*_BVLCI)(nil)
 
-func NewBVLCI(requirements BVLCIRequirements, args Args, kwArgs KWArgs) BVLCI {
+func NewBVLCI(requirements BVLCIRequirements, args Args, kwArgs KWArgs, options ...Option) BVLCI {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
@@ -75,10 +75,11 @@ func NewBVLCI(requirements BVLCIRequirements, args Args, kwArgs KWArgs) BVLCI {
 
 		bvlciType: 0x81,
 	}
+	options = AddLeafTypeIfAbundant(options, b)
 	b.DebugContents = NewDebugContents(b, "bvlciType", "bvlciFunction", "bvlciLength")
 	b.PCI = NewPCI(args, kwArgs)
 	b.AddExtraPrinters(b.PCI.(DebugContentPrinter))
-	if bvlc, ok := KWO[readWriteModel.BVLC](kwArgs, KWCompRootMessage, nil); ok {
+	if bvlc, ok := ExtractRootMessage(options).(readWriteModel.BVLC); ok {
 		b.bvlciFunction = bvlc.GetBvlcFunction()
 		b.bvlciLength = bvlc.GetLengthInBytes(context.Background())
 	}

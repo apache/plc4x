@@ -32,7 +32,7 @@ type AssignedLandingCalls struct {
 func NewAssignedLandingCalls(arg Arg) (*AssignedLandingCalls, error) {
 	s := &AssignedLandingCalls{
 		sequenceElements: []Element{
-			NewElement("landingCalls", SequenceOf(NewAssignedLandingCallsLandingCalls), WithElementContext(0)),
+			NewElement("landingCalls", SequenceOfE(NewAssignedLandingCallsLandingCalls), WithElementContext(0)),
 		},
 	}
 	panic("implementchoice")

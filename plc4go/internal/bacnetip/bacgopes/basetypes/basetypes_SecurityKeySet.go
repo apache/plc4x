@@ -36,7 +36,7 @@ func NewSecurityKeySet(arg Arg) (*SecurityKeySet, error) {
 			NewElement("keyRevision", V2E(NewUnsigned), WithElementContext(0)),
 			NewElement("activationTime", V2E(NewDateTime), WithElementContext(1)),
 			NewElement("expirationTime", V2E(NewDateTime), WithElementContext(2)),
-			NewElement("keyIds", SequenceOf(NewKeyIdentifier), WithElementContext(3)),
+			NewElement("keyIds", SequenceOfE(NewKeyIdentifier), WithElementContext(3)),
 		},
 	}
 	panic("implementchoice")

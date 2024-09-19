@@ -44,7 +44,7 @@ type WhoIsIAmServices struct {
 	_requirements WhoIsIAmServicesRequirements `ignore:"true"`
 	Capability
 
-	localDevice *LocalDeviceObject
+	localDevice LocalDeviceObject
 
 	log zerolog.Logger
 }
@@ -70,7 +70,7 @@ func NewWhoIsIAmServices(localLog zerolog.Logger, whoIsIAmServicesRequirements W
 	return w, nil
 }
 
-func WithWhoIsIAmServicesLocalDevice(localDevice *LocalDeviceObject) func(*WhoIsIAmServices) {
+func WithWhoIsIAmServicesLocalDevice(localDevice LocalDeviceObject) func(*WhoIsIAmServices) {
 	return func(w *WhoIsIAmServices) {
 		w.localDevice = localDevice
 	}
@@ -92,7 +92,21 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 	}
 	w.log.Debug().Msg("WhoIs")
 
-	var deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit uint
+	// build a request
+	whoIs, err := NewWhoIsRequest(Nothing())
+	if err != nil {
+		return errors.Wrap(err, "NewWhoIsRequest failed")
+	}
+
+	// defaults to a global broadcast
+	if address == nil {
+		address = NewGlobalBroadcast(nil)
+	}
+
+	// set the destination
+	whoIs.SetPDUDestination(address)
+
+	//check for consistent parameters
 	if lowLimit != nil {
 		if highLimit == nil {
 			return errors.New("highLimit required")
@@ -102,7 +116,7 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 		}
 
 		// low limit is fine
-		deviceInstanceRangeLowLimit = *lowLimit
+		whoIs.SetDeviceInstanceRangeLowLimit(*lowLimit)
 	}
 	if highLimit != nil {
 		if lowLimit == nil {
@@ -113,18 +127,15 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 		}
 
 		// low limit is fine
-		deviceInstanceRangeHighLimit = *highLimit
+		whoIs.SetDeviceInstanceRangeHighLimit(*highLimit)
 	}
-
-	// Build a request
-	whoIs := readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(readWriteModel.CreateBACnetContextTagUnsignedInteger(0, deviceInstanceRangeLowLimit), readWriteModel.CreateBACnetContextTagUnsignedInteger(1, deviceInstanceRangeHighLimit), 0)
 
 	if _debug != nil {
 		_debug("    - whoIs: %r", whoIs)
 	}
 	w.log.Debug().Stringer("whoIs", whoIs).Msg("WhoIs")
 
-	return w._requirements.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, whoIs, KWCPCIDestination, address))), NoKWArgs())
+	return w._requirements.Request(NA(whoIs), NoKWArgs())
 }
 
 // DoWhoIsRequest respond to a Who-Is request.
@@ -176,12 +187,12 @@ func (w *WhoIsIAmServices) DoWhoIsRequest(apdu APDU) error {
 
 	// see we should respond
 	if lowLimit != nil {
-		if uint(w.localDevice.ObjectIdentifier[1]) < *lowLimit {
+		if uint(w.localDevice.GetObjectIdentifier()[1]) < *lowLimit {
 			return nil
 		}
 	}
 	if highLimit != nil {
-		if uint(w.localDevice.ObjectIdentifier[1]) > *highLimit {
+		if uint(w.localDevice.GetObjectIdentifier()[1]) > *highLimit {
 			return nil
 		}
 	}
@@ -208,10 +219,10 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 	iAm, err := NewIAmRequest(
 		NoArgs,
 		NKW(
-			KnownKey("iAmDeviceIdentifier"), w.localDevice.ObjectIdentifier,
-			KnownKey("maxAPDULengthAccepted"), w.localDevice.MaximumApduLengthAccepted,
-			KnownKey("segmentationSupported"), w.localDevice.SegmentationSupported,
-			KnownKey("vendorID"), w.localDevice.VendorIdentifier,
+			KnownKey("iAmDeviceIdentifier"), w.localDevice.GetObjectIdentifier(),
+			KnownKey("maxAPDULengthAccepted"), w.localDevice.GetMaximumApduLengthAccepted(),
+			KnownKey("segmentationSupported"), w.localDevice.GetSegmentationSupported(),
+			KnownKey("vendorID"), w.localDevice.GetVendorIdentifier(),
 		),
 	)
 	if err != nil {
@@ -226,7 +237,7 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 	if _debug != nil {
 		_debug("    - iAm: %r", iAm)
 	}
-	w.log.Debug().Stringer("iAm", iAm).Msg("IAm")
+	w.log.Debug().Stringer("iAm", iAm).Msg("")
 
 	return w._requirements.Request(NA(iAm), NoKWArgs())
 }

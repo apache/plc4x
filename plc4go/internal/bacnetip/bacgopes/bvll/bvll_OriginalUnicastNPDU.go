@@ -38,9 +38,10 @@ type OriginalUnicastNPDU struct {
 
 var _ BVLPDU = (*OriginalUnicastNPDU)(nil)
 
-func NewOriginalUnicastNPDU(args Args, kwArgs KWArgs) (*OriginalUnicastNPDU, error) {
+func NewOriginalUnicastNPDU(args Args, kwArgs KWArgs, options ...Option) (*OriginalUnicastNPDU, error) {
 	o := &OriginalUnicastNPDU{}
-	o._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, o)
+	o._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	switch npdu := o.GetRootMessage().(type) {
 	case readWriteModel.NPDU:
 		// Repackage

@@ -19,6 +19,12 @@
 
 package apdu
 
+import "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+
 // TODO: implement it...
 type EventNotificationParameters struct {
+}
+
+func NewEventNotificationParameters(arg comp.Arg) (*EventNotificationParameters, error) {
+	panic("Not implemented")
 }

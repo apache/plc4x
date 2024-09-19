@@ -91,7 +91,7 @@ type stateMachine struct {
 
 	states                 []State
 	name                   string
-	machineGroup           *StateMachineGroup
+	machineGroup           *StateMachineGroup `asPtr:"true"`
 	stateSubStruct         any
 	startState             State
 	unexpectedReceiveState State

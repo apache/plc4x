@@ -34,13 +34,13 @@ type ConfirmedRequestPDU struct {
 
 var _ readWriteModel.APDUConfirmedRequest = (*ConfirmedRequestPDU)(nil)
 
-func NewConfirmedRequestPDU(args Args, kwArgs KWArgs) (*ConfirmedRequestPDU, error) {
+func NewConfirmedRequestPDU(args Args, kwArgs KWArgs, options ...Option) (*ConfirmedRequestPDU, error) {
 	c := &ConfirmedRequestPDU{}
 	choice, ok := KWO[*readWriteModel.BACnetConfirmedServiceChoice](kwArgs, KWConfirmedServiceChoice, nil)
 	if _debug != nil {
 		_debug("__init__ %r %r %r", choice, args, kwArgs)
 	}
-	apdu, err := New_APDU(args, kwArgs)
+	apdu, err := New_APDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}

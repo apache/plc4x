@@ -48,9 +48,10 @@ func (d *Task) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	if err := writeBuffer.PushContext("Task"); err != nil {
 		return err
 	}
-
-	if err := writeBuffer.WriteString("taskTime", uint32(len(fmt.Sprintf("%s", d.taskTime))*8), fmt.Sprintf("%s", d.taskTime)); err != nil {
-		return err
+	if d.taskTime != nil {
+		if err := writeBuffer.WriteString("taskTime", uint32(len(fmt.Sprintf("%s", *d.taskTime))*8), fmt.Sprintf("%s", *d.taskTime)); err != nil {
+			return err
+		}
 	}
 
 	if err := writeBuffer.WriteBit("isScheduled", d.isScheduled); err != nil {

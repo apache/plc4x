@@ -37,17 +37,14 @@ type InitializeRoutingTable struct {
 	irtTable []*RoutingTableEntry
 }
 
-func NewInitializeRoutingTable(args Args, kwArgs KWArgs, opts ...func(*InitializeRoutingTable)) (*InitializeRoutingTable, error) {
+func NewInitializeRoutingTable(args Args, kwArgs KWArgs, options ...Option) (*InitializeRoutingTable, error) {
 	i := &InitializeRoutingTable{
 		messageType: 0x06,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMInitializeRoutingTable(i.produceNLMInitializeRoutingTablePortMapping())
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMInitializeRoutingTable(i.produceNLMInitializeRoutingTablePortMapping()))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -57,10 +54,9 @@ func NewInitializeRoutingTable(args Args, kwArgs KWArgs, opts ...func(*Initializ
 	return i, nil
 }
 
-func WithInitializeRoutingTableIrtTable(irtTable ...*RoutingTableEntry) func(*InitializeRoutingTable) {
-	return func(r *InitializeRoutingTable) {
-		r.irtTable = irtTable
-	}
+// TODO: check if this is rather a KWArgs
+func WithInitializeRoutingTableIrtTable(irtTable ...*RoutingTableEntry) GenericApplier[*InitializeRoutingTable] {
+	return WrapGenericApplier(func(r *InitializeRoutingTable) { r.irtTable = irtTable })
 }
 
 func (i *InitializeRoutingTable) GetIrtTable() []*RoutingTableEntry {

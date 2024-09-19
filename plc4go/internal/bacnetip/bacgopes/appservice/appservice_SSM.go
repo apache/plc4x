@@ -81,7 +81,7 @@ type SSMSAPRequirements interface {
 	ServiceAccessPointContract
 	Client
 	GetDeviceInfoCache() *DeviceInfoCache
-	GetLocalDevice() *LocalDeviceObject
+	GetLocalDevice() LocalDeviceObject
 	GetProposedWindowSize() uint8
 	GetClientTransactions() []*ClientSSM
 	RemoveClientTransaction(*ClientSSM)
@@ -145,36 +145,36 @@ func NewSSM(localLog zerolog.Logger, sap interface {
 	}
 	localDevice := sap.GetLocalDevice()
 	var numberOfApduRetries uint
-	if localDevice.NumberOfAPDURetries != nil {
-		numberOfApduRetries = *localDevice.NumberOfAPDURetries
+	if localDevice.GetNumberOfAPDURetries() != nil {
+		numberOfApduRetries = *localDevice.GetNumberOfAPDURetries()
 	}
 	var apduTimeout uint
-	if localDevice.APDUTimeout != nil {
-		apduTimeout = *localDevice.APDUTimeout
+	if localDevice.GetAPDUTimeout() != nil {
+		apduTimeout = *localDevice.GetAPDUTimeout()
 	} else {
 		apduTimeout = sap.GetDefaultAPDUTimeout()
 	}
 	var segmentationSupported readWriteModel.BACnetSegmentation
-	if localDevice.SegmentationSupported != nil {
-		segmentationSupported = *localDevice.SegmentationSupported
+	if localDevice.GetSegmentationSupported() != nil {
+		segmentationSupported = *localDevice.GetSegmentationSupported()
 	} else {
 		segmentationSupported = sap.GetDefaultSegmentationSupported()
 	}
 	var segmentTimeout uint
-	if localDevice.APDUSegmentTimeout != nil {
-		segmentTimeout = *localDevice.APDUSegmentTimeout
+	if localDevice.GetAPDUSegmentTimeout() != nil {
+		segmentTimeout = *localDevice.GetAPDUSegmentTimeout()
 	} else {
 		segmentTimeout = sap.GetDefaultAPDUSegmentTimeout()
 	}
 	var maxSegmentsAccepted readWriteModel.MaxSegmentsAccepted
-	if localDevice.MaxSegmentsAccepted != nil {
-		maxSegmentsAccepted = *localDevice.MaxSegmentsAccepted
+	if localDevice.GetMaxSegmentsAccepted() != nil {
+		maxSegmentsAccepted = *localDevice.GetMaxSegmentsAccepted()
 	} else {
 		maxSegmentsAccepted = sap.GetDefaultMaxSegmentsAccepted()
 	}
 	var maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted
-	if localDevice.MaximumApduLengthAccepted != nil {
-		maxApduLengthAccepted = *localDevice.MaximumApduLengthAccepted
+	if localDevice.GetMaximumApduLengthAccepted() != nil {
+		maxApduLengthAccepted = *localDevice.GetMaximumApduLengthAccepted()
 	} else {
 		maxApduLengthAccepted = sap.GetDefaultMaximumApduLengthAccepted()
 	}
@@ -291,7 +291,7 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU PDU, moreFollows bool, err er
 
 	// TODO: the original code does here something funky but it seems it is best to just return the original apdu
 	if s.segmentCount == 1 {
-		return NewPDU(NoArgs, NKW(KWCompRootMessage, s.segmentAPDU.originalApdu, KWCPCIDestination, s.pduAddress)), false, nil
+		return NewPDU(NoArgs, NKW(KWCPCIDestination, s.pduAddress), WithRootMessage(s.segmentAPDU.originalApdu)), false, nil
 	}
 
 	moreFollows = index < s.segmentCount-1
@@ -309,7 +309,7 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU PDU, moreFollows bool, err er
 		s.log.Debug().Msg("confirmed request context")
 		segmentedResponseAccepted := s.segmentationSupported == readWriteModel.BACnetSegmentation_SEGMENTED_RECEIVE || s.segmentationSupported == readWriteModel.BACnetSegmentation_SEGMENTED_BOTH
 		s.log.Debug().Bool("segmentedResponseAccepted", segmentedResponseAccepted).Msg("segmentedResponseAccepted")
-		segmentAPDU = NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUConfirmedRequest(
+		segmentAPDU = NewPDU(NoArgs, NKW(KWCPCIDestination, s.pduAddress), WithRootMessage(readWriteModel.NewAPDUConfirmedRequest(
 			true,
 			moreFollows,
 			segmentedResponseAccepted,
@@ -322,10 +322,10 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU PDU, moreFollows bool, err er
 			serviceChoice,
 			segmentBytes,
 			0,
-		), KWCPCIDestination, s.pduAddress))
+		)))
 	} else {
 		s.log.Debug().Msg("complex ack context")
-		segmentAPDU = NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUComplexAck(
+		segmentAPDU = NewPDU(NoArgs, NKW(KWCPCIDestination, s.pduAddress), WithRootMessage(readWriteModel.NewAPDUComplexAck(
 			true,
 			moreFollows,
 			s.segmentAPDU.originalInvokeId,
@@ -335,7 +335,7 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU PDU, moreFollows bool, err er
 			serviceChoice,
 			segmentBytes,
 			0,
-		), KWCPCIDestination, s.pduAddress))
+		)))
 	}
 	return segmentAPDU, moreFollows, nil
 }
@@ -383,7 +383,7 @@ func (s *SSM) fillWindow(sequenceNumber uint8) error {
 		if err != nil {
 			return errors.Wrapf(err, "Error sending out segment %d", i)
 		}
-		if err := s.ssmSAP.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, apdu.GetRootMessage(), KWCPCIDestination, s.pduAddress))), NoKWArgs()); err != nil {
+		if err := s.ssmSAP.Request(NA(NewPDU(NoArgs, NKW(KWCPCIDestination, s.pduAddress)), WithRootMessage(apdu.GetRootMessage())), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
 		if moreFollows {

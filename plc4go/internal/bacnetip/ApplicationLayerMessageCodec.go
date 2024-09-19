@@ -73,9 +73,9 @@ func NewApplicationLayerMessageCodec(localLog zerolog.Logger, udpTransport *udp.
 	}
 	// TODO: workaround for strange address parsing
 	address.AddrTuple = pdu.NewAddressTuple(fmt.Sprintf("%d.%d.%d.%d", address.AddrAddress[0], address.AddrAddress[1], address.AddrAddress[2], address.AddrAddress[3]), *address.AddrPort)
-	application, err := app.NewBIPSimpleApplication(localLog, &device.LocalDeviceObject{
-		NumberOfAPDURetries: func() *uint { retries := uint(10); return &retries }(),
-	}, *address, &a.deviceInfoCache, nil)
+	application, err := app.NewBIPSimpleApplication(localLog, device.NewLocalDeviceObject(comp.NoArgs,
+		comp.NewKWArgs(comp.KWNumberOfAPDURetries, func() *uint { retries := uint(10); return &retries }()),
+	), *address, &a.deviceInfoCache, nil)
 	if err != nil {
 		return nil, err
 	}

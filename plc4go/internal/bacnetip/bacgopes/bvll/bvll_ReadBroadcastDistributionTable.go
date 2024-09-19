@@ -35,9 +35,10 @@ type ReadBroadcastDistributionTable struct {
 
 var _ BVLPDU = (*ReadBroadcastDistributionTable)(nil)
 
-func NewReadBroadcastDistributionTable(args Args, kwArgs KWArgs) (*ReadBroadcastDistributionTable, error) {
+func NewReadBroadcastDistributionTable(args Args, kwArgs KWArgs, options ...Option) (*ReadBroadcastDistributionTable, error) {
 	r := &ReadBroadcastDistributionTable{}
-	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, r)
+	r._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	if r.GetRootMessage() == nil {
 		r.SetRootMessage(readWriteModel.NewBVLCReadBroadcastDistributionTable())
 	}

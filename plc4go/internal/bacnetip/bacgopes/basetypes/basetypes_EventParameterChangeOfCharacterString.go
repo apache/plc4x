@@ -34,7 +34,7 @@ func NewEventParameterChangeOfCharacterString(arg Arg) (*EventParameterChangeOfC
 	s := &EventParameterChangeOfCharacterString{
 		sequenceElements: []Element{
 			NewElement("timeDelay", V2E(NewUnsigned), WithElementContext(0)),
-			NewElement("listOfAlarmValues", SequenceOf(NewCharacterString), WithElementContext(1)),
+			NewElement("listOfAlarmValues", SequenceOfE(NewCharacterString), WithElementContext(1)),
 		},
 	}
 	panic("implementchoice")

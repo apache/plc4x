@@ -57,13 +57,13 @@ type __PCI struct {
 
 var _ IPCI = (*__PCI)(nil)
 
-func new__PCI(args Args, kwArgs KWArgs) *__PCI {
+func new__PCI(args Args, kwArgs KWArgs, options ...Option) *__PCI {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
-	i := &__PCI{}
-	i.rootMessage, _ = KWO[spi.Message](kwArgs, KWCompRootMessage, nil)
-	delete(kwArgs, KWCompRootMessage)
+	i := &__PCI{
+		rootMessage: ExtractRootMessage(options),
+	}
 	i.DebugContents = NewDebugContents(i, "pduUserData+", "pduSource", "pduDestination")
 	var myKwargs = make(KWArgs)
 	var otherKwargs = make(KWArgs)

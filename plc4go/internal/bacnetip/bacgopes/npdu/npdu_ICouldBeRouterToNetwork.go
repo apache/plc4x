@@ -38,17 +38,14 @@ type ICouldBeRouterToNetwork struct {
 	icbrtnPerformanceIndex uint8
 }
 
-func NewICouldBeRouterToNetwork(args Args, kwArgs KWArgs, opts ...func(*ICouldBeRouterToNetwork)) (*ICouldBeRouterToNetwork, error) {
+func NewICouldBeRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*ICouldBeRouterToNetwork, error) {
 	i := &ICouldBeRouterToNetwork{
 		messageType: 0x02,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex, 0)
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -58,16 +55,14 @@ func NewICouldBeRouterToNetwork(args Args, kwArgs KWArgs, opts ...func(*ICouldBe
 	return i, nil
 }
 
-func WithICouldBeRouterToNetworkNetwork(icbrtnNetwork uint16) func(*ICouldBeRouterToNetwork) {
-	return func(n *ICouldBeRouterToNetwork) {
-		n.icbrtnNetwork = icbrtnNetwork
-	}
+// TODO: check if this is rather a KWArgs
+func WithICouldBeRouterToNetworkNetwork(icbrtnNetwork uint16) GenericApplier[*ICouldBeRouterToNetwork] {
+	return WrapGenericApplier(func(n *ICouldBeRouterToNetwork) { n.icbrtnNetwork = icbrtnNetwork })
 }
 
-func WithICouldBeRouterToNetworkPerformanceIndex(icbrtnPerformanceIndex uint8) func(*ICouldBeRouterToNetwork) {
-	return func(n *ICouldBeRouterToNetwork) {
-		n.icbrtnPerformanceIndex = icbrtnPerformanceIndex
-	}
+// TODO: check if this is rather a KWArgs
+func WithICouldBeRouterToNetworkPerformanceIndex(icbrtnPerformanceIndex uint8) GenericApplier[*ICouldBeRouterToNetwork] {
+	return WrapGenericApplier(func(n *ICouldBeRouterToNetwork) { n.icbrtnPerformanceIndex = icbrtnPerformanceIndex })
 }
 
 func (i *ICouldBeRouterToNetwork) GetIcbrtnNetwork() uint16 {

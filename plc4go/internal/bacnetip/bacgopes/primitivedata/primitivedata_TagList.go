@@ -20,19 +20,25 @@
 package primitivedata
 
 import (
+	"io"
+
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type TagList struct {
+	*DefaultRFormatter
 	tagList []Tag
 }
 
 func NewTagList(arg Arg) *TagList {
-	t := &TagList{}
+	t := &TagList{
+		DefaultRFormatter: NewDefaultRFormatter(),
+	}
 	switch arg := arg.(type) {
 	case []any:
 		args := arg
@@ -171,4 +177,10 @@ func (b *TagList) Decode(data PDUData) error {
 
 func (b *TagList) GetTagList() []Tag {
 	return b.tagList
+}
+
+func (b *TagList) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
+	for _, tag := range b.tagList {
+		tag.PrintDebugContents(indent, file, _ids)
+	}
 }

@@ -37,30 +37,26 @@ type RouterAvailableToNetwork struct {
 	ratnNetworkList []uint16
 }
 
-func NewRouterAvailableToNetwork(args Args, kwArgs KWArgs, opts ...func(*RouterAvailableToNetwork)) (*RouterAvailableToNetwork, error) {
-	i := &RouterAvailableToNetwork{
+func NewRouterAvailableToNetwork(args Args, kwArgs KWArgs, options ...Option) (*RouterAvailableToNetwork, error) {
+	r := &RouterAvailableToNetwork{
 		messageType: 0x05,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMRouterAvailableToNetwork(i.ratnNetworkList, 0)
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, r)
+	options = AddLeafTypeIfAbundant(options, r)
+	options = AddNLMIfAbundant(options, model.NewNLMRouterAvailableToNetwork(r.ratnNetworkList, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
-	i._NPDU = npdu.(*_NPDU)
+	r._NPDU = npdu.(*_NPDU)
 
-	i.npduNetMessage = &i.messageType
-	return i, nil
+	r.npduNetMessage = &r.messageType
+	return r, nil
 }
 
-func WithRouterAvailableToNetworkDnet(networkList []uint16) func(*RouterAvailableToNetwork) {
-	return func(n *RouterAvailableToNetwork) {
-		n.ratnNetworkList = networkList
-	}
+// TODO: check if this is rather a KWArgs
+func WithRouterAvailableToNetworkDnet(networkList []uint16) GenericApplier[*RouterAvailableToNetwork] {
+	return WrapGenericApplier(func(n *RouterAvailableToNetwork) { n.ratnNetworkList = networkList })
 }
 
 func (r *RouterAvailableToNetwork) GetRatnNetworkList() []uint16 {

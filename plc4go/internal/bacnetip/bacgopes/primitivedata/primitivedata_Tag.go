@@ -21,55 +21,60 @@ package primitivedata
 
 import (
 	"bytes"
+	"fmt"
+	"io"
+	"strings"
 
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 const (
 	// Deprecated: use model.TagClass_APPLICATION_TAGS
-	TagApplicationTagClass = model.TagClass_APPLICATION_TAGS
+	TagApplicationTagClass = readWriteModel.TagClass_APPLICATION_TAGS
 	// Deprecated: use model.TagClass_CONTEXT_SPECIFIC_TAGS
-	TagContextTagClass = model.TagClass_CONTEXT_SPECIFIC_TAGS
+	TagContextTagClass = readWriteModel.TagClass_CONTEXT_SPECIFIC_TAGS
 	TagOpeningTagClass = 2
 	TagClosingTagClass = 3
 
 	// Deprecated: use  model.BACnetDataType_NULL
-	TagNullAppTag = model.BACnetDataType_NULL
+	TagNullAppTag = readWriteModel.BACnetDataType_NULL
 	// Deprecated: use  model.BACnetDataType_BOOLEAN
-	TagBooleanAppTag = model.BACnetDataType_BOOLEAN
+	TagBooleanAppTag = readWriteModel.BACnetDataType_BOOLEAN
 	// Deprecated: use  model.BACnetDataType_UNSIGNED_INTEGER
-	TagUnsignedAppTag = model.BACnetDataType_UNSIGNED_INTEGER
+	TagUnsignedAppTag = readWriteModel.BACnetDataType_UNSIGNED_INTEGER
 	// Deprecated: use  model.BACnetDataType_SIGNED_INTEGER
-	TagIntegerAppTag = model.BACnetDataType_SIGNED_INTEGER
+	TagIntegerAppTag = readWriteModel.BACnetDataType_SIGNED_INTEGER
 	// Deprecated: use  model.BACnetDataType_REAL
-	TagRealAppTag = model.BACnetDataType_REAL
+	TagRealAppTag = readWriteModel.BACnetDataType_REAL
 	// Deprecated: use  model.BACnetDataType_DOUBLE
-	TagDoubleAppTag = model.BACnetDataType_DOUBLE
+	TagDoubleAppTag = readWriteModel.BACnetDataType_DOUBLE
 	// Deprecated: use  model.BACnetDataType_OCTET_STRING
-	TagOctetStringAppTag = model.BACnetDataType_OCTET_STRING
+	TagOctetStringAppTag = readWriteModel.BACnetDataType_OCTET_STRING
 	// Deprecated: use  model.BACnetDataType_CHARACTER_STRING
-	TagCharacterStringAppTag = model.BACnetDataType_CHARACTER_STRING
+	TagCharacterStringAppTag = readWriteModel.BACnetDataType_CHARACTER_STRING
 	// Deprecated: use  model.BACnetDataType_BIT_STRING
-	TagBitStringAppTag = model.BACnetDataType_BIT_STRING
+	TagBitStringAppTag = readWriteModel.BACnetDataType_BIT_STRING
 	// Deprecated: use  model.BACnetDataType_ENUMERATED
-	TagEnumeratedAppTag = model.BACnetDataType_ENUMERATED
+	TagEnumeratedAppTag = readWriteModel.BACnetDataType_ENUMERATED
 	// Deprecated: use  model.BACnetDataType_DATE
-	TagDateAppTag = model.BACnetDataType_DATE
+	TagDateAppTag = readWriteModel.BACnetDataType_DATE
 	// Deprecated: use  model.BACnetDataType_TIME
-	TagTimeAppTag = model.BACnetDataType_TIME
+	TagTimeAppTag = readWriteModel.BACnetDataType_TIME
 	// Deprecated: use  model.BACnetDataType_BACNET_OBJECT_IDENTIFIER
-	TagObjectIdentifierAppTag = model.BACnetDataType_BACNET_OBJECT_IDENTIFIER
+	TagObjectIdentifierAppTag = readWriteModel.BACnetDataType_BACNET_OBJECT_IDENTIFIER
 	TagReservedAppTag13       = 13
 	TagReservedAppTag14       = 14
 	TagReservedAppTag15       = 15
 )
 
 type Tag interface {
-	GetTagClass() model.TagClass
+	DebugContentPrinter
+	GetTagClass() readWriteModel.TagClass
 	GetTagNumber() uint
 	GetTagLvt() int
 	GetTagData() []byte
@@ -83,7 +88,7 @@ type Tag interface {
 }
 
 type tag struct {
-	tagClass  model.TagClass
+	tagClass  readWriteModel.TagClass
 	tagNumber uint
 	tagLVT    int
 	tagData   []byte
@@ -91,6 +96,8 @@ type tag struct {
 	appTagName  []string
 	appTagClass []any
 }
+
+var _ Tag = (*tag)(nil)
 
 func NewTag(args Args) (Tag, error) {
 	t := &tag{
@@ -129,7 +136,7 @@ func (t *tag) Decode(pdu PDUData) error {
 	}
 
 	// extract the type
-	t.tagClass = model.TagClass(tag >> 3 & 0x01)
+	t.tagClass = readWriteModel.TagClass(tag >> 3 & 0x01)
 
 	// extract the tag number
 	t.tagNumber = uint(tag >> 4)
@@ -170,7 +177,7 @@ func (t *tag) Decode(pdu PDUData) error {
 		t.tagLVT = 0
 	}
 
-	if t.tagClass == model.TagClass_APPLICATION_TAGS && t.tagNumber == uint(model.BACnetDataType_BOOLEAN) {
+	if t.tagClass == readWriteModel.TagClass_APPLICATION_TAGS && t.tagNumber == uint(readWriteModel.BACnetDataType_BOOLEAN) {
 		// tagLVT contains value
 		t.tagData = nil
 	} else {
@@ -186,7 +193,7 @@ func (t *tag) Decode(pdu PDUData) error {
 func (t *tag) Encode(pdu PDUData) {
 	var data byte
 	// check for special encoding
-	if t.tagClass == model.TagClass_CONTEXT_SPECIFIC_TAGS {
+	if t.tagClass == readWriteModel.TagClass_CONTEXT_SPECIFIC_TAGS {
 		data = 0x08
 	} else if t.tagClass == TagOpeningTagClass {
 		data = 0x0E
@@ -234,27 +241,27 @@ func (t *tag) Encode(pdu PDUData) {
 }
 
 func (t *tag) AppToContext(context uint) (*ContextTag, error) {
-	if t.tagClass != model.TagClass_APPLICATION_TAGS {
+	if t.tagClass != readWriteModel.TagClass_APPLICATION_TAGS {
 		return nil, errors.New("application tag required")
 	}
-	if t.tagNumber == uint(model.BACnetDataType_BOOLEAN) {
+	if t.tagNumber == uint(readWriteModel.BACnetDataType_BOOLEAN) {
 		return NewContextTag(NA(context, []byte{byte(t.tagLVT)}))
 	}
 	return NewContextTag(NA(context, t.tagData))
 }
 
 func (t *tag) ContextToApp(dataType uint) (Tag, error) {
-	if t.tagClass != model.TagClass_CONTEXT_SPECIFIC_TAGS {
+	if t.tagClass != readWriteModel.TagClass_CONTEXT_SPECIFIC_TAGS {
 		return nil, errors.New("context tag required")
 	}
-	if dataType == uint(model.BACnetDataType_BOOLEAN) {
-		return NewTag(NA(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, t.tagData[0], nil))
+	if dataType == uint(readWriteModel.BACnetDataType_BOOLEAN) {
+		return NewTag(NA(readWriteModel.TagClass_APPLICATION_TAGS, readWriteModel.BACnetDataType_BOOLEAN, t.tagData[0], nil))
 	}
 	return NewApplicationTag(NA(dataType, t.tagData))
 }
 
 func (t *tag) AppToObject() (any, error) {
-	if t.tagClass != model.TagClass_APPLICATION_TAGS {
+	if t.tagClass != readWriteModel.TagClass_APPLICATION_TAGS {
 		return nil, errors.New("context tag required")
 	}
 
@@ -297,19 +304,19 @@ func (t *tag) AppToObject() (any, error) {
 
 func (t *tag) set(args Args) {
 	switch tagClass := args[0].(type) {
-	case model.TagClass:
+	case readWriteModel.TagClass:
 		t.tagClass = tagClass
 	case uint:
-		t.tagClass = model.TagClass(tagClass)
+		t.tagClass = readWriteModel.TagClass(tagClass)
 	case uint8:
-		t.tagClass = model.TagClass(tagClass)
+		t.tagClass = readWriteModel.TagClass(tagClass)
 	case int:
-		t.tagClass = model.TagClass(tagClass)
+		t.tagClass = readWriteModel.TagClass(tagClass)
 	default:
 		panic("oh no")
 	}
 	switch tagNumber := args[1].(type) {
-	case model.BACnetDataType:
+	case readWriteModel.BACnetDataType:
 		t.tagNumber = uint(tagNumber)
 	case uint:
 		t.tagNumber = tagNumber
@@ -348,13 +355,13 @@ func (t *tag) set(args Args) {
 }
 
 func (t *tag) setAppData(tagNumber uint, tdata []byte) {
-	t.tagClass = model.TagClass_APPLICATION_TAGS
+	t.tagClass = readWriteModel.TagClass_APPLICATION_TAGS
 	t.tagNumber = tagNumber
 	t.tagLVT = len(tdata)
 	t.tagData = tdata
 }
 
-func (t *tag) GetTagClass() model.TagClass {
+func (t *tag) GetTagClass() readWriteModel.TagClass {
 	return t.tagClass
 }
 
@@ -385,4 +392,61 @@ func (t *tag) Equals(other any) bool {
 		t.tagNumber == otherTag.GetTagNumber() &&
 		t.tagLVT == otherTag.GetTagLvt() &&
 		bytes.Equal(t.tagData, otherTag.GetTagData())
+}
+
+func (t *tag) Format(s fmt.State, v rune) {
+	switch v {
+	case 'r':
+		sname := StructName() // TODO: maybe use leafname too
+		var desc string
+		if t.tagClass == TagOpeningTagClass {
+			desc = fmt.Sprintf("(open(%d))", t.tagNumber)
+		} else if t.tagClass == TagClosingTagClass {
+			desc = fmt.Sprintf("(close(%d))", t.tagNumber)
+		} else if t.tagClass == readWriteModel.TagClass_CONTEXT_SPECIFIC_TAGS {
+			desc = fmt.Sprintf("(context(%d))", t.tagNumber)
+		} else if t.tagClass == readWriteModel.TagClass_APPLICATION_TAGS && t.tagNumber < uint(len(t.appTagName)) {
+			desc = fmt.Sprintf("(%s)", t.appTagName[t.tagNumber])
+		} else {
+			desc = "(?)"
+		}
+
+		_, _ = fmt.Fprintf(s, "<%s%s instance at %p", sname, desc, t)
+	}
+}
+
+func (t *tag) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
+	// object reference first
+	_, _ = fmt.Fprintf(file, "%s%r\n", strings.Repeat("    ", indent), t)
+	indent += 1
+
+	// tag class
+	msg := fmt.Sprintf("%stagClass = %s ", strings.Repeat("    ", indent), t.tagClass)
+	if t.tagClass == readWriteModel.TagClass_APPLICATION_TAGS {
+		msg += "application"
+	} else if t.tagClass == readWriteModel.TagClass_CONTEXT_SPECIFIC_TAGS {
+		msg += "context"
+	} else if t.tagClass == TagOpeningTagClass {
+		msg += "opening"
+	} else if t.tagClass == TagClosingTagClass {
+		msg += "closing"
+	} else {
+		msg += "?"
+	}
+	_, _ = fmt.Fprintf(file, msg+"\n")
+
+	// tag number
+	msg = fmt.Sprintf("%stagNumber = %d ", strings.Repeat("    ", indent), t.tagNumber)
+	if t.tagClass == readWriteModel.TagClass_APPLICATION_TAGS && t.tagNumber < uint(len(t.appTagName)) {
+		msg += t.appTagName[t.tagNumber]
+	} else {
+		msg += "?"
+	}
+	_, _ = fmt.Fprintf(file, msg+"\n")
+
+	// length, value, type
+	_, _ = fmt.Fprintf(file, "%stagLVT = %d\n", strings.Repeat("    ", indent), t.tagLVT)
+
+	// data
+	_, _ = fmt.Fprintf(file, "%stagData = '%s'\n", strings.Repeat("    ", indent), Btox(t.tagData, "."))
 }

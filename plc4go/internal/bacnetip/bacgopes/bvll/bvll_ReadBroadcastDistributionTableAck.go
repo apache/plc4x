@@ -38,9 +38,11 @@ type ReadBroadcastDistributionTableAck struct {
 
 var _ BVLPDU = (*ReadBroadcastDistributionTableAck)(nil)
 
-func NewReadBroadcastDistributionTableAck(bdt []*Address, args Args, kwArgs KWArgs) (*ReadBroadcastDistributionTableAck, error) {
+// TODO: check this arg desaster
+func NewReadBroadcastDistributionTableAck(bdt []*Address, args Args, kwArgs KWArgs, options ...Option) (*ReadBroadcastDistributionTableAck, error) {
 	r := &ReadBroadcastDistributionTableAck{}
-	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, r)
+	r._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	r.AddDebugContents(r, "bvlciBDT")
 	if r.GetRootMessage() == nil {
 		r.SetRootMessage(readWriteModel.NewBVLCReadBroadcastDistributionTableAck(r.produceBroadcastDistributionTable()))

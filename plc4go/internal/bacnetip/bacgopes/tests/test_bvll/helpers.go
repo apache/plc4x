@@ -27,5 +27,5 @@ import (
 var _debug = CreateDebugPrinter()
 
 type TestDeviceObject struct {
-	*LocalDeviceObject
+	LocalDeviceObject
 }

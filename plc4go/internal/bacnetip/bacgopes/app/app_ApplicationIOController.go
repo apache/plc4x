@@ -45,7 +45,7 @@ type ApplicationIOController struct {
 	log zerolog.Logger
 }
 
-func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(controller *ApplicationIOController)) (*ApplicationIOController, error) {
+func NewApplicationIOController(localLog zerolog.Logger, localDevice LocalDeviceObject, opts ...func(controller *ApplicationIOController)) (*ApplicationIOController, error) {
 	a := &ApplicationIOController{
 		// queues for each address
 		queueByAddress: make(map[string]*SieveQueue),

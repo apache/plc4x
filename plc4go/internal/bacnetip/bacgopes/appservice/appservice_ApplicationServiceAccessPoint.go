@@ -143,7 +143,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 			a.log.Debug().Err(errorFound).Msg("got error")
 
 			// TODO: map it to a error... code temporary placeholder
-			return a.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0)))), NoKWArgs())
+			return a.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(readWriteModel.NewAPDUReject(_apdu.GetInvokeId(), nil, 0)))), NoKWArgs())
 		}
 	case readWriteModel.APDUUnconfirmedRequest:
 		var apduService readWriteModel.BACnetUnconfirmedServiceChoice
@@ -173,7 +173,6 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) err
 	return nil
 }
 
-// TODO: big WIP
 func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwArgs).Msg("SapIndication")
 	apdu := GA[APDU](args, 0)
@@ -207,6 +206,10 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) 
 		return errors.Errorf("unknown _PDU type %T", apdu)
 	}
 
+	if _debug != nil {
+		_debug("    - xpdu %r", xpdu)
+	}
+
 	// forward the encoded packet
 	err := a.Request(NA(xpdu), NoKWArgs())
 	if err != nil {
@@ -215,7 +218,10 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) 
 
 	// if the upper layers of the application did not assign an invoke ID,
 	// copy the one that was assigned on its way down the stack
-	if isConfirmed && apdu.GetApduInvokeID() != nil {
+	if isConfirmed && apdu.GetApduInvokeID() == nil {
+		if _debug != nil {
+			_debug("    - pass invoke ID upstream %r", xpdu.GetApduInvokeID())
+		}
 		apdu.SetApduInvokeID(xpdu.GetApduInvokeID())
 	}
 	return err

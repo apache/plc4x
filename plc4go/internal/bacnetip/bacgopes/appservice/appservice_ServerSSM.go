@@ -286,7 +286,7 @@ func (s *ServerSSM) abort(reason readWriteModel.BACnetAbortReason) (PDU, error) 
 	// build an abort _PDU to return
 	abortApdu := readWriteModel.NewAPDUAbort(true, s.invokeId, readWriteModel.NewBACnetAbortReasonTagged(reason, uint32(reason), 0), 0)
 	// return it
-	return NewPDU(NoArgs, NKW(KWCompRootMessage, abortApdu)), nil
+	return NewPDU(NoArgs, NoKWArgs(), WithRootMessage(abortApdu)), nil
 }
 
 func (s *ServerSSM) idle(apdu PDU) error {
@@ -390,7 +390,7 @@ func (s *ServerSSM) idle(apdu PDU) error {
 	// send back a segment ack
 	segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
 	s.log.Debug().Stringer("segack", segack).Msg("segAck")
-	return s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segack))), NoKWArgs())
+	return s.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(segack))), NoKWArgs())
 }
 
 func (s *ServerSSM) segmentedRequest(apdu PDU) error {
@@ -447,7 +447,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 
 		// send back a segment ack
 		segack := readWriteModel.NewAPDUSegmentAck(true, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
-		return s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segack))), NoKWArgs())
+		return s.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(segack))), NoKWArgs())
 	}
 
 	// add the data
@@ -464,7 +464,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 
 		// send back the final segment ack
 		segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.lastSequenceNumber, *s.actualWindowSize, 0)
-		if err := s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segack))), NoKWArgs()); err != nil {
+		if err := s.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(segack))), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending response")
 		}
 
@@ -481,7 +481,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 		if err != nil {
 			return errors.Wrap(err, "error parsing apdu")
 		}
-		if err := s.Request(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, parse))), NoKWArgs()); err != nil {
+		if err := s.Request(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(parse))), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
 	} else if *apduConfirmedRequest.GetSequenceNumber() == s.initialSequenceNumber+*s.actualWindowSize {
@@ -492,7 +492,7 @@ func (s *ServerSSM) segmentedRequest(apdu PDU) error {
 
 		// send back a segment ack
 		segack := readWriteModel.NewAPDUSegmentAck(false, true, s.invokeId, s.initialSequenceNumber, *s.actualWindowSize, 0)
-		if err := s.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, segack))), NoKWArgs()); err != nil {
+		if err := s.Response(NA(NewPDU(NoArgs, NoKWArgs(), WithRootMessage(segack))), NoKWArgs()); err != nil {
 			s.log.Debug().Err(err).Msg("error sending response")
 		}
 	} else {

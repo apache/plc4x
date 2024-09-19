@@ -37,17 +37,14 @@ type WhoIsRouterToNetwork struct {
 	wirtnNetwork *uint16
 }
 
-func NewWhoIsRouterToNetwork(args Args, kwArgs KWArgs, opts ...func(network *WhoIsRouterToNetwork)) (*WhoIsRouterToNetwork, error) {
+func NewWhoIsRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*WhoIsRouterToNetwork, error) {
 	w := &WhoIsRouterToNetwork{
 		messageType: 0x00,
 	}
-	for _, opt := range opts {
-		opt(w)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMWhoIsRouterToNetwork(w.wirtnNetwork, 0)
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, w)
+	options = AddLeafTypeIfAbundant(options, w)
+	options = AddNLMIfAbundant(options, model.NewNLMWhoIsRouterToNetwork(w.wirtnNetwork, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -57,10 +54,8 @@ func NewWhoIsRouterToNetwork(args Args, kwArgs KWArgs, opts ...func(network *Who
 	return w, nil
 }
 
-func WithWhoIsRouterToNetworkNet(net uint16) func(*WhoIsRouterToNetwork) {
-	return func(n *WhoIsRouterToNetwork) {
-		n.wirtnNetwork = &net
-	}
+func WithWhoIsRouterToNetworkNet(net uint16) GenericApplier[*WhoIsRouterToNetwork] {
+	return WrapGenericApplier(func(n *WhoIsRouterToNetwork) { n.wirtnNetwork = &net })
 }
 
 func (w *WhoIsRouterToNetwork) GetWirtnNetwork() *uint16 {

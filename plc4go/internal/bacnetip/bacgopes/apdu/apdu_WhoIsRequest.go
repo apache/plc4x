@@ -37,7 +37,7 @@ type WhoIsRequest struct {
 
 var _ readWriteModel.APDUUnconfirmedRequest = (*WhoIsRequest)(nil)
 
-func NewWhoIsRequest(args Args, kwArgs KWArgs) (*WhoIsRequest, error) {
+func NewWhoIsRequest(args Args, kwArgs KWArgs, options ...Option) (*WhoIsRequest, error) {
 	w := &WhoIsRequest{
 		serviceChoice: readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS,
 		sequenceElements: []Element{
@@ -45,15 +45,14 @@ func NewWhoIsRequest(args Args, kwArgs KWArgs) (*WhoIsRequest, error) {
 			NewElement("deviceInstanceRangeHighLimit", V2E(NewUnsigned), WithElementContext(1), WithElementOptional(true)),
 		},
 	}
-	if _, ok := kwArgs[KWCompRootMessage]; !ok {
-		kwArgs[KWCompRootMessage] = readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(
-			readWriteModel.CreateBACnetContextTagUnsignedInteger(0, 0), // TODO: set the right values
-			readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: set the right values
-			0,
-		)
-	}
+	options = AddRootMessageIfAbundant(options, readWriteModel.NewBACnetUnconfirmedServiceRequestWhoIs(
+		readWriteModel.CreateBACnetContextTagUnsignedInteger(0, 0), // TODO: set the right values
+		readWriteModel.CreateBACnetContextTagUnsignedInteger(1, 0), // TODO: set the right values
+		0,
+	))
+	options = AddLeafTypeIfAbundant(options, w)
 	var err error
-	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(args, kwArgs, WithUnconfirmedRequestSequenceExtension(w))
+	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(args, kwArgs, Combine(options, WithUnconfirmedRequestSequenceExtension(w))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating UnconfirmedRequestSequence")
 	}
@@ -77,4 +76,12 @@ func (w *WhoIsRequest) GetSequenceElements() []Element {
 
 func (w *WhoIsRequest) SetUnconfirmedRequestSequence(u *UnconfirmedRequestSequence) {
 	w.UnconfirmedRequestSequence = u
+}
+
+func (w *WhoIsRequest) SetDeviceInstanceRangeLowLimit(u uint) {
+	panic("implement me")
+}
+
+func (w *WhoIsRequest) SetDeviceInstanceRangeHighLimit(u uint) {
+	panic("implement me")
 }

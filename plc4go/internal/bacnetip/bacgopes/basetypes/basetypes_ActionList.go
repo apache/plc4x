@@ -32,7 +32,7 @@ type ActionList struct {
 func NewActionList(arg Arg) (*ActionList, error) {
 	s := &ActionList{
 		sequenceElements: []Element{
-			NewElement("action", SequenceOf(NewActionCommand), WithElementContext(0)),
+			NewElement("action", SequenceOfE(NewActionCommand), WithElementContext(0)),
 		},
 	}
 	panic("implementchoice")

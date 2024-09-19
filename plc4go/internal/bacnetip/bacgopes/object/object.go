@@ -17,4 +17,62 @@
  * under the License.
  */
 
+// TODO: big WIP
 package object
+
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+)
+
+var _debug = CreateDebugPrinter()
+
+var registeredObjectTypes map[any]struct{}
+
+func init() {
+	registeredObjectTypes = make(map[any]struct{})
+}
+
+// V2P accepts a function which takes an Arg and maps it to a PropertyKlass
+func V2P[T any](b func(arg Arg) (*T, error)) func(Args, KWArgs) (PropertyKlass, error) {
+	return func(args Args, kwArgs KWArgs) (PropertyKlass, error) {
+		var arg any
+		if len(args) == 1 {
+			arg = args[0]
+		}
+		r, err := b(arg)
+		return any(r).(PropertyKlass), err
+	}
+}
+
+// Vs2P accepts a function which takes an Args and maps it to a PropertyKlass
+func Vs2P[T any](b func(args Args) (*T, error)) func(Args, KWArgs) (PropertyKlass, error) {
+	return func(args Args, kwArgs KWArgs) (PropertyKlass, error) {
+		r, err := b(args)
+		return any(r).(PropertyKlass), err
+	}
+}
+
+// TODO: finish
+func SequenceOfP[T any](b func(arg Arg) (*T, error)) func(Args, KWArgs) (PropertyKlass, error) {
+	panic("finish me")
+}
+
+func SequenceOfsP[T any](b func(args Args) (*T, error)) func(Args, KWArgs) (PropertyKlass, error) {
+	panic("finish me")
+}
+
+// TODO: finish // convert to kwArgs and check wtf we are doing here...
+func ArrayOfP[T any](b func(arg Arg) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (PropertyKlass, error) {
+	panic("finish me")
+}
+
+// TODO: finish // convert to kwArgs and check wtf we are doing here...
+func ArrayOfsP[T any](b func(args Args) (*T, error), fixedLength int, prototype any) func(Args, KWArgs) (PropertyKlass, error) {
+	panic("finish me")
+}
+
+// TODO: finish // convert to kwArgs and check wtf we are doing here...
+func ListOfP[T any](b func(arg Arg) (*T, error)) func(Args, KWArgs) (PropertyKlass, error) {
+	panic("finish me")
+}

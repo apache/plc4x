@@ -35,7 +35,7 @@ func NewEventParameterExtended(arg Arg) (*EventParameterExtended, error) {
 		sequenceElements: []Element{
 			NewElement("vendorId", V2E(NewUnsigned), WithElementContext(0)),
 			NewElement("extendedEventType", V2E(NewUnsigned), WithElementContext(1)),
-			NewElement("parameters", SequenceOf(NewEventParameterExtendedParameters), WithElementContext(2)),
+			NewElement("parameters", SequenceOfE(NewEventParameterExtendedParameters), WithElementContext(2)),
 		},
 	}
 	panic("implementchoice")

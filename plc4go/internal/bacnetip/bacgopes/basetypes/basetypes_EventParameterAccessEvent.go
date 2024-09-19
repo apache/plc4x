@@ -32,7 +32,7 @@ type EventParameterAccessEvent struct {
 func NewEventParameterAccessEvent(arg Arg) (*EventParameterAccessEvent, error) {
 	s := &EventParameterAccessEvent{
 		sequenceElements: []Element{
-			NewElement("accessEvent", SequenceOf(NewEventParameterAccessEventAccessEvent), WithElementContext(0)),
+			NewElement("accessEvent", SequenceOfE(NewEventParameterAccessEventAccessEvent), WithElementContext(0)),
 		},
 	}
 	panic("implementchoice")

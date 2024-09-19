@@ -34,7 +34,7 @@ type ErrorPDU struct {
 
 var _ readWriteModel.APDUError = (*ErrorPDU)(nil)
 
-func NewErrorPDU(args Args, kwArgs KWArgs) (*ErrorPDU, error) {
+func NewErrorPDU(args Args, kwArgs KWArgs, options ...Option) (*ErrorPDU, error) {
 	e := &ErrorPDU{}
 	choice, ok := KWO[*readWriteModel.BACnetConfirmedServiceChoice](kwArgs, KWConfirmedServiceChoice, nil)
 	invokeID, ok := KWO[*uint8](kwArgs, KWInvokedID, nil)
@@ -42,7 +42,8 @@ func NewErrorPDU(args Args, kwArgs KWArgs) (*ErrorPDU, error) {
 	if _debug != nil {
 		_debug("__init__ %r %r %r %r %r", choice, invokeID, context, args, kwArgs)
 	}
-	apdu, err := New_APDU(args, kwArgs)
+	options = AddLeafTypeIfAbundant(options, e)
+	apdu, err := New_APDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}

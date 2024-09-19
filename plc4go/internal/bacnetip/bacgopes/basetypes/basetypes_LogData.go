@@ -34,7 +34,7 @@ func NewLogData(arg Arg) (*LogData, error) {
 	s := &LogData{
 		choiceElements: []Element{
 			NewElement("logStatus", V2E(NewLogStatus), WithElementContext(0)),
-			NewElement("logData", SequenceOf(NewLogDataLogData), WithElementContext(1)),
+			NewElement("logData", SequenceOfE(NewLogDataLogData), WithElementContext(1)),
 			NewElement("timeChange", V2E(NewReal), WithElementContext(2)),
 		},
 	}

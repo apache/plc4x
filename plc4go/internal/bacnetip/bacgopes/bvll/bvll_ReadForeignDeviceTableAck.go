@@ -38,9 +38,11 @@ type ReadForeignDeviceTableAck struct {
 
 var _ BVLPDU = (*ReadForeignDeviceTableAck)(nil)
 
-func NewReadForeignDeviceTableAck(fdt []*FDTEntry, args Args, kwArgs KWArgs) (*ReadForeignDeviceTableAck, error) {
+// TODO: check this arg desaster
+func NewReadForeignDeviceTableAck(fdt []*FDTEntry, args Args, kwArgs KWArgs, options ...Option) (*ReadForeignDeviceTableAck, error) {
 	r := &ReadForeignDeviceTableAck{}
-	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, r)
+	r._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	r.AddDebugContents(r, "bvlciFDT++")
 	if r.GetRootMessage() == nil {
 		r.SetRootMessage(readWriteModel.NewBVLCReadForeignDeviceTableAck(r.produceForeignDeviceTable()))

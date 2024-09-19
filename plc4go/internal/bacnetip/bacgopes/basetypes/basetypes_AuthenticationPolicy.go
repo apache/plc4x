@@ -33,7 +33,7 @@ type AuthenticationPolicy struct {
 func NewAuthenticationPolicy(arg Arg) (*AuthenticationPolicy, error) {
 	s := &AuthenticationPolicy{
 		sequenceElements: []Element{
-			NewElement("policy", SequenceOf(NewAuthenticationPolicyPolicy), WithElementContext(0)),
+			NewElement("policy", SequenceOfE(NewAuthenticationPolicyPolicy), WithElementContext(0)),
 			NewElement("orderEnforced", V2E(NewBoolean), WithElementContext(1)),
 			NewElement("timeout", V2E(NewUnsigned), WithElementContext(2)),
 		},

@@ -34,7 +34,7 @@ func NewEventParameterChangeOfState(arg Arg) (*EventParameterChangeOfState, erro
 	s := &EventParameterChangeOfState{
 		sequenceElements: []Element{
 			NewElement("timeDelay", V2E(NewUnsigned), WithElementContext(0)),
-			NewElement("listOfValues", SequenceOf(NewPropertyStates), WithElementContext(1)),
+			NewElement("listOfValues", SequenceOfE(NewPropertyStates), WithElementContext(1)),
 		},
 	}
 	panic("implementchoice")

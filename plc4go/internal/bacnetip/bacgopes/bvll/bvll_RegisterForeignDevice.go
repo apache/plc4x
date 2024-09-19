@@ -35,9 +35,11 @@ type RegisterForeignDevice struct {
 
 var _ BVLPDU = (*RegisterForeignDevice)(nil)
 
-func NewRegisterForeignDevice(ttl *uint16, args Args, kwArgs KWArgs) (*RegisterForeignDevice, error) {
+// TODO: check this args desaster
+func NewRegisterForeignDevice(ttl *uint16, args Args, kwArgs KWArgs, options ...Option) (*RegisterForeignDevice, error) {
 	r := &RegisterForeignDevice{}
-	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, r)
+	r._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	if r.GetRootMessage() == nil {
 		r.SetRootMessage(readWriteModel.NewBVLCRegisterForeignDevice(r.bvlciTimeToLive))
 	}

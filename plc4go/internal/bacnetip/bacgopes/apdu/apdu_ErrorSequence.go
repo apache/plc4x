@@ -46,23 +46,22 @@ type ErrorSequence struct {
 	_contract ErrorSequenceContract
 }
 
-func NewErrorSequence(args Args, kwArgs KWArgs, opts ...func(*ErrorSequence)) (*ErrorSequence, error) {
+func NewErrorSequence(args Args, kwArgs KWArgs, options ...Option) (*ErrorSequence, error) {
 	e := &ErrorSequence{}
-	for _, opt := range opts {
-		opt(e)
-	}
+	ApplyAppliers(options, e)
 	if e._contract == nil {
 		e._contract = e
 	} else {
 		e._contract.(ErrorSequenceContractRequirement).SetErrorSequence(e)
 	}
+	options = AddLeafTypeIfAbundant(options, e)
 	var err error
 	kwArgs[KWConfirmedServiceChoice] = e._contract.GetErrorChoice()
-	e.ErrorPDU, err = NewErrorPDU(args, kwArgs)
+	e.ErrorPDU, err = NewErrorPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating ErrorPDU")
 	}
-	e.APCISequence, err = NewAPCISequence(args, kwArgs, WithAPCISequenceExtension(e._contract))
+	e.APCISequence, err = NewAPCISequence(args, kwArgs, Combine(options, WithAPCISequenceExtension(e._contract))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APCISequence")
 	}
@@ -71,10 +70,8 @@ func NewErrorSequence(args Args, kwArgs KWArgs, opts ...func(*ErrorSequence)) (*
 	return e, nil
 }
 
-func WithErrorSequenceExtension(contract ErrorSequenceContractRequirement) func(*ErrorSequence) {
-	return func(a *ErrorSequence) {
-		a._contract = contract
-	}
+func WithErrorSequenceExtension(contract ErrorSequenceContractRequirement) GenericApplier[*ErrorSequence] {
+	return WrapGenericApplier(func(a *ErrorSequence) { a._contract = contract })
 }
 
 func (u *ErrorSequence) SetAPCISequence(a *APCISequence) {

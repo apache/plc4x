@@ -54,7 +54,7 @@ type _PDUData struct {
 
 var _ PDUData = (*_PDUData)(nil)
 
-func NewPDUData(args Args, kwArgs KWArgs) PDUData {
+func NewPDUData(args Args, kwArgs KWArgs, _ ...Option) PDUData {
 	data, ok := GAO[any](args, 0, nil)
 	if ok {
 		args = args[1:]

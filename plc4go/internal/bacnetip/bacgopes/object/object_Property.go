@@ -19,6 +19,42 @@
 
 package object
 
-type Property struct {
-	//TODO: implement me
+import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+
+// TODO: big WIP
+type Property interface {
+	ReadProperty()
+	WriteProperty()
+}
+
+type PropertyKlass interface {
+	Encode(Arg) error
+}
+
+func NewProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), opts ...func(*PropertyKlass)) Property {
+	return &_Property{}
+}
+
+type _Property struct {
+	Name     string
+	Klass    func(Args, KWArgs) (PropertyKlass, error)
+	Optional bool
+}
+
+var _ Property = (*_Property)(nil)
+
+func WithPropertyOptional(optional bool) func(*_Property) {
+	return func(e *_Property) {
+		e.Optional = optional
+	}
+}
+
+func (p *_Property) ReadProperty() {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *_Property) WriteProperty() {
+	//TODO implement me
+	panic("implement me")
 }

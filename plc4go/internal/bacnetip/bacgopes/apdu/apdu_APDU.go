@@ -21,8 +21,6 @@ package apdu
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -34,6 +32,7 @@ import (
 )
 
 type APDU interface {
+	Copyable
 	readWriteModel.APDU
 	APCI
 	PDUData
@@ -46,13 +45,18 @@ type __APDU struct {
 
 var _ APDU = (*__APDU)(nil)
 
-func NewAPDU(args Args, kwArgs KWArgs) (APDU, error) {
+func NewAPDU(args Args, kwArgs KWArgs, options ...Option) (APDU, error) {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
 	a := &__APDU{}
-	a._APCI = NewAPCI(args, kwArgs).(*_APCI)
-	a.PDUData = NewPDUData(args, kwArgs)
+	options = AddLeafTypeIfAbundant(options, a)
+	var err error
+	a._APCI, err = CreateSharedSuperIfAbundant[_APCI](options, newAPCI, args, kwArgs, options...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating APCI")
+	}
+	a.PDUData = NewPDUData(args, kwArgs, options...)
 	a.AddExtraPrinters(a.PDUData.(DebugContentPrinter))
 	return a, nil
 }
@@ -133,9 +137,5 @@ func (a *__APDU) DeepCopy() any {
 }
 
 func (a *__APDU) String() string {
-	if IsDebuggingActive() {
-		pci := "\t" + strings.Join(strings.Split(a.PCI.String(), "\n"), "\n\t")
-		return fmt.Sprintf("<APDU instance at %p>\n%s\n\tpduData = x'%s'", a, pci, Btox(a.GetPduData(), "."))
-	}
-	return fmt.Sprintf("APDU{%s}", a.PCI)
+	return a._APCI.String()
 }

@@ -35,9 +35,10 @@ type ReadForeignDeviceTable struct {
 
 var _ BVLPDU = (*ReadForeignDeviceTable)(nil)
 
-func NewReadForeignDeviceTable(args Args, kwArgs KWArgs) (*ReadForeignDeviceTable, error) {
+func NewReadForeignDeviceTable(args Args, kwArgs KWArgs, options ...Option) (*ReadForeignDeviceTable, error) {
 	r := &ReadForeignDeviceTable{}
-	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, r)
+	r._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	if r.GetRootMessage() == nil {
 		r.SetRootMessage(readWriteModel.NewBVLCReadForeignDeviceTable())
 	}

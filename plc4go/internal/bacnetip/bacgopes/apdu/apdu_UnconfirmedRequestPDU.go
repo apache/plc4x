@@ -34,13 +34,14 @@ type UnconfirmedRequestPDU struct {
 
 var _ readWriteModel.APDUUnconfirmedRequest = (*UnconfirmedRequestPDU)(nil)
 
-func NewUnconfirmedRequestPDU(args Args, kwArgs KWArgs) (*UnconfirmedRequestPDU, error) {
+func NewUnconfirmedRequestPDU(args Args, kwArgs KWArgs, options ...Option) (*UnconfirmedRequestPDU, error) {
 	u := &UnconfirmedRequestPDU{}
 	choice, ok := KWO[*readWriteModel.BACnetUnconfirmedServiceChoice](kwArgs, KWUnconfirmedServiceChoice, nil)
 	if _debug != nil {
 		_debug("__init__ %r %r %r", choice, args, kwArgs)
 	}
-	apdu, err := New_APDU(args, kwArgs)
+	options = AddLeafTypeIfAbundant(options, u)
+	apdu, err := New_APDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}

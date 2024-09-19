@@ -230,7 +230,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 	n.log.Debug().Stringer("localAdapter", localAdapter).Msg("localAdapter")
 
 	// build a generic APDU
-	apdu, err := NewAPDU(nil, NKW(KWCPCIUserData, pdu.GetPDUUserData())) // Note: upstream makes a _APDU instance which looks like a programming error as this class is only useful in an extension context...
+	apdu, err := New_APDU(nil, NKW(KWCPCIUserData, pdu.GetPDUUserData())) // Note: upstream makes a _APDU instance which looks like a programming error as this class is only useful in an extension context...
 	if err != nil {
 		return errors.Wrap(err, "error creating _APDU")
 	}
@@ -351,7 +351,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 
 		// check the path status
 		dnetStatus := routerInfo.dnets[nk(dnet)]
-		n.log.Debug().Stringer("dnetStatus", dnetStatus).Msg("dnetStatus")
+		n.log.Debug().Interface("dnetStatus", dnetStatus).Msg("dnetStatus")
 
 		// fix the destination
 		npdu.SetPDUDestination(routerInfo.address)
@@ -462,7 +462,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 		if processLocally && n.HasServerPeer() {
 			n.log.Trace().Msg("processing APDU locally")
 			// decode as a generic APDU
-			apdu, err := NewAPDU(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData()))
+			apdu, err := New_APDU(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData()))
 			if err != nil {
 				return errors.Wrap(err, "error creating APDU")
 			}
@@ -675,7 +675,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// pass this along as if it came from the NSE
-			if err := n.SapIndication(NA(xadapter, NewPDU(NoArgs, NKW(KWCompRootMessage, xnpdu, KWCPCIDestination, pduDestination))), NoKWArgs()); err != nil {
+			if err := n.SapIndication(NA(xadapter, NewPDU(NoArgs, NKW(KWCPCIDestination, pduDestination), WithRootMessage(xnpdu))), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error sending indication")
 			}
 		}

@@ -63,9 +63,9 @@ type ApplicationNetwork struct {
 
 	trafficLog      *TrafficLog
 	vlan            *Network
-	tdDeviceObject  *LocalDeviceObject
+	tdDeviceObject  LocalDeviceObject
 	td              *ApplicationStateMachine
-	iutDeviceObject *LocalDeviceObject
+	iutDeviceObject LocalDeviceObject
 	iut             *ApplicationStateMachine
 
 	log zerolog.Logger
@@ -89,13 +89,16 @@ func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error)
 	// test device object
 	octets1024 := model.MaxApduLengthAccepted_NUM_OCTETS_1024
 	segmentation := model.BACnetSegmentation_NO_SEGMENTATION
-	a.tdDeviceObject = &LocalDeviceObject{
-		ObjectName:                "td",
-		ObjectIdentifier:          "device:10",
-		MaximumApduLengthAccepted: &octets1024,
-		SegmentationSupported:     &segmentation,
-		VendorIdentifier:          999,
-	}
+	a.tdDeviceObject = NewLocalDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, "td",
+			KWObjectIdentifier, "device:10",
+			KWMaximumApduLengthAccepted, &octets1024,
+			KWSegmentationSupported, &segmentation,
+			KWVendorIdentifier, 999,
+		),
+	)
 
 	// test device
 	var err error
@@ -108,13 +111,16 @@ func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error)
 	// implementation under test device object
 	octets1024 = model.MaxApduLengthAccepted_NUM_OCTETS_1024
 	segmentation = model.BACnetSegmentation_NO_SEGMENTATION
-	a.iutDeviceObject = &LocalDeviceObject{
-		ObjectName:                "iut",
-		ObjectIdentifier:          "device:20",
-		MaximumApduLengthAccepted: &octets1024,
-		SegmentationSupported:     &segmentation,
-		VendorIdentifier:          999,
-	}
+	a.iutDeviceObject = NewLocalDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, "iut",
+			KWObjectIdentifier, "device:20",
+			KWMaximumApduLengthAccepted, &octets1024,
+			KWSegmentationSupported, &segmentation,
+			KWVendorIdentifier, 999,
+		),
+	)
 
 	// implementation under test
 	a.iut, err = NewApplicationStateMachine(localLog, a.iutDeviceObject, a.vlan)
@@ -352,13 +358,13 @@ type ApplicationStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDeviceObject, vlan *Network) (*ApplicationStateMachine, error) {
+func NewApplicationStateMachine(localLog zerolog.Logger, localDevice LocalDeviceObject, vlan *Network) (*ApplicationStateMachine, error) {
 	a := &ApplicationStateMachine{
 		log: localLog,
 	}
 
 	// build and address and save it
-	_, instance := ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
+	_, instance := ObjectIdentifierStringToTuple(localDevice.GetObjectIdentifier())
 	var err error
 	a.address, err = NewAddress(NA(instance))
 	if err != nil {
@@ -372,7 +378,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 		return nil, errors.Wrap(err, "error creating application io controller")
 	}
 	var init func()
-	a.StateMachineContract, init = NewStateMachine(a.log, a, WithStateMachineName(localDevice.ObjectName))
+	a.StateMachineContract, init = NewStateMachine(a.log, a, WithStateMachineName(localDevice.GetObjectName()))
 	init()
 
 	// include a application decoder

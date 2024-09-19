@@ -28,7 +28,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
@@ -75,7 +75,7 @@ type ApplicationNetwork struct {
 	log zerolog.Logger
 }
 
-func NewApplicationNetwork(localLog zerolog.Logger, tdDeviceObject, iutDeviceObject *LocalDeviceObject) (*ApplicationNetwork, error) {
+func NewApplicationNetwork(localLog zerolog.Logger, tdDeviceObject, iutDeviceObject LocalDeviceObject) (*ApplicationNetwork, error) {
 	a := &ApplicationNetwork{
 		log: localLog,
 	}
@@ -247,7 +247,7 @@ type ApplicationStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDeviceObject, vlan *Network, opts ...func(*ApplicationStateMachine)) (*ApplicationStateMachine, error) {
+func NewApplicationStateMachine(localLog zerolog.Logger, localDevice LocalDeviceObject, vlan *Network, opts ...func(*ApplicationStateMachine)) (*ApplicationStateMachine, error) {
 	a := &ApplicationStateMachine{
 		log: localLog,
 	}
@@ -255,7 +255,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 		opt(a)
 	}
 	// build and address and save it
-	_, instance := ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
+	_, instance := ObjectIdentifierStringToTuple(localDevice.GetObjectIdentifier())
 	var err error
 	a.address, err = NewAddress(NA(instance))
 	if err != nil {
@@ -269,7 +269,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 		return nil, errors.Wrap(err, "error creating application io controller")
 	}
 	var init func()
-	a.StateMachineContract, init = NewStateMachine(a.log, a, WithStateMachineName(localDevice.ObjectName))
+	a.StateMachineContract, init = NewStateMachine(a.log, a, WithStateMachineName(localDevice.GetObjectName()))
 	init()
 
 	// include a application decoder
@@ -367,25 +367,31 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 	octets206 := model.MaxApduLengthAccepted_NUM_OCTETS_206
 	segmentation := model.BACnetSegmentation_SEGMENTED_BOTH
 	maxSegmentsAccepted := model.MaxSegmentsAccepted_NUM_SEGMENTS_04
-	tdDeviceObject := &LocalDeviceObject{
-		ObjectName:                "td",
-		ObjectIdentifier:          "device:10",
-		MaximumApduLengthAccepted: &octets206,
-		SegmentationSupported:     &segmentation,
-		MaxSegmentsAccepted:       &maxSegmentsAccepted,
-		VendorIdentifier:          999,
-	}
+	tdDeviceObject := NewLocalDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, "td",
+			KWObjectIdentifier, "device:10",
+			KWMaximumApduLengthAccepted, &octets206,
+			KWSegmentationSupported, &segmentation,
+			KWMaxSegmentsAccepted, &maxSegmentsAccepted,
+			KWVendorIdentifier, 999,
+		),
+	)
 
 	// server device object
 	maxSegmentsAccepted = model.MaxSegmentsAccepted_NUM_SEGMENTS_64
-	iutDeviceObject := &LocalDeviceObject{
-		ObjectName:                "td",
-		ObjectIdentifier:          "device:10",
-		MaximumApduLengthAccepted: &octets206,
-		SegmentationSupported:     &segmentation,
-		MaxSegmentsAccepted:       &maxSegmentsAccepted,
-		VendorIdentifier:          999,
-	}
+	iutDeviceObject := NewLocalDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, "td",
+			KWObjectIdentifier, "device:10",
+			KWMaximumApduLengthAccepted, &octets206,
+			KWSegmentationSupported, &segmentation,
+			KWMaxSegmentsAccepted, &maxSegmentsAccepted,
+			KWVendorIdentifier, 999,
+		),
+	)
 
 	// create a network
 	anet, err := NewApplicationNetwork(testingLogger, tdDeviceObject, iutDeviceObject)
@@ -433,7 +439,7 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 			KnownKey("serviceParameters"), requestString,
 			KnownKey("destination"), anet.iut.address,
 		)), nil).Doc(prefix+"-1").
-		Receive(NA((*apdu.ConfirmedPrivateTransferRequest)(nil)), NoKWArgs()).Doc(prefix + "-2").
+		Receive(NA((*ConfirmedPrivateTransferRequest)(nil)), NoKWArgs()).Doc(prefix + "-2").
 		Success("")
 
 	// no IUT application layer matching

@@ -20,11 +20,38 @@
 package device
 
 import (
+	"fmt"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
-//go:generate plc4xGenerator -type=LocalDeviceObject -prefix=local_device_
-type LocalDeviceObject struct {
+type LocalDeviceObject interface {
+	fmt.Stringer
+	GetObjectIdentifier() string
+	GetMaximumApduLengthAccepted() *readWriteModel.MaxApduLengthAccepted
+	GetSegmentationSupported() *readWriteModel.BACnetSegmentation
+	GetVendorIdentifier() any
+	GetNumberOfAPDURetries() *uint
+	GetAPDUTimeout() *uint
+	SetApp(a any)
+	GetAPDUSegmentTimeout() *uint
+	GetObjectName() string
+	GetMaxSegmentsAccepted() *readWriteModel.MaxSegmentsAccepted
+	GetObjectList() []string
+	SetObjectList([]string)
+}
+
+func NewLocalDeviceObject(args Args, kwArgs KWArgs) LocalDeviceObject {
+	return &localDeviceObject{}
+}
+
+type localDeviceObject struct {
+	*CurrentPropertyListMixIn
+	*object.DeviceObject
+
+	// TODO: replace below...
 	NumberOfAPDURetries       *uint
 	APDUTimeout               *uint
 	SegmentationSupported     *readWriteModel.BACnetSegmentation `directSerialize:"true"`
@@ -36,4 +63,56 @@ type LocalDeviceObject struct {
 	ObjectIdentifier          string
 	VendorIdentifier          uint16
 	ObjectList                []string
+}
+
+func (l *localDeviceObject) GetObjectIdentifier() string {
+	return l.ObjectIdentifier
+}
+
+func (l *localDeviceObject) GetMaximumApduLengthAccepted() *readWriteModel.MaxApduLengthAccepted {
+	return l.MaximumApduLengthAccepted
+}
+
+func (l *localDeviceObject) GetSegmentationSupported() *readWriteModel.BACnetSegmentation {
+	return l.SegmentationSupported
+}
+
+func (l *localDeviceObject) GetVendorIdentifier() any {
+	return l.VendorIdentifier
+}
+
+func (l *localDeviceObject) GetNumberOfAPDURetries() *uint {
+	return l.NumberOfAPDURetries
+}
+
+func (l *localDeviceObject) GetAPDUTimeout() *uint {
+	return l.APDUTimeout
+}
+
+func (l *localDeviceObject) SetApp(a any) {
+	l.App = a
+}
+
+func (l *localDeviceObject) GetAPDUSegmentTimeout() *uint {
+	return l.APDUSegmentTimeout
+}
+
+func (l *localDeviceObject) GetObjectName() string {
+	return l.ObjectName
+}
+
+func (l *localDeviceObject) GetMaxSegmentsAccepted() *readWriteModel.MaxSegmentsAccepted {
+	return l.MaxSegmentsAccepted
+}
+
+func (l *localDeviceObject) GetObjectList() []string {
+	return l.ObjectList
+}
+
+func (l *localDeviceObject) SetObjectList(strings []string) {
+	l.ObjectList = strings
+}
+
+func (l *localDeviceObject) String() string {
+	panic("implementme")
 }

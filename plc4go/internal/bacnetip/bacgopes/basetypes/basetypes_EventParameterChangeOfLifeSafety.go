@@ -34,8 +34,8 @@ func NewEventParameterChangeOfLifeSafety(arg Arg) (*EventParameterChangeOfLifeSa
 	s := &EventParameterChangeOfLifeSafety{
 		sequenceElements: []Element{
 			NewElement("timeDelay", V2E(NewUnsigned), WithElementContext(0)),
-			NewElement("listOfLifeSafetyAlarmValues", SequenceOf(NewLifeSafetyState), WithElementContext(1)),
-			NewElement("listOfAlarmValues", SequenceOf(NewLifeSafetyState), WithElementContext(2)),
+			NewElement("listOfLifeSafetyAlarmValues", SequenceOfE(NewLifeSafetyState), WithElementContext(1)),
+			NewElement("listOfAlarmValues", SequenceOfE(NewLifeSafetyState), WithElementContext(2)),
 			NewElement("modePropertyReference", V2E(NewDeviceObjectPropertyReference), WithElementContext(3)),
 		},
 	}

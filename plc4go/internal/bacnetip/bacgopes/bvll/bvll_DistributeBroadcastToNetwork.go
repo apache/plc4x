@@ -35,9 +35,10 @@ type DistributeBroadcastToNetwork struct {
 
 var _ BVLPDU = (*DistributeBroadcastToNetwork)(nil)
 
-func NewDistributeBroadcastToNetwork(args Args, kwArgs KWArgs) (*DistributeBroadcastToNetwork, error) {
+func NewDistributeBroadcastToNetwork(args Args, kwArgs KWArgs, options ...Option) (*DistributeBroadcastToNetwork, error) {
 	d := &DistributeBroadcastToNetwork{}
-	d._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, d)
+	d._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	switch npdu := d.GetRootMessage().(type) {
 	case readWriteModel.NPDU:
 		// Repackage

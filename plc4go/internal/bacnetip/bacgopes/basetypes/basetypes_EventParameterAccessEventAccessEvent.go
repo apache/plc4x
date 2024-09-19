@@ -32,7 +32,7 @@ type EventParameterAccessEventAccessEvent struct {
 func NewEventParameterAccessEventAccessEvent(arg Arg) (*EventParameterAccessEventAccessEvent, error) {
 	s := &EventParameterAccessEventAccessEvent{
 		sequenceElements: []Element{
-			NewElement("listOfAccessEvents", SequenceOf(NewAccessEvent), WithElementContext(0)),
+			NewElement("listOfAccessEvents", SequenceOfE(NewAccessEvent), WithElementContext(0)),
 			NewElement("accessEventTimeReference", V2E(NewDeviceObjectPropertyReference), WithElementContext(1)),
 		},
 	}

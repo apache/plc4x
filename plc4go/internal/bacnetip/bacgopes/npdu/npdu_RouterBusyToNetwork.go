@@ -37,30 +37,26 @@ type RouterBusyToNetwork struct {
 	rbtnNetworkList []uint16
 }
 
-func NewRouterBusyToNetwork(args Args, kwArgs KWArgs, opts ...func(*RouterBusyToNetwork)) (*RouterBusyToNetwork, error) {
-	i := &RouterBusyToNetwork{
+func NewRouterBusyToNetwork(args Args, kwArgs KWArgs, options ...Option) (*RouterBusyToNetwork, error) {
+	r := &RouterBusyToNetwork{
 		messageType: 0x04,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMRouterBusyToNetwork(i.rbtnNetworkList, 0)
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, r)
+	options = AddLeafTypeIfAbundant(options, r)
+	options = AddNLMIfAbundant(options, model.NewNLMRouterBusyToNetwork(r.rbtnNetworkList, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
-	i._NPDU = npdu.(*_NPDU)
+	r._NPDU = npdu.(*_NPDU)
 
-	i.npduNetMessage = &i.messageType
-	return i, nil
+	r.npduNetMessage = &r.messageType
+	return r, nil
 }
 
-func WithRouterBusyToNetworkDnet(networkList []uint16) func(*RouterBusyToNetwork) {
-	return func(n *RouterBusyToNetwork) {
-		n.rbtnNetworkList = networkList
-	}
+// TODO: check if this is rather a KWArgs
+func WithRouterBusyToNetworkDnet(networkList []uint16) GenericApplier[*RouterBusyToNetwork] {
+	return WrapGenericApplier(func(n *RouterBusyToNetwork) { n.rbtnNetworkList = networkList })
 }
 
 func (r *RouterBusyToNetwork) GetRbtnNetworkList() []uint16 {

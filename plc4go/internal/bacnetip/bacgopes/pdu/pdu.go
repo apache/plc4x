@@ -80,8 +80,11 @@ func UnpackIpAddr(addr []byte) (addrTuple *AddressTuple[string, uint16]) {
 	return &AddressTuple[string, uint16]{uint32ToIpv4(ip).String(), port}
 }
 
+// TODO: convert to struct
 func NewLocalStation(addr any, route *Address) (*Address, error) {
-	l := &Address{}
+	l := &Address{
+		_leafName: "LocalStation",
+	}
 	l.AddrType = LOCAL_STATION_ADDRESS
 	l.AddrRoute = route
 
@@ -106,8 +109,11 @@ func NewLocalStation(addr any, route *Address) (*Address, error) {
 	return l, nil
 }
 
+// TODO: convert to struct
 func NewRemoteStation(net *uint16, addr any, route *Address) (*Address, error) {
-	l := &Address{}
+	l := &Address{
+		_leafName: "RemoteStation",
+	}
 	l.AddrType = REMOTE_STATION_ADDRESS
 	l.AddrNet = net
 	l.AddrRoute = route
@@ -134,22 +140,30 @@ func NewRemoteStation(net *uint16, addr any, route *Address) (*Address, error) {
 }
 
 func NewLocalBroadcast(route *Address) *Address {
-	l := &Address{}
+	l := &Address{
+		_leafName: "LocalBroadcast",
+	}
 	l.AddrType = LOCAL_BROADCAST_ADDRESS
 	l.AddrRoute = route
 	return l
 }
 
+// TODO: convert to struct
 func NewRemoteBroadcast(net uint16, route *Address) *Address {
-	r := &Address{}
+	r := &Address{
+		_leafName: "RemoteBroadcast",
+	}
 	r.AddrType = REMOTE_BROADCAST_ADDRESS
 	r.AddrNet = &net
 	r.AddrRoute = route
 	return r
 }
 
+// TODO: convert to struct
 func NewGlobalBroadcast(route *Address) *Address {
-	g := &Address{}
+	g := &Address{
+		_leafName: "GlobalBroadcast",
+	}
 	g.AddrType = GLOBAL_BROADCAST_ADDRESS
 	g.AddrRoute = route
 	return g

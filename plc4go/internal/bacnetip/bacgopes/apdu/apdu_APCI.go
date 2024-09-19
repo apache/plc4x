@@ -88,52 +88,58 @@ type _APCI struct {
 
 	// Deprecated: hacky workaround
 	bytesToDiscard int
+
+	_leafName string
 }
 
 var _ APCI = (*_APCI)(nil)
 
-func NewAPCI(args Args, kwArgs KWArgs) APCI {
+func NewAPCI(args Args, kwArgs KWArgs, options ...Option) (APCI, error) {
+	return newAPCI(args, kwArgs, options...)
+}
+
+func newAPCI(args Args, kwArgs KWArgs, options ...Option) (*_APCI, error) {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
-	a := &_APCI{}
+	a := &_APCI{
+		_leafName: ExtractLeafName(options, "APCI"),
+	}
+	options = AddLeafTypeIfAbundant(options, a)
 	a.DebugContents = NewDebugContents(a, "apduType", "apduSeg", "apduMor", "apduSA", "apduSrv",
 		"apduNak", "apduSeq", "apduWin", "apduMaxSegs", "apduMaxResp",
 		"apduService", "apduInvokeID", "apduAbortRejectReason")
-	a.PCI = NewPCI(args, kwArgs)
+	a.PCI = NewPCI(args, kwArgs, options...)
 	a.AddExtraPrinters(a.PCI.(DebugContentPrinter))
-	return a
+	return a, nil
 }
 
 func (a *_APCI) GetDebugAttr(attr string) any {
 	switch attr {
 	case "apduType":
-		return a.apduType
+		if a.apduType != nil {
+			return *a.apduType
+		}
 	case "apduSeg":
-		if !a.apduSeg {
-			return nil
+		if a.apduSeg {
+			return a.apduSeq
 		}
-		return a.apduSeq
 	case "apduMor":
-		if !a.apduMor {
-			return nil
+		if a.apduMor {
+			return a.apduMor
 		}
-		return a.apduMor
 	case "apduSA":
-		if !a.apduSA {
-			return nil
+		if a.apduSA {
+			return a.apduSA
 		}
-		return a.apduSA
 	case "apduSrv":
-		if !a.apduSrv {
-			return nil
+		if a.apduSrv {
+			return a.apduSrv
 		}
-		return a.apduSrv
 	case "apduNak":
-		if !a.apduNak {
-			return nil
+		if a.apduNak {
+			return a.apduNak
 		}
-		return a.apduNak
 	case "apduSeq":
 		if a.apduSeq != nil {
 			return *a.apduSeq
@@ -504,7 +510,7 @@ func (a *_APCI) deepCopy() *_APCI {
 }
 
 func (a *_APCI) String() string {
-	sname := StructName()
+	sname := a._leafName
 
 	// expand the type if possible
 	stype := ""

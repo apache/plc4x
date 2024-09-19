@@ -77,18 +77,19 @@ type _NPCI struct {
 
 var _ NPCI = (*_NPCI)(nil)
 
-func NewNPCI(args Args, kwArgs KWArgs) NPCI {
+func NewNPCI(args Args, kwArgs KWArgs, options ...Option) NPCI {
 	n := &_NPCI{
 		npduVersion: 1,
 	}
 	n.DebugContents = NewDebugContents(n, "npduVersion", "npduControl", "npduDADR", "npduSADR",
 		"npduHopCount", "npduNetMessage", "npduVendorID")
-	n.PCI = NewPCI(args, kwArgs)
+	options = AddLeafTypeIfAbundant(options, n)
+	n.PCI = NewPCI(args, kwArgs, options...)
 	n.AddExtraPrinters(n.PCI.(DebugContentPrinter))
 	if n.GetRootMessage() == nil {
-		nlm, nlmOk := KWO[readWriteModel.NLM](kwArgs, KWCompNLM, nil)
-		apdu, apduOk := KWO[readWriteModel.APDU](kwArgs, KWCompAPDU, nil)
-		if nlmOk || apduOk {
+		nlm := ExtractNLM(options)
+		apdu := ExtractAPDU(options)
+		if nlm != nil || apdu != nil {
 			npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
 			n.SetRootMessage(npdu)
 		}

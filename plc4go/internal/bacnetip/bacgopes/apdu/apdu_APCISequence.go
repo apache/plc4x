@@ -49,32 +49,36 @@ type APCISequence struct {
 	tagList *TagList
 }
 
-func NewAPCISequence(args Args, kwArgs KWArgs, opts ...func(*APCISequence)) (*APCISequence, error) {
+func NewAPCISequence(args Args, kwArgs KWArgs, options ...Option) (*APCISequence, error) {
 	a := &APCISequence{}
-	for _, opt := range opts {
-		opt(a)
+	ApplyAppliers(options, a)
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwArgs)
 	}
 	if a._contract == nil {
 		a._contract = a
 	} else {
 		a._contract.(APCISequenceContractRequirement).SetAPCISequence(a)
 	}
-	a._APCI = NewAPCI(args, kwArgs).(*_APCI)
+	options = AddLeafTypeIfAbundant(options, a)
 	var err error
-	a.Sequence, err = NewSequence(args, kwArgs, WithSequenceExtension(a._contract))
+	a._APCI, err = CreateSharedSuperIfAbundant[_APCI](options, newAPCI, args, kwArgs, options...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating APCI")
+	}
+	a.Sequence, err = NewSequence(args, kwArgs, Combine(options, WithSequenceExtension(a._contract))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating sequence")
 	}
+	a.AddExtraPrinters(a.Sequence)
 
 	// start with an empty tag list
 	a.tagList = NewTagList(nil)
 	return a, nil
 }
 
-func WithAPCISequenceExtension(contract APCISequenceContractRequirement) func(*APCISequence) {
-	return func(a *APCISequence) {
-		a._contract = contract
-	}
+func WithAPCISequenceExtension(contract APCISequenceContractRequirement) GenericApplier[*APCISequence] {
+	return WrapGenericApplier(func(a *APCISequence) { a._contract = contract })
 }
 
 func (a *APCISequence) SetSequence(sequence *Sequence) {
@@ -82,6 +86,9 @@ func (a *APCISequence) SetSequence(sequence *Sequence) {
 }
 
 func (a *APCISequence) Encode(apdu Arg) error {
+	if _debug != nil {
+		_debug("encode %r", apdu)
+	}
 	switch apdu := apdu.(type) {
 	case Updater:
 		if err := apdu.Update(a); err != nil {
@@ -107,6 +114,9 @@ func (a *APCISequence) Encode(apdu Arg) error {
 }
 
 func (a *APCISequence) Decode(apdu Arg) error {
+	if _debug != nil {
+		_debug("decode %r", apdu)
+	}
 	// copy the header fields
 	if err := a.Update(apdu); err != nil {
 		return errors.Wrap(err, "error updating APDU")
@@ -126,8 +136,14 @@ func (a *APCISequence) Decode(apdu Arg) error {
 	if err := a.Sequence.Decode(a.tagList); err != nil {
 		return errors.Wrap(err, "error encoding TagList")
 	}
+	if _debug != nil {
+		_debug("    - tag list: %r", a.tagList)
+	}
 
 	if len(a.tagList.GetTagList()) > 0 {
+		if _debug != nil {
+			_debug("    - trailing unmatched tags")
+		}
 		return errors.New("trailing unmatched tags")
 	}
 	return nil

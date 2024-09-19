@@ -36,7 +36,7 @@ type IAmRequest struct {
 	sequenceElements []Element
 }
 
-func NewIAmRequest(args Args, kwArgs KWArgs) (*IAmRequest, error) {
+func NewIAmRequest(args Args, kwArgs KWArgs, options ...Option) (*IAmRequest, error) {
 	w := &IAmRequest{
 		serviceChoice: readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS,
 		sequenceElements: []Element{
@@ -46,17 +46,16 @@ func NewIAmRequest(args Args, kwArgs KWArgs) (*IAmRequest, error) {
 			NewElement("vendorID", V2E(NewUnsigned)),
 		},
 	}
-	if _, ok := kwArgs[KWCompRootMessage]; !ok {
-		kwArgs[KWCompRootMessage] = readWriteModel.NewBACnetUnconfirmedServiceRequestIAm(
-			readWriteModel.CreateBACnetApplicationTagObjectIdentifier(0, 0),                                                // TODO: get right values
-			readWriteModel.CreateBACnetApplicationTagUnsignedInteger(0),                                                    // TODO: get right values
-			readWriteModel.NewBACnetSegmentationTagged(readWriteModel.CreateBACnetTagHeaderBalanced(false, 0, 0), 0, 0, 0), // TODO: get right values
-			readWriteModel.CreateBACnetVendorIdApplicationTagged(0),                                                        // TODO: get right values
-			0,
-		)
-	}
+	options = AddRootMessageIfAbundant(options, readWriteModel.NewBACnetUnconfirmedServiceRequestIAm(
+		readWriteModel.CreateBACnetApplicationTagObjectIdentifier(0, 0),                                                // TODO: get right values
+		readWriteModel.CreateBACnetApplicationTagUnsignedInteger(0),                                                    // TODO: get right values
+		readWriteModel.NewBACnetSegmentationTagged(readWriteModel.CreateBACnetTagHeaderBalanced(false, 0, 0), 0, 0, 0), // TODO: get right values
+		readWriteModel.CreateBACnetVendorIdApplicationTagged(0),                                                        // TODO: get right values
+		0,
+	))
+	options = AddLeafTypeIfAbundant(options, w)
 	var err error
-	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(args, kwArgs, WithUnconfirmedRequestSequenceExtension(w))
+	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(args, kwArgs, Combine(options, WithUnconfirmedRequestSequenceExtension(w))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating UnconfirmedRequestSequence")
 	}

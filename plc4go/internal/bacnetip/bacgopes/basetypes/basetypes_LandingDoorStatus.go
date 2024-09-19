@@ -32,7 +32,7 @@ type LandingDoorStatus struct {
 func NewLandingDoorStatus(arg Arg) (*LandingDoorStatus, error) {
 	s := &LandingDoorStatus{
 		sequenceElements: []Element{
-			NewElement("landingDoors", SequenceOf(NewLandingDoorStatusLandingDoor), WithElementContext(0)),
+			NewElement("landingDoors", SequenceOfE(NewLandingDoorStatusLandingDoor), WithElementContext(0)),
 		},
 	}
 	panic("implementchoice")

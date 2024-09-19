@@ -34,7 +34,7 @@ func NewCOVMultipleSubscriptionList(arg Arg) (*COVMultipleSubscriptionList, erro
 	s := &COVMultipleSubscriptionList{
 		sequenceElements: []Element{
 			NewElement("monitoredObjectIdentifier", Vs2E(NewObjectIdentifier), WithElementContext(0)),
-			NewElement("listOfCOVReferences", SequenceOf(NewCOVMultipleSubscriptionListOfCOVReference), WithElementContext(1)),
+			NewElement("listOfCOVReferences", SequenceOfE(NewCOVMultipleSubscriptionListOfCOVReference), WithElementContext(1)),
 		},
 	}
 	panic("implementchoice")

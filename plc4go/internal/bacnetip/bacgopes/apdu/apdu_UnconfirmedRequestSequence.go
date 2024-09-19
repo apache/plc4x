@@ -46,28 +46,30 @@ type UnconfirmedRequestSequence struct {
 	_contract UnconfirmedRequestSequenceContract
 }
 
-func NewUnconfirmedRequestSequence(args Args, kwArgs KWArgs, opts ...func(*UnconfirmedRequestSequence)) (*UnconfirmedRequestSequence, error) {
+func NewUnconfirmedRequestSequence(args Args, kwArgs KWArgs, options ...Option) (*UnconfirmedRequestSequence, error) {
 	u := &UnconfirmedRequestSequence{}
-	for _, opt := range opts {
-		opt(u)
+	ApplyAppliers(options, u)
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwArgs)
 	}
 	if u._contract == nil {
 		u._contract = u
 	} else {
 		u._contract.(UnconfirmedRequestSequenceContractRequirement).SetUnconfirmedRequestSequence(u)
 	}
+	options = AddSharedSuperIfAbundant[_APCI](options)
+	options = AddLeafTypeIfAbundant(options, u)
 	var err error
 	kwArgs[KWUnconfirmedServiceChoice] = u._contract.GetServiceChoice()
-	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU(args, kwArgs)
+	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating UnconfirmedRequestPDU")
 	}
-	u.APCISequence, err = NewAPCISequence(args, kwArgs, WithAPCISequenceExtension(u._contract))
+	//TODO: the sequence is usually init first but seems upstream does a init on the same level first before going deeper
+	u.APCISequence, err = NewAPCISequence(args, kwArgs, Combine(options, WithAPCISequenceExtension(u._contract))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APCISequence")
 	}
-	// We need to set the APCI to the same objects...
-	u.APCISequence._APCI = u.UnconfirmedRequestPDU._APCI
 	if u.GetRootMessage() == nil {
 		panic("this should be set by NewConfirmedRequestPDU")
 		serviceRequest, _ := GAO[model.BACnetConfirmedServiceRequest](args, 0, nil)
@@ -79,10 +81,8 @@ func NewUnconfirmedRequestSequence(args Args, kwArgs KWArgs, opts ...func(*Uncon
 	return u, nil
 }
 
-func WithUnconfirmedRequestSequenceExtension(contract UnconfirmedRequestSequenceContractRequirement) func(*UnconfirmedRequestSequence) {
-	return func(a *UnconfirmedRequestSequence) {
-		a._contract = contract
-	}
+func WithUnconfirmedRequestSequenceExtension(contract UnconfirmedRequestSequenceContractRequirement) GenericApplier[*UnconfirmedRequestSequence] {
+	return WrapGenericApplier(func(a *UnconfirmedRequestSequence) { a._contract = contract })
 }
 
 func (u *UnconfirmedRequestSequence) SetAPCISequence(a *APCISequence) {

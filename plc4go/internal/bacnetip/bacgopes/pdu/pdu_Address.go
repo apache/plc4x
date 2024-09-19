@@ -134,13 +134,17 @@ type Address struct {
 	AddrPort           *uint16
 	AddrTuple          *AddressTuple[string, uint16]
 	AddrBroadcastTuple *AddressTuple[string, uint16]
+
+	_leafName string
 }
 
 func NewAddress(args Args) (*Address, error) {
 	if _debug != nil {
 		_debug("__init__ %r", args)
 	}
-	a := &Address{}
+	a := &Address{
+		_leafName: "Address", // TODO: usually this is done by extract, we leaf address for now as this would imply changing type to an interface and that is a big change.
+	}
 	a.AddrNet = nil
 	a.AddrAddress = nil
 	a.AddrLen = nil
@@ -800,7 +804,7 @@ func (a *Address) Format(s fmt.State, v rune) {
 	}
 	switch v {
 	case 'r':
-		_, _ = fmt.Fprintf(s, "<%s %s>", StructName(), a.String())
+		_, _ = fmt.Fprintf(s, "<%s %s>", a._leafName, a.String())
 	case 'v', 's':
 		_, _ = fmt.Fprint(s, a.String())
 	}
@@ -823,6 +827,7 @@ func (a *Address) deepCopy() *Address {
 		CopyPtr(a.AddrPort),
 		a.AddrTuple.deepCopy(),
 		a.AddrBroadcastTuple.deepCopy(),
+		a._leafName,
 	}
 }
 

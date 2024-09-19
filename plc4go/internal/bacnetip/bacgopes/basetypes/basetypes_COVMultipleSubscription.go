@@ -37,7 +37,7 @@ func NewCOVMultipleSubscription(arg Arg) (*COVMultipleSubscription, error) {
 			NewElement("issueConfirmedNotifications", V2E(NewBoolean), WithElementContext(1)),
 			NewElement("timeRemaining", V2E(NewUnsigned), WithElementContext(2)),
 			NewElement("maxNotificationDelay", V2E(NewUnsigned), WithElementContext(3)),
-			NewElement("listOfCOVSubscriptionSpecifications", SequenceOf(NewCOVMultipleSubscriptionList), WithElementContext(4)),
+			NewElement("listOfCOVSubscriptionSpecifications", SequenceOfE(NewCOVMultipleSubscriptionList), WithElementContext(4)),
 		},
 	}
 	panic("implementchoice")

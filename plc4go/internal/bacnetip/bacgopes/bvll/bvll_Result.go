@@ -37,9 +37,11 @@ type Result struct {
 
 var _ BVLPDU = (*Result)(nil)
 
-func NewResult(code *readWriteModel.BVLCResultCode, args Args, kwArgs KWArgs) (*Result, error) {
+// TODO: check this arg desaster...
+func NewResult(code *readWriteModel.BVLCResultCode, args Args, kwArgs KWArgs, options ...Option) (*Result, error) {
 	r := &Result{}
-	r._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, r)
+	r._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	if r.GetRootMessage() == nil {
 		r.SetRootMessage(readWriteModel.NewBVLCResult(r.bvlciResultCode))
 	}

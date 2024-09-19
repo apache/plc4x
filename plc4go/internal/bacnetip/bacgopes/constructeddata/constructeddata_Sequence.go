@@ -20,11 +20,15 @@
 package constructeddata
 
 import (
+	"fmt"
+	"io"
 	"reflect"
+	"strings"
 
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -41,7 +45,6 @@ type SequenceContractRequirement interface {
 	SetSequence(s *Sequence)
 }
 
-// TODO: finish
 type Sequence struct {
 	_contract        SequenceContract
 	sequenceElements []Element
@@ -49,13 +52,11 @@ type Sequence struct {
 }
 
 // NewSequence Create a sequence element, optionally providing attribute/property values.
-func NewSequence(args Args, kwArgs KWArgs, opts ...func(*Sequence)) (*Sequence, error) {
+func NewSequence(args Args, kwArgs KWArgs, options ...Option) (*Sequence, error) {
 	s := &Sequence{
 		attr: make(map[string]any),
 	}
-	for _, opt := range opts {
-		opt(s)
-	}
+	ApplyAppliers(options, s)
 	if s._contract == nil {
 		s._contract = s
 	} else {
@@ -98,10 +99,8 @@ func NewSequence(args Args, kwArgs KWArgs, opts ...func(*Sequence)) (*Sequence, 
 	return s, nil
 }
 
-func WithSequenceExtension(contract SequenceContractRequirement) func(*Sequence) {
-	return func(s *Sequence) {
-		s._contract = contract
-	}
+func WithSequenceExtension(contract SequenceContractRequirement) GenericApplier[*Sequence] {
+	return WrapGenericApplier(func(s *Sequence) { s._contract = contract })
 }
 
 func (a *Sequence) GetSequenceElements() []Element {
@@ -117,6 +116,9 @@ func (a *Sequence) Encode(arg Arg) error {
 	tagList, ok := arg.(*TagList)
 	if !ok {
 		return errors.New("arg is not a TagList")
+	}
+	if _debug != nil {
+		_debug("encode %r", tagList)
 	}
 
 	for _, element := range a._contract.GetSequenceElements() {
@@ -225,9 +227,15 @@ func (a *Sequence) Decode(arg Arg) error {
 	if !ok {
 		return errors.New("arg is not a TagList")
 	}
+	if _debug != nil {
+		_debug("decode %r", tagList)
+	}
 
 	for _, element := range a._contract.GetSequenceElements() {
 		tag := tagList.Peek()
+		if _debug != nil {
+			_debug("    - element, tag: %r, %r", element, tag)
+		}
 
 		elementKlass, err := element.GetKlass()(Nothing())
 		if err != nil {
@@ -315,4 +323,53 @@ func (a *Sequence) Decode(arg Arg) error {
 		}
 	}
 	return nil
+}
+
+func (a *Sequence) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
+	for _, element := range a.sequenceElements {
+		value, ok := a.GetAttr(element.GetName())
+		if element.IsOptional() && !ok {
+			continue
+		} else if !element.IsOptional() && !ok {
+			_, _ = fmt.Fprintf(file, "%s%s is a missing required element of %s\n", strings.Repeat("    ", indent), element.GetName(), StructName())
+			continue
+		}
+
+		elementKlass, err := element.GetKlass()(Nothing())
+		if err != nil {
+			if _debug != nil {
+				_debug("can't get zero object")
+			}
+			return
+		}
+		_, elementInSequenceOfClasses := _sequenceOfClasses[elementKlass]
+		_, elementInListOfClasses := _listOfClasses[elementKlass]
+		isAtomic := false
+		isAnyAtomic := false
+		switch elementKlass.(type) {
+		case IsAtomic:
+			isAtomic = true
+		case IsAnyAtomic:
+			isAnyAtomic = true
+		}
+		isValueSubOfElementKlass := false // TODO: how to figure that out??
+		if elementInSequenceOfClasses || elementInListOfClasses {
+			_, _ = fmt.Fprintf(file, "%s%s\n", strings.Repeat("    ", indent), element.GetName())
+			helper, err := element.GetKlass()(NA(value), NoKWArgs())
+			if err != nil {
+				if _debug != nil {
+					_debug("    - helper class %s, err: %v", element.GetName(), err)
+				}
+				return
+			}
+			helper.(DebugContentPrinter).PrintDebugContents(indent+1, file, _ids)
+		} else if isAtomic || isAnyAtomic {
+			printVerb := VerbForType(value, 'r')
+			_, _ = fmt.Fprintf(file, "%s%s = "+string(printVerb)+"\n", strings.Repeat("    ", indent), element.GetName(), value)
+		} else if isValueSubOfElementKlass {
+			value.(DebugContentPrinter).PrintDebugContents(indent+1, file, _ids)
+		} else {
+			_, _ = fmt.Fprintf(file, "%s%s must be a %T\n", strings.Repeat("    ", indent), element.GetName(), element.GetKlass())
+		}
+	}
 }

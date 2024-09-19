@@ -37,17 +37,14 @@ type DisconnectConnectionToNetwork struct {
 	dctnDNET uint16
 }
 
-func NewDisconnectConnectionToNetwork(args Args, kwArgs KWArgs, opts ...func(*DisconnectConnectionToNetwork)) (*DisconnectConnectionToNetwork, error) {
+func NewDisconnectConnectionToNetwork(args Args, kwArgs KWArgs, options ...Option) (*DisconnectConnectionToNetwork, error) {
 	i := &DisconnectConnectionToNetwork{
 		messageType: 0x09,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	if _, ok := kwArgs[KWCompNLM]; ok {
-		kwArgs[KWCompNLM] = model.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0)
-	}
-	npdu, err := NewNPDU(args, kwArgs)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -57,10 +54,9 @@ func NewDisconnectConnectionToNetwork(args Args, kwArgs KWArgs, opts ...func(*Di
 	return i, nil
 }
 
-func WithDisconnectConnectionToNetworkDNET(dnet uint16) func(*DisconnectConnectionToNetwork) {
-	return func(n *DisconnectConnectionToNetwork) {
-		n.dctnDNET = dnet
-	}
+// TODO: check if this is rather a KWArgs
+func WithDisconnectConnectionToNetworkDNET(dnet uint16) GenericApplier[*DisconnectConnectionToNetwork] {
+	return WrapGenericApplier(func(n *DisconnectConnectionToNetwork) { n.dctnDNET = dnet })
 }
 
 func (n *DisconnectConnectionToNetwork) GetDctnDNET() uint16 {

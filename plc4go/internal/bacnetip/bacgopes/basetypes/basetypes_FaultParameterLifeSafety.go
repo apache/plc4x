@@ -32,7 +32,7 @@ type FaultParameterLifeSafety struct {
 func NewFaultParameterLifeSafety(arg Arg) (*FaultParameterLifeSafety, error) {
 	s := &FaultParameterLifeSafety{
 		sequenceElements: []Element{
-			NewElement("listOfFaultValues", SequenceOf(NewLifeSafetyState), WithElementContext(0)),
+			NewElement("listOfFaultValues", SequenceOfE(NewLifeSafetyState), WithElementContext(0)),
 			NewElement("modePropertyReference", V2E(NewDeviceObjectPropertyReference), WithElementContext(1)),
 		},
 	}

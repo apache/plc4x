@@ -17,19 +17,26 @@
  * under the License.
  */
 
-package object
+package comp
 
-import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+type GenericFunction = func(args Args, kwArgs KWArgs) error
 
-//go:generate plc4xGenerator -type=ReadWritePropertyServices -prefix=object_
-type ReadWritePropertyServices struct {
+type Updater interface {
+	Update(Arg) error
 }
 
-func NewReadWritePropertyServices() (*ReadWritePropertyServices, error) {
-	// TODO: implement me
-	return nil, nil
+type Encoder interface {
+	Encode(Arg) error
 }
 
-func (*ReadWritePropertyServices) Confirmation(Args, KWArgs) error {
-	panic("implement me")
+type Decoder interface {
+	Decode(Arg) error
+}
+
+type Comparable interface {
+	Equals(other any) bool
+}
+
+type Copyable interface {
+	DeepCopy() any
 }

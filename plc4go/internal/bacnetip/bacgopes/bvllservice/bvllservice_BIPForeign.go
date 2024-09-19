@@ -372,7 +372,7 @@ func (b *BIPForeign) Register(addr *Address, ttl uint16) error {
 // Immediately drops active foreign device registration and stops further
 // registration renewals.
 func (b *BIPForeign) Unregister() {
-	pdu := NewPDU(NoArgs, NKW(KWCompRootMessage, model.NewBVLCRegisterForeignDevice(0), KWCPCIDestination, b.bbmdAddress))
+	pdu := NewPDU(NoArgs, NKW(KWCPCIDestination, b.bbmdAddress), WithRootMessage(model.NewBVLCRegisterForeignDevice(0)))
 
 	// send it downstream
 	if err := b.Request(NA(pdu), NoKWArgs()); err != nil {

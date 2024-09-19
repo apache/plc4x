@@ -38,9 +38,11 @@ type ForwardedNPDU struct {
 
 var _ BVLPDU = (*ForwardedNPDU)(nil)
 
-func NewForwardedNPDU(addr *Address, args Args, kwArgs KWArgs) (*ForwardedNPDU, error) {
+// TODO: check this args desaster...
+func NewForwardedNPDU(addr *Address, args Args, kwArgs KWArgs, options ...Option) (*ForwardedNPDU, error) {
 	f := &ForwardedNPDU{}
-	f._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, f)
+	f._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	f.AddDebugContents(f, "bvlciAddress")
 	switch npdu := f.GetRootMessage().(type) {
 	case readWriteModel.NPDU:

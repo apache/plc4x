@@ -32,7 +32,7 @@ type FaultParameterState struct {
 func NewFaultParameterState(arg Arg) (*FaultParameterState, error) {
 	s := &FaultParameterState{
 		sequenceElements: []Element{
-			NewElement("listOfFaultValues", SequenceOf(NewPropertyStates), WithElementContext(0)),
+			NewElement("listOfFaultValues", SequenceOfE(NewPropertyStates), WithElementContext(0)),
 		},
 	}
 	panic("implementchoice")
