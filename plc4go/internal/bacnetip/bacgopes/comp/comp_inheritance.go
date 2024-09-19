@@ -50,7 +50,7 @@ func AddLeafTypeIfAbundant[T any](options []Option, leaf *T) []Option {
 
 // WithLeafType can be used to add a leaf type
 func WithLeafType[T any](leaf *T) Option {
-	return leafType{name: fmt.Sprintf("%T", leaf)[1:]}
+	return leafType{name: "bacgopes." + fmt.Sprintf("%T", leaf)[1:]}
 }
 
 // ExtractLeafName or return default

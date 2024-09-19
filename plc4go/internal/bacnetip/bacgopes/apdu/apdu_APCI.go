@@ -103,7 +103,7 @@ func newAPCI(args Args, kwArgs KWArgs, options ...Option) (*_APCI, error) {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
 	a := &_APCI{
-		_leafName: ExtractLeafName(options, "APCI"),
+		_leafName: ExtractLeafName(options, StructName()),
 	}
 	options = AddLeafTypeIfAbundant(options, a)
 	a.DebugContents = NewDebugContents(a, "apduType", "apduSeg", "apduMor", "apduSA", "apduSrv",
@@ -516,7 +516,7 @@ func (a *_APCI) String() string {
 	stype := ""
 	if a.apduType != nil {
 		if v, ok := APDUTypes[*a.apduType]; ok {
-			stype = fmt.Sprintf("%T", v)
+			stype = QualifiedTypeName(v())
 		} else {
 			stype = "?"
 		}

@@ -20,12 +20,10 @@
 package vlan
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -40,17 +38,19 @@ type IPNode struct {
 	addrBroadcastTuple *AddressTuple[string, uint16] `stringer:"true"`
 }
 
-func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, opts ...func(*Node)) (*IPNode, error) {
+func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, options ...Option) (*IPNode, error) {
 	i := &IPNode{
 		// save the address information
 		addrTuple:          addr.AddrTuple,
 		addrBroadcastTuple: addr.AddrBroadcastTuple,
 	}
+	ApplyAppliers(options, i)
+	optionsForParent := AddLeafTypeIfAbundant(options, i)
 	if _debug != nil {
 		_debug("__init__ %r lan=%r", addr, lan)
 	}
 	var err error
-	i.Node, err = NewNode(localLog, addr, opts...)
+	i.Node, err = NewNode(localLog, addr, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -61,11 +61,4 @@ func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, opts ...f
 func (n *IPNode) bind(lan NodeNetworkReference) { // This is used to preserve the type
 	n.log.Debug().Interface("lan", lan).Msg("binding lan")
 	lan.AddNode(n)
-}
-
-func (n *IPNode) Format(s fmt.State, v rune) {
-	switch v {
-	case 's', 'v', 'r':
-		_, _ = fmt.Fprintf(s, "<%s(%s) at %p>", StructName(), n.name, n)
-	}
 }

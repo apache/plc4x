@@ -50,30 +50,29 @@ type Node struct {
 	promiscuous bool
 	spoofing    bool
 
-	// pass through args
-	argSid *int `ignore:"true"`
+	_leafName string
 
 	log zerolog.Logger
 }
 
-func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node, error) {
+func NewNode(localLog zerolog.Logger, addr *Address, options ...Option) (*Node, error) {
 	n := &Node{
-		address: addr,
-		log:     localLog,
+		address:   addr,
+		_leafName: ExtractLeafName(options, StructName()),
+		log:       localLog,
 	}
-	for _, opt := range opts {
-		opt(n)
-	}
-	if _debug != nil {
-		_debug("__init__ %r lan=%r name=%r, promiscuous=%r spoofing=%r sid=%r", addr, n.lan, n.name, n.promiscuous, n.spoofing, n.argSid)
-	}
+	ApplyAppliers(options, n)
+	optionsForParent := AddLeafTypeIfAbundant(options, n)
 	if n.name != "" {
 		n.log = n.log.With().Str("name", n.name).Logger()
 	}
 	var err error
-	n.ServerContract, err = NewServer(localLog, OptionalOption2(n.argSid, ToPtr[ServerRequirements](n), WithServerSID))
+	n.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
+	}
+	if _debug != nil {
+		_debug("__init__ %r lan=%r name=%r, promiscuous=%r spoofing=%r sid=%r", addr, n.lan, n.name, n.promiscuous, n.spoofing, n.GetServerId())
 	}
 
 	// bind to a lan if it was provided
@@ -83,34 +82,20 @@ func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node
 	return n, nil
 }
 
-func WithNodeName(name string) func(*Node) {
-	return func(n *Node) {
-		n.name = name
-	}
+func WithNodeName(name string) GenericApplier[*Node] {
+	return WrapGenericApplier(func(n *Node) { n.name = name })
 }
 
-func WithNodeLan(lan NodeNetworkReference) func(*Node) {
-	return func(n *Node) {
-		n.lan = lan
-	}
+func WithNodeLan(lan NodeNetworkReference) GenericApplier[*Node] {
+	return WrapGenericApplier(func(n *Node) { n.lan = lan })
 }
 
-func WithNodePromiscuous(promiscuous bool) func(*Node) {
-	return func(n *Node) {
-		n.promiscuous = promiscuous
-	}
+func WithNodePromiscuous(promiscuous bool) GenericApplier[*Node] {
+	return WrapGenericApplier(func(n *Node) { n.promiscuous = promiscuous })
 }
 
-func WithNodeSpoofing(spoofing bool) func(*Node) {
-	return func(n *Node) {
-		n.spoofing = spoofing
-	}
-}
-
-func WithNodeSid(sid int) func(*Node) {
-	return func(n *Node) {
-		n.argSid = &sid
-	}
+func WithNodeSpoofing(spoofing bool) GenericApplier[*Node] {
+	return WrapGenericApplier(func(n *Node) { n.spoofing = spoofing })
 }
 
 func (n *Node) setLan(lan *Network) {
@@ -179,6 +164,13 @@ func (n *Node) Indication(args Args, kwArgs KWArgs) error {
 func (n *Node) Format(s fmt.State, v rune) {
 	switch v {
 	case 's', 'v', 'r':
-		_, _ = fmt.Fprintf(s, "<%s(%s) at %p>", StructName(), n.name, n)
+		_, _ = fmt.Fprintf(s, "<%s(%s) at %p>", n._leafName, n.name, n)
 	}
+}
+
+func (n *Node) AlternateString() (string, bool) {
+	if IsDebuggingActive() {
+		return fmt.Sprintf("%s", n), true // Delegate to debugging format
+	}
+	return "", false
 }

@@ -48,7 +48,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *IPNet
 	if _debug != nil {
 		_debug("__init__ %r %r", address, vlan)
 	}
-	machine, err := NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(s))
+	machine, err := NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(s), WithLeafType(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}

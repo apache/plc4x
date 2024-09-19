@@ -66,7 +66,7 @@ func (k KWArgs) String() string {
 		if IsNil(ea) {
 			ea = fmt.Sprintf("<nil>(%T)", ea)
 		}
-		r += fmt.Sprintf("'%s'=%v, ", kk, ea)
+		r += fmt.Sprintf("'%s': %v, ", kk, ea)
 	}
 	if r != "" {
 		r = r[:len(r)-2]

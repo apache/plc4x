@@ -25,7 +25,7 @@ import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 type ReadWritePropertyServices struct {
 }
 
-func NewReadWritePropertyServices() (*ReadWritePropertyServices, error) {
+func NewReadWritePropertyServices(options ...Option) (*ReadWritePropertyServices, error) {
 	// TODO: implement me
 	return nil, nil
 }

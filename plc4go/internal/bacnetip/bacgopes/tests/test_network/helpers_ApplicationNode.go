@@ -30,7 +30,6 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
@@ -70,15 +69,13 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *Network) 
 	}
 
 	// build a local device object
-	localDevice := &TestDeviceObject{
-		LocalDeviceObject: NewLocalDeviceObject(NoArgs,
-			NKW(
-				KWObjectName, a.name,
-				KWObjectIdentifier, "device:999",
-				KWVendorIdentifier, 999,
-			),
+	localDevice := NewTestDeviceObject(NoArgs,
+		NKW(
+			KWObjectName, a.name,
+			KWObjectIdentifier, "device:999",
+			KWVendorIdentifier, 999,
 		),
-	}
+	)
 
 	// continue with initialization
 	a.Application, err = NewApplication(localLog, WithApplicationLocalDeviceObject(localDevice))
@@ -99,12 +96,14 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *Network) 
 
 	// pass the device object to the state machine access point so it
 	// can know if it should support segmentation
-	// the segmentation state machines need access to the same device
-	// information cache as the application
-	a.smap, err = NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, WithStateMachineAccessPointDeviceInfoCache(a.GetDeviceInfoCache())) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	a.smap, err = NewStateMachineAccessPoint(localLog, localDevice)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building state machine access point")
 	}
+
+	// the segmentation state machines need access to the same device
+	// information cache as the application
+	a.smap.SetDeviceInfoCache(a.GetDeviceInfoCache())
 
 	// a network service access point will be needed
 	a.nsap, err = NewNetworkServiceAccessPoint(localLog)

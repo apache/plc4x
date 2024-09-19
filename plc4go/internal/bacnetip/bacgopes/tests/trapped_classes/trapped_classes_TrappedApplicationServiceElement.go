@@ -61,28 +61,25 @@ type TrappedApplicationServiceElement struct {
 	responseSent         PDU
 	confirmationReceived PDU
 
-	elementID int // TODO: temporary where from?????????
-
-	// args
-	argAseId *int //TODO: hook up
-
 	log zerolog.Logger
 }
 
 var _ ApplicationServiceElement = (*TrappedApplicationServiceElement)(nil)
 
-func NewTrappedApplicationServiceElement(localLog zerolog.Logger, requirements TrappedApplicationServiceElementRequirements) (*TrappedApplicationServiceElement, error) {
+func NewTrappedApplicationServiceElement(localLog zerolog.Logger, requirements TrappedApplicationServiceElementRequirements, options ...Option) (*TrappedApplicationServiceElement, error) {
 	t := &TrappedApplicationServiceElement{
 		requirements: requirements,
 		log:          localLog,
 	}
-	if _debug != nil {
-		_debug("__init__(%s)", t.argAseId)
-	}
+	ApplyAppliers(options, t)
+	optionsForParent := AddLeafTypeIfAbundant(options, t)
 	var err error
-	t.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog)
+	t.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating SAP")
+	}
+	if _debug != nil {
+		_debug("__init__(%s)", t.GetElementId())
 	}
 	return t, nil
 }
@@ -111,7 +108,7 @@ func (s *TrappedApplicationServiceElement) Request(args Args, kwArgs KWArgs) err
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Request")
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
-		_debug("request(%s) %r", s.elementID, pdu)
+		_debug("request(%s) %r", s.GetElementId(), pdu)
 	}
 	s.requestSent = pdu
 	return s.ApplicationServiceElementContract.Request(args, kwArgs)
@@ -121,7 +118,7 @@ func (s *TrappedApplicationServiceElement) Indication(args Args, kwArgs KWArgs) 
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Indication")
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
-		_debug("indication(%s) %r", s.elementID, pdu)
+		_debug("indication(%s) %r", s.GetElementId(), pdu)
 	}
 	s.indicationReceived = pdu
 	return s.requirements.Indication(args, kwArgs)
@@ -131,7 +128,7 @@ func (s *TrappedApplicationServiceElement) Response(args Args, kwArgs KWArgs) er
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Response")
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
-		_debug("response(%s) %r", s.elementID, pdu)
+		_debug("response(%s) %r", s.GetElementId(), pdu)
 	}
 	s.responseSent = pdu
 	return s.ApplicationServiceElementContract.Response(args, kwArgs)
@@ -141,7 +138,7 @@ func (s *TrappedApplicationServiceElement) Confirmation(args Args, kwArgs KWArgs
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("Confirmation")
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
-		_debug("confirmation(%s) %r", s.elementID, pdu)
+		_debug("confirmation(%s) %r", s.GetElementId(), pdu)
 	}
 	s.confirmationReceived = pdu
 	return s.requirements.Confirmation(args, kwArgs)

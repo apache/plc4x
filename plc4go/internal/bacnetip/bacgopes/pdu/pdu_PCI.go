@@ -81,7 +81,11 @@ func NewPCI(args Args, kwArgs KWArgs, options ...Option) *_PCI {
 func (p *_PCI) GetDebugAttr(attr string) any {
 	switch attr {
 	case "pduExpectingReply":
-		return p.pduExpectingReply
+		if p.pduExpectingReply {
+			return 1
+		} else {
+			return 0
+		}
 	case "pduNetworkPriority":
 		return p.pduNetworkPriority
 	default:

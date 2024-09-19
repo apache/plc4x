@@ -58,13 +58,12 @@ type ClientStateMachine struct {
 
 var _ ClientStateMachineContract = (*ClientStateMachine)(nil)
 
-func NewClientStateMachine(localLog zerolog.Logger, opts ...func(*ClientStateMachine)) (*ClientStateMachine, error) {
+func NewClientStateMachine(localLog zerolog.Logger, options ...Option) (*ClientStateMachine, error) {
 	c := &ClientStateMachine{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(c)
-	}
+	ApplyAppliers(options, c)
+	optionsForParent := AddLeafTypeIfAbundant(options, c)
 	if c.contract == nil {
 		c.contract = c
 	}
@@ -75,26 +74,22 @@ func NewClientStateMachine(localLog zerolog.Logger, opts ...func(*ClientStateMac
 		c.log = c.log.With().Str("name", c.name).Logger()
 	}
 	var err error
-	c.ClientContract, err = NewClient(localLog) // TODO: do we need to pass cid?
+	c.ClientContract, err = NewClient(localLog, optionsForParent...) // TODO: do we need to pass cid?
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	var init func()
-	c.StateMachineContract, init = NewStateMachine(localLog, c.contract, WithStateMachineName(c.name))
+	c.StateMachineContract, init = NewStateMachine(localLog, c.contract, Combine(optionsForParent, WithStateMachineName(c.name))...)
 	init()
 	return c, nil
 }
 
-func WithClientStateMachineName(name string) func(*ClientStateMachine) {
-	return func(c *ClientStateMachine) {
-		c.name = name
-	}
+func WithClientStateMachineName(name string) GenericApplier[*ClientStateMachine] {
+	return WrapGenericApplier(func(c *ClientStateMachine) { c.name = name })
 }
 
-func WithClientStateMachineExtension(contract ClientStateMachineContract) func(*ClientStateMachine) {
-	return func(c *ClientStateMachine) {
-		c.contract = contract
-	}
+func WithClientStateMachineExtension(contract ClientStateMachineContract) GenericApplier[*ClientStateMachine] {
+	return WrapGenericApplier(func(c *ClientStateMachine) { c.contract = contract })
 }
 
 func (s *ClientStateMachine) Send(args Args, kwArgs KWArgs) error {

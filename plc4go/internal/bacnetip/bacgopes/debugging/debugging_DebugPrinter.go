@@ -54,12 +54,12 @@ func CreateDebugPrinter() DebugPrinter {
 		return nil
 	}
 	dir := path.Dir(file)
-	rootIndex := strings.Index(dir, "bacgopes")
+	rootIndex := strings.Index(dir, projectName)
 	dir = dir[rootIndex:]
 	qualifier := strings.ReplaceAll(dir, "/", ".")
 	switch {
-	case strings.HasPrefix(qualifier, "bacgopes.tests"):
-		qualifier = "tests" + strings.TrimPrefix(qualifier, "bacgopes.tests")
+	case strings.HasPrefix(qualifier, projectName+".tests"):
+		qualifier = "tests" + strings.TrimPrefix(qualifier, projectName+".tests")
 	}
 	dirPrefix := path.Base(dir) + "_"
 
@@ -67,27 +67,12 @@ func CreateDebugPrinter() DebugPrinter {
 	if strings.Contains(bacgopesDebug, qualifier) {
 		_isDebuggingActive = true
 		return func(format string, a ...any) {
-			pc, file, _, ok := runtime.Caller(1)
+			_, file, _, ok := runtime.Caller(1)
 			if !ok {
 				return
 			}
 			base := path.Base(file)
 			prefix := strings.TrimSuffix(base, ".go")
-			if !strings.HasPrefix(prefix, dirPrefix) && !strings.Contains(prefix, "tests") && false { // TODO: disabled for now as it makes more trouble for the rest
-				// Attach the fuction name // TODO: check if that makes sense, only a workaround for bind at the moment
-				details := runtime.FuncForPC(pc)
-				name := details.Name()
-				name = name[strings.LastIndex(name, ".")+1:]
-				prefix = strings.ToLower(name)
-			}
-			{ //TODO: temporary debug
-				if strings.Contains(qualifier, "tests.") {
-					println()
-				}
-				if strings.Contains(file, "tests") {
-					println()
-				}
-			}
 			prefix = strings.TrimPrefix(prefix, dirPrefix)
 			formatString := "DEBUG:" + qualifier + "." + prefix + ":" + format + "\n"
 			formatString = cleanupFormatString(formatString)
@@ -102,10 +87,37 @@ func CreateDebugPrinter() DebugPrinter {
 			for k, v := range customReplaces {
 				output = strings.ReplaceAll(output, k, v)
 			}
+			if customProjectName != "" {
+				output = strings.ReplaceAll(output, projectName, customProjectName)
+			}
 			_, _ = os.Stdout.Write([]byte(output))
 		}
 	}
 	return nil
+}
+
+func fixVerbs(formatString string, values ...any) string {
+	length := len(formatString)
+	verbNumber := -1
+	for i, r := range formatString {
+		switch r {
+		case '%':
+			nextIndex := i + 1
+			if nextIndex >= length {
+				continue
+			}
+			followRune := formatString[nextIndex]
+			if followRune != '%' {
+				verbNumber++
+			}
+			if followRune == 'r' && verbNumber < len(values) { // TODO: this completely breaks at indexed verbs... better fix assap
+				runes := []rune(formatString)
+				runes[nextIndex] = VerbForType(values[verbNumber], 'r')
+				formatString = string(runes)
+			}
+		}
+	}
+	return formatString
 }
 
 func cleanupFormatString(s string) string {

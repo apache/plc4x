@@ -20,24 +20,24 @@
 package comp
 
 // OptionalOption allows options to be applied that might be optional
-func OptionalOption[V any, T any](value *V, opt func(V) func(*T)) func(*T) {
+func OptionalOption[V any, T any](value *V, opt func(V) GenericApplier[*T]) GenericApplier[*T] {
 	if value != nil {
 		return opt(*value)
 	}
-	return func(c *T) {}
+	return WrapGenericApplier(func(c *T) {})
 }
 
 // OptionalOption2 allows options to be applied that might be optional
-func OptionalOption2[V1 any, V2 any, T any](value1 *V1, value2 *V2, opt func(V1, V2) func(*T)) func(*T) {
+func OptionalOption2[V1 any, V2 any, T any](value1 *V1, value2 *V2, opt func(V1, V2) GenericApplier[*T]) GenericApplier[*T] {
 	v1Set := value1 != nil
 	v2Set := value2 != nil
 	if (v1Set && !v2Set) || (!v1Set && v2Set) {
-		return func(c *T) {}
+		return WrapGenericApplier(func(c *T) {})
 	}
 	if v1Set {
 		return opt(*value1, *value2)
 	}
-	return func(c *T) {}
+	return WrapGenericApplier(func(c *T) {})
 }
 
 // Option is a generic interface for transporting options which are meant to bubble up

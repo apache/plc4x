@@ -62,13 +62,11 @@ type server struct {
 	log zerolog.Logger
 }
 
-func NewServer(localLog zerolog.Logger, opts ...func(server *server)) (ServerContract, error) {
+func NewServer(localLog zerolog.Logger, options ...Option) (ServerContract, error) {
 	s := &server{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(s)
-	}
+	ApplyAppliers(options, s)
 	if _debug != nil {
 		_debug("__init__ sid=%v", s.serverID)
 	}
@@ -94,11 +92,11 @@ func NewServer(localLog zerolog.Logger, opts ...func(server *server)) (ServerCon
 	return s, nil
 }
 
-func WithServerSID(sid int, requirements ServerRequirements) func(*server) {
-	return func(s *server) {
+func WithServerSID(sid int, requirements ServerRequirements) GenericApplier[*server] {
+	return WrapGenericApplier(func(s *server) {
 		s.serverID = &sid
 		s.argServerRequirements = requirements
-	}
+	})
 }
 
 func (s *server) Response(args Args, kwArgs KWArgs) error {

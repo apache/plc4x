@@ -138,51 +138,6 @@ func TestApplyGenericOption(t *testing.T) {
 	}
 }
 
-func TestOptionalOption(t *testing.T) {
-	type args[V any, T any] struct {
-		value *V
-		opt   func(V) func(*T)
-	}
-	type testCase[V any, T any] struct {
-		name string
-		args args[V, T]
-		want func(*T)
-	}
-	tests := []testCase[spi.Message, spi.Message]{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := OptionalOption(tt.args.value, tt.args.opt); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("OptionalOption() = %v, want %v", got != nil, tt.want != nil)
-			}
-		})
-	}
-}
-
-func TestOptionalOption2(t *testing.T) {
-	type args[V1 any, V2 any, T any] struct {
-		value1 *V1
-		value2 *V2
-		opt    func(V1, V2) func(*T)
-	}
-	type testCase[V1 any, V2 any, T any] struct {
-		name string
-		args args[V1, V2, T]
-		want func(*T)
-	}
-	tests := []testCase[spi.Message, spi.Message, spi.Message]{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := OptionalOption2(tt.args.value1, tt.args.value2, tt.args.opt); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("OptionalOption2() = %v, want %v", got != nil, tt.want != nil)
-			}
-		})
-	}
-}
-
 func TestExtractIfPresent(t *testing.T) {
 	type A interface{}
 	type B interface{ A }

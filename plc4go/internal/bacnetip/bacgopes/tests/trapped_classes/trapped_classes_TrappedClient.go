@@ -49,19 +49,18 @@ type TrappedClient struct {
 	log zerolog.Logger
 }
 
-func NewTrappedClient(localLog zerolog.Logger, opts ...func(*TrappedClient)) (*TrappedClient, error) {
+func NewTrappedClient(localLog zerolog.Logger, options ...Option) (*TrappedClient, error) {
 	t := &TrappedClient{
 		log: localLog,
 	}
 	t.TrappedClientContract = t
-	for _, opt := range opts {
-		opt(t)
-	}
+	ApplyAppliers(options, t)
+	optionsForParent := AddLeafTypeIfAbundant(options, t)
 	if _debug != nil {
 		_debug("__init__")
 	}
 	var err error
-	t.ClientContract, err = NewClient(localLog) // TODO: do we need to pass client id?
+	t.ClientContract, err = NewClient(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client")
 	}

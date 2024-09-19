@@ -55,15 +55,10 @@ type StateMachineAccessPoint struct {
 	dccEnableDisable      readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable `stringer:"true"`
 	applicationTimeout    uint
 
-	// pass through args
-	argSapID *int                `ignore:"true"`
-	argSap   *ServiceAccessPoint `ignore:"true"`
-	argCid   *int                `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice LocalDeviceObject, opts ...func(*StateMachineAccessPoint)) (*StateMachineAccessPoint, error) {
+func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice LocalDeviceObject, options ...Option) (*StateMachineAccessPoint, error) {
 	s := &StateMachineAccessPoint{
 		DefaultRFormatter: NewDefaultRFormatter(),
 		// save a reference to the device information cache
@@ -96,48 +91,32 @@ func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice LocalDevice
 
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(s)
+	ApplyAppliers(options, s)
+	optionsForParent := AddLeafTypeIfAbundant(options, s)
+	// basic initialization
+	var err error
+	s.ClientContract, err = NewClient(s.log, optionsForParent...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building client")
+	}
+	s.ServiceAccessPointContract, err = NewServiceAccessPoint(s.log, optionsForParent...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building serviceAccessPoint")
 	}
 	if _debug != nil {
-		_debug("__init__ localDevice=%r deviceInfoCache=%r sap=%r cid=%r", localDevice, s.deviceInfoCache, s.argSap, s.argCid)
+		_debug("__init__ localDevice=%r deviceInfoCache=%r sap=%r cid=%r", localDevice, s.deviceInfoCache, s.GetServiceID(), s.GetClientID())
 	}
 	s.log.Debug().
 		Stringer("localDevice", localDevice).
 		Stringer("deviceInfoCache", s.deviceInfoCache).
-		Interface("sapID", s.argSapID).
-		Interface("cid", s.argCid).
+		Interface("sapID", s.GetServiceID()).
+		Interface("cid", s.GetClientID()).
 		Msg("NewStateMachineAccessPoint")
-	// basic initialization
-	var err error
-	s.ClientContract, err = NewClient(s.log, OptionalOption2(s.argCid, ToPtr[ClientRequirements](s), WithClientCID))
-	if err != nil {
-		return nil, errors.Wrapf(err, "error building client for %d", s.argCid)
-	}
-	s.ServiceAccessPointContract, err = NewServiceAccessPoint(s.log, OptionalOption2(s.argSapID, s.argSap, WithServiceAccessPointSapID))
-	if err != nil {
-		return nil, errors.Wrapf(err, "error building serviceAccessPoint for %d", s.argSapID)
-	}
 	return s, nil
 }
 
-func WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache *DeviceInfoCache) func(*StateMachineAccessPoint) {
-	return func(s *StateMachineAccessPoint) {
-		s.deviceInfoCache = deviceInfoCache
-	}
-}
-
-func WithStateMachineAccessPointSapID(sapID int, sap ServiceAccessPoint) func(*StateMachineAccessPoint) {
-	return func(s *StateMachineAccessPoint) {
-		s.argSapID = &sapID
-		s.argSap = &sap
-	}
-}
-
-func WithStateMachineAccessPointCid(cid int) func(*StateMachineAccessPoint) {
-	return func(s *StateMachineAccessPoint) {
-		s.argCid = &cid
-	}
+func WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache *DeviceInfoCache) GenericApplier[*StateMachineAccessPoint] {
+	return WrapGenericApplier(func(s *StateMachineAccessPoint) { s.deviceInfoCache = deviceInfoCache })
 }
 
 // getNextInvokeId Called by clients to get an unused invoke ID

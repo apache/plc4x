@@ -46,24 +46,18 @@ type NetworkServiceElement struct {
 	// regular args
 	argStartupDisabled bool `ignore:"true"`
 
-	// pass through args
-	argEID *int                       `ignore:"true"`
-	argAse *ApplicationServiceElement `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewNetworkServiceElement(localLog zerolog.Logger, opts ...func(*NetworkServiceElement)) (*NetworkServiceElement, error) {
+func NewNetworkServiceElement(localLog zerolog.Logger, options ...Option) (*NetworkServiceElement, error) {
 	n := &NetworkServiceElement{
 		DefaultRFormatter: NewDefaultRFormatter(),
 		log:               localLog,
 	}
-	for _, opt := range opts {
-		opt(n)
-	}
-	n.log.Trace().Interface("eid", n.argEID).Msg("NewNetworkServiceElement")
+	ApplyAppliers(options, n)
+	optionsForParent := AddLeafTypeIfAbundant(options, n)
 	var err error
-	n.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(n.argEID, n.argAse, WithApplicationServiceElementAseID))
+	n.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}
@@ -78,17 +72,8 @@ func NewNetworkServiceElement(localLog zerolog.Logger, opts ...func(*NetworkServ
 	return n, nil
 }
 
-func WithNetworkServiceElementEID(eid int, ase ApplicationServiceElement) func(*NetworkServiceElement) {
-	return func(n *NetworkServiceElement) {
-		n.argEID = &eid
-		n.argAse = &ase
-	}
-}
-
-func WithNetworkServiceElementStartupDisabled(startupDisabled bool) func(*NetworkServiceElement) {
-	return func(n *NetworkServiceElement) {
-		n.argStartupDisabled = startupDisabled
-	}
+func WithNetworkServiceElementStartupDisabled(startupDisabled bool) GenericApplier[*NetworkServiceElement] {
+	return WrapGenericApplier(func(n *NetworkServiceElement) { n.argStartupDisabled = startupDisabled })
 }
 
 func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {

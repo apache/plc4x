@@ -20,10 +20,11 @@
 package task
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/rs/zerolog"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
 
 type RecurringTask struct {
@@ -35,17 +36,16 @@ type RecurringTask struct {
 	log zerolog.Logger
 }
 
-func NewRecurringTask(localLog zerolog.Logger, taskRequirements TaskRequirements, opts ...func(*RecurringTask)) *RecurringTask {
+func NewRecurringTask(localLog zerolog.Logger, taskRequirements TaskRequirements, options ...Option) *RecurringTask {
 	r := &RecurringTask{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(r)
-	}
+	ApplyAppliers(options, r)
+	optionsForParent := AddLeafTypeIfAbundant(options, r)
 	if _debug != nil {
 		_debug("__init__ interval=%r offset=%r", r.taskInterval, r.taskIntervalOffset)
 	}
-	r.Task = NewTask(taskRequirements)
+	r.Task = NewTask(taskRequirements, optionsForParent...)
 	r.AddDebugContents(r, "taskInterval", "taskIntervalOffset")
 	return r
 }
@@ -64,16 +64,12 @@ func (r *RecurringTask) GetDebugAttr(attr string) any {
 	return nil
 }
 
-func WithRecurringTaskInterval(interval time.Duration) func(task *RecurringTask) {
-	return func(task *RecurringTask) {
-		task.taskInterval = &interval
-	}
+func WithRecurringTaskInterval(interval time.Duration) GenericApplier[*RecurringTask] {
+	return WrapGenericApplier(func(task *RecurringTask) { task.taskInterval = &interval })
 }
 
-func WithRecurringTaskOffset(offset time.Duration) func(task *RecurringTask) {
-	return func(task *RecurringTask) {
-		task.taskIntervalOffset = &offset
-	}
+func WithRecurringTaskOffset(offset time.Duration) GenericApplier[*RecurringTask] {
+	return WrapGenericApplier(func(task *RecurringTask) { task.taskIntervalOffset = &offset })
 }
 
 func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
@@ -139,8 +135,4 @@ func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 
 func (r *RecurringTask) IsRecurringTask() bool {
 	return true
-}
-
-func (r *RecurringTask) String() string {
-	return fmt.Sprintf("RecurringTask(%v, taskInterval: %v, taskIntervalOffset: %v)", r.Task, r.taskInterval, r.taskIntervalOffset)
 }

@@ -26,6 +26,6 @@ type OptionalProperty interface {
 	StandardProperty
 }
 
-func NewOptionalProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), opts ...func(*PropertyKlass)) OptionalProperty {
+func NewOptionalProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) OptionalProperty {
 	panic("implement me")
 }

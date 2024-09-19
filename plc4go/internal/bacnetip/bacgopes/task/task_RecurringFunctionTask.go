@@ -35,15 +35,14 @@ type RecurringFunctionTask struct {
 	kwArgs KWArgs
 }
 
-func NewRecurringFunctionTask(localLog zerolog.Logger, fn GenericFunction, args Args, kwArgs KWArgs, opts ...func(*RecurringFunctionTask)) *RecurringFunctionTask {
+func NewRecurringFunctionTask(localLog zerolog.Logger, fn GenericFunction, args Args, kwArgs KWArgs, options ...Option) *RecurringFunctionTask {
 	r := &RecurringFunctionTask{fn: fn, args: args, kwArgs: kwArgs}
-	for _, opt := range opts {
-		opt(r)
-	}
+	ApplyAppliers(options, r)
+	optionsForParent := AddLeafTypeIfAbundant(options, r)
 	if _debug != nil {
 		_debug("RecurringFunctionTask %r %r %r", fn, args, kwArgs)
 	}
-	r.RecurringTask = NewRecurringTask(localLog, r)
+	r.RecurringTask = NewRecurringTask(localLog, r, optionsForParent...)
 	if _debug != nil {
 		_debug("    - task: %r", r)
 	}

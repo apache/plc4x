@@ -42,13 +42,10 @@ type NetworkAdapter struct {
 	adapterAddr          *Address
 	adapterNetConfigured *int
 
-	// pass through args
-	argCid *int
-
 	log zerolog.Logger
 }
 
-func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, net *uint16, addr *Address, opts ...func(*NetworkAdapter)) (*NetworkAdapter, error) {
+func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, net *uint16, addr *Address, options ...Option) (*NetworkAdapter, error) {
 	n := &NetworkAdapter{
 		adapterSAP:  sap,
 		adapterNet:  net,
@@ -56,13 +53,11 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(n)
-	}
+	ApplyAppliers(options, n)
+	optionsForParent := AddLeafTypeIfAbundant(options, n)
 	n.DebugContents = NewDebugContents(n, "adapterSAP-", "adapterNet", "adapterAddr", "adapterNetConfigured")
-	n.log.Trace().Stringer("sap", sap).Interface("net", net).Stringer("addr", addr).Interface("cid", n.argCid).Msg("NewNetworkAdapter")
 	var err error
-	n.ClientContract, err = NewClient(n.log, OptionalOption2(n.argCid, ToPtr[ClientRequirements](n), WithClientCID))
+	n.ClientContract, err = NewClient(n.log, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -72,12 +67,6 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 		n.adapterNetConfigured = &state
 	}
 	return n, nil
-}
-
-func WithNetworkAdapterCid(cid int) func(*NetworkAdapter) {
-	return func(na *NetworkAdapter) {
-		na.argCid = &cid
-	}
 }
 
 func (n *NetworkAdapter) GetDebugAttr(attr string) any {

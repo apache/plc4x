@@ -34,17 +34,19 @@ type TrappedClientStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewTrappedClientStateMachine(localLog zerolog.Logger) (*TrappedClientStateMachine, error) {
+func NewTrappedClientStateMachine(localLog zerolog.Logger, options ...Option) (*TrappedClientStateMachine, error) {
 	t := &TrappedClientStateMachine{log: localLog}
+	ApplyAppliers(options, t)
+	optionsForParent := AddLeafTypeIfAbundant(options, t)
 	if _debug != nil {
 		_debug("__init__")
 	}
 	var err error
-	t.TrappedServer, err = NewTrappedServer(localLog, WithTrappedServerContract(t))
+	t.TrappedServer, err = NewTrappedServer(localLog, Combine(optionsForParent, WithTrappedServerContract(t))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building trapped server")
 	}
-	t.TrappedStateMachine = NewTrappedStateMachine(localLog)
+	t.TrappedStateMachine = NewTrappedStateMachine(localLog, optionsForParent...)
 	return t, nil
 }
 

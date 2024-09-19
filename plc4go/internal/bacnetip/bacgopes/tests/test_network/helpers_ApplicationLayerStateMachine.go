@@ -28,7 +28,6 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
@@ -66,13 +65,11 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	}
 
 	// build a local device object
-	localDevice := TestDeviceObject{
-		NewLocalDeviceObject(NoArgs,
-			NKW(KWObjectName, a.name,
-				KWObjectIdentifier, "device:"+address,
-				KWVendorIdentifier, 999,
-			)),
-	}
+	localDevice := NewTestDeviceObject(NoArgs,
+		NKW(KWObjectName, a.name,
+			KWObjectIdentifier, "device:"+address,
+			KWVendorIdentifier, 999,
+		))
 
 	if LogTestNetwork {
 		a.log.Debug().Stringer("address", a.address).Msg("address")
@@ -83,7 +80,12 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service")
 	}
-	a.ClientStateMachine, err = NewClientStateMachine(a.log, WithClientStateMachineName(localDevice.GetObjectName()), WithClientStateMachineExtension(a))
+	a.ClientStateMachine, err = NewClientStateMachine(a.log,
+		WithClientStateMachineName(localDevice.GetObjectName()),
+		WithClientStateMachineExtension(a),
+		WithClientStateMachineName(a.name),
+		WithLeafType(a),
+	)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}

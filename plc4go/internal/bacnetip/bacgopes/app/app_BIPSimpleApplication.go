@@ -26,6 +26,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvllservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
@@ -50,20 +51,22 @@ type BIPSimpleApplication struct {
 	log zerolog.Logger
 }
 
-func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice LocalDeviceObject, localAddress Address, deviceInfoCache *DeviceInfoCache, aseID *int) (*BIPSimpleApplication, error) {
+func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice LocalDeviceObject, localAddress Address, options ...Option) (*BIPSimpleApplication, error) {
 	b := &BIPSimpleApplication{
 		log: localLog,
 	}
+	ApplyAppliers(options, b)
+	optionsForParent := AddLeafTypeIfAbundant(options, b)
 	var err error
-	b.ApplicationIOController, err = NewApplicationIOController(localLog, localDevice, WithApplicationIOControllerDeviceInfoCache(deviceInfoCache), WithApplicationIOControllerAseID(aseID))
+	b.ApplicationIOController, err = NewApplicationIOController(localLog, Combine(optionsForParent, WithApplicationLocalDeviceObject(localDevice))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
-	b.WhoIsIAmServices, err = NewWhoIsIAmServices(localLog, b)
+	b.WhoIsIAmServices, err = NewWhoIsIAmServices(localLog, b, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error WhoIs/IAm services")
 	}
-	b.ReadWritePropertyServices, err = NewReadWritePropertyServices()
+	b.ReadWritePropertyServices, err = NewReadWritePropertyServices(optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error read write property services")
 	}
@@ -77,7 +80,7 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice LocalDeviceObj
 	}
 
 	// pass the device object to the state machine access point, so it can know if it should support segmentation
-	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))
+	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating state machine access point")
 	}
@@ -86,13 +89,13 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice LocalDeviceObj
 	// Note: deviceInfoCache already passed above, so we don't need to do it again here
 
 	// a network service access point will be needed
-	b.nsap, err = NewNetworkServiceAccessPoint(localLog)
+	b.nsap, err = NewNetworkServiceAccessPoint(localLog, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
 
 	// give the NSAP a generic network layer service element
-	b.nse, err = NewNetworkServiceElement(localLog)
+	b.nse, err = NewNetworkServiceElement(localLog, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -106,15 +109,15 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice LocalDeviceObj
 	}
 
 	// create a generic BIP stack, bound to the Annex J server on the UDP multiplexer
-	b.bip, err = NewBIPSimple(localLog)
+	b.bip, err = NewBIPSimple(localLog, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new bip")
 	}
-	b.annexj, err = NewAnnexJCodec(localLog)
+	b.annexj, err = NewAnnexJCodec(localLog, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new annex j codec")
 	}
-	b.mux, err = NewUDPMultiplexer(localLog, b.localAddress, false)
+	b.mux, err = NewUDPMultiplexer(localLog, b.localAddress, false, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new udp multiplexer")
 	}

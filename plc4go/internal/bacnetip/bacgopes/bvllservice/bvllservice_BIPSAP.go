@@ -42,42 +42,30 @@ type BIPSAP struct {
 
 	requirements BIPSAPRequirements
 
-	// pass through args
-	argSapID *int
-	argSap   *ServiceAccessPoint
-
 	log zerolog.Logger
 }
 
-func NewBIPSAP(localLog zerolog.Logger, requirements BIPSAPRequirements, opts ...func(*BIPSAP)) (*BIPSAP, error) {
+func NewBIPSAP(localLog zerolog.Logger, requirements BIPSAPRequirements, options ...Option) (*BIPSAP, error) {
 	b := &BIPSAP{
 		DefaultRFormatter: NewDefaultRFormatter(),
 		log:               localLog,
 	}
-	for _, opt := range opts {
-		opt(b)
-	}
-	if _debug != nil {
-		_debug("__init__ sap=%r", b.argSapID)
-	}
-	localLog.Debug().
-		Interface("sapID", b.argSapID).
-		Interface("requirements", requirements).
-		Msg("NewBIPSAP")
+	ApplyAppliers(options, b)
+	optionsForParent := AddLeafTypeIfAbundant(options, b)
 	var err error
-	b.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(b.argSapID, b.argSap, WithServiceAccessPointSapID))
+	b.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error creating service access point")
 	}
 	b.requirements = requirements
-	return b, nil
-}
-
-func WithBIPSAPSapID(sapID int, sap ServiceAccessPoint) func(*BIPSAP) {
-	return func(b *BIPSAP) {
-		b.argSapID = &sapID
-		b.argSap = &sap
+	if _debug != nil {
+		_debug("__init__ sap=%r", b.GetServiceID())
 	}
+	localLog.Debug().
+		Interface("sapID", b.GetServiceElement()).
+		Interface("requirements", requirements).
+		Msg("NewBIPSAP")
+	return b, nil
 }
 
 func (b *BIPSAP) String() string {

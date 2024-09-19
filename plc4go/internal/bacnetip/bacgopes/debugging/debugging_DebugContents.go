@@ -31,6 +31,7 @@ import (
 
 type Debuggable interface {
 	GetDebugAttr(attr string) any
+	GetLeafName() string
 }
 
 type DebugContentPrinter interface {
@@ -54,6 +55,14 @@ func NewDebugContents(debuggable Debuggable, contents ...string) *DebugContents 
 
 var _ DebugContentPrinter = (*DebugContents)(nil)
 
+func (d *DebugContents) GetLeafName() string {
+	if len(d.debuggables) > 0 {
+		debuggable := d.debuggables[0]
+		return QualifiedTypeName(debuggable)
+	}
+	return StructName()
+}
+
 func (d *DebugContents) AddExtraPrinters(printers ...DebugContentPrinter) {
 	d.extraPrinters = append(d.extraPrinters, printers...)
 }
@@ -75,14 +84,14 @@ func (d *DebugContents) Format(s fmt.State, v rune) {
 		// TODO: check if that hacky hacky makes sense
 		if len(d.debuggables) > 0 {
 			debuggable := d.debuggables[0]
-			_, _ = fmt.Fprintf(s, "<%s at %p>", QualifiedTypeName(debuggable), debuggable)
+			_, _ = fmt.Fprintf(s, "<%s at %p>", debuggable.GetLeafName(), debuggable)
 		}
 	case 'r':
 		// TODO: check if that hacky hacky makes sense
 		if len(d.debuggables) > 0 {
 			debuggable := d.debuggables[0]
-			_, _ = fmt.Fprintf(s, "<%s at %p>\n", QualifiedTypeName(debuggable), debuggable)
-			_, _ = fmt.Fprintf(s, "    <%s at %p>\n", QualifiedTypeName(debuggable), debuggable) // TODO: why is this duplicated?
+			_, _ = fmt.Fprintf(s, "<%s at %p>\n", debuggable.GetLeafName(), debuggable)
+			_, _ = fmt.Fprintf(s, "    <%s at %p>\n", debuggable.GetLeafName(), debuggable) // TODO: why is this duplicated?
 		}
 		d.PrintDebugContents(2, s, nil)
 	}
@@ -306,7 +315,7 @@ func QualifiedTypeName(anything any) string {
 	if typeOf.Kind() == reflect.Ptr {
 		typeOf = typeOf.Elem()
 	}
-	typeNameString := "bacgopes." + typeOf.String()
+	typeNameString := projectName + "." + typeOf.String()
 	if customProjectName != "" {
 		typeNameString = strings.ReplaceAll(typeNameString, projectName, customProjectName)
 	}

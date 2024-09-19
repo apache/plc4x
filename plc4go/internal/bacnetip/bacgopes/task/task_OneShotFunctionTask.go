@@ -31,14 +31,14 @@ type OneShotFunctionTask struct {
 
 func OneShotFunction(fn GenericFunction, args Args, kwArgs KWArgs) *OneShotFunctionTask {
 	task := &OneShotFunctionTask{fn: fn, args: args, kwArgs: kwArgs}
-	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
+	task.OneShotDeleteTask = NewOneShotDeleteTask(task)
 	task.InstallTask(WithInstallTaskOptionsDelta(0))
 	return task
 }
 
 func FunctionTask(fn GenericFunction, args Args, kwArgs KWArgs) *OneShotFunctionTask {
 	task := &OneShotFunctionTask{fn: fn, args: args, kwArgs: kwArgs}
-	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
+	task.OneShotDeleteTask = NewOneShotDeleteTask(task)
 	return task
 }
 

@@ -35,13 +35,15 @@ type IPNetwork struct {
 	*Network
 }
 
-func NewIPNetwork(localLog zerolog.Logger, opts ...func(*Network)) *IPNetwork {
+func NewIPNetwork(localLog zerolog.Logger, options ...Option) *IPNetwork {
 	if _debug != nil {
 		_debug("__init__")
 	}
-	return &IPNetwork{
-		Network: NewNetwork(localLog, opts...),
-	}
+	i := &IPNetwork{}
+	ApplyAppliers(options, i)
+	optionsForParent := AddLeafTypeIfAbundant(options, i)
+	i.Network = NewNetwork(localLog, optionsForParent...)
+	return i
 }
 
 // AddNode Add a node to this network, let the node know which network it's on.

@@ -45,29 +45,23 @@ type _Element struct {
 	Optional bool
 }
 
-func NewElement(name string, klass func(Args, KWArgs) (ElementKlass, error), opts ...func(*_Element)) Element {
+func NewElement(name string, klass func(Args, KWArgs) (ElementKlass, error), options ...Option) Element {
 	e := &_Element{
 		Name:  name,
 		Klass: klass,
 	}
-	for _, opt := range opts {
-		opt(e)
-	}
+	ApplyAppliers(options, e)
 	return e
 }
 
 var _ Element = (*_Element)(nil)
 
-func WithElementOptional(optional bool) func(*_Element) {
-	return func(e *_Element) {
-		e.Optional = optional
-	}
+func WithElementOptional(optional bool) GenericApplier[*_Element] {
+	return WrapGenericApplier(func(e *_Element) { e.Optional = optional })
 }
 
-func WithElementContext(context int) func(*_Element) {
-	return func(e *_Element) {
-		e.Context = &context
-	}
+func WithElementContext(context int) GenericApplier[*_Element] {
+	return WrapGenericApplier(func(e *_Element) { e.Context = &context })
 }
 
 func (e *_Element) GetName() string {

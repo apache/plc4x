@@ -47,28 +47,22 @@ type NetworkServiceAccessPoint struct {
 	pendingNets     map[netKey][]NPDU
 	localAdapter    *NetworkAdapter `stringer:"true"`
 
-	// pass through args
-	argSapID *int                `ignore:"true"`
-	argSap   *ServiceAccessPoint `ignore:"true"`
-	argSid   *int                `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*NetworkServiceAccessPoint)) (*NetworkServiceAccessPoint, error) {
+func NewNetworkServiceAccessPoint(localLog zerolog.Logger, options ...Option) (*NetworkServiceAccessPoint, error) {
 	n := &NetworkServiceAccessPoint{
 		log: localLog,
 	}
 	n.DebugContents = NewDebugContents(n, "adapters++", "pending_nets", "local_adapter-")
-	for _, opt := range opts {
-		opt(n)
-	}
+	ApplyAppliers(options, n)
+	optionsForParent := AddLeafTypeIfAbundant(options, n)
 	var err error
-	n.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(n.argSapID, n.argSap, WithServiceAccessPointSapID))
+	n.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
-	n.ServerContract, err = NewServer(localLog, OptionalOption2(n.argSid, ToPtr[ServerRequirements](n), WithServerSID))
+	n.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
@@ -87,23 +81,8 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*Network
 	return n, nil
 }
 
-func WithNetworkServiceAccessPointRouterInfoCache(routerInfoCache *RouterInfoCache) func(*NetworkServiceAccessPoint) {
-	return func(n *NetworkServiceAccessPoint) {
-		n.routerInfoCache = routerInfoCache
-	}
-}
-
-func WithNetworkServiceAccessPointRouterSapID(sapID int, sap ServiceAccessPoint) func(*NetworkServiceAccessPoint) {
-	return func(n *NetworkServiceAccessPoint) {
-		n.argSapID = &sapID
-		n.argSap = &sap
-	}
-}
-
-func WithNetworkServiceAccessPointRouterSID(sid int) func(*NetworkServiceAccessPoint) {
-	return func(n *NetworkServiceAccessPoint) {
-		n.argSid = &sid
-	}
+func WithNetworkServiceAccessPointRouterInfoCache(routerInfoCache *RouterInfoCache) GenericApplier[*NetworkServiceAccessPoint] {
+	return WrapGenericApplier(func(n *NetworkServiceAccessPoint) { n.routerInfoCache = routerInfoCache })
 }
 
 func (n *NetworkServiceAccessPoint) GetDebugAttr(attr string) any {

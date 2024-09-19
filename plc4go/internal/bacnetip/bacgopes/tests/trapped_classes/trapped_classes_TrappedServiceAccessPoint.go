@@ -61,26 +61,23 @@ type TrappedServiceAccessPoint struct {
 	sapResponseSent         PDU
 	sapConfirmationReceived PDU
 
-	serviceID int // TODO: temporary where from?????????
-
-	// args
-	argSapId *int //TODO: hook up
-
 	log zerolog.Logger
 }
 
-func NewTrappedServiceAccessPoint(localLog zerolog.Logger, requirements TrappedServiceAccessPointRequirements) (*TrappedServiceAccessPoint, error) {
+func NewTrappedServiceAccessPoint(localLog zerolog.Logger, requirements TrappedServiceAccessPointRequirements, options ...Option) (*TrappedServiceAccessPoint, error) {
 	t := &TrappedServiceAccessPoint{
 		requirements: requirements,
 		log:          localLog,
 	}
-	if _debug != nil {
-		_debug("__init__(%s)", t.argSapId)
-	}
+	ApplyAppliers(options, t)
+	optionsForParent := AddLeafTypeIfAbundant(options, t)
 	var err error
-	t.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog)
+	t.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating SAP")
+	}
+	if _debug != nil {
+		_debug("__init__(%s)", t.GetServiceID())
 	}
 	return t, nil
 }
@@ -105,7 +102,7 @@ func (s *TrappedServiceAccessPoint) SapRequest(args Args, kwArgs KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapRequest")
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
-		_debug("sap_request(%s) %r", s.serviceID, pdu)
+		_debug("sap_request(%s) %r", s.GetServiceID(), pdu)
 	}
 	s.sapRequestSent = pdu
 	return s.ServiceAccessPointContract.SapRequest(args, kwArgs)
@@ -115,7 +112,7 @@ func (s *TrappedServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) erro
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapIndication")
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
-		_debug("sap_indication(%s) %r", s.serviceID, pdu)
+		_debug("sap_indication(%s) %r", s.GetServiceID(), pdu)
 	}
 	s.sapIndicationReceived = pdu
 	return s.requirements.SapIndication(args, kwArgs)
@@ -125,7 +122,7 @@ func (s *TrappedServiceAccessPoint) SapResponse(args Args, kwArgs KWArgs) error 
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapResponse")
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
-		_debug("sap_response(%s) %r", s.serviceID, pdu)
+		_debug("sap_response(%s) %r", s.GetServiceID(), pdu)
 	}
 	s.sapResponseSent = pdu
 	return s.ServiceAccessPointContract.SapResponse(args, kwArgs)
@@ -135,7 +132,7 @@ func (s *TrappedServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) er
 	s.log.Debug().Stringer("args", args).Stringer("kwArgs", kwArgs).Msg("SapConfirmation")
 	pdu := GA[PDU](args, 0)
 	if _debug != nil {
-		_debug("sap_confirmation(%s) %r", s.serviceID, pdu)
+		_debug("sap_confirmation(%s) %r", s.GetServiceID(), pdu)
 	}
 	s.sapConfirmationReceived = pdu
 	return s.requirements.SapConfirmation(args, kwArgs)

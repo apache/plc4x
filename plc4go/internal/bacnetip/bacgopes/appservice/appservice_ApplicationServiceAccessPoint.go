@@ -39,50 +39,29 @@ type ApplicationServiceAccessPoint struct {
 	ServiceAccessPointContract
 	*DefaultRFormatter `ignore:"true"`
 
-	// pass through args
-	argAseID        *int                       `ignore:"true"`
-	argASEExtension *ApplicationServiceElement `ignore:"true"`
-	argSapID        *int                       `ignore:"true"`
-	argSap          *ServiceAccessPoint        `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewApplicationServiceAccessPoint(localLog zerolog.Logger, opts ...func(*ApplicationServiceAccessPoint)) (*ApplicationServiceAccessPoint, error) {
+func NewApplicationServiceAccessPoint(localLog zerolog.Logger, options ...Option) (*ApplicationServiceAccessPoint, error) {
 	a := &ApplicationServiceAccessPoint{
 		DefaultRFormatter: NewDefaultRFormatter(),
 		log:               localLog,
 	}
-	for _, opt := range opts {
-		opt(a)
-	}
-	if _debug != nil {
-		_debug("__init__ aseID=%r sapID=%r", a.argAseID, a.argSapID)
-	}
+	ApplyAppliers(options, a)
+	optionsForParent := AddLeafTypeIfAbundant(options, a)
 	var err error
-	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(a.argAseID, a.argASEExtension, WithApplicationServiceElementAseID))
+	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}
-	a.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(a.argSapID, a.argSap, WithServiceAccessPointSapID))
+	a.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}
+	if _debug != nil {
+		_debug("__init__ aseID=%r sapID=%r", a.GetElementId(), a.GetServiceID())
+	}
 	return a, nil
-}
-
-func WithApplicationServiceAccessPointAseID(aseID int, argASEExtension ApplicationServiceElement) func(*ApplicationServiceAccessPoint) {
-	return func(a *ApplicationServiceAccessPoint) {
-		a.argAseID = &aseID
-		a.argASEExtension = &argASEExtension
-	}
-}
-
-func WithApplicationServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) func(*ApplicationServiceAccessPoint) {
-	return func(a *ApplicationServiceAccessPoint) {
-		a.argSapID = &sapID
-		a.argSap = &sap
-	}
 }
 
 func (a *ApplicationServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {

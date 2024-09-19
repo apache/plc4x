@@ -191,7 +191,7 @@ func NewSSM(localLog zerolog.Logger, sap interface {
 		maxApduLengthAccepted: maxApduLengthAccepted,
 		log:                   localLog,
 	}
-	ssm.OneShotTask = NewOneShotTask(ssm, nil)
+	ssm.OneShotTask = NewOneShotTask(ssm)
 	ssm.SSMProcessingRequirements = sap
 	return ssm, nil
 }

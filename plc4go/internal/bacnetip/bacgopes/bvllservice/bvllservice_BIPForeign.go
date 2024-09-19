@@ -51,49 +51,41 @@ type BIPForeign struct {
 	argAddr *Address `ignore:"true"`
 	argTTL  *uint16  `ignore:"true"`
 
-	// pass through args
-	argSapID *int `ignore:"true"`
-	argCid   *int `ignore:"true"`
-	argSid   *int `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewBIPForeign(localLog zerolog.Logger, opts ...func(*BIPForeign)) (*BIPForeign, error) {
+func NewBIPForeign(localLog zerolog.Logger, options ...Option) (*BIPForeign, error) {
 	b := &BIPForeign{
 		log: localLog,
 	}
 	b.DebugContents = NewDebugContents(b, "registrationStatus", "bbmdAddress", "bbmdTimeToLive")
-	for _, opt := range opts {
-		opt(b)
-	}
-	if _debug != nil {
-		_debug("__init__ addr=%r ttl=%r sapID=%r cid=%r sid=%r", b.argAddr, b.argTTL, b.argSapID, b.argCid, b.argSid)
-	}
-	localLog.Debug().
-		Stringer("addrs", b.argAddr).
-		Interface("ttls", b.argTTL).
-		Interface("sapID", b.argSapID).
-		Interface("cid", b.argCid).
-		Interface("sid", b.argSid).
-		Msg("NewBIPForeign")
-	bipsap, err := NewBIPSAP(localLog, b, func(bipsap *BIPSAP) {
-		bipsap.argSapID = b.argSapID
-	})
+	ApplyAppliers(options, b)
+	optionsForParent := AddLeafTypeIfAbundant(options, b)
+	bipsap, err := NewBIPSAP(localLog, b, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating bisap")
 	}
 	b.BIPSAP = bipsap
-	b.ClientContract, err = NewClient(localLog, OptionalOption2(b.argCid, ToPtr[ClientRequirements](b), WithClientCID))
+	b.ClientContract, err = NewClient(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	b.ServerContract, err = NewServer(localLog, OptionalOption2(b.argSid, ToPtr[ServerRequirements](b), WithServerSID))
+	b.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	b.OneShotTask = NewOneShotTask(b, nil)
+	b.OneShotTask = NewOneShotTask(b)
 	b.AddExtraPrinters(b.OneShotTask)
+	if _debug != nil {
+		_debug("__init__ addr=%r ttl=%r sapID=%r cid=%r sid=%r", b.argAddr, b.argTTL, b.GetServiceID(), b.GetClientID(), b.GetServerId())
+	}
+	localLog.Debug().
+		Stringer("addrs", b.argAddr).
+		Interface("ttls", b.argTTL).
+		Interface("sapID", b.GetServiceID()).
+		Interface("cid", b.GetClientID()).
+		Interface("sid", b.GetServiceID()).
+		Msg("NewBIPForeign")
 
 	// -2=unregistered, -1=not attempted or no ack, 0=OK, >0 error
 	b.registrationStatus = -1
@@ -140,16 +132,12 @@ func (b *BIPForeign) GetDebugAttr(attr string) any {
 	return nil
 }
 
-func WithBIPForeignAddress(addr *Address) func(*BIPForeign) {
-	return func(b *BIPForeign) {
-		b.argAddr = addr
-	}
+func WithBIPForeignAddress(addr *Address) GenericApplier[*BIPForeign] {
+	return WrapGenericApplier(func(b *BIPForeign) { b.argAddr = addr })
 }
 
-func WithBIPForeignTTL(ttl uint16) func(*BIPForeign) {
-	return func(b *BIPForeign) {
-		b.argTTL = &ttl
-	}
+func WithBIPForeignTTL(ttl uint16) GenericApplier[*BIPForeign] {
+	return WrapGenericApplier(func(b *BIPForeign) { b.argTTL = &ttl })
 }
 
 func (b *BIPForeign) Indication(args Args, kwArgs KWArgs) error {

@@ -47,40 +47,33 @@ type BIPBBMD struct {
 	bbmdBDT     []*Address
 	bbmdFDT     []*FDTEntry
 
-	// Pass Through args
-	argSapID *int `ignore:"true"`
-	argCID   *int `ignore:"true"`
-	argSID   *int `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewBIPBBMD(localLog zerolog.Logger, addr *Address, opts ...func(*BIPBBMD)) (*BIPBBMD, error) {
+func NewBIPBBMD(localLog zerolog.Logger, addr *Address, options ...Option) (*BIPBBMD, error) {
 	b := &BIPBBMD{log: localLog}
-	for _, opt := range opts {
-		opt(b)
-	}
-	if _debug != nil {
-		_debug("__init__ %r sapID=%r cid=%r sid=%r", addr, b.argSapID, b.argCID, b.argSID)
-	}
+	ApplyAppliers(options, b)
+	optionsForParent := AddLeafTypeIfAbundant(options, b)
 	b.DebugContents = NewDebugContents(b, "bbmdAddress", "bbmdBDT+", "bbmdFDT+")
 	var err error
-	b.BIPSAP, err = NewBIPSAP(localLog, b, func(bipsap *BIPSAP) {
-		bipsap.argSapID = b.argSapID
-	})
+	b.BIPSAP, err = NewBIPSAP(localLog, b, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating BIPSAP")
 	}
-	b.ClientContract, err = NewClient(localLog, OptionalOption2(b.argCID, ToPtr[ClientRequirements](b), WithClientCID))
+	b.ClientContract, err = NewClient(localLog, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating Client")
 	}
-	b.ServerContract, err = NewServer(localLog, OptionalOption2(b.argSID, ToPtr[ServerRequirements](b), WithServerSID))
+	b.ServerContract, err = NewServer(localLog, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating Server")
 	}
 	b.RecurringTask = NewRecurringTask(localLog, b, WithRecurringTaskInterval(1*time.Second))
 	b.AddExtraPrinters(b.RecurringTask)
+
+	if _debug != nil {
+		_debug("__init__ %r sapID=%r cid=%r sid=%r", addr, b.GetServiceID(), b.GetClientID(), b.GetServiceID())
+	}
 
 	b.bbmdAddress = addr
 

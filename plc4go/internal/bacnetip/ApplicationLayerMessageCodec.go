@@ -75,7 +75,7 @@ func NewApplicationLayerMessageCodec(localLog zerolog.Logger, udpTransport *udp.
 	address.AddrTuple = pdu.NewAddressTuple(fmt.Sprintf("%d.%d.%d.%d", address.AddrAddress[0], address.AddrAddress[1], address.AddrAddress[2], address.AddrAddress[3]), *address.AddrPort)
 	application, err := app.NewBIPSimpleApplication(localLog, device.NewLocalDeviceObject(comp.NoArgs,
 		comp.NewKWArgs(comp.KWNumberOfAPDURetries, func() *uint { retries := uint(10); return &retries }()),
-	), *address, &a.deviceInfoCache, nil)
+	), *address, app.WithApplicationDeviceInfoCache(&a.deviceInfoCache))
 	if err != nil {
 		return nil, err
 	}

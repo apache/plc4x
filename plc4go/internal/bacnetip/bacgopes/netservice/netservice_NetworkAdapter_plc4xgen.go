@@ -74,11 +74,6 @@ func (d *NetworkAdapter) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return err
 		}
 	}
-	if d.argCid != nil {
-		if err := writeBuffer.WriteInt64("argCid", 64, int64(*d.argCid)); err != nil {
-			return err
-		}
-	}
 	if err := writeBuffer.PopContext("NetworkAdapter"); err != nil {
 		return err
 	}

@@ -38,9 +38,9 @@ type Client interface {
 type ClientContract interface {
 	fmt.Stringer
 	utils.Serializable
+	GetClientID() *int
 	Request(args Args, kwArgs KWArgs) error
 	_setClientPeer(server Server)
-	getClientId() *int
 }
 
 // ClientRequirements provides a set of functions which must be overwritten by a sub struct
@@ -61,13 +61,11 @@ type client struct {
 
 var _ ClientContract = (*client)(nil)
 
-func NewClient(localLog zerolog.Logger, opts ...func(*client)) (ClientContract, error) {
+func NewClient(localLog zerolog.Logger, options ...Option) (ClientContract, error) {
 	c := &client{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(c)
-	}
+	ApplyAppliers(options, c)
 	if _debug != nil {
 		_debug("__init__ cid=%v", c.clientID)
 	}
@@ -93,11 +91,11 @@ func NewClient(localLog zerolog.Logger, opts ...func(*client)) (ClientContract, 
 	return c, nil
 }
 
-func WithClientCID(cid int, requirements ClientRequirements) func(*client) {
-	return func(c *client) {
+func WithClientCID(cid int, requirements ClientRequirements) GenericApplier[*client] {
+	return WrapGenericApplier(func(c *client) {
 		c.clientID = &cid
 		c.argClientRequirements = requirements
-	}
+	})
 }
 
 func (c *client) Request(args Args, kwArgs KWArgs) error {
@@ -116,6 +114,6 @@ func (c *client) _setClientPeer(server Server) {
 	c.clientPeer = server
 }
 
-func (c *client) getClientId() *int {
+func (c *client) GetClientID() *int {
 	return c.clientID
 }

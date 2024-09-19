@@ -55,33 +55,28 @@ type Application struct {
 
 	_startupDisabled bool
 
-	// pass through args
-	argAseID *int                       `ignore:"true"`
-	argAse   *ApplicationServiceElement `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewApplication(localLog zerolog.Logger, opts ...func(*Application)) (*Application, error) {
+func NewApplication(localLog zerolog.Logger, options ...Option) (*Application, error) {
 	a := &Application{
 		log:     localLog,
 		helpers: map[string]func(apdu APDU) error{},
 	}
-	for _, opt := range opts {
-		opt(a)
+	ApplyAppliers(options, a)
+	optionsForParent := AddLeafTypeIfAbundant(options, a)
+	var err error
+	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, optionsForParent...)
+	if err != nil {
+		return nil, err
 	}
 	localLog.Debug().
 		Stringer("localDevice", a.localDevice).
 		Stringer("deviceInfoCache", a.deviceInfoCache).
-		Interface("aseID", a.argAseID).
+		Interface("aseID", a.GetElementId()).
 		Msg("NewApplication")
 	if _debug != nil {
-		_debug("__init__ %r %r deviceInfoCache=%r aseID=%r", a.localDevice, a.localAddress, a.deviceInfoCache, a.argAse)
-	}
-	var err error
-	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, OptionalOption2(a.argAseID, a.argAse, WithApplicationServiceElementAseID))
-	if err != nil {
-		return nil, err
+		_debug("__init__ %r %r deviceInfoCache=%r aseID=%r", a.localDevice, a.localAddress, a.deviceInfoCache, a.GetElementId())
 	}
 
 	// local objects by ID and name
@@ -124,23 +119,12 @@ func NewApplication(localLog zerolog.Logger, opts ...func(*Application)) (*Appli
 	return a, nil
 }
 
-func WithApplicationLocalDeviceObject(localDevice LocalDeviceObject) func(*Application) {
-	return func(a *Application) {
-		a.localDevice = localDevice
-	}
+func WithApplicationLocalDeviceObject(localDevice LocalDeviceObject) GenericApplier[*Application] {
+	return WrapGenericApplier(func(a *Application) { a.localDevice = localDevice })
 }
 
-func WithApplicationAseID(aseID int, ase ApplicationServiceElement) func(*Application) {
-	return func(a *Application) {
-		a.argAseID = &aseID
-		a.argAse = &ase
-	}
-}
-
-func WithApplicationDeviceInfoCache(deviceInfoCache *appservice.DeviceInfoCache) func(*Application) {
-	return func(a *Application) {
-		a.deviceInfoCache = deviceInfoCache
-	}
+func WithApplicationDeviceInfoCache(deviceInfoCache *appservice.DeviceInfoCache) GenericApplier[*Application] {
+	return WrapGenericApplier(func(a *Application) { a.deviceInfoCache = deviceInfoCache })
 }
 
 func (a *Application) GetDeviceInfoCache() *appservice.DeviceInfoCache {

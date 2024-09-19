@@ -23,6 +23,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -59,15 +61,18 @@ type IOController struct {
 	name         string
 	requirements IOControllerRequirements `ignore:"true"`
 
+	_leafName string
+
 	log zerolog.Logger
 }
 
-func NewIOController(localLog zerolog.Logger, name string, requirements IOControllerRequirements) (*IOController, error) {
+func NewIOController(localLog zerolog.Logger, name string, requirements IOControllerRequirements, options ...Option) (*IOController, error) {
 	localLog.Debug().Str("name", name).Msg("NewIOController")
 	return &IOController{
 		// save the name
 		name:         name,
 		requirements: requirements,
+		_leafName:    ExtractLeafName(options, StructName()),
 		log:          localLog,
 	}, nil
 }

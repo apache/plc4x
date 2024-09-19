@@ -45,7 +45,7 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 		log: localLog,
 	}
 	var err error
-	n.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(n))
+	n.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(n), WithLeafType(n))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}

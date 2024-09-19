@@ -38,45 +38,37 @@ type BIPSimple struct {
 	ServerContract
 	*debugging.DefaultRFormatter `ignore:"true"`
 
-	// pass through args
-	argSapID *int `ignore:"true"`
-	argCid   *int `ignore:"true"`
-	argSid   *int `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BIPSimple, error) {
+func NewBIPSimple(localLog zerolog.Logger, options ...Option) (*BIPSimple, error) {
 	b := &BIPSimple{
 		DefaultRFormatter: debugging.NewDefaultRFormatter(),
 		log:               localLog,
 	}
-	for _, opt := range opts {
-		opt(b)
-	}
-	if _debug != nil {
-		_debug("__init__ sapID=%r cid=%r sid=%r", b.argSapID, b.argCid, b.argSid)
-	}
-	localLog.Debug().
-		Interface("sapID", b.argSapID).
-		Interface("cid", b.argCid).
-		Interface("sid", b.argSid).
-		Msg("NewBIPSimple")
-	bipsap, err := NewBIPSAP(localLog, b, func(bipsap *BIPSAP) {
-		bipsap.argSapID = b.argSapID
-	})
+	ApplyAppliers(options, b)
+	optionsForParent := AddLeafTypeIfAbundant(options, b)
+	bipsap, err := NewBIPSAP(localLog, b, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating bisap")
 	}
 	b.BIPSAP = bipsap
-	b.ClientContract, err = NewClient(localLog, OptionalOption2(b.argCid, ToPtr[ClientRequirements](b), WithClientCID))
+	b.ClientContract, err = NewClient(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	b.ServerContract, err = NewServer(localLog, OptionalOption2(b.argSid, ToPtr[ServerRequirements](b), WithServerSID))
+	b.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
+	if _debug != nil {
+		_debug("__init__ sapID=%r cid=%r sid=%r", b.GetServiceID(), b.GetClientID(), b.GetServerId())
+	}
+	localLog.Debug().
+		Interface("sapID", b.GetServerId()).
+		Interface("cid", b.GetClientID()).
+		Interface("sid", b.GetServiceID()).
+		Msg("NewBIPSimple")
 	return b, nil
 }
 

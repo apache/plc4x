@@ -40,7 +40,7 @@ type capability struct {
 
 var _ Capability = (*capability)(nil)
 
-func NewCapability() Capability {
+func NewCapability(options ...Option) Capability {
 	return &capability{_zindex: 99}
 }
 

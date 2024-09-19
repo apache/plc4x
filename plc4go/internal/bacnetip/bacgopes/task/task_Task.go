@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"time"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 )
 
@@ -41,15 +42,24 @@ type Task struct {
 	TaskRequirements `ignore:"true"`
 	taskTime         *time.Time
 	isScheduled      bool
+
+	_leafName string
 }
 
-func NewTask(taskRequirements TaskRequirements, opts ...func(*Task)) *Task {
-	t := &Task{TaskRequirements: taskRequirements}
-	t.DebugContents = NewDebugContents(t, "taskTime", "isScheduled")
-	for _, opt := range opts {
-		opt(t)
+func NewTask(taskRequirements TaskRequirements, options ...Option) *Task {
+	t := &Task{
+		TaskRequirements: taskRequirements,
+		_leafName:        ExtractLeafName(options, StructName()),
 	}
+	ApplyAppliers(options, t)
+	t.DebugContents = NewDebugContents(t, "taskTime", "isScheduled")
 	return t
+}
+
+func WithTaskTime(taskTime time.Time) GenericApplier[*Task] {
+	return WrapGenericApplier(func(t *Task) {
+		t.taskTime = &taskTime
+	})
 }
 
 func (t *Task) GetDebugAttr(attr string) any {
@@ -62,6 +72,10 @@ func (t *Task) GetDebugAttr(attr string) any {
 		return t.isScheduled
 	}
 	return nil
+}
+
+func (t *Task) GetLeafName() string {
+	return t._leafName
 }
 
 func (t *Task) InstallTask(options InstallTaskOptions) {

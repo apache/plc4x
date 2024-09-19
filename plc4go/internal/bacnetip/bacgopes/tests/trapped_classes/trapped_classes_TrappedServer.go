@@ -49,29 +49,26 @@ type TrappedServer struct {
 	log zerolog.Logger
 }
 
-func NewTrappedServer(localLog zerolog.Logger, opts ...func(*TrappedServer)) (*TrappedServer, error) {
+func NewTrappedServer(localLog zerolog.Logger, options ...Option) (*TrappedServer, error) {
 	t := &TrappedServer{
 		log: localLog,
 	}
 	t.TrappedServerContract = t
-	for _, opt := range opts {
-		opt(t)
-	}
+	ApplyAppliers(options, t)
+	optionsForParent := AddLeafTypeIfAbundant(options, t)
 	if _debug != nil {
 		_debug("__init__")
 	}
 	var err error
-	t.ServerContract, err = NewServer(localLog) // TODO: do we need to pass server id
+	t.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building server")
 	}
 	return t, nil
 }
 
-func WithTrappedServerContract(trappedServerContract TrappedServerContract) func(*TrappedServer) {
-	return func(t *TrappedServer) {
-		t.TrappedServerContract = trappedServerContract
-	}
+func WithTrappedServerContract(trappedServerContract TrappedServerContract) GenericApplier[*TrappedServer] {
+	return WrapGenericApplier(func(t *TrappedServer) { t.TrappedServerContract = trappedServerContract })
 }
 
 func (t *TrappedServer) GetIndicationReceived() PDU {

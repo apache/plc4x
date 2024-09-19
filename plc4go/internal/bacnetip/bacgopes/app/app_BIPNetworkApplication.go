@@ -32,30 +32,28 @@ import (
 
 type BIPNetworkApplication struct {
 	*NetworkServiceElement
+
 	localAddress Address
 	nsap         *NetworkServiceAccessPoint
 	bip          any // BIPSimple or BIPForeign
 	annexj       *AnnexJCodec
 	mux          *UDPMultiplexer
 
-	// passThroughArgs
-	argBBMDAddress **Address                  `ignore:"true"`
-	argBBMDTTL     *uint16                    `ignore:"true"`
-	argEID         *int                       `ignore:"true"`
-	argASE         *ApplicationServiceElement `ignore:"true"`
+	// args for constructions
+	argBBMDAddress **Address `ignore:"true"`
+	argBBMDTTL     *uint16   `ignore:"true"`
 
 	log zerolog.Logger
 }
 
-func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, opts ...func(*BIPNetworkApplication)) (*BIPNetworkApplication, error) {
+func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, options ...Option) (*BIPNetworkApplication, error) {
 	n := &BIPNetworkApplication{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(n)
-	}
+	ApplyAppliers(options, n)
+	optionsForParent := AddLeafTypeIfAbundant(options, n)
 	var err error
-	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, OptionalOption2(n.argEID, n.argASE, WithNetworkServiceElementEID))
+	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -63,7 +61,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, opt
 	n.localAddress = localAddress
 
 	// a network service access point will be needed
-	n.nsap, err = NewNetworkServiceAccessPoint(localLog)
+	n.nsap, err = NewNetworkServiceAccessPoint(localLog, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -76,21 +74,21 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, opt
 	// create a generic BIP stack, bound to the Annex J server
 	// on the UDP multiplexer
 	if n.argBBMDAddress == nil && n.argBBMDTTL == nil {
-		n.bip, err = NewBIPSimple(localLog)
+		n.bip, err = NewBIPSimple(localLog, options...)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPSimple")
 		}
 	} else {
-		n.bip, err = NewBIPForeign(localLog, OptionalOption(n.argBBMDAddress, WithBIPForeignAddress), OptionalOption(n.argBBMDTTL, WithBIPForeignTTL))
+		n.bip, err = NewBIPForeign(localLog, Combine(options, OptionalOption(n.argBBMDAddress, WithBIPForeignAddress), OptionalOption(n.argBBMDTTL, WithBIPForeignTTL))...)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPForeign")
 		}
 	}
-	n.annexj, err = NewAnnexJCodec(localLog)
+	n.annexj, err = NewAnnexJCodec(localLog, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new annex j codec")
 	}
-	n.mux, err = NewUDPMultiplexer(localLog, n.localAddress, true)
+	n.mux, err = NewUDPMultiplexer(localLog, n.localAddress, true, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new udp multiplexer")
 	}

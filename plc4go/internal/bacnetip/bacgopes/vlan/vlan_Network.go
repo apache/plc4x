@@ -52,45 +52,38 @@ type Network struct {
 
 	trafficLogger TrafficLogger
 
+	_leafName string
+
 	log zerolog.Logger
 }
 
-func NewNetwork(localLog zerolog.Logger, opts ...func(*Network)) *Network {
+func NewNetwork(localLog zerolog.Logger, options ...Option) *Network {
 	n := &Network{
 		DefaultRFormatter: NewDefaultRFormatter(),
+		_leafName:         ExtractLeafName(options, StructName()),
 		log:               localLog,
 	}
-	for _, opt := range opts {
-		opt(n)
-	}
+	ApplyAppliers(options, n)
 	if _debug != nil {
 		_debug("__init__ name=%r broadcast_address=%r drop_percent=%r", n.name, n.broadcastAddress, n.dropPercent)
 	}
 	return n
 }
 
-func WithNetworkName(name string) func(*Network) {
-	return func(n *Network) {
-		n.name = name
-	}
+func WithNetworkName(name string) GenericApplier[*Network] {
+	return WrapGenericApplier(func(n *Network) { n.name = name })
 }
 
-func WithNetworkBroadcastAddress(broadcastAddress *Address) func(*Network) {
-	return func(n *Network) {
-		n.broadcastAddress = broadcastAddress
-	}
+func WithNetworkBroadcastAddress(broadcastAddress *Address) GenericApplier[*Network] {
+	return WrapGenericApplier(func(n *Network) { n.broadcastAddress = broadcastAddress })
 }
 
-func WithNetworkDropPercent(dropPercent float32) func(*Network) {
-	return func(n *Network) {
-		n.dropPercent = dropPercent
-	}
+func WithNetworkDropPercent(dropPercent float32) GenericApplier[*Network] {
+	return WrapGenericApplier(func(n *Network) { n.dropPercent = dropPercent })
 }
 
-func WithNetworkTrafficLogger(trafficLogger TrafficLogger) func(*Network) {
-	return func(n *Network) {
-		n.trafficLogger = trafficLogger
-	}
+func WithNetworkTrafficLogger(trafficLogger TrafficLogger) GenericApplier[*Network] {
+	return WrapGenericApplier(func(n *Network) { n.trafficLogger = trafficLogger })
 }
 
 // AddNode Add a node to this network, let the node know which network it's on.
@@ -183,5 +176,5 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 }
 
 func (n *Network) String() string {
-	return fmt.Sprintf("<Network name=%s>", n.name)
+	return fmt.Sprintf("<%s name=%s>", n._leafName, n.name)
 }

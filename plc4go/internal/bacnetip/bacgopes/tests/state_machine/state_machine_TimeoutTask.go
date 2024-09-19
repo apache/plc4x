@@ -21,7 +21,6 @@ package state_machine
 
 import (
 	"fmt"
-	"time"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
@@ -36,17 +35,19 @@ type TimeoutTask struct {
 	kwArgs KWArgs
 }
 
-func NewTimeoutTask(fn GenericFunction, args Args, kwArgs KWArgs, when *time.Time) *TimeoutTask {
+func NewTimeoutTask(fn GenericFunction, args Args, kwArgs KWArgs, options ...Option) *TimeoutTask {
 	if _debug != nil {
 		_debug("__init__ %r %r %r", fn, args, kwArgs)
 	}
-	_task := &TimeoutTask{
+	t := &TimeoutTask{
 		fn:     fn,
 		args:   args,
 		kwArgs: kwArgs,
 	}
-	_task.OneShotTask = NewOneShotTask(_task, when)
-	return _task
+	ApplyAppliers(options, t)
+	optionsForParent := AddLeafTypeIfAbundant(options, t)
+	t.OneShotTask = NewOneShotTask(t, optionsForParent...)
+	return t
 }
 
 func (t *TimeoutTask) ProcessTask() error {

@@ -37,7 +37,7 @@ func NewDefaultRFormatter(extraPrinters ...DebugContentPrinter) *DefaultRFormatt
 		panic("oh no")
 	}
 	dir := path.Dir(file)
-	rootIndex := strings.Index(dir, "bacgopes")
+	rootIndex := strings.Index(dir, projectName)
 	dir = dir[rootIndex:]
 	dirPrefix := path.Base(dir) + "_"
 	base := path.Base(file)
@@ -47,7 +47,7 @@ func NewDefaultRFormatter(extraPrinters ...DebugContentPrinter) *DefaultRFormatt
 	if strings.HasPrefix(qualifier, "test.") {
 		qualifier = "tests.test_" + strings.TrimPrefix(qualifier, "test.")
 	} else {
-		qualifier = "bacgopes." + qualifier
+		qualifier = projectName + "." + qualifier
 	}
 	header := fmt.Sprintf("<%s at 0x%x>", qualifier+prefix, pc)
 	if customProjectName != "" {

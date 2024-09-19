@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
 
@@ -39,14 +40,14 @@ type _APDU interface {
 type ___APDU struct {
 	*__APDU
 
-	_leafType string
+	_leafName string
 }
 
 var _ _APDU = (*___APDU)(nil)
 
 func New_APDU(args Args, kwArgs KWArgs, options ...Option) (_APDU, error) {
 	i := &___APDU{
-		_leafType: ExtractLeafName(options, "APDU"),
+		_leafName: ExtractLeafName(options, StructName()),
 	}
 	options = AddLeafTypeIfAbundant(options, i)
 	var err error
@@ -107,7 +108,7 @@ func (a *___APDU) SetContext(context APDU) {
 func (a *___APDU) Format(s fmt.State, v rune) {
 	switch v {
 	case 'v', 's', 'r':
-		sname := a._leafType
+		sname := a._leafName
 
 		// the type is the service
 		stype := ""

@@ -49,7 +49,7 @@ func NewBIPSimpleStateMachine(localLog zerolog.Logger, netstring string, vlan *I
 		log: localLog,
 	}
 	var err error
-	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(netstring), WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(netstring), WithClientStateMachineExtension(b), WithLeafType(b))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}

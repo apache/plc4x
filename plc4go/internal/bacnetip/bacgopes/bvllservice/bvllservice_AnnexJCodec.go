@@ -36,50 +36,33 @@ type AnnexJCodec struct {
 	ServerContract
 	*DefaultRFormatter `ignore:"true"`
 
-	// pass through args
-	argCid *int `ignore:"true"`
-	argSid *int `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewAnnexJCodec(localLog zerolog.Logger, opts ...func(*AnnexJCodec)) (*AnnexJCodec, error) {
+func NewAnnexJCodec(localLog zerolog.Logger, options ...Option) (*AnnexJCodec, error) {
 	a := &AnnexJCodec{
 		DefaultRFormatter: NewDefaultRFormatter(),
 		log:               localLog,
 	}
-	for _, opt := range opts {
-		opt(a)
-	}
-	if _debug != nil {
-		_debug("__init__ cid=%r sid=%r", a.argCid, a.argSid)
-	}
-	localLog.Debug().
-		Interface("cid", a.argCid).
-		Interface("sid", a.argSid).
-		Msg("NewAnnexJCodec")
+	ApplyAppliers(options, a)
+	optionsForParent := AddLeafTypeIfAbundant(options, a)
 	var err error
-	a.ClientContract, err = NewClient(localLog, OptionalOption2(a.argCid, ToPtr[ClientRequirements](a), WithClientCID))
+	a.ClientContract, err = NewClient(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	a.ServerContract, err = NewServer(localLog, OptionalOption2(a.argSid, ToPtr[ServerRequirements](a), WithServerSID))
+	a.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
+	if _debug != nil {
+		_debug("__init__ cid=%r sid=%r", a.GetClientID(), a.GetServerId())
+	}
+	localLog.Debug().
+		Interface("cid", a.GetClientID()).
+		Interface("sid", a.GetServerId()).
+		Msg("NewAnnexJCodec")
 	return a, nil
-}
-
-func WithAnnexJCodecCid(cid int) func(*AnnexJCodec) {
-	return func(a *AnnexJCodec) {
-		a.argCid = &cid
-	}
-}
-
-func WithAnnexJCodecSid(sid int) func(*AnnexJCodec) {
-	return func(a *AnnexJCodec) {
-		a.argSid = &sid
-	}
 }
 
 func (b *AnnexJCodec) Indication(args Args, kwArgs KWArgs) error {

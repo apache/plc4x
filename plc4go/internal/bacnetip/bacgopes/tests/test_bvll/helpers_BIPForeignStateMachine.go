@@ -53,7 +53,7 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *IP
 		_debug("__init__ %s %r", address, vlan)
 	}
 	var err error
-	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(b), WithLeafType(b))
 	if err != nil {
 		return nil, errors.New("error building client state machine")
 	}

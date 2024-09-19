@@ -32,15 +32,17 @@ type RouterStateMachine struct {
 	StateMachineContract
 }
 
-func NewRouterStateMachine(localLog zerolog.Logger) (*RouterStateMachine, error) {
+func NewRouterStateMachine(localLog zerolog.Logger, options ...Option) (*RouterStateMachine, error) {
 	r := &RouterStateMachine{}
+	ApplyAppliers(options, r)
+	optionsForParent := AddLeafTypeIfAbundant(options, r)
 	var err error
 	r.RouterNode, err = NewRouterNode(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating router node")
 	}
 	var initFunc func()
-	r.StateMachineContract, initFunc = NewStateMachine(localLog, r)
+	r.StateMachineContract, initFunc = NewStateMachine(localLog, r, optionsForParent...)
 	initFunc()
 	if !LogTestNetwork {
 		r.log = zerolog.Nop()

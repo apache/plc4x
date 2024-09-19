@@ -43,6 +43,7 @@ type ApplicationServiceElementContract interface {
 	utils.Serializable
 	Request(args Args, kwArgs KWArgs) error
 	Response(args Args, kwArgs KWArgs) error
+	GetElementId() *int
 	_setElementService(elementService ElementService)
 	GetElementService() ElementService
 }
@@ -64,13 +65,11 @@ type applicationServiceElement struct {
 	log zerolog.Logger
 }
 
-func NewApplicationServiceElement(localLog zerolog.Logger, opts ...func(*applicationServiceElement)) (ApplicationServiceElementContract, error) {
+func NewApplicationServiceElement(localLog zerolog.Logger, options ...Option) (ApplicationServiceElementContract, error) {
 	a := &applicationServiceElement{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(a)
-	}
+	ApplyAppliers(options, a)
 	if _debug != nil {
 		_debug("__init__(%v)", a.argASEExtension)
 	}
@@ -96,14 +95,18 @@ func NewApplicationServiceElement(localLog zerolog.Logger, opts ...func(*applica
 	return a, nil
 }
 
-func WithApplicationServiceElementAseID(aseID int, ase ApplicationServiceElement) func(*applicationServiceElement) {
+func WithApplicationServiceElementAseID(aseID int, ase ApplicationServiceElement) GenericApplier[*applicationServiceElement] {
 	if ase == nil {
 		panic("saq required (completely build sap)") // TODO: might be hard because initialization not yet done
 	}
-	return func(s *applicationServiceElement) {
+	return WrapGenericApplier(func(s *applicationServiceElement) {
 		s.elementID = &aseID
 		s.argASEExtension = ase
-	}
+	})
+}
+
+func (a *applicationServiceElement) GetElementId() *int {
+	return a.elementID
 }
 
 func (a *applicationServiceElement) Request(args Args, kwArgs KWArgs) error {

@@ -49,18 +49,17 @@ type WhoIsIAmServices struct {
 	log zerolog.Logger
 }
 
-func NewWhoIsIAmServices(localLog zerolog.Logger, whoIsIAmServicesRequirements WhoIsIAmServicesRequirements, opts ...func(*WhoIsIAmServices)) (*WhoIsIAmServices, error) {
+func NewWhoIsIAmServices(localLog zerolog.Logger, whoIsIAmServicesRequirements WhoIsIAmServicesRequirements, options ...Option) (*WhoIsIAmServices, error) {
 	w := &WhoIsIAmServices{
 		_requirements: whoIsIAmServicesRequirements,
 		log:           localLog,
 	}
-	for _, opt := range opts {
-		opt(w)
-	}
+	ApplyAppliers(options, w)
+	optionsForParent := AddLeafTypeIfAbundant(options, w)
 	if _debug != nil {
 		_debug("__init__")
 	}
-	w.Capability = NewCapability()
+	w.Capability = NewCapability(optionsForParent...)
 	if err := w._requirements.RegisterHelperFn(fmt.Sprintf("Do_%T", &WhoIsRequest{}), w.DoWhoIsRequest); err != nil {
 		return nil, errors.Wrap(err, "registering function failed")
 	}
@@ -70,10 +69,8 @@ func NewWhoIsIAmServices(localLog zerolog.Logger, whoIsIAmServicesRequirements W
 	return w, nil
 }
 
-func WithWhoIsIAmServicesLocalDevice(localDevice LocalDeviceObject) func(*WhoIsIAmServices) {
-	return func(w *WhoIsIAmServices) {
-		w.localDevice = localDevice
-	}
+func WithWhoIsIAmServicesLocalDevice(localDevice LocalDeviceObject) GenericApplier[*WhoIsIAmServices] {
+	return WrapGenericApplier(func(w *WhoIsIAmServices) { w.localDevice = localDevice })
 }
 
 func (w *WhoIsIAmServices) Startup() error {

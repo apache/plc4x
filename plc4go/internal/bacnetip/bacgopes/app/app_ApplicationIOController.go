@@ -23,10 +23,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/iocb"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -38,48 +36,27 @@ type ApplicationIOController struct {
 
 	queueByAddress map[string]*SieveQueue
 
-	// pass through args
-	argDeviceInfoCache *appservice.DeviceInfoCache `ignore:"true"`
-	argAseID           *int                        `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewApplicationIOController(localLog zerolog.Logger, localDevice LocalDeviceObject, opts ...func(controller *ApplicationIOController)) (*ApplicationIOController, error) {
+func NewApplicationIOController(localLog zerolog.Logger, options ...Option) (*ApplicationIOController, error) {
 	a := &ApplicationIOController{
 		// queues for each address
 		queueByAddress: make(map[string]*SieveQueue),
 		log:            localLog,
 	}
-	for _, opt := range opts {
-		opt(a)
-	}
+	ApplyAppliers(options, a)
+	optionsForParent := AddLeafTypeIfAbundant(options, a)
 	var err error
-	a.IOController, err = NewIOController(localLog, "", a)
+	a.IOController, err = NewIOController(localLog, "", a, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
-	a.Application, err = NewApplication(localLog, func(application *Application) {
-		application.localDevice = localDevice
-		application.deviceInfoCache = a.argDeviceInfoCache
-		application.argAseID = a.argAseID
-	})
+	a.Application, err = NewApplication(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application")
 	}
 	return a, nil
-}
-
-func WithApplicationIOControllerDeviceInfoCache(deviceInfoCache *appservice.DeviceInfoCache) func(*ApplicationIOController) {
-	return func(a *ApplicationIOController) {
-		a.argDeviceInfoCache = deviceInfoCache
-	}
-}
-
-func WithApplicationIOControllerAseID(aseID *int) func(*ApplicationIOController) {
-	return func(a *ApplicationIOController) {
-		a.argAseID = aseID
-	}
 }
 
 func (a *ApplicationIOController) ProcessIO(iocb IOCBContract) error {

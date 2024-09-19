@@ -37,28 +37,25 @@ type ServerStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewServerStateMachine(localLog zerolog.Logger, opts ...func(*ServerStateMachine)) (*ServerStateMachine, error) {
+func NewServerStateMachine(localLog zerolog.Logger, options ...Option) (*ServerStateMachine, error) {
 	c := &ServerStateMachine{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(c)
-	}
+	ApplyAppliers(options, c)
+	optionsForParent := AddLeafTypeIfAbundant(options, c)
 	var err error
-	c.ServerContract, err = NewServer(localLog) // TODO: do we need to pass server id
+	c.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating Server")
 	}
 	var init func()
-	c.StateMachineContract, init = NewStateMachine(localLog, c, WithStateMachineName(c.name))
+	c.StateMachineContract, init = NewStateMachine(localLog, c, Combine(options, WithStateMachineName(c.name))...)
 	init()
 	return c, nil
 }
 
-func WithServerStateMachineName(name string) func(*ServerStateMachine) {
-	return func(s *ServerStateMachine) {
-		s.name = name
-	}
+func WithServerStateMachineName(name string) GenericApplier[*ServerStateMachine] {
+	return WrapGenericApplier(func(s *ServerStateMachine) { s.name = name })
 }
 
 func (s *ServerStateMachine) Send(args Args, kwArgs KWArgs) error {

@@ -81,7 +81,7 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}
-	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(b.name), WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(b.name), WithClientStateMachineExtension(b), WithLeafType(b))
 
 	// include a application decoder
 	b.asap, err = NewApplicationServiceAccessPoint(localLog)
@@ -91,12 +91,14 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 
 	// pass the device object to the state machine access point so it
 	// can know if it should support segmentation
-	// the segmentation state machines need access to the same device
-	// information cache as the application
-	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, WithStateMachineAccessPointDeviceInfoCache(NewDeviceInfoCache(localLog))) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building state machine access point")
 	}
+
+	// the segmentation state machines need access to the same device
+	// information cache as the application
+	b.smap.SetDeviceInfoCache(NewDeviceInfoCache(localLog))
 
 	// a network service access point will be needed
 	b.nsap, err = NewNetworkServiceAccessPoint(localLog)

@@ -20,7 +20,7 @@
 package task
 
 import (
-	"time"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 )
 
 //go:generate plc4xGenerator -type=OneShotDeleteTask -prefix=task_
@@ -28,11 +28,11 @@ type OneShotDeleteTask struct {
 	*Task
 }
 
-func NewOneShotDeleteTask(taskRequirements TaskRequirements, when *time.Time) *OneShotDeleteTask {
+func NewOneShotDeleteTask(taskRequirements TaskRequirements, options ...Option) *OneShotDeleteTask {
 	o := &OneShotDeleteTask{}
-	o.Task = NewTask(taskRequirements, func(task *Task) {
-		task.taskTime = when
-	})
+	ApplyAppliers(options, o)
+	optionsForParent := AddLeafTypeIfAbundant(options, o)
+	o.Task = NewTask(taskRequirements, optionsForParent...)
 	return o
 }
 

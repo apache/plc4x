@@ -45,12 +45,13 @@ type UDPMultiplexer struct {
 	log zerolog.Logger
 }
 
-func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (*UDPMultiplexer, error) {
+func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool, options ...Option) (*UDPMultiplexer, error) {
 	localLog.Debug().
 		Interface("address", address).
 		Bool("noBroadcast", noBroadcast).
 		Msg("NewUDPMultiplexer")
 	u := &UDPMultiplexer{}
+	ApplyAppliers(options, u)
 	if _debug != nil {
 		_debug("__init__ %r noBroadcast=%r", address, noBroadcast)
 	}

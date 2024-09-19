@@ -179,6 +179,10 @@ func (d *stateMachine) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.PopContext("transactionLog", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteString("_leafName", uint32(len(d._leafName)*8), d._leafName); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("stateMachine"); err != nil {
 		return err
 	}

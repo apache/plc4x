@@ -57,6 +57,10 @@ func (d *Task) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	if err := writeBuffer.WriteBit("isScheduled", d.isScheduled); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteString("_leafName", uint32(len(d._leafName)*8), d._leafName); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("Task"); err != nil {
 		return err
 	}

@@ -54,33 +54,9 @@ func Xtob(hexString string) ([]byte, error) {
 	return decodeString, nil
 }
 
-func fixVerbs(formatString string, values ...any) string {
-	length := len(formatString)
-	verbNumber := -1
-	for i, r := range formatString {
-		switch r {
-		case '%':
-			nextIndex := i + 1
-			if nextIndex >= length {
-				continue
-			}
-			followRune := formatString[nextIndex]
-			if followRune != '%' {
-				verbNumber++
-			}
-			if followRune == 'r' && verbNumber < len(values) { // TODO: this completely breaks at indexed verbs... better fix assap
-				runes := []rune(formatString)
-				runes[nextIndex] = VerbForType(values[verbNumber], 'r')
-				formatString = string(runes)
-			}
-		}
-	}
-	return formatString
-}
-
 func VerbForType(value any, printVerb rune) rune {
 	if isNil(value) {
-		return 'p' // hack to avoid panic
+		return 'v'
 	}
 	switch value.(type) {
 	case string:
@@ -123,7 +99,7 @@ func StructName() string {
 		return ""
 	}
 	dir := path.Dir(file)
-	rootIndex := strings.Index(dir, "bacgopes")
+	rootIndex := strings.Index(dir, projectName)
 	dir = dir[rootIndex:]
 	dirPrefix := path.Base(dir) + "_"
 	base := path.Base(file)

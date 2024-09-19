@@ -38,6 +38,7 @@ type ServiceAccessPoint interface {
 type ServiceAccessPointContract interface {
 	fmt.Stringer
 	utils.Serializable
+	GetServiceID() *int
 	SapRequest(Args, KWArgs) error
 	SapResponse(Args, KWArgs) error
 	_setServiceElement(serviceElement ServiceElement)
@@ -68,13 +69,11 @@ type serviceAccessPoint struct {
 
 var _ ServiceAccessPointContract = (*serviceAccessPoint)(nil)
 
-func NewServiceAccessPoint(localLog zerolog.Logger, opts ...func(point *serviceAccessPoint)) (ServiceAccessPointContract, error) {
+func NewServiceAccessPoint(localLog zerolog.Logger, options ...Option) (ServiceAccessPointContract, error) {
 	s := &serviceAccessPoint{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(s)
-	}
+	ApplyAppliers(options, s)
 	if _debug != nil {
 		_debug("__init__(%v)", s.serviceID)
 	}
@@ -100,14 +99,18 @@ func NewServiceAccessPoint(localLog zerolog.Logger, opts ...func(point *serviceA
 	return s, nil
 }
 
-func WithServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) func(*serviceAccessPoint) {
+func WithServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) GenericApplier[*serviceAccessPoint] {
 	if sap == nil {
 		panic("saq required (completely build sap)") // TODO: might be hard because initialization not yet done
 	}
-	return func(s *serviceAccessPoint) {
+	return WrapGenericApplier(func(s *serviceAccessPoint) {
 		s.serviceID = &sapID
 		s.argSAPExtension = sap
-	}
+	})
+}
+
+func (s *serviceAccessPoint) GetServiceID() *int {
+	return s.serviceID
 }
 
 func (s *serviceAccessPoint) SapRequest(args Args, kwArgs KWArgs) error {

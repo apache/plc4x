@@ -31,7 +31,7 @@ type PropertyKlass interface {
 	Encode(Arg) error
 }
 
-func NewProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), opts ...func(*PropertyKlass)) Property {
+func NewProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) Property {
 	return &_Property{}
 }
 

@@ -79,6 +79,10 @@ func (d *Node) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	if err := writeBuffer.WriteBit("spoofing", d.spoofing); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteString("_leafName", uint32(len(d._leafName)*8), d._leafName); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("Node"); err != nil {
 		return err
 	}

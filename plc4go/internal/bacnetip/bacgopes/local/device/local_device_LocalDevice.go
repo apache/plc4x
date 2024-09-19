@@ -23,12 +23,14 @@ import (
 	"fmt"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type LocalDeviceObject interface {
 	fmt.Stringer
+	fmt.Formatter
 	GetObjectIdentifier() string
 	GetMaximumApduLengthAccepted() *readWriteModel.MaxApduLengthAccepted
 	GetSegmentationSupported() *readWriteModel.BACnetSegmentation
@@ -42,14 +44,10 @@ type LocalDeviceObject interface {
 	GetObjectList() []string
 	SetObjectList([]string)
 }
-
-func NewLocalDeviceObject(args Args, kwArgs KWArgs) LocalDeviceObject {
-	return &localDeviceObject{}
-}
-
-type localDeviceObject struct {
+type _LocalDeviceObject struct {
 	*CurrentPropertyListMixIn
-	*object.DeviceObject
+	*DeviceObject
+	*DefaultRFormatter
 
 	// TODO: replace below...
 	NumberOfAPDURetries       *uint
@@ -65,54 +63,60 @@ type localDeviceObject struct {
 	ObjectList                []string
 }
 
-func (l *localDeviceObject) GetObjectIdentifier() string {
+func NewLocalDeviceObject(args Args, kwArgs KWArgs) LocalDeviceObject {
+	return &_LocalDeviceObject{
+		DefaultRFormatter: NewDefaultRFormatter(),
+	}
+}
+
+func (l *_LocalDeviceObject) GetObjectIdentifier() string {
 	return l.ObjectIdentifier
 }
 
-func (l *localDeviceObject) GetMaximumApduLengthAccepted() *readWriteModel.MaxApduLengthAccepted {
+func (l *_LocalDeviceObject) GetMaximumApduLengthAccepted() *readWriteModel.MaxApduLengthAccepted {
 	return l.MaximumApduLengthAccepted
 }
 
-func (l *localDeviceObject) GetSegmentationSupported() *readWriteModel.BACnetSegmentation {
+func (l *_LocalDeviceObject) GetSegmentationSupported() *readWriteModel.BACnetSegmentation {
 	return l.SegmentationSupported
 }
 
-func (l *localDeviceObject) GetVendorIdentifier() any {
+func (l *_LocalDeviceObject) GetVendorIdentifier() any {
 	return l.VendorIdentifier
 }
 
-func (l *localDeviceObject) GetNumberOfAPDURetries() *uint {
+func (l *_LocalDeviceObject) GetNumberOfAPDURetries() *uint {
 	return l.NumberOfAPDURetries
 }
 
-func (l *localDeviceObject) GetAPDUTimeout() *uint {
+func (l *_LocalDeviceObject) GetAPDUTimeout() *uint {
 	return l.APDUTimeout
 }
 
-func (l *localDeviceObject) SetApp(a any) {
+func (l *_LocalDeviceObject) SetApp(a any) {
 	l.App = a
 }
 
-func (l *localDeviceObject) GetAPDUSegmentTimeout() *uint {
+func (l *_LocalDeviceObject) GetAPDUSegmentTimeout() *uint {
 	return l.APDUSegmentTimeout
 }
 
-func (l *localDeviceObject) GetObjectName() string {
+func (l *_LocalDeviceObject) GetObjectName() string {
 	return l.ObjectName
 }
 
-func (l *localDeviceObject) GetMaxSegmentsAccepted() *readWriteModel.MaxSegmentsAccepted {
+func (l *_LocalDeviceObject) GetMaxSegmentsAccepted() *readWriteModel.MaxSegmentsAccepted {
 	return l.MaxSegmentsAccepted
 }
 
-func (l *localDeviceObject) GetObjectList() []string {
+func (l *_LocalDeviceObject) GetObjectList() []string {
 	return l.ObjectList
 }
 
-func (l *localDeviceObject) SetObjectList(strings []string) {
+func (l *_LocalDeviceObject) SetObjectList(strings []string) {
 	l.ObjectList = strings
 }
 
-func (l *localDeviceObject) String() string {
+func (l *_LocalDeviceObject) String() string {
 	panic("implementme")
 }

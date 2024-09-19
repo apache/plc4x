@@ -44,7 +44,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *Netwo
 		log: localLog,
 	}
 	var err error
-	s.ClientStateMachine, err = NewClientStateMachine(s.log, WithClientStateMachineName(address), WithClientStateMachineExtension(s))
+	s.ClientStateMachine, err = NewClientStateMachine(s.log, WithClientStateMachineName(address), WithClientStateMachineExtension(s), WithLeafType(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}

@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"fmt"
 
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 )
 
@@ -33,12 +34,10 @@ type RoutingTableEntry struct {
 	rtPortInfo     []byte
 }
 
-func NewRoutingTableEntry(opts ...func(*RoutingTableEntry)) *RoutingTableEntry {
+func NewRoutingTableEntry(options ...Option) *RoutingTableEntry {
 	r := &RoutingTableEntry{}
 	r.DebugContents = NewDebugContents(r, "rtDNET", "rtPortID", "rtPortInfo")
-	for _, opt := range opts {
-		opt(r)
-	}
+	ApplyAppliers(options, r)
 	return r
 }
 
@@ -55,22 +54,16 @@ func (r *RoutingTableEntry) GetDebugAttr(attr string) any {
 	}
 }
 
-func WithRoutingTableEntryDestinationNetworkAddress(dnet uint16) func(*RoutingTableEntry) {
-	return func(r *RoutingTableEntry) {
-		r.rtDNET = dnet
-	}
+func WithRoutingTableEntryDestinationNetworkAddress(dnet uint16) GenericApplier[*RoutingTableEntry] {
+	return WrapGenericApplier(func(r *RoutingTableEntry) { r.rtDNET = dnet })
 }
 
-func WithRoutingTableEntryPortId(id uint8) func(*RoutingTableEntry) {
-	return func(r *RoutingTableEntry) {
-		r.rtPortId = id
-	}
+func WithRoutingTableEntryPortId(id uint8) GenericApplier[*RoutingTableEntry] {
+	return WrapGenericApplier(func(r *RoutingTableEntry) { r.rtPortId = id })
 }
 
-func WithRoutingTableEntryPortInfo(portInfo []byte) func(*RoutingTableEntry) {
-	return func(r *RoutingTableEntry) {
-		r.rtPortInfo = portInfo
-	}
+func WithRoutingTableEntryPortInfo(portInfo []byte) GenericApplier[*RoutingTableEntry] {
+	return WrapGenericApplier(func(r *RoutingTableEntry) { r.rtPortInfo = portInfo })
 }
 
 func (r *RoutingTableEntry) tuple() (destinationNetworkAddress uint16, portId uint8, portInfoLength uint8, portInfo []byte) {

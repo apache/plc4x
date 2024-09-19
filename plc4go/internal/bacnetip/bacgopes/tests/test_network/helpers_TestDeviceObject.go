@@ -19,8 +19,30 @@
 
 package test_network
 
-import "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
+import (
+	"fmt"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
+)
 
 type TestDeviceObject struct {
 	device.LocalDeviceObject
+	*DefaultRFormatter
+}
+
+func NewTestDeviceObject(args comp.Args, kwArgs comp.KWArgs) *TestDeviceObject {
+	return &TestDeviceObject{
+		LocalDeviceObject: device.NewLocalDeviceObject(args, kwArgs),
+		DefaultRFormatter: NewDefaultRFormatter(),
+	}
+}
+
+func (t *TestDeviceObject) Format(s fmt.State, v rune) {
+	t.DefaultRFormatter.Format(s, v)
+}
+
+func (t *TestDeviceObject) String() string {
+	return t.DefaultRFormatter.String()
 }

@@ -24,7 +24,7 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
 )
 
 // TrappedStateMachine This class is a simple wrapper around the stateMachine class that keeps the
@@ -35,22 +35,24 @@ import (
 //	throw an exception.
 type TrappedStateMachine struct {
 	*Trapper
-	state_machine.StateMachineContract
+	StateMachineContract
 
 	sent PDU
 
 	log zerolog.Logger
 }
 
-func NewTrappedStateMachine(localLog zerolog.Logger) *TrappedStateMachine {
+func NewTrappedStateMachine(localLog zerolog.Logger, options ...Option) *TrappedStateMachine {
 	t := &TrappedStateMachine{
 		log: localLog,
 	}
+	ApplyAppliers(options, t)
+	optionsForParent := AddLeafTypeIfAbundant(options, t)
 	if _debug != nil {
 		_debug("__init__ %r", nil) //TODO: kwargs
 	}
 	var init func()
-	t.StateMachineContract, init = state_machine.NewStateMachine(localLog, t, state_machine.WithStateMachineStateInterceptor(t), state_machine.WithStateMachineStateDecorator(t.DecorateState))
+	t.StateMachineContract, init = NewStateMachine(localLog, t, Combine(optionsForParent, WithStateMachineStateInterceptor(t), WithStateMachineStateDecorator(t.DecorateState))...)
 	t.Trapper = NewTrapper(localLog, t.StateMachineContract)
 	init() // bit later so everything is set up
 	return t
@@ -92,6 +94,6 @@ func (t *TrappedStateMachine) UnexpectedReceive(pdu PDU) {
 	t.Trapper.UnexpectedReceive(pdu)
 }
 
-func (t *TrappedStateMachine) DecorateState(state state_machine.State) state_machine.State {
+func (t *TrappedStateMachine) DecorateState(state State) State {
 	return NewTrappedState(state, t.Trapper)
 }

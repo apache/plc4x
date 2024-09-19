@@ -73,15 +73,18 @@ func GAO[T any](args Args, index int, defaultValue T) (T, bool) {
 func (a Args) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 'r':
-		_, _ = fmt.Fprintf(s, "(%s)", a.string(false, false)[1:len(a.string(false, false))-1])
+		str := a.string(false, false)
+		_, _ = fmt.Fprintf(s, "(%s)", str[1:len(str)-1])
 	case 's', 'v':
-		_, _ = fmt.Fprintf(s, "(%s)", a.String()[1:len(a.String())-1])
+		str := a.String()
+		_, _ = fmt.Fprintf(s, "(%s)", str[1:len(str)-1])
 	}
 }
 
 func (a Args) String() string {
 	return a.string(true, true)
 }
+
 func (a Args) string(printIndex bool, printType bool) string {
 	r := ""
 	for i, ea := range a {
@@ -110,7 +113,7 @@ func (a Args) string(printIndex bool, printType bool) string {
 		r += ", "
 	}
 	if r != "" {
-		r = r[:len(r)-2]
+		r = r[:len(r)-1]
 	}
 	return "[" + r + "]"
 }
