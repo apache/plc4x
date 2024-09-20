@@ -68,7 +68,7 @@ public class ManualEipLogixDriverTest extends ManualTest {
      */
 
     public ManualEipLogixDriverTest(String connectionString) {
-        super(connectionString, true, false, true, 10);
+        super(connectionString, true, false, true, true, 10);
     }
 
     public static void main(String[] args) throws Exception {
