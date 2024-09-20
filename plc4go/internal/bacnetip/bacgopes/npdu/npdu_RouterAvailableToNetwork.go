@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -101,8 +99,4 @@ func (r *RouterAvailableToNetwork) Decode(npdu Arg) error {
 		r.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (r *RouterAvailableToNetwork) String() string {
-	return fmt.Sprintf("RouterAvailableToNetwork{%s, ratnNetworkList: %v}", r._NPDU, r.ratnNetworkList)
 }

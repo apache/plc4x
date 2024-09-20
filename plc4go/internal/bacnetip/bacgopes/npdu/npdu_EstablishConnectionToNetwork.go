@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -50,6 +48,7 @@ func NewEstablishConnectionToNetwork(args Args, kwArgs KWArgs, options ...Option
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	e._NPDU = npdu.(*_NPDU)
+	e.AddDebugContents(e, "ectnDNET", "ectnTerminationTime")
 
 	e.npduNetMessage = &e.messageType
 	return e, nil
@@ -63,6 +62,16 @@ func WithEstablishConnectionToNetworkDNET(dnet uint16) GenericApplier[*Establish
 // TODO: check if this is rather a KWArgs
 func WithEstablishConnectionToNetworkTerminationTime(terminationTime uint8) GenericApplier[*EstablishConnectionToNetwork] {
 	return WrapGenericApplier(func(n *EstablishConnectionToNetwork) { n.ectnTerminationTime = terminationTime })
+}
+
+func (e *EstablishConnectionToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "ectnDNET":
+		return e.ectnDNET
+	case "ectnTerminationTime":
+		return e.ectnTerminationTime
+	}
+	return nil
 }
 
 func (e *EstablishConnectionToNetwork) GetEctnDNET() uint16 {
@@ -111,8 +120,4 @@ func (e *EstablishConnectionToNetwork) Decode(npdu Arg) error {
 		e.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (e *EstablishConnectionToNetwork) String() string {
-	return fmt.Sprintf("EstablishConnectionToNetwork{%s, ectnDNET: %v, ectnTerminationTime: %v}", e._NPDU, e.ectnDNET, e.ectnTerminationTime)
 }

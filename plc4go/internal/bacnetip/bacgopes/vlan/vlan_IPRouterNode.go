@@ -41,6 +41,8 @@ type IPRouterNode struct {
 	addrMask   *uint32
 	addrSubnet *uint32
 
+	_leafName string
+
 	log zerolog.Logger
 }
 
@@ -49,6 +51,8 @@ func NewIPRouterNode(localLog zerolog.Logger, router *IPRouter, addr *Address, l
 		// save the references to the router for packets and the lan for debugging
 		router: router,
 		lan:    lan,
+
+		_leafName: ExtractLeafName(options, StructName()),
 
 		log: localLog,
 	}
@@ -98,6 +102,6 @@ func (n *IPRouterNode) ProcessPDU(pdu PDU) error {
 func (n *IPRouterNode) Format(s fmt.State, v rune) {
 	switch v {
 	case 's', 'v', 'r':
-		_, _ = fmt.Fprintf(s, "<%s for %s>", StructName(), n.lan.name)
+		_, _ = fmt.Fprintf(s, "<%s for %s>", n._leafName, n.lan.name)
 	}
 }

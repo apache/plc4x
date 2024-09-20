@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -49,6 +47,7 @@ func NewWhoIsRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*WhoI
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	w._NPDU = npdu.(*_NPDU)
+	w.AddDebugContents(w, "wirtnNetwork")
 
 	w.npduNetMessage = &w.messageType
 	return w, nil
@@ -56,6 +55,14 @@ func NewWhoIsRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*WhoI
 
 func WithWhoIsRouterToNetworkNet(net uint16) GenericApplier[*WhoIsRouterToNetwork] {
 	return WrapGenericApplier(func(n *WhoIsRouterToNetwork) { n.wirtnNetwork = &net })
+}
+
+func (w *WhoIsRouterToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "wirtnNetwork":
+		return w.wirtnNetwork
+	}
+	return nil
 }
 
 func (w *WhoIsRouterToNetwork) GetWirtnNetwork() *uint16 {
@@ -100,8 +107,4 @@ func (w *WhoIsRouterToNetwork) Decode(npdu Arg) error {
 		w.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (w *WhoIsRouterToNetwork) String() string {
-	return fmt.Sprintf("WhoIsRouterToNetwork{%s, wirtnNetwork: %d}", w._NPDU, w.wirtnNetwork)
 }

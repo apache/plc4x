@@ -95,6 +95,8 @@ type tag struct {
 
 	appTagName  []string
 	appTagClass []any
+
+	_leafName string
 }
 
 var _ Tag = (*tag)(nil)
@@ -113,6 +115,7 @@ func NewTag(args Args) (Tag, error) {
 			&BitString{}, &Enumerated{}, &Date{}, &Time{},
 			&ObjectIdentifier{}, nil, nil, nil,
 		},
+		_leafName: StructName(), //TODO: extract from options...
 	}
 	if len(args) == 0 {
 		return t, nil
@@ -397,7 +400,7 @@ func (t *tag) Equals(other any) bool {
 func (t *tag) Format(s fmt.State, v rune) {
 	switch v {
 	case 'r':
-		sname := StructName() // TODO: maybe use leafname too
+		sname := t._leafName
 		var desc string
 		if t.tagClass == TagOpeningTagClass {
 			desc = fmt.Sprintf("(open(%d))", t.tagNumber)

@@ -30,6 +30,10 @@ var inheritanceDebug = func(_ string, _ ...interface{}) {}
 // GenericConstructor is the generic signature for constructors
 type GenericConstructor[T any] func(args Args, kwArgs KWArgs, options ...Option) (*T, error)
 
+type LeafNameSupplier interface {
+	GetLeafName() string
+}
+
 type leafType struct {
 	defaultOption
 
@@ -40,7 +44,7 @@ type leafType struct {
 func AddLeafTypeIfAbundant[T any](options []Option, leaf *T) []Option {
 	for _, option := range options {
 		switch option.(type) {
-		case genericOption[T]:
+		case leafType:
 			// We have a match so nothing to do
 			return options
 		}

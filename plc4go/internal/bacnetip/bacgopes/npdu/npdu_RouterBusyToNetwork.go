@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -49,6 +47,7 @@ func NewRouterBusyToNetwork(args Args, kwArgs KWArgs, options ...Option) (*Route
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	r._NPDU = npdu.(*_NPDU)
+	r.AddDebugContents(r, "rbtnNetworkList")
 
 	r.npduNetMessage = &r.messageType
 	return r, nil
@@ -57,6 +56,14 @@ func NewRouterBusyToNetwork(args Args, kwArgs KWArgs, options ...Option) (*Route
 // TODO: check if this is rather a KWArgs
 func WithRouterBusyToNetworkDnet(networkList []uint16) GenericApplier[*RouterBusyToNetwork] {
 	return WrapGenericApplier(func(n *RouterBusyToNetwork) { n.rbtnNetworkList = networkList })
+}
+
+func (r *RouterBusyToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "rbtnNetworkList":
+		return r.rbtnNetworkList
+	}
+	return nil
 }
 
 func (r *RouterBusyToNetwork) GetRbtnNetworkList() []uint16 {
@@ -101,8 +108,4 @@ func (r *RouterBusyToNetwork) Decode(npdu Arg) error {
 		r.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (r *RouterBusyToNetwork) String() string {
-	return fmt.Sprintf("RouterBusyToNetwork{%s, rbtnNetworkList: %v}", r._NPDU, r.rbtnNetworkList)
 }

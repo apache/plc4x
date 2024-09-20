@@ -35,6 +35,7 @@ import (
 
 type IPCI interface {
 	spi.Message
+	GetLeafName() string
 	SetRootMessage(spi.Message)
 	GetRootMessage() spi.Message
 	SetPDUUserData(spi.Message)
@@ -53,6 +54,8 @@ type __PCI struct {
 	pduUserData    spi.Message
 	pduSource      *Address
 	pduDestination *Address
+
+	_leafName string
 }
 
 var _ IPCI = (*__PCI)(nil)
@@ -63,6 +66,7 @@ func new__PCI(args Args, kwArgs KWArgs, options ...Option) *__PCI {
 	}
 	i := &__PCI{
 		rootMessage: ExtractRootMessage(options),
+		_leafName:   ExtractLeafName(options, "PCI"),
 	}
 	i.DebugContents = NewDebugContents(i, "pduUserData+", "pduSource", "pduDestination")
 	var myKwargs = make(KWArgs)
@@ -106,6 +110,10 @@ func (p *__PCI) GetDebugAttr(attr string) any {
 		return nil
 	}
 	return nil
+}
+
+func (p *__PCI) GetLeafName() string {
+	return p._leafName
 }
 
 func (p *__PCI) SetRootMessage(rootMessage spi.Message) {
@@ -166,7 +174,7 @@ func (p *__PCI) deepCopy() *__PCI {
 		copyPduDestination := *pduDestination
 		pduDestination = &copyPduDestination
 	}
-	return &__PCI{p.DebugContents, rootMessage, pduUserData, pduSource, pduDestination}
+	return &__PCI{p.DebugContents, rootMessage, pduUserData, pduSource, pduDestination, p._leafName}
 }
 
 func (p *__PCI) DeepCopy() any {
@@ -202,11 +210,8 @@ func (p *__PCI) GetLengthInBits(ctx context.Context) uint16 {
 }
 
 func (p *__PCI) String() string {
-	if p.rootMessage == nil {
-		return "_PCI<nil>"
-	}
 	if IsDebuggingActive() {
 		return fmt.Sprintf("%s", p) // Delegate
 	}
-	return p.rootMessage.String()
+	return fmt.Sprintf("%s", p.rootMessage)
 }

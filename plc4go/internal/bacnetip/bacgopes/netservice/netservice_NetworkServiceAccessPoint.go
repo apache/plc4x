@@ -209,7 +209,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 	n.log.Debug().Stringer("localAdapter", localAdapter).Msg("localAdapter")
 
 	// build a generic APDU
-	apdu, err := NewAPDU(nil, NKW(KWCPCIUserData, pdu.GetPDUUserData())) // Note: upstream uses _APDU which looks like the _APDU class but is an alias to APDU
+	apdu, err := NewAPDU(NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData())) // Note: upstream uses _APDU which looks like the _APDU class but is an alias to APDU
 	if err != nil {
 		return errors.Wrap(err, "error creating _APDU")
 	}

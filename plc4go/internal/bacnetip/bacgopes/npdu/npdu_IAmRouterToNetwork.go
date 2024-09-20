@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -49,6 +47,7 @@ func NewIAmRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*IAmRou
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+	i.AddDebugContents(i, "iartnNetworkList")
 
 	i.npduNetMessage = &i.messageType
 	return i, nil
@@ -57,6 +56,14 @@ func NewIAmRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*IAmRou
 // TODO: check if this is rather a KWArgs
 func WithIAmRouterToNetworkNetworkList(iartnNetworkList ...uint16) GenericApplier[*IAmRouterToNetwork] {
 	return WrapGenericApplier(func(n *IAmRouterToNetwork) { n.iartnNetworkList = iartnNetworkList })
+}
+
+func (i *IAmRouterToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "iartnNetworkList":
+		return i.iartnNetworkList
+	}
+	return nil
 }
 
 func (i *IAmRouterToNetwork) GetIartnNetworkList() []uint16 {
@@ -101,11 +108,4 @@ func (i *IAmRouterToNetwork) Decode(npdu Arg) error {
 		i.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (i *IAmRouterToNetwork) String() string {
-	if i == nil {
-		return "(*IAmRouterToNetwork)(nil)"
-	}
-	return fmt.Sprintf("IAmRouterToNetwork{%s, iartnNetworkList: %v}", i._NPDU, i.iartnNetworkList)
 }

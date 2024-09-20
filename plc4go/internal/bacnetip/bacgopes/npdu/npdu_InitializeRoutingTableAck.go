@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -49,6 +47,7 @@ func NewInitializeRoutingTableAck(args Args, kwArgs KWArgs, options ...Option) (
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+	i.AddDebugContents(i, "irtaTable++")
 
 	i.npduNetMessage = &i.messageType
 	return i, nil
@@ -57,6 +56,14 @@ func NewInitializeRoutingTableAck(args Args, kwArgs KWArgs, options ...Option) (
 // TODO: check if this is rather a KWArgs
 func WithInitializeRoutingTableAckIrtaTable(irtaTable ...*RoutingTableEntry) GenericApplier[*InitializeRoutingTableAck] {
 	return WrapGenericApplier(func(r *InitializeRoutingTableAck) { r.irtaTable = irtaTable })
+}
+
+func (i *InitializeRoutingTableAck) GetDebugAttr(attr string) any {
+	switch attr {
+	case "irtaTable":
+		return i.irtaTable
+	}
+	return nil
 }
 
 func (i *InitializeRoutingTableAck) GetIrtaTable() []*RoutingTableEntry {
@@ -129,8 +136,4 @@ func (i *InitializeRoutingTableAck) Decode(npdu Arg) error {
 		i.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (i *InitializeRoutingTableAck) String() string {
-	return fmt.Sprintf("InitializeRoutingTableAck{%s, irtaTable: %v}", i._NPDU, i.irtaTable)
 }

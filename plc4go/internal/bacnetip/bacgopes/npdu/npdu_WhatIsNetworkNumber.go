@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -81,8 +79,4 @@ func (w *WhatIsNetworkNumber) Decode(npdu Arg) error {
 		w.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (w *WhatIsNetworkNumber) String() string {
-	return fmt.Sprintf("WhatIsNetworkNumber{%s}", w._NPDU)
 }

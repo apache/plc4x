@@ -37,13 +37,17 @@ type _PDU struct {
 	*_PCI
 	*_PDUData
 	*DefaultRFormatter
+
+	_leafName string
 }
 
 func NewPDU(args Args, kwArgs KWArgs, options ...Option) PDU {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
-	p := &_PDU{}
+	p := &_PDU{
+		_leafName: ExtractLeafName(options, StructName()),
+	}
 	p._PCI = NewPCI(args, kwArgs, options...)
 	p._PDUData = NewPDUData(args, kwArgs, options...).(*_PDUData)
 	p.DefaultRFormatter = NewDefaultRFormatter(p._PCI, p._PDUData)
@@ -55,7 +59,7 @@ func (p *_PDU) GetRootMessage() spi.Message {
 }
 
 func (p *_PDU) deepCopy() *_PDU {
-	pduCopy := &_PDU{p._PCI.deepCopy(), p._PDUData.deepCopy(), p.DefaultRFormatter}
+	pduCopy := &_PDU{p._PCI.deepCopy(), p._PDUData.deepCopy(), p.DefaultRFormatter, p._leafName}
 	return pduCopy
 }
 
@@ -73,5 +77,5 @@ func (p *_PDU) Format(s fmt.State, v rune) {
 }
 
 func (p *_PDU) String() string {
-	return fmt.Sprintf("<%s %s -> %s : %s>", StructName(), p.GetPDUSource(), p.GetPDUDestination(), p._PDUData)
+	return fmt.Sprintf("<%s %s -> %s : %s>", p._leafName, p.GetPDUSource(), p.GetPDUDestination(), Btox(p._PDUData.data, "."))
 }

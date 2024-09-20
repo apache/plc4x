@@ -516,7 +516,7 @@ func (a *_APCI) String() string {
 	stype := ""
 	if a.apduType != nil {
 		if v, ok := APDUTypes[*a.apduType]; ok {
-			stype = QualifiedTypeName(v())
+			stype = fmt.Sprintf("%s(%d)", QualifiedTypeName(v()), *a.apduType)
 		} else {
 			stype = "?"
 		}

@@ -88,6 +88,10 @@ func (d *IPRouterNode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return err
 		}
 	}
+
+	if err := writeBuffer.WriteString("_leafName", uint32(len(d._leafName)*8), d._leafName); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("IPRouterNode"); err != nil {
 		return err
 	}

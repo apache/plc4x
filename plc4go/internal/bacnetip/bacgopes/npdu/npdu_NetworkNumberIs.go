@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -50,6 +48,7 @@ func NewNetworkNumberIs(args Args, kwArgs KWArgs, options ...Option) (*NetworkNu
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	n._NPDU = npdu.(*_NPDU)
+	n.AddDebugContents(n, "nniNet", "nniFlag")
 
 	n.npduNetMessage = &n.messageType
 	return n, nil
@@ -63,6 +62,16 @@ func WithNetworkNumberIsNET(net uint16) GenericApplier[*NetworkNumberIs] {
 // TODO: check if this is rather a KWArgs
 func WithNetworkNumberIsTerminationConfigured(configured bool) GenericApplier[*NetworkNumberIs] {
 	return WrapGenericApplier(func(n *NetworkNumberIs) { n.nniFlag = configured })
+}
+
+func (n *NetworkNumberIs) GetDebugAttr(attr string) any {
+	switch attr {
+	case "nniNet":
+		return n.nniNet
+	case "nniFlag":
+		return n.nniFlag
+	}
+	return nil
 }
 
 func (n *NetworkNumberIs) GetNniNet() uint16 {
@@ -118,8 +127,4 @@ func (n *NetworkNumberIs) Decode(npdu Arg) error {
 		n.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (n *NetworkNumberIs) String() string {
-	return fmt.Sprintf("NetworkNumberIs{%s, nniNet: %v, nniFlag: %v}", n._NPDU, n.nniNet, n.nniFlag)
 }
