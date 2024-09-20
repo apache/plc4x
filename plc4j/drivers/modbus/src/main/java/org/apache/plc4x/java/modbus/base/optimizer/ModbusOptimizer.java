@@ -169,7 +169,13 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                 if (!responses.containsKey(tagType)) {
                     responses.put(tagType, new ArrayList<>());
                 }
-                responses.get(tagType).add(new Response(modbusTag.getAddress(), optimizedReadResponse.getPlcValue(tagName).getRaw()));
+                PlcResponseCode responseCode = optimizedReadResponse.getResponseCode(tagName);
+                int startingAddress = modbusTag.getAddress();
+                int endingAddressRegister = modbusTag.getAddress() + modbusTag.getNumberOfElements();
+                int endingAddressCoil = modbusTag.getAddress() + modbusTag.getNumberOfElements();
+                byte[] responseData = (responseCode == PlcResponseCode.OK) ? optimizedReadResponse.getPlcValue(tagName).getRaw() : null;
+                responses.get(tagType).add(new Response(responseCode, startingAddress,
+                    endingAddressRegister, endingAddressCoil, responseData));
             }
 
             // Now go through the original requests and try to answer them by using the raw data we now have.
@@ -185,6 +191,16 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                 for (Response response : responses.get(tagType)) {
                     if(modbusTag instanceof ModbusTagCoil) {
                         if(response.matchesCoil(modbusTag)) {
+                            // If this response was invalid, return all associated addresses as equally invalid.
+                            // TODO: Possibly it would be worth doing a single item request for each of these
+                            //  tags in order to find out which ones are actually invalid as if one item in the
+                            //  current request exceeds the address range, all items in this chunk will fail, even
+                            //  if only one element was invalid.
+                            if(response.getResponseCode() != PlcResponseCode.OK) {
+                                values.put(tagName, new ResponseItem<>(response.getResponseCode(), null));
+                                break;
+                            }
+
                             // Coils are read completely different from registers.
                             ModbusTagCoil coilTag = (ModbusTagCoil) modbusTag;
 
@@ -200,6 +216,16 @@ public class ModbusOptimizer extends SingleTagOptimizer {
                     }
                     // Read a normal register.
                     else if (response.matchesRegister(modbusTag)) {
+                        // If this response was invalid, return all associated addresses as equally invalid.
+                        // TODO: Possibly it would be worth doing a single item request for each of these
+                        //  tags in order to find out which ones are actually invalid as if one item in the
+                        //  current request exceeds the address range, all items in this chunk will fail, even
+                        //  if only one element was invalid.
+                        if(response.getResponseCode() != PlcResponseCode.OK) {
+                            values.put(tagName, new ResponseItem<>(response.getResponseCode(), null));
+                            break;
+                        }
+
                         byte[] responseData = response.getResponseDataForTag(modbusTag);
                         ReadBuffer readBuffer = getReadBuffer(responseData, modbusContext.getByteOrder());
                         try {
@@ -340,18 +366,20 @@ public class ModbusOptimizer extends SingleTagOptimizer {
     }
 
     protected static class Response {
+        private final PlcResponseCode responseCode;
         private final int startingAddress;
         private final int endingAddressCoil;
         private final int endingAddressRegister;
         private final byte[] responseData;
 
-        public Response(int startingAddress, byte[] responseData) {
+        public Response(PlcResponseCode responseCode, int startingAddress, int endingAddressRegister, int endingAddressCoil, byte[] responseData) {
+            this.responseCode = responseCode;
             this.startingAddress = startingAddress;
             this.responseData = responseData;
-            this.endingAddressCoil = startingAddress + responseData.length * 8;
+            this.endingAddressCoil = endingAddressRegister;
             // In general a "Celil(responseData.length / 2)" would have been more correct,
             // but the data returned from the device should already be an even number.
-            this.endingAddressRegister = startingAddress + (responseData.length / 2);
+            this.endingAddressRegister = endingAddressCoil;
         }
 
         public boolean matchesCoil(ModbusTag modbusTag) {
@@ -364,6 +392,10 @@ public class ModbusOptimizer extends SingleTagOptimizer {
             int tagStartingAddress = modbusTag.getAddress();
             int tagEndingAddress = modbusTag.getAddress() + (int) Math.ceil((double) modbusTag.getLengthBytes() / 2.0f);
             return ((tagStartingAddress >= this.startingAddress) && (tagEndingAddress <= this.endingAddressRegister));
+        }
+
+        public PlcResponseCode getResponseCode() {
+            return responseCode;
         }
 
         public byte[] getResponseData() {
