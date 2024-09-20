@@ -27,6 +27,7 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,10 +40,11 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
                                     boolean readable,
                                     boolean writable,
                                     boolean subscribable,
+                                    boolean publishable,
                                     Map<String, PlcBrowseItem> children,
                                     Map<String, PlcValue> options,
                                     List<PlcBrowseItemArrayInfo> arrayInformation) {
-        super(tag, name, readable, writable, subscribable, children, options);
+        super(tag, name, readable, writable, subscribable, publishable, children, options);
         this.arrayInformation = arrayInformation;
     }
 
@@ -55,6 +57,26 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
     public List<PlcBrowseItemArrayInfo> getArrayInformation() {
         return arrayInformation;
     }
+
+    /*@Override
+    public PlcBrowseItem resolveArrayItems() {
+        if((arrayInformation == null) || (arrayInformation.isEmpty())) {
+            return super.resolveArrayItems();
+        }
+        return resolveInternal(getTag() ,arrayInformation);
+    }
+
+    protected PlcBrowseItem resolveInternal(PlcTag tag, List<PlcBrowseItemArrayInfo> arrayInformation) {
+        if(arrayInformation.isEmpty()) {
+
+        }
+        for (PlcBrowseItemArrayInfo arrayInfo : arrayInformation) {
+            for(long i = arrayInfo.getLowerBound(); i <= arrayInfo.getUpperBound(); i++) {
+
+            }
+        }
+        return this;
+    }*/
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {

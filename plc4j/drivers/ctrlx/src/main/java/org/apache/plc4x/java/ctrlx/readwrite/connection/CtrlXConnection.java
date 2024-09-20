@@ -260,7 +260,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                             matchingQueryNames.forEach(queryName -> responseItems.get(queryName).add(
                                 new DefaultListPlcBrowseItem(
                                     new CtrlXTag(curNode, PlcValueType.BOOL, Collections.emptyList()),
-                                    curNode, true, true, true,
+                                    curNode, true, true, true, false,
                                     Collections.emptyMap(), Collections.emptyMap(), Collections.emptyList())));
                         }
                     }

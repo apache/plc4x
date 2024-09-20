@@ -42,18 +42,19 @@ public abstract class ManualTest {
     private final boolean testWrite;
     private final boolean enableSingleIteTests;
     private final List<TestCase> testCases;
-
+    private final boolean shuffleMultiItemRequests;
     private final int numRandomMultiItemRequests;
 
     public ManualTest(String connectionString) {
-        this(connectionString, true, true, true, 100);
+        this(connectionString, true, true, true, true, 100);
     }
 
-    public ManualTest(String connectionString, boolean testRead, boolean testWrite, boolean enableSingleIteTests, int numRandomMultiItemRequests) {
+    public ManualTest(String connectionString, boolean testRead, boolean testWrite, boolean enableSingleIteTests, boolean shuffleMultiItemRequests, int numRandomMultiItemRequests) {
         this.connectionString = connectionString;
         this.testRead = testRead;
         this.testWrite = testWrite;
         this.enableSingleIteTests = enableSingleIteTests;
+        this.shuffleMultiItemRequests = shuffleMultiItemRequests;
         this.numRandomMultiItemRequests = numRandomMultiItemRequests;
         testCases = new ArrayList<>();
     }
@@ -152,7 +153,9 @@ public abstract class ManualTest {
                 for (int i = 0; i < numRandomMultiItemRequests; i++) {
                     System.out.println(" - run number " + i + " of " + numRandomMultiItemRequests);
                     final List<TestCase> shuffledTestcases = new ArrayList<>(testCases);
-                    Collections.shuffle(shuffledTestcases);
+                    if(shuffleMultiItemRequests) {
+                        Collections.shuffle(shuffledTestcases);
+                    }
 
                     StringBuilder sb = new StringBuilder();
                     for (TestCase testCase : shuffledTestcases) {

@@ -41,6 +41,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     private final boolean readable;
     private final boolean writable;
     private final boolean subscribable;
+    private final boolean publishable;
 
     private final Map<String, PlcBrowseItem> children;
 
@@ -51,6 +52,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
                                 boolean readable,
                                 boolean writable,
                                 boolean subscribable,
+                                boolean publishable,
                                 Map<String, PlcBrowseItem> children,
                                 Map<String, PlcValue> options) {
         this.tag = tag;
@@ -58,8 +60,20 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         this.readable = readable;
         this.writable = writable;
         this.subscribable = subscribable;
+        this.publishable = publishable;
         this.children = children;
         this.options = options;
+    }
+
+    protected DefaultPlcBrowseItem(PlcBrowseItem original, Map<String, PlcBrowseItem> children) {
+        this.tag = original.getTag();
+        this.name = original.getName();
+        this.readable = original.isReadable();
+        this.writable = original.isWritable();
+        this.subscribable = original.isSubscribable();
+        this.publishable = original.isPublishable();
+        this.options = original.getOptions();
+        this.children = children;
     }
 
     @Override
@@ -72,16 +86,24 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         return name;
     }
 
+    @Override
     public boolean isReadable() {
         return readable;
     }
 
+    @Override
     public boolean isWritable() {
         return writable;
     }
 
+    @Override
     public boolean isSubscribable() {
         return subscribable;
+    }
+
+    @Override
+    public boolean isPublishable() {
+        return publishable;
     }
 
     @Override
@@ -89,6 +111,7 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
         return false;
     }
 
+    @Override
     public List<PlcBrowseItemArrayInfo> getArrayInformation() {
         return Collections.emptyList();
     }
@@ -102,6 +125,15 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
     public Map<String, PlcValue> getOptions() {
         return options;
     }
+
+    /**
+     * For simple non-array elements we usually don't have to do anything here
+     * @return a one-element list the unchanged item
+     */
+    /*@Override
+    public PlcBrowseItem resolveArrayItems() {
+        return this;
+    }*/
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
