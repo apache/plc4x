@@ -89,22 +89,23 @@ public class S7Optimizer extends BaseOptimizer {
                 continue;
             }
 
-            // Var length strings go into their own separate read-request.
-            if ((readRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
-                LinkedHashMap<String, PlcTag> strTags = new LinkedHashMap<>();
-                strTags.put(tagName, readRequest.getTag(tagName));
-                processedRequests.add(new DefaultPlcReadRequest(
-                    ((DefaultPlcReadRequest) readRequest).getReader(), strTags));
-                continue;
-            }
-
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Processing of normal tags.
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             S7Tag tag = (S7Tag) readRequest.getTag(tagName);
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
-            int readResponseItemSize = 4 + (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes());
+            // If we're reading var-length strings, then we'll read the sizes of the strings instead
+            // and the S7ProtocolLogic will handle reading the actual strings in an additional request.
+            int readResponseItemElementSize = tag.getDataType().getSizeInBytes();
+            if(readRequest.getTag(tagName) instanceof S7StringVarLengthTag) {
+                if(((S7StringVarLengthTag) readRequest.getTag(tagName)).getDataType() == TransportSize.STRING) {
+                    readResponseItemElementSize = 2;
+                } else if(((S7StringVarLengthTag) readRequest.getTag(tagName)).getDataType() == TransportSize.WSTRING) {
+                    readResponseItemElementSize = 4;
+                }
+            }
+            int readResponseItemSize = 4 + (tag.getNumberOfElements() * readResponseItemElementSize);
             // If it's an odd number of bytes, add one to make it even
             if (readResponseItemSize % 2 == 1) {
                 readResponseItemSize++;
@@ -169,7 +170,7 @@ public class S7Optimizer extends BaseOptimizer {
         return processedRequests;
     }
 
-    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses) {
+    protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcReadRequest, SubResponse<PlcReadResponse>> readResponses, DriverContext driverContext) {
         Map<String, ResponseItem<PlcValue>> tagValues = new HashMap<>();
         for (Map.Entry<PlcReadRequest, SubResponse<PlcReadResponse>> requestsEntries : readResponses.entrySet()) {
             PlcReadRequest curRequest = requestsEntries.getKey();

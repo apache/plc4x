@@ -70,6 +70,8 @@ import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
 
+import javax.xml.crypto.Data;
+
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
  * So we need to limit those.
@@ -652,9 +654,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             }
             // This seems to be the case if we're trying to do a subscription on a device that doesn't support that.
             else if((errorClass == 0) && (errorCode == (short) 0x8104)) {
-                logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                logger.warn("Got an error response from the PLC. Error Class: {}, Error Code {}. This particular response code usually indicates " +
                     "that a given service is not implemented on the PLC. Most probably you tried to subscribe to " +
-                    "data on a PLC that doesn't support subsciptions (S7-1200 or S7-1500)",
+                    "data on a PLC that doesn't support subscriptions (S7-1200 or S7-1500)",
                     errorClass, errorCode);
                 for (String tagName : plcSubscriptionRequest.getTagNames()) {
                     values.put(tagName, new ResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
@@ -1287,42 +1289,82 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private CompletableFuture<S7Message> performVarLengthStringReadRequest(DefaultPlcReadRequest request) {
         CompletableFuture<S7Message> future = new CompletableFuture<>();
 
-        // Resolve the lengths of all var-length string fields in the request.
-        CompletableFuture<Map<S7StringVarLengthTag, StringSizes>> stringSizesFuture = getStringSizes(request);
-        stringSizesFuture.whenComplete((s7StringVarLengthTagStringSizesMap, throwable) -> {
-            if (throwable != null) {
-                future.completeExceptionally(new PlcProtocolException("Error resolving string sizes", throwable));
+        // Replace the var-length string fields with requests to read the
+        // length information instead of the string content.
+        int numVarLengthStrings = 0;
+        LinkedHashMap<String, PlcTag> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
+        for (String tagName : request.getTagNames()) {
+            S7Tag s7tag = (S7Tag) request.getTag(tagName);
+            if(s7tag instanceof S7StringVarLengthTag) {
+                if(s7tag.getDataType() == TransportSize.STRING) {
+                    updatedRequestItems.put(tagName, new S7Tag(TransportSize.BYTE, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 2));
+                    numVarLengthStrings++;
+                } else if(s7tag.getDataType() == TransportSize.WSTRING) {
+                    updatedRequestItems.put(tagName, new S7Tag(TransportSize.BYTE, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 4));
+                    numVarLengthStrings++;
+                }
             } else {
-                // Create an alternative list of request items, where all var-length string tags are replaced with
-                // fixed-length string tags using the string length returned by the previous request.
-                LinkedHashMap<String, PlcTag> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
-                for (String tagName : request.getTagNames()) {
-                    PlcTag tag = request.getTag(tagName);
-                    if (tag instanceof S7StringVarLengthTag) {
-                        S7StringVarLengthTag varLengthTag = (S7StringVarLengthTag) tag;
-                        int stringLength = s7StringVarLengthTagStringSizesMap.get(varLengthTag).getCurLength();
-                        S7StringFixedLengthTag newTag = new S7StringFixedLengthTag(varLengthTag.getDataType(), varLengthTag.getMemoryArea(),
-                            varLengthTag.getBlockNumber(), varLengthTag.getByteOffset(), varLengthTag.getBitOffset(),
-                            varLengthTag.getNumberOfElements(), stringLength);
-                        updatedRequestItems.put(tagName, newTag);
-                    } else {
-                        updatedRequestItems.put(tagName, tag);
+                updatedRequestItems.put(tagName, s7tag);
+            }
+        }
+
+        CompletableFuture<S7Message> s7MessageCompletableFuture = performOrdinaryReadRequest(new DefaultPlcReadRequest(request.getReader(), updatedRequestItems));
+        int finalNumVarLengthStrings = numVarLengthStrings;
+        s7MessageCompletableFuture.whenComplete((s7Message, throwable1) -> {
+            if (throwable1 != null) {
+                future.completeExceptionally(throwable1);
+                return;
+            }
+            // Collect the responses for the var-length strings and read them separately.
+            LinkedHashMap<String, PlcTag> varLengthStringTags = new LinkedHashMap<>(finalNumVarLengthStrings);
+            int curItem = 0;
+            for (String tagName : request.getTagNames()) {
+                S7Tag s7tag = (S7Tag) request.getTag(tagName);
+                if(s7tag instanceof S7StringVarLengthTag) {
+                    S7VarPayloadDataItem s7VarPayloadDataItem = ((S7PayloadReadVarResponse) s7Message.getPayload()).getItems().get(curItem);
+                    // Simply ignore processing var-lenght strings that are not ok
+                    if(s7VarPayloadDataItem.getReturnCode() == DataTransportErrorCode.OK) {
+                        ReadBuffer rb = new ReadBufferByteBased(s7VarPayloadDataItem.getData());
+                        try {
+                            if (s7tag.getDataType() == TransportSize.STRING) {
+                                rb.readShort(8);
+                                int stringLength = rb.readShort(8);
+                                varLengthStringTags.put(tagName, new S7StringFixedLengthTag(TransportSize.STRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength));
+                            } else if (s7tag.getDataType() == TransportSize.WSTRING) {
+                                rb.readInt(16);
+                                int stringLength = rb.readInt(16);
+                                varLengthStringTags.put(tagName, new S7StringFixedLengthTag(TransportSize.WSTRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength));
+                            }
+                        } catch (Exception e) {
+                            logger.warn("Error parsing string size for tag {}", tagName, e);
+                        }
                     }
                 }
-
-                // Use the normal functionality to execute the read request.
-                // TODO: Here technically the request object in the response will not match the original request.
-                CompletableFuture<S7Message> s7MessageCompletableFuture = performOrdinaryReadRequest(new DefaultPlcReadRequest(request.getReader(), updatedRequestItems));
-                s7MessageCompletableFuture.whenComplete((s7Message, throwable1) -> {
-                    if (throwable1 != null) {
-                        future.completeExceptionally(throwable1);
-                    } else {
-                        future.complete(s7Message);
-                    }
-                });
+                curItem++;
             }
+            // TODO: Technically we would need to let this go through the optimizer in order to split things up.
+            //  For this we need access to the PlcReader instance of this driver
+            CompletableFuture<S7Message> readStringsCompletableFuture = performOrdinaryReadRequest(new DefaultPlcReadRequest(request.getReader(), varLengthStringTags));
+            readStringsCompletableFuture.whenComplete((s7StringMessage, throwable2) -> {
+                // Build a new S7Message that replaces the var-length string items of the previous request with the responses of this response.
+                int curInitialItem = 0;
+                int curVarLengthStringItem = 0;
+                List<S7VarPayloadDataItem> varLengthStringItems = new ArrayList<>(request.getNumberOfTags());
+                for (String tagName : request.getTagNames()) {
+                    S7Tag s7tag = (S7Tag) request.getTag(tagName);
+                    S7VarPayloadDataItem curResultItem = ((S7PayloadReadVarResponse) s7Message.getPayload()).getItems().get(curInitialItem);
+                    if(s7tag instanceof S7StringVarLengthTag) {
+                        if(curResultItem.getReturnCode() == DataTransportErrorCode.OK) {
+                            curResultItem = ((S7PayloadReadVarResponse) s7StringMessage.getPayload()).getItems().get(curVarLengthStringItem);
+                            curVarLengthStringItem++;
+                        }
+                    }
+                    varLengthStringItems.add(curResultItem);
+                    curInitialItem++;
+                }
+                future.complete(new S7MessageResponse(s7Message.getTpduReference(), s7Message.getParameter(), new S7PayloadReadVarResponse(varLengthStringItems), (short) 0, (short) 0));
+            });
         });
-
         return future;
     }
 
@@ -1478,18 +1520,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      * This method is called when there is no handler for the message. 
      * By default it must correspond to asynchronous events, which if so, 
      * must be transferred to the event queue.
-     * 
      * The event's own information is encapsulated in the parameters and payload
      * field. From this it is abstracted to the corresponding event model.
-     * 
      * 01. S7ModeEvent:
      * 02. S7UserEvent:
      * 03. S7SysEvent:
      * 04. S7AlarmEvent
      * 05. S7CyclicEvent:
      * 06. S7CyclicEvent:
-     * 
-     * TODO: Use mspec to generate types that allow better interpretation of 
+     * TODO: Use mspec to generate types that allow better interpretation of
      * the code using "instanceof".
      */
     @Override
@@ -1563,7 +1602,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         
                         if (cycChangeValueEvents.containsKey(parameterItem.getSequenceNumber())){
                             S7CyclicEvent lastCycEvent = cycChangeValueEvents.get(parameterItem.getSequenceNumber());
-                            if (cycEvent.equals(lastCycEvent ) == false) {
+                            if (!cycEvent.equals(lastCycEvent)) {
                                 cycChangeValueEvents.replace(parameterItem.getSequenceNumber(), cycEvent);
                                 eventQueue.add(cycEvent);                                
                             }
@@ -1962,25 +2001,29 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             DataTransportSize transportSize = tag.getDataType().getDataTransportSize();
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
-            for (int i = 0; i < tag.getNumberOfElements(); i++) {
-                int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
-
-                // Cap the length of the string with the maximum allowed size.
-                if (tag.getDataType() == TransportSize.STRING) {
-                    lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
-                } else if (tag.getDataType() == TransportSize.WSTRING) {
-                    lengthInBits = Math.min(lengthInBits, (stringLength * 16) + 32);
-                } else if (tag.getDataType() == TransportSize.S5TIME) {
-                    lengthInBits = lengthInBits * 8;
+            if((tag.getDataType() == TransportSize.BYTE) && (tag.getNumberOfElements() > 1)) {
+                byteBuffer = ByteBuffer.allocate(tag.getNumberOfElements());
+                byteBuffer.put(plcValue.getRaw());
+            } else {
+                for (int i = 0; i < tag.getNumberOfElements(); i++) {
+                    int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
+                    // Cap the length of the string with the maximum allowed size.
+                    if (tag.getDataType() == TransportSize.STRING) {
+                        lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
+                    } else if (tag.getDataType() == TransportSize.WSTRING) {
+                        lengthInBits = Math.min(lengthInBits, (stringLength * 16) + 32);
+                    } else if (tag.getDataType() == TransportSize.S5TIME) {
+                        lengthInBits = lengthInBits * 8;
+                    }
+                    final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
+                    DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
+                    // Allocate enough space for all items.
+                    if (byteBuffer == null) {
+                        // TODO: This logic will cause problems when reading arrays of strings.
+                        byteBuffer = ByteBuffer.allocate(writeBuffer.getBytes().length * tag.getNumberOfElements());
+                    }
+                    byteBuffer.put(writeBuffer.getBytes());
                 }
-                final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
-                // Allocate enough space for all items.
-                if (byteBuffer == null) {
-                    // TODO: This logic will cause problems when reading arrays of strings.
-                    byteBuffer = ByteBuffer.allocate(writeBuffer.getBytes().length * tag.getNumberOfElements());
-                }
-                byteBuffer.put(writeBuffer.getBytes());
             }
             if (byteBuffer != null) {
                 byte[] data = byteBuffer.array();
@@ -2040,7 +2083,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             case OK:
                 return PlcResponseCode.OK;
             case NOT_FOUND:
-                return PlcResponseCode.NOT_FOUND;
+                // It seems the S7 devices return NOT_FOUND if for example we try to access a DB number
+                // which doesn't exist. In other protocols we all map that to invalid address.
             case INVALID_ADDRESS:
                 return PlcResponseCode.INVALID_ADDRESS;
             case DATA_TYPE_NOT_SUPPORTED:
@@ -2309,6 +2353,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int curItemIndex = 0;
             for (S7StringVarLengthTag varLengthStringTag : varLengthStringTags) {
                 S7VarPayloadDataItem s7VarPayloadDataItem = getLengthsResponse.getItems().get(curItemIndex);
+                // Something went wrong.
+                // We simply don't save the length information, and then we'll treat it as INVALID_ADDRESS later on
+                // in the code.
+                if(s7VarPayloadDataItem.getReturnCode() != DataTransportErrorCode.OK) {
+                    continue;
+                }
                 ReadBufferByteBased readBuffer = new ReadBufferByteBased(s7VarPayloadDataItem.getData());
                 try {
                     if (varLengthStringTag.getDataType() == TransportSize.STRING) {
@@ -2323,7 +2373,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         throw new PlcInvalidTagException("Only STRING and WSTRING allowed here.");
                     }
                 } catch (ParseException e) {
-                    throw new PlcInvalidTagException("Error reading var-length string actual lengths.");
+                    throw new PlcInvalidTagException("Error parsing var-length string actual lengths.");
                 }
             }
 
