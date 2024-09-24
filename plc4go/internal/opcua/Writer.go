@@ -22,11 +22,9 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
-	"runtime/debug"
-	"strconv"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -115,25 +113,22 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 		writeValueArray,
 	)
 
-	identifier, err := strconv.ParseUint(opcuaWriteRequest.GetExtensionId(), 10, 16)
-	if err != nil {
-		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "error parsing identifier"))
-		return
-	}
+	identifier := opcuaWriteRequest.GetExtensionId()
 	expandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 		false, //Server Index Specified
 		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensionObject(
-		expandedNodeId,
-		nil,
-		opcuaWriteRequest,
-		false)
+	extObject := readWriteModel.NewExtensionObject(expandedNodeId)
+
+	//expandedNodeId,
+	//nil,
+	//opcuaWriteRequest,
+	//false)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest"))
 		return
 	}
