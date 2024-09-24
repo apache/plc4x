@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ReferenceDescription extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "520";
+  public Integer getExtensionId() {
+    return (int) 520;
   }
 
   // Properties.
@@ -174,7 +174,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ReferenceDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

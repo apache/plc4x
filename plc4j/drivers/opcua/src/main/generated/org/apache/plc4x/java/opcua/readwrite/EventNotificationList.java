@@ -38,25 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class EventNotificationList extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "916";
+  public Integer getExtensionId() {
+    return (int) 916;
   }
 
   // Properties.
-  protected final int noOfEvents;
-  protected final List<ExtensionObjectDefinition> events;
+  protected final List<EventFieldList> events;
 
-  public EventNotificationList(int noOfEvents, List<ExtensionObjectDefinition> events) {
+  public EventNotificationList(List<EventFieldList> events) {
     super();
-    this.noOfEvents = noOfEvents;
     this.events = events;
   }
 
-  public int getNoOfEvents() {
-    return noOfEvents;
-  }
-
-  public List<ExtensionObjectDefinition> getEvents() {
+  public List<EventFieldList> getEvents() {
     return events;
   }
 
@@ -67,13 +61,10 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("EventNotificationList");
 
-    // Implicit Field (notificationLength) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int notificationLength = (int) (getLengthInBytes());
-    writeImplicitField("notificationLength", notificationLength, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (noOfEvents)
-    writeSimpleField("noOfEvents", noOfEvents, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfEvents) (Used for parsing, but its value is not stored as it's implicitly
+    // given by the objects content)
+    int noOfEvents = (int) ((((getEvents()) == (null)) ? -(1) : COUNT(getEvents())));
+    writeImplicitField("noOfEvents", noOfEvents, writeSignedInt(writeBuffer, 32));
 
     // Array Field (events)
     writeComplexTypeArrayField("events", events, writeBuffer);
@@ -92,16 +83,13 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
     EventNotificationList _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Implicit Field (notificationLength)
-    lengthInBits += 32;
-
-    // Simple field (noOfEvents)
+    // Implicit Field (noOfEvents)
     lengthInBits += 32;
 
     // Array field
     if (events != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : events) {
+      for (EventFieldList element : events) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= events.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -111,41 +99,37 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("EventNotificationList");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int notificationLength = readImplicitField("notificationLength", readSignedInt(readBuffer, 32));
+    int noOfEvents = readImplicitField("noOfEvents", readSignedInt(readBuffer, 32));
 
-    int noOfEvents = readSimpleField("noOfEvents", readSignedInt(readBuffer, 32));
-
-    List<ExtensionObjectDefinition> events =
+    List<EventFieldList> events =
         readCountArrayField(
             "events",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("919")),
+                () ->
+                    (EventFieldList) ExtensionObjectDefinition.staticParse(readBuffer, (int) (919)),
                 readBuffer),
             noOfEvents);
 
     readBuffer.closeContext("EventNotificationList");
     // Create the instance
-    return new EventNotificationListBuilderImpl(noOfEvents, events);
+    return new EventNotificationListBuilderImpl(events);
   }
 
   public static class EventNotificationListBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfEvents;
-    private final List<ExtensionObjectDefinition> events;
+    private final List<EventFieldList> events;
 
-    public EventNotificationListBuilderImpl(
-        int noOfEvents, List<ExtensionObjectDefinition> events) {
-      this.noOfEvents = noOfEvents;
+    public EventNotificationListBuilderImpl(List<EventFieldList> events) {
       this.events = events;
     }
 
     public EventNotificationList build() {
-      EventNotificationList eventNotificationList = new EventNotificationList(noOfEvents, events);
+      EventNotificationList eventNotificationList = new EventNotificationList(events);
       return eventNotificationList;
     }
   }
@@ -159,15 +143,12 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
       return false;
     }
     EventNotificationList that = (EventNotificationList) o;
-    return (getNoOfEvents() == that.getNoOfEvents())
-        && (getEvents() == that.getEvents())
-        && super.equals(that)
-        && true;
+    return (getEvents() == that.getEvents()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getNoOfEvents(), getEvents());
+    return Objects.hash(super.hashCode(), getEvents());
   }
 
   @Override

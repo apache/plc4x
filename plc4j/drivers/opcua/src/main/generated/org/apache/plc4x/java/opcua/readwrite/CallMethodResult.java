@@ -38,34 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CallMethodResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "709";
+  public Integer getExtensionId() {
+    return (int) 709;
   }
 
   // Properties.
   protected final StatusCode statusCode;
-  protected final int noOfInputArgumentResults;
   protected final List<StatusCode> inputArgumentResults;
-  protected final int noOfInputArgumentDiagnosticInfos;
   protected final List<DiagnosticInfo> inputArgumentDiagnosticInfos;
-  protected final int noOfOutputArguments;
   protected final List<Variant> outputArguments;
 
   public CallMethodResult(
       StatusCode statusCode,
-      int noOfInputArgumentResults,
       List<StatusCode> inputArgumentResults,
-      int noOfInputArgumentDiagnosticInfos,
       List<DiagnosticInfo> inputArgumentDiagnosticInfos,
-      int noOfOutputArguments,
       List<Variant> outputArguments) {
     super();
     this.statusCode = statusCode;
-    this.noOfInputArgumentResults = noOfInputArgumentResults;
     this.inputArgumentResults = inputArgumentResults;
-    this.noOfInputArgumentDiagnosticInfos = noOfInputArgumentDiagnosticInfos;
     this.inputArgumentDiagnosticInfos = inputArgumentDiagnosticInfos;
-    this.noOfOutputArguments = noOfOutputArguments;
     this.outputArguments = outputArguments;
   }
 
@@ -73,24 +64,12 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     return statusCode;
   }
 
-  public int getNoOfInputArgumentResults() {
-    return noOfInputArgumentResults;
-  }
-
   public List<StatusCode> getInputArgumentResults() {
     return inputArgumentResults;
   }
 
-  public int getNoOfInputArgumentDiagnosticInfos() {
-    return noOfInputArgumentDiagnosticInfos;
-  }
-
   public List<DiagnosticInfo> getInputArgumentDiagnosticInfos() {
     return inputArgumentDiagnosticInfos;
-  }
-
-  public int getNoOfOutputArguments() {
-    return noOfOutputArguments;
   }
 
   public List<Variant> getOutputArguments() {
@@ -107,15 +86,24 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     // Simple Field (statusCode)
     writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
-    // Simple Field (noOfInputArgumentResults)
-    writeSimpleField(
+    // Implicit Field (noOfInputArgumentResults) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfInputArgumentResults =
+        (int) ((((getInputArgumentResults()) == (null)) ? -(1) : COUNT(getInputArgumentResults())));
+    writeImplicitField(
         "noOfInputArgumentResults", noOfInputArgumentResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (inputArgumentResults)
     writeComplexTypeArrayField("inputArgumentResults", inputArgumentResults, writeBuffer);
 
-    // Simple Field (noOfInputArgumentDiagnosticInfos)
-    writeSimpleField(
+    // Implicit Field (noOfInputArgumentDiagnosticInfos) (Used for parsing, but its value is not
+    // stored as it's implicitly given by the objects content)
+    int noOfInputArgumentDiagnosticInfos =
+        (int)
+            ((((getInputArgumentDiagnosticInfos()) == (null))
+                ? -(1)
+                : COUNT(getInputArgumentDiagnosticInfos())));
+    writeImplicitField(
         "noOfInputArgumentDiagnosticInfos",
         noOfInputArgumentDiagnosticInfos,
         writeSignedInt(writeBuffer, 32));
@@ -124,8 +112,11 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     writeComplexTypeArrayField(
         "inputArgumentDiagnosticInfos", inputArgumentDiagnosticInfos, writeBuffer);
 
-    // Simple Field (noOfOutputArguments)
-    writeSimpleField("noOfOutputArguments", noOfOutputArguments, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfOutputArguments) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfOutputArguments =
+        (int) ((((getOutputArguments()) == (null)) ? -(1) : COUNT(getOutputArguments())));
+    writeImplicitField("noOfOutputArguments", noOfOutputArguments, writeSignedInt(writeBuffer, 32));
 
     // Array Field (outputArguments)
     writeComplexTypeArrayField("outputArguments", outputArguments, writeBuffer);
@@ -147,7 +138,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
 
-    // Simple field (noOfInputArgumentResults)
+    // Implicit Field (noOfInputArgumentResults)
     lengthInBits += 32;
 
     // Array field
@@ -159,7 +150,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
       }
     }
 
-    // Simple field (noOfInputArgumentDiagnosticInfos)
+    // Implicit Field (noOfInputArgumentDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -171,7 +162,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
       }
     }
 
-    // Simple field (noOfOutputArguments)
+    // Implicit Field (noOfOutputArguments)
     lengthInBits += 32;
 
     // Array field
@@ -187,7 +178,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CallMethodResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -197,7 +188,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
             "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfInputArgumentResults =
-        readSimpleField("noOfInputArgumentResults", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfInputArgumentResults", readSignedInt(readBuffer, 32));
 
     List<StatusCode> inputArgumentResults =
         readCountArrayField(
@@ -206,7 +197,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
             noOfInputArgumentResults);
 
     int noOfInputArgumentDiagnosticInfos =
-        readSimpleField("noOfInputArgumentDiagnosticInfos", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfInputArgumentDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> inputArgumentDiagnosticInfos =
         readCountArrayField(
@@ -214,7 +205,8 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
             readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfInputArgumentDiagnosticInfos);
 
-    int noOfOutputArguments = readSimpleField("noOfOutputArguments", readSignedInt(readBuffer, 32));
+    int noOfOutputArguments =
+        readImplicitField("noOfOutputArguments", readSignedInt(readBuffer, 32));
 
     List<Variant> outputArguments =
         readCountArrayField(
@@ -225,52 +217,31 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     readBuffer.closeContext("CallMethodResult");
     // Create the instance
     return new CallMethodResultBuilderImpl(
-        statusCode,
-        noOfInputArgumentResults,
-        inputArgumentResults,
-        noOfInputArgumentDiagnosticInfos,
-        inputArgumentDiagnosticInfos,
-        noOfOutputArguments,
-        outputArguments);
+        statusCode, inputArgumentResults, inputArgumentDiagnosticInfos, outputArguments);
   }
 
   public static class CallMethodResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
-    private final int noOfInputArgumentResults;
     private final List<StatusCode> inputArgumentResults;
-    private final int noOfInputArgumentDiagnosticInfos;
     private final List<DiagnosticInfo> inputArgumentDiagnosticInfos;
-    private final int noOfOutputArguments;
     private final List<Variant> outputArguments;
 
     public CallMethodResultBuilderImpl(
         StatusCode statusCode,
-        int noOfInputArgumentResults,
         List<StatusCode> inputArgumentResults,
-        int noOfInputArgumentDiagnosticInfos,
         List<DiagnosticInfo> inputArgumentDiagnosticInfos,
-        int noOfOutputArguments,
         List<Variant> outputArguments) {
       this.statusCode = statusCode;
-      this.noOfInputArgumentResults = noOfInputArgumentResults;
       this.inputArgumentResults = inputArgumentResults;
-      this.noOfInputArgumentDiagnosticInfos = noOfInputArgumentDiagnosticInfos;
       this.inputArgumentDiagnosticInfos = inputArgumentDiagnosticInfos;
-      this.noOfOutputArguments = noOfOutputArguments;
       this.outputArguments = outputArguments;
     }
 
     public CallMethodResult build() {
       CallMethodResult callMethodResult =
           new CallMethodResult(
-              statusCode,
-              noOfInputArgumentResults,
-              inputArgumentResults,
-              noOfInputArgumentDiagnosticInfos,
-              inputArgumentDiagnosticInfos,
-              noOfOutputArguments,
-              outputArguments);
+              statusCode, inputArgumentResults, inputArgumentDiagnosticInfos, outputArguments);
       return callMethodResult;
     }
   }
@@ -285,11 +256,8 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     }
     CallMethodResult that = (CallMethodResult) o;
     return (getStatusCode() == that.getStatusCode())
-        && (getNoOfInputArgumentResults() == that.getNoOfInputArgumentResults())
         && (getInputArgumentResults() == that.getInputArgumentResults())
-        && (getNoOfInputArgumentDiagnosticInfos() == that.getNoOfInputArgumentDiagnosticInfos())
         && (getInputArgumentDiagnosticInfos() == that.getInputArgumentDiagnosticInfos())
-        && (getNoOfOutputArguments() == that.getNoOfOutputArguments())
         && (getOutputArguments() == that.getOutputArguments())
         && super.equals(that)
         && true;
@@ -300,11 +268,8 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     return Objects.hash(
         super.hashCode(),
         getStatusCode(),
-        getNoOfInputArgumentResults(),
         getInputArgumentResults(),
-        getNoOfInputArgumentDiagnosticInfos(),
         getInputArgumentDiagnosticInfos(),
-        getNoOfOutputArguments(),
         getOutputArguments());
   }
 

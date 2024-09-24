@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DeleteNodesItem extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "384";
+  public Integer getExtensionId() {
+    return (int) 384;
   }
 
   // Properties.
@@ -103,7 +103,7 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DeleteNodesItem");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

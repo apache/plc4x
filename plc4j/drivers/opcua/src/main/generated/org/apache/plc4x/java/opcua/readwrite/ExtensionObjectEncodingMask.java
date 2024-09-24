@@ -39,13 +39,13 @@ public class ExtensionObjectEncodingMask implements Message {
 
   // Properties.
   protected final boolean typeIdSpecified;
-  protected final boolean xmlbody;
+  protected final boolean xmlBody;
   protected final boolean binaryBody;
 
-  public ExtensionObjectEncodingMask(boolean typeIdSpecified, boolean xmlbody, boolean binaryBody) {
+  public ExtensionObjectEncodingMask(boolean typeIdSpecified, boolean xmlBody, boolean binaryBody) {
     super();
     this.typeIdSpecified = typeIdSpecified;
-    this.xmlbody = xmlbody;
+    this.xmlBody = xmlBody;
     this.binaryBody = binaryBody;
   }
 
@@ -53,8 +53,8 @@ public class ExtensionObjectEncodingMask implements Message {
     return typeIdSpecified;
   }
 
-  public boolean getXmlbody() {
-    return xmlbody;
+  public boolean getXmlBody() {
+    return xmlBody;
   }
 
   public boolean getBinaryBody() {
@@ -72,8 +72,8 @@ public class ExtensionObjectEncodingMask implements Message {
     // Simple Field (typeIdSpecified)
     writeSimpleField("typeIdSpecified", typeIdSpecified, writeBoolean(writeBuffer));
 
-    // Simple Field (xmlbody)
-    writeSimpleField("xmlbody", xmlbody, writeBoolean(writeBuffer));
+    // Simple Field (xmlBody)
+    writeSimpleField("xmlBody", xmlBody, writeBoolean(writeBuffer));
 
     // Simple Field (binaryBody)
     writeSimpleField("binaryBody", binaryBody, writeBoolean(writeBuffer));
@@ -98,7 +98,7 @@ public class ExtensionObjectEncodingMask implements Message {
     // Simple field (typeIdSpecified)
     lengthInBits += 1;
 
-    // Simple field (xmlbody)
+    // Simple field (xmlBody)
     lengthInBits += 1;
 
     // Simple field (binaryBody)
@@ -117,7 +117,7 @@ public class ExtensionObjectEncodingMask implements Message {
 
     boolean typeIdSpecified = readSimpleField("typeIdSpecified", readBoolean(readBuffer));
 
-    boolean xmlbody = readSimpleField("xmlbody", readBoolean(readBuffer));
+    boolean xmlBody = readSimpleField("xmlBody", readBoolean(readBuffer));
 
     boolean binaryBody = readSimpleField("binaryBody", readBoolean(readBuffer));
 
@@ -125,7 +125,7 @@ public class ExtensionObjectEncodingMask implements Message {
     // Create the instance
     ExtensionObjectEncodingMask _extensionObjectEncodingMask;
     _extensionObjectEncodingMask =
-        new ExtensionObjectEncodingMask(typeIdSpecified, xmlbody, binaryBody);
+        new ExtensionObjectEncodingMask(typeIdSpecified, xmlBody, binaryBody);
     return _extensionObjectEncodingMask;
   }
 
@@ -139,14 +139,14 @@ public class ExtensionObjectEncodingMask implements Message {
     }
     ExtensionObjectEncodingMask that = (ExtensionObjectEncodingMask) o;
     return (getTypeIdSpecified() == that.getTypeIdSpecified())
-        && (getXmlbody() == that.getXmlbody())
+        && (getXmlBody() == that.getXmlBody())
         && (getBinaryBody() == that.getBinaryBody())
         && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getTypeIdSpecified(), getXmlbody(), getBinaryBody());
+    return Objects.hash(getTypeIdSpecified(), getXmlBody(), getBinaryBody());
   }
 
   @Override

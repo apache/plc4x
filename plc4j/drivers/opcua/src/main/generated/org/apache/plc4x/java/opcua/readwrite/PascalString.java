@@ -73,8 +73,8 @@ public class PascalString implements Message {
     int stringLength = getStringLength();
     writeBuffer.writeVirtual("stringLength", stringLength);
 
-    // Simple Field (stringValue)
-    writeSimpleField("stringValue", stringValue, writeString(writeBuffer, (stringLength) * (8)));
+    // Optional Field (stringValue) (Can be skipped, if the value is null)
+    writeOptionalField("stringValue", stringValue, writeString(writeBuffer, (stringLength) * (8)));
 
     writeBuffer.popContext("PascalString");
   }
@@ -95,8 +95,10 @@ public class PascalString implements Message {
 
     // A virtual field doesn't have any in- or output.
 
-    // Simple field (stringValue)
-    lengthInBits += (getStringLength()) * (8);
+    // Optional Field (stringValue)
+    if (stringValue != null) {
+      lengthInBits += (getStringLength()) * (8);
+    }
 
     return lengthInBits;
   }
@@ -115,7 +117,8 @@ public class PascalString implements Message {
                 sLength));
 
     String stringValue =
-        readSimpleField("stringValue", readString(readBuffer, (stringLength) * (8)));
+        readOptionalField(
+            "stringValue", readString(readBuffer, (stringLength) * (8)), (sLength) != (-(1)));
 
     readBuffer.closeContext("PascalString");
     // Create the instance

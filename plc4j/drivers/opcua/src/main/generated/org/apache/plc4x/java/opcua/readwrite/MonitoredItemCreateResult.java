@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class MonitoredItemCreateResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "748";
+  public Integer getExtensionId() {
+    return (int) 748;
   }
 
   // Properties.
@@ -139,7 +139,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("MonitoredItemCreateResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

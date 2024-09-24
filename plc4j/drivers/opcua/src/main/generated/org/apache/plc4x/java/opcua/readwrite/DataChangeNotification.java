@@ -38,38 +38,23 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DataChangeNotification extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "811";
+  public Integer getExtensionId() {
+    return (int) 811;
   }
 
   // Properties.
-  protected final int noOfMonitoredItems;
-  protected final List<ExtensionObjectDefinition> monitoredItems;
-  protected final int noOfDiagnosticInfos;
+  protected final List<MonitoredItemNotification> monitoredItems;
   protected final List<DiagnosticInfo> diagnosticInfos;
 
   public DataChangeNotification(
-      int noOfMonitoredItems,
-      List<ExtensionObjectDefinition> monitoredItems,
-      int noOfDiagnosticInfos,
-      List<DiagnosticInfo> diagnosticInfos) {
+      List<MonitoredItemNotification> monitoredItems, List<DiagnosticInfo> diagnosticInfos) {
     super();
-    this.noOfMonitoredItems = noOfMonitoredItems;
     this.monitoredItems = monitoredItems;
-    this.noOfDiagnosticInfos = noOfDiagnosticInfos;
     this.diagnosticInfos = diagnosticInfos;
   }
 
-  public int getNoOfMonitoredItems() {
-    return noOfMonitoredItems;
-  }
-
-  public List<ExtensionObjectDefinition> getMonitoredItems() {
+  public List<MonitoredItemNotification> getMonitoredItems() {
     return monitoredItems;
-  }
-
-  public int getNoOfDiagnosticInfos() {
-    return noOfDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getDiagnosticInfos() {
@@ -83,19 +68,20 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("DataChangeNotification");
 
-    // Implicit Field (notificationLength) (Used for parsing, but its value is not stored as it's
+    // Implicit Field (noOfMonitoredItems) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    int notificationLength = (int) (getLengthInBytes());
-    writeImplicitField("notificationLength", notificationLength, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (noOfMonitoredItems)
-    writeSimpleField("noOfMonitoredItems", noOfMonitoredItems, writeSignedInt(writeBuffer, 32));
+    int noOfMonitoredItems =
+        (int) ((((getMonitoredItems()) == (null)) ? -(1) : COUNT(getMonitoredItems())));
+    writeImplicitField("noOfMonitoredItems", noOfMonitoredItems, writeSignedInt(writeBuffer, 32));
 
     // Array Field (monitoredItems)
     writeComplexTypeArrayField("monitoredItems", monitoredItems, writeBuffer);
 
-    // Simple Field (noOfDiagnosticInfos)
-    writeSimpleField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiagnosticInfos) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiagnosticInfos =
+        (int) ((((getDiagnosticInfos()) == (null)) ? -(1) : COUNT(getDiagnosticInfos())));
+    writeImplicitField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (diagnosticInfos)
     writeComplexTypeArrayField("diagnosticInfos", diagnosticInfos, writeBuffer);
@@ -114,22 +100,19 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
     DataChangeNotification _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Implicit Field (notificationLength)
-    lengthInBits += 32;
-
-    // Simple field (noOfMonitoredItems)
+    // Implicit Field (noOfMonitoredItems)
     lengthInBits += 32;
 
     // Array field
     if (monitoredItems != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : monitoredItems) {
+      for (MonitoredItemNotification element : monitoredItems) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= monitoredItems.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfDiagnosticInfos)
+    // Implicit Field (noOfDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -145,24 +128,25 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DataChangeNotification");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int notificationLength = readImplicitField("notificationLength", readSignedInt(readBuffer, 32));
+    int noOfMonitoredItems = readImplicitField("noOfMonitoredItems", readSignedInt(readBuffer, 32));
 
-    int noOfMonitoredItems = readSimpleField("noOfMonitoredItems", readSignedInt(readBuffer, 32));
-
-    List<ExtensionObjectDefinition> monitoredItems =
+    List<MonitoredItemNotification> monitoredItems =
         readCountArrayField(
             "monitoredItems",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("808")),
+                () ->
+                    (MonitoredItemNotification)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (808)),
                 readBuffer),
             noOfMonitoredItems);
 
-    int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
+    int noOfDiagnosticInfos =
+        readImplicitField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
@@ -172,32 +156,23 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("DataChangeNotification");
     // Create the instance
-    return new DataChangeNotificationBuilderImpl(
-        noOfMonitoredItems, monitoredItems, noOfDiagnosticInfos, diagnosticInfos);
+    return new DataChangeNotificationBuilderImpl(monitoredItems, diagnosticInfos);
   }
 
   public static class DataChangeNotificationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfMonitoredItems;
-    private final List<ExtensionObjectDefinition> monitoredItems;
-    private final int noOfDiagnosticInfos;
+    private final List<MonitoredItemNotification> monitoredItems;
     private final List<DiagnosticInfo> diagnosticInfos;
 
     public DataChangeNotificationBuilderImpl(
-        int noOfMonitoredItems,
-        List<ExtensionObjectDefinition> monitoredItems,
-        int noOfDiagnosticInfos,
-        List<DiagnosticInfo> diagnosticInfos) {
-      this.noOfMonitoredItems = noOfMonitoredItems;
+        List<MonitoredItemNotification> monitoredItems, List<DiagnosticInfo> diagnosticInfos) {
       this.monitoredItems = monitoredItems;
-      this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
     }
 
     public DataChangeNotification build() {
       DataChangeNotification dataChangeNotification =
-          new DataChangeNotification(
-              noOfMonitoredItems, monitoredItems, noOfDiagnosticInfos, diagnosticInfos);
+          new DataChangeNotification(monitoredItems, diagnosticInfos);
       return dataChangeNotification;
     }
   }
@@ -211,9 +186,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
       return false;
     }
     DataChangeNotification that = (DataChangeNotification) o;
-    return (getNoOfMonitoredItems() == that.getNoOfMonitoredItems())
-        && (getMonitoredItems() == that.getMonitoredItems())
-        && (getNoOfDiagnosticInfos() == that.getNoOfDiagnosticInfos())
+    return (getMonitoredItems() == that.getMonitoredItems())
         && (getDiagnosticInfos() == that.getDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -221,12 +194,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getNoOfMonitoredItems(),
-        getMonitoredItems(),
-        getNoOfDiagnosticInfos(),
-        getDiagnosticInfos());
+    return Objects.hash(super.hashCode(), getMonitoredItems(), getDiagnosticInfos());
   }
 
   @Override

@@ -38,32 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ReadRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "631";
+  public Integer getExtensionId() {
+    return (int) 631;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final double maxAge;
   protected final TimestampsToReturn timestampsToReturn;
-  protected final int noOfNodesToRead;
-  protected final List<ExtensionObjectDefinition> nodesToRead;
+  protected final List<ReadValueId> nodesToRead;
 
   public ReadRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       double maxAge,
       TimestampsToReturn timestampsToReturn,
-      int noOfNodesToRead,
-      List<ExtensionObjectDefinition> nodesToRead) {
+      List<ReadValueId> nodesToRead) {
     super();
     this.requestHeader = requestHeader;
     this.maxAge = maxAge;
     this.timestampsToReturn = timestampsToReturn;
-    this.noOfNodesToRead = noOfNodesToRead;
     this.nodesToRead = nodesToRead;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -75,11 +72,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     return timestampsToReturn;
   }
 
-  public int getNoOfNodesToRead() {
-    return noOfNodesToRead;
-  }
-
-  public List<ExtensionObjectDefinition> getNodesToRead() {
+  public List<ReadValueId> getNodesToRead() {
     return nodesToRead;
   }
 
@@ -106,8 +99,10 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
             TimestampsToReturn::name,
             writeUnsignedLong(writeBuffer, 32)));
 
-    // Simple Field (noOfNodesToRead)
-    writeSimpleField("noOfNodesToRead", noOfNodesToRead, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNodesToRead) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNodesToRead = (int) ((((getNodesToRead()) == (null)) ? -(1) : COUNT(getNodesToRead())));
+    writeImplicitField("noOfNodesToRead", noOfNodesToRead, writeSignedInt(writeBuffer, 32));
 
     // Array Field (nodesToRead)
     writeComplexTypeArrayField("nodesToRead", nodesToRead, writeBuffer);
@@ -135,13 +130,13 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     // Simple field (timestampsToReturn)
     lengthInBits += 32;
 
-    // Simple field (noOfNodesToRead)
+    // Implicit Field (noOfNodesToRead)
     lengthInBits += 32;
 
     // Array field
     if (nodesToRead != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : nodesToRead) {
+      for (ReadValueId element : nodesToRead) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToRead.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -151,16 +146,17 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ReadRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     double maxAge = readSimpleField("maxAge", readDouble(readBuffer, 64));
@@ -171,46 +167,42 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
             "TimestampsToReturn",
             readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
-    int noOfNodesToRead = readSimpleField("noOfNodesToRead", readSignedInt(readBuffer, 32));
+    int noOfNodesToRead = readImplicitField("noOfNodesToRead", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> nodesToRead =
+    List<ReadValueId> nodesToRead =
         readCountArrayField(
             "nodesToRead",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("628")),
+                () -> (ReadValueId) ExtensionObjectDefinition.staticParse(readBuffer, (int) (628)),
                 readBuffer),
             noOfNodesToRead);
 
     readBuffer.closeContext("ReadRequest");
     // Create the instance
-    return new ReadRequestBuilderImpl(
-        requestHeader, maxAge, timestampsToReturn, noOfNodesToRead, nodesToRead);
+    return new ReadRequestBuilderImpl(requestHeader, maxAge, timestampsToReturn, nodesToRead);
   }
 
   public static class ReadRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final double maxAge;
     private final TimestampsToReturn timestampsToReturn;
-    private final int noOfNodesToRead;
-    private final List<ExtensionObjectDefinition> nodesToRead;
+    private final List<ReadValueId> nodesToRead;
 
     public ReadRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         double maxAge,
         TimestampsToReturn timestampsToReturn,
-        int noOfNodesToRead,
-        List<ExtensionObjectDefinition> nodesToRead) {
+        List<ReadValueId> nodesToRead) {
       this.requestHeader = requestHeader;
       this.maxAge = maxAge;
       this.timestampsToReturn = timestampsToReturn;
-      this.noOfNodesToRead = noOfNodesToRead;
       this.nodesToRead = nodesToRead;
     }
 
     public ReadRequest build() {
       ReadRequest readRequest =
-          new ReadRequest(requestHeader, maxAge, timestampsToReturn, noOfNodesToRead, nodesToRead);
+          new ReadRequest(requestHeader, maxAge, timestampsToReturn, nodesToRead);
       return readRequest;
     }
   }
@@ -227,7 +219,6 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     return (getRequestHeader() == that.getRequestHeader())
         && (getMaxAge() == that.getMaxAge())
         && (getTimestampsToReturn() == that.getTimestampsToReturn())
-        && (getNoOfNodesToRead() == that.getNoOfNodesToRead())
         && (getNodesToRead() == that.getNodesToRead())
         && super.equals(that)
         && true;
@@ -240,7 +231,6 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
         getRequestHeader(),
         getMaxAge(),
         getTimestampsToReturn(),
-        getNoOfNodesToRead(),
         getNodesToRead());
   }
 

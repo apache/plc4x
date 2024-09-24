@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ReaderGroupMessageDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15624";
+  public Integer getExtensionId() {
+    return (int) 15624;
   }
 
   public ReaderGroupMessageDataType() {
@@ -71,7 +71,7 @@ public class ReaderGroupMessageDataType extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ReaderGroupMessageDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

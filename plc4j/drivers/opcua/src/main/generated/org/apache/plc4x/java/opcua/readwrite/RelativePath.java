@@ -38,25 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RelativePath extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "542";
+  public Integer getExtensionId() {
+    return (int) 542;
   }
 
   // Properties.
-  protected final int noOfElements;
-  protected final List<ExtensionObjectDefinition> elements;
+  protected final List<RelativePathElement> elements;
 
-  public RelativePath(int noOfElements, List<ExtensionObjectDefinition> elements) {
+  public RelativePath(List<RelativePathElement> elements) {
     super();
-    this.noOfElements = noOfElements;
     this.elements = elements;
   }
 
-  public int getNoOfElements() {
-    return noOfElements;
-  }
-
-  public List<ExtensionObjectDefinition> getElements() {
+  public List<RelativePathElement> getElements() {
     return elements;
   }
 
@@ -67,8 +61,10 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("RelativePath");
 
-    // Simple Field (noOfElements)
-    writeSimpleField("noOfElements", noOfElements, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfElements) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfElements = (int) ((((getElements()) == (null)) ? -(1) : COUNT(getElements())));
+    writeImplicitField("noOfElements", noOfElements, writeSignedInt(writeBuffer, 32));
 
     // Array Field (elements)
     writeComplexTypeArrayField("elements", elements, writeBuffer);
@@ -87,13 +83,13 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
     RelativePath _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfElements)
+    // Implicit Field (noOfElements)
     lengthInBits += 32;
 
     // Array field
     if (elements != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : elements) {
+      for (RelativePathElement element : elements) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= elements.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -103,38 +99,38 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RelativePath");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int noOfElements = readSimpleField("noOfElements", readSignedInt(readBuffer, 32));
+    int noOfElements = readImplicitField("noOfElements", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> elements =
+    List<RelativePathElement> elements =
         readCountArrayField(
             "elements",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("539")),
+                () ->
+                    (RelativePathElement)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (539)),
                 readBuffer),
             noOfElements);
 
     readBuffer.closeContext("RelativePath");
     // Create the instance
-    return new RelativePathBuilderImpl(noOfElements, elements);
+    return new RelativePathBuilderImpl(elements);
   }
 
   public static class RelativePathBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfElements;
-    private final List<ExtensionObjectDefinition> elements;
+    private final List<RelativePathElement> elements;
 
-    public RelativePathBuilderImpl(int noOfElements, List<ExtensionObjectDefinition> elements) {
-      this.noOfElements = noOfElements;
+    public RelativePathBuilderImpl(List<RelativePathElement> elements) {
       this.elements = elements;
     }
 
     public RelativePath build() {
-      RelativePath relativePath = new RelativePath(noOfElements, elements);
+      RelativePath relativePath = new RelativePath(elements);
       return relativePath;
     }
   }
@@ -148,15 +144,12 @@ public class RelativePath extends ExtensionObjectDefinition implements Message {
       return false;
     }
     RelativePath that = (RelativePath) o;
-    return (getNoOfElements() == that.getNoOfElements())
-        && (getElements() == that.getElements())
-        && super.equals(that)
-        && true;
+    return (getElements() == that.getElements()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getNoOfElements(), getElements());
+    return Objects.hash(super.hashCode(), getElements());
   }
 
   @Override
