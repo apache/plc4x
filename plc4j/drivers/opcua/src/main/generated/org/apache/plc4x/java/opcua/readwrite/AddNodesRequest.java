@@ -38,34 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AddNodesRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "488";
+  public Integer getExtensionId() {
+    return (int) 488;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfNodesToAdd;
-  protected final List<ExtensionObjectDefinition> nodesToAdd;
+  protected final RequestHeader requestHeader;
+  protected final List<AddNodesItem> nodesToAdd;
 
-  public AddNodesRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfNodesToAdd,
-      List<ExtensionObjectDefinition> nodesToAdd) {
+  public AddNodesRequest(RequestHeader requestHeader, List<AddNodesItem> nodesToAdd) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfNodesToAdd = noOfNodesToAdd;
     this.nodesToAdd = nodesToAdd;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public int getNoOfNodesToAdd() {
-    return noOfNodesToAdd;
-  }
-
-  public List<ExtensionObjectDefinition> getNodesToAdd() {
+  public List<AddNodesItem> getNodesToAdd() {
     return nodesToAdd;
   }
 
@@ -79,8 +70,10 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfNodesToAdd)
-    writeSimpleField("noOfNodesToAdd", noOfNodesToAdd, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNodesToAdd) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNodesToAdd = (int) ((((getNodesToAdd()) == (null)) ? -(1) : COUNT(getNodesToAdd())));
+    writeImplicitField("noOfNodesToAdd", noOfNodesToAdd, writeSignedInt(writeBuffer, 32));
 
     // Array Field (nodesToAdd)
     writeComplexTypeArrayField("nodesToAdd", nodesToAdd, writeBuffer);
@@ -102,13 +95,13 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfNodesToAdd)
+    // Implicit Field (noOfNodesToAdd)
     lengthInBits += 32;
 
     // Array field
     if (nodesToAdd != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : nodesToAdd) {
+      for (AddNodesItem element : nodesToAdd) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToAdd.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -118,51 +111,46 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("AddNodesRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    int noOfNodesToAdd = readSimpleField("noOfNodesToAdd", readSignedInt(readBuffer, 32));
+    int noOfNodesToAdd = readImplicitField("noOfNodesToAdd", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> nodesToAdd =
+    List<AddNodesItem> nodesToAdd =
         readCountArrayField(
             "nodesToAdd",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("378")),
+                () -> (AddNodesItem) ExtensionObjectDefinition.staticParse(readBuffer, (int) (378)),
                 readBuffer),
             noOfNodesToAdd);
 
     readBuffer.closeContext("AddNodesRequest");
     // Create the instance
-    return new AddNodesRequestBuilderImpl(requestHeader, noOfNodesToAdd, nodesToAdd);
+    return new AddNodesRequestBuilderImpl(requestHeader, nodesToAdd);
   }
 
   public static class AddNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfNodesToAdd;
-    private final List<ExtensionObjectDefinition> nodesToAdd;
+    private final RequestHeader requestHeader;
+    private final List<AddNodesItem> nodesToAdd;
 
-    public AddNodesRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfNodesToAdd,
-        List<ExtensionObjectDefinition> nodesToAdd) {
+    public AddNodesRequestBuilderImpl(RequestHeader requestHeader, List<AddNodesItem> nodesToAdd) {
       this.requestHeader = requestHeader;
-      this.noOfNodesToAdd = noOfNodesToAdd;
       this.nodesToAdd = nodesToAdd;
     }
 
     public AddNodesRequest build() {
-      AddNodesRequest addNodesRequest =
-          new AddNodesRequest(requestHeader, noOfNodesToAdd, nodesToAdd);
+      AddNodesRequest addNodesRequest = new AddNodesRequest(requestHeader, nodesToAdd);
       return addNodesRequest;
     }
   }
@@ -177,7 +165,6 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     }
     AddNodesRequest that = (AddNodesRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfNodesToAdd() == that.getNoOfNodesToAdd())
         && (getNodesToAdd() == that.getNodesToAdd())
         && super.equals(that)
         && true;
@@ -185,7 +172,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getRequestHeader(), getNoOfNodesToAdd(), getNodesToAdd());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getNodesToAdd());
   }
 
   @Override

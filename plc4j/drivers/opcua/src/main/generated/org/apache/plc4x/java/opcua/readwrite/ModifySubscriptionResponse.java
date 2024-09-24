@@ -38,18 +38,18 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ModifySubscriptionResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "796";
+  public Integer getExtensionId() {
+    return (int) 796;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
   protected final double revisedPublishingInterval;
   protected final long revisedLifetimeCount;
   protected final long revisedMaxKeepAliveCount;
 
   public ModifySubscriptionResponse(
-      ExtensionObjectDefinition responseHeader,
+      ResponseHeader responseHeader,
       double revisedPublishingInterval,
       long revisedLifetimeCount,
       long revisedMaxKeepAliveCount) {
@@ -60,7 +60,7 @@ public class ModifySubscriptionResponse extends ExtensionObjectDefinition implem
     this.revisedMaxKeepAliveCount = revisedMaxKeepAliveCount;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -128,16 +128,17 @@ public class ModifySubscriptionResponse extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ModifySubscriptionResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     double revisedPublishingInterval =
@@ -157,13 +158,13 @@ public class ModifySubscriptionResponse extends ExtensionObjectDefinition implem
 
   public static class ModifySubscriptionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
     private final double revisedPublishingInterval;
     private final long revisedLifetimeCount;
     private final long revisedMaxKeepAliveCount;
 
     public ModifySubscriptionResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
+        ResponseHeader responseHeader,
         double revisedPublishingInterval,
         long revisedLifetimeCount,
         long revisedMaxKeepAliveCount) {

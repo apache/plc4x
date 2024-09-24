@@ -38,45 +38,31 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RegisterServer2Response extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12196";
+  public Integer getExtensionId() {
+    return (int) 12196;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final int noOfConfigurationResults;
+  protected final ResponseHeader responseHeader;
   protected final List<StatusCode> configurationResults;
-  protected final int noOfDiagnosticInfos;
   protected final List<DiagnosticInfo> diagnosticInfos;
 
   public RegisterServer2Response(
-      ExtensionObjectDefinition responseHeader,
-      int noOfConfigurationResults,
+      ResponseHeader responseHeader,
       List<StatusCode> configurationResults,
-      int noOfDiagnosticInfos,
       List<DiagnosticInfo> diagnosticInfos) {
     super();
     this.responseHeader = responseHeader;
-    this.noOfConfigurationResults = noOfConfigurationResults;
     this.configurationResults = configurationResults;
-    this.noOfDiagnosticInfos = noOfDiagnosticInfos;
     this.diagnosticInfos = diagnosticInfos;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
-  }
-
-  public int getNoOfConfigurationResults() {
-    return noOfConfigurationResults;
   }
 
   public List<StatusCode> getConfigurationResults() {
     return configurationResults;
-  }
-
-  public int getNoOfDiagnosticInfos() {
-    return noOfDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getDiagnosticInfos() {
@@ -93,15 +79,21 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     // Simple Field (responseHeader)
     writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfConfigurationResults)
-    writeSimpleField(
+    // Implicit Field (noOfConfigurationResults) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfConfigurationResults =
+        (int) ((((getConfigurationResults()) == (null)) ? -(1) : COUNT(getConfigurationResults())));
+    writeImplicitField(
         "noOfConfigurationResults", noOfConfigurationResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (configurationResults)
     writeComplexTypeArrayField("configurationResults", configurationResults, writeBuffer);
 
-    // Simple Field (noOfDiagnosticInfos)
-    writeSimpleField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiagnosticInfos) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiagnosticInfos =
+        (int) ((((getDiagnosticInfos()) == (null)) ? -(1) : COUNT(getDiagnosticInfos())));
+    writeImplicitField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (diagnosticInfos)
     writeComplexTypeArrayField("diagnosticInfos", diagnosticInfos, writeBuffer);
@@ -123,7 +115,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
 
-    // Simple field (noOfConfigurationResults)
+    // Implicit Field (noOfConfigurationResults)
     lengthInBits += 32;
 
     // Array field
@@ -135,7 +127,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
       }
     }
 
-    // Simple field (noOfDiagnosticInfos)
+    // Implicit Field (noOfDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -151,20 +143,21 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RegisterServer2Response");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     int noOfConfigurationResults =
-        readSimpleField("noOfConfigurationResults", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfConfigurationResults", readSignedInt(readBuffer, 32));
 
     List<StatusCode> configurationResults =
         readCountArrayField(
@@ -172,7 +165,8 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
             readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfConfigurationResults);
 
-    int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
+    int noOfDiagnosticInfos =
+        readImplicitField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
@@ -183,42 +177,27 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     readBuffer.closeContext("RegisterServer2Response");
     // Create the instance
     return new RegisterServer2ResponseBuilderImpl(
-        responseHeader,
-        noOfConfigurationResults,
-        configurationResults,
-        noOfDiagnosticInfos,
-        diagnosticInfos);
+        responseHeader, configurationResults, diagnosticInfos);
   }
 
   public static class RegisterServer2ResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final int noOfConfigurationResults;
+    private final ResponseHeader responseHeader;
     private final List<StatusCode> configurationResults;
-    private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
     public RegisterServer2ResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        int noOfConfigurationResults,
+        ResponseHeader responseHeader,
         List<StatusCode> configurationResults,
-        int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
       this.responseHeader = responseHeader;
-      this.noOfConfigurationResults = noOfConfigurationResults;
       this.configurationResults = configurationResults;
-      this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
     }
 
     public RegisterServer2Response build() {
       RegisterServer2Response registerServer2Response =
-          new RegisterServer2Response(
-              responseHeader,
-              noOfConfigurationResults,
-              configurationResults,
-              noOfDiagnosticInfos,
-              diagnosticInfos);
+          new RegisterServer2Response(responseHeader, configurationResults, diagnosticInfos);
       return registerServer2Response;
     }
   }
@@ -233,9 +212,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     }
     RegisterServer2Response that = (RegisterServer2Response) o;
     return (getResponseHeader() == that.getResponseHeader())
-        && (getNoOfConfigurationResults() == that.getNoOfConfigurationResults())
         && (getConfigurationResults() == that.getConfigurationResults())
-        && (getNoOfDiagnosticInfos() == that.getNoOfDiagnosticInfos())
         && (getDiagnosticInfos() == that.getDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -244,12 +221,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getResponseHeader(),
-        getNoOfConfigurationResults(),
-        getConfigurationResults(),
-        getNoOfDiagnosticInfos(),
-        getDiagnosticInfos());
+        super.hashCode(), getResponseHeader(), getConfigurationResults(), getDiagnosticInfos());
   }
 
   @Override

@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PublishedDataSetSourceDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15582";
+  public Integer getExtensionId() {
+    return (int) 15582;
   }
 
   public PublishedDataSetSourceDataType() {
@@ -71,7 +71,7 @@ public class PublishedDataSetSourceDataType extends ExtensionObjectDefinition im
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PublishedDataSetSourceDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

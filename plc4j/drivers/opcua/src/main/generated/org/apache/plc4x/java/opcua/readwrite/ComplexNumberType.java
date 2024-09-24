@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ComplexNumberType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12173";
+  public Integer getExtensionId() {
+    return (int) 12173;
   }
 
   // Properties.
@@ -97,7 +97,7 @@ public class ComplexNumberType extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ComplexNumberType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

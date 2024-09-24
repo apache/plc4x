@@ -38,34 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DeleteNodesRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "500";
+  public Integer getExtensionId() {
+    return (int) 500;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfNodesToDelete;
-  protected final List<ExtensionObjectDefinition> nodesToDelete;
+  protected final RequestHeader requestHeader;
+  protected final List<DeleteNodesItem> nodesToDelete;
 
-  public DeleteNodesRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfNodesToDelete,
-      List<ExtensionObjectDefinition> nodesToDelete) {
+  public DeleteNodesRequest(RequestHeader requestHeader, List<DeleteNodesItem> nodesToDelete) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfNodesToDelete = noOfNodesToDelete;
     this.nodesToDelete = nodesToDelete;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public int getNoOfNodesToDelete() {
-    return noOfNodesToDelete;
-  }
-
-  public List<ExtensionObjectDefinition> getNodesToDelete() {
+  public List<DeleteNodesItem> getNodesToDelete() {
     return nodesToDelete;
   }
 
@@ -79,8 +70,11 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfNodesToDelete)
-    writeSimpleField("noOfNodesToDelete", noOfNodesToDelete, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNodesToDelete) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNodesToDelete =
+        (int) ((((getNodesToDelete()) == (null)) ? -(1) : COUNT(getNodesToDelete())));
+    writeImplicitField("noOfNodesToDelete", noOfNodesToDelete, writeSignedInt(writeBuffer, 32));
 
     // Array Field (nodesToDelete)
     writeComplexTypeArrayField("nodesToDelete", nodesToDelete, writeBuffer);
@@ -102,13 +96,13 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfNodesToDelete)
+    // Implicit Field (noOfNodesToDelete)
     lengthInBits += 32;
 
     // Array field
     if (nodesToDelete != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : nodesToDelete) {
+      for (DeleteNodesItem element : nodesToDelete) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToDelete.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -118,51 +112,49 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DeleteNodesRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    int noOfNodesToDelete = readSimpleField("noOfNodesToDelete", readSignedInt(readBuffer, 32));
+    int noOfNodesToDelete = readImplicitField("noOfNodesToDelete", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> nodesToDelete =
+    List<DeleteNodesItem> nodesToDelete =
         readCountArrayField(
             "nodesToDelete",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("384")),
+                () ->
+                    (DeleteNodesItem)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (384)),
                 readBuffer),
             noOfNodesToDelete);
 
     readBuffer.closeContext("DeleteNodesRequest");
     // Create the instance
-    return new DeleteNodesRequestBuilderImpl(requestHeader, noOfNodesToDelete, nodesToDelete);
+    return new DeleteNodesRequestBuilderImpl(requestHeader, nodesToDelete);
   }
 
   public static class DeleteNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfNodesToDelete;
-    private final List<ExtensionObjectDefinition> nodesToDelete;
+    private final RequestHeader requestHeader;
+    private final List<DeleteNodesItem> nodesToDelete;
 
     public DeleteNodesRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfNodesToDelete,
-        List<ExtensionObjectDefinition> nodesToDelete) {
+        RequestHeader requestHeader, List<DeleteNodesItem> nodesToDelete) {
       this.requestHeader = requestHeader;
-      this.noOfNodesToDelete = noOfNodesToDelete;
       this.nodesToDelete = nodesToDelete;
     }
 
     public DeleteNodesRequest build() {
-      DeleteNodesRequest deleteNodesRequest =
-          new DeleteNodesRequest(requestHeader, noOfNodesToDelete, nodesToDelete);
+      DeleteNodesRequest deleteNodesRequest = new DeleteNodesRequest(requestHeader, nodesToDelete);
       return deleteNodesRequest;
     }
   }
@@ -177,7 +169,6 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
     }
     DeleteNodesRequest that = (DeleteNodesRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfNodesToDelete() == that.getNoOfNodesToDelete())
         && (getNodesToDelete() == that.getNodesToDelete())
         && super.equals(that)
         && true;
@@ -185,8 +176,7 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getRequestHeader(), getNoOfNodesToDelete(), getNodesToDelete());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getNodesToDelete());
   }
 
   @Override

@@ -38,22 +38,16 @@ import org.apache.plc4x.java.spi.generation.*;
 public class EndpointUrlListDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "11945";
+  public Integer getExtensionId() {
+    return (int) 11945;
   }
 
   // Properties.
-  protected final int noOfEndpointUrlList;
   protected final List<PascalString> endpointUrlList;
 
-  public EndpointUrlListDataType(int noOfEndpointUrlList, List<PascalString> endpointUrlList) {
+  public EndpointUrlListDataType(List<PascalString> endpointUrlList) {
     super();
-    this.noOfEndpointUrlList = noOfEndpointUrlList;
     this.endpointUrlList = endpointUrlList;
-  }
-
-  public int getNoOfEndpointUrlList() {
-    return noOfEndpointUrlList;
   }
 
   public List<PascalString> getEndpointUrlList() {
@@ -67,8 +61,11 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("EndpointUrlListDataType");
 
-    // Simple Field (noOfEndpointUrlList)
-    writeSimpleField("noOfEndpointUrlList", noOfEndpointUrlList, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfEndpointUrlList) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfEndpointUrlList =
+        (int) ((((getEndpointUrlList()) == (null)) ? -(1) : COUNT(getEndpointUrlList())));
+    writeImplicitField("noOfEndpointUrlList", noOfEndpointUrlList, writeSignedInt(writeBuffer, 32));
 
     // Array Field (endpointUrlList)
     writeComplexTypeArrayField("endpointUrlList", endpointUrlList, writeBuffer);
@@ -87,7 +84,7 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
     EndpointUrlListDataType _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfEndpointUrlList)
+    // Implicit Field (noOfEndpointUrlList)
     lengthInBits += 32;
 
     // Array field
@@ -103,12 +100,13 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("EndpointUrlListDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int noOfEndpointUrlList = readSimpleField("noOfEndpointUrlList", readSignedInt(readBuffer, 32));
+    int noOfEndpointUrlList =
+        readImplicitField("noOfEndpointUrlList", readSignedInt(readBuffer, 32));
 
     List<PascalString> endpointUrlList =
         readCountArrayField(
@@ -118,23 +116,20 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("EndpointUrlListDataType");
     // Create the instance
-    return new EndpointUrlListDataTypeBuilderImpl(noOfEndpointUrlList, endpointUrlList);
+    return new EndpointUrlListDataTypeBuilderImpl(endpointUrlList);
   }
 
   public static class EndpointUrlListDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfEndpointUrlList;
     private final List<PascalString> endpointUrlList;
 
-    public EndpointUrlListDataTypeBuilderImpl(
-        int noOfEndpointUrlList, List<PascalString> endpointUrlList) {
-      this.noOfEndpointUrlList = noOfEndpointUrlList;
+    public EndpointUrlListDataTypeBuilderImpl(List<PascalString> endpointUrlList) {
       this.endpointUrlList = endpointUrlList;
     }
 
     public EndpointUrlListDataType build() {
       EndpointUrlListDataType endpointUrlListDataType =
-          new EndpointUrlListDataType(noOfEndpointUrlList, endpointUrlList);
+          new EndpointUrlListDataType(endpointUrlList);
       return endpointUrlListDataType;
     }
   }
@@ -148,15 +143,12 @@ public class EndpointUrlListDataType extends ExtensionObjectDefinition implement
       return false;
     }
     EndpointUrlListDataType that = (EndpointUrlListDataType) o;
-    return (getNoOfEndpointUrlList() == that.getNoOfEndpointUrlList())
-        && (getEndpointUrlList() == that.getEndpointUrlList())
-        && super.equals(that)
-        && true;
+    return (getEndpointUrlList() == that.getEndpointUrlList()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getNoOfEndpointUrlList(), getEndpointUrlList());
+    return Objects.hash(super.hashCode(), getEndpointUrlList());
   }
 
   @Override

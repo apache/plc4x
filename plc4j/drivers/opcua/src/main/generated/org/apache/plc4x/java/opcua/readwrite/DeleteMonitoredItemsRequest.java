@@ -38,38 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "781";
+  public Integer getExtensionId() {
+    return (int) 781;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long subscriptionId;
-  protected final int noOfMonitoredItemIds;
   protected final List<Long> monitoredItemIds;
 
   public DeleteMonitoredItemsRequest(
-      ExtensionObjectDefinition requestHeader,
-      long subscriptionId,
-      int noOfMonitoredItemIds,
-      List<Long> monitoredItemIds) {
+      RequestHeader requestHeader, long subscriptionId, List<Long> monitoredItemIds) {
     super();
     this.requestHeader = requestHeader;
     this.subscriptionId = subscriptionId;
-    this.noOfMonitoredItemIds = noOfMonitoredItemIds;
     this.monitoredItemIds = monitoredItemIds;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
   public long getSubscriptionId() {
     return subscriptionId;
-  }
-
-  public int getNoOfMonitoredItemIds() {
-    return noOfMonitoredItemIds;
   }
 
   public List<Long> getMonitoredItemIds() {
@@ -89,8 +80,12 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
     // Simple Field (subscriptionId)
     writeSimpleField("subscriptionId", subscriptionId, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfMonitoredItemIds)
-    writeSimpleField("noOfMonitoredItemIds", noOfMonitoredItemIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfMonitoredItemIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfMonitoredItemIds =
+        (int) ((((getMonitoredItemIds()) == (null)) ? -(1) : COUNT(getMonitoredItemIds())));
+    writeImplicitField(
+        "noOfMonitoredItemIds", noOfMonitoredItemIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (monitoredItemIds)
     writeSimpleTypeArrayField(
@@ -116,7 +111,7 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
     // Simple field (subscriptionId)
     lengthInBits += 32;
 
-    // Simple field (noOfMonitoredItemIds)
+    // Implicit Field (noOfMonitoredItemIds)
     lengthInBits += 32;
 
     // Array field
@@ -128,22 +123,23 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DeleteMonitoredItemsRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
 
     int noOfMonitoredItemIds =
-        readSimpleField("noOfMonitoredItemIds", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfMonitoredItemIds", readSignedInt(readBuffer, 32));
 
     List<Long> monitoredItemIds =
         readCountArrayField(
@@ -152,31 +148,25 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
     readBuffer.closeContext("DeleteMonitoredItemsRequest");
     // Create the instance
     return new DeleteMonitoredItemsRequestBuilderImpl(
-        requestHeader, subscriptionId, noOfMonitoredItemIds, monitoredItemIds);
+        requestHeader, subscriptionId, monitoredItemIds);
   }
 
   public static class DeleteMonitoredItemsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long subscriptionId;
-    private final int noOfMonitoredItemIds;
     private final List<Long> monitoredItemIds;
 
     public DeleteMonitoredItemsRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        long subscriptionId,
-        int noOfMonitoredItemIds,
-        List<Long> monitoredItemIds) {
+        RequestHeader requestHeader, long subscriptionId, List<Long> monitoredItemIds) {
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
-      this.noOfMonitoredItemIds = noOfMonitoredItemIds;
       this.monitoredItemIds = monitoredItemIds;
     }
 
     public DeleteMonitoredItemsRequest build() {
       DeleteMonitoredItemsRequest deleteMonitoredItemsRequest =
-          new DeleteMonitoredItemsRequest(
-              requestHeader, subscriptionId, noOfMonitoredItemIds, monitoredItemIds);
+          new DeleteMonitoredItemsRequest(requestHeader, subscriptionId, monitoredItemIds);
       return deleteMonitoredItemsRequest;
     }
   }
@@ -192,7 +182,6 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
     DeleteMonitoredItemsRequest that = (DeleteMonitoredItemsRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
         && (getSubscriptionId() == that.getSubscriptionId())
-        && (getNoOfMonitoredItemIds() == that.getNoOfMonitoredItemIds())
         && (getMonitoredItemIds() == that.getMonitoredItemIds())
         && super.equals(that)
         && true;
@@ -201,11 +190,7 @@ public class DeleteMonitoredItemsRequest extends ExtensionObjectDefinition imple
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getRequestHeader(),
-        getSubscriptionId(),
-        getNoOfMonitoredItemIds(),
-        getMonitoredItemIds());
+        super.hashCode(), getRequestHeader(), getSubscriptionId(), getMonitoredItemIds());
   }
 
   @Override

@@ -38,37 +38,30 @@ import org.apache.plc4x.java.spi.generation.*;
 public class QueryNextResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "624";
+  public Integer getExtensionId() {
+    return (int) 624;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final int noOfQueryDataSets;
-  protected final List<ExtensionObjectDefinition> queryDataSets;
+  protected final ResponseHeader responseHeader;
+  protected final List<QueryDataSet> queryDataSets;
   protected final PascalByteString revisedContinuationPoint;
 
   public QueryNextResponse(
-      ExtensionObjectDefinition responseHeader,
-      int noOfQueryDataSets,
-      List<ExtensionObjectDefinition> queryDataSets,
+      ResponseHeader responseHeader,
+      List<QueryDataSet> queryDataSets,
       PascalByteString revisedContinuationPoint) {
     super();
     this.responseHeader = responseHeader;
-    this.noOfQueryDataSets = noOfQueryDataSets;
     this.queryDataSets = queryDataSets;
     this.revisedContinuationPoint = revisedContinuationPoint;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
-  public int getNoOfQueryDataSets() {
-    return noOfQueryDataSets;
-  }
-
-  public List<ExtensionObjectDefinition> getQueryDataSets() {
+  public List<QueryDataSet> getQueryDataSets() {
     return queryDataSets;
   }
 
@@ -86,8 +79,11 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     // Simple Field (responseHeader)
     writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfQueryDataSets)
-    writeSimpleField("noOfQueryDataSets", noOfQueryDataSets, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfQueryDataSets) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfQueryDataSets =
+        (int) ((((getQueryDataSets()) == (null)) ? -(1) : COUNT(getQueryDataSets())));
+    writeImplicitField("noOfQueryDataSets", noOfQueryDataSets, writeSignedInt(writeBuffer, 32));
 
     // Array Field (queryDataSets)
     writeComplexTypeArrayField("queryDataSets", queryDataSets, writeBuffer);
@@ -113,13 +109,13 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
 
-    // Simple field (noOfQueryDataSets)
+    // Implicit Field (noOfQueryDataSets)
     lengthInBits += 32;
 
     // Array field
     if (queryDataSets != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : queryDataSets) {
+      for (QueryDataSet element : queryDataSets) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= queryDataSets.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -132,25 +128,26 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("QueryNextResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
-    int noOfQueryDataSets = readSimpleField("noOfQueryDataSets", readSignedInt(readBuffer, 32));
+    int noOfQueryDataSets = readImplicitField("noOfQueryDataSets", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> queryDataSets =
+    List<QueryDataSet> queryDataSets =
         readCountArrayField(
             "queryDataSets",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("579")),
+                () -> (QueryDataSet) ExtensionObjectDefinition.staticParse(readBuffer, (int) (579)),
                 readBuffer),
             noOfQueryDataSets);
 
@@ -162,31 +159,27 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     readBuffer.closeContext("QueryNextResponse");
     // Create the instance
     return new QueryNextResponseBuilderImpl(
-        responseHeader, noOfQueryDataSets, queryDataSets, revisedContinuationPoint);
+        responseHeader, queryDataSets, revisedContinuationPoint);
   }
 
   public static class QueryNextResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final int noOfQueryDataSets;
-    private final List<ExtensionObjectDefinition> queryDataSets;
+    private final ResponseHeader responseHeader;
+    private final List<QueryDataSet> queryDataSets;
     private final PascalByteString revisedContinuationPoint;
 
     public QueryNextResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        int noOfQueryDataSets,
-        List<ExtensionObjectDefinition> queryDataSets,
+        ResponseHeader responseHeader,
+        List<QueryDataSet> queryDataSets,
         PascalByteString revisedContinuationPoint) {
       this.responseHeader = responseHeader;
-      this.noOfQueryDataSets = noOfQueryDataSets;
       this.queryDataSets = queryDataSets;
       this.revisedContinuationPoint = revisedContinuationPoint;
     }
 
     public QueryNextResponse build() {
       QueryNextResponse queryNextResponse =
-          new QueryNextResponse(
-              responseHeader, noOfQueryDataSets, queryDataSets, revisedContinuationPoint);
+          new QueryNextResponse(responseHeader, queryDataSets, revisedContinuationPoint);
       return queryNextResponse;
     }
   }
@@ -201,7 +194,6 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     }
     QueryNextResponse that = (QueryNextResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
-        && (getNoOfQueryDataSets() == that.getNoOfQueryDataSets())
         && (getQueryDataSets() == that.getQueryDataSets())
         && (getRevisedContinuationPoint() == that.getRevisedContinuationPoint())
         && super.equals(that)
@@ -211,11 +203,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getResponseHeader(),
-        getNoOfQueryDataSets(),
-        getQueryDataSets(),
-        getRevisedContinuationPoint());
+        super.hashCode(), getResponseHeader(), getQueryDataSets(), getRevisedContinuationPoint());
   }
 
   @Override

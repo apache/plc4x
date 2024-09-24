@@ -38,36 +38,33 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BrowseRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "527";
+  public Integer getExtensionId() {
+    return (int) 527;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final ExtensionObjectDefinition view;
+  protected final RequestHeader requestHeader;
+  protected final ViewDescription view;
   protected final long requestedMaxReferencesPerNode;
-  protected final int noOfNodesToBrowse;
-  protected final List<ExtensionObjectDefinition> nodesToBrowse;
+  protected final List<BrowseDescription> nodesToBrowse;
 
   public BrowseRequest(
-      ExtensionObjectDefinition requestHeader,
-      ExtensionObjectDefinition view,
+      RequestHeader requestHeader,
+      ViewDescription view,
       long requestedMaxReferencesPerNode,
-      int noOfNodesToBrowse,
-      List<ExtensionObjectDefinition> nodesToBrowse) {
+      List<BrowseDescription> nodesToBrowse) {
     super();
     this.requestHeader = requestHeader;
     this.view = view;
     this.requestedMaxReferencesPerNode = requestedMaxReferencesPerNode;
-    this.noOfNodesToBrowse = noOfNodesToBrowse;
     this.nodesToBrowse = nodesToBrowse;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public ExtensionObjectDefinition getView() {
+  public ViewDescription getView() {
     return view;
   }
 
@@ -75,11 +72,7 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     return requestedMaxReferencesPerNode;
   }
 
-  public int getNoOfNodesToBrowse() {
-    return noOfNodesToBrowse;
-  }
-
-  public List<ExtensionObjectDefinition> getNodesToBrowse() {
+  public List<BrowseDescription> getNodesToBrowse() {
     return nodesToBrowse;
   }
 
@@ -102,8 +95,11 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
         requestedMaxReferencesPerNode,
         writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfNodesToBrowse)
-    writeSimpleField("noOfNodesToBrowse", noOfNodesToBrowse, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNodesToBrowse) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNodesToBrowse =
+        (int) ((((getNodesToBrowse()) == (null)) ? -(1) : COUNT(getNodesToBrowse())));
+    writeImplicitField("noOfNodesToBrowse", noOfNodesToBrowse, writeSignedInt(writeBuffer, 32));
 
     // Array Field (nodesToBrowse)
     writeComplexTypeArrayField("nodesToBrowse", nodesToBrowse, writeBuffer);
@@ -131,13 +127,13 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     // Simple field (requestedMaxReferencesPerNode)
     lengthInBits += 32;
 
-    // Simple field (noOfNodesToBrowse)
+    // Implicit Field (noOfNodesToBrowse)
     lengthInBits += 32;
 
     // Array field
     if (nodesToBrowse != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : nodesToBrowse) {
+      for (BrowseDescription element : nodesToBrowse) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToBrowse.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -147,69 +143,70 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("BrowseRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    ExtensionObjectDefinition view =
+    ViewDescription view =
         readSimpleField(
             "view",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("513")),
+                () ->
+                    (ViewDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (513)),
                 readBuffer));
 
     long requestedMaxReferencesPerNode =
         readSimpleField("requestedMaxReferencesPerNode", readUnsignedLong(readBuffer, 32));
 
-    int noOfNodesToBrowse = readSimpleField("noOfNodesToBrowse", readSignedInt(readBuffer, 32));
+    int noOfNodesToBrowse = readImplicitField("noOfNodesToBrowse", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> nodesToBrowse =
+    List<BrowseDescription> nodesToBrowse =
         readCountArrayField(
             "nodesToBrowse",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("516")),
+                () ->
+                    (BrowseDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (516)),
                 readBuffer),
             noOfNodesToBrowse);
 
     readBuffer.closeContext("BrowseRequest");
     // Create the instance
     return new BrowseRequestBuilderImpl(
-        requestHeader, view, requestedMaxReferencesPerNode, noOfNodesToBrowse, nodesToBrowse);
+        requestHeader, view, requestedMaxReferencesPerNode, nodesToBrowse);
   }
 
   public static class BrowseRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final ExtensionObjectDefinition view;
+    private final RequestHeader requestHeader;
+    private final ViewDescription view;
     private final long requestedMaxReferencesPerNode;
-    private final int noOfNodesToBrowse;
-    private final List<ExtensionObjectDefinition> nodesToBrowse;
+    private final List<BrowseDescription> nodesToBrowse;
 
     public BrowseRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        ExtensionObjectDefinition view,
+        RequestHeader requestHeader,
+        ViewDescription view,
         long requestedMaxReferencesPerNode,
-        int noOfNodesToBrowse,
-        List<ExtensionObjectDefinition> nodesToBrowse) {
+        List<BrowseDescription> nodesToBrowse) {
       this.requestHeader = requestHeader;
       this.view = view;
       this.requestedMaxReferencesPerNode = requestedMaxReferencesPerNode;
-      this.noOfNodesToBrowse = noOfNodesToBrowse;
       this.nodesToBrowse = nodesToBrowse;
     }
 
     public BrowseRequest build() {
       BrowseRequest browseRequest =
-          new BrowseRequest(
-              requestHeader, view, requestedMaxReferencesPerNode, noOfNodesToBrowse, nodesToBrowse);
+          new BrowseRequest(requestHeader, view, requestedMaxReferencesPerNode, nodesToBrowse);
       return browseRequest;
     }
   }
@@ -226,7 +223,6 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     return (getRequestHeader() == that.getRequestHeader())
         && (getView() == that.getView())
         && (getRequestedMaxReferencesPerNode() == that.getRequestedMaxReferencesPerNode())
-        && (getNoOfNodesToBrowse() == that.getNoOfNodesToBrowse())
         && (getNodesToBrowse() == that.getNodesToBrowse())
         && super.equals(that)
         && true;
@@ -239,7 +235,6 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
         getRequestHeader(),
         getView(),
         getRequestedMaxReferencesPerNode(),
-        getNoOfNodesToBrowse(),
         getNodesToBrowse());
   }
 

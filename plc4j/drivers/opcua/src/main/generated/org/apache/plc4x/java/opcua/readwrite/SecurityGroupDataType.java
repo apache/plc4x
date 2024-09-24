@@ -38,58 +38,45 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SecurityGroupDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "23603";
+  public Integer getExtensionId() {
+    return (int) 23603;
   }
 
   // Properties.
   protected final PascalString name;
-  protected final int noOfSecurityGroupFolder;
   protected final List<PascalString> securityGroupFolder;
   protected final double keyLifetime;
   protected final PascalString securityPolicyUri;
   protected final long maxFutureKeyCount;
   protected final long maxPastKeyCount;
   protected final PascalString securityGroupId;
-  protected final int noOfRolePermissions;
-  protected final List<ExtensionObjectDefinition> rolePermissions;
-  protected final int noOfGroupProperties;
-  protected final List<ExtensionObjectDefinition> groupProperties;
+  protected final List<RolePermissionType> rolePermissions;
+  protected final List<KeyValuePair> groupProperties;
 
   public SecurityGroupDataType(
       PascalString name,
-      int noOfSecurityGroupFolder,
       List<PascalString> securityGroupFolder,
       double keyLifetime,
       PascalString securityPolicyUri,
       long maxFutureKeyCount,
       long maxPastKeyCount,
       PascalString securityGroupId,
-      int noOfRolePermissions,
-      List<ExtensionObjectDefinition> rolePermissions,
-      int noOfGroupProperties,
-      List<ExtensionObjectDefinition> groupProperties) {
+      List<RolePermissionType> rolePermissions,
+      List<KeyValuePair> groupProperties) {
     super();
     this.name = name;
-    this.noOfSecurityGroupFolder = noOfSecurityGroupFolder;
     this.securityGroupFolder = securityGroupFolder;
     this.keyLifetime = keyLifetime;
     this.securityPolicyUri = securityPolicyUri;
     this.maxFutureKeyCount = maxFutureKeyCount;
     this.maxPastKeyCount = maxPastKeyCount;
     this.securityGroupId = securityGroupId;
-    this.noOfRolePermissions = noOfRolePermissions;
     this.rolePermissions = rolePermissions;
-    this.noOfGroupProperties = noOfGroupProperties;
     this.groupProperties = groupProperties;
   }
 
   public PascalString getName() {
     return name;
-  }
-
-  public int getNoOfSecurityGroupFolder() {
-    return noOfSecurityGroupFolder;
   }
 
   public List<PascalString> getSecurityGroupFolder() {
@@ -116,19 +103,11 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     return securityGroupId;
   }
 
-  public int getNoOfRolePermissions() {
-    return noOfRolePermissions;
-  }
-
-  public List<ExtensionObjectDefinition> getRolePermissions() {
+  public List<RolePermissionType> getRolePermissions() {
     return rolePermissions;
   }
 
-  public int getNoOfGroupProperties() {
-    return noOfGroupProperties;
-  }
-
-  public List<ExtensionObjectDefinition> getGroupProperties() {
+  public List<KeyValuePair> getGroupProperties() {
     return groupProperties;
   }
 
@@ -142,8 +121,11 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     // Simple Field (name)
     writeSimpleField("name", name, writeComplex(writeBuffer));
 
-    // Simple Field (noOfSecurityGroupFolder)
-    writeSimpleField(
+    // Implicit Field (noOfSecurityGroupFolder) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfSecurityGroupFolder =
+        (int) ((((getSecurityGroupFolder()) == (null)) ? -(1) : COUNT(getSecurityGroupFolder())));
+    writeImplicitField(
         "noOfSecurityGroupFolder", noOfSecurityGroupFolder, writeSignedInt(writeBuffer, 32));
 
     // Array Field (securityGroupFolder)
@@ -164,14 +146,20 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     // Simple Field (securityGroupId)
     writeSimpleField("securityGroupId", securityGroupId, writeComplex(writeBuffer));
 
-    // Simple Field (noOfRolePermissions)
-    writeSimpleField("noOfRolePermissions", noOfRolePermissions, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfRolePermissions) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfRolePermissions =
+        (int) ((((getRolePermissions()) == (null)) ? -(1) : COUNT(getRolePermissions())));
+    writeImplicitField("noOfRolePermissions", noOfRolePermissions, writeSignedInt(writeBuffer, 32));
 
     // Array Field (rolePermissions)
     writeComplexTypeArrayField("rolePermissions", rolePermissions, writeBuffer);
 
-    // Simple Field (noOfGroupProperties)
-    writeSimpleField("noOfGroupProperties", noOfGroupProperties, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfGroupProperties) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfGroupProperties =
+        (int) ((((getGroupProperties()) == (null)) ? -(1) : COUNT(getGroupProperties())));
+    writeImplicitField("noOfGroupProperties", noOfGroupProperties, writeSignedInt(writeBuffer, 32));
 
     // Array Field (groupProperties)
     writeComplexTypeArrayField("groupProperties", groupProperties, writeBuffer);
@@ -193,7 +181,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
 
-    // Simple field (noOfSecurityGroupFolder)
+    // Implicit Field (noOfSecurityGroupFolder)
     lengthInBits += 32;
 
     // Array field
@@ -220,25 +208,25 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     // Simple field (securityGroupId)
     lengthInBits += securityGroupId.getLengthInBits();
 
-    // Simple field (noOfRolePermissions)
+    // Implicit Field (noOfRolePermissions)
     lengthInBits += 32;
 
     // Array field
     if (rolePermissions != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : rolePermissions) {
+      for (RolePermissionType element : rolePermissions) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= rolePermissions.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfGroupProperties)
+    // Implicit Field (noOfGroupProperties)
     lengthInBits += 32;
 
     // Array field
     if (groupProperties != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : groupProperties) {
+      for (KeyValuePair element : groupProperties) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= groupProperties.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -248,7 +236,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SecurityGroupDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -258,7 +246,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
             "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfSecurityGroupFolder =
-        readSimpleField("noOfSecurityGroupFolder", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfSecurityGroupFolder", readSignedInt(readBuffer, 32));
 
     List<PascalString> securityGroupFolder =
         readCountArrayField(
@@ -281,23 +269,28 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
         readSimpleField(
             "securityGroupId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    int noOfRolePermissions = readSimpleField("noOfRolePermissions", readSignedInt(readBuffer, 32));
+    int noOfRolePermissions =
+        readImplicitField("noOfRolePermissions", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> rolePermissions =
+    List<RolePermissionType> rolePermissions =
         readCountArrayField(
             "rolePermissions",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("98")),
+                () ->
+                    (RolePermissionType)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (98)),
                 readBuffer),
             noOfRolePermissions);
 
-    int noOfGroupProperties = readSimpleField("noOfGroupProperties", readSignedInt(readBuffer, 32));
+    int noOfGroupProperties =
+        readImplicitField("noOfGroupProperties", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> groupProperties =
+    List<KeyValuePair> groupProperties =
         readCountArrayField(
             "groupProperties",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
+                () ->
+                    (KeyValuePair) ExtensionObjectDefinition.staticParse(readBuffer, (int) (14535)),
                 readBuffer),
             noOfGroupProperties);
 
@@ -305,58 +298,46 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     // Create the instance
     return new SecurityGroupDataTypeBuilderImpl(
         name,
-        noOfSecurityGroupFolder,
         securityGroupFolder,
         keyLifetime,
         securityPolicyUri,
         maxFutureKeyCount,
         maxPastKeyCount,
         securityGroupId,
-        noOfRolePermissions,
         rolePermissions,
-        noOfGroupProperties,
         groupProperties);
   }
 
   public static class SecurityGroupDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
-    private final int noOfSecurityGroupFolder;
     private final List<PascalString> securityGroupFolder;
     private final double keyLifetime;
     private final PascalString securityPolicyUri;
     private final long maxFutureKeyCount;
     private final long maxPastKeyCount;
     private final PascalString securityGroupId;
-    private final int noOfRolePermissions;
-    private final List<ExtensionObjectDefinition> rolePermissions;
-    private final int noOfGroupProperties;
-    private final List<ExtensionObjectDefinition> groupProperties;
+    private final List<RolePermissionType> rolePermissions;
+    private final List<KeyValuePair> groupProperties;
 
     public SecurityGroupDataTypeBuilderImpl(
         PascalString name,
-        int noOfSecurityGroupFolder,
         List<PascalString> securityGroupFolder,
         double keyLifetime,
         PascalString securityPolicyUri,
         long maxFutureKeyCount,
         long maxPastKeyCount,
         PascalString securityGroupId,
-        int noOfRolePermissions,
-        List<ExtensionObjectDefinition> rolePermissions,
-        int noOfGroupProperties,
-        List<ExtensionObjectDefinition> groupProperties) {
+        List<RolePermissionType> rolePermissions,
+        List<KeyValuePair> groupProperties) {
       this.name = name;
-      this.noOfSecurityGroupFolder = noOfSecurityGroupFolder;
       this.securityGroupFolder = securityGroupFolder;
       this.keyLifetime = keyLifetime;
       this.securityPolicyUri = securityPolicyUri;
       this.maxFutureKeyCount = maxFutureKeyCount;
       this.maxPastKeyCount = maxPastKeyCount;
       this.securityGroupId = securityGroupId;
-      this.noOfRolePermissions = noOfRolePermissions;
       this.rolePermissions = rolePermissions;
-      this.noOfGroupProperties = noOfGroupProperties;
       this.groupProperties = groupProperties;
     }
 
@@ -364,16 +345,13 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
       SecurityGroupDataType securityGroupDataType =
           new SecurityGroupDataType(
               name,
-              noOfSecurityGroupFolder,
               securityGroupFolder,
               keyLifetime,
               securityPolicyUri,
               maxFutureKeyCount,
               maxPastKeyCount,
               securityGroupId,
-              noOfRolePermissions,
               rolePermissions,
-              noOfGroupProperties,
               groupProperties);
       return securityGroupDataType;
     }
@@ -389,16 +367,13 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     }
     SecurityGroupDataType that = (SecurityGroupDataType) o;
     return (getName() == that.getName())
-        && (getNoOfSecurityGroupFolder() == that.getNoOfSecurityGroupFolder())
         && (getSecurityGroupFolder() == that.getSecurityGroupFolder())
         && (getKeyLifetime() == that.getKeyLifetime())
         && (getSecurityPolicyUri() == that.getSecurityPolicyUri())
         && (getMaxFutureKeyCount() == that.getMaxFutureKeyCount())
         && (getMaxPastKeyCount() == that.getMaxPastKeyCount())
         && (getSecurityGroupId() == that.getSecurityGroupId())
-        && (getNoOfRolePermissions() == that.getNoOfRolePermissions())
         && (getRolePermissions() == that.getRolePermissions())
-        && (getNoOfGroupProperties() == that.getNoOfGroupProperties())
         && (getGroupProperties() == that.getGroupProperties())
         && super.equals(that)
         && true;
@@ -409,16 +384,13 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     return Objects.hash(
         super.hashCode(),
         getName(),
-        getNoOfSecurityGroupFolder(),
         getSecurityGroupFolder(),
         getKeyLifetime(),
         getSecurityPolicyUri(),
         getMaxFutureKeyCount(),
         getMaxPastKeyCount(),
         getSecurityGroupId(),
-        getNoOfRolePermissions(),
         getRolePermissions(),
-        getNoOfGroupProperties(),
         getGroupProperties());
   }
 

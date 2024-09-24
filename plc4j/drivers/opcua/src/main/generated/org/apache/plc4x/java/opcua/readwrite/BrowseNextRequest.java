@@ -38,38 +38,31 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BrowseNextRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "533";
+  public Integer getExtensionId() {
+    return (int) 533;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final boolean releaseContinuationPoints;
-  protected final int noOfContinuationPoints;
   protected final List<PascalByteString> continuationPoints;
 
   public BrowseNextRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       boolean releaseContinuationPoints,
-      int noOfContinuationPoints,
       List<PascalByteString> continuationPoints) {
     super();
     this.requestHeader = requestHeader;
     this.releaseContinuationPoints = releaseContinuationPoints;
-    this.noOfContinuationPoints = noOfContinuationPoints;
     this.continuationPoints = continuationPoints;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
   public boolean getReleaseContinuationPoints() {
     return releaseContinuationPoints;
-  }
-
-  public int getNoOfContinuationPoints() {
-    return noOfContinuationPoints;
   }
 
   public List<PascalByteString> getContinuationPoints() {
@@ -93,8 +86,11 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     writeSimpleField(
         "releaseContinuationPoints", releaseContinuationPoints, writeBoolean(writeBuffer));
 
-    // Simple Field (noOfContinuationPoints)
-    writeSimpleField(
+    // Implicit Field (noOfContinuationPoints) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfContinuationPoints =
+        (int) ((((getContinuationPoints()) == (null)) ? -(1) : COUNT(getContinuationPoints())));
+    writeImplicitField(
         "noOfContinuationPoints", noOfContinuationPoints, writeSignedInt(writeBuffer, 32));
 
     // Array Field (continuationPoints)
@@ -123,7 +119,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     // Simple field (releaseContinuationPoints)
     lengthInBits += 1;
 
-    // Simple field (noOfContinuationPoints)
+    // Implicit Field (noOfContinuationPoints)
     lengthInBits += 32;
 
     // Array field
@@ -139,16 +135,17 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("BrowseNextRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     Byte reservedField0 =
@@ -158,7 +155,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
         readSimpleField("releaseContinuationPoints", readBoolean(readBuffer));
 
     int noOfContinuationPoints =
-        readSimpleField("noOfContinuationPoints", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfContinuationPoints", readSignedInt(readBuffer, 32));
 
     List<PascalByteString> continuationPoints =
         readCountArrayField(
@@ -169,31 +166,27 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     readBuffer.closeContext("BrowseNextRequest");
     // Create the instance
     return new BrowseNextRequestBuilderImpl(
-        requestHeader, releaseContinuationPoints, noOfContinuationPoints, continuationPoints);
+        requestHeader, releaseContinuationPoints, continuationPoints);
   }
 
   public static class BrowseNextRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final boolean releaseContinuationPoints;
-    private final int noOfContinuationPoints;
     private final List<PascalByteString> continuationPoints;
 
     public BrowseNextRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         boolean releaseContinuationPoints,
-        int noOfContinuationPoints,
         List<PascalByteString> continuationPoints) {
       this.requestHeader = requestHeader;
       this.releaseContinuationPoints = releaseContinuationPoints;
-      this.noOfContinuationPoints = noOfContinuationPoints;
       this.continuationPoints = continuationPoints;
     }
 
     public BrowseNextRequest build() {
       BrowseNextRequest browseNextRequest =
-          new BrowseNextRequest(
-              requestHeader, releaseContinuationPoints, noOfContinuationPoints, continuationPoints);
+          new BrowseNextRequest(requestHeader, releaseContinuationPoints, continuationPoints);
       return browseNextRequest;
     }
   }
@@ -209,7 +202,6 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     BrowseNextRequest that = (BrowseNextRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
         && (getReleaseContinuationPoints() == that.getReleaseContinuationPoints())
-        && (getNoOfContinuationPoints() == that.getNoOfContinuationPoints())
         && (getContinuationPoints() == that.getContinuationPoints())
         && super.equals(that)
         && true;
@@ -221,7 +213,6 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
         super.hashCode(),
         getRequestHeader(),
         getReleaseContinuationPoints(),
-        getNoOfContinuationPoints(),
         getContinuationPoints());
   }
 
