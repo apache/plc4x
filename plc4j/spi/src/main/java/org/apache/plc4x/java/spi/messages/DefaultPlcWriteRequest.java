@@ -18,20 +18,22 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.messages.utils.DefaultTagErrorItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultTagValueItem;
 import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -67,6 +69,11 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
     public LinkedHashSet<String> getTagNames() {
         // TODO: Check if this already is a LinkedHashSet.
         return new LinkedHashSet<>(tags.keySet());
+    }
+
+    @Override
+    public PlcResponseCode getTagResponseCode(String tagName) {
+        return tags.get(tagName).getResponseCode();
     }
 
     @Override
@@ -154,62 +161,82 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         private final PlcWriter writer;
         private final PlcTagHandler tagHandler;
         private final PlcValueHandler valueHandler;
-        private final Map<String, Pair<Supplier<PlcTag>, Object[]>> tags;
+        private final Map<String, Supplier<TagValueItem>> tagValues;
 
         public Builder(PlcWriter writer, PlcTagHandler tagHandler, PlcValueHandler valueHandler) {
             this.writer = writer;
             this.tagHandler = tagHandler;
             this.valueHandler = valueHandler;
-            tags = new TreeMap<>();
+            tagValues = new TreeMap<>();
         }
 
         @Override
         public Builder addTagAddress(String name, String tagAddress, Object... values) {
-            if (tags.containsKey(name)) {
+            if (tagValues.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            tags.put(name, Pair.of(() -> tagHandler.parseTag(tagAddress), values));
+            tagValues.put(name, () -> {
+                try {
+                    PlcTag tag = tagHandler.parseTag(tagAddress);
+                    try {
+                        PlcValue plcValue = parsePlcValue(tag, values);
+                        return new DefaultTagValueItem(tag, plcValue);
+                    } catch (Exception e) {
+                        return new DefaultTagErrorItem(PlcResponseCode.INVALID_DATA);
+                    }
+                } catch (Exception e) {
+                    return new DefaultTagErrorItem(PlcResponseCode.INVALID_ADDRESS);
+                }
+            });
             return this;
         }
 
         @Override
         public Builder addTag(String name, PlcTag tag, Object... values) {
-            if (tags.containsKey(name)) {
+            if (tagValues.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            tags.put(name, Pair.of(() -> tag, values));
+            tagValues.put(name, () -> {
+                try {
+                    PlcValue plcValue = parsePlcValue(tag, values);
+                    return new DefaultTagValueItem(tag, plcValue);
+                } catch (Exception e) {
+                    return new DefaultTagErrorItem(PlcResponseCode.INVALID_DATA);
+                }
+            });
             return this;
+        }
+
+        protected PlcValue parsePlcValue(PlcTag tag, Object... values) {
+            // If this is more than one element the value itself will definitely be a list.
+            if(values.length > 1) {
+                List<PlcValue> listItems = new ArrayList<>(values.length);
+                for (Object value : values) {
+                    if(value instanceof PlcValue) {
+                        listItems.add((PlcValue) value);
+                    } else {
+                        PlcValue plcItemValue = valueHandler.newPlcValue(tag, value);
+                        listItems.add(plcItemValue);
+                    }
+                }
+                return new PlcList(listItems);
+            }
+            // If the values are already PlcValues, just use them.
+            else if(values[0] instanceof PlcValue) {
+                return (PlcValue) values[0];
+            }
+            // In all other cases use the value-handler.
+            else {
+                return valueHandler.newPlcValue(tag, values[0]);
+            }
         }
 
         @Override
         public PlcWriteRequest build() {
             LinkedHashMap<String, TagValueItem> parsedTags = new LinkedHashMap<>();
-            tags.forEach((name, tagValues) -> {
-                // Compile the query string.
-                PlcTag tag = tagValues.getLeft().get();
-                PlcValue plcValue;
-                // If this is more than one element the value itself will definitely be a list.
-                if(tagValues.getRight().length > 1) {
-                    List<PlcValue> listItems = new ArrayList<>(tagValues.getRight().length);
-                    for (Object tagValue : tagValues.getRight()) {
-                        if(tagValue instanceof PlcValue) {
-                            listItems.add((PlcValue) tagValue);
-                        } else {
-                            PlcValue plcItemValue = valueHandler.newPlcValue(tag, tagValue);
-                            listItems.add(plcItemValue);
-                        }
-                    }
-                    plcValue = new PlcList(listItems);
-                }
-                // If the values are already PlcValues, just use them.
-                else if(tagValues.getRight()[0] instanceof PlcValue) {
-                    plcValue = (PlcValue) tagValues.getRight()[0];
-                }
-                // In all other cases use the value-handler.
-                else {
-                    plcValue = valueHandler.newPlcValue(tag, tagValues.getRight()[0]);
-                }
-                parsedTags.put(name, new TagValueItem(tag, plcValue));
+            tagValues.forEach((name, tagValueItemSupplier) -> {
+                TagValueItem tagValueItem = tagValueItemSupplier.get();
+                parsedTags.put(name, tagValueItem);
             });
             return new DefaultPlcWriteRequest(writer, parsedTags);
         }

@@ -672,7 +672,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         if(directAdsTag == null) {
             return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, Collections.singletonMap(
                 readRequest.getTagNames().stream().findFirst().orElseThrow(),
-                new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null))));
+                new ResponseItem<>(PlcResponseCode.NOT_FOUND, null))));
         }
 
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();

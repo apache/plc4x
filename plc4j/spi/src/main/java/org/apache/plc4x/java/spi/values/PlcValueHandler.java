@@ -30,15 +30,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValueHandler {
-
-    public PlcValue newPlcValue(Object value) {
-        return of(new Object[]{value});
-    }
-
-    public PlcValue newPlcValue(Object[] values) {
-        return of(values);
-    }
+public class PlcValueHandler {
 
     public PlcValue newPlcValue(PlcTag tag, Object value) {
         return of(tag, new Object[]{value});

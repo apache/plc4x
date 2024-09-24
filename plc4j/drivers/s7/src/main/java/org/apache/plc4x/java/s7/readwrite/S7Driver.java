@@ -105,7 +105,7 @@ public class S7Driver extends S7HGeneratedDriverBase {
     }
 
     @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+    protected PlcValueHandler getValueHandler() {
         return new PlcValueHandler();
     }
 

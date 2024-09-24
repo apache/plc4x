@@ -61,7 +61,17 @@ public abstract class ManualTest {
     }
 
     public ManualTest addTestCase(String address, PlcValue expectedReadValue) {
-        testCases.add(new TestCase(address, expectedReadValue, null));
+        testCases.add(new TestCase(address, PlcResponseCode.OK, expectedReadValue));
+        return this;
+    }
+
+    public ManualTest addTestCase(String address, PlcResponseCode expectedResponseCode) {
+        testCases.add(new TestCase(address, expectedResponseCode, null));
+        return this;
+    }
+
+    public ManualTest addTestCase(String address, PlcResponseCode expectedResponseCode, PlcValue expectedReadValue) {
+        testCases.add(new TestCase(address, expectedResponseCode, expectedReadValue));
         return this;
     }
 
@@ -78,7 +88,8 @@ public abstract class ManualTest {
                     if (testRead) {
                         System.out.println(" - Reading: " + tagName);
                         // Prepare the read-request
-                        final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress(tagName, testCase.address).build();
+                        final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress(
+                            tagName, testCase.address).build();
 
                         // Execute the read request
                         long startTime = System.currentTimeMillis();
@@ -88,7 +99,7 @@ public abstract class ManualTest {
                         // Check the result
                         Assertions.assertEquals(1, readResponse.getTagNames().size(), tagName);
                         Assertions.assertEquals(tagName, readResponse.getTagNames().iterator().next(), tagName);
-                        Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(tagName), tagName);
+                        Assertions.assertEquals(testCase.responseCode, readResponse.getResponseCode(tagName), tagName);
                         Assertions.assertNotNull(readResponse.getPlcValue(tagName), tagName);
                         if (readResponse.getPlcValue(tagName) instanceof PlcList) {
                             PlcList plcList = (PlcList) readResponse.getPlcValue(tagName);
@@ -104,24 +115,29 @@ public abstract class ManualTest {
                             }
                             for (int j = 0; j < expectedValues.size(); j++) {
                                 if (expectedValues.get(j) instanceof PlcValue) {
-                                    Assertions.assertEquals(((PlcValue) expectedValues.get(j)).getObject(), plcList.getIndex(j).getObject(), tagName + "[" + j + "]");
+                                    Assertions.assertEquals(((PlcValue) expectedValues.get(j)).getObject(),
+                                        plcList.getIndex(j).getObject(), tagName + "[" + j + "]");
                                 } else {
-                                    Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(), tagName + "[" + j + "]");
+                                    Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(),
+                                        tagName + "[" + j + "]");
                                 }
                             }
                         } else {
                             if (testCase.expectedReadValue instanceof PlcStruct) {
-                                Assertions.assertEquals(testCase.expectedReadValue.toString(), readResponse.getPlcValue(tagName).toString(), tagName);
+                                Assertions.assertEquals(testCase.expectedReadValue.toString(),
+                                    readResponse.getPlcValue(tagName).toString(), tagName);
                             } else if (testCase.expectedReadValue instanceof PlcRawByteArray) {
                                 byte[] expectedRawByteArray = ((PlcRawByteArray) testCase.expectedReadValue).getRaw();
                                 byte[] readRawByteArray = ((PlcRawByteArray) readResponse.getPlcValue(tagName)).getRaw();
                                 Assertions.assertArrayEquals(expectedRawByteArray, readRawByteArray);
                             } else if (testCase.expectedReadValue instanceof PlcValue) {
                                 Assertions.assertEquals(
-                                    ((PlcValue) testCase.expectedReadValue).getObject(), readResponse.getPlcValue(tagName).getObject(), tagName);
+                                    ((PlcValue) testCase.expectedReadValue).getObject(),
+                                    readResponse.getPlcValue(tagName).getObject(), tagName);
                             } else {
                                 Assertions.assertEquals(
-                                    testCase.expectedReadValue.toString(), readResponse.getPlcValue(tagName).getObject().toString(), tagName);
+                                    testCase.expectedReadValue.toString(),
+                                    readResponse.getPlcValue(tagName).getObject().toString(), tagName);
                             }
                         }
                     }
@@ -137,7 +153,8 @@ public abstract class ManualTest {
                         }
 
                         // Prepare the write request
-                        PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addTagAddress(tagName, testCase.address, plcValue).build();
+                        PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addTagAddress(
+                            tagName, testCase.address, plcValue).build();
 
                         // Execute the write request
                         long startTime = System.currentTimeMillis();
@@ -145,7 +162,9 @@ public abstract class ManualTest {
                         long endTime = System.currentTimeMillis();
 
                         // Check the result
-                        Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName), String.format("Got status %s for %s", writeResponse.getResponseCode(tagName).name(), testCase.address));
+                        Assertions.assertEquals(testCase.responseCode, writeResponse.getResponseCode(tagName),
+                            String.format("Got status %s for %s",
+                                writeResponse.getResponseCode(tagName).name(), testCase.address));
                     }
                 }
                 System.out.println("Success");
@@ -234,25 +253,25 @@ public abstract class ManualTest {
 
     public static class TestCase {
         private final String address;
+        private final PlcResponseCode responseCode;
         private final Object expectedReadValue;
-        private final Object writeValue;
 
-        public TestCase(String address, Object expectedReadValue, Object writeValue) {
+        public TestCase(String address, PlcResponseCode responseCode, Object expectedReadValue) {
             this.address = address;
+            this.responseCode = responseCode;
             this.expectedReadValue = expectedReadValue;
-            this.writeValue = writeValue;
         }
 
         public String getAddress() {
             return address;
         }
 
-        public Object getExpectedReadValue() {
-            return expectedReadValue;
+        public PlcResponseCode getResponseCode() {
+            return responseCode;
         }
 
-        public Object getWriteValue() {
-            return writeValue;
+        public Object getExpectedReadValue() {
+            return expectedReadValue;
         }
     }
 

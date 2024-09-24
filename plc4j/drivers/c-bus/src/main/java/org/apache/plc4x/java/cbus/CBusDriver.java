@@ -19,12 +19,9 @@
 package org.apache.plc4x.java.cbus;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.cbus.readwrite.CBusMessage;
 import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
-import org.apache.plc4x.java.cbus.readwrite.RequestContext;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.cbus.configuration.CBusConfiguration;
 import org.apache.plc4x.java.cbus.configuration.CBusTcpTransportConfiguration;
 import org.apache.plc4x.java.cbus.context.CBusDriverContext;
@@ -85,11 +82,6 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
 
     @Override
     protected PlcTagHandler getTagHandler() {
-        return null;
-    }
-
-    @Override
-    protected PlcValueHandler getValueHandler() {
         return null;
     }
 

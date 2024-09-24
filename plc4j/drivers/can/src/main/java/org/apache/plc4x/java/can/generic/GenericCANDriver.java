@@ -33,7 +33,6 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.transport.can.CANTransport;
 
 import java.util.Optional;
@@ -83,11 +82,6 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
     @Override
     protected GenericCANTagHandler getTagHandler() {
         return new GenericCANTagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     /**

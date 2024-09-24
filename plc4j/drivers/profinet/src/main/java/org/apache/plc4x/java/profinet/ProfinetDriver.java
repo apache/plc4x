@@ -37,6 +37,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.pcap4j.core.*;
 
 import java.util.Collections;
@@ -141,8 +142,8 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    protected  org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new org.apache.plc4x.java.spi.values.PlcValueHandler();
+    protected  PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     @Override

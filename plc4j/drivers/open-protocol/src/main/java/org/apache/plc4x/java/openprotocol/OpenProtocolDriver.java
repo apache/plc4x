@@ -32,7 +32,6 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.Collections;
 import java.util.List;
@@ -103,11 +102,6 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     @Override
     protected OpenProtocolTagHandler getTagHandler() {
         return new OpenProtocolTagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     @Override

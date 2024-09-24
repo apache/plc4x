@@ -38,8 +38,6 @@ import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.transport.Transport;
 
-import org.apache.plc4x.java.api.value.PlcValueHandler;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -95,11 +93,6 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     protected PlcTagHandler getTagHandler() {
         return new EipTagHandler();
-    }
-
-    @Override
-    protected PlcValueHandler getValueHandler() {
-        return new org.apache.plc4x.java.spi.values.PlcValueHandler();
     }
 
     @Override

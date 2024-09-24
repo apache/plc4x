@@ -23,7 +23,6 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
@@ -182,10 +181,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         throw new UnsupportedOperationException("getTagHandler, Not supported yet.");
     }
 
-    @Override
-    protected PlcValueHandler getValueHandler() {
-        throw new UnsupportedOperationException("getValueHandler, Not supported yet.");
-    }
     @Override
     protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
         throw new UnsupportedOperationException("getStackConfigurer, Not supported yet.");

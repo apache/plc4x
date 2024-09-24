@@ -242,17 +242,13 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
                 ));
             return CompletableFuture.completedFuture(new DefaultPlcWriteResponse(writeRequest, map));
         };
-        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getTagHandler(), getValueHandler()));
+        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getTagHandler(), new PlcValueHandler()));
 
         return new PlcEntityManager(mock);
     }
 
     private PlcTagHandler getTagHandler() {
         return new NoOpPlcTagHandler();
-    }
-
-    private org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new NoOpPlcValueHandler();
     }
 
     private static class NoOpPlcTagHandler implements PlcTagHandler {
@@ -279,28 +275,6 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         @Override
         public PlcQuery parseQuery(String query) {
             throw new UnsupportedOperationException("This driver doesn't support browsing");
-        }
-    }
-
-    private static class NoOpPlcValueHandler implements org.apache.plc4x.java.api.value.PlcValueHandler {
-        @Override
-        public PlcValue newPlcValue(Object value) {
-            throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
-        }
-
-        @Override
-        public PlcValue newPlcValue(Object[] values) {
-            throw new RuntimeException("Data Type " + values.getClass().getSimpleName() + "Is not supported");
-        }
-
-        @Override
-        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcTag tag, Object value) {
-            throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
-        }
-
-        @Override
-        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcTag tag, Object[] values) {
-            throw new RuntimeException("Data Type " + values.getClass().getSimpleName() + "Is not supported");
         }
     }
 

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,18 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.api.value;
 
-import org.apache.plc4x.java.api.model.PlcTag;
+package org.apache.plc4x.java.ads.tag;
 
-/**
- * Base Valuehandler
- */
-public interface PlcValueHandler {
+import org.junit.jupiter.api.Test;
 
-    PlcValue newPlcValue(Object value);
-    PlcValue newPlcValue(Object[] values);
-    PlcValue newPlcValue(PlcTag tag, Object value);
-    PlcValue newPlcValue(PlcTag tag, Object[] values);
+import static org.junit.jupiter.api.Assertions.*;
+
+class SymbolicAdsTagTest {
+
+    @Test
+    void of() {
+
+
+    }
 
 }

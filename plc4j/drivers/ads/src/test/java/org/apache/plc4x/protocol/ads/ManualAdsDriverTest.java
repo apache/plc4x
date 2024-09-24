@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.protocol.ads;
 
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
@@ -131,6 +132,10 @@ public class ManualAdsDriverTest extends ManualTest {
         children.put("hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         children.put("hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
         test.addTestCase("MAIN.hurz_Struct", new PlcStruct(children));
+        test.addTestCase("MAIN.thisVariableDoesntExist", PlcResponseCode.NOT_FOUND);
+        // TODO: Add some complex array path
+        test.addTestCase("...3323(/987", PlcResponseCode.INVALID_ADDRESS);
+        test.addTestCase("MAIN.hurz_UDT_array[4].hurz_INT_array[2].someProperty", PlcResponseCode.NOT_FOUND);
         test.run();
     }
 

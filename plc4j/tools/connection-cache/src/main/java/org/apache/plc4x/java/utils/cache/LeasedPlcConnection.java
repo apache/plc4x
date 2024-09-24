@@ -29,6 +29,7 @@ import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,8 +159,7 @@ public class LeasedPlcConnection implements EventPlcConnection {
                             } else {
                                 // Mark the connection as invalid.
                                 invalidateConnection = true;
-                                log.debug("ReadRequest execution completed exceptionally invalidateConnection={} t={}",
-                                    invalidateConnection,
+                                log.debug("ReadRequest execution completed exceptionally invalidateConnection=true",
                                     throwable);
                                 responseFuture.completeExceptionally(throwable);
                             }
@@ -176,6 +176,11 @@ public class LeasedPlcConnection implements EventPlcConnection {
                     @Override
                     public LinkedHashSet<String> getTagNames() {
                         return innerPlcReadRequest.getTagNames();
+                    }
+
+                    @Override
+                    public PlcResponseCode getTagResponseCode(String tagName) {
+                        return innerPlcReadRequest.getTagResponseCode(tagName);
                     }
 
                     @Override
@@ -249,6 +254,11 @@ public class LeasedPlcConnection implements EventPlcConnection {
                     @Override
                     public LinkedHashSet<String> getTagNames() {
                         return innerPlcWriteRequest.getTagNames();
+                    }
+
+                    @Override
+                    public PlcResponseCode getTagResponseCode(String tagName) {
+                        return innerPlcWriteRequest.getTagResponseCode(tagName);
                     }
 
                     @Override

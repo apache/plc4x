@@ -87,7 +87,7 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+    protected PlcValueHandler getValueHandler() {
         return new PlcValueHandler() {
             @Override
             public PlcValue newPlcValue(PlcTag tag, Object[] values) {

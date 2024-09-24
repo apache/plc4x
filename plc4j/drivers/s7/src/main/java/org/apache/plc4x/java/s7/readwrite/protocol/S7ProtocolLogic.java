@@ -44,7 +44,10 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.utils.DefaultTagItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultTagValueItem;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.TagItem;
 import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
@@ -69,8 +72,6 @@ import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
-
-import javax.xml.crypto.Data;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -1292,19 +1293,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Replace the var-length string fields with requests to read the
         // length information instead of the string content.
         int numVarLengthStrings = 0;
-        LinkedHashMap<String, PlcTag> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
+        LinkedHashMap<String, TagItem> updatedRequestItems = new LinkedHashMap<>(request.getNumberOfTags());
         for (String tagName : request.getTagNames()) {
-            S7Tag s7tag = (S7Tag) request.getTag(tagName);
-            if(s7tag instanceof S7StringVarLengthTag) {
-                if(s7tag.getDataType() == TransportSize.STRING) {
-                    updatedRequestItems.put(tagName, new S7Tag(TransportSize.BYTE, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 2));
+            TagItem tagItem = request.getTagItem(tagName);
+            if(tagItem.getTag() instanceof S7StringVarLengthTag) {
+                S7Tag s7Tag = (S7Tag) tagItem.getTag();
+                TransportSize dataType = s7Tag.getDataType();
+                if(dataType == TransportSize.STRING) {
+                    updatedRequestItems.put(tagName, new DefaultTagItem(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 2)));
                     numVarLengthStrings++;
-                } else if(s7tag.getDataType() == TransportSize.WSTRING) {
-                    updatedRequestItems.put(tagName, new S7Tag(TransportSize.BYTE, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 4));
+                } else if(dataType == TransportSize.WSTRING) {
+                    updatedRequestItems.put(tagName, new DefaultTagItem(new S7Tag(TransportSize.BYTE, s7Tag.getMemoryArea(), s7Tag.getBlockNumber(), s7Tag.getByteOffset(), s7Tag.getBitOffset(), 4)));
                     numVarLengthStrings++;
                 }
             } else {
-                updatedRequestItems.put(tagName, s7tag);
+                updatedRequestItems.put(tagName, tagItem);
             }
         }
 
@@ -1316,24 +1319,24 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 return;
             }
             // Collect the responses for the var-length strings and read them separately.
-            LinkedHashMap<String, PlcTag> varLengthStringTags = new LinkedHashMap<>(finalNumVarLengthStrings);
+            LinkedHashMap<String, TagItem> varLengthStringTags = new LinkedHashMap<>(finalNumVarLengthStrings);
             int curItem = 0;
             for (String tagName : request.getTagNames()) {
                 S7Tag s7tag = (S7Tag) request.getTag(tagName);
                 if(s7tag instanceof S7StringVarLengthTag) {
                     S7VarPayloadDataItem s7VarPayloadDataItem = ((S7PayloadReadVarResponse) s7Message.getPayload()).getItems().get(curItem);
-                    // Simply ignore processing var-lenght strings that are not ok
+                    // Simply ignore processing var-length strings that are not ok
                     if(s7VarPayloadDataItem.getReturnCode() == DataTransportErrorCode.OK) {
                         ReadBuffer rb = new ReadBufferByteBased(s7VarPayloadDataItem.getData());
                         try {
                             if (s7tag.getDataType() == TransportSize.STRING) {
                                 rb.readShort(8);
                                 int stringLength = rb.readShort(8);
-                                varLengthStringTags.put(tagName, new S7StringFixedLengthTag(TransportSize.STRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength));
+                                varLengthStringTags.put(tagName, new DefaultTagItem(new S7StringFixedLengthTag(TransportSize.STRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
                             } else if (s7tag.getDataType() == TransportSize.WSTRING) {
                                 rb.readInt(16);
                                 int stringLength = rb.readInt(16);
-                                varLengthStringTags.put(tagName, new S7StringFixedLengthTag(TransportSize.WSTRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength));
+                                varLengthStringTags.put(tagName, new DefaultTagItem(new S7StringFixedLengthTag(TransportSize.WSTRING, s7tag.getMemoryArea(), s7tag.getBlockNumber(), s7tag.getByteOffset(), s7tag.getBitOffset(), 1, stringLength)));
                             }
                         } catch (Exception e) {
                             logger.warn("Error parsing string size for tag {}", tagName, e);
@@ -1438,9 +1441,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         S7StringFixedLengthTag newTag = new S7StringFixedLengthTag(varLengthTag.getDataType(), varLengthTag.getMemoryArea(),
                             varLengthTag.getBlockNumber(), varLengthTag.getByteOffset(), varLengthTag.getBitOffset(),
                             varLengthTag.getNumberOfElements(), stringLength);
-                        updatedRequestItems.put(tagName, new TagValueItem(newTag, value));
+                        updatedRequestItems.put(tagName, new DefaultTagValueItem(newTag, value));
                     } else {
-                        updatedRequestItems.put(tagName, new TagValueItem(tag, value));
+                        updatedRequestItems.put(tagName, new DefaultTagValueItem(tag, value));
                     }
                 }
 

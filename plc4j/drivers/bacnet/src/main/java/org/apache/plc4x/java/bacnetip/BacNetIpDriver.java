@@ -31,7 +31,6 @@ import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -97,11 +96,6 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
     @Override
     protected BacNetIpTagHandler getTagHandler() {
         return new BacNetIpTagHandler();
-    }
-
-    @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     @Override

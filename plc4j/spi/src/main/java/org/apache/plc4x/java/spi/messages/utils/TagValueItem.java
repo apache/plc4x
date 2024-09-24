@@ -18,25 +18,12 @@
  */
 package org.apache.plc4x.java.spi.messages.utils;
 
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
-public class TagValueItem {
+public interface TagValueItem extends TagItem {
 
-    private final PlcTag tag;
-    private final PlcValue value;
-
-    public TagValueItem(PlcTag tag, PlcValue value) {
-        this.tag = tag;
-        this.value = value;
-    }
-
-    public PlcTag getTag() {
-        return tag;
-    }
-
-    public PlcValue getValue() {
-        return value;
+    default PlcValue getValue() {
+        return null;
     }
 
 }
