@@ -22,11 +22,9 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
-	"runtime/debug"
-	"strconv"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"runtime/debug"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
@@ -96,32 +94,23 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		readWriteModel.TimestampsToReturn_timestampsToReturnNeither,
 		readValueArray)
 
-	identifier, err := strconv.ParseUint(opcuaReadRequest.GetExtensionId(), 10, 16)
-	if err != nil {
-		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "error parsing identifier"))
-		return
-	}
-
+	identifier := opcuaReadRequest.GetExtensionId()
 	expandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 		false, //Server Index Specified
 		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensionObject(
-		expandedNodeId,
-		nil,
-		opcuaReadRequest,
-		false)
+	extObject := readWriteModel.NewExtensiblePayload(readWriteModel.NewRootExtensionObject(opcuaReadRequest, expandedNodeId, identifier), nil, 0)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest"))
 		return
 	}
 
 	consumer := func(opcuaResponse []byte) {
-		reply, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		reply, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "Unable to read the reply"))
 			return
