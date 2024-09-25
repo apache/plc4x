@@ -34,7 +34,6 @@ import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.core.Pcaps;
 
@@ -102,11 +101,6 @@ public class S7Driver extends S7HGeneratedDriverBase {
     @Override
     protected S7PlcTagHandler getTagHandler() {
         return new S7PlcTagHandler();
-    }
-
-    @Override
-    protected PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     @Override

@@ -42,7 +42,7 @@ import java.util.stream.IntStream;
 import org.apache.plc4x.java.s7.readwrite.tag.S7SubscriptionTag;
 import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 
 public class S7CyclicEvent implements S7Event {
 
@@ -77,7 +77,7 @@ public class S7CyclicEvent implements S7Event {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            map.put(tagname, dataToPlcValue(tagname, request, event.getItems().get(i).getData()));
             n[0]++;                                    
         });
 
@@ -97,7 +97,7 @@ public class S7CyclicEvent implements S7Event {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            map.put(tagname, dataToPlcValue(tagname, request, event.getItems().get(i).getData()));
             n[0]++;                                    
         });
         
@@ -117,7 +117,7 @@ public class S7CyclicEvent implements S7Event {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            map.put(tagname, dataToPlcValue(tagname, request, event.getItems().get(i).getData()));
             n[0]++;                                    
         });       
     }
@@ -136,7 +136,7 @@ public class S7CyclicEvent implements S7Event {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            map.put(tagname, dataToPlcValue(tagname, request, event.getItems().get(i).getData()));
             n[0]++;                                    
         });       
     }
@@ -744,7 +744,7 @@ public class S7CyclicEvent implements S7Event {
     }
     
         
-    private static PlcValue DataToPlcValue(String tagname, PlcSubscriptionRequest request, List<Short> data){
+    private static PlcValue dataToPlcValue(String tagname, PlcSubscriptionRequest request, List<Short> data){
         
         int[] i = new int[1];
         
@@ -770,7 +770,7 @@ public class S7CyclicEvent implements S7Event {
                 for (int iter = 0; iter < s7Tags[0].getNumberOfElements(); iter++) {
                     bools[iter] = bb.readBoolean();
                 }
-                plcValue = PlcValueHandler.of(bools);
+                plcValue = DefaultPlcValueHandler.of(s7Tags[0], bools);
                 break;
             case BYTE:
                 // TODO: This looks suspicious
@@ -778,7 +778,7 @@ public class S7CyclicEvent implements S7Event {
                 for (Byte b:bytes) {
                     b = Byte.valueOf(bb.readByte());
                 }
-                plcValue = PlcValueHandler.of(bytes);
+                plcValue = DefaultPlcValueHandler.of(s7Tags[0], bytes);
                 break;
             case WORD:
                 break;  
@@ -791,7 +791,7 @@ public class S7CyclicEvent implements S7Event {
                 for (int iter = 0; iter < s7Tags[0].getNumberOfElements(); iter ++) {
                     shorts[iter] = bb.readShort();
                 }
-                plcValue = PlcValueHandler.of(shorts);
+                plcValue = DefaultPlcValueHandler.of(s7Tags[0], shorts);
                 break;
             case UINT:
                 break;    
@@ -805,7 +805,7 @@ public class S7CyclicEvent implements S7Event {
                 for (Integer di:integers) {
                     di = Integer.valueOf(bb.readInt());
                 }
-                plcValue = PlcValueHandler.of(integers);
+                plcValue = DefaultPlcValueHandler.of(s7Tags[0], integers);
                 break;
             case UDINT:
                 break;    
@@ -815,7 +815,7 @@ public class S7CyclicEvent implements S7Event {
                 for (Long l:longs) {
                     l = bb.readLong();
                 }
-                plcValue = PlcValueHandler.of(longs);
+                plcValue = DefaultPlcValueHandler.of(s7Tags[0], longs);
                 break;
             case ULINT:
                 break;  
@@ -825,7 +825,7 @@ public class S7CyclicEvent implements S7Event {
                 for (Float f:floats) {
                     f = bb.readFloat();
                 }
-                plcValue = PlcValueHandler.of(floats);
+                plcValue = DefaultPlcValueHandler.of(s7Tags[0], floats);
                 break;
             case LREAL:
                 // TODO: This looks suspicious
@@ -833,7 +833,7 @@ public class S7CyclicEvent implements S7Event {
                 for (Double d:doubles) {
                     d = bb.readDouble();
                 }
-                plcValue = PlcValueHandler.of(doubles);
+                plcValue = DefaultPlcValueHandler.of(s7Tags[0], doubles);
                 break;
             case CHAR:
                 break;   

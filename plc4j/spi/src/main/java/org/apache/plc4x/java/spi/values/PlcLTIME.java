@@ -35,7 +35,7 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
         if (value instanceof Duration) {
             return new PlcLTIME((Duration) value);
         } else if(value instanceof Integer) {
-            return new PlcLTIME(Duration.of((long) value, ChronoUnit.MILLIS));
+            return new PlcLTIME(Duration.of(((Integer) value).longValue(), ChronoUnit.MILLIS));
         } else if(value instanceof Long) {
             return new PlcLTIME(Duration.of((long) value, ChronoUnit.NANOS));
         } else if(value instanceof BigInteger) {

@@ -32,7 +32,7 @@ import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 
 import java.time.Duration;
@@ -135,7 +135,7 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
 
                     // Prepare the response.
                     PlcReadResponse response = new DefaultPlcReadResponse(request,
-                        Collections.singletonMap(tagName, new ResponseItem<>(responseCode, plcValue)));
+                        Collections.singletonMap(tagName, new DefaultPlcResponseItem<>(responseCode, plcValue)));
 
                     // Pass the response back to the application.
                     future.complete(response);

@@ -18,40 +18,50 @@
  */
 package org.apache.plc4x.java.spi.messages.utils;
 
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-public class DefaultTagValueItem extends DefaultTagItem implements TagValueItem, Serializable {
+import java.nio.charset.StandardCharsets;
 
-    private final PlcValue value;
+public class DefaultPlcResponseItem<T> implements Serializable, PlcResponseItem<T> {
 
-    public DefaultTagValueItem(PlcTag tag, PlcValue value) {
-        super(tag);
+    private final PlcResponseCode code;
+    private final T value;
+
+    public DefaultPlcResponseItem(PlcResponseCode code, T value) {
+        this.code = code;
         this.value = value;
     }
 
-    public PlcValue getValue() {
+    @Override
+    public PlcResponseCode getCode() {
+        return code;
+    }
+
+    @Override
+    public T getValue() {
         return value;
     }
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext("PlcWriteRequest");
-        if(getTag() instanceof Serializable) {
-            writeBuffer.pushContext("tag");
-            writeBuffer.writeSerializable((Serializable) getTag());
-            writeBuffer.popContext("tag");
-        }
-        if(value instanceof Serializable) {
+        writeBuffer.pushContext("DefaultPlcResponseItem");
+        String codeName = code.name();
+        writeBuffer.writeString("code",
+            codeName.getBytes(StandardCharsets.UTF_8).length * 8,
+            codeName, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        if (value != null) {
             writeBuffer.pushContext("value");
-            writeBuffer.writeSerializable((Serializable) value);
+            if (!(value instanceof Serializable)) {
+                throw new RuntimeException("Error serializing. Tag value doesn't implement XmlSerializable");
+            }
+            ((Serializable) value).serialize(writeBuffer);
             writeBuffer.popContext("value");
         }
-        writeBuffer.popContext("PlcWriteRequest");
+        writeBuffer.popContext("DefaultPlcResponseItem");
     }
 
 }

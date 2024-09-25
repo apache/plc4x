@@ -97,11 +97,15 @@
               <PlcTagRequest>
                 <tags isList="true">
                   <hurz>
-                    <ModbusTagHoldingRegister>
-                      <address dataType="uint" bitLength="16">0</address>
-                      <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                    </ModbusTagHoldingRegister>
+                    <DefaultPlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">0</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </DefaultPlcTagItem>
                   </hurz>
                 </tags>
               </PlcTagRequest>
@@ -109,12 +113,12 @@
           </request>
           <values isList="true">
             <hurz>
-              <ResponseItem>
+              <DefaultPlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
                 </value>
-              </ResponseItem>
+              </DefaultPlcResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
@@ -190,11 +194,15 @@
               <PlcTagRequest>
                 <tags isList="true">
                   <hurz>
-                    <ModbusTagHoldingRegister>
-                      <address dataType="uint" bitLength="16">0</address>
-                      <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                    </ModbusTagHoldingRegister>
+                    <DefaultPlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">0</address>
+                          <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </DefaultPlcTagItem>
                   </hurz>
                 </tags>
               </PlcTagRequest>
@@ -202,7 +210,7 @@
           </request>
           <values isList="true">
             <hurz>
-              <ResponseItem>
+              <DefaultPlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcList>
@@ -210,7 +218,7 @@
                     <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
                   </PlcList>
                 </value>
-              </ResponseItem>
+              </DefaultPlcResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>
@@ -290,18 +298,26 @@
               <PlcTagRequest>
                 <tags isList="true">
                   <hurz1>
-                    <ModbusTagHoldingRegister>
-                      <address dataType="uint" bitLength="16">0</address>
-                      <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                    </ModbusTagHoldingRegister>
+                    <DefaultPlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">0</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </DefaultPlcTagItem>
                   </hurz1>
                   <hurz2>
-                    <ModbusTagHoldingRegister>
-                      <address dataType="uint" bitLength="16">2</address>
-                      <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                    </ModbusTagHoldingRegister>
+                    <DefaultPlcTagItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">2</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                    </DefaultPlcTagItem>
                   </hurz2>
                 </tags>
               </PlcTagRequest>
@@ -309,20 +325,20 @@
           </request>
           <values isList="true">
             <hurz1>
-              <ResponseItem>
+              <DefaultPlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
                 </value>
-              </ResponseItem>
+              </DefaultPlcResponseItem>
             </hurz1>
             <hurz2>
-              <ResponseItem>
+              <DefaultPlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
                 </value>
-              </ResponseItem>
+              </DefaultPlcResponseItem>
             </hurz2>
           </values>
         </PlcReadResponse>
@@ -401,19 +417,21 @@
               <PlcTagRequest>
                 <tags isList="true">
                   <hurz>
-                    <ModbusTagHoldingRegister>
-                      <address dataType="uint" bitLength="16">0</address>
-                      <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                    </ModbusTagHoldingRegister>
+                    <DefaultPlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">0</address>
+                          <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                      </value>
+                    </DefaultPlcTagValueItem>
                   </hurz>
                 </tags>
               </PlcTagRequest>
-              <values isList="true">
-                <hurz>
-                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-                </hurz>
-              </values>
             </PlcWriteRequest>
           </request>
           <responseCodes isList="true">
@@ -498,22 +516,24 @@
               <PlcTagRequest>
                 <tags isList="true">
                   <hurz>
-                    <ModbusTagHoldingRegister>
-                      <address dataType="uint" bitLength="16">0</address>
-                      <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
-                      <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
-                    </ModbusTagHoldingRegister>
+                    <DefaultPlcTagValueItem>
+                      <tag>
+                        <ModbusTagHoldingRegister>
+                          <address dataType="uint" bitLength="16">0</address>
+                          <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
+                          <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
+                        </ModbusTagHoldingRegister>
+                      </tag>
+                      <value>
+                        <PlcList>
+                          <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                          <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                        </PlcList>
+                      </value>
+                    </DefaultPlcTagValueItem>
                   </hurz>
                 </tags>
               </PlcTagRequest>
-              <values isList="true">
-                <hurz>
-                  <PlcList>
-                    <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-                    <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
-                  </PlcList>
-                </hurz>
-              </values>
             </PlcWriteRequest>
           </request>
           <responseCodes isList="true">

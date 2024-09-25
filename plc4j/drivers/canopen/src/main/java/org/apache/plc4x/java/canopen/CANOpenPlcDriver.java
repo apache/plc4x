@@ -36,6 +36,7 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.transport.can.CANTransport;
@@ -88,7 +89,7 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
 
     @Override
     protected PlcValueHandler getValueHandler() {
-        return new PlcValueHandler() {
+        return new DefaultPlcValueHandler() {
             @Override
             public PlcValue newPlcValue(PlcTag tag, Object[] values) {
                 if (values[0] instanceof PlcList) {

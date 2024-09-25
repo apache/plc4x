@@ -46,7 +46,6 @@ import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.IllegalRawDataException;
@@ -170,11 +169,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     @Override
     protected ProfinetTagHandler getTagHandler() {
         return new ProfinetTagHandler();
-    }
-
-    @Override
-    protected PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
     }
 
     @Override

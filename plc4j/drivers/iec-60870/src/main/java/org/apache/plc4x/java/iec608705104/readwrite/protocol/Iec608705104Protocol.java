@@ -37,7 +37,8 @@ import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcBrowser;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
@@ -130,13 +131,13 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         for (String tagName : subscriptionRequest.getTagNames()) {
             final DefaultPlcSubscriptionTag tag = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
             if (!(tag.getTag() instanceof Iec608705104Tag)) {
-                values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
             } else {
-                values.put(tagName, new ResponseItem<>(PlcResponseCode.OK,
+                values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK,
                     new Iec608705104SubscriptionHandle(this, (Iec608705104Tag) tag.getTag())));
             }
         }
@@ -208,7 +209,7 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
             timeStamp.atZone(ZoneId.systemDefault()).toInstant(),
             Collections.singletonMap(tag.toString(), tag),
             Collections.singletonMap(tag.toString(),
-                new ResponseItem<>(PlcResponseCode.OK, plcValue)));
+                new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue)));
 
         // Try sending the subscription event to all listeners.
         for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {

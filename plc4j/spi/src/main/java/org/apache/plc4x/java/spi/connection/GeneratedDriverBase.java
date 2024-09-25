@@ -37,6 +37,7 @@ import org.apache.plc4x.java.spi.metadata.DefaultOption;
 import org.apache.plc4x.java.spi.metadata.DefaultOptionMetadata;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.lang.reflect.Field;
@@ -287,7 +288,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     protected abstract PlcTagHandler getTagHandler();
 
     protected PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
+        return new DefaultPlcValueHandler();
     }
 
     protected abstract ProtocolStackConfigurer<BASE_PACKET> getStackConfigurer();

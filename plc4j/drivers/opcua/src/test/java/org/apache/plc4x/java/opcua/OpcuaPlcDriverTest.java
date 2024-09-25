@@ -57,7 +57,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
@@ -65,9 +64,6 @@ import java.util.stream.Stream;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.images.builder.ImageFromDockerfile;
-import org.testcontainers.jib.JibImage;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -82,7 +78,7 @@ public class OpcuaPlcDriverTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
 
     @Container
-    public static final GenericContainer milo = new MiloTestContainer()
+    public static final GenericContainer<MiloTestContainer> milo = new MiloTestContainer()
         //.withCreateContainerCmdModifier(cmd -> cmd.withHostName("test-opcua-server"))
         .withReuse(true)
         .withLogConsumer(new Slf4jLogConsumer(LOGGER))
@@ -139,17 +135,17 @@ public class OpcuaPlcDriverTest {
     public static final String STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE = "ns=2;s=HelloWorld/OnlyAdminCanRead/String";
 
     // Address of local milo server, since it comes from test container its hostname and port is not static
-    private final String miloLocalAddress = "%s:%d/milo";
+    private static final String miloLocalAddress = "%s:%d/milo";
     //Tcp pattern of OPC UA
-    private final String opcPattern = "opcua:tcp://";
+    private static final String opcPattern = "opcua:tcp://";
 
-    private final String paramSectionDivider = "?";
-    private final String paramDivider = "&";
+    private static final String paramSectionDivider = "?";
+    private static final String paramDivider = "&";
 
-    private final String discoveryValidParamTrue = "discovery=true";
-    private final String discoveryValidParamFalse = "discovery=false";
-    private final String discoveryCorruptedParamWrongValueNum = "discovery=1";
-    private final String discoveryCorruptedParamWrongName = "diskovery=false";
+    private static final String discoveryValidParamTrue = "discovery=true";
+    private static final String discoveryValidParamFalse = "discovery=false";
+    private static final String discoveryCorruptedParamWrongValueNum = "discovery=1";
+    private static final String discoveryCorruptedParamWrongName = "diskovery=false";
 
     private String tcpConnectionAddress;
     private List<String> connectionStringValidSet;

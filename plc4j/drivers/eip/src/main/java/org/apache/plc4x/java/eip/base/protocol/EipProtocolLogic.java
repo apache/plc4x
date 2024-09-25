@@ -43,7 +43,8 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
@@ -445,7 +446,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     private CompletableFuture<PlcReadResponse> readWithoutMessageRouter(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         List<CompletableFuture<Void>> internalFutures = new ArrayList<>();
         PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
         PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
@@ -494,11 +495,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         UnConnectedDataItem dataItem = (UnConnectedDataItem) responseTypeIds.get(1);
                         // If the response indicates an error, handle this.
                         if((dataItem.getService() instanceof CipConnectedResponse) && (((CipConnectedResponse) dataItem.getService()).getStatus() == 0x03)) {
-                            values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                            values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
                         }
                         // Otherwise process the response.
                         else {
-                            Map<String, ResponseItem<PlcValue>> readResponse = decodeSingleReadResponse(dataItem.getService(), tagName, eipTag);
+                            Map<String, PlcResponseItem<PlcValue>> readResponse = decodeSingleReadResponse(dataItem.getService(), tagName, eipTag);
                             values.putAll(readResponse);
                         }
                         internalFuture.complete(null);
@@ -732,7 +733,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     }
 
     private PlcReadResponse decodeReadResponse(CipService p, PlcReadRequest readRequest) {
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         // only 1 field
         if (p instanceof CipReadResponse) {
             CipReadResponse resp = (CipReadResponse) p;
@@ -745,7 +746,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             if (code == PlcResponseCode.OK) {
                 plcValue = parsePlcValue(tag, data, type);
             }
-            ResponseItem<PlcValue> result = new ResponseItem<>(code, plcValue);
+            PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(code, plcValue);
             values.put(fieldName, result);
         }
         //Multiple response
@@ -790,7 +791,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     if (code == PlcResponseCode.OK) {
                         plcValue = parsePlcValue(tag, data, type);
                     }
-                    ResponseItem<PlcValue> result = new ResponseItem<>(code, plcValue);
+                    PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(code, plcValue);
                     values.put(fieldName, result);
                 }
             }
@@ -798,8 +799,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         return new DefaultPlcReadResponse(readRequest, values);
     }
 
-    private Map<String, ResponseItem<PlcValue>> decodeSingleReadResponse(CipService p, String tagName, PlcTag tag) {
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+    private Map<String, PlcResponseItem<PlcValue>> decodeSingleReadResponse(CipService p, String tagName, PlcTag tag) {
+        Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         CipReadResponse resp = (CipReadResponse) p;
         PlcResponseCode code = decodeResponseCode(resp.getStatus());
         PlcValue plcValue = null;
@@ -808,7 +809,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         if (code == PlcResponseCode.OK) {
             plcValue = parsePlcValue((EipTag) tag, data, type);
         }
-        ResponseItem<PlcValue> result = new ResponseItem<>(code, plcValue);
+        PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(code, plcValue);
         values.put(tagName, result);
         return values;
     }

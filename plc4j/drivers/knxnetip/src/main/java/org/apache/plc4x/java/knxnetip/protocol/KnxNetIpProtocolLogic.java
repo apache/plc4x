@@ -37,7 +37,8 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
@@ -540,13 +541,13 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         for (String tagName : subscriptionRequest.getTagNames()) {
             final DefaultPlcSubscriptionTag tag = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
             if (!(tag.getTag() instanceof KnxNetIpTag)) {
-                values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
             } else {
-                values.put(tagName, new ResponseItem<>(PlcResponseCode.OK,
+                values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK,
                     new KnxNetIpSubscriptionHandle(this, (KnxNetIpTag) tag.getTag())));
             }
         }
@@ -572,7 +573,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         // Create a subscription event from the input.
         // TODO: Check this ... this is sort of not really right ...
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-            Collections.singletonMap("knxData", new ResponseItem<>(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap("knxData", new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue)));
 
         // Try sending the subscription event to all listeners.
         for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {

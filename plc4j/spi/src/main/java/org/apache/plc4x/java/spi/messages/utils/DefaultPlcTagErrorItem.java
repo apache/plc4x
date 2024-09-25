@@ -24,11 +24,11 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-public class DefaultTagErrorItem implements TagItem, TagValueItem, Serializable {
+public class DefaultPlcTagErrorItem implements PlcTagItem, PlcTagValueItem, Serializable {
 
     private final PlcResponseCode responseCode;
 
-    public DefaultTagErrorItem(PlcResponseCode responseCode) {
+    public DefaultPlcTagErrorItem(PlcResponseCode responseCode) {
         this.responseCode = responseCode;
     }
 
@@ -38,9 +38,9 @@ public class DefaultTagErrorItem implements TagItem, TagValueItem, Serializable 
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext("DefaultTagErrorItem");
+        writeBuffer.pushContext("DefaultPlcTagErrorItem");
         writeBuffer.writeString("responseCode", responseCode.name().length() * 8, responseCode.name());
-        writeBuffer.popContext("DefaultTagErrorItem");
+        writeBuffer.popContext("DefaultPlcTagErrorItem");
     }
 
 }

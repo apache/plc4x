@@ -38,11 +38,11 @@ import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.values.*;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,8 +163,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     enrichedPlcValue.put("address", new PlcSTRING(toString(curTag)));
 
                     // From the original BACNet tag
-                    enrichedPlcValue.put("tagNumber", PlcValueHandler.of(propertyValue.getPeekedTagHeader().getActualTagNumber()));
-                    enrichedPlcValue.put("lengthValueType", PlcValueHandler.of(propertyValue.getPeekedTagHeader().getActualLength()));
+                    enrichedPlcValue.put("tagNumber", new PlcUSINT(propertyValue.getPeekedTagHeader().getActualTagNumber()));
+                    enrichedPlcValue.put("lengthValueType", new PlcUSINT(propertyValue.getPeekedTagHeader().getActualLength()));
 
                     // Use the information in the edeModel to enrich the information.
                     if (edeModel != null) {
@@ -214,8 +214,8 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                     enrichedPlcValue.put("address", new PlcSTRING(toString(curTag)));
 
                     // From the original BACNet tag
-                    enrichedPlcValue.put("tagNumber", PlcValueHandler.of(baCnetTag.getActualTagNumber()));
-                    enrichedPlcValue.put("lengthValueType", PlcValueHandler.of(baCnetTag.getActualLength()));
+                    enrichedPlcValue.put("tagNumber", new PlcUSINT(baCnetTag.getActualTagNumber()));
+                    enrichedPlcValue.put("lengthValueType", new PlcUSINT(baCnetTag.getActualLength()));
 
                     // Use the information in the edeModel to enrich the information.
                     if (edeModel != null) {
@@ -244,9 +244,9 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         for (String tagName : subscriptionRequest.getTagNames()) {
-            values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, new DefaultPlcSubscriptionHandle(this)));
+            values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, new DefaultPlcSubscriptionHandle(this)));
         }
         return CompletableFuture.completedFuture(new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
     }
@@ -268,7 +268,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
     protected void publishEvent(BacNetIpTag tag, PlcValue plcValue) {
         // Create a subscription event from the input.
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-            Collections.singletonMap("event", new ResponseItem<>(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap("event", new DefaultPlcResponseItem<>(PlcResponseCode.OK, plcValue)));
 
         // Send the subscription event to all listeners.
         for (Consumer<PlcSubscriptionEvent> consumer : consumerIdMap.values()) {

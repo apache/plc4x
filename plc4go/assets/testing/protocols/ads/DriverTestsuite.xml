@@ -1150,9 +1150,13 @@
               <PlcTagRequest>
                 <tags isList="true">
                   <hurz>
-                    <SymbolicAdsTag>
-                      <symbolicAddress dataType="string" bitLength="128" encoding="UTF-8">MAIN.hurz_Struct</symbolicAddress>
-                    </SymbolicAdsTag>
+                    <DefaultPlcTagItem>
+                      <tag>
+                        <SymbolicAdsTag>
+                          <symbolicAddress dataType="string" bitLength="128" encoding="UTF-8">MAIN.hurz_Struct</symbolicAddress>
+                        </SymbolicAdsTag>
+                      </tag>
+                    </DefaultPlcTagItem>
                   </hurz>
                 </tags>
               </PlcTagRequest>
@@ -1160,7 +1164,7 @@
           </request>
           <values isList="true">
             <hurz>
-              <ResponseItem>
+              <DefaultPlcResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
                   <PlcStruct>
@@ -1232,7 +1236,7 @@
                     </hurz_DATE>
                   </PlcStruct>
                 </value>
-              </ResponseItem>
+              </DefaultPlcResponseItem>
             </hurz>
           </values>
         </PlcReadResponse>

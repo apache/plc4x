@@ -20,7 +20,7 @@ package org.apache.plc4x.java.spi.messages.utils;
 
 import org.apache.plc4x.java.api.value.PlcValue;
 
-public interface TagValueItem extends TagItem {
+public interface PlcTagValueItem extends PlcTagItem {
 
     default PlcValue getValue() {
         return null;

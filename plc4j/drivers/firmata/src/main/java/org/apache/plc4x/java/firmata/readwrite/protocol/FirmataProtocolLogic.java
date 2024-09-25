@@ -37,7 +37,8 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcBOOL;
@@ -129,12 +130,12 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             for (FirmataMessage firmataMessage : firmataMessages) {
                 context.sendToWire(firmataMessage);
             }
-            Map<String, ResponseItem<PlcSubscriptionHandle>> result = new HashMap<>();
+            Map<String, PlcResponseItem<PlcSubscriptionHandle>> result = new HashMap<>();
             for (String tagName : subscriptionRequest.getTagNames()) {
                 DefaultPlcSubscriptionTag subscriptionTag =
                     (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
                 FirmataTag tag = (FirmataTag) subscriptionTag.getTag();
-                result.put(tagName, new ResponseItem<>(PlcResponseCode.OK,
+                result.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK,
                     new FirmataSubscriptionHandle(this, tagName, tag)));
             }
             future.complete(new DefaultPlcSubscriptionResponse(subscriptionRequest, result));
@@ -279,13 +280,13 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
         // If it's just one element, return this as a direct PlcValue
         if (values.size() == 1) {
             final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-                Collections.singletonMap(tagName, new ResponseItem<>(PlcResponseCode.OK, values.get(0))));
+                Collections.singletonMap(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, values.get(0))));
             consumer.accept(event);
         }
         // If it's more, return a PlcList instead.
         else {
             final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-                Collections.singletonMap(tagName, new ResponseItem<>(PlcResponseCode.OK, new PlcList(values))));
+                Collections.singletonMap(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcList(values))));
             consumer.accept(event);
         }
     }

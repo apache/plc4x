@@ -52,7 +52,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         } else if (value instanceof BigDecimal) {
             return new PlcBOOL((BigDecimal) value);
         } else {
-            return new PlcBOOL((String) value);
+            return new PlcBOOL(value.toString());
         }
     }
 
@@ -62,7 +62,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(Byte value) {
-        if ((value == null) || (value < minValue || value > maxValue)) {
+        if ((value == null) || (value < minValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
@@ -70,7 +70,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(Short value) {
-        if ((value == null) || (value < minValue || value > maxValue)) {
+        if ((value == null) || (value < minValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
@@ -78,7 +78,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(Integer value) {
-        if ((value == null) || (value < minValue || value > maxValue)) {
+        if ((value == null) || (value < minValue)) {
             throw new PlcInvalidTagException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
@@ -86,7 +86,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(Long value) {
-        if ((value == null) || (value < minValue || value > maxValue)) {
+        if ((value == null) || (value < minValue)) {
             throw new PlcInvalidTagException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
@@ -94,7 +94,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(Float value) {
-        if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+        if ((value == null) || (value < minValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
@@ -102,7 +102,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(Double value) {
-        if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+        if ((value == null) || (value < minValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
@@ -110,7 +110,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(BigInteger value) {
-        if ((value == null) || (value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
+        if ((value == null) || (value.compareTo(BigInteger.valueOf(minValue)) < 0)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.compareTo(BigInteger.valueOf(maxValue)) >= 0;
@@ -118,7 +118,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     public PlcBOOL(BigDecimal value) {
-        if ((value == null) || (value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+        if ((value == null) || (value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.scale() > 0)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.compareTo(BigDecimal.valueOf(maxValue)) >= 0;

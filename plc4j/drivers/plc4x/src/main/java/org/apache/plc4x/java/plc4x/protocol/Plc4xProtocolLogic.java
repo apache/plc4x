@@ -29,7 +29,8 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,13 +117,13 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             .only(Plc4xReadResponse.class)
             .check(plc4xReadResponse -> plc4xReadResponse.getConnectionId() == connectionId)
             .handle(plc4xReadResponse -> {
-                Map<String, ResponseItem<PlcValue>> apiResponses = new HashMap<>();
+                Map<String, PlcResponseItem<PlcValue>> apiResponses = new HashMap<>();
                 // Create the API response from the incoming message.
                 for (Plc4xTagValueResponse plc4xTag : plc4xReadResponse.getTags()) {
                     final Plc4xResponseCode plc4xResponseCode = plc4xTag.getResponseCode();
                     final PlcResponseCode apiResponseCode = PlcResponseCode.valueOf(plc4xResponseCode.name());
                     apiResponses.put(plc4xTag.getTag().getName(),
-                        new ResponseItem<>(apiResponseCode, plc4xTag.getValue()));
+                        new DefaultPlcResponseItem<>(apiResponseCode, plc4xTag.getValue()));
                 }
 
                 // Send it back to the calling process.

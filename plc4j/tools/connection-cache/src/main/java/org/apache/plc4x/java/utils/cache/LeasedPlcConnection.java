@@ -103,6 +103,14 @@ public class LeasedPlcConnection implements EventPlcConnection {
         return plcConnection.parseTagAddress(tagAddress);
     }
 
+    @Override
+    public Optional<PlcValue> parseTagValue(PlcTag tag, Object... values) {
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection == null) {
+            throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
+        }
+        return plcConnection.parseTagValue(tag, values);
+    }
 
     @Override
     public void connect() throws PlcConnectionException {

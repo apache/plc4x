@@ -20,10 +20,10 @@ package org.apache.plc4x.java.opm;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,7 +56,7 @@ public class ConnectedEntityTest {
         driverManager = new DefaultPlcDriverManager();
         connection = (MockConnection) driverManager.getConnection("mock:cached");
         when(mockDevice.read(any()))
-            .thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcSTRING("hallo")));
+            .thenReturn(new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcSTRING("hallo")));
         connection.setDevice(mockDevice);
         entityManager = new PlcEntityManager(driverManager);
     }

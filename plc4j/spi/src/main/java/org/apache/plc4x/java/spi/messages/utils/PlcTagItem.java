@@ -22,7 +22,7 @@ package org.apache.plc4x.java.spi.messages.utils;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-public interface TagItem {
+public interface PlcTagItem {
 
     default PlcResponseCode getResponseCode() {
         return PlcResponseCode.OK;

@@ -19,23 +19,11 @@
 package org.apache.plc4x.java.can.generic;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
-import io.netty.buffer.UnpooledDirectByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerAdapter;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelOutboundHandlerAdapter;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -43,14 +31,12 @@ import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest.Builder;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.spi.connection.ChannelExposingConnection;
-import org.apache.plc4x.java.spi.values.PlcBYTE;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.util.Primitives;
 
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.*;
@@ -134,7 +120,8 @@ public class GenericCANDriverTest {
             subscriptionRequestBuilder.addEventTagAddress(k, v.getKey());
         });
 
-        subscriptionRequestBuilder.build().execute().whenComplete((reply, error) -> {
+        PlcSubscriptionRequest subscriptionRequest = subscriptionRequestBuilder.build();
+        subscriptionRequest.execute().whenComplete((reply, error) -> {
             if (error != null) {
                 fail(error);
                 return;
@@ -150,7 +137,8 @@ public class GenericCANDriverTest {
         entries.forEach((k, v) -> {
             writeRequestBuilder.addTagAddress(k, v.getKey(), v.getValue());
         });
-        writeRequestBuilder.build().execute().whenComplete((reply, error) -> {
+        PlcWriteRequest writeRequest = writeRequestBuilder.build();
+        writeRequest.execute().whenComplete((reply, error) -> {
             if (error != null) {
                 fail(error);
             }

@@ -30,8 +30,8 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.mock.tag.MockTagHandler;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,7 +145,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return CompletableFuture.supplyAsync(() -> {
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending read request to MockDevice");
-            Map<String, ResponseItem<PlcValue>> response = readRequest.getTagNames().stream()
+            Map<String, PlcResponseItem<PlcValue>> response = readRequest.getTagNames().stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         name -> device.read(readRequest.getTag(name).getAddressString())
@@ -175,7 +175,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return CompletableFuture.supplyAsync(() -> {
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending subsribe request to MockDevice");
-            Map<String, ResponseItem<PlcSubscriptionHandle>> response = subscriptionRequest.getTagNames().stream()
+            Map<String, PlcResponseItem<PlcSubscriptionHandle>> response = subscriptionRequest.getTagNames().stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
                         name -> device.subscribe(subscriptionRequest.getTag(name).getAddressString())
@@ -207,7 +207,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, mockTagHandler, new PlcValueHandler());
+        return new DefaultPlcWriteRequest.Builder(this, mockTagHandler, new DefaultPlcValueHandler());
     }
 
     @Override

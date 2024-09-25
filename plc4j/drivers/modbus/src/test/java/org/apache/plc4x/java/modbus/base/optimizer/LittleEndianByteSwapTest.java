@@ -33,7 +33,7 @@ import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.values.PlcRawByteArray;
 import org.junit.jupiter.api.Assertions;
@@ -248,13 +248,13 @@ public class LittleEndianByteSwapTest {
         Map<PlcReadRequest, BaseOptimizer.SubResponse<PlcReadResponse>> readResponses = new HashMap<>();
         readResponses.put(firstRequest, new BaseOptimizer.SubResponse<>(
             new DefaultPlcReadResponse(firstRequest, Map.of(
-                "coils0", new ResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(Hex.decodeHex("3060480c00c084000000000000000000000000000000")))))));
+                "coils0", new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(Hex.decodeHex("3060480c00c084000000000000000000000000000000")))))));
         readResponses.put(secondRequest, new BaseOptimizer.SubResponse<>(
             new DefaultPlcReadResponse(secondRequest, Map.of(
-                "registers0", new ResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(Hex.decodeHex("134141b000000000f80146c3000000003852c31f000000000b7841ae00000000fc0046e000000000028fc31f00000000c50441ab00000000540046dd00000000c000c31e000000006e973f32000000009998420300000000a5e33c9b00000000ccd041fc00000000020c3f2f00000000c3f9409e0000000047ae3f39000000009fbe3f3a00000000fbe83ff900000000d70a3aa30000000033333e33000000008f5c412400000000b83143d4000000005c293f5700000000c28f3f0500000000ac093f3c00000000fbe7413a0000000000000000000000000000000000000000e0df3f3b0000000023a33f3900000000a3d74220")))))));
+                "registers0", new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(Hex.decodeHex("134141b000000000f80146c3000000003852c31f000000000b7841ae00000000fc0046e000000000028fc31f00000000c50441ab00000000540046dd00000000c000c31e000000006e973f32000000009998420300000000a5e33c9b00000000ccd041fc00000000020c3f2f00000000c3f9409e0000000047ae3f39000000009fbe3f3a00000000fbe83ff900000000d70a3aa30000000033333e33000000008f5c412400000000b83143d4000000005c293f5700000000c28f3f0500000000ac093f3c00000000fbe7413a0000000000000000000000000000000000000000e0df3f3b0000000023a33f3900000000a3d74220")))))));
         readResponses.put(thirdRequest, new BaseOptimizer.SubResponse<>(
             new DefaultPlcReadResponse(thirdRequest, Map.of(
-                "registers1", new ResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(Hex.decodeHex("a75cbc11000000007620bc26000000002f833f3c0000000086593f38000000005c293f0f0000000013aabc50000000003ffbbc8700000000da513f3b00000000c7113f3a0000000051ec3f3800000000a75cbc11000000007620bca60000000016873ed900000000ebee3ec000000000000000000000000044e5bc3b")))))));
+                "registers1", new DefaultPlcResponseItem<>(PlcResponseCode.OK, new PlcRawByteArray(Hex.decodeHex("a75cbc11000000007620bc26000000002f833f3c0000000086593f38000000005c293f0f0000000013aabc50000000003ffbbc8700000000da513f3b00000000c7113f3a0000000051ec3f3800000000a75cbc11000000007620bca60000000016873ed900000000ebee3ec000000000000000000000000044e5bc3b")))))));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Process the responses

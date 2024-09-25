@@ -19,32 +19,10 @@
 
 package org.apache.plc4x.java.spi.messages.utils;
 
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-public class DefaultTagItem implements TagItem, Serializable {
+public interface PlcResponseItem<T> {
+    PlcResponseCode getCode();
 
-    private final PlcTag tag;
-
-    public DefaultTagItem(PlcTag tag) {
-        this.tag = tag;
-    }
-
-    public PlcTag getTag() {
-        return tag;
-    }
-
-    @Override
-    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.pushContext("DefaultTagItem");
-        if(tag instanceof Serializable) {
-            writeBuffer.pushContext("tag");
-            writeBuffer.writeSerializable((Serializable) tag);
-            writeBuffer.popContext("tag");
-        }
-        writeBuffer.popContext("DefaultTagItem");
-    }
-
+    T getValue();
 }

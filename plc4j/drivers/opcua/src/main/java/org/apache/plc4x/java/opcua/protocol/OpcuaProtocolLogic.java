@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -42,13 +43,14 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager.RequestTransaction;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,9 +203,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getTagNames().size());
         Iterator<String> iterator = request.getTagNames().iterator();
+        Map<String, PlcTag> tagMap = new HashMap<>();
         for (int i = 0; i < request.getTagNames().size(); i++) {
             String tagName = iterator.next();
+            // TODO: We need to check that the tag-return-code is OK as it could also be INVALID_TAG
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
+            tagMap.put(tagName, tag);
 
             NodeId nodeId = generateNodeId(tag);
 
@@ -225,7 +230,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         transaction.submit(() -> {
             conversation.submit(opcuaReadRequest, ReadResponse.class).whenComplete((response, error) -> bridge(transaction, future, response, error));
         });
-        return future.thenApply(response -> new DefaultPlcReadResponse(request, readResponse(request.getTagNames(), response.getResults())));
+        return future.thenApply(response -> new DefaultPlcReadResponse(request, readResponse(request.getTagNames(), tagMap, response.getResults())));
     }
 
     static NodeId generateNodeId(OpcuaTag tag) {
@@ -250,11 +255,12 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return nodeId;
     }
 
-    public Map<String, ResponseItem<PlcValue>> readResponse(LinkedHashSet<String> tagNames, List<DataValue> results) {
+    public Map<String, PlcResponseItem<PlcValue>> readResponse(LinkedHashSet<String> tagNames, Map<String, PlcTag> tagMap, List<DataValue> results) {
         PlcResponseCode responseCode = null; // initialize variable
-        Map<String, ResponseItem<PlcValue>> response = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> response = new HashMap<>();
         int count = 0;
         for (String tagName : tagNames) {
+            PlcTag tag = tagMap.get(tagName);
             PlcValue value = null;
             if (results.get(count).getValueSpecified()) {
                 Variant variant = results.get(count).getValue();
@@ -266,44 +272,44 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     for (int i = 0; i < length; i++) {
                         tmpValue[i] = array[i] != 0;
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantSByte) {
                     byte[] array = ((VariantSByte) variant).getValue();
-                    value = PlcValueHandler.of(array);
+                    value = DefaultPlcValueHandler.of(tag, array);
                 } else if (variant instanceof VariantByte) {
                     List<Short> array = ((VariantByte) variant).getValue();
                     Short[] tmpValue = array.toArray(new Short[0]);
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantInt16) {
                     List<Short> array = ((VariantInt16) variant).getValue();
                     Short[] tmpValue = array.toArray(new Short[0]);
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantUInt16) {
                     List<Integer> array = ((VariantUInt16) variant).getValue();
                     Integer[] tmpValue = array.toArray(new Integer[0]);
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantInt32) {
                     List<Integer> array = ((VariantInt32) variant).getValue();
                     Integer[] tmpValue = array.toArray(new Integer[0]);
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantUInt32) {
                     List<Long> array = ((VariantUInt32) variant).getValue();
                     Long[] tmpValue = array.toArray(new Long[0]);
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantInt64) {
                     List<Long> array = ((VariantInt64) variant).getValue();
                     Long[] tmpValue = array.toArray(new Long[0]);
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantUInt64) {
-                    value = PlcValueHandler.of(((VariantUInt64) variant).getValue());
+                    value = DefaultPlcValueHandler.of(tag, ((VariantUInt64) variant).getValue());
                 } else if (variant instanceof VariantFloat) {
                     List<Float> array = ((VariantFloat) variant).getValue();
                     Float[] tmpValue = array.toArray(new Float[0]);
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantDouble) {
                     List<Double> array = ((VariantDouble) variant).getValue();
                     Double[] tmpValue = array.toArray(new Double[0]);
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantString) {
                     int length = ((VariantString) variant).getValue().size();
                     List<PascalString> stringArray = ((VariantString) variant).getValue();
@@ -311,7 +317,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     for (int i = 0; i < length; i++) {
                         tmpValue[i] = stringArray.get(i).getStringValue();
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantDateTime) {
                     List<Long> array = ((VariantDateTime) variant).getValue();
                     int length = array.size();
@@ -319,7 +325,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     for (int i = 0; i < length; i++) {
                         tmpValue[i] = LocalDateTime.ofInstant(Instant.ofEpochMilli(getDateTime(array.get(i))), ZoneOffset.UTC);
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantGuid) {
                     List<GuidValue> array = ((VariantGuid) variant).getValue();
                     int length = array.size();
@@ -338,7 +344,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                         }
                         tmpValue[i] = Long.toHexString(array.get(i).getData1()) + "-" + Integer.toHexString(array.get(i).getData2()) + "-" + Integer.toHexString(array.get(i).getData3()) + "-" + Integer.toHexString(data4) + "-" + Long.toHexString(data5);
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantXmlElement) {
                     int length = ((VariantXmlElement) variant).getValue().size();
                     List<PascalString> strings = ((VariantXmlElement) variant).getValue();
@@ -346,7 +352,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     for (int i = 0; i < length; i++) {
                         tmpValue[i] = strings.get(i).getStringValue();
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantLocalizedText) {
                     int length = ((VariantLocalizedText) variant).getValue().size();
                     List<LocalizedText> strings = ((VariantLocalizedText) variant).getValue();
@@ -356,7 +362,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                         tmpValue[i] += strings.get(i).getLocaleSpecified() ? strings.get(i).getLocale().getStringValue() + "|" : "";
                         tmpValue[i] += strings.get(i).getTextSpecified() ? strings.get(i).getText().getStringValue() : "";
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantQualifiedName) {
                     int length = ((VariantQualifiedName) variant).getValue().size();
                     List<QualifiedName> strings = ((VariantQualifiedName) variant).getValue();
@@ -364,7 +370,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     for (int i = 0; i < length; i++) {
                         tmpValue[i] = "ns=" + strings.get(i).getNamespaceIndex() + ";s=" + strings.get(i).getName().getStringValue();
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantExtensionObject) {
                     int length = ((VariantExtensionObject) variant).getValue().size();
                     List<ExtensionObject> strings = ((VariantExtensionObject) variant).getValue();
@@ -372,7 +378,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     for (int i = 0; i < length; i++) {
                         tmpValue[i] = strings.get(i).toString();
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantNodeId) {
                     int length = ((VariantNodeId) variant).getValue().size();
                     List<NodeId> strings = ((VariantNodeId) variant).getValue();
@@ -380,7 +386,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     for (int i = 0; i < length; i++) {
                         tmpValue[i] = strings.get(i).toString();
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantStatusCode) {
                     int length = ((VariantStatusCode) variant).getValue().size();
                     List<StatusCode> strings = ((VariantStatusCode) variant).getValue();
@@ -388,7 +394,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     for (int i = 0; i < length; i++) {
                         tmpValue[i] = strings.get(i).toString();
                     }
-                    value = PlcValueHandler.of(tmpValue);
+                    value = DefaultPlcValueHandler.of(tag, tmpValue);
                 } else if (variant instanceof VariantByteString) {
                     PlcList plcList = new PlcList();
                     List<ByteStringArray> array = ((VariantByteString) variant).getValue();
@@ -398,7 +404,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                         for (int i = 0; i < length; i++) {
                             tmpValue[i] = byteStringArray.getValue().get(i);
                         }
-                        plcList.add(PlcValueHandler.of(tmpValue));
+                        plcList.add(DefaultPlcValueHandler.of(tag, tmpValue));
                     }
                     value = plcList;
                 } else {
@@ -415,7 +421,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 LOGGER.error("Error while reading value from OPC UA server error code: {}", results.get(count).getStatusCode().toString());
             }
             count++;
-            response.put(tagName, new ResponseItem<>(responseCode, value));
+            response.put(tagName, new DefaultPlcResponseItem<>(responseCode, value));
         }
         return response;
     }
@@ -779,13 +785,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             })
             .thenCompose(handle -> handle.onSubscribeCreateMonitoredItemsRequest())
             .thenApply(handle -> {
-                Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+                Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
                 for (String tagName : subscriptionRequest.getTagNames()) {
                     final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
                     if (!(tagDefaultPlcSubscription.getTag() instanceof OpcuaTag)) {
-                        values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+                        values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
                     } else {
-                        values.put(tagName, new ResponseItem<>(PlcResponseCode.OK, handle));
+                        values.put(tagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, handle));
                     }
                 }
 

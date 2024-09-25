@@ -42,7 +42,8 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
@@ -672,7 +673,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         if(directAdsTag == null) {
             return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, Collections.singletonMap(
                 readRequest.getTagNames().stream().findFirst().orElseThrow(),
-                new ResponseItem<>(PlcResponseCode.NOT_FOUND, null))));
+                new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null))));
         }
 
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
@@ -822,11 +823,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
         // Read the values next
         if (readBuffer != null) {
-            Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+            Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
             for (String tagName : readRequest.getTagNames()) {
                 // If the response-code was anything but OK, we don't need to parse the payload.
                 if(responseCodes.get(tagName) != PlcResponseCode.OK) {
-                    values.put(tagName, new ResponseItem<>(responseCodes.get(tagName), null));
+                    values.put(tagName, new DefaultPlcResponseItem<>(responseCodes.get(tagName), null));
                 }
                 // If the response-code was ok, parse the data returned.
                 else {
@@ -849,7 +850,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
     }
 
-    private ResponseItem<PlcValue> parseResponseItem(DirectAdsTag tag, ReadBuffer readBuffer) {
+    private PlcResponseItem<PlcValue> parseResponseItem(DirectAdsTag tag, ReadBuffer readBuffer) {
         try {
             String dataTypeName = tag.getPlcDataType();
             AdsDataTypeTableEntry adsDataTypeTableEntry;
@@ -872,7 +873,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 // Sometimes the ADS device just sends shorter strings than we asked for.
                 int remainingBytes = readBufferByteBased.getTotalBytes() - readBufferByteBased.getPos();
                 final int singleStringLength = Math.min(remainingBytes - 1, stringLength);
-                return new ResponseItem<>(PlcResponseCode.OK, parsePlcValue(plcValueType, adsDataTypeTableEntry, singleStringLength, readBuffer));
+                return new DefaultPlcResponseItem<>(PlcResponseCode.OK, parsePlcValue(plcValueType, adsDataTypeTableEntry, singleStringLength, readBuffer));
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
@@ -883,11 +884,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     }
                     return null;
                 }).toArray(PlcValue[]::new);
-                return new ResponseItem<>(PlcResponseCode.OK, PlcValueHandler.of(resultItems));
+                return new DefaultPlcResponseItem<>(PlcResponseCode.OK, DefaultPlcValueHandler.of(tag, resultItems));
             }
         } catch (Exception e) {
             LOGGER.warn(String.format("Error parsing tag item of type: '%s'", tag.getPlcDataType()), e);
-            return new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null);
+            return new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null);
         }
     }
 
@@ -1329,7 +1330,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             })
             .collect(Collectors.toList());
 
-        Map<String, ResponseItem<PlcSubscriptionHandle>> responses = new HashMap<>();
+        Map<String, PlcResponseItem<PlcSubscriptionHandle>> responses = new HashMap<>();
 
         // Start the first request-transaction (it is ended in the response-handler).
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -1347,7 +1348,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     private Runnable subscribeRecursively(PlcSubscriptionRequest subscriptionRequest,
                                           Iterator<String> tagNames,
                                           Map<AdsTag, DirectAdsTag> resolvedTags,
-                                          Map<String, ResponseItem<PlcSubscriptionHandle>> responses,
+                                          Map<String, PlcResponseItem<PlcSubscriptionHandle>> responses,
                                           CompletableFuture<PlcSubscriptionResponse> future,
                                           Iterator<AmsTCPPacket> amsTCPPackets,
                                           RequestTransactionManager.RequestTransaction transaction) {
@@ -1368,7 +1369,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get((resolvedTags.get((AdsTag) subscriptionTag.getTag())).getPlcDataType());
 
                         // Collect notification handle from individual response.
-                        responses.put(tagName, new ResponseItem<>(
+                        responses.put(tagName, new DefaultPlcResponseItem<>(
                             parsePlcResponseCode(response.getResult()),
                             new AdsSubscriptionHandle(this,
                                 tagName,
@@ -1498,11 +1499,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
     }
 
-    private Map<String, ResponseItem<PlcValue>> convertSampleToPlc4XResult(AdsSubscriptionHandle subscriptionHandle, byte[] data) throws
+    private Map<String, PlcResponseItem<PlcValue>> convertSampleToPlc4XResult(AdsSubscriptionHandle subscriptionHandle, byte[] data) throws
         ParseException {
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
-        values.put(subscriptionHandle.getTagName(), new ResponseItem<>(PlcResponseCode.OK,
+        values.put(subscriptionHandle.getTagName(), new DefaultPlcResponseItem<>(PlcResponseCode.OK,
             DataItem.staticParse(readBuffer, getPlcValueTypeForAdsDataType(subscriptionHandle.getAdsDataType()), data.length)));
         return values;
     }

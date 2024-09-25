@@ -27,9 +27,9 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.messages.utils.DefaultTagErrorItem;
-import org.apache.plc4x.java.spi.messages.utils.DefaultTagItem;
-import org.apache.plc4x.java.spi.messages.utils.TagItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagErrorItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcTagItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.LinkedHashMap;
@@ -46,10 +46,10 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
     private final PlcReader reader;
     // This is intentionally a linked hash map in order to keep the order of how elements were added.
-    private final LinkedHashMap<String, TagItem> tags;
+    private final LinkedHashMap<String, PlcTagItem> tags;
 
     public DefaultPlcReadRequest(PlcReader reader,
-                                 LinkedHashMap<String, TagItem> tags) {
+                                 LinkedHashMap<String, PlcTagItem> tags) {
         this.reader = reader;
         this.tags = tags;
     }
@@ -70,7 +70,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
         return new LinkedHashSet<>(tags.keySet());
     }
 
-    public TagItem getTagItem(String tagName) {
+    public PlcTagItem getTagItem(String tagName) {
         return tags.get(tagName);
     }
 
@@ -86,7 +86,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
     @Override
     public List<PlcTag> getTags() {
-        return tags.values().stream().map(TagItem::getTag).collect(Collectors.toList());
+        return tags.values().stream().map(PlcTagItem::getTag).collect(Collectors.toList());
     }
 
     public PlcReader getReader() {
@@ -99,11 +99,14 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
         writeBuffer.pushContext("PlcTagRequest");
         writeBuffer.pushContext("tags", WithRenderAsList(true));
-        for (Map.Entry<String, TagItem> tagEntry : tags.entrySet()) {
+        for (Map.Entry<String, PlcTagItem> tagEntry : tags.entrySet()) {
             String tagName = tagEntry.getKey();
             writeBuffer.pushContext(tagName);
-            TagItem tagResponseCode = tagEntry.getValue();
-            ((Serializable) tagResponseCode).serialize(writeBuffer);
+            PlcTagItem tagItem = tagEntry.getValue();
+            if (!(tagItem instanceof Serializable)) {
+                throw new RuntimeException("Error serializing. PlcTagItem doesn't implement Serializable");
+            }
+            ((Serializable) tagItem).serialize(writeBuffer);
             writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("tags");
@@ -116,7 +119,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
         private final PlcReader reader;
         private final PlcTagHandler tagHandler;
-        private final Map<String, Supplier<TagItem>> tagItems;
+        private final Map<String, Supplier<PlcTagItem>> tagItems;
 
         public Builder(PlcReader reader, PlcTagHandler tagHandler) {
             this.reader = reader;
@@ -132,9 +135,9 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
             tagItems.put(name, () -> {
                 try {
                     PlcTag tag = tagHandler.parseTag(tagAddress);
-                    return new DefaultTagItem(tag);
+                    return new DefaultPlcTagItem(tag);
                 } catch (Exception e) {
-                    return new DefaultTagErrorItem(PlcResponseCode.INVALID_ADDRESS);
+                    return new DefaultPlcTagErrorItem(PlcResponseCode.INVALID_ADDRESS);
                 }
             });
             return this;
@@ -145,16 +148,16 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
             if (tagItems.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
             }
-            tagItems.put(name, () -> new DefaultTagItem(tag));
+            tagItems.put(name, () -> new DefaultPlcTagItem(tag));
             return this;
         }
 
         @Override
         public PlcReadRequest build() {
-            LinkedHashMap<String, TagItem> parsedTags = new LinkedHashMap<>();
+            LinkedHashMap<String, PlcTagItem> parsedTags = new LinkedHashMap<>();
             tagItems.forEach((name, tagItemSupplier) -> {
-                TagItem tagItem = tagItemSupplier.get();
-                parsedTags.put(name, tagItem);
+                PlcTagItem plcTagItem = tagItemSupplier.get();
+                parsedTags.put(name, plcTagItem);
             });
             return new DefaultPlcReadRequest(reader, parsedTags);
         }
