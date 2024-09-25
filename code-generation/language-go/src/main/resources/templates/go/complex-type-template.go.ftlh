@@ -156,6 +156,9 @@ type ${type.name}Contract interface {
 
 // ${type.name}Requirements provides a set of functions which need to be implemented by a sub struct
 type ${type.name}Requirements interface {
+	<#if type.isDiscriminatedChildTypeDefinition()>
+		${type.parentType.orElseThrow().name?cap_first}Requirements
+	</#if>
 	GetLengthInBits(ctx context.Context) uint16
 	GetLengthInBytes(ctx context.Context) uint16
 	<#list helper.discriminatorTypes as discriminatorName, discriminatorType>
