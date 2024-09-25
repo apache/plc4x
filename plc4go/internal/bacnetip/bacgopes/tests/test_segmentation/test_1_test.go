@@ -368,7 +368,7 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 	octets206 := model.MaxApduLengthAccepted_NUM_OCTETS_206
 	segmentation := model.BACnetSegmentation_SEGMENTED_BOTH
 	maxSegmentsAccepted := model.MaxSegmentsAccepted_NUM_SEGMENTS_04
-	tdDeviceObject := NewLocalDeviceObject(
+	tdDeviceObject, err := NewLocalDeviceObject(
 		NoArgs,
 		NKW(
 			KWObjectName, "td",
@@ -379,10 +379,11 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 			KWVendorIdentifier, 999,
 		),
 	)
+	require.NoError(t, err)
 
 	// server device object
 	maxSegmentsAccepted = model.MaxSegmentsAccepted_NUM_SEGMENTS_64
-	iutDeviceObject := NewLocalDeviceObject(
+	iutDeviceObject, err := NewLocalDeviceObject(
 		NoArgs,
 		NKW(
 			KWObjectName, "td",
@@ -393,6 +394,7 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 			KWVendorIdentifier, 999,
 		),
 	)
+	require.NoError(t, err)
 
 	// create a network
 	anet, err := NewApplicationNetwork(testingLogger, tdDeviceObject, iutDeviceObject)

@@ -88,10 +88,11 @@ func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error)
 	// make a little LAN
 	a.vlan = NewNetwork(localLog, WithNetworkBroadcastAddress(NewLocalBroadcast(nil)), WithNetworkTrafficLogger(a.trafficLog))
 
+	var err error
 	// test device object
 	octets1024 := model.MaxApduLengthAccepted_NUM_OCTETS_1024
 	segmentation := model.BACnetSegmentation_NO_SEGMENTATION
-	a.tdDeviceObject = NewLocalDeviceObject(
+	a.tdDeviceObject, err = NewLocalDeviceObject(
 		NoArgs,
 		NKW(
 			KWObjectName, "td",
@@ -101,9 +102,11 @@ func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error)
 			KWVendorIdentifier, 999,
 		),
 	)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating test device")
+	}
 
 	// test device
-	var err error
 	a.td, err = NewApplicationStateMachine(localLog, a.tdDeviceObject, a.vlan)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application state machine")
@@ -113,7 +116,7 @@ func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error)
 	// implementation under test device object
 	octets1024 = model.MaxApduLengthAccepted_NUM_OCTETS_1024
 	segmentation = model.BACnetSegmentation_NO_SEGMENTATION
-	a.iutDeviceObject = NewLocalDeviceObject(
+	a.iutDeviceObject, err = NewLocalDeviceObject(
 		NoArgs,
 		NKW(
 			KWObjectName, "iut",
@@ -123,6 +126,9 @@ func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error)
 			KWVendorIdentifier, 999,
 		),
 	)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating test device")
+	}
 
 	// implementation under test
 	a.iut, err = NewApplicationStateMachine(localLog, a.iutDeviceObject, a.vlan)

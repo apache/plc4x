@@ -73,11 +73,15 @@ func NewApplicationLayerMessageCodec(localLog zerolog.Logger, udpTransport *udp.
 	}
 	// TODO: workaround for strange address parsing
 	address.AddrTuple = pdu.NewAddressTuple(fmt.Sprintf("%d.%d.%d.%d", address.AddrAddress[0], address.AddrAddress[1], address.AddrAddress[2], address.AddrAddress[3]), *address.AddrPort)
-	application, err := app.NewBIPSimpleApplication(localLog, device.NewLocalDeviceObject(comp.NoArgs,
+	localDeviceObject, err := device.NewLocalDeviceObject(comp.NoArgs,
 		comp.NewKWArgs(comp.KWNumberOfAPDURetries, func() *uint { retries := uint(10); return &retries }()),
-	), *address, app.WithApplicationDeviceInfoCache(&a.deviceInfoCache))
+	)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error creating local device object")
+	}
+	application, err := app.NewBIPSimpleApplication(localLog, localDeviceObject, *address, app.WithApplicationDeviceInfoCache(&a.deviceInfoCache))
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating application")
 	}
 	a.bipSimpleApplication = application
 	// TODO: this is currently done by the BIP

@@ -271,7 +271,7 @@ func (a *Application) Indication(args Args, kwArgs KWArgs) error {
 		Bool("helperFn", helperFn != nil).
 		Msg("working with helper")
 	if _debug != nil {
-		_debug("    - helperFn: %t", helperFn != nil)
+		_debug("    - helperFn: %p", helperFn)
 	}
 
 	// send back a reject for unrecognized services

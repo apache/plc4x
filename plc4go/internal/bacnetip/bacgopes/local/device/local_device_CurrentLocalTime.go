@@ -19,5 +19,29 @@
 
 package device
 
-type CurrentPropertyListMixIn struct {
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
+
+type CurrentLocalTime struct {
+	Property
+}
+
+func NewCurrentLocalTime() *CurrentLocalTime {
+	c := &CurrentLocalTime{}
+	c.Property = NewProperty("localTime", Vs2P(NewTime), WithPropertyDefault(nil), WithPropertyOptional(true), WithPropertyMutable(false))
+	return c
+}
+
+// TODO: implement readproperty
+
+func (p *CurrentLocalTime) ReadProperty() error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *CurrentLocalTime) WriteProperty() error {
+	//TODO implement me
+	panic("implement me")
 }

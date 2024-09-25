@@ -27,6 +27,12 @@ type ReadableProperty interface {
 	// TODO: implement me
 }
 
-func NewReadableProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), opts ...func(property *_Property)) ReadableProperty {
-	panic("impllement me") // TODO: implement me
+type _ReadableProperty struct {
+	StandardProperty
+}
+
+func NewReadableProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) ReadableProperty {
+	r := &_ReadableProperty{}
+	r.StandardProperty = NewStandardProperty(name, klass, options...)
+	return r
 }

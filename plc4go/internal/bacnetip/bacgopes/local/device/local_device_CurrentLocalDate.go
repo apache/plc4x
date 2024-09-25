@@ -17,26 +17,31 @@
  * under the License.
  */
 
-package object
+package device
 
-import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
 
-// TODO: big WIP
-type ObjectIdentifierProperty interface {
-	ReadableProperty
+type CurrentLocalDate struct {
+	Property
 }
 
-type _ObjectIdentifierProperty struct {
-	ReadableProperty
+func NewCurrentLocalDate() *CurrentLocalDate {
+	c := &CurrentLocalDate{}
+	c.Property = NewProperty("localDate", Vs2P(NewDate), WithPropertyDefault(nil), WithPropertyOptional(true), WithPropertyMutable(false))
+	return c
 }
 
-func NewObjectIdentifierProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) ObjectIdentifierProperty {
-	o := &_ObjectIdentifierProperty{}
-	o.ReadableProperty = NewReadableProperty(name, klass, options...)
-	return o
+// TODO: implement readproperty
+
+func (p *CurrentLocalDate) ReadProperty() error {
+	//TODO implement me
+	panic("implement me")
 }
 
-func (o *_ObjectIdentifierProperty) WriteProperty() error {
+func (p *CurrentLocalDate) WriteProperty() error {
 	//TODO implement me
 	panic("implement me")
 }

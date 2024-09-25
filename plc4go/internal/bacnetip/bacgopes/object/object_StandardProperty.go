@@ -19,8 +19,20 @@
 
 package object
 
+import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+
 // TODO: big WIP
 type StandardProperty interface {
 	Property
 	// TODO: implement me
+}
+
+type _StandardProperty struct {
+	Property
+}
+
+func NewStandardProperty(identifier string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) StandardProperty {
+	s := &_StandardProperty{}
+	s.Property = NewProperty(identifier, klass, options...)
+	return s
 }

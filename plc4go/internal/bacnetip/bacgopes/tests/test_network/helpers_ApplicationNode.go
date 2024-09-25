@@ -69,13 +69,16 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *Network) 
 	}
 
 	// build a local device object
-	localDevice := NewTestDeviceObject(NoArgs,
+	localDevice, err := NewTestDeviceObject(NoArgs,
 		NKW(
 			KWObjectName, a.name,
 			KWObjectIdentifier, "device:999",
 			KWVendorIdentifier, 999,
 		),
 	)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating device")
+	}
 
 	// continue with initialization
 	a.Application, err = NewApplication(localLog, WithApplicationLocalDeviceObject(localDevice))

@@ -20,12 +20,23 @@
 package object
 
 import (
+	"io"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/basetypes"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
 
 // TODO: big WIP
 type Object interface {
+	DebugContentPrinter
+	GetAttr(name string) (any, bool)
+	SetAttr(name string, value any)
+	AddProperty(prop Property)
+	DeleteProperty(prop string)
+	ReadProperty() error
+	WriteProperty() error
 }
 
 type _Object struct {
@@ -33,9 +44,11 @@ type _Object struct {
 	_objectSupportsCov bool
 
 	properties []Property
+
+	_leafName string
 }
 
-func NewObject() (Object, error) {
+func NewObject(kwArgs KWArgs, options ...Option) (Object, error) {
 	o := &_Object{
 		properties: []Property{
 			NewObjectIdentifierProperty("objectIdentifier", Vs2P(NewObjectIdentifier), WithPropertyOptional(false)),
@@ -49,7 +62,46 @@ func NewObject() (Object, error) {
 			NewOptionalProperty("profileLocation", V2P(NewCharacterString)),
 			NewOptionalProperty("profileName", V2P(NewCharacterString)),
 		},
+		_leafName: ExtractLeafName(options, StructName()),
+	}
+	if _debug != nil {
+		_debug("__init__(%s) %r", o._leafName, kwArgs)
 	}
 	panic("implement me")
 	return o, nil
+}
+
+func (o *_Object) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (o *_Object) GetAttr(name string) (any, bool) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (o *_Object) SetAttr(name string, value any) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (o *_Object) AddProperty(prop Property) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (o *_Object) DeleteProperty(prop string) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (o *_Object) ReadProperty() error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (o *_Object) WriteProperty() error {
+	//TODO implement me
+	panic("implement me")
 }

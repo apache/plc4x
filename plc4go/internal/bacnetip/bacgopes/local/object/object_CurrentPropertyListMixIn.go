@@ -19,24 +19,30 @@
 
 package object
 
-import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+import (
+	"github.com/pkg/errors"
 
-// TODO: big WIP
-type ObjectIdentifierProperty interface {
-	ReadableProperty
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
+)
+
+type CurrentPropertyListMixIn struct {
+	Object
+
+	properties []Property
 }
 
-type _ObjectIdentifierProperty struct {
-	ReadableProperty
-}
+func NewCurrentPropertyListMixIn(kwArgs KWArgs, options ...Option) (*CurrentPropertyListMixIn, error) {
+	c := &CurrentPropertyListMixIn{
 
-func NewObjectIdentifierProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) ObjectIdentifierProperty {
-	o := &_ObjectIdentifierProperty{}
-	o.ReadableProperty = NewReadableProperty(name, klass, options...)
-	return o
-}
-
-func (o *_ObjectIdentifierProperty) WriteProperty() error {
-	//TODO implement me
-	panic("implement me")
+		properties: []Property{
+			NewCurrentPropertyList(),
+		},
+	}
+	var err error
+	c.Object, err = NewObject(kwArgs, options...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object")
+	}
+	return c, nil
 }

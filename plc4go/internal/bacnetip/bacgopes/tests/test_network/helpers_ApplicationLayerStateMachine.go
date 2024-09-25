@@ -61,15 +61,18 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	var err error
 	a.address, err = NewAddress(NA(address))
 	if err != nil {
-		return nil, errors.Wrap(err, "error creaing address")
+		return nil, errors.Wrap(err, "error creating address")
 	}
 
 	// build a local device object
-	localDevice := NewTestDeviceObject(NoArgs,
+	localDevice, err := NewTestDeviceObject(NoArgs,
 		NKW(KWObjectName, a.name,
 			KWObjectIdentifier, "device:"+address,
 			KWVendorIdentifier, 999,
 		))
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating device")
+	}
 
 	if LogTestNetwork {
 		a.log.Debug().Stringer("address", a.address).Msg("address")

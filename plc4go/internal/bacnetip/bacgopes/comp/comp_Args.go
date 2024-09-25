@@ -107,7 +107,14 @@ func (a Args) String() string {
 			ea = "'" + tea + "'"
 		case fmt.Stringer:
 			if !IsNil(tea) {
-				teaString := tea.String()
+				teaString := func() (teaString string) {
+					defer func() {
+						if r := recover(); r != nil {
+							teaString += fmt.Sprintf("%v", r)
+						}
+					}()
+					return tea.String()
+				}()
 				ea = teaString
 				if strings.Contains(teaString, "\n") {
 					ea = "\n" + teaString + "\n"

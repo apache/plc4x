@@ -19,6 +19,5 @@
 
 package constructeddata
 
-// TODO: finish
 type Array struct {
 }

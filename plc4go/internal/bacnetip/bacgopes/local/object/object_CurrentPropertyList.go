@@ -19,24 +19,29 @@
 
 package object
 
-import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+import (
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
+)
 
-// TODO: big WIP
-type ObjectIdentifierProperty interface {
-	ReadableProperty
+type CurrentPropertyList struct {
+	Property
 }
 
-type _ObjectIdentifierProperty struct {
-	ReadableProperty
+func NewCurrentPropertyList() *CurrentPropertyList {
+	c := &CurrentPropertyList{}
+	c.Property = NewProperty("PropertyList", Vs2P(NewTime), WithPropertyDefault(nil), WithPropertyOptional(true), WithPropertyMutable(false))
+	return c
 }
 
-func NewObjectIdentifierProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) ObjectIdentifierProperty {
-	o := &_ObjectIdentifierProperty{}
-	o.ReadableProperty = NewReadableProperty(name, klass, options...)
-	return o
+// TODO: implement readproperty
+
+func (p *CurrentPropertyList) ReadProperty() error {
+	//TODO implement me
+	panic("implement me")
 }
 
-func (o *_ObjectIdentifierProperty) WriteProperty() error {
+func (p *CurrentPropertyList) WriteProperty() error {
 	//TODO implement me
 	panic("implement me")
 }

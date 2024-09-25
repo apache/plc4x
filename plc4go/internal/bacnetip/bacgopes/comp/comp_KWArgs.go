@@ -53,7 +53,10 @@ func (k KWArgs) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 'r':
 		_, _ = fmt.Fprint(s, "{")
+		currentE := 0
+		nElements := len(k)
 		for kk, element := range k {
+			currentE++
 			_, _ = fmt.Fprintf(s, "'%s': ", kk)
 			switch element := element.(type) {
 			case interface{ StructHeader() []byte }:
@@ -65,7 +68,9 @@ func (k KWArgs) Format(s fmt.State, verb rune) {
 			default:
 				_, _ = fmt.Fprintf(s, "%v", element)
 			}
-			_, _ = fmt.Fprint(s, ", ")
+			if currentE < nElements {
+				_, _ = fmt.Fprint(s, ", ")
+			}
 		}
 		_, _ = fmt.Fprint(s, "}")
 	case 's', 'v':
