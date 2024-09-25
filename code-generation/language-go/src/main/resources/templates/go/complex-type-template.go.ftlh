@@ -127,7 +127,7 @@ type ${type.name} interface {
 // ${type.name}Contract provides a set of functions which can be overwritten by a sub struct
 type ${type.name}Contract interface {
 	<#if type.isDiscriminatedChildTypeDefinition()>
-	${type.parentType.orElseThrow().name?cap_first}
+	${type.parentType.orElseThrow().name?cap_first}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if>
 	</#if>
 	<#list type.propertyFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
@@ -208,7 +208,7 @@ var _ ${type.name}Contract = (*_${type.name})(nil)
 <#else>
 var _ ${type.name} = (*_${type.name})(nil)
 </#if>
-<#if type.isDiscriminatedChildTypeDefinition()>
+<#if type.isDiscriminatedChildTypeDefinition() && !type.isDiscriminatedParentTypeDefinition()>
 var _ ${type.getParentType().orElseThrow().name}Requirements = (*_${type.name})(nil)
 </#if>
 
