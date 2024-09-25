@@ -852,7 +852,9 @@ func ${type.name}ParseWithBuffer<#if type.isDiscriminatedParentTypeDefinition()>
 func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#if type.isDiscriminatedChildTypeDefinition()>, parent *_${type.getParentType().orElseThrow().name}</#if><#if hasParserArguments>, ${parserArgumentList}</#if>) (__${type.name?uncap_first} ${type.name}, err error) {
 <#if type.isDiscriminatedChildTypeDefinition()>
 	m.${type.getParentType().orElseThrow().name}Contract = parent
-	parent._SubType = m
+	<#if !type.isDiscriminatedParentTypeDefinition()>
+		parent._SubType = m
+	</#if>
 </#if>
 	positionAware := readBuffer
 	_ = positionAware
@@ -1168,6 +1170,9 @@ func (m *_${type.name}) parse(ctx context.Context, readBuffer utils.ReadBuffer<#
 	}
 
 	<#if type.isDiscriminatedParentTypeDefinition()>
+		<#if type.isDiscriminatedChildTypeDefinition()>
+	parent._SubType = _child
+		</#if>
 	return _child, nil
 	<#else>
 	return m, nil
