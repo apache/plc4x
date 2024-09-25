@@ -92,7 +92,7 @@ public class PlcWORD extends PlcIECValue<Integer> {
     }
 
     public PlcWORD(Float value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+        if ((value < minValue) || (value > maxValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
@@ -100,7 +100,7 @@ public class PlcWORD extends PlcIECValue<Integer> {
     }
 
     public PlcWORD(Double value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+        if ((value < minValue) || (value > maxValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();

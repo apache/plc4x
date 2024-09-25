@@ -91,7 +91,7 @@ public class PlcSINT extends PlcIECValue<Byte> {
     }
 
     public PlcSINT(Float value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+        if ((value < minValue) || (value > maxValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.byteValue();
@@ -99,7 +99,7 @@ public class PlcSINT extends PlcIECValue<Byte> {
     }
 
     public PlcSINT(Double value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+        if ((value < minValue) || (value > maxValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.byteValue();
