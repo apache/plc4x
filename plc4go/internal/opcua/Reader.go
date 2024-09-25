@@ -22,9 +22,10 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
+	"runtime/debug"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"runtime/debug"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"

@@ -158,7 +158,7 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 	responseChan := make(chan readWriteModel.CreateMonitoredItemsResponse, 100) // TODO: bit oversized to not block anything. Discards errors
 	errorChan := make(chan error, 100)                                          // TODO: bit oversized to not block anything. Discards errors
 	consumer := func(opcuaResponse []byte) {
-		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			errorChan <- errors.Wrapf(err, "Unable to read the reply")
 			return
@@ -289,7 +289,7 @@ func (h *SubscriptionHandle) startSubscriber() {
 				consumer := func(opcuaResponse []byte) {
 					var responseMessage readWriteModel.PublishResponse
 					var serviceFault readWriteModel.ServiceFault
-					unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+					unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 					if err != nil {
 						h.log.Error().Err(err).Msg("Unable to parse the returned Subscription response")
 						h.plcSubscriber.onDisconnect()
@@ -399,7 +399,7 @@ func (h *SubscriptionHandle) stopSubscriber() {
 
 	consumer := func(opcuaResponse []byte) {
 		var responseMessage readWriteModel.DeleteSubscriptionsResponse
-		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		unknownExtensionObject, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			h.log.Error().Err(err).Msg("Unable to parse the returned Subscription response")
 			h.plcSubscriber.onDisconnect()

@@ -22,9 +22,10 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
+	"runtime/debug"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"runtime/debug"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -120,13 +121,7 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensionObject(expandedNodeId)
-
-	//expandedNodeId,
-	//nil,
-	//opcuaWriteRequest,
-	//false)
-
+	extObject := readWriteModel.NewExtensiblePayload(readWriteModel.NewRootExtensionObject(opcuaWriteRequest, expandedNodeId, identifier), nil, 0)
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest"))
@@ -134,7 +129,7 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 	}
 
 	consumer := func(opcuaResponse []byte) {
-		reply, err := readWriteModel.ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
+		reply, err := readWriteModel.ExtensionObjectParseWithBuffer[readWriteModel.ExtensionObject](ctx, utils.NewReadBufferByteBased(opcuaResponse, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), false)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to read the reply"))
 			return
@@ -403,7 +398,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	case apiValues.WSTRING:
 		tmpString := make([]readWriteModel.PascalString, length)
 		for i := uint32(0); i < length; i++ {
-			tmpString[i] = readWriteModel.NewPascalString(valueObject.GetIndex(i).GetString())
+			tmpString[i] = readWriteModel.NewPascalString(utils.MakePtr(valueObject.GetIndex(i).GetString()))
 		}
 		var arrayLength *int32
 		if length != 1 {
