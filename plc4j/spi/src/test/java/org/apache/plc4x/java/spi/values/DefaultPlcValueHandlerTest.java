@@ -125,7 +125,7 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.WCHAR), "B", new PlcWCHAR("B")),
 
             // STRING values
-            Arguments.of(new MockTag("mock", PlcValueType.STRING), "Wolf", new PlcSTRING("Wold")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), "Wolf", new PlcSTRING("Wolf")),
 
             // WSTRING values
             Arguments.of(new MockTag("mock", PlcValueType.WSTRING), "Lamm", new PlcWSTRING("Lamm")),
