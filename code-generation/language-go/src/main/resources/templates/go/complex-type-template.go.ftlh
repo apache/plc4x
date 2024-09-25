@@ -1564,7 +1564,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		return nil
 	}
-	return m.${type.getParentType().orElseThrow().name}Contract.(*_${type.getParentType().orElseThrow().name}).serializeParent(ctx, writeBuffer, m, ser)
+	return <#if type.isDiscriminatedParentTypeDefinition()>p</#if>m.${type.getParentType().orElseThrow().name}Contract.(*_${type.getParentType().orElseThrow().name}).serializeParent(ctx, writeBuffer, m, ser)
 		<#else>
 	if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ${type.name}")<@emitImport import="github.com/pkg/errors" />
