@@ -405,7 +405,7 @@ if ${fieldName} == nil {
 		${field.name?cap_first}: ${field.name},
 	</#list>
 	}
-	_result.${type.parentType.orElseThrow().name}Contract.(*_${type.parentType.orElseThrow().name})._SubType=_result
+	_result.${type.parentType.orElseThrow().name}Contract.(*_${type.parentType.orElseThrow().name})._SubType=_result<#if type.isDiscriminatedParentTypeDefinition()>._SubType</#if>
 	return _result
 <#else>
 	<@compress single_line=true>
