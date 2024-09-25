@@ -150,6 +150,17 @@ type ${type.name}Contract interface {
 	Get${parserArgument.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
 		</#list>
 	</#if>
+	<#if type.isDiscriminatedChildTypeDefinition()>
+		<#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
+		<#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorType>
+		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
+			<#if !type.isNonDiscriminatorField(discriminatorName)>
+				<#assign typeRef=helper.getDiscriminatorTypes(discriminatedChildType.parentType.orElseThrow())[discriminatorName]>
+	// Get${discriminatorName?cap_first} returns ${discriminatorName?cap_first} (discriminator field)
+	Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+			</#if>
+		</#list>
+	</#if>
 	// Is${type.name} is a marker method to prevent unintentional type checks (interfaces of same signature)
 	Is${type.name}()
 }
