@@ -38,6 +38,7 @@ type NetworkProtocolControlInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStackCounter returns StackCounter (property field)
 	GetStackCounter() uint8
 	// GetStackDepth returns StackDepth (property field)
@@ -201,6 +202,22 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_NetworkProtocolControlInformation) IsNetworkProtocolControlInformation() {}
+
+func (m *_NetworkProtocolControlInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkProtocolControlInformation) deepCopy() *_NetworkProtocolControlInformation {
+	if m == nil {
+		return nil
+	}
+	_NetworkProtocolControlInformationCopy := &_NetworkProtocolControlInformation{
+		m.StackCounter,
+		m.StackDepth,
+		m.reservedField0,
+	}
+	return _NetworkProtocolControlInformationCopy
+}
 
 func (m *_NetworkProtocolControlInformation) String() string {
 	if m == nil {

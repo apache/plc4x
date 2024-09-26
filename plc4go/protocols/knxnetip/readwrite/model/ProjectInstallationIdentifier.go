@@ -38,6 +38,7 @@ type ProjectInstallationIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetProjectNumber returns ProjectNumber (property field)
 	GetProjectNumber() uint8
 	// GetInstallationNumber returns InstallationNumber (property field)
@@ -186,6 +187,21 @@ func (m *_ProjectInstallationIdentifier) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_ProjectInstallationIdentifier) IsProjectInstallationIdentifier() {}
+
+func (m *_ProjectInstallationIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ProjectInstallationIdentifier) deepCopy() *_ProjectInstallationIdentifier {
+	if m == nil {
+		return nil
+	}
+	_ProjectInstallationIdentifierCopy := &_ProjectInstallationIdentifier{
+		m.ProjectNumber,
+		m.InstallationNumber,
+	}
+	return _ProjectInstallationIdentifierCopy
+}
 
 func (m *_ProjectInstallationIdentifier) String() string {
 	if m == nil {

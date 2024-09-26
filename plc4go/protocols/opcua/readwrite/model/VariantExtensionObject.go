@@ -38,6 +38,7 @@ type VariantExtensionObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -210,6 +211,23 @@ func (m *_VariantExtensionObject) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_VariantExtensionObject) IsVariantExtensionObject() {}
+
+func (m *_VariantExtensionObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantExtensionObject) deepCopy() *_VariantExtensionObject {
+	if m == nil {
+		return nil
+	}
+	_VariantExtensionObjectCopy := &_VariantExtensionObject{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantExtensionObjectCopy
+}
 
 func (m *_VariantExtensionObject) String() string {
 	if m == nil {

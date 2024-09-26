@@ -38,6 +38,7 @@ type CBusCommandPointToPointToMultiPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusCommand
 	// GetCommand returns Command (property field)
 	GetCommand() CBusPointToPointToMultiPointCommand
@@ -178,6 +179,22 @@ func (m *_CBusCommandPointToPointToMultiPoint) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_CBusCommandPointToPointToMultiPoint) IsCBusCommandPointToPointToMultiPoint() {}
+
+func (m *_CBusCommandPointToPointToMultiPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusCommandPointToPointToMultiPoint) deepCopy() *_CBusCommandPointToPointToMultiPoint {
+	if m == nil {
+		return nil
+	}
+	_CBusCommandPointToPointToMultiPointCopy := &_CBusCommandPointToPointToMultiPoint{
+		m.CBusCommandContract.DeepCopy().(CBusCommandContract),
+		m.Command.DeepCopy().(CBusPointToPointToMultiPointCommand),
+	}
+	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	return _CBusCommandPointToPointToMultiPointCopy
+}
 
 func (m *_CBusCommandPointToPointToMultiPoint) String() string {
 	if m == nil {

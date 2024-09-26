@@ -38,6 +38,7 @@ type BACnetTimerTransitionTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetTimerTransitionTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetTimerTransitionTagged) IsBACnetTimerTransitionTagged() {}
+
+func (m *_BACnetTimerTransitionTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerTransitionTagged) deepCopy() *_BACnetTimerTransitionTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerTransitionTaggedCopy := &_BACnetTimerTransitionTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetTimerTransitionTaggedCopy
+}
 
 func (m *_BACnetTimerTransitionTagged) String() string {
 	if m == nil {

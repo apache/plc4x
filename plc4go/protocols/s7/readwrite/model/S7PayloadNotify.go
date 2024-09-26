@@ -38,6 +38,7 @@ type S7PayloadNotify interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() AlarmMessagePushType
@@ -190,6 +191,22 @@ func (m *_S7PayloadNotify) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_S7PayloadNotify) IsS7PayloadNotify() {}
+
+func (m *_S7PayloadNotify) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadNotify) deepCopy() *_S7PayloadNotify {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadNotifyCopy := &_S7PayloadNotify{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.AlarmMessage.DeepCopy().(AlarmMessagePushType),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadNotifyCopy
+}
 
 func (m *_S7PayloadNotify) String() string {
 	if m == nil {

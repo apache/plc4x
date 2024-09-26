@@ -38,6 +38,7 @@ type IdentifyReplyCommandOutputUnitSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetUnitFlags returns UnitFlags (property field)
 	GetUnitFlags() IdentifyReplyCommandUnitSummary
@@ -251,6 +252,25 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) IsIdentifyReplyCommandOutputUnitSummary() {}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) deepCopy() *_IdentifyReplyCommandOutputUnitSummary {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandOutputUnitSummaryCopy := &_IdentifyReplyCommandOutputUnitSummary{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.UnitFlags.DeepCopy().(IdentifyReplyCommandUnitSummary),
+		utils.CopyPtr[byte](m.GavStoreEnabledByte1),
+		utils.CopyPtr[byte](m.GavStoreEnabledByte2),
+		m.TimeFromLastRecoverOfMainsInSeconds,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandOutputUnitSummaryCopy
+}
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) String() string {
 	if m == nil {

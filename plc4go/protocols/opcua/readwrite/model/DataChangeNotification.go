@@ -38,6 +38,7 @@ type DataChangeNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfMonitoredItems returns NoOfMonitoredItems (property field)
 	GetNoOfMonitoredItems() int32
@@ -269,6 +270,25 @@ func (m *_DataChangeNotification) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_DataChangeNotification) IsDataChangeNotification() {}
+
+func (m *_DataChangeNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataChangeNotification) deepCopy() *_DataChangeNotification {
+	if m == nil {
+		return nil
+	}
+	_DataChangeNotificationCopy := &_DataChangeNotification{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfMonitoredItems,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MonitoredItems),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataChangeNotificationCopy
+}
 
 func (m *_DataChangeNotification) String() string {
 	if m == nil {

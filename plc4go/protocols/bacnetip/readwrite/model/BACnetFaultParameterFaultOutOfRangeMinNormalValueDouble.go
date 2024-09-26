@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) SerializeWith
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) IsBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble() {
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) deepCopy() *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleCopy := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble{
+		m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.DeepCopy().(BACnetFaultParameterFaultOutOfRangeMinNormalValueContract),
+		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = m
+	return _BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleCopy
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) String() string {

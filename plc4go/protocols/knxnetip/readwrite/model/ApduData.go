@@ -40,12 +40,14 @@ type ApduData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApduData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduData()
 }
 
 // ApduDataContract provides a set of functions which can be overwritten by a sub struct
 type ApduDataContract interface {
+	utils.Copyable
 	// GetDataLength() returns a parser argument
 	GetDataLength() uint8
 	// IsApduData is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -261,3 +263,18 @@ func (m *_ApduData) GetDataLength() uint8 {
 ////
 
 func (m *_ApduData) IsApduData() {}
+
+func (m *_ApduData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduData) deepCopy() *_ApduData {
+	if m == nil {
+		return nil
+	}
+	_ApduDataCopy := &_ApduData{
+		nil, // will be set by child
+		m.DataLength,
+	}
+	return _ApduDataCopy
+}

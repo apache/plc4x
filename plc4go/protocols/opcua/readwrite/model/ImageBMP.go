@@ -36,6 +36,7 @@ type ImageBMP interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsImageBMP is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsImageBMP()
 }
@@ -134,6 +135,18 @@ func (m *_ImageBMP) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_ImageBMP) IsImageBMP() {}
+
+func (m *_ImageBMP) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ImageBMP) deepCopy() *_ImageBMP {
+	if m == nil {
+		return nil
+	}
+	_ImageBMPCopy := &_ImageBMP{}
+	return _ImageBMPCopy
+}
 
 func (m *_ImageBMP) String() string {
 	if m == nil {

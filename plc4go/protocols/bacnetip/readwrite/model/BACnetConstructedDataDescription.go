@@ -38,6 +38,7 @@ type BACnetConstructedDataDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDescription returns Description (property field)
 	GetDescription() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDescription) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataDescription) IsBACnetConstructedDataDescription() {}
+
+func (m *_BACnetConstructedDataDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDescription) deepCopy() *_BACnetConstructedDataDescription {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDescriptionCopy := &_BACnetConstructedDataDescription{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Description.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDescriptionCopy
+}
 
 func (m *_BACnetConstructedDataDescription) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataOccupancyCountEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOccupancyCountEnable returns OccupancyCountEnable (property field)
 	GetOccupancyCountEnable() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOccupancyCountEnable) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataOccupancyCountEnable) IsBACnetConstructedDataOccupancyCountEnable() {}
+
+func (m *_BACnetConstructedDataOccupancyCountEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOccupancyCountEnable) deepCopy() *_BACnetConstructedDataOccupancyCountEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOccupancyCountEnableCopy := &_BACnetConstructedDataOccupancyCountEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.OccupancyCountEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOccupancyCountEnableCopy
+}
 
 func (m *_BACnetConstructedDataOccupancyCountEnable) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataBinaryInputPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetBinaryPVTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBinaryInputPresentValue) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataBinaryInputPresentValue) IsBACnetConstructedDataBinaryInputPresentValue() {
+}
+
+func (m *_BACnetConstructedDataBinaryInputPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryInputPresentValue) deepCopy() *_BACnetConstructedDataBinaryInputPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryInputPresentValueCopy := &_BACnetConstructedDataBinaryInputPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryInputPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataBinaryInputPresentValue) String() string {

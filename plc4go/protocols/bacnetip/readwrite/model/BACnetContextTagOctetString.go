@@ -38,6 +38,7 @@ type BACnetContextTagOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadOctetString
@@ -182,6 +183,22 @@ func (m *_BACnetContextTagOctetString) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetContextTagOctetString) IsBACnetContextTagOctetString() {}
+
+func (m *_BACnetContextTagOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagOctetString) deepCopy() *_BACnetContextTagOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagOctetStringCopy := &_BACnetContextTagOctetString{
+		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadOctetString),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagOctetStringCopy
+}
 
 func (m *_BACnetContextTagOctetString) String() string {
 	if m == nil {

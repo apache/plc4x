@@ -38,6 +38,7 @@ type S7ParameterReadVarResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetNumItems returns NumItems (property field)
 	GetNumItems() uint8
@@ -183,6 +184,22 @@ func (m *_S7ParameterReadVarResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_S7ParameterReadVarResponse) IsS7ParameterReadVarResponse() {}
+
+func (m *_S7ParameterReadVarResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterReadVarResponse) deepCopy() *_S7ParameterReadVarResponse {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterReadVarResponseCopy := &_S7ParameterReadVarResponse{
+		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		m.NumItems,
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterReadVarResponseCopy
+}
 
 func (m *_S7ParameterReadVarResponse) String() string {
 	if m == nil {

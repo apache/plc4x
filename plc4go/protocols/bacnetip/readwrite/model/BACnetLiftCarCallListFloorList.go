@@ -38,6 +38,7 @@ type BACnetLiftCarCallListFloorList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetFloorNumbers returns FloorNumbers (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetLiftCarCallListFloorList) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetLiftCarCallListFloorList) IsBACnetLiftCarCallListFloorList() {}
+
+func (m *_BACnetLiftCarCallListFloorList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftCarCallListFloorList) deepCopy() *_BACnetLiftCarCallListFloorList {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftCarCallListFloorListCopy := &_BACnetLiftCarCallListFloorList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.FloorNumbers),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetLiftCarCallListFloorListCopy
+}
 
 func (m *_BACnetLiftCarCallListFloorList) String() string {
 	if m == nil {

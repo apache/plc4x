@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkInterfaceName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNetworkInterfaceName returns NetworkInterfaceName (property field)
 	GetNetworkInterfaceName() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataNetworkInterfaceName) IsBACnetConstructedDataNetworkInterfaceName() {}
+
+func (m *_BACnetConstructedDataNetworkInterfaceName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkInterfaceName) deepCopy() *_BACnetConstructedDataNetworkInterfaceName {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkInterfaceNameCopy := &_BACnetConstructedDataNetworkInterfaceName{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NetworkInterfaceName.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkInterfaceNameCopy
+}
 
 func (m *_BACnetConstructedDataNetworkInterfaceName) String() string {
 	if m == nil {

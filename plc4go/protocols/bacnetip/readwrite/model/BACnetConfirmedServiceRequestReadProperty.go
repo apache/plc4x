@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReadProperty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -233,6 +234,24 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConfirmedServiceRequestReadProperty) IsBACnetConfirmedServiceRequestReadProperty() {}
+
+func (m *_BACnetConfirmedServiceRequestReadProperty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadProperty) deepCopy() *_BACnetConfirmedServiceRequestReadProperty {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadPropertyCopy := &_BACnetConfirmedServiceRequestReadProperty{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestReadPropertyCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestReadProperty) String() string {
 	if m == nil {

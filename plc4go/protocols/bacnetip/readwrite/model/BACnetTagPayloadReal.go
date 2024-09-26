@@ -38,6 +38,7 @@ type BACnetTagPayloadReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() float32
 	// IsBACnetTagPayloadReal is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -166,6 +167,20 @@ func (m *_BACnetTagPayloadReal) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetTagPayloadReal) IsBACnetTagPayloadReal() {}
+
+func (m *_BACnetTagPayloadReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadReal) deepCopy() *_BACnetTagPayloadReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadRealCopy := &_BACnetTagPayloadReal{
+		m.Value,
+	}
+	return _BACnetTagPayloadRealCopy
+}
 
 func (m *_BACnetTagPayloadReal) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type KnxNetIpTunneling interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -179,6 +180,22 @@ func (m *_KnxNetIpTunneling) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_KnxNetIpTunneling) IsKnxNetIpTunneling() {}
+
+func (m *_KnxNetIpTunneling) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpTunneling) deepCopy() *_KnxNetIpTunneling {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpTunnelingCopy := &_KnxNetIpTunneling{
+		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpTunnelingCopy
+}
 
 func (m *_KnxNetIpTunneling) String() string {
 	if m == nil {

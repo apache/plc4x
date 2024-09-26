@@ -38,6 +38,7 @@ type NLMReserved interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
@@ -181,6 +182,22 @@ func (m *_NLMReserved) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_NLMReserved) IsNLMReserved() {}
+
+func (m *_NLMReserved) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMReserved) deepCopy() *_NLMReserved {
+	if m == nil {
+		return nil
+	}
+	_NLMReservedCopy := &_NLMReserved{
+		m.NLMContract.DeepCopy().(NLMContract),
+		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMReservedCopy
+}
 
 func (m *_NLMReserved) String() string {
 	if m == nil {

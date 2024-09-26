@@ -36,6 +36,7 @@ type TelephonyDataInternetConnectionRequestMade interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// IsTelephonyDataInternetConnectionRequestMade is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataInternetConnectionRequestMade()
@@ -142,6 +143,21 @@ func (m *_TelephonyDataInternetConnectionRequestMade) SerializeWithWriteBuffer(c
 }
 
 func (m *_TelephonyDataInternetConnectionRequestMade) IsTelephonyDataInternetConnectionRequestMade() {
+}
+
+func (m *_TelephonyDataInternetConnectionRequestMade) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataInternetConnectionRequestMade) deepCopy() *_TelephonyDataInternetConnectionRequestMade {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataInternetConnectionRequestMadeCopy := &_TelephonyDataInternetConnectionRequestMade{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataInternetConnectionRequestMadeCopy
 }
 
 func (m *_TelephonyDataInternetConnectionRequestMade) String() string {

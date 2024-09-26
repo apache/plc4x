@@ -38,6 +38,7 @@ type EncodedReplyCALReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EncodedReply
 	// GetCalReply returns CalReply (property field)
 	GetCalReply() CALReply
@@ -178,6 +179,22 @@ func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_EncodedReplyCALReply) IsEncodedReplyCALReply() {}
+
+func (m *_EncodedReplyCALReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EncodedReplyCALReply) deepCopy() *_EncodedReplyCALReply {
+	if m == nil {
+		return nil
+	}
+	_EncodedReplyCALReplyCopy := &_EncodedReplyCALReply{
+		m.EncodedReplyContract.DeepCopy().(EncodedReplyContract),
+		m.CalReply.DeepCopy().(CALReply),
+	}
+	m.EncodedReplyContract.(*_EncodedReply)._SubType = m
+	return _EncodedReplyCALReplyCopy
+}
 
 func (m *_EncodedReplyCALReply) String() string {
 	if m == nil {

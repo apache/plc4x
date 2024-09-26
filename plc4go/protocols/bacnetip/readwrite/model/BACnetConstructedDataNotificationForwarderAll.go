@@ -36,6 +36,7 @@ type BACnetConstructedDataNotificationForwarderAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataNotificationForwarderAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNotificationForwarderAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataNotificationForwarderAll) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataNotificationForwarderAll) IsBACnetConstructedDataNotificationForwarderAll() {
+}
+
+func (m *_BACnetConstructedDataNotificationForwarderAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNotificationForwarderAll) deepCopy() *_BACnetConstructedDataNotificationForwarderAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNotificationForwarderAllCopy := &_BACnetConstructedDataNotificationForwarderAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNotificationForwarderAllCopy
 }
 
 func (m *_BACnetConstructedDataNotificationForwarderAll) String() string {

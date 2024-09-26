@@ -36,6 +36,7 @@ type BACnetConstructedDataAveragingAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataAveragingAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAveragingAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataAveragingAll) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataAveragingAll) IsBACnetConstructedDataAveragingAll() {}
+
+func (m *_BACnetConstructedDataAveragingAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAveragingAll) deepCopy() *_BACnetConstructedDataAveragingAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAveragingAllCopy := &_BACnetConstructedDataAveragingAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAveragingAllCopy
+}
 
 func (m *_BACnetConstructedDataAveragingAll) String() string {
 	if m == nil {

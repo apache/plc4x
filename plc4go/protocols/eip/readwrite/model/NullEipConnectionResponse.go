@@ -36,6 +36,7 @@ type NullEipConnectionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsNullEipConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullEipConnectionResponse()
@@ -154,6 +155,21 @@ func (m *_NullEipConnectionResponse) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_NullEipConnectionResponse) IsNullEipConnectionResponse() {}
+
+func (m *_NullEipConnectionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullEipConnectionResponse) deepCopy() *_NullEipConnectionResponse {
+	if m == nil {
+		return nil
+	}
+	_NullEipConnectionResponseCopy := &_NullEipConnectionResponse{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _NullEipConnectionResponseCopy
+}
 
 func (m *_NullEipConnectionResponse) String() string {
 	if m == nil {

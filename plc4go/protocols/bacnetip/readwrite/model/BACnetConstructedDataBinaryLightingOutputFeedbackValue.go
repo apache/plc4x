@@ -38,6 +38,7 @@ type BACnetConstructedDataBinaryLightingOutputFeedbackValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() BACnetBinaryLightingPVTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) SerializeWithW
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) IsBACnetConstructedDataBinaryLightingOutputFeedbackValue() {
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) deepCopy() *_BACnetConstructedDataBinaryLightingOutputFeedbackValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryLightingOutputFeedbackValueCopy := &_BACnetConstructedDataBinaryLightingOutputFeedbackValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FeedbackValue.DeepCopy().(BACnetBinaryLightingPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryLightingOutputFeedbackValueCopy
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) String() string {

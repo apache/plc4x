@@ -40,6 +40,7 @@ type BVLCRegisterForeignDevice interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetTtl returns Ttl (property field)
 	GetTtl() uint16
@@ -181,6 +182,22 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BVLCRegisterForeignDevice) IsBVLCRegisterForeignDevice() {}
+
+func (m *_BVLCRegisterForeignDevice) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCRegisterForeignDevice) deepCopy() *_BVLCRegisterForeignDevice {
+	if m == nil {
+		return nil
+	}
+	_BVLCRegisterForeignDeviceCopy := &_BVLCRegisterForeignDevice{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.Ttl,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCRegisterForeignDeviceCopy
+}
 
 func (m *_BVLCRegisterForeignDevice) String() string {
 	if m == nil {

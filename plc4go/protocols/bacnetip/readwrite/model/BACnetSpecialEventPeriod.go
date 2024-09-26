@@ -40,12 +40,14 @@ type BACnetSpecialEventPeriod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetSpecialEventPeriod is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSpecialEventPeriod()
 }
 
 // BACnetSpecialEventPeriodContract provides a set of functions which can be overwritten by a sub struct
 type BACnetSpecialEventPeriodContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -242,3 +244,18 @@ func (pm *_BACnetSpecialEventPeriod) serializeParent(ctx context.Context, writeB
 }
 
 func (m *_BACnetSpecialEventPeriod) IsBACnetSpecialEventPeriod() {}
+
+func (m *_BACnetSpecialEventPeriod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSpecialEventPeriod) deepCopy() *_BACnetSpecialEventPeriod {
+	if m == nil {
+		return nil
+	}
+	_BACnetSpecialEventPeriodCopy := &_BACnetSpecialEventPeriod{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetSpecialEventPeriodCopy
+}

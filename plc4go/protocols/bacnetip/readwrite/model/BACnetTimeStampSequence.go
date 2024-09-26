@@ -38,6 +38,7 @@ type BACnetTimeStampSequence interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimeStamp
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() BACnetContextTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetTimeStampSequence) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetTimeStampSequence) IsBACnetTimeStampSequence() {}
+
+func (m *_BACnetTimeStampSequence) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStampSequence) deepCopy() *_BACnetTimeStampSequence {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampSequenceCopy := &_BACnetTimeStampSequence{
+		m.BACnetTimeStampContract.DeepCopy().(BACnetTimeStampContract),
+		m.SequenceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
+	return _BACnetTimeStampSequenceCopy
+}
 
 func (m *_BACnetTimeStampSequence) String() string {
 	if m == nil {

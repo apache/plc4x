@@ -38,6 +38,7 @@ type BACnetAccumulatorRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetPresentValue returns PresentValue (property field)
@@ -238,6 +239,23 @@ func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetAccumulatorRecord) IsBACnetAccumulatorRecord() {}
+
+func (m *_BACnetAccumulatorRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccumulatorRecord) deepCopy() *_BACnetAccumulatorRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccumulatorRecordCopy := &_BACnetAccumulatorRecord{
+		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
+		m.PresentValue.DeepCopy().(BACnetContextTagSignedInteger),
+		m.AccumulatedValue.DeepCopy().(BACnetContextTagSignedInteger),
+		m.AccumulatorStatus.DeepCopy().(BACnetAccumulatorRecordAccumulatorStatusTagged),
+	}
+	return _BACnetAccumulatorRecordCopy
+}
 
 func (m *_BACnetAccumulatorRecord) String() string {
 	if m == nil {

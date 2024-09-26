@@ -38,6 +38,7 @@ type BACnetLightingInProgressTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetLightingInProgressTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLightingInProgressTagged) IsBACnetLightingInProgressTagged() {}
+
+func (m *_BACnetLightingInProgressTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingInProgressTagged) deepCopy() *_BACnetLightingInProgressTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingInProgressTaggedCopy := &_BACnetLightingInProgressTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLightingInProgressTaggedCopy
+}
 
 func (m *_BACnetLightingInProgressTagged) String() string {
 	if m == nil {

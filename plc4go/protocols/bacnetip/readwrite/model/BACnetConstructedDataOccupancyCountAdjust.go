@@ -38,6 +38,7 @@ type BACnetConstructedDataOccupancyCountAdjust interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOccupancyCountAdjust returns OccupancyCountAdjust (property field)
 	GetOccupancyCountAdjust() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOccupancyCountAdjust) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataOccupancyCountAdjust) IsBACnetConstructedDataOccupancyCountAdjust() {}
+
+func (m *_BACnetConstructedDataOccupancyCountAdjust) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOccupancyCountAdjust) deepCopy() *_BACnetConstructedDataOccupancyCountAdjust {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOccupancyCountAdjustCopy := &_BACnetConstructedDataOccupancyCountAdjust{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.OccupancyCountAdjust.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOccupancyCountAdjustCopy
+}
 
 func (m *_BACnetConstructedDataOccupancyCountAdjust) String() string {
 	if m == nil {

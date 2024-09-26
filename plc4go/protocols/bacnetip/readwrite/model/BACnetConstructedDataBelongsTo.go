@@ -38,6 +38,7 @@ type BACnetConstructedDataBelongsTo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBelongsTo returns BelongsTo (property field)
 	GetBelongsTo() BACnetDeviceObjectReference
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBelongsTo) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataBelongsTo) IsBACnetConstructedDataBelongsTo() {}
+
+func (m *_BACnetConstructedDataBelongsTo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBelongsTo) deepCopy() *_BACnetConstructedDataBelongsTo {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBelongsToCopy := &_BACnetConstructedDataBelongsTo{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BelongsTo.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBelongsToCopy
+}
 
 func (m *_BACnetConstructedDataBelongsTo) String() string {
 	if m == nil {

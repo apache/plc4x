@@ -38,6 +38,7 @@ type BACnetConstructedDataDateList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDateList returns DateList (property field)
 	GetDateList() []BACnetCalendarEntry
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataDateList) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataDateList) IsBACnetConstructedDataDateList() {}
+
+func (m *_BACnetConstructedDataDateList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDateList) deepCopy() *_BACnetConstructedDataDateList {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDateListCopy := &_BACnetConstructedDataDateList{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetCalendarEntry, BACnetCalendarEntry](m.DateList),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDateListCopy
+}
 
 func (m *_BACnetConstructedDataDateList) String() string {
 	if m == nil {

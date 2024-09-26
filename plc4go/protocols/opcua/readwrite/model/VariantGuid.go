@@ -38,6 +38,7 @@ type VariantGuid interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -210,6 +211,23 @@ func (m *_VariantGuid) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_VariantGuid) IsVariantGuid() {}
+
+func (m *_VariantGuid) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantGuid) deepCopy() *_VariantGuid {
+	if m == nil {
+		return nil
+	}
+	_VariantGuidCopy := &_VariantGuid{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[GuidValue, GuidValue](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantGuidCopy
+}
 
 func (m *_VariantGuid) String() string {
 	if m == nil {

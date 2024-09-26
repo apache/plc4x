@@ -38,6 +38,7 @@ type UserTokenPolicy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetPolicyId returns PolicyId (property field)
 	GetPolicyId() PascalString
@@ -275,6 +276,26 @@ func (m *_UserTokenPolicy) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_UserTokenPolicy) IsUserTokenPolicy() {}
+
+func (m *_UserTokenPolicy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UserTokenPolicy) deepCopy() *_UserTokenPolicy {
+	if m == nil {
+		return nil
+	}
+	_UserTokenPolicyCopy := &_UserTokenPolicy{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.PolicyId.DeepCopy().(PascalString),
+		m.TokenType,
+		m.IssuedTokenType.DeepCopy().(PascalString),
+		m.IssuerEndpointUrl.DeepCopy().(PascalString),
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UserTokenPolicyCopy
+}
 
 func (m *_UserTokenPolicy) String() string {
 	if m == nil {

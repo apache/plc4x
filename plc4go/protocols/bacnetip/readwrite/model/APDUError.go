@@ -38,6 +38,7 @@ type APDUError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
@@ -239,6 +240,25 @@ func (m *_APDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_APDUError) IsAPDUError() {}
+
+func (m *_APDUError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUError) deepCopy() *_APDUError {
+	if m == nil {
+		return nil
+	}
+	_APDUErrorCopy := &_APDUError{
+		m.APDUContract.DeepCopy().(APDUContract),
+		m.OriginalInvokeId,
+		m.ErrorChoice,
+		m.Error.DeepCopy().(BACnetError),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUErrorCopy
+}
 
 func (m *_APDUError) String() string {
 	if m == nil {

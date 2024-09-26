@@ -36,6 +36,7 @@ type BACnetConstructedDataRequired interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataRequired is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataRequired()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataRequired) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataRequired) IsBACnetConstructedDataRequired() {}
+
+func (m *_BACnetConstructedDataRequired) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRequired) deepCopy() *_BACnetConstructedDataRequired {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRequiredCopy := &_BACnetConstructedDataRequired{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRequiredCopy
+}
 
 func (m *_BACnetConstructedDataRequired) String() string {
 	if m == nil {

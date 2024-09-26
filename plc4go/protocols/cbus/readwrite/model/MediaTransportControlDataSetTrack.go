@@ -38,6 +38,7 @@ type MediaTransportControlDataSetTrack interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetTrackMSB returns TrackMSB (property field)
 	GetTrackMSB() byte
@@ -238,6 +239,25 @@ func (m *_MediaTransportControlDataSetTrack) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_MediaTransportControlDataSetTrack) IsMediaTransportControlDataSetTrack() {}
+
+func (m *_MediaTransportControlDataSetTrack) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSetTrack) deepCopy() *_MediaTransportControlDataSetTrack {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSetTrackCopy := &_MediaTransportControlDataSetTrack{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.TrackMSB,
+		m.TrackMMSB,
+		m.TrackMLSB,
+		m.TrackLSB,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSetTrackCopy
+}
 
 func (m *_MediaTransportControlDataSetTrack) String() string {
 	if m == nil {

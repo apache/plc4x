@@ -40,12 +40,14 @@ type PathSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPathSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPathSegment()
 }
 
 // PathSegmentContract provides a set of functions which can be overwritten by a sub struct
 type PathSegmentContract interface {
+	utils.Copyable
 	// IsPathSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPathSegment()
 }
@@ -194,3 +196,17 @@ func (pm *_PathSegment) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_PathSegment) IsPathSegment() {}
+
+func (m *_PathSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PathSegment) deepCopy() *_PathSegment {
+	if m == nil {
+		return nil
+	}
+	_PathSegmentCopy := &_PathSegment{
+		nil, // will be set by child
+	}
+	return _PathSegmentCopy
+}

@@ -36,6 +36,7 @@ type SecurityDataMainsFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataMainsFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataMainsFailure()
@@ -142,6 +143,21 @@ func (m *_SecurityDataMainsFailure) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SecurityDataMainsFailure) IsSecurityDataMainsFailure() {}
+
+func (m *_SecurityDataMainsFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataMainsFailure) deepCopy() *_SecurityDataMainsFailure {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataMainsFailureCopy := &_SecurityDataMainsFailure{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataMainsFailureCopy
+}
 
 func (m *_SecurityDataMainsFailure) String() string {
 	if m == nil {

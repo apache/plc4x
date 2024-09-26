@@ -38,6 +38,7 @@ type BACnetTagPayloadSignedInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValueInt8 returns ValueInt8 (property field)
 	GetValueInt8() *int8
 	// GetValueInt16 returns ValueInt16 (property field)
@@ -723,6 +724,28 @@ func (m *_BACnetTagPayloadSignedInteger) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadSignedInteger) IsBACnetTagPayloadSignedInteger() {}
+
+func (m *_BACnetTagPayloadSignedInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadSignedInteger) deepCopy() *_BACnetTagPayloadSignedInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadSignedIntegerCopy := &_BACnetTagPayloadSignedInteger{
+		utils.CopyPtr[int8](m.ValueInt8),
+		utils.CopyPtr[int16](m.ValueInt16),
+		utils.CopyPtr[int32](m.ValueInt24),
+		utils.CopyPtr[int32](m.ValueInt32),
+		utils.CopyPtr[int64](m.ValueInt40),
+		utils.CopyPtr[int64](m.ValueInt48),
+		utils.CopyPtr[int64](m.ValueInt56),
+		utils.CopyPtr[int64](m.ValueInt64),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadSignedIntegerCopy
+}
 
 func (m *_BACnetTagPayloadSignedInteger) String() string {
 	if m == nil {

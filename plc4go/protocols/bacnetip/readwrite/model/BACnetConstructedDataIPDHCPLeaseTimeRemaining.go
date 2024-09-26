@@ -38,6 +38,7 @@ type BACnetConstructedDataIPDHCPLeaseTimeRemaining interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpDhcpLeaseTimeRemaining returns IpDhcpLeaseTimeRemaining (property field)
 	GetIpDhcpLeaseTimeRemaining() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) IsBACnetConstructedDataIPDHCPLeaseTimeRemaining() {
+}
+
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) deepCopy() *_BACnetConstructedDataIPDHCPLeaseTimeRemaining {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPDHCPLeaseTimeRemainingCopy := &_BACnetConstructedDataIPDHCPLeaseTimeRemaining{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IpDhcpLeaseTimeRemaining.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPDHCPLeaseTimeRemainingCopy
 }
 
 func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) String() string {

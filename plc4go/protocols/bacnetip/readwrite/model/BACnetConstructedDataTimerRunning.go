@@ -38,6 +38,7 @@ type BACnetConstructedDataTimerRunning interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimerRunning returns TimerRunning (property field)
 	GetTimerRunning() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimerRunning) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataTimerRunning) IsBACnetConstructedDataTimerRunning() {}
+
+func (m *_BACnetConstructedDataTimerRunning) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimerRunning) deepCopy() *_BACnetConstructedDataTimerRunning {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimerRunningCopy := &_BACnetConstructedDataTimerRunning{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TimerRunning.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimerRunningCopy
+}
 
 func (m *_BACnetConstructedDataTimerRunning) String() string {
 	if m == nil {

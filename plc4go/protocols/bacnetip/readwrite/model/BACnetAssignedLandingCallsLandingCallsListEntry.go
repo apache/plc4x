@@ -38,6 +38,7 @@ type BACnetAssignedLandingCallsLandingCallsListEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFloorNumber returns FloorNumber (property field)
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetDirection returns Direction (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) SerializeWithWriteBuf
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) IsBACnetAssignedLandingCallsLandingCallsListEntry() {
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) deepCopy() *_BACnetAssignedLandingCallsLandingCallsListEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetAssignedLandingCallsLandingCallsListEntryCopy := &_BACnetAssignedLandingCallsLandingCallsListEntry{
+		m.FloorNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Direction.DeepCopy().(BACnetLiftCarDirectionTagged),
+	}
+	return _BACnetAssignedLandingCallsLandingCallsListEntryCopy
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) String() string {

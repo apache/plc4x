@@ -38,6 +38,7 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry interf
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
 	GetMonitoredObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetListOfCovReferences returns ListOfCovReferences (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) 
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry() {
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) deepCopy() *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryCopy := &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry{
+		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.ListOfCovReferences.DeepCopy().(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences),
+	}
+	return _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryCopy
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) String() string {

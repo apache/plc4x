@@ -38,6 +38,7 @@ type SecurityDataArmSystem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetArmMode returns ArmMode (property field)
 	GetArmMode() byte
@@ -316,6 +317,22 @@ func (m *_SecurityDataArmSystem) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SecurityDataArmSystem) IsSecurityDataArmSystem() {}
+
+func (m *_SecurityDataArmSystem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataArmSystem) deepCopy() *_SecurityDataArmSystem {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataArmSystemCopy := &_SecurityDataArmSystem{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.ArmMode,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataArmSystemCopy
+}
 
 func (m *_SecurityDataArmSystem) String() string {
 	if m == nil {

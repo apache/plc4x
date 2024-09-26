@@ -38,6 +38,7 @@ type BACnetConstructedDataCountBeforeChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCountBeforeChange returns CountBeforeChange (property field)
 	GetCountBeforeChange() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCountBeforeChange) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataCountBeforeChange) IsBACnetConstructedDataCountBeforeChange() {}
+
+func (m *_BACnetConstructedDataCountBeforeChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCountBeforeChange) deepCopy() *_BACnetConstructedDataCountBeforeChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCountBeforeChangeCopy := &_BACnetConstructedDataCountBeforeChange{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CountBeforeChange.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCountBeforeChangeCopy
+}
 
 func (m *_BACnetConstructedDataCountBeforeChange) String() string {
 	if m == nil {

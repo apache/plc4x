@@ -38,6 +38,7 @@ type BACnetConstructedDataGlobalIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetGlobalIdentifier returns GlobalIdentifier (property field)
 	GetGlobalIdentifier() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataGlobalIdentifier) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataGlobalIdentifier) IsBACnetConstructedDataGlobalIdentifier() {}
+
+func (m *_BACnetConstructedDataGlobalIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGlobalIdentifier) deepCopy() *_BACnetConstructedDataGlobalIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGlobalIdentifierCopy := &_BACnetConstructedDataGlobalIdentifier{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.GlobalIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGlobalIdentifierCopy
+}
 
 func (m *_BACnetConstructedDataGlobalIdentifier) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues interface
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfLifeSavetyAlarmValues returns ListOfLifeSavetyAlarmValues (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) Get
 ////
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) IsBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues() {
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) deepCopy() *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesCopy := &_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.ListOfLifeSavetyAlarmValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesCopy
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) String() string {

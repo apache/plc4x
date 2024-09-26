@@ -38,6 +38,7 @@ type BACnetConstructedDataDefaultFadeTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDefaultFadeTime returns DefaultFadeTime (property field)
 	GetDefaultFadeTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDefaultFadeTime) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataDefaultFadeTime) IsBACnetConstructedDataDefaultFadeTime() {}
+
+func (m *_BACnetConstructedDataDefaultFadeTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDefaultFadeTime) deepCopy() *_BACnetConstructedDataDefaultFadeTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDefaultFadeTimeCopy := &_BACnetConstructedDataDefaultFadeTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DefaultFadeTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDefaultFadeTimeCopy
+}
 
 func (m *_BACnetConstructedDataDefaultFadeTime) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type SecurityDataSystemDisarmed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataSystemDisarmed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataSystemDisarmed()
@@ -142,6 +143,21 @@ func (m *_SecurityDataSystemDisarmed) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataSystemDisarmed) IsSecurityDataSystemDisarmed() {}
+
+func (m *_SecurityDataSystemDisarmed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataSystemDisarmed) deepCopy() *_SecurityDataSystemDisarmed {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataSystemDisarmedCopy := &_SecurityDataSystemDisarmed{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataSystemDisarmedCopy
+}
 
 func (m *_SecurityDataSystemDisarmed) String() string {
 	if m == nil {

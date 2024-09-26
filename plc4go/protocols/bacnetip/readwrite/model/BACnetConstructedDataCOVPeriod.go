@@ -38,6 +38,7 @@ type BACnetConstructedDataCOVPeriod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovPeriod returns CovPeriod (property field)
 	GetCovPeriod() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCOVPeriod) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataCOVPeriod) IsBACnetConstructedDataCOVPeriod() {}
+
+func (m *_BACnetConstructedDataCOVPeriod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCOVPeriod) deepCopy() *_BACnetConstructedDataCOVPeriod {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCOVPeriodCopy := &_BACnetConstructedDataCOVPeriod{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CovPeriod.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCOVPeriodCopy
+}
 
 func (m *_BACnetConstructedDataCOVPeriod) String() string {
 	if m == nil {

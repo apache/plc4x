@@ -38,6 +38,7 @@ type SessionSecurityDiagnosticsDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSessionId returns SessionId (property field)
 	GetSessionId() NodeId
@@ -396,6 +397,31 @@ func (m *_SessionSecurityDiagnosticsDataType) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_SessionSecurityDiagnosticsDataType) IsSessionSecurityDiagnosticsDataType() {}
+
+func (m *_SessionSecurityDiagnosticsDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SessionSecurityDiagnosticsDataType) deepCopy() *_SessionSecurityDiagnosticsDataType {
+	if m == nil {
+		return nil
+	}
+	_SessionSecurityDiagnosticsDataTypeCopy := &_SessionSecurityDiagnosticsDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SessionId.DeepCopy().(NodeId),
+		m.ClientUserIdOfSession.DeepCopy().(PascalString),
+		m.NoOfClientUserIdHistory,
+		utils.DeepCopySlice[PascalString, PascalString](m.ClientUserIdHistory),
+		m.AuthenticationMechanism.DeepCopy().(PascalString),
+		m.Encoding.DeepCopy().(PascalString),
+		m.TransportProtocol.DeepCopy().(PascalString),
+		m.SecurityMode,
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.ClientCertificate.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SessionSecurityDiagnosticsDataTypeCopy
+}
 
 func (m *_SessionSecurityDiagnosticsDataType) String() string {
 	if m == nil {

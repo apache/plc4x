@@ -38,6 +38,7 @@ type BACnetConstructedDataTrendLogMultipleLogBuffer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetLogMultipleRecord
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) IsBACnetConstructedDataTrendLogMultipleLogBuffer() {
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) deepCopy() *_BACnetConstructedDataTrendLogMultipleLogBuffer {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTrendLogMultipleLogBufferCopy := &_BACnetConstructedDataTrendLogMultipleLogBuffer{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetLogMultipleRecord, BACnetLogMultipleRecord](m.FloorText),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTrendLogMultipleLogBufferCopy
 }
 
 func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) String() string {

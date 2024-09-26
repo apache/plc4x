@@ -38,6 +38,7 @@ type BACnetLogDataLogData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogData
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -227,6 +228,24 @@ func (m *_BACnetLogDataLogData) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetLogDataLogData) IsBACnetLogDataLogData() {}
+
+func (m *_BACnetLogDataLogData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogData) deepCopy() *_BACnetLogDataLogData {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataCopy := &_BACnetLogDataLogData{
+		m.BACnetLogDataContract.DeepCopy().(BACnetLogDataContract),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetLogDataLogDataEntry, BACnetLogDataLogDataEntry](m.LogData),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
+	return _BACnetLogDataLogDataCopy
+}
 
 func (m *_BACnetLogDataLogData) String() string {
 	if m == nil {

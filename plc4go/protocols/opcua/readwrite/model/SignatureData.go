@@ -38,6 +38,7 @@ type SignatureData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAlgorithm returns Algorithm (property field)
 	GetAlgorithm() PascalString
@@ -206,6 +207,23 @@ func (m *_SignatureData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_SignatureData) IsSignatureData() {}
+
+func (m *_SignatureData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SignatureData) deepCopy() *_SignatureData {
+	if m == nil {
+		return nil
+	}
+	_SignatureDataCopy := &_SignatureData{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Algorithm.DeepCopy().(PascalString),
+		m.Signature.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SignatureDataCopy
+}
 
 func (m *_SignatureData) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CipRRData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// GetInterfaceHandle returns InterfaceHandle (property field)
 	GetInterfaceHandle() uint32
@@ -249,6 +250,24 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_CipRRData) IsCipRRData() {}
+
+func (m *_CipRRData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipRRData) deepCopy() *_CipRRData {
+	if m == nil {
+		return nil
+	}
+	_CipRRDataCopy := &_CipRRData{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		m.InterfaceHandle,
+		m.Timeout,
+		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _CipRRDataCopy
+}
 
 func (m *_CipRRData) String() string {
 	if m == nil {

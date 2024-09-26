@@ -38,6 +38,7 @@ type GuidValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetData1 returns Data1 (property field)
 	GetData1() uint32
 	// GetData2 returns Data2 (property field)
@@ -250,6 +251,24 @@ func (m *_GuidValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_GuidValue) IsGuidValue() {}
+
+func (m *_GuidValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GuidValue) deepCopy() *_GuidValue {
+	if m == nil {
+		return nil
+	}
+	_GuidValueCopy := &_GuidValue{
+		m.Data1,
+		m.Data2,
+		m.Data3,
+		utils.DeepCopySlice[byte, byte](m.Data4),
+		utils.DeepCopySlice[byte, byte](m.Data5),
+	}
+	return _GuidValueCopy
+}
 
 func (m *_GuidValue) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type VariantExpandedNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -210,6 +211,23 @@ func (m *_VariantExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_VariantExpandedNodeId) IsVariantExpandedNodeId() {}
+
+func (m *_VariantExpandedNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantExpandedNodeId) deepCopy() *_VariantExpandedNodeId {
+	if m == nil {
+		return nil
+	}
+	_VariantExpandedNodeIdCopy := &_VariantExpandedNodeId{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[ExpandedNodeId, ExpandedNodeId](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantExpandedNodeIdCopy
+}
 
 func (m *_VariantExpandedNodeId) String() string {
 	if m == nil {

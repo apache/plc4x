@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) Seria
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) IsBACnetFaultParameterFaultExtendedParametersEntryCharacterString() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringCopy := &_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryCharacterStringCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) String() string {

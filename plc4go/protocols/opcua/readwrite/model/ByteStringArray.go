@@ -38,6 +38,7 @@ type ByteStringArray interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() int32
 	// GetValue returns Value (property field)
@@ -188,6 +189,21 @@ func (m *_ByteStringArray) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ByteStringArray) IsByteStringArray() {}
+
+func (m *_ByteStringArray) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ByteStringArray) deepCopy() *_ByteStringArray {
+	if m == nil {
+		return nil
+	}
+	_ByteStringArrayCopy := &_ByteStringArray{
+		m.ArrayLength,
+		utils.DeepCopySlice[uint8, uint8](m.Value),
+	}
+	return _ByteStringArrayCopy
+}
 
 func (m *_ByteStringArray) String() string {
 	if m == nil {

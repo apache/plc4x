@@ -36,6 +36,7 @@ type ApduDataExtGroupPropertyValueRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtGroupPropertyValueRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtGroupPropertyValueRead()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtGroupPropertyValueRead) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_ApduDataExtGroupPropertyValueRead) IsApduDataExtGroupPropertyValueRead() {}
+
+func (m *_ApduDataExtGroupPropertyValueRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtGroupPropertyValueRead) deepCopy() *_ApduDataExtGroupPropertyValueRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtGroupPropertyValueReadCopy := &_ApduDataExtGroupPropertyValueRead{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtGroupPropertyValueReadCopy
+}
 
 func (m *_ApduDataExtGroupPropertyValueRead) String() string {
 	if m == nil {

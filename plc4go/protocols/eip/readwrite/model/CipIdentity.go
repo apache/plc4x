@@ -44,6 +44,7 @@ type CipIdentity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CommandSpecificDataItem
 	// GetEncapsulationProtocolVersion returns EncapsulationProtocolVersion (property field)
 	GetEncapsulationProtocolVersion() uint16
@@ -508,6 +509,34 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_CipIdentity) IsCipIdentity() {}
+
+func (m *_CipIdentity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipIdentity) deepCopy() *_CipIdentity {
+	if m == nil {
+		return nil
+	}
+	_CipIdentityCopy := &_CipIdentity{
+		m.CommandSpecificDataItemContract.DeepCopy().(CommandSpecificDataItemContract),
+		m.EncapsulationProtocolVersion,
+		m.SocketAddressFamily,
+		m.SocketAddressPort,
+		utils.DeepCopySlice[uint8, uint8](m.SocketAddressAddress),
+		m.VendorId,
+		m.DeviceType,
+		m.ProductCode,
+		m.RevisionMajor,
+		m.RevisionMinor,
+		m.Status,
+		m.SerialNumber,
+		m.ProductName,
+		m.State,
+	}
+	m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = m
+	return _CipIdentityCopy
+}
 
 func (m *_CipIdentity) String() string {
 	if m == nil {

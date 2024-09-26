@@ -38,6 +38,7 @@ type BACnetGroupChannelValueList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetGroupChannelValueList) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetGroupChannelValueList) IsBACnetGroupChannelValueList() {}
+
+func (m *_BACnetGroupChannelValueList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetGroupChannelValueList) deepCopy() *_BACnetGroupChannelValueList {
+	if m == nil {
+		return nil
+	}
+	_BACnetGroupChannelValueListCopy := &_BACnetGroupChannelValueList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetEventSummary, BACnetEventSummary](m.ListOfEventSummaries),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetGroupChannelValueListCopy
+}
 
 func (m *_BACnetGroupChannelValueList) String() string {
 	if m == nil {

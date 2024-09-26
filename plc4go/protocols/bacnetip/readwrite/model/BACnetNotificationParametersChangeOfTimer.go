@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfTimer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -355,6 +356,29 @@ func (m *_BACnetNotificationParametersChangeOfTimer) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetNotificationParametersChangeOfTimer) IsBACnetNotificationParametersChangeOfTimer() {}
+
+func (m *_BACnetNotificationParametersChangeOfTimer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfTimer) deepCopy() *_BACnetNotificationParametersChangeOfTimer {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfTimerCopy := &_BACnetNotificationParametersChangeOfTimer{
+		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.NewValue.DeepCopy().(BACnetTimerStateTagged),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.UpdateTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.LastStateChange.DeepCopy().(BACnetTimerTransitionTagged),
+		m.InitialTimeout.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ExpirationTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersChangeOfTimerCopy
+}
 
 func (m *_BACnetNotificationParametersChangeOfTimer) String() string {
 	if m == nil {

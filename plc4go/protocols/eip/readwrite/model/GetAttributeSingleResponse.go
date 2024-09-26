@@ -36,6 +36,7 @@ type GetAttributeSingleResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsGetAttributeSingleResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeSingleResponse()
@@ -154,6 +155,21 @@ func (m *_GetAttributeSingleResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_GetAttributeSingleResponse) IsGetAttributeSingleResponse() {}
+
+func (m *_GetAttributeSingleResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetAttributeSingleResponse) deepCopy() *_GetAttributeSingleResponse {
+	if m == nil {
+		return nil
+	}
+	_GetAttributeSingleResponseCopy := &_GetAttributeSingleResponse{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _GetAttributeSingleResponseCopy
+}
 
 func (m *_GetAttributeSingleResponse) String() string {
 	if m == nil {

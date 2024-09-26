@@ -38,6 +38,7 @@ type BACnetConstructedDataEffectivePeriod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDateRange returns DateRange (property field)
 	GetDateRange() BACnetDateRange
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEffectivePeriod) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataEffectivePeriod) IsBACnetConstructedDataEffectivePeriod() {}
+
+func (m *_BACnetConstructedDataEffectivePeriod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEffectivePeriod) deepCopy() *_BACnetConstructedDataEffectivePeriod {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEffectivePeriodCopy := &_BACnetConstructedDataEffectivePeriod{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DateRange.DeepCopy().(BACnetDateRange),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEffectivePeriodCopy
+}
 
 func (m *_BACnetConstructedDataEffectivePeriod) String() string {
 	if m == nil {

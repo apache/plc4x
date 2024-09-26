@@ -38,6 +38,7 @@ type NotificationMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint32
@@ -249,6 +250,25 @@ func (m *_NotificationMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NotificationMessage) IsNotificationMessage() {}
+
+func (m *_NotificationMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NotificationMessage) deepCopy() *_NotificationMessage {
+	if m == nil {
+		return nil
+	}
+	_NotificationMessageCopy := &_NotificationMessage{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SequenceNumber,
+		m.PublishTime,
+		m.NoOfNotificationData,
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.NotificationData),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NotificationMessageCopy
+}
 
 func (m *_NotificationMessage) String() string {
 	if m == nil {

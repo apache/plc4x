@@ -38,6 +38,7 @@ type BACnetConstructedDataExceptionSchedule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataExceptionSchedule) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataExceptionSchedule) IsBACnetConstructedDataExceptionSchedule() {}
+
+func (m *_BACnetConstructedDataExceptionSchedule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExceptionSchedule) deepCopy() *_BACnetConstructedDataExceptionSchedule {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExceptionScheduleCopy := &_BACnetConstructedDataExceptionSchedule{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetSpecialEvent, BACnetSpecialEvent](m.ExceptionSchedule),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExceptionScheduleCopy
+}
 
 func (m *_BACnetConstructedDataExceptionSchedule) String() string {
 	if m == nil {

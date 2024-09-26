@@ -40,6 +40,7 @@ type TunnelingResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetTunnelingResponseDataBlock returns TunnelingResponseDataBlock (property field)
 	GetTunnelingResponseDataBlock() TunnelingResponseDataBlock
@@ -184,6 +185,22 @@ func (m *_TunnelingResponse) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_TunnelingResponse) IsTunnelingResponse() {}
+
+func (m *_TunnelingResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TunnelingResponse) deepCopy() *_TunnelingResponse {
+	if m == nil {
+		return nil
+	}
+	_TunnelingResponseCopy := &_TunnelingResponse{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.TunnelingResponseDataBlock.DeepCopy().(TunnelingResponseDataBlock),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _TunnelingResponseCopy
+}
 
 func (m *_TunnelingResponse) String() string {
 	if m == nil {

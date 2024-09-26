@@ -38,6 +38,7 @@ type BACnetConstructedDataLimitEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLimitEnable returns LimitEnable (property field)
 	GetLimitEnable() BACnetLimitEnableTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLimitEnable) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataLimitEnable) IsBACnetConstructedDataLimitEnable() {}
+
+func (m *_BACnetConstructedDataLimitEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLimitEnable) deepCopy() *_BACnetConstructedDataLimitEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLimitEnableCopy := &_BACnetConstructedDataLimitEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LimitEnable.DeepCopy().(BACnetLimitEnableTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLimitEnableCopy
+}
 
 func (m *_BACnetConstructedDataLimitEnable) String() string {
 	if m == nil {

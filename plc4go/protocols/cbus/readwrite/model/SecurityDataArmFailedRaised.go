@@ -36,6 +36,7 @@ type SecurityDataArmFailedRaised interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataArmFailedRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataArmFailedRaised()
@@ -142,6 +143,21 @@ func (m *_SecurityDataArmFailedRaised) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_SecurityDataArmFailedRaised) IsSecurityDataArmFailedRaised() {}
+
+func (m *_SecurityDataArmFailedRaised) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataArmFailedRaised) deepCopy() *_SecurityDataArmFailedRaised {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataArmFailedRaisedCopy := &_SecurityDataArmFailedRaised{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataArmFailedRaisedCopy
+}
 
 func (m *_SecurityDataArmFailedRaised) String() string {
 	if m == nil {

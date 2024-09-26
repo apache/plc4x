@@ -38,6 +38,7 @@ type BACnetConstructedDataReasonForHalt interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProgramError returns ProgramError (property field)
 	GetProgramError() BACnetProgramErrorTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataReasonForHalt) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataReasonForHalt) IsBACnetConstructedDataReasonForHalt() {}
+
+func (m *_BACnetConstructedDataReasonForHalt) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReasonForHalt) deepCopy() *_BACnetConstructedDataReasonForHalt {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReasonForHaltCopy := &_BACnetConstructedDataReasonForHalt{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProgramError.DeepCopy().(BACnetProgramErrorTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReasonForHaltCopy
+}
 
 func (m *_BACnetConstructedDataReasonForHalt) String() string {
 	if m == nil {

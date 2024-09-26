@@ -38,6 +38,7 @@ type BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) Serializ
 }
 
 func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) IsBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty() {
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) deepCopy() *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyCopy := &_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.GroupMembers),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyCopy
 }
 
 func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) String() string {

@@ -38,6 +38,7 @@ type ApduDataGroupValueWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetDataFirstByte returns DataFirstByte (property field)
 	GetDataFirstByte() int8
@@ -202,6 +203,23 @@ func (m *_ApduDataGroupValueWrite) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_ApduDataGroupValueWrite) IsApduDataGroupValueWrite() {}
+
+func (m *_ApduDataGroupValueWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataGroupValueWrite) deepCopy() *_ApduDataGroupValueWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataGroupValueWriteCopy := &_ApduDataGroupValueWrite{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.DataFirstByte,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataGroupValueWriteCopy
+}
 
 func (m *_ApduDataGroupValueWrite) String() string {
 	if m == nil {

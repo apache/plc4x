@@ -38,6 +38,7 @@ type KnxAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMainGroup returns MainGroup (property field)
 	GetMainGroup() uint8
 	// GetMiddleGroup returns MiddleGroup (property field)
@@ -206,6 +207,22 @@ func (m *_KnxAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_KnxAddress) IsKnxAddress() {}
+
+func (m *_KnxAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxAddress) deepCopy() *_KnxAddress {
+	if m == nil {
+		return nil
+	}
+	_KnxAddressCopy := &_KnxAddress{
+		m.MainGroup,
+		m.MiddleGroup,
+		m.SubGroup,
+	}
+	return _KnxAddressCopy
+}
 
 func (m *_KnxAddress) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLifeSafetyPointAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetLifeSafetyStateTagged
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) IsBACnetConstructedDataLifeSafetyPointAlarmValues() {
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) deepCopy() *_BACnetConstructedDataLifeSafetyPointAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLifeSafetyPointAlarmValuesCopy := &_BACnetConstructedDataLifeSafetyPointAlarmValues{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLifeSafetyPointAlarmValuesCopy
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) String() string {

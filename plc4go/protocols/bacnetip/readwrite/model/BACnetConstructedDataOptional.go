@@ -36,6 +36,7 @@ type BACnetConstructedDataOptional interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataOptional is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOptional()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataOptional) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataOptional) IsBACnetConstructedDataOptional() {}
+
+func (m *_BACnetConstructedDataOptional) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOptional) deepCopy() *_BACnetConstructedDataOptional {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOptionalCopy := &_BACnetConstructedDataOptional{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOptionalCopy
+}
 
 func (m *_BACnetConstructedDataOptional) String() string {
 	if m == nil {

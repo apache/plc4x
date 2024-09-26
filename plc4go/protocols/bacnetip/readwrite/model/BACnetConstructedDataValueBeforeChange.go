@@ -38,6 +38,7 @@ type BACnetConstructedDataValueBeforeChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetValuesBeforeChange returns ValuesBeforeChange (property field)
 	GetValuesBeforeChange() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataValueBeforeChange) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataValueBeforeChange) IsBACnetConstructedDataValueBeforeChange() {}
+
+func (m *_BACnetConstructedDataValueBeforeChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataValueBeforeChange) deepCopy() *_BACnetConstructedDataValueBeforeChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataValueBeforeChangeCopy := &_BACnetConstructedDataValueBeforeChange{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ValuesBeforeChange.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataValueBeforeChangeCopy
+}
 
 func (m *_BACnetConstructedDataValueBeforeChange) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataBinaryInputInterfaceValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInterfaceValue returns InterfaceValue (property field)
 	GetInterfaceValue() BACnetOptionalBinaryPV
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBinaryInputInterfaceValue) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataBinaryInputInterfaceValue) IsBACnetConstructedDataBinaryInputInterfaceValue() {
+}
+
+func (m *_BACnetConstructedDataBinaryInputInterfaceValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryInputInterfaceValue) deepCopy() *_BACnetConstructedDataBinaryInputInterfaceValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryInputInterfaceValueCopy := &_BACnetConstructedDataBinaryInputInterfaceValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.InterfaceValue.DeepCopy().(BACnetOptionalBinaryPV),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryInputInterfaceValueCopy
 }
 
 func (m *_BACnetConstructedDataBinaryInputInterfaceValue) String() string {

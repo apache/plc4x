@@ -38,6 +38,7 @@ type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
@@ -274,6 +275,25 @@ func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) GetTagNumber
 ////
 
 func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) IsSubscribeCOVPropertyMultipleErrorFirstFailedSubscription() {
+}
+
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) deepCopy() *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription {
+	if m == nil {
+		return nil
+	}
+	_SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionCopy := &_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.MonitoredPropertyReference.DeepCopy().(BACnetPropertyReferenceEnclosed),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionCopy
 }
 
 func (m *_SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) String() string {

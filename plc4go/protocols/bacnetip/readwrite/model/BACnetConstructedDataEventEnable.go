@@ -38,6 +38,7 @@ type BACnetConstructedDataEventEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEventEnable returns EventEnable (property field)
 	GetEventEnable() BACnetEventTransitionBitsTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEventEnable) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataEventEnable) IsBACnetConstructedDataEventEnable() {}
+
+func (m *_BACnetConstructedDataEventEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventEnable) deepCopy() *_BACnetConstructedDataEventEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventEnableCopy := &_BACnetConstructedDataEventEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.EventEnable.DeepCopy().(BACnetEventTransitionBitsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventEnableCopy
+}
 
 func (m *_BACnetConstructedDataEventEnable) String() string {
 	if m == nil {

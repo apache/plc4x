@@ -40,12 +40,14 @@ type S7PayloadUserDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7PayloadUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItem()
 }
 
 // S7PayloadUserDataItemContract provides a set of functions which can be overwritten by a sub struct
 type S7PayloadUserDataItemContract interface {
+	utils.Copyable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
@@ -383,3 +385,20 @@ func (pm *_S7PayloadUserDataItem) serializeParent(ctx context.Context, writeBuff
 }
 
 func (m *_S7PayloadUserDataItem) IsS7PayloadUserDataItem() {}
+
+func (m *_S7PayloadUserDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItem) deepCopy() *_S7PayloadUserDataItem {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCopy := &_S7PayloadUserDataItem{
+		nil, // will be set by child
+		m.ReturnCode,
+		m.TransportSize,
+		m.DataLength,
+	}
+	return _S7PayloadUserDataItemCopy
+}

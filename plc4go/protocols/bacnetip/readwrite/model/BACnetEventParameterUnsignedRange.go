@@ -38,6 +38,7 @@ type BACnetEventParameterUnsignedRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -274,6 +275,26 @@ func (m *_BACnetEventParameterUnsignedRange) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetEventParameterUnsignedRange) IsBACnetEventParameterUnsignedRange() {}
+
+func (m *_BACnetEventParameterUnsignedRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterUnsignedRange) deepCopy() *_BACnetEventParameterUnsignedRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterUnsignedRangeCopy := &_BACnetEventParameterUnsignedRange{
+		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.LowLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.HighLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterUnsignedRangeCopy
+}
 
 func (m *_BACnetEventParameterUnsignedRange) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BrowseDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -305,6 +306,28 @@ func (m *_BrowseDescription) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_BrowseDescription) IsBrowseDescription() {}
+
+func (m *_BrowseDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseDescription) deepCopy() *_BrowseDescription {
+	if m == nil {
+		return nil
+	}
+	_BrowseDescriptionCopy := &_BrowseDescription{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NodeId.DeepCopy().(NodeId),
+		m.BrowseDirection,
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IncludeSubtypes,
+		m.NodeClassMask,
+		m.ResultMask,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseDescriptionCopy
+}
 
 func (m *_BrowseDescription) String() string {
 	if m == nil {

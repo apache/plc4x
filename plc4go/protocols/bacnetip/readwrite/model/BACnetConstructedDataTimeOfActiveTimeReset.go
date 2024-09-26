@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeOfActiveTimeReset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeOfActiveTimeReset returns TimeOfActiveTimeReset (property field)
 	GetTimeOfActiveTimeReset() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimeOfActiveTimeReset) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataTimeOfActiveTimeReset) IsBACnetConstructedDataTimeOfActiveTimeReset() {
+}
+
+func (m *_BACnetConstructedDataTimeOfActiveTimeReset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeOfActiveTimeReset) deepCopy() *_BACnetConstructedDataTimeOfActiveTimeReset {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeOfActiveTimeResetCopy := &_BACnetConstructedDataTimeOfActiveTimeReset{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TimeOfActiveTimeReset.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeOfActiveTimeResetCopy
 }
 
 func (m *_BACnetConstructedDataTimeOfActiveTimeReset) String() string {

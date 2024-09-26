@@ -38,6 +38,7 @@ type BACnetConstructedDataRoutingTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRoutingTable returns RoutingTable (property field)
 	GetRoutingTable() []BACnetRouterEntry
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataRoutingTable) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataRoutingTable) IsBACnetConstructedDataRoutingTable() {}
+
+func (m *_BACnetConstructedDataRoutingTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRoutingTable) deepCopy() *_BACnetConstructedDataRoutingTable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRoutingTableCopy := &_BACnetConstructedDataRoutingTable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetRouterEntry, BACnetRouterEntry](m.RoutingTable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRoutingTableCopy
+}
 
 func (m *_BACnetConstructedDataRoutingTable) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataChangesPending interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetChangesPending returns ChangesPending (property field)
 	GetChangesPending() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataChangesPending) IsBACnetConstructedDataChangesPending() {}
+
+func (m *_BACnetConstructedDataChangesPending) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataChangesPending) deepCopy() *_BACnetConstructedDataChangesPending {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataChangesPendingCopy := &_BACnetConstructedDataChangesPending{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ChangesPending.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataChangesPendingCopy
+}
 
 func (m *_BACnetConstructedDataChangesPending) String() string {
 	if m == nil {

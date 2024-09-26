@@ -38,6 +38,7 @@ type RelativeTimestamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() uint16
 	// IsRelativeTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -166,6 +167,20 @@ func (m *_RelativeTimestamp) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_RelativeTimestamp) IsRelativeTimestamp() {}
+
+func (m *_RelativeTimestamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RelativeTimestamp) deepCopy() *_RelativeTimestamp {
+	if m == nil {
+		return nil
+	}
+	_RelativeTimestampCopy := &_RelativeTimestamp{
+		m.Timestamp,
+	}
+	return _RelativeTimestampCopy
+}
 
 func (m *_RelativeTimestamp) String() string {
 	if m == nil {

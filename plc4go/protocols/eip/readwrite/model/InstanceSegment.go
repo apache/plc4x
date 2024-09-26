@@ -38,6 +38,7 @@ type InstanceSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPathSegmentType returns PathSegmentType (property field)
 	GetPathSegmentType() uint8
 	// GetLogicalSegmentType returns LogicalSegmentType (property field)
@@ -226,6 +227,23 @@ func (m *_InstanceSegment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_InstanceSegment) IsInstanceSegment() {}
+
+func (m *_InstanceSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InstanceSegment) deepCopy() *_InstanceSegment {
+	if m == nil {
+		return nil
+	}
+	_InstanceSegmentCopy := &_InstanceSegment{
+		m.PathSegmentType,
+		m.LogicalSegmentType,
+		m.LogicalSegmentFormat,
+		m.Instance,
+	}
+	return _InstanceSegmentCopy
+}
 
 func (m *_InstanceSegment) String() string {
 	if m == nil {

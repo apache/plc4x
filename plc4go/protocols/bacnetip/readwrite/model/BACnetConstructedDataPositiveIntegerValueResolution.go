@@ -38,6 +38,7 @@ type BACnetConstructedDataPositiveIntegerValueResolution interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueResolution) IsBACnetConstructedDataPositiveIntegerValueResolution() {
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueResolution) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueResolution) deepCopy() *_BACnetConstructedDataPositiveIntegerValueResolution {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPositiveIntegerValueResolutionCopy := &_BACnetConstructedDataPositiveIntegerValueResolution{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Resolution.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPositiveIntegerValueResolutionCopy
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueResolution) String() string {

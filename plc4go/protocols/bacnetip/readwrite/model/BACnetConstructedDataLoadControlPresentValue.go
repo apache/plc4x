@@ -38,6 +38,7 @@ type BACnetConstructedDataLoadControlPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetShedStateTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoadControlPresentValue) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataLoadControlPresentValue) IsBACnetConstructedDataLoadControlPresentValue() {
+}
+
+func (m *_BACnetConstructedDataLoadControlPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoadControlPresentValue) deepCopy() *_BACnetConstructedDataLoadControlPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoadControlPresentValueCopy := &_BACnetConstructedDataLoadControlPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetShedStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoadControlPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataLoadControlPresentValue) String() string {

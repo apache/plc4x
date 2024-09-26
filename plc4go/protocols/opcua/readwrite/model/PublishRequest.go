@@ -38,6 +38,7 @@ type PublishRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_PublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_PublishRequest) IsPublishRequest() {}
+
+func (m *_PublishRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishRequest) deepCopy() *_PublishRequest {
+	if m == nil {
+		return nil
+	}
+	_PublishRequestCopy := &_PublishRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfSubscriptionAcknowledgements,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.SubscriptionAcknowledgements),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishRequestCopy
+}
 
 func (m *_PublishRequest) String() string {
 	if m == nil {

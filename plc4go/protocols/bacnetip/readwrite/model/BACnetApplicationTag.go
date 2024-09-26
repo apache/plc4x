@@ -40,12 +40,14 @@ type BACnetApplicationTag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetApplicationTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTag()
 }
 
 // BACnetApplicationTagContract provides a set of functions which can be overwritten by a sub struct
 type BACnetApplicationTagContract interface {
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetActualTagNumber returns ActualTagNumber (virtual field)
@@ -316,3 +318,18 @@ func (pm *_BACnetApplicationTag) serializeParent(ctx context.Context, writeBuffe
 }
 
 func (m *_BACnetApplicationTag) IsBACnetApplicationTag() {}
+
+func (m *_BACnetApplicationTag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTag) deepCopy() *_BACnetApplicationTag {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagCopy := &_BACnetApplicationTag{
+		nil, // will be set by child
+		m.Header.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetApplicationTagCopy
+}

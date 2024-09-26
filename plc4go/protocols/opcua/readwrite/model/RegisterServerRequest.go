@@ -38,6 +38,7 @@ type RegisterServerRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -206,6 +207,23 @@ func (m *_RegisterServerRequest) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_RegisterServerRequest) IsRegisterServerRequest() {}
+
+func (m *_RegisterServerRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterServerRequest) deepCopy() *_RegisterServerRequest {
+	if m == nil {
+		return nil
+	}
+	_RegisterServerRequestCopy := &_RegisterServerRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.Server.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterServerRequestCopy
+}
 
 func (m *_RegisterServerRequest) String() string {
 	if m == nil {

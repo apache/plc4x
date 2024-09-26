@@ -38,6 +38,7 @@ type SecurityDataSystemArmedDisarmed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetArmCodeType returns ArmCodeType (property field)
 	GetArmCodeType() SecurityArmCode
@@ -178,6 +179,22 @@ func (m *_SecurityDataSystemArmedDisarmed) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_SecurityDataSystemArmedDisarmed) IsSecurityDataSystemArmedDisarmed() {}
+
+func (m *_SecurityDataSystemArmedDisarmed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataSystemArmedDisarmed) deepCopy() *_SecurityDataSystemArmedDisarmed {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataSystemArmedDisarmedCopy := &_SecurityDataSystemArmedDisarmed{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.ArmCodeType.DeepCopy().(SecurityArmCode),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataSystemArmedDisarmedCopy
+}
 
 func (m *_SecurityDataSystemArmedDisarmed) String() string {
 	if m == nil {

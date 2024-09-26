@@ -40,12 +40,14 @@ type Reply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReply()
 }
 
 // ReplyContract provides a set of functions which can be overwritten by a sub struct
 type ReplyContract interface {
+	utils.Copyable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetCBusOptions() returns a parser argument
@@ -227,3 +229,20 @@ func (m *_Reply) GetRequestContext() RequestContext {
 ////
 
 func (m *_Reply) IsReply() {}
+
+func (m *_Reply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Reply) deepCopy() *_Reply {
+	if m == nil {
+		return nil
+	}
+	_ReplyCopy := &_Reply{
+		nil, // will be set by child
+		m.PeekedByte,
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _ReplyCopy
+}

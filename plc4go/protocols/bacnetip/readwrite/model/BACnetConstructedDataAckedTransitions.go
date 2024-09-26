@@ -38,6 +38,7 @@ type BACnetConstructedDataAckedTransitions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAckedTransitions returns AckedTransitions (property field)
 	GetAckedTransitions() BACnetEventTransitionBitsTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAckedTransitions) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataAckedTransitions) IsBACnetConstructedDataAckedTransitions() {}
+
+func (m *_BACnetConstructedDataAckedTransitions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAckedTransitions) deepCopy() *_BACnetConstructedDataAckedTransitions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAckedTransitionsCopy := &_BACnetConstructedDataAckedTransitions{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AckedTransitions.DeepCopy().(BACnetEventTransitionBitsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAckedTransitionsCopy
+}
 
 func (m *_BACnetConstructedDataAckedTransitions) String() string {
 	if m == nil {

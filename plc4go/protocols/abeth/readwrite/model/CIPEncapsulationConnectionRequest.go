@@ -37,6 +37,7 @@ type CIPEncapsulationConnectionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CIPEncapsulationPacket
 	// IsCIPEncapsulationConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationConnectionRequest()
@@ -147,6 +148,21 @@ func (m *_CIPEncapsulationConnectionRequest) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_CIPEncapsulationConnectionRequest) IsCIPEncapsulationConnectionRequest() {}
+
+func (m *_CIPEncapsulationConnectionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationConnectionRequest) deepCopy() *_CIPEncapsulationConnectionRequest {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationConnectionRequestCopy := &_CIPEncapsulationConnectionRequest{
+		m.CIPEncapsulationPacketContract.DeepCopy().(CIPEncapsulationPacketContract),
+	}
+	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	return _CIPEncapsulationConnectionRequestCopy
+}
 
 func (m *_CIPEncapsulationConnectionRequest) String() string {
 	if m == nil {

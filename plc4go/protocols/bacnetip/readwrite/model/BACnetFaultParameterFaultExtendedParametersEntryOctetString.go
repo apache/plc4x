@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) Serialize
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) IsBACnetFaultParameterFaultExtendedParametersEntryOctetString() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryOctetStringCopy := &_BACnetFaultParameterFaultExtendedParametersEntryOctetString{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryOctetStringCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) String() string {

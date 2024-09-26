@@ -36,6 +36,7 @@ type ApduDataAdcRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataAdcRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataAdcRead()
@@ -146,6 +147,21 @@ func (m *_ApduDataAdcRead) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ApduDataAdcRead) IsApduDataAdcRead() {}
+
+func (m *_ApduDataAdcRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataAdcRead) deepCopy() *_ApduDataAdcRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataAdcReadCopy := &_ApduDataAdcRead{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataAdcReadCopy
+}
 
 func (m *_ApduDataAdcRead) String() string {
 	if m == nil {

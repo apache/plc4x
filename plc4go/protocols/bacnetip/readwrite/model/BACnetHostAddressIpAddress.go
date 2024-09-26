@@ -38,6 +38,7 @@ type BACnetHostAddressIpAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetHostAddress
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() BACnetContextTagOctetString
@@ -178,6 +179,22 @@ func (m *_BACnetHostAddressIpAddress) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetHostAddressIpAddress) IsBACnetHostAddressIpAddress() {}
+
+func (m *_BACnetHostAddressIpAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddressIpAddress) deepCopy() *_BACnetHostAddressIpAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressIpAddressCopy := &_BACnetHostAddressIpAddress{
+		m.BACnetHostAddressContract.DeepCopy().(BACnetHostAddressContract),
+		m.IpAddress.DeepCopy().(BACnetContextTagOctetString),
+	}
+	m.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
+	return _BACnetHostAddressIpAddressCopy
+}
 
 func (m *_BACnetHostAddressIpAddress) String() string {
 	if m == nil {

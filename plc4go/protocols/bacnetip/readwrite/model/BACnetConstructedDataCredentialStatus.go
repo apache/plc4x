@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentialStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCredentialStatus) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataCredentialStatus) IsBACnetConstructedDataCredentialStatus() {}
+
+func (m *_BACnetConstructedDataCredentialStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentialStatus) deepCopy() *_BACnetConstructedDataCredentialStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialStatusCopy := &_BACnetConstructedDataCredentialStatus{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialStatusCopy
+}
 
 func (m *_BACnetConstructedDataCredentialStatus) String() string {
 	if m == nil {

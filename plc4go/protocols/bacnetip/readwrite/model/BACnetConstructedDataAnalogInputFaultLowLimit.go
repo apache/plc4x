@@ -38,6 +38,7 @@ type BACnetConstructedDataAnalogInputFaultLowLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultLowLimit returns FaultLowLimit (property field)
 	GetFaultLowLimit() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAnalogInputFaultLowLimit) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataAnalogInputFaultLowLimit) IsBACnetConstructedDataAnalogInputFaultLowLimit() {
+}
+
+func (m *_BACnetConstructedDataAnalogInputFaultLowLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAnalogInputFaultLowLimit) deepCopy() *_BACnetConstructedDataAnalogInputFaultLowLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAnalogInputFaultLowLimitCopy := &_BACnetConstructedDataAnalogInputFaultLowLimit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FaultLowLimit.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAnalogInputFaultLowLimitCopy
 }
 
 func (m *_BACnetConstructedDataAnalogInputFaultLowLimit) String() string {

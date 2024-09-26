@@ -38,6 +38,7 @@ type BrowsePathResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -231,6 +232,24 @@ func (m *_BrowsePathResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_BrowsePathResult) IsBrowsePathResult() {}
+
+func (m *_BrowsePathResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowsePathResult) deepCopy() *_BrowsePathResult {
+	if m == nil {
+		return nil
+	}
+	_BrowsePathResultCopy := &_BrowsePathResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfTargets,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Targets),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowsePathResultCopy
+}
 
 func (m *_BrowsePathResult) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type HistoryReadResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -230,6 +231,24 @@ func (m *_HistoryReadResult) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_HistoryReadResult) IsHistoryReadResult() {}
+
+func (m *_HistoryReadResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadResult) deepCopy() *_HistoryReadResult {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadResultCopy := &_HistoryReadResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		m.HistoryData.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadResultCopy
+}
 
 func (m *_HistoryReadResult) String() string {
 	if m == nil {

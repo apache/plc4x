@@ -40,12 +40,14 @@ type ReplyOrConfirmation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsReplyOrConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReplyOrConfirmation()
 }
 
 // ReplyOrConfirmationContract provides a set of functions which can be overwritten by a sub struct
 type ReplyOrConfirmationContract interface {
+	utils.Copyable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetIsAlpha returns IsAlpha (virtual field)
@@ -261,3 +263,20 @@ func (m *_ReplyOrConfirmation) GetRequestContext() RequestContext {
 ////
 
 func (m *_ReplyOrConfirmation) IsReplyOrConfirmation() {}
+
+func (m *_ReplyOrConfirmation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReplyOrConfirmation) deepCopy() *_ReplyOrConfirmation {
+	if m == nil {
+		return nil
+	}
+	_ReplyOrConfirmationCopy := &_ReplyOrConfirmation{
+		nil, // will be set by child
+		m.PeekedByte,
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _ReplyOrConfirmationCopy
+}

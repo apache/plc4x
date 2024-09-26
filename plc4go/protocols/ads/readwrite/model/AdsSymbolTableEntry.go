@@ -45,6 +45,7 @@ type AdsSymbolTableEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetEntryLength returns EntryLength (property field)
 	GetEntryLength() uint32
 	// GetGroup returns Group (property field)
@@ -725,6 +726,43 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_AdsSymbolTableEntry) IsAdsSymbolTableEntry() {}
+
+func (m *_AdsSymbolTableEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsSymbolTableEntry) deepCopy() *_AdsSymbolTableEntry {
+	if m == nil {
+		return nil
+	}
+	_AdsSymbolTableEntryCopy := &_AdsSymbolTableEntry{
+		m.EntryLength,
+		m.Group,
+		m.Offset,
+		m.Size,
+		m.DataType,
+		m.FlagMethodDeref,
+		m.FlagItfMethodAccess,
+		m.FlagReadOnly,
+		m.FlagTComInterfacePointer,
+		m.FlagTypeGuid,
+		m.FlagReferenceTo,
+		m.FlagBitValue,
+		m.FlagPersistent,
+		m.FlagExtendedFlags,
+		m.FlagInitOnReset,
+		m.FlagStatic,
+		m.FlagAttributes,
+		m.FlagContextMask,
+		m.Name,
+		m.DataTypeName,
+		m.Comment,
+		utils.DeepCopySlice[byte, byte](m.Rest),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _AdsSymbolTableEntryCopy
+}
 
 func (m *_AdsSymbolTableEntry) String() string {
 	if m == nil {

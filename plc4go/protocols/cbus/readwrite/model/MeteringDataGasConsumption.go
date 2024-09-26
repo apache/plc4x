@@ -38,6 +38,7 @@ type MeteringDataGasConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetMJ returns MJ (property field)
 	GetMJ() uint32
@@ -175,6 +176,22 @@ func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_MeteringDataGasConsumption) IsMeteringDataGasConsumption() {}
+
+func (m *_MeteringDataGasConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataGasConsumption) deepCopy() *_MeteringDataGasConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataGasConsumptionCopy := &_MeteringDataGasConsumption{
+		m.MeteringDataContract.DeepCopy().(MeteringDataContract),
+		m.MJ,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataGasConsumptionCopy
+}
 
 func (m *_MeteringDataGasConsumption) String() string {
 	if m == nil {

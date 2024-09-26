@@ -38,6 +38,7 @@ type BACnetConstructedDataMinPresValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinPresValue returns MinPresValue (property field)
 	GetMinPresValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMinPresValue) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataMinPresValue) IsBACnetConstructedDataMinPresValue() {}
+
+func (m *_BACnetConstructedDataMinPresValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMinPresValue) deepCopy() *_BACnetConstructedDataMinPresValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMinPresValueCopy := &_BACnetConstructedDataMinPresValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MinPresValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMinPresValueCopy
+}
 
 func (m *_BACnetConstructedDataMinPresValue) String() string {
 	if m == nil {

@@ -37,6 +37,7 @@ type DF1UnprotectedReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1Command
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -180,6 +181,22 @@ func (m *_DF1UnprotectedReadResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_DF1UnprotectedReadResponse) IsDF1UnprotectedReadResponse() {}
+
+func (m *_DF1UnprotectedReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1UnprotectedReadResponse) deepCopy() *_DF1UnprotectedReadResponse {
+	if m == nil {
+		return nil
+	}
+	_DF1UnprotectedReadResponseCopy := &_DF1UnprotectedReadResponse{
+		m.DF1CommandContract.DeepCopy().(DF1CommandContract),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.DF1CommandContract.(*_DF1Command)._SubType = m
+	return _DF1UnprotectedReadResponseCopy
+}
 
 func (m *_DF1UnprotectedReadResponse) String() string {
 	if m == nil {

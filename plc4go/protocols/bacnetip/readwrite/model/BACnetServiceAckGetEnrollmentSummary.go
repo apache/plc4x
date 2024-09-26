@@ -38,6 +38,7 @@ type BACnetServiceAckGetEnrollmentSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -281,6 +282,26 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetServiceAckGetEnrollmentSummary) IsBACnetServiceAckGetEnrollmentSummary() {}
+
+func (m *_BACnetServiceAckGetEnrollmentSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckGetEnrollmentSummary) deepCopy() *_BACnetServiceAckGetEnrollmentSummary {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckGetEnrollmentSummaryCopy := &_BACnetServiceAckGetEnrollmentSummary{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.EventType.DeepCopy().(BACnetEventTypeTagged),
+		m.EventState.DeepCopy().(BACnetEventStateTagged),
+		m.Priority.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.NotificationClass.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckGetEnrollmentSummaryCopy
+}
 
 func (m *_BACnetServiceAckGetEnrollmentSummary) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type HVACZoneList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetExpansion returns Expansion (property field)
 	GetExpansion() bool
 	// GetZone6 returns Zone6 (property field)
@@ -337,6 +338,27 @@ func (m *_HVACZoneList) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_HVACZoneList) IsHVACZoneList() {}
+
+func (m *_HVACZoneList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACZoneList) deepCopy() *_HVACZoneList {
+	if m == nil {
+		return nil
+	}
+	_HVACZoneListCopy := &_HVACZoneList{
+		m.Expansion,
+		m.Zone6,
+		m.Zone5,
+		m.Zone4,
+		m.Zone3,
+		m.Zone2,
+		m.Zone1,
+		m.Zone0,
+	}
+	return _HVACZoneListCopy
+}
 
 func (m *_HVACZoneList) String() string {
 	if m == nil {

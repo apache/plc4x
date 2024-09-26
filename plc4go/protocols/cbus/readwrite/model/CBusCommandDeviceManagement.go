@@ -41,6 +41,7 @@ type CBusCommandDeviceManagement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusCommand
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -225,6 +226,23 @@ func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_CBusCommandDeviceManagement) IsCBusCommandDeviceManagement() {}
+
+func (m *_CBusCommandDeviceManagement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusCommandDeviceManagement) deepCopy() *_CBusCommandDeviceManagement {
+	if m == nil {
+		return nil
+	}
+	_CBusCommandDeviceManagementCopy := &_CBusCommandDeviceManagement{
+		m.CBusCommandContract.DeepCopy().(CBusCommandContract),
+		m.ParamNo,
+		m.ParameterValue,
+	}
+	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	return _CBusCommandDeviceManagementCopy
+}
 
 func (m *_CBusCommandDeviceManagement) String() string {
 	if m == nil {

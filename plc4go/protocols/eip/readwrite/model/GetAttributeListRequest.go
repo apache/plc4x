@@ -36,6 +36,7 @@ type GetAttributeListRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsGetAttributeListRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeListRequest()
@@ -154,6 +155,21 @@ func (m *_GetAttributeListRequest) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_GetAttributeListRequest) IsGetAttributeListRequest() {}
+
+func (m *_GetAttributeListRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetAttributeListRequest) deepCopy() *_GetAttributeListRequest {
+	if m == nil {
+		return nil
+	}
+	_GetAttributeListRequestCopy := &_GetAttributeListRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _GetAttributeListRequestCopy
+}
 
 func (m *_GetAttributeListRequest) String() string {
 	if m == nil {

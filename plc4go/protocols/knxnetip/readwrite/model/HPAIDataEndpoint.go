@@ -38,6 +38,7 @@ type HPAIDataEndpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
@@ -222,6 +223,22 @@ func (m *_HPAIDataEndpoint) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_HPAIDataEndpoint) IsHPAIDataEndpoint() {}
+
+func (m *_HPAIDataEndpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HPAIDataEndpoint) deepCopy() *_HPAIDataEndpoint {
+	if m == nil {
+		return nil
+	}
+	_HPAIDataEndpointCopy := &_HPAIDataEndpoint{
+		m.HostProtocolCode,
+		m.IpAddress.DeepCopy().(IPAddress),
+		m.IpPort,
+	}
+	return _HPAIDataEndpointCopy
+}
 
 func (m *_HPAIDataEndpoint) String() string {
 	if m == nil {

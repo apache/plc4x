@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveVTSessions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveVTSession returns ActiveVTSession (property field)
 	GetActiveVTSession() []BACnetVTSession
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataActiveVTSessions) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataActiveVTSessions) IsBACnetConstructedDataActiveVTSessions() {}
+
+func (m *_BACnetConstructedDataActiveVTSessions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveVTSessions) deepCopy() *_BACnetConstructedDataActiveVTSessions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveVTSessionsCopy := &_BACnetConstructedDataActiveVTSessions{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetVTSession, BACnetVTSession](m.ActiveVTSession),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveVTSessionsCopy
+}
 
 func (m *_BACnetConstructedDataActiveVTSessions) String() string {
 	if m == nil {

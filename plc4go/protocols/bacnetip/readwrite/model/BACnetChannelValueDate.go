@@ -38,6 +38,7 @@ type BACnetChannelValueDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueDate) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetChannelValueDate) IsBACnetChannelValueDate() {}
+
+func (m *_BACnetChannelValueDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueDate) deepCopy() *_BACnetChannelValueDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueDateCopy := &_BACnetChannelValueDate{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueDateCopy
+}
 
 func (m *_BACnetChannelValueDate) String() string {
 	if m == nil {

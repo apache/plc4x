@@ -36,6 +36,7 @@ type AccessControlDataRequestToExit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AccessControlData
 	// IsAccessControlDataRequestToExit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataRequestToExit()
@@ -142,6 +143,21 @@ func (m *_AccessControlDataRequestToExit) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_AccessControlDataRequestToExit) IsAccessControlDataRequestToExit() {}
+
+func (m *_AccessControlDataRequestToExit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlDataRequestToExit) deepCopy() *_AccessControlDataRequestToExit {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataRequestToExitCopy := &_AccessControlDataRequestToExit{
+		m.AccessControlDataContract.DeepCopy().(AccessControlDataContract),
+	}
+	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	return _AccessControlDataRequestToExitCopy
+}
 
 func (m *_AccessControlDataRequestToExit) String() string {
 	if m == nil {

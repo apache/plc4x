@@ -38,6 +38,7 @@ type BACnetConstructedDataDirectReading interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDirectReading returns DirectReading (property field)
 	GetDirectReading() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDirectReading) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataDirectReading) IsBACnetConstructedDataDirectReading() {}
+
+func (m *_BACnetConstructedDataDirectReading) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDirectReading) deepCopy() *_BACnetConstructedDataDirectReading {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDirectReadingCopy := &_BACnetConstructedDataDirectReading{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DirectReading.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDirectReadingCopy
+}
 
 func (m *_BACnetConstructedDataDirectReading) String() string {
 	if m == nil {

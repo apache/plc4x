@@ -38,6 +38,7 @@ type BACnetTagPayloadTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHour returns Hour (property field)
 	GetHour() uint8
 	// GetMinute returns Minute (property field)
@@ -345,6 +346,23 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetTagPayloadTime) IsBACnetTagPayloadTime() {}
+
+func (m *_BACnetTagPayloadTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadTime) deepCopy() *_BACnetTagPayloadTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadTimeCopy := &_BACnetTagPayloadTime{
+		m.Hour,
+		m.Minute,
+		m.Second,
+		m.Fractional,
+	}
+	return _BACnetTagPayloadTimeCopy
+}
 
 func (m *_BACnetTagPayloadTime) String() string {
 	if m == nil {

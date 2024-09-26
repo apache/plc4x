@@ -38,6 +38,7 @@ type ModbusPDUReadFileRecordResponseItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() uint8
 	// GetData returns Data (property field)
@@ -201,6 +202,21 @@ func (m *_ModbusPDUReadFileRecordResponseItem) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ModbusPDUReadFileRecordResponseItem) IsModbusPDUReadFileRecordResponseItem() {}
+
+func (m *_ModbusPDUReadFileRecordResponseItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFileRecordResponseItem) deepCopy() *_ModbusPDUReadFileRecordResponseItem {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFileRecordResponseItemCopy := &_ModbusPDUReadFileRecordResponseItem{
+		m.ReferenceType,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	return _ModbusPDUReadFileRecordResponseItemCopy
+}
 
 func (m *_ModbusPDUReadFileRecordResponseItem) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type X509IdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	UserIdentityTokenDefinition
 	// GetCertificateData returns CertificateData (property field)
 	GetCertificateData() PascalByteString
@@ -182,6 +183,22 @@ func (m *_X509IdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_X509IdentityToken) IsX509IdentityToken() {}
+
+func (m *_X509IdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_X509IdentityToken) deepCopy() *_X509IdentityToken {
+	if m == nil {
+		return nil
+	}
+	_X509IdentityTokenCopy := &_X509IdentityToken{
+		m.UserIdentityTokenDefinitionContract.DeepCopy().(UserIdentityTokenDefinitionContract),
+		m.CertificateData.DeepCopy().(PascalByteString),
+	}
+	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	return _X509IdentityTokenCopy
+}
 
 func (m *_X509IdentityToken) String() string {
 	if m == nil {

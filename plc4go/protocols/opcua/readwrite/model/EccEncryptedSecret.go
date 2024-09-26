@@ -36,6 +36,7 @@ type EccEncryptedSecret interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsEccEncryptedSecret is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEccEncryptedSecret()
 }
@@ -134,6 +135,18 @@ func (m *_EccEncryptedSecret) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_EccEncryptedSecret) IsEccEncryptedSecret() {}
+
+func (m *_EccEncryptedSecret) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EccEncryptedSecret) deepCopy() *_EccEncryptedSecret {
+	if m == nil {
+		return nil
+	}
+	_EccEncryptedSecretCopy := &_EccEncryptedSecret{}
+	return _EccEncryptedSecretCopy
+}
 
 func (m *_EccEncryptedSecret) String() string {
 	if m == nil {

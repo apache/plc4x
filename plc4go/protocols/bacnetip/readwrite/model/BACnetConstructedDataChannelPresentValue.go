@@ -38,6 +38,7 @@ type BACnetConstructedDataChannelPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetChannelValue
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataChannelPresentValue) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataChannelPresentValue) IsBACnetConstructedDataChannelPresentValue() {}
+
+func (m *_BACnetConstructedDataChannelPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataChannelPresentValue) deepCopy() *_BACnetConstructedDataChannelPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataChannelPresentValueCopy := &_BACnetConstructedDataChannelPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetChannelValue),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataChannelPresentValueCopy
+}
 
 func (m *_BACnetConstructedDataChannelPresentValue) String() string {
 	if m == nil {

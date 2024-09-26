@@ -38,6 +38,7 @@ type SALDataClockAndTimekeeping interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetClockAndTimekeepingData returns ClockAndTimekeepingData (property field)
 	GetClockAndTimekeepingData() ClockAndTimekeepingData
@@ -182,6 +183,22 @@ func (m *_SALDataClockAndTimekeeping) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SALDataClockAndTimekeeping) IsSALDataClockAndTimekeeping() {}
+
+func (m *_SALDataClockAndTimekeeping) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataClockAndTimekeeping) deepCopy() *_SALDataClockAndTimekeeping {
+	if m == nil {
+		return nil
+	}
+	_SALDataClockAndTimekeepingCopy := &_SALDataClockAndTimekeeping{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.ClockAndTimekeepingData.DeepCopy().(ClockAndTimekeepingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataClockAndTimekeepingCopy
+}
 
 func (m *_SALDataClockAndTimekeeping) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type HistoryEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfEvents returns NoOfEvents (property field)
 	GetNoOfEvents() int32
@@ -207,6 +208,23 @@ func (m *_HistoryEvent) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_HistoryEvent) IsHistoryEvent() {}
+
+func (m *_HistoryEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryEvent) deepCopy() *_HistoryEvent {
+	if m == nil {
+		return nil
+	}
+	_HistoryEventCopy := &_HistoryEvent{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfEvents,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Events),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryEventCopy
+}
 
 func (m *_HistoryEvent) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ParameterValueBaudRateSelector interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() BaudRateSelector
@@ -207,6 +208,23 @@ func (m *_ParameterValueBaudRateSelector) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ParameterValueBaudRateSelector) IsParameterValueBaudRateSelector() {}
+
+func (m *_ParameterValueBaudRateSelector) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueBaudRateSelector) deepCopy() *_ParameterValueBaudRateSelector {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueBaudRateSelectorCopy := &_ParameterValueBaudRateSelector{
+		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.Value,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueBaudRateSelectorCopy
+}
 
 func (m *_ParameterValueBaudRateSelector) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BrowseResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -255,6 +256,25 @@ func (m *_BrowseResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_BrowseResult) IsBrowseResult() {}
+
+func (m *_BrowseResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseResult) deepCopy() *_BrowseResult {
+	if m == nil {
+		return nil
+	}
+	_BrowseResultCopy := &_BrowseResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		m.NoOfReferences,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.References),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseResultCopy
+}
 
 func (m *_BrowseResult) String() string {
 	if m == nil {

@@ -42,12 +42,14 @@ type CIPEncapsulationPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationPacket()
 }
 
 // CIPEncapsulationPacketContract provides a set of functions which can be overwritten by a sub struct
 type CIPEncapsulationPacketContract interface {
+	utils.Copyable
 	// GetSessionHandle returns SessionHandle (property field)
 	GetSessionHandle() uint32
 	// GetStatus returns Status (property field)
@@ -320,3 +322,22 @@ func (pm *_CIPEncapsulationPacket) serializeParent(ctx context.Context, writeBuf
 }
 
 func (m *_CIPEncapsulationPacket) IsCIPEncapsulationPacket() {}
+
+func (m *_CIPEncapsulationPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationPacket) deepCopy() *_CIPEncapsulationPacket {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationPacketCopy := &_CIPEncapsulationPacket{
+		nil, // will be set by child
+		m.SessionHandle,
+		m.Status,
+		utils.DeepCopySlice[uint8, uint8](m.SenderContext),
+		m.Options,
+		m.reservedField0,
+	}
+	return _CIPEncapsulationPacketCopy
+}

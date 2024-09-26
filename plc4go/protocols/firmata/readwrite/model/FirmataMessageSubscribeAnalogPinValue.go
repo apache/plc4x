@@ -40,6 +40,7 @@ type FirmataMessageSubscribeAnalogPinValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -217,6 +218,24 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_FirmataMessageSubscribeAnalogPinValue) IsFirmataMessageSubscribeAnalogPinValue() {}
+
+func (m *_FirmataMessageSubscribeAnalogPinValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessageSubscribeAnalogPinValue) deepCopy() *_FirmataMessageSubscribeAnalogPinValue {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageSubscribeAnalogPinValueCopy := &_FirmataMessageSubscribeAnalogPinValue{
+		m.FirmataMessageContract.DeepCopy().(FirmataMessageContract),
+		m.Pin,
+		m.Enable,
+		m.reservedField0,
+	}
+	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	return _FirmataMessageSubscribeAnalogPinValueCopy
+}
 
 func (m *_FirmataMessageSubscribeAnalogPinValue) String() string {
 	if m == nil {

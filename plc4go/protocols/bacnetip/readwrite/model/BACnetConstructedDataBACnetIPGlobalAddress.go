@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPGlobalAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBacnetIpGlobalAddress returns BacnetIpGlobalAddress (property field)
 	GetBacnetIpGlobalAddress() BACnetHostNPort
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataBACnetIPGlobalAddress) IsBACnetConstructedDataBACnetIPGlobalAddress() {
+}
+
+func (m *_BACnetConstructedDataBACnetIPGlobalAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPGlobalAddress) deepCopy() *_BACnetConstructedDataBACnetIPGlobalAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPGlobalAddressCopy := &_BACnetConstructedDataBACnetIPGlobalAddress{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BacnetIpGlobalAddress.DeepCopy().(BACnetHostNPort),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPGlobalAddressCopy
 }
 
 func (m *_BACnetConstructedDataBACnetIPGlobalAddress) String() string {

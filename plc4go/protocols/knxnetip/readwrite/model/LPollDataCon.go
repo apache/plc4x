@@ -36,6 +36,7 @@ type LPollDataCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsLPollDataCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLPollDataCon()
@@ -146,6 +147,21 @@ func (m *_LPollDataCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_LPollDataCon) IsLPollDataCon() {}
+
+func (m *_LPollDataCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LPollDataCon) deepCopy() *_LPollDataCon {
+	if m == nil {
+		return nil
+	}
+	_LPollDataConCopy := &_LPollDataCon{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LPollDataConCopy
+}
 
 func (m *_LPollDataCon) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyAccessResultAccessResultPropertyAccessError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyAccessResultAccessResult
 	// GetPropertyAccessError returns PropertyAccessError (property field)
 	GetPropertyAccessError() ErrorEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) SerializeWi
 }
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) IsBACnetPropertyAccessResultAccessResultPropertyAccessError() {
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) deepCopy() *_BACnetPropertyAccessResultAccessResultPropertyAccessError {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyAccessResultAccessResultPropertyAccessErrorCopy := &_BACnetPropertyAccessResultAccessResultPropertyAccessError{
+		m.BACnetPropertyAccessResultAccessResultContract.DeepCopy().(BACnetPropertyAccessResultAccessResultContract),
+		m.PropertyAccessError.DeepCopy().(ErrorEnclosed),
+	}
+	m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = m
+	return _BACnetPropertyAccessResultAccessResultPropertyAccessErrorCopy
 }
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) String() string {

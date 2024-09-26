@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter inte
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetCharacterValue returns CharacterValue (property field)
 	GetCharacterValue() BACnetContextTagCharacterString
@@ -178,6 +179,22 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter() {
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) deepCopy() *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
+		m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract),
+		m.CharacterValue.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = m
+	return _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter) String() string {

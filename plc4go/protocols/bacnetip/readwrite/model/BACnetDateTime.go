@@ -38,6 +38,7 @@ type BACnetDateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
 	// GetTimeValue returns TimeValue (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetDateTime) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetDateTime) IsBACnetDateTime() {}
+
+func (m *_BACnetDateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDateTime) deepCopy() *_BACnetDateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetDateTimeCopy := &_BACnetDateTime{
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	return _BACnetDateTimeCopy
+}
 
 func (m *_BACnetDateTime) String() string {
 	if m == nil {

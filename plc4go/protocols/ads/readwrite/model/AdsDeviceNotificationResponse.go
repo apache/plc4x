@@ -36,6 +36,7 @@ type AdsDeviceNotificationResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDeviceNotificationResponse()
@@ -150,6 +151,21 @@ func (m *_AdsDeviceNotificationResponse) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_AdsDeviceNotificationResponse) IsAdsDeviceNotificationResponse() {}
+
+func (m *_AdsDeviceNotificationResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDeviceNotificationResponse) deepCopy() *_AdsDeviceNotificationResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsDeviceNotificationResponseCopy := &_AdsDeviceNotificationResponse{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsDeviceNotificationResponseCopy
+}
 
 func (m *_AdsDeviceNotificationResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type VariantLocalizedText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -210,6 +211,23 @@ func (m *_VariantLocalizedText) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_VariantLocalizedText) IsVariantLocalizedText() {}
+
+func (m *_VariantLocalizedText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantLocalizedText) deepCopy() *_VariantLocalizedText {
+	if m == nil {
+		return nil
+	}
+	_VariantLocalizedTextCopy := &_VariantLocalizedText{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[LocalizedText, LocalizedText](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantLocalizedTextCopy
+}
 
 func (m *_VariantLocalizedText) String() string {
 	if m == nil {

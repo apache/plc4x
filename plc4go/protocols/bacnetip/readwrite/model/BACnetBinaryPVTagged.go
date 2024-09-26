@@ -38,6 +38,7 @@ type BACnetBinaryPVTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetBinaryPVTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetBinaryPVTagged) IsBACnetBinaryPVTagged() {}
+
+func (m *_BACnetBinaryPVTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetBinaryPVTagged) deepCopy() *_BACnetBinaryPVTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetBinaryPVTaggedCopy := &_BACnetBinaryPVTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetBinaryPVTaggedCopy
+}
 
 func (m *_BACnetBinaryPVTagged) String() string {
 	if m == nil {

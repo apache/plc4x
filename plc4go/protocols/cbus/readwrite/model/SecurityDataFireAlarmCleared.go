@@ -36,6 +36,7 @@ type SecurityDataFireAlarmCleared interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataFireAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataFireAlarmCleared()
@@ -142,6 +143,21 @@ func (m *_SecurityDataFireAlarmCleared) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SecurityDataFireAlarmCleared) IsSecurityDataFireAlarmCleared() {}
+
+func (m *_SecurityDataFireAlarmCleared) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataFireAlarmCleared) deepCopy() *_SecurityDataFireAlarmCleared {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataFireAlarmClearedCopy := &_SecurityDataFireAlarmCleared{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataFireAlarmClearedCopy
+}
 
 func (m *_SecurityDataFireAlarmCleared) String() string {
 	if m == nil {

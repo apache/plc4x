@@ -38,6 +38,7 @@ type BACnetConstructedDataMultiStateInputFaultValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultValues returns FaultValues (property field)
 	GetFaultValues() []BACnetApplicationTagUnsignedInteger
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataMultiStateInputFaultValues) IsBACnetConstructedDataMultiStateInputFaultValues() {
+}
+
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) deepCopy() *_BACnetConstructedDataMultiStateInputFaultValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMultiStateInputFaultValuesCopy := &_BACnetConstructedDataMultiStateInputFaultValues{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.FaultValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMultiStateInputFaultValuesCopy
 }
 
 func (m *_BACnetConstructedDataMultiStateInputFaultValues) String() string {

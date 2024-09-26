@@ -40,12 +40,14 @@ type AdsDiscoveryBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAdsDiscoveryBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlock()
 }
 
 // AdsDiscoveryBlockContract provides a set of functions which can be overwritten by a sub struct
 type AdsDiscoveryBlockContract interface {
+	utils.Copyable
 	// IsAdsDiscoveryBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlock()
 }
@@ -218,3 +220,17 @@ func (pm *_AdsDiscoveryBlock) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_AdsDiscoveryBlock) IsAdsDiscoveryBlock() {}
+
+func (m *_AdsDiscoveryBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlock) deepCopy() *_AdsDiscoveryBlock {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockCopy := &_AdsDiscoveryBlock{
+		nil, // will be set by child
+	}
+	return _AdsDiscoveryBlockCopy
+}

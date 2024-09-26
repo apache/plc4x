@@ -40,12 +40,14 @@ type COTPPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacket()
 }
 
 // COTPPacketContract provides a set of functions which can be overwritten by a sub struct
 type COTPPacketContract interface {
+	utils.Copyable
 	// GetParameters returns Parameters (property field)
 	GetParameters() []COTPParameter
 	// GetPayload returns Payload (property field)
@@ -296,3 +298,20 @@ func (m *_COTPPacket) GetCotpLen() uint16 {
 ////
 
 func (m *_COTPPacket) IsCOTPPacket() {}
+
+func (m *_COTPPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPPacket) deepCopy() *_COTPPacket {
+	if m == nil {
+		return nil
+	}
+	_COTPPacketCopy := &_COTPPacket{
+		nil, // will be set by child
+		utils.DeepCopySlice[COTPParameter, COTPParameter](m.Parameters),
+		m.Payload.DeepCopy().(S7Message),
+		m.CotpLen,
+	}
+	return _COTPPacketCopy
+}

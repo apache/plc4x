@@ -40,6 +40,7 @@ type AdsDataTypeArrayInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLowerBound returns LowerBound (property field)
 	GetLowerBound() uint32
 	// GetNumElements returns NumElements (property field)
@@ -219,6 +220,21 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_AdsDataTypeArrayInfo) IsAdsDataTypeArrayInfo() {}
+
+func (m *_AdsDataTypeArrayInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDataTypeArrayInfo) deepCopy() *_AdsDataTypeArrayInfo {
+	if m == nil {
+		return nil
+	}
+	_AdsDataTypeArrayInfoCopy := &_AdsDataTypeArrayInfo{
+		m.LowerBound,
+		m.NumElements,
+	}
+	return _AdsDataTypeArrayInfoCopy
+}
 
 func (m *_AdsDataTypeArrayInfo) String() string {
 	if m == nil {

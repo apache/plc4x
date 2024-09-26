@@ -36,6 +36,7 @@ type RequestEmpty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// IsRequestEmpty is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestEmpty()
@@ -142,6 +143,21 @@ func (m *_RequestEmpty) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_RequestEmpty) IsRequestEmpty() {}
+
+func (m *_RequestEmpty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestEmpty) deepCopy() *_RequestEmpty {
+	if m == nil {
+		return nil
+	}
+	_RequestEmptyCopy := &_RequestEmpty{
+		m.RequestContract.DeepCopy().(RequestContract),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestEmptyCopy
+}
 
 func (m *_RequestEmpty) String() string {
 	if m == nil {

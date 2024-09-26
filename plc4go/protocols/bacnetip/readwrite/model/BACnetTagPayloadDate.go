@@ -38,6 +38,7 @@ type BACnetTagPayloadDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetYearMinus1900 returns YearMinus1900 (property field)
 	GetYearMinus1900() uint8
 	// GetMonth returns Month (property field)
@@ -477,6 +478,23 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetTagPayloadDate) IsBACnetTagPayloadDate() {}
+
+func (m *_BACnetTagPayloadDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadDate) deepCopy() *_BACnetTagPayloadDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadDateCopy := &_BACnetTagPayloadDate{
+		m.YearMinus1900,
+		m.Month,
+		m.DayOfMonth,
+		m.DayOfWeek,
+	}
+	return _BACnetTagPayloadDateCopy
+}
 
 func (m *_BACnetTagPayloadDate) String() string {
 	if m == nil {

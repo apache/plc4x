@@ -38,6 +38,7 @@ type OpenSecureChannelResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -251,6 +252,25 @@ func (m *_OpenSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_OpenSecureChannelResponse) IsOpenSecureChannelResponse() {}
+
+func (m *_OpenSecureChannelResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpenSecureChannelResponse) deepCopy() *_OpenSecureChannelResponse {
+	if m == nil {
+		return nil
+	}
+	_OpenSecureChannelResponseCopy := &_OpenSecureChannelResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerProtocolVersion,
+		m.SecurityToken.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerNonce.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _OpenSecureChannelResponseCopy
+}
 
 func (m *_OpenSecureChannelResponse) String() string {
 	if m == nil {

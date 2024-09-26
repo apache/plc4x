@@ -38,6 +38,7 @@ type WriteValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -251,6 +252,25 @@ func (m *_WriteValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_WriteValue) IsWriteValue() {}
+
+func (m *_WriteValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WriteValue) deepCopy() *_WriteValue {
+	if m == nil {
+		return nil
+	}
+	_WriteValueCopy := &_WriteValue{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NodeId.DeepCopy().(NodeId),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+		m.Value.DeepCopy().(DataValue),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _WriteValueCopy
+}
 
 func (m *_WriteValue) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetContextTagUnknown interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
@@ -194,6 +195,23 @@ func (m *_BACnetContextTagUnknown) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetContextTagUnknown) IsBACnetContextTagUnknown() {}
+
+func (m *_BACnetContextTagUnknown) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagUnknown) deepCopy() *_BACnetContextTagUnknown {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagUnknownCopy := &_BACnetContextTagUnknown{
+		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		utils.DeepCopySlice[byte, byte](m.UnknownData),
+		m.ActualLength,
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagUnknownCopy
+}
 
 func (m *_BACnetContextTagUnknown) String() string {
 	if m == nil {

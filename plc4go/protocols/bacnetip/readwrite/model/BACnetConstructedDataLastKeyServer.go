@@ -38,6 +38,7 @@ type BACnetConstructedDataLastKeyServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastKeyServer returns LastKeyServer (property field)
 	GetLastKeyServer() BACnetAddressBinding
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastKeyServer) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataLastKeyServer) IsBACnetConstructedDataLastKeyServer() {}
+
+func (m *_BACnetConstructedDataLastKeyServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastKeyServer) deepCopy() *_BACnetConstructedDataLastKeyServer {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastKeyServerCopy := &_BACnetConstructedDataLastKeyServer{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastKeyServer.DeepCopy().(BACnetAddressBinding),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastKeyServerCopy
+}
 
 func (m *_BACnetConstructedDataLastKeyServer) String() string {
 	if m == nil {

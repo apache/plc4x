@@ -38,6 +38,7 @@ type BACnetPropertyStatesFileAccessMethod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetFileAccessMethod returns FileAccessMethod (property field)
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesFileAccessMethod) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetPropertyStatesFileAccessMethod) IsBACnetPropertyStatesFileAccessMethod() {}
+
+func (m *_BACnetPropertyStatesFileAccessMethod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesFileAccessMethod) deepCopy() *_BACnetPropertyStatesFileAccessMethod {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesFileAccessMethodCopy := &_BACnetPropertyStatesFileAccessMethod{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.FileAccessMethod.DeepCopy().(BACnetFileAccessMethodTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesFileAccessMethodCopy
+}
 
 func (m *_BACnetPropertyStatesFileAccessMethod) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type DF1Command interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1Command is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1Command()
 }
 
 // DF1CommandContract provides a set of functions which can be overwritten by a sub struct
 type DF1CommandContract interface {
+	utils.Copyable
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)
@@ -240,3 +242,19 @@ func (pm *_DF1Command) serializeParent(ctx context.Context, writeBuffer utils.Wr
 }
 
 func (m *_DF1Command) IsDF1Command() {}
+
+func (m *_DF1Command) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1Command) deepCopy() *_DF1Command {
+	if m == nil {
+		return nil
+	}
+	_DF1CommandCopy := &_DF1Command{
+		nil, // will be set by child
+		m.Status,
+		m.TransactionCounter,
+	}
+	return _DF1CommandCopy
+}

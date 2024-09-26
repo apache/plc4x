@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetAcknowledgmentFilter returns AcknowledgmentFilter (property field)
 	GetAcknowledgmentFilter() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
@@ -317,6 +318,27 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) SerializeWithWriteB
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) IsBACnetConfirmedServiceRequestGetEnrollmentSummary() {
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) deepCopy() *_BACnetConfirmedServiceRequestGetEnrollmentSummary {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestGetEnrollmentSummaryCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummary{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.AcknowledgmentFilter.DeepCopy().(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged),
+		m.EnrollmentFilter.DeepCopy().(BACnetRecipientProcessEnclosed),
+		m.EventStateFilter.DeepCopy().(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged),
+		m.EventTypeFilter.DeepCopy().(BACnetEventTypeTagged),
+		m.PriorityFilter.DeepCopy().(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter),
+		m.NotificationClassFilter.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestGetEnrollmentSummaryCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) String() string {

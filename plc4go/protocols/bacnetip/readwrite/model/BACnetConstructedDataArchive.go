@@ -38,6 +38,7 @@ type BACnetConstructedDataArchive interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetArchive returns Archive (property field)
 	GetArchive() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataArchive) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataArchive) IsBACnetConstructedDataArchive() {}
+
+func (m *_BACnetConstructedDataArchive) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataArchive) deepCopy() *_BACnetConstructedDataArchive {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataArchiveCopy := &_BACnetConstructedDataArchive{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Archive.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataArchiveCopy
+}
 
 func (m *_BACnetConstructedDataArchive) String() string {
 	if m == nil {

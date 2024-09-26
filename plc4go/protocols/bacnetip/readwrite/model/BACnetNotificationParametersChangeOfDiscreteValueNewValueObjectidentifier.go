@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier i
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentif
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier) deepCopy() *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier{
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfDiscreteValueNewValueContract),
+		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier) String() string {

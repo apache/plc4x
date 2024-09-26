@@ -36,6 +36,7 @@ type ApduDataExtDomainAddressSelectiveRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtDomainAddressSelectiveRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressSelectiveRead()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_ApduDataExtDomainAddressSelectiveRead) IsApduDataExtDomainAddressSelectiveRead() {}
+
+func (m *_ApduDataExtDomainAddressSelectiveRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtDomainAddressSelectiveRead) deepCopy() *_ApduDataExtDomainAddressSelectiveRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtDomainAddressSelectiveReadCopy := &_ApduDataExtDomainAddressSelectiveRead{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtDomainAddressSelectiveReadCopy
+}
 
 func (m *_ApduDataExtDomainAddressSelectiveRead) String() string {
 	if m == nil {

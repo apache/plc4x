@@ -37,6 +37,7 @@ type RoutingIndication interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// IsRoutingIndication is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRoutingIndication()
@@ -147,6 +148,21 @@ func (m *_RoutingIndication) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_RoutingIndication) IsRoutingIndication() {}
+
+func (m *_RoutingIndication) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RoutingIndication) deepCopy() *_RoutingIndication {
+	if m == nil {
+		return nil
+	}
+	_RoutingIndicationCopy := &_RoutingIndication{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _RoutingIndicationCopy
+}
 
 func (m *_RoutingIndication) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLargeAnalogValueCOVIncrement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetApplicationTagDouble
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) SerializeWithWriteB
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) IsBACnetConstructedDataLargeAnalogValueCOVIncrement() {
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) deepCopy() *_BACnetConstructedDataLargeAnalogValueCOVIncrement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLargeAnalogValueCOVIncrementCopy := &_BACnetConstructedDataLargeAnalogValueCOVIncrement{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CovIncrement.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLargeAnalogValueCOVIncrementCopy
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) String() string {

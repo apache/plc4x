@@ -38,6 +38,7 @@ type AdsDiscoveryBlockPassword interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetPassword returns Password (property field)
 	GetPassword() AmsString
@@ -182,6 +183,22 @@ func (m *_AdsDiscoveryBlockPassword) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AdsDiscoveryBlockPassword) IsAdsDiscoveryBlockPassword() {}
+
+func (m *_AdsDiscoveryBlockPassword) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockPassword) deepCopy() *_AdsDiscoveryBlockPassword {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockPasswordCopy := &_AdsDiscoveryBlockPassword{
+		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.Password.DeepCopy().(AmsString),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockPasswordCopy
+}
 
 func (m *_AdsDiscoveryBlockPassword) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type GetAttributeAllResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -250,6 +251,25 @@ func (m *_GetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_GetAttributeAllResponse) IsGetAttributeAllResponse() {}
+
+func (m *_GetAttributeAllResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetAttributeAllResponse) deepCopy() *_GetAttributeAllResponse {
+	if m == nil {
+		return nil
+	}
+	_GetAttributeAllResponseCopy := &_GetAttributeAllResponse{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.Status,
+		m.ExtStatus,
+		m.Attributes.DeepCopy().(CIPAttributes),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _GetAttributeAllResponseCopy
+}
 
 func (m *_GetAttributeAllResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetAuthenticationFactorEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
@@ -228,6 +229,23 @@ func (m *_BACnetAuthenticationFactorEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetAuthenticationFactorEnclosed) IsBACnetAuthenticationFactorEnclosed() {}
+
+func (m *_BACnetAuthenticationFactorEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationFactorEnclosed) deepCopy() *_BACnetAuthenticationFactorEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationFactorEnclosedCopy := &_BACnetAuthenticationFactorEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.AuthenticationFactor.DeepCopy().(BACnetAuthenticationFactor),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetAuthenticationFactorEnclosedCopy
+}
 
 func (m *_BACnetAuthenticationFactorEnclosed) String() string {
 	if m == nil {

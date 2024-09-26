@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) SerializeWithWri
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) IsBACnetFaultParameterFaultExtendedParametersEntryNull() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryNullCopy := &_BACnetFaultParameterFaultExtendedParametersEntryNull{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryNullCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) String() string {

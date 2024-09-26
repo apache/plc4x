@@ -38,6 +38,7 @@ type BACnetPropertyStatesNetworkType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetNetworkType returns NetworkType (property field)
 	GetNetworkType() BACnetNetworkTypeTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesNetworkType) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesNetworkType) IsBACnetPropertyStatesNetworkType() {}
+
+func (m *_BACnetPropertyStatesNetworkType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesNetworkType) deepCopy() *_BACnetPropertyStatesNetworkType {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesNetworkTypeCopy := &_BACnetPropertyStatesNetworkType{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.NetworkType.DeepCopy().(BACnetNetworkTypeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesNetworkTypeCopy
+}
 
 func (m *_BACnetPropertyStatesNetworkType) String() string {
 	if m == nil {

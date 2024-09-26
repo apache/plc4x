@@ -38,6 +38,7 @@ type BACnetPropertyStatesSilencedState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetSilencedState returns SilencedState (property field)
 	GetSilencedState() BACnetSilencedStateTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesSilencedState) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesSilencedState) IsBACnetPropertyStatesSilencedState() {}
+
+func (m *_BACnetPropertyStatesSilencedState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesSilencedState) deepCopy() *_BACnetPropertyStatesSilencedState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesSilencedStateCopy := &_BACnetPropertyStatesSilencedState{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.SilencedState.DeepCopy().(BACnetSilencedStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesSilencedStateCopy
+}
 
 func (m *_BACnetPropertyStatesSilencedState) String() string {
 	if m == nil {

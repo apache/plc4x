@@ -38,6 +38,7 @@ type KnxNetIpCore interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -179,6 +180,22 @@ func (m *_KnxNetIpCore) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_KnxNetIpCore) IsKnxNetIpCore() {}
+
+func (m *_KnxNetIpCore) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpCore) deepCopy() *_KnxNetIpCore {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpCoreCopy := &_KnxNetIpCore{
+		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpCoreCopy
+}
 
 func (m *_KnxNetIpCore) String() string {
 	if m == nil {

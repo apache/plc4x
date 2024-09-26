@@ -38,6 +38,7 @@ type HVACTemperature interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTemperatureValue returns TemperatureValue (property field)
 	GetTemperatureValue() int16
 	// GetTemperatureInCelcius returns TemperatureInCelcius (virtual field)
@@ -197,6 +198,20 @@ func (m *_HVACTemperature) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_HVACTemperature) IsHVACTemperature() {}
+
+func (m *_HVACTemperature) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACTemperature) deepCopy() *_HVACTemperature {
+	if m == nil {
+		return nil
+	}
+	_HVACTemperatureCopy := &_HVACTemperature{
+		m.TemperatureValue,
+	}
+	return _HVACTemperatureCopy
+}
 
 func (m *_HVACTemperature) String() string {
 	if m == nil {

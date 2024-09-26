@@ -40,12 +40,14 @@ type EncodedReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedReply()
 }
 
 // EncodedReplyContract provides a set of functions which can be overwritten by a sub struct
 type EncodedReplyContract interface {
+	utils.Copyable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetIsMonitoredSAL returns IsMonitoredSAL (virtual field)
@@ -255,3 +257,20 @@ func (m *_EncodedReply) GetRequestContext() RequestContext {
 ////
 
 func (m *_EncodedReply) IsEncodedReply() {}
+
+func (m *_EncodedReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EncodedReply) deepCopy() *_EncodedReply {
+	if m == nil {
+		return nil
+	}
+	_EncodedReplyCopy := &_EncodedReply{
+		nil, // will be set by child
+		m.PeekedByte,
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _EncodedReplyCopy
+}

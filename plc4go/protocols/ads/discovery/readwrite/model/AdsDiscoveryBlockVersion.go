@@ -38,6 +38,7 @@ type AdsDiscoveryBlockVersion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetVersionData returns VersionData (property field)
 	GetVersionData() []byte
@@ -194,6 +195,22 @@ func (m *_AdsDiscoveryBlockVersion) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_AdsDiscoveryBlockVersion) IsAdsDiscoveryBlockVersion() {}
+
+func (m *_AdsDiscoveryBlockVersion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockVersion) deepCopy() *_AdsDiscoveryBlockVersion {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockVersionCopy := &_AdsDiscoveryBlockVersion{
+		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		utils.DeepCopySlice[byte, byte](m.VersionData),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockVersionCopy
+}
 
 func (m *_AdsDiscoveryBlockVersion) String() string {
 	if m == nil {

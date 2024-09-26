@@ -38,6 +38,7 @@ type CBusPointToPointToMultiPointCommandNormal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToPointToMultiPointCommand
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -199,6 +200,23 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) SerializeWithWriteBuffer(ct
 }
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) IsCBusPointToPointToMultiPointCommandNormal() {}
+
+func (m *_CBusPointToPointToMultiPointCommandNormal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointToMultiPointCommandNormal) deepCopy() *_CBusPointToPointToMultiPointCommandNormal {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointToMultiPointCommandNormalCopy := &_CBusPointToPointToMultiPointCommandNormal{
+		m.CBusPointToPointToMultiPointCommandContract.DeepCopy().(CBusPointToPointToMultiPointCommandContract),
+		m.Application,
+		m.SalData.DeepCopy().(SALData),
+	}
+	m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = m
+	return _CBusPointToPointToMultiPointCommandNormalCopy
+}
 
 func (m *_CBusPointToPointToMultiPointCommandNormal) String() string {
 	if m == nil {

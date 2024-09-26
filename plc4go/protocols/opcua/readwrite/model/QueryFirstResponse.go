@@ -38,6 +38,7 @@ type QueryFirstResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -377,6 +378,30 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_QueryFirstResponse) IsQueryFirstResponse() {}
+
+func (m *_QueryFirstResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryFirstResponse) deepCopy() *_QueryFirstResponse {
+	if m == nil {
+		return nil
+	}
+	_QueryFirstResponseCopy := &_QueryFirstResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfQueryDataSets,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.QueryDataSets),
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		m.NoOfParsingResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ParsingResults),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+		m.FilterResult.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryFirstResponseCopy
+}
 
 func (m *_QueryFirstResponse) String() string {
 	if m == nil {

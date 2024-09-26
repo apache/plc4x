@@ -38,6 +38,7 @@ type AdsDeleteDeviceNotificationResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -183,6 +184,22 @@ func (m *_AdsDeleteDeviceNotificationResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_AdsDeleteDeviceNotificationResponse) IsAdsDeleteDeviceNotificationResponse() {}
+
+func (m *_AdsDeleteDeviceNotificationResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDeleteDeviceNotificationResponse) deepCopy() *_AdsDeleteDeviceNotificationResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsDeleteDeviceNotificationResponseCopy := &_AdsDeleteDeviceNotificationResponse{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.Result,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsDeleteDeviceNotificationResponseCopy
+}
 
 func (m *_AdsDeleteDeviceNotificationResponse) String() string {
 	if m == nil {

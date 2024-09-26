@@ -38,6 +38,7 @@ type ConnectedDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetSequenceCount returns SequenceCount (property field)
 	GetSequenceCount() uint16
@@ -216,6 +217,23 @@ func (m *_ConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ConnectedDataItem) IsConnectedDataItem() {}
+
+func (m *_ConnectedDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectedDataItem) deepCopy() *_ConnectedDataItem {
+	if m == nil {
+		return nil
+	}
+	_ConnectedDataItemCopy := &_ConnectedDataItem{
+		m.TypeIdContract.DeepCopy().(TypeIdContract),
+		m.SequenceCount,
+		m.Service.DeepCopy().(CipService),
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _ConnectedDataItemCopy
+}
 
 func (m *_ConnectedDataItem) String() string {
 	if m == nil {

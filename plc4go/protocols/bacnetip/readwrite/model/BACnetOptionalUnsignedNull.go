@@ -38,6 +38,7 @@ type BACnetOptionalUnsignedNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalUnsigned
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalUnsignedNull) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetOptionalUnsignedNull) IsBACnetOptionalUnsignedNull() {}
+
+func (m *_BACnetOptionalUnsignedNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalUnsignedNull) deepCopy() *_BACnetOptionalUnsignedNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalUnsignedNullCopy := &_BACnetOptionalUnsignedNull{
+		m.BACnetOptionalUnsignedContract.DeepCopy().(BACnetOptionalUnsignedContract),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = m
+	return _BACnetOptionalUnsignedNullCopy
+}
 
 func (m *_BACnetOptionalUnsignedNull) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ModbusPDUReadExceptionStatusResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() uint8
@@ -187,6 +188,22 @@ func (m *_ModbusPDUReadExceptionStatusResponse) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_ModbusPDUReadExceptionStatusResponse) IsModbusPDUReadExceptionStatusResponse() {}
+
+func (m *_ModbusPDUReadExceptionStatusResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadExceptionStatusResponse) deepCopy() *_ModbusPDUReadExceptionStatusResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadExceptionStatusResponseCopy := &_ModbusPDUReadExceptionStatusResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.Value,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadExceptionStatusResponseCopy
+}
 
 func (m *_ModbusPDUReadExceptionStatusResponse) String() string {
 	if m == nil {

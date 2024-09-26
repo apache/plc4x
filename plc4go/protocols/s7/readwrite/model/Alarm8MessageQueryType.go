@@ -38,6 +38,7 @@ type Alarm8MessageQueryType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
@@ -273,6 +274,25 @@ func (m *_Alarm8MessageQueryType) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_Alarm8MessageQueryType) IsAlarm8MessageQueryType() {}
+
+func (m *_Alarm8MessageQueryType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Alarm8MessageQueryType) deepCopy() *_Alarm8MessageQueryType {
+	if m == nil {
+		return nil
+	}
+	_Alarm8MessageQueryTypeCopy := &_Alarm8MessageQueryType{
+		m.FunctionId,
+		m.NumberOfObjects,
+		m.ReturnCode,
+		m.TransportSize,
+		m.ByteCount,
+		utils.DeepCopySlice[AlarmMessageObjectQueryType, AlarmMessageObjectQueryType](m.MessageObjects),
+	}
+	return _Alarm8MessageQueryTypeCopy
+}
 
 func (m *_Alarm8MessageQueryType) String() string {
 	if m == nil {

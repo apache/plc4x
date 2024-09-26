@@ -38,6 +38,7 @@ type BACnetConstructedDataProcessIdentifierFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProcessIdentifierFilter returns ProcessIdentifierFilter (property field)
 	GetProcessIdentifierFilter() BACnetProcessIdSelection
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) IsBACnetConstructedDataProcessIdentifierFilter() {
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilter) deepCopy() *_BACnetConstructedDataProcessIdentifierFilter {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProcessIdentifierFilterCopy := &_BACnetConstructedDataProcessIdentifierFilter{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProcessIdentifierFilter.DeepCopy().(BACnetProcessIdSelection),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProcessIdentifierFilterCopy
 }
 
 func (m *_BACnetConstructedDataProcessIdentifierFilter) String() string {

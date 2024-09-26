@@ -38,6 +38,7 @@ type ModifySubscriptionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -308,6 +309,28 @@ func (m *_ModifySubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_ModifySubscriptionRequest) IsModifySubscriptionRequest() {}
+
+func (m *_ModifySubscriptionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModifySubscriptionRequest) deepCopy() *_ModifySubscriptionRequest {
+	if m == nil {
+		return nil
+	}
+	_ModifySubscriptionRequestCopy := &_ModifySubscriptionRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.RequestedPublishingInterval,
+		m.RequestedLifetimeCount,
+		m.RequestedMaxKeepAliveCount,
+		m.MaxNotificationsPerPublish,
+		m.Priority,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModifySubscriptionRequestCopy
+}
 
 func (m *_ModifySubscriptionRequest) String() string {
 	if m == nil {

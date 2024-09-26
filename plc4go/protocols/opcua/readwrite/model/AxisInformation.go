@@ -38,6 +38,7 @@ type AxisInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetEngineeringUnits returns EngineeringUnits (property field)
 	GetEngineeringUnits() ExtensionObjectDefinition
@@ -295,6 +296,27 @@ func (m *_AxisInformation) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_AxisInformation) IsAxisInformation() {}
+
+func (m *_AxisInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AxisInformation) deepCopy() *_AxisInformation {
+	if m == nil {
+		return nil
+	}
+	_AxisInformationCopy := &_AxisInformation{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.EngineeringUnits.DeepCopy().(ExtensionObjectDefinition),
+		m.EURange.DeepCopy().(ExtensionObjectDefinition),
+		m.Title.DeepCopy().(LocalizedText),
+		m.AxisScaleType,
+		m.NoOfAxisSteps,
+		utils.DeepCopySlice[float64, float64](m.AxisSteps),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AxisInformationCopy
+}
 
 func (m *_AxisInformation) String() string {
 	if m == nil {

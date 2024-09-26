@@ -38,6 +38,7 @@ type ReplyOrConfirmationReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ReplyOrConfirmation
 	// GetReply returns Reply (property field)
 	GetReply() Reply
@@ -202,6 +203,23 @@ func (m *_ReplyOrConfirmationReply) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_ReplyOrConfirmationReply) IsReplyOrConfirmationReply() {}
+
+func (m *_ReplyOrConfirmationReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReplyOrConfirmationReply) deepCopy() *_ReplyOrConfirmationReply {
+	if m == nil {
+		return nil
+	}
+	_ReplyOrConfirmationReplyCopy := &_ReplyOrConfirmationReply{
+		m.ReplyOrConfirmationContract.DeepCopy().(ReplyOrConfirmationContract),
+		m.Reply.DeepCopy().(Reply),
+		m.Termination.DeepCopy().(ResponseTermination),
+	}
+	m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = m
+	return _ReplyOrConfirmationReplyCopy
+}
 
 func (m *_ReplyOrConfirmationReply) String() string {
 	if m == nil {

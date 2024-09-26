@@ -38,6 +38,7 @@ type BACnetConstructedDataCurrentCommandPriority interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCurrentCommandPriority returns CurrentCommandPriority (property field)
 	GetCurrentCommandPriority() BACnetOptionalUnsigned
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) IsBACnetConstructedDataCurrentCommandPriority() {
+}
+
+func (m *_BACnetConstructedDataCurrentCommandPriority) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCurrentCommandPriority) deepCopy() *_BACnetConstructedDataCurrentCommandPriority {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCurrentCommandPriorityCopy := &_BACnetConstructedDataCurrentCommandPriority{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CurrentCommandPriority.DeepCopy().(BACnetOptionalUnsigned),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCurrentCommandPriorityCopy
 }
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) String() string {

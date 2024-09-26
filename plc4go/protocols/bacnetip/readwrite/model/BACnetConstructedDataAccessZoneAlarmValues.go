@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessZoneAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetAccessZoneOccupancyStateTagged
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataAccessZoneAlarmValues) IsBACnetConstructedDataAccessZoneAlarmValues() {
+}
+
+func (m *_BACnetConstructedDataAccessZoneAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessZoneAlarmValues) deepCopy() *_BACnetConstructedDataAccessZoneAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessZoneAlarmValuesCopy := &_BACnetConstructedDataAccessZoneAlarmValues{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetAccessZoneOccupancyStateTagged, BACnetAccessZoneOccupancyStateTagged](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessZoneAlarmValuesCopy
 }
 
 func (m *_BACnetConstructedDataAccessZoneAlarmValues) String() string {

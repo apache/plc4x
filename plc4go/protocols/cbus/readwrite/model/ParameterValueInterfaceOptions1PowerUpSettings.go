@@ -38,6 +38,7 @@ type ParameterValueInterfaceOptions1PowerUpSettings interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() InterfaceOptions1PowerUpSettings
@@ -187,6 +188,22 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) SerializeWithWriteBuff
 }
 
 func (m *_ParameterValueInterfaceOptions1PowerUpSettings) IsParameterValueInterfaceOptions1PowerUpSettings() {
+}
+
+func (m *_ParameterValueInterfaceOptions1PowerUpSettings) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueInterfaceOptions1PowerUpSettings) deepCopy() *_ParameterValueInterfaceOptions1PowerUpSettings {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueInterfaceOptions1PowerUpSettingsCopy := &_ParameterValueInterfaceOptions1PowerUpSettings{
+		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.Value.DeepCopy().(InterfaceOptions1PowerUpSettings),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueInterfaceOptions1PowerUpSettingsCopy
 }
 
 func (m *_ParameterValueInterfaceOptions1PowerUpSettings) String() string {

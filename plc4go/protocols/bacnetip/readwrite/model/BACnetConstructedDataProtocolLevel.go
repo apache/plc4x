@@ -38,6 +38,7 @@ type BACnetConstructedDataProtocolLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProtocolLevel) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataProtocolLevel) IsBACnetConstructedDataProtocolLevel() {}
+
+func (m *_BACnetConstructedDataProtocolLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProtocolLevel) deepCopy() *_BACnetConstructedDataProtocolLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProtocolLevelCopy := &_BACnetConstructedDataProtocolLevel{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProtocolLevel.DeepCopy().(BACnetProtocolLevelTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProtocolLevelCopy
+}
 
 func (m *_BACnetConstructedDataProtocolLevel) String() string {
 	if m == nil {

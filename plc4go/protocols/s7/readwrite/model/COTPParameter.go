@@ -40,12 +40,14 @@ type COTPParameter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCOTPParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPParameter()
 }
 
 // COTPParameterContract provides a set of functions which can be overwritten by a sub struct
 type COTPParameterContract interface {
+	utils.Copyable
 	// GetRest() returns a parser argument
 	GetRest() uint8
 	// IsCOTPParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -230,3 +232,18 @@ func (m *_COTPParameter) GetRest() uint8 {
 ////
 
 func (m *_COTPParameter) IsCOTPParameter() {}
+
+func (m *_COTPParameter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameter) deepCopy() *_COTPParameter {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterCopy := &_COTPParameter{
+		nil, // will be set by child
+		m.Rest,
+	}
+	return _COTPParameterCopy
+}

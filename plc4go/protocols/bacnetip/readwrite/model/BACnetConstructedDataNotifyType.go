@@ -38,6 +38,7 @@ type BACnetConstructedDataNotifyType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() BACnetNotifyTypeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNotifyType) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataNotifyType) IsBACnetConstructedDataNotifyType() {}
+
+func (m *_BACnetConstructedDataNotifyType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNotifyType) deepCopy() *_BACnetConstructedDataNotifyType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNotifyTypeCopy := &_BACnetConstructedDataNotifyType{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNotifyTypeCopy
+}
 
 func (m *_BACnetConstructedDataNotifyType) String() string {
 	if m == nil {

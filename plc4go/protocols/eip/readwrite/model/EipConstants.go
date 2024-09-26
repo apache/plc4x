@@ -42,6 +42,7 @@ type EipConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsEipConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipConstants()
 }
@@ -184,6 +185,18 @@ func (m *_EipConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_EipConstants) IsEipConstants() {}
+
+func (m *_EipConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipConstants) deepCopy() *_EipConstants {
+	if m == nil {
+		return nil
+	}
+	_EipConstantsCopy := &_EipConstants{}
+	return _EipConstantsCopy
+}
 
 func (m *_EipConstants) String() string {
 	if m == nil {

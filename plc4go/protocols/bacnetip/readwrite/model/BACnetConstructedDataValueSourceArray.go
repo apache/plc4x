@@ -38,6 +38,7 @@ type BACnetConstructedDataValueSourceArray interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -252,6 +253,23 @@ func (m *_BACnetConstructedDataValueSourceArray) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataValueSourceArray) IsBACnetConstructedDataValueSourceArray() {}
+
+func (m *_BACnetConstructedDataValueSourceArray) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataValueSourceArray) deepCopy() *_BACnetConstructedDataValueSourceArray {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataValueSourceArrayCopy := &_BACnetConstructedDataValueSourceArray{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetValueSource, BACnetValueSource](m.VtClassesSupported),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataValueSourceArrayCopy
+}
 
 func (m *_BACnetConstructedDataValueSourceArray) String() string {
 	if m == nil {

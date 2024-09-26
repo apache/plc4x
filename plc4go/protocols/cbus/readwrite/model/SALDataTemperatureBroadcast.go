@@ -38,6 +38,7 @@ type SALDataTemperatureBroadcast interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetTemperatureBroadcastData returns TemperatureBroadcastData (property field)
 	GetTemperatureBroadcastData() TemperatureBroadcastData
@@ -182,6 +183,22 @@ func (m *_SALDataTemperatureBroadcast) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_SALDataTemperatureBroadcast) IsSALDataTemperatureBroadcast() {}
+
+func (m *_SALDataTemperatureBroadcast) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataTemperatureBroadcast) deepCopy() *_SALDataTemperatureBroadcast {
+	if m == nil {
+		return nil
+	}
+	_SALDataTemperatureBroadcastCopy := &_SALDataTemperatureBroadcast{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.TemperatureBroadcastData.DeepCopy().(TemperatureBroadcastData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataTemperatureBroadcastCopy
+}
 
 func (m *_SALDataTemperatureBroadcast) String() string {
 	if m == nil {

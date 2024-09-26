@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
@@ -223,6 +224,23 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) SerializeWithWriteBu
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) IsS7PayloadUserDataItemCpuFunctionAlarmAckResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmAckResponseCopy := &_S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.FunctionId,
+		utils.DeepCopySlice[uint8, uint8](m.MessageObjects),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmAckResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) String() string {

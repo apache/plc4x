@@ -38,6 +38,7 @@ type StatusRequestBinaryStateDeprecated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -204,6 +205,24 @@ func (m *_StatusRequestBinaryStateDeprecated) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_StatusRequestBinaryStateDeprecated) IsStatusRequestBinaryStateDeprecated() {}
+
+func (m *_StatusRequestBinaryStateDeprecated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusRequestBinaryStateDeprecated) deepCopy() *_StatusRequestBinaryStateDeprecated {
+	if m == nil {
+		return nil
+	}
+	_StatusRequestBinaryStateDeprecatedCopy := &_StatusRequestBinaryStateDeprecated{
+		m.StatusRequestContract.DeepCopy().(StatusRequestContract),
+		m.Application,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.StatusRequestContract.(*_StatusRequest)._SubType = m
+	return _StatusRequestBinaryStateDeprecatedCopy
+}
 
 func (m *_StatusRequestBinaryStateDeprecated) String() string {
 	if m == nil {

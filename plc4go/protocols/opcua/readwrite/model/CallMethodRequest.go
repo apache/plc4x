@@ -38,6 +38,7 @@ type CallMethodRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetObjectId returns ObjectId (property field)
 	GetObjectId() NodeId
@@ -255,6 +256,25 @@ func (m *_CallMethodRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_CallMethodRequest) IsCallMethodRequest() {}
+
+func (m *_CallMethodRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CallMethodRequest) deepCopy() *_CallMethodRequest {
+	if m == nil {
+		return nil
+	}
+	_CallMethodRequestCopy := &_CallMethodRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ObjectId.DeepCopy().(NodeId),
+		m.MethodId.DeepCopy().(NodeId),
+		m.NoOfInputArguments,
+		utils.DeepCopySlice[Variant, Variant](m.InputArguments),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CallMethodRequestCopy
+}
 
 func (m *_CallMethodRequest) String() string {
 	if m == nil {

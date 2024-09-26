@@ -38,6 +38,7 @@ type BACnetVTSession interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLocalVtSessionId returns LocalVtSessionId (property field)
 	GetLocalVtSessionId() BACnetApplicationTagUnsignedInteger
 	// GetRemoveVtSessionId returns RemoveVtSessionId (property field)
@@ -215,6 +216,22 @@ func (m *_BACnetVTSession) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetVTSession) IsBACnetVTSession() {}
+
+func (m *_BACnetVTSession) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetVTSession) deepCopy() *_BACnetVTSession {
+	if m == nil {
+		return nil
+	}
+	_BACnetVTSessionCopy := &_BACnetVTSession{
+		m.LocalVtSessionId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.RemoveVtSessionId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.RemoteVtAddress.DeepCopy().(BACnetAddress),
+	}
+	return _BACnetVTSessionCopy
+}
 
 func (m *_BACnetVTSession) String() string {
 	if m == nil {

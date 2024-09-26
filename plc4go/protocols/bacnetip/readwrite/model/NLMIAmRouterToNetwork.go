@@ -38,6 +38,7 @@ type NLMIAmRouterToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddresses returns DestinationNetworkAddresses (property field)
 	GetDestinationNetworkAddresses() []uint16
@@ -181,6 +182,22 @@ func (m *_NLMIAmRouterToNetwork) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_NLMIAmRouterToNetwork) IsNLMIAmRouterToNetwork() {}
+
+func (m *_NLMIAmRouterToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMIAmRouterToNetwork) deepCopy() *_NLMIAmRouterToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMIAmRouterToNetworkCopy := &_NLMIAmRouterToNetwork{
+		m.NLMContract.DeepCopy().(NLMContract),
+		utils.DeepCopySlice[uint16, uint16](m.DestinationNetworkAddresses),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMIAmRouterToNetworkCopy
+}
 
 func (m *_NLMIAmRouterToNetwork) String() string {
 	if m == nil {

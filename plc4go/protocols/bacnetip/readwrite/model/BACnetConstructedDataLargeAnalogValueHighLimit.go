@@ -38,6 +38,7 @@ type BACnetConstructedDataLargeAnalogValueHighLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetHighLimit returns HighLimit (property field)
 	GetHighLimit() BACnetApplicationTagDouble
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) IsBACnetConstructedDataLargeAnalogValueHighLimit() {
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) deepCopy() *_BACnetConstructedDataLargeAnalogValueHighLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLargeAnalogValueHighLimitCopy := &_BACnetConstructedDataLargeAnalogValueHighLimit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.HighLimit.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLargeAnalogValueHighLimitCopy
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) String() string {

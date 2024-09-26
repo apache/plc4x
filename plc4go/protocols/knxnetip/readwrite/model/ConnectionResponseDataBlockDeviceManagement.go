@@ -36,6 +36,7 @@ type ConnectionResponseDataBlockDeviceManagement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ConnectionResponseDataBlock
 	// IsConnectionResponseDataBlockDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlockDeviceManagement()
@@ -146,6 +147,21 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) SerializeWithWriteBuffer(
 }
 
 func (m *_ConnectionResponseDataBlockDeviceManagement) IsConnectionResponseDataBlockDeviceManagement() {
+}
+
+func (m *_ConnectionResponseDataBlockDeviceManagement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionResponseDataBlockDeviceManagement) deepCopy() *_ConnectionResponseDataBlockDeviceManagement {
+	if m == nil {
+		return nil
+	}
+	_ConnectionResponseDataBlockDeviceManagementCopy := &_ConnectionResponseDataBlockDeviceManagement{
+		m.ConnectionResponseDataBlockContract.DeepCopy().(ConnectionResponseDataBlockContract),
+	}
+	m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = m
+	return _ConnectionResponseDataBlockDeviceManagementCopy
 }
 
 func (m *_ConnectionResponseDataBlockDeviceManagement) String() string {

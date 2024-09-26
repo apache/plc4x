@@ -36,6 +36,7 @@ type BACnetConstructedDataNotificationClassAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataNotificationClassAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNotificationClassAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataNotificationClassAll) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataNotificationClassAll) IsBACnetConstructedDataNotificationClassAll() {}
+
+func (m *_BACnetConstructedDataNotificationClassAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNotificationClassAll) deepCopy() *_BACnetConstructedDataNotificationClassAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNotificationClassAllCopy := &_BACnetConstructedDataNotificationClassAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNotificationClassAllCopy
+}
 
 func (m *_BACnetConstructedDataNotificationClassAll) String() string {
 	if m == nil {

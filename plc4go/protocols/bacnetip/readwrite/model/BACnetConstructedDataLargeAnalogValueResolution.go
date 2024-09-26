@@ -38,6 +38,7 @@ type BACnetConstructedDataLargeAnalogValueResolution interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagDouble
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueResolution) IsBACnetConstructedDataLargeAnalogValueResolution() {
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) deepCopy() *_BACnetConstructedDataLargeAnalogValueResolution {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLargeAnalogValueResolutionCopy := &_BACnetConstructedDataLargeAnalogValueResolution{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Resolution.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLargeAnalogValueResolutionCopy
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueResolution) String() string {

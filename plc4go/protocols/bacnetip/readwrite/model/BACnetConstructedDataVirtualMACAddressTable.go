@@ -38,6 +38,7 @@ type BACnetConstructedDataVirtualMACAddressTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVirtualMacAddressTable returns VirtualMacAddressTable (property field)
 	GetVirtualMacAddressTable() []BACnetVMACEntry
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataVirtualMACAddressTable) IsBACnetConstructedDataVirtualMACAddressTable() {
+}
+
+func (m *_BACnetConstructedDataVirtualMACAddressTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVirtualMACAddressTable) deepCopy() *_BACnetConstructedDataVirtualMACAddressTable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVirtualMACAddressTableCopy := &_BACnetConstructedDataVirtualMACAddressTable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetVMACEntry, BACnetVMACEntry](m.VirtualMacAddressTable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVirtualMACAddressTableCopy
 }
 
 func (m *_BACnetConstructedDataVirtualMACAddressTable) String() string {

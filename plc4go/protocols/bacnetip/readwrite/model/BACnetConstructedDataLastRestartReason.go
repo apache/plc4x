@@ -38,6 +38,7 @@ type BACnetConstructedDataLastRestartReason interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastRestartReason returns LastRestartReason (property field)
 	GetLastRestartReason() BACnetRestartReasonTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastRestartReason) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataLastRestartReason) IsBACnetConstructedDataLastRestartReason() {}
+
+func (m *_BACnetConstructedDataLastRestartReason) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastRestartReason) deepCopy() *_BACnetConstructedDataLastRestartReason {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastRestartReasonCopy := &_BACnetConstructedDataLastRestartReason{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastRestartReason.DeepCopy().(BACnetRestartReasonTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastRestartReasonCopy
+}
 
 func (m *_BACnetConstructedDataLastRestartReason) String() string {
 	if m == nil {

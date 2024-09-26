@@ -36,6 +36,7 @@ type ApduDataExtGroupPropertyValueInfoReport interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtGroupPropertyValueInfoReport is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtGroupPropertyValueInfoReport()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtGroupPropertyValueInfoReport) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_ApduDataExtGroupPropertyValueInfoReport) IsApduDataExtGroupPropertyValueInfoReport() {}
+
+func (m *_ApduDataExtGroupPropertyValueInfoReport) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtGroupPropertyValueInfoReport) deepCopy() *_ApduDataExtGroupPropertyValueInfoReport {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtGroupPropertyValueInfoReportCopy := &_ApduDataExtGroupPropertyValueInfoReport{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtGroupPropertyValueInfoReportCopy
+}
 
 func (m *_ApduDataExtGroupPropertyValueInfoReport) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type LRawInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsLRawInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLRawInd()
@@ -146,6 +147,21 @@ func (m *_LRawInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_LRawInd) IsLRawInd() {}
+
+func (m *_LRawInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LRawInd) deepCopy() *_LRawInd {
+	if m == nil {
+		return nil
+	}
+	_LRawIndCopy := &_LRawInd{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LRawIndCopy
+}
 
 func (m *_LRawInd) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeDelayNormal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeDelayNormal returns TimeDelayNormal (property field)
 	GetTimeDelayNormal() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimeDelayNormal) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataTimeDelayNormal) IsBACnetConstructedDataTimeDelayNormal() {}
+
+func (m *_BACnetConstructedDataTimeDelayNormal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeDelayNormal) deepCopy() *_BACnetConstructedDataTimeDelayNormal {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeDelayNormalCopy := &_BACnetConstructedDataTimeDelayNormal{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TimeDelayNormal.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeDelayNormalCopy
+}
 
 func (m *_BACnetConstructedDataTimeDelayNormal) String() string {
 	if m == nil {

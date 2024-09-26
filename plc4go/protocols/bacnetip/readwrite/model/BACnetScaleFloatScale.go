@@ -38,6 +38,7 @@ type BACnetScaleFloatScale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetScale
 	// GetFloatScale returns FloatScale (property field)
 	GetFloatScale() BACnetContextTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetScaleFloatScale) IsBACnetScaleFloatScale() {}
+
+func (m *_BACnetScaleFloatScale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetScaleFloatScale) deepCopy() *_BACnetScaleFloatScale {
+	if m == nil {
+		return nil
+	}
+	_BACnetScaleFloatScaleCopy := &_BACnetScaleFloatScale{
+		m.BACnetScaleContract.DeepCopy().(BACnetScaleContract),
+		m.FloatScale.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetScaleContract.(*_BACnetScale)._SubType = m
+	return _BACnetScaleFloatScaleCopy
+}
 
 func (m *_BACnetScaleFloatScale) String() string {
 	if m == nil {

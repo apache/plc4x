@@ -38,6 +38,7 @@ type BACnetConstructedDataFDBBMDAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFDBBMDAddress returns FDBBMDAddress (property field)
 	GetFDBBMDAddress() BACnetHostNPort
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataFDBBMDAddress) IsBACnetConstructedDataFDBBMDAddress() {}
+
+func (m *_BACnetConstructedDataFDBBMDAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFDBBMDAddress) deepCopy() *_BACnetConstructedDataFDBBMDAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFDBBMDAddressCopy := &_BACnetConstructedDataFDBBMDAddress{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FDBBMDAddress.DeepCopy().(BACnetHostNPort),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFDBBMDAddressCopy
+}
 
 func (m *_BACnetConstructedDataFDBBMDAddress) String() string {
 	if m == nil {

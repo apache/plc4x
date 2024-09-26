@@ -38,6 +38,7 @@ type BACnetConstructedDataDerivativeConstant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDerivativeConstant returns DerivativeConstant (property field)
 	GetDerivativeConstant() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDerivativeConstant) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataDerivativeConstant) IsBACnetConstructedDataDerivativeConstant() {}
+
+func (m *_BACnetConstructedDataDerivativeConstant) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDerivativeConstant) deepCopy() *_BACnetConstructedDataDerivativeConstant {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDerivativeConstantCopy := &_BACnetConstructedDataDerivativeConstant{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DerivativeConstant.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDerivativeConstantCopy
+}
 
 func (m *_BACnetConstructedDataDerivativeConstant) String() string {
 	if m == nil {

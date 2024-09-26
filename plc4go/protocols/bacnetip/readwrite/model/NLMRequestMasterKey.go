@@ -38,6 +38,7 @@ type NLMRequestMasterKey interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetNumberOfSupportedKeyAlgorithms returns NumberOfSupportedKeyAlgorithms (property field)
 	GetNumberOfSupportedKeyAlgorithms() uint8
@@ -202,6 +203,23 @@ func (m *_NLMRequestMasterKey) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NLMRequestMasterKey) IsNLMRequestMasterKey() {}
+
+func (m *_NLMRequestMasterKey) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRequestMasterKey) deepCopy() *_NLMRequestMasterKey {
+	if m == nil {
+		return nil
+	}
+	_NLMRequestMasterKeyCopy := &_NLMRequestMasterKey{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.NumberOfSupportedKeyAlgorithms,
+		utils.DeepCopySlice[byte, byte](m.EncryptionAndSignatureAlgorithms),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRequestMasterKeyCopy
+}
 
 func (m *_NLMRequestMasterKey) String() string {
 	if m == nil {

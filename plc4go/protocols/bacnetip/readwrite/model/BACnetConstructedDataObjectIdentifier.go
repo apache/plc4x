@@ -38,6 +38,7 @@ type BACnetConstructedDataObjectIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataObjectIdentifier) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataObjectIdentifier) IsBACnetConstructedDataObjectIdentifier() {}
+
+func (m *_BACnetConstructedDataObjectIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataObjectIdentifier) deepCopy() *_BACnetConstructedDataObjectIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataObjectIdentifierCopy := &_BACnetConstructedDataObjectIdentifier{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataObjectIdentifierCopy
+}
 
 func (m *_BACnetConstructedDataObjectIdentifier) String() string {
 	if m == nil {

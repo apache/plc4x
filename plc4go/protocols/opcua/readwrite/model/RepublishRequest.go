@@ -38,6 +38,7 @@ type RepublishRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -224,6 +225,24 @@ func (m *_RepublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_RepublishRequest) IsRepublishRequest() {}
+
+func (m *_RepublishRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RepublishRequest) deepCopy() *_RepublishRequest {
+	if m == nil {
+		return nil
+	}
+	_RepublishRequestCopy := &_RepublishRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.RetransmitSequenceNumber,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RepublishRequestCopy
+}
 
 func (m *_RepublishRequest) String() string {
 	if m == nil {

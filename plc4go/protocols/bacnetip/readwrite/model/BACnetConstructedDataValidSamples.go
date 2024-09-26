@@ -38,6 +38,7 @@ type BACnetConstructedDataValidSamples interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetValidSamples returns ValidSamples (property field)
 	GetValidSamples() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataValidSamples) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataValidSamples) IsBACnetConstructedDataValidSamples() {}
+
+func (m *_BACnetConstructedDataValidSamples) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataValidSamples) deepCopy() *_BACnetConstructedDataValidSamples {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataValidSamplesCopy := &_BACnetConstructedDataValidSamples{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ValidSamples.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataValidSamplesCopy
+}
 
 func (m *_BACnetConstructedDataValidSamples) String() string {
 	if m == nil {

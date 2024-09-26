@@ -38,6 +38,7 @@ type HistoryEventFieldList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfEventFields returns NoOfEventFields (property field)
 	GetNoOfEventFields() int32
@@ -207,6 +208,23 @@ func (m *_HistoryEventFieldList) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_HistoryEventFieldList) IsHistoryEventFieldList() {}
+
+func (m *_HistoryEventFieldList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryEventFieldList) deepCopy() *_HistoryEventFieldList {
+	if m == nil {
+		return nil
+	}
+	_HistoryEventFieldListCopy := &_HistoryEventFieldList{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfEventFields,
+		utils.DeepCopySlice[Variant, Variant](m.EventFields),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryEventFieldListCopy
+}
 
 func (m *_HistoryEventFieldList) String() string {
 	if m == nil {

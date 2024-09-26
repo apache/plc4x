@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestTimeSynchronization interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetSynchronizedDate returns SynchronizedDate (property field)
 	GetSynchronizedDate() BACnetApplicationTagDate
@@ -206,6 +207,23 @@ func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) SerializeWithWrite
 }
 
 func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) IsBACnetUnconfirmedServiceRequestTimeSynchronization() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) deepCopy() *_BACnetUnconfirmedServiceRequestTimeSynchronization {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestTimeSynchronizationCopy := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
+		m.BACnetUnconfirmedServiceRequestContract.DeepCopy().(BACnetUnconfirmedServiceRequestContract),
+		m.SynchronizedDate.DeepCopy().(BACnetApplicationTagDate),
+		m.SynchronizedTime.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestTimeSynchronizationCopy
 }
 
 func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) String() string {

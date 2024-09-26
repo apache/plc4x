@@ -38,6 +38,7 @@ type KnxNetRemoteLogging interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -179,6 +180,22 @@ func (m *_KnxNetRemoteLogging) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_KnxNetRemoteLogging) IsKnxNetRemoteLogging() {}
+
+func (m *_KnxNetRemoteLogging) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetRemoteLogging) deepCopy() *_KnxNetRemoteLogging {
+	if m == nil {
+		return nil
+	}
+	_KnxNetRemoteLoggingCopy := &_KnxNetRemoteLogging{
+		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetRemoteLoggingCopy
+}
 
 func (m *_KnxNetRemoteLogging) String() string {
 	if m == nil {

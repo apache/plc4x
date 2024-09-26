@@ -38,6 +38,7 @@ type SecurityDataLowBatteryCharging interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetStartStop returns StartStop (property field)
 	GetStartStop() byte
@@ -228,6 +229,22 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_SecurityDataLowBatteryCharging) IsSecurityDataLowBatteryCharging() {}
+
+func (m *_SecurityDataLowBatteryCharging) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataLowBatteryCharging) deepCopy() *_SecurityDataLowBatteryCharging {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataLowBatteryChargingCopy := &_SecurityDataLowBatteryCharging{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.StartStop,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataLowBatteryChargingCopy
+}
 
 func (m *_SecurityDataLowBatteryCharging) String() string {
 	if m == nil {

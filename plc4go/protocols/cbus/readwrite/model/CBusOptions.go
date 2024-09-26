@@ -38,6 +38,7 @@ type CBusOptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetConnect returns Connect (property field)
 	GetConnect() bool
 	// GetSmart returns Smart (property field)
@@ -326,6 +327,28 @@ func (m *_CBusOptions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_CBusOptions) IsCBusOptions() {}
+
+func (m *_CBusOptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusOptions) deepCopy() *_CBusOptions {
+	if m == nil {
+		return nil
+	}
+	_CBusOptionsCopy := &_CBusOptions{
+		m.Connect,
+		m.Smart,
+		m.Idmon,
+		m.Exstat,
+		m.Monitor,
+		m.Monall,
+		m.Pun,
+		m.Pcn,
+		m.Srchk,
+	}
+	return _CBusOptionsCopy
+}
 
 func (m *_CBusOptions) String() string {
 	if m == nil {

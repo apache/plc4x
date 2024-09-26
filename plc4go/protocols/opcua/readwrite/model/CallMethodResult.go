@@ -38,6 +38,7 @@ type CallMethodResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -329,6 +330,28 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_CallMethodResult) IsCallMethodResult() {}
+
+func (m *_CallMethodResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CallMethodResult) deepCopy() *_CallMethodResult {
+	if m == nil {
+		return nil
+	}
+	_CallMethodResultCopy := &_CallMethodResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfInputArgumentResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.InputArgumentResults),
+		m.NoOfInputArgumentDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.InputArgumentDiagnosticInfos),
+		m.NoOfOutputArguments,
+		utils.DeepCopySlice[Variant, Variant](m.OutputArguments),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CallMethodResultCopy
+}
 
 func (m *_CallMethodResult) String() string {
 	if m == nil {

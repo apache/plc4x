@@ -36,6 +36,7 @@ type BACnetConstructedDataBinaryValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataBinaryValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBinaryValueAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataBinaryValueAll) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataBinaryValueAll) IsBACnetConstructedDataBinaryValueAll() {}
+
+func (m *_BACnetConstructedDataBinaryValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryValueAll) deepCopy() *_BACnetConstructedDataBinaryValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryValueAllCopy := &_BACnetConstructedDataBinaryValueAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryValueAllCopy
+}
 
 func (m *_BACnetConstructedDataBinaryValueAll) String() string {
 	if m == nil {

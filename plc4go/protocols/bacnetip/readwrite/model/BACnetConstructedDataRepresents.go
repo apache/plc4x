@@ -38,6 +38,7 @@ type BACnetConstructedDataRepresents interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRepresents returns Represents (property field)
 	GetRepresents() BACnetDeviceObjectReference
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRepresents) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataRepresents) IsBACnetConstructedDataRepresents() {}
+
+func (m *_BACnetConstructedDataRepresents) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRepresents) deepCopy() *_BACnetConstructedDataRepresents {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRepresentsCopy := &_BACnetConstructedDataRepresents{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Represents.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRepresentsCopy
+}
 
 func (m *_BACnetConstructedDataRepresents) String() string {
 	if m == nil {

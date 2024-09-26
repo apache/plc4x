@@ -38,6 +38,7 @@ type BACnetConstructedDataNotificationThreshold interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNotificationThreshold returns NotificationThreshold (property field)
 	GetNotificationThreshold() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNotificationThreshold) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataNotificationThreshold) IsBACnetConstructedDataNotificationThreshold() {
+}
+
+func (m *_BACnetConstructedDataNotificationThreshold) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNotificationThreshold) deepCopy() *_BACnetConstructedDataNotificationThreshold {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNotificationThresholdCopy := &_BACnetConstructedDataNotificationThreshold{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NotificationThreshold.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNotificationThresholdCopy
 }
 
 func (m *_BACnetConstructedDataNotificationThreshold) String() string {

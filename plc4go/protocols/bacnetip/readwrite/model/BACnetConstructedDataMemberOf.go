@@ -38,6 +38,7 @@ type BACnetConstructedDataMemberOf interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetZones returns Zones (property field)
 	GetZones() []BACnetDeviceObjectReference
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataMemberOf) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataMemberOf) IsBACnetConstructedDataMemberOf() {}
+
+func (m *_BACnetConstructedDataMemberOf) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMemberOf) deepCopy() *_BACnetConstructedDataMemberOf {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMemberOfCopy := &_BACnetConstructedDataMemberOf{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.Zones),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMemberOfCopy
+}
 
 func (m *_BACnetConstructedDataMemberOf) String() string {
 	if m == nil {

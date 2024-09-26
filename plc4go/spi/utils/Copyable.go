@@ -19,35 +19,6 @@
 
 package utils
 
-import (
-	"time"
-)
-
-// InlineIf is basically a inline if like construct for golang
-func InlineIf[T any](test bool, a func() T, b func() T) T {
-	if test {
-		return a()
-	} else {
-		return b()
-	}
-}
-
-// CleanupTimer stops a timer and purges anything left in the channel
-//
-//	and is safe to call even if the channel has already been received
-func CleanupTimer(timer *time.Timer) {
-	if timer == nil {
-		return
-	}
-	if !timer.Stop() {
-		select {
-		case <-timer.C:
-		default:
-		}
-	}
-}
-
-// ToPtr makes a pointer to T
-func ToPtr[T any](v T) *T {
-	return &v
+type Copyable interface {
+	DeepCopy() any
 }

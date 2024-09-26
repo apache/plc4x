@@ -40,6 +40,7 @@ type DescriptionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
@@ -184,6 +185,22 @@ func (m *_DescriptionRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_DescriptionRequest) IsDescriptionRequest() {}
+
+func (m *_DescriptionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DescriptionRequest) deepCopy() *_DescriptionRequest {
+	if m == nil {
+		return nil
+	}
+	_DescriptionRequestCopy := &_DescriptionRequest{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DescriptionRequestCopy
+}
 
 func (m *_DescriptionRequest) String() string {
 	if m == nil {

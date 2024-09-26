@@ -40,6 +40,7 @@ type BVLCWriteBroadcastDistributionTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCBroadcastDistributionTableEntry
@@ -198,6 +199,23 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCWriteBroadcastDistributionTable) IsBVLCWriteBroadcastDistributionTable() {}
+
+func (m *_BVLCWriteBroadcastDistributionTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCWriteBroadcastDistributionTable) deepCopy() *_BVLCWriteBroadcastDistributionTable {
+	if m == nil {
+		return nil
+	}
+	_BVLCWriteBroadcastDistributionTableCopy := &_BVLCWriteBroadcastDistributionTable{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+		utils.DeepCopySlice[BVLCBroadcastDistributionTableEntry, BVLCBroadcastDistributionTableEntry](m.Table),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCWriteBroadcastDistributionTableCopy
+}
 
 func (m *_BVLCWriteBroadcastDistributionTable) String() string {
 	if m == nil {

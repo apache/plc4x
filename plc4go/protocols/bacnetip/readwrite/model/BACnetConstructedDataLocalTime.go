@@ -38,6 +38,7 @@ type BACnetConstructedDataLocalTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLocalTime returns LocalTime (property field)
 	GetLocalTime() BACnetApplicationTagTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLocalTime) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataLocalTime) IsBACnetConstructedDataLocalTime() {}
+
+func (m *_BACnetConstructedDataLocalTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLocalTime) deepCopy() *_BACnetConstructedDataLocalTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLocalTimeCopy := &_BACnetConstructedDataLocalTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LocalTime.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLocalTimeCopy
+}
 
 func (m *_BACnetConstructedDataLocalTime) String() string {
 	if m == nil {

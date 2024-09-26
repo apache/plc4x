@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetItems returns Items (property field)
 	GetItems() []byte
@@ -189,6 +190,22 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) SerializeWithWrite
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) IsS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseCopy := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		utils.DeepCopySlice[byte, byte](m.Items),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmQueryResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {

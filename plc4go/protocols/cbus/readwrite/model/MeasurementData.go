@@ -40,12 +40,14 @@ type MeasurementData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMeasurementData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeasurementData()
 }
 
 // MeasurementDataContract provides a set of functions which can be overwritten by a sub struct
 type MeasurementDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MeasurementCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
@@ -242,3 +244,18 @@ func (pm *_MeasurementData) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_MeasurementData) IsMeasurementData() {}
+
+func (m *_MeasurementData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeasurementData) deepCopy() *_MeasurementData {
+	if m == nil {
+		return nil
+	}
+	_MeasurementDataCopy := &_MeasurementData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+	}
+	return _MeasurementDataCopy
+}

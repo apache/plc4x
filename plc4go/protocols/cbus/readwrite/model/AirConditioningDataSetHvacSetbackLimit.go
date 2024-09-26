@@ -38,6 +38,7 @@ type AirConditioningDataSetHvacSetbackLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -247,6 +248,25 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_AirConditioningDataSetHvacSetbackLimit) IsAirConditioningDataSetHvacSetbackLimit() {}
+
+func (m *_AirConditioningDataSetHvacSetbackLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataSetHvacSetbackLimit) deepCopy() *_AirConditioningDataSetHvacSetbackLimit {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataSetHvacSetbackLimitCopy := &_AirConditioningDataSetHvacSetbackLimit{
+		m.AirConditioningDataContract.DeepCopy().(AirConditioningDataContract),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Limit.DeepCopy().(HVACTemperature),
+		m.HvacModeAndFlags.DeepCopy().(HVACModeAndFlags),
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataSetHvacSetbackLimitCopy
+}
 
 func (m *_AirConditioningDataSetHvacSetbackLimit) String() string {
 	if m == nil {

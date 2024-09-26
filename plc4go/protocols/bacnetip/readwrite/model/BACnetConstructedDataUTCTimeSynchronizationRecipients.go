@@ -38,6 +38,7 @@ type BACnetConstructedDataUTCTimeSynchronizationRecipients interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUtcTimeSynchronizationRecipients returns UtcTimeSynchronizationRecipients (property field)
 	GetUtcTimeSynchronizationRecipients() []BACnetRecipient
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) SerializeWithWr
 }
 
 func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) IsBACnetConstructedDataUTCTimeSynchronizationRecipients() {
+}
+
+func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) deepCopy() *_BACnetConstructedDataUTCTimeSynchronizationRecipients {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUTCTimeSynchronizationRecipientsCopy := &_BACnetConstructedDataUTCTimeSynchronizationRecipients{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetRecipient, BACnetRecipient](m.UtcTimeSynchronizationRecipients),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUTCTimeSynchronizationRecipientsCopy
 }
 
 func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) String() string {

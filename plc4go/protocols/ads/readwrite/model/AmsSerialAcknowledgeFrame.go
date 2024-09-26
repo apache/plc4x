@@ -38,6 +38,7 @@ type AmsSerialAcknowledgeFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMagicCookie returns MagicCookie (property field)
 	GetMagicCookie() uint16
 	// GetTransmitterAddress returns TransmitterAddress (property field)
@@ -266,6 +267,25 @@ func (m *_AmsSerialAcknowledgeFrame) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AmsSerialAcknowledgeFrame) IsAmsSerialAcknowledgeFrame() {}
+
+func (m *_AmsSerialAcknowledgeFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsSerialAcknowledgeFrame) deepCopy() *_AmsSerialAcknowledgeFrame {
+	if m == nil {
+		return nil
+	}
+	_AmsSerialAcknowledgeFrameCopy := &_AmsSerialAcknowledgeFrame{
+		m.MagicCookie,
+		m.TransmitterAddress,
+		m.ReceiverAddress,
+		m.FragmentNumber,
+		m.Length,
+		m.Crc,
+	}
+	return _AmsSerialAcknowledgeFrameCopy
+}
 
 func (m *_AmsSerialAcknowledgeFrame) String() string {
 	if m == nil {

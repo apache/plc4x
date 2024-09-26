@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 ////
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) IsBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) deepCopy() *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedCopy := &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) String() string {

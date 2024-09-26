@@ -38,6 +38,7 @@ type PubSubConfigurationDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfPublishedDataSets returns NoOfPublishedDataSets (property field)
 	GetNoOfPublishedDataSets() int32
@@ -292,6 +293,27 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_PubSubConfigurationDataType) IsPubSubConfigurationDataType() {}
+
+func (m *_PubSubConfigurationDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubConfigurationDataType) deepCopy() *_PubSubConfigurationDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubConfigurationDataTypeCopy := &_PubSubConfigurationDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfPublishedDataSets,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.PublishedDataSets),
+		m.NoOfConnections,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Connections),
+		m.Enabled,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubConfigurationDataTypeCopy
+}
 
 func (m *_PubSubConfigurationDataType) String() string {
 	if m == nil {

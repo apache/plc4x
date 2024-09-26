@@ -38,6 +38,7 @@ type CALReplyLong interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALReply
 	// GetTerminatingByte returns TerminatingByte (property field)
 	GetTerminatingByte() uint32
@@ -356,6 +357,28 @@ func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_CALReplyLong) IsCALReplyLong() {}
+
+func (m *_CALReplyLong) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALReplyLong) deepCopy() *_CALReplyLong {
+	if m == nil {
+		return nil
+	}
+	_CALReplyLongCopy := &_CALReplyLong{
+		m.CALReplyContract.DeepCopy().(CALReplyContract),
+		m.TerminatingByte,
+		m.UnitAddress.DeepCopy().(UnitAddress),
+		m.BridgeAddress.DeepCopy().(BridgeAddress),
+		m.SerialInterfaceAddress.DeepCopy().(SerialInterfaceAddress),
+		utils.CopyPtr[byte](m.ReservedByte),
+		m.ReplyNetwork.DeepCopy().(ReplyNetwork),
+		m.reservedField0,
+	}
+	m.CALReplyContract.(*_CALReply)._SubType = m
+	return _CALReplyLongCopy
+}
 
 func (m *_CALReplyLong) String() string {
 	if m == nil {

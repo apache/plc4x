@@ -38,6 +38,7 @@ type BACnetActionList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
 	// GetAction returns Action (property field)
@@ -216,6 +217,22 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_BACnetActionList) IsBACnetActionList() {}
+
+func (m *_BACnetActionList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetActionList) deepCopy() *_BACnetActionList {
+	if m == nil {
+		return nil
+	}
+	_BACnetActionListCopy := &_BACnetActionList{
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetActionCommand, BACnetActionCommand](m.Action),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetActionListCopy
+}
 
 func (m *_BACnetActionList) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataProgramState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProgramState returns ProgramState (property field)
 	GetProgramState() BACnetProgramStateTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProgramState) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataProgramState) IsBACnetConstructedDataProgramState() {}
+
+func (m *_BACnetConstructedDataProgramState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProgramState) deepCopy() *_BACnetConstructedDataProgramState {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProgramStateCopy := &_BACnetConstructedDataProgramState{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProgramState.DeepCopy().(BACnetProgramStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProgramStateCopy
+}
 
 func (m *_BACnetConstructedDataProgramState) String() string {
 	if m == nil {

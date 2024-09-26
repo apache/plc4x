@@ -38,6 +38,7 @@ type IssuedIdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	UserIdentityTokenDefinition
 	// GetTokenData returns TokenData (property field)
 	GetTokenData() PascalByteString
@@ -206,6 +207,23 @@ func (m *_IssuedIdentityToken) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_IssuedIdentityToken) IsIssuedIdentityToken() {}
+
+func (m *_IssuedIdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IssuedIdentityToken) deepCopy() *_IssuedIdentityToken {
+	if m == nil {
+		return nil
+	}
+	_IssuedIdentityTokenCopy := &_IssuedIdentityToken{
+		m.UserIdentityTokenDefinitionContract.DeepCopy().(UserIdentityTokenDefinitionContract),
+		m.TokenData.DeepCopy().(PascalByteString),
+		m.EncryptionAlgorithm.DeepCopy().(PascalString),
+	}
+	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	return _IssuedIdentityTokenCopy
+}
 
 func (m *_IssuedIdentityToken) String() string {
 	if m == nil {

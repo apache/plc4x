@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessDoorRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetDoorValueTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) IsBACnetConstructedDataAccessDoorRelinquishDefault() {
+}
+
+func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) deepCopy() *_BACnetConstructedDataAccessDoorRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessDoorRelinquishDefaultCopy := &_BACnetConstructedDataAccessDoorRelinquishDefault{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.RelinquishDefault.DeepCopy().(BACnetDoorValueTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessDoorRelinquishDefaultCopy
 }
 
 func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) String() string {

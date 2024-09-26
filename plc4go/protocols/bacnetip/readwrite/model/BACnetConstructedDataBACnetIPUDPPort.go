@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPUDPPort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpUdpPort returns IpUdpPort (property field)
 	GetIpUdpPort() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) IsBACnetConstructedDataBACnetIPUDPPort() {}
+
+func (m *_BACnetConstructedDataBACnetIPUDPPort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPUDPPort) deepCopy() *_BACnetConstructedDataBACnetIPUDPPort {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPUDPPortCopy := &_BACnetConstructedDataBACnetIPUDPPort{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IpUdpPort.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPUDPPortCopy
+}
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) String() string {
 	if m == nil {

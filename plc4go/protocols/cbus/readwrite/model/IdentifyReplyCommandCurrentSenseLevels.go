@@ -38,6 +38,7 @@ type IdentifyReplyCommandCurrentSenseLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetCurrentSenseLevels returns CurrentSenseLevels (property field)
 	GetCurrentSenseLevels() []byte
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) IsIdentifyReplyCommandCurrentSenseLevels() {}
+
+func (m *_IdentifyReplyCommandCurrentSenseLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandCurrentSenseLevels) deepCopy() *_IdentifyReplyCommandCurrentSenseLevels {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandCurrentSenseLevelsCopy := &_IdentifyReplyCommandCurrentSenseLevels{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		utils.DeepCopySlice[byte, byte](m.CurrentSenseLevels),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandCurrentSenseLevelsCopy
+}
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type AnsiExtendedSymbolSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DataSegmentType
 	// GetSymbol returns Symbol (property field)
 	GetSymbol() string
@@ -216,6 +217,23 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AnsiExtendedSymbolSegment) IsAnsiExtendedSymbolSegment() {}
+
+func (m *_AnsiExtendedSymbolSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AnsiExtendedSymbolSegment) deepCopy() *_AnsiExtendedSymbolSegment {
+	if m == nil {
+		return nil
+	}
+	_AnsiExtendedSymbolSegmentCopy := &_AnsiExtendedSymbolSegment{
+		m.DataSegmentTypeContract.DeepCopy().(DataSegmentTypeContract),
+		m.Symbol,
+		utils.CopyPtr[uint8](m.Pad),
+	}
+	m.DataSegmentTypeContract.(*_DataSegmentType)._SubType = m
+	return _AnsiExtendedSymbolSegmentCopy
+}
 
 func (m *_AnsiExtendedSymbolSegment) String() string {
 	if m == nil {

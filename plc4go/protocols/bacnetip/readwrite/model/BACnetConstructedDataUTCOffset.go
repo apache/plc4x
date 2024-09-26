@@ -38,6 +38,7 @@ type BACnetConstructedDataUTCOffset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUtcOffset returns UtcOffset (property field)
 	GetUtcOffset() BACnetApplicationTagSignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataUTCOffset) IsBACnetConstructedDataUTCOffset() {}
+
+func (m *_BACnetConstructedDataUTCOffset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUTCOffset) deepCopy() *_BACnetConstructedDataUTCOffset {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUTCOffsetCopy := &_BACnetConstructedDataUTCOffset{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.UtcOffset.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUTCOffsetCopy
+}
 
 func (m *_BACnetConstructedDataUTCOffset) String() string {
 	if m == nil {

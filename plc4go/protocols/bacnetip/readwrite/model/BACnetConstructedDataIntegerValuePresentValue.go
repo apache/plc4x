@@ -38,6 +38,7 @@ type BACnetConstructedDataIntegerValuePresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagSignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIntegerValuePresentValue) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataIntegerValuePresentValue) IsBACnetConstructedDataIntegerValuePresentValue() {
+}
+
+func (m *_BACnetConstructedDataIntegerValuePresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntegerValuePresentValue) deepCopy() *_BACnetConstructedDataIntegerValuePresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntegerValuePresentValueCopy := &_BACnetConstructedDataIntegerValuePresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntegerValuePresentValueCopy
 }
 
 func (m *_BACnetConstructedDataIntegerValuePresentValue) String() string {

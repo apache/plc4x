@@ -38,6 +38,7 @@ type BACnetConstructedDataInputReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInputReference returns InputReference (property field)
 	GetInputReference() BACnetObjectPropertyReference
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataInputReference) IsBACnetConstructedDataInputReference() {}
+
+func (m *_BACnetConstructedDataInputReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInputReference) deepCopy() *_BACnetConstructedDataInputReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInputReferenceCopy := &_BACnetConstructedDataInputReference{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.InputReference.DeepCopy().(BACnetObjectPropertyReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInputReferenceCopy
+}
 
 func (m *_BACnetConstructedDataInputReference) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type BACnetConstructedDataTimerAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataTimerAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimerAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataTimerAll) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataTimerAll) IsBACnetConstructedDataTimerAll() {}
+
+func (m *_BACnetConstructedDataTimerAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimerAll) deepCopy() *_BACnetConstructedDataTimerAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimerAllCopy := &_BACnetConstructedDataTimerAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimerAllCopy
+}
 
 func (m *_BACnetConstructedDataTimerAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestVTClose interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetListOfRemoteVtSessionIdentifiers returns ListOfRemoteVtSessionIdentifiers (property field)
 	GetListOfRemoteVtSessionIdentifiers() []BACnetApplicationTagUnsignedInteger
@@ -196,6 +197,23 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetServiceRequestPayloadLength()
 ////
 
 func (m *_BACnetConfirmedServiceRequestVTClose) IsBACnetConfirmedServiceRequestVTClose() {}
+
+func (m *_BACnetConfirmedServiceRequestVTClose) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestVTClose) deepCopy() *_BACnetConfirmedServiceRequestVTClose {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestVTCloseCopy := &_BACnetConfirmedServiceRequestVTClose{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ListOfRemoteVtSessionIdentifiers),
+		m.ServiceRequestPayloadLength,
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestVTCloseCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestVTClose) String() string {
 	if m == nil {

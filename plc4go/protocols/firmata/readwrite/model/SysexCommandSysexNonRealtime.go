@@ -36,6 +36,7 @@ type SysexCommandSysexNonRealtime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandSysexNonRealtime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandSysexNonRealtime()
@@ -150,6 +151,21 @@ func (m *_SysexCommandSysexNonRealtime) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SysexCommandSysexNonRealtime) IsSysexCommandSysexNonRealtime() {}
+
+func (m *_SysexCommandSysexNonRealtime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandSysexNonRealtime) deepCopy() *_SysexCommandSysexNonRealtime {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandSysexNonRealtimeCopy := &_SysexCommandSysexNonRealtime{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandSysexNonRealtimeCopy
+}
 
 func (m *_SysexCommandSysexNonRealtime) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesShedState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetShedState returns ShedState (property field)
 	GetShedState() BACnetShedStateTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesShedState) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetPropertyStatesShedState) IsBACnetPropertyStatesShedState() {}
+
+func (m *_BACnetPropertyStatesShedState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesShedState) deepCopy() *_BACnetPropertyStatesShedState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesShedStateCopy := &_BACnetPropertyStatesShedState{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.ShedState.DeepCopy().(BACnetShedStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesShedStateCopy
+}
 
 func (m *_BACnetPropertyStatesShedState) String() string {
 	if m == nil {

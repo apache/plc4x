@@ -38,6 +38,7 @@ type VariantUInt16 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -205,6 +206,23 @@ func (m *_VariantUInt16) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_VariantUInt16) IsVariantUInt16() {}
+
+func (m *_VariantUInt16) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantUInt16) deepCopy() *_VariantUInt16 {
+	if m == nil {
+		return nil
+	}
+	_VariantUInt16Copy := &_VariantUInt16{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[uint16, uint16](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantUInt16Copy
+}
 
 func (m *_VariantUInt16) String() string {
 	if m == nil {

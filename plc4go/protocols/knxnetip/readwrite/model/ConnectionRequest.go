@@ -40,6 +40,7 @@ type ConnectionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiDiscoveryEndpoint returns HpaiDiscoveryEndpoint (property field)
 	GetHpaiDiscoveryEndpoint() HPAIDiscoveryEndpoint
@@ -232,6 +233,24 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ConnectionRequest) IsConnectionRequest() {}
+
+func (m *_ConnectionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequest) deepCopy() *_ConnectionRequest {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestCopy := &_ConnectionRequest{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.HpaiDiscoveryEndpoint.DeepCopy().(HPAIDiscoveryEndpoint),
+		m.HpaiDataEndpoint.DeepCopy().(HPAIDataEndpoint),
+		m.ConnectionRequestInformation.DeepCopy().(ConnectionRequestInformation),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _ConnectionRequestCopy
+}
 
 func (m *_ConnectionRequest) String() string {
 	if m == nil {

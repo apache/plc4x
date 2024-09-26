@@ -39,6 +39,7 @@ type BACnetTagPayloadCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetEncoding returns Encoding (property field)
 	GetEncoding() BACnetCharacterEncoding
 	// GetValue returns Value (property field)
@@ -231,6 +232,22 @@ func (m *_BACnetTagPayloadCharacterString) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadCharacterString) IsBACnetTagPayloadCharacterString() {}
+
+func (m *_BACnetTagPayloadCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadCharacterString) deepCopy() *_BACnetTagPayloadCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadCharacterStringCopy := &_BACnetTagPayloadCharacterString{
+		m.Encoding,
+		m.Value,
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadCharacterStringCopy
+}
 
 func (m *_BACnetTagPayloadCharacterString) String() string {
 	if m == nil {

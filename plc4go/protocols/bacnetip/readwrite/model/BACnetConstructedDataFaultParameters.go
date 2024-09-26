@@ -38,6 +38,7 @@ type BACnetConstructedDataFaultParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultParameters returns FaultParameters (property field)
 	GetFaultParameters() BACnetFaultParameter
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFaultParameters) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataFaultParameters) IsBACnetConstructedDataFaultParameters() {}
+
+func (m *_BACnetConstructedDataFaultParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFaultParameters) deepCopy() *_BACnetConstructedDataFaultParameters {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFaultParametersCopy := &_BACnetConstructedDataFaultParameters{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FaultParameters.DeepCopy().(BACnetFaultParameter),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFaultParametersCopy
+}
 
 func (m *_BACnetConstructedDataFaultParameters) String() string {
 	if m == nil {

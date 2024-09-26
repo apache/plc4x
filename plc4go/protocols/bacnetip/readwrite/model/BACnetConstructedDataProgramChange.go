@@ -38,6 +38,7 @@ type BACnetConstructedDataProgramChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProgramChange returns ProgramChange (property field)
 	GetProgramChange() BACnetProgramRequestTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProgramChange) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataProgramChange) IsBACnetConstructedDataProgramChange() {}
+
+func (m *_BACnetConstructedDataProgramChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProgramChange) deepCopy() *_BACnetConstructedDataProgramChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProgramChangeCopy := &_BACnetConstructedDataProgramChange{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProgramChange.DeepCopy().(BACnetProgramRequestTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProgramChangeCopy
+}
 
 func (m *_BACnetConstructedDataProgramChange) String() string {
 	if m == nil {

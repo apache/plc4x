@@ -38,6 +38,7 @@ type ModbusPDUGetComEventCounterResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStatus returns Status (property field)
 	GetStatus() uint16
@@ -208,6 +209,23 @@ func (m *_ModbusPDUGetComEventCounterResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ModbusPDUGetComEventCounterResponse) IsModbusPDUGetComEventCounterResponse() {}
+
+func (m *_ModbusPDUGetComEventCounterResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUGetComEventCounterResponse) deepCopy() *_ModbusPDUGetComEventCounterResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUGetComEventCounterResponseCopy := &_ModbusPDUGetComEventCounterResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.Status,
+		m.EventCount,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUGetComEventCounterResponseCopy
+}
 
 func (m *_ModbusPDUGetComEventCounterResponse) String() string {
 	if m == nil {

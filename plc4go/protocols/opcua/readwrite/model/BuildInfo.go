@@ -38,6 +38,7 @@ type BuildInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetProductUri returns ProductUri (property field)
 	GetProductUri() PascalString
@@ -299,6 +300,27 @@ func (m *_BuildInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_BuildInfo) IsBuildInfo() {}
+
+func (m *_BuildInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BuildInfo) deepCopy() *_BuildInfo {
+	if m == nil {
+		return nil
+	}
+	_BuildInfoCopy := &_BuildInfo{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ProductUri.DeepCopy().(PascalString),
+		m.ManufacturerName.DeepCopy().(PascalString),
+		m.ProductName.DeepCopy().(PascalString),
+		m.SoftwareVersion.DeepCopy().(PascalString),
+		m.BuildNumber.DeepCopy().(PascalString),
+		m.BuildDate,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BuildInfoCopy
+}
 
 func (m *_BuildInfo) String() string {
 	if m == nil {

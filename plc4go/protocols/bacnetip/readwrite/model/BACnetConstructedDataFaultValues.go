@@ -38,6 +38,7 @@ type BACnetConstructedDataFaultValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataFaultValues) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataFaultValues) IsBACnetConstructedDataFaultValues() {}
+
+func (m *_BACnetConstructedDataFaultValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFaultValues) deepCopy() *_BACnetConstructedDataFaultValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFaultValuesCopy := &_BACnetConstructedDataFaultValues{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.FaultValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFaultValuesCopy
+}
 
 func (m *_BACnetConstructedDataFaultValues) String() string {
 	if m == nil {

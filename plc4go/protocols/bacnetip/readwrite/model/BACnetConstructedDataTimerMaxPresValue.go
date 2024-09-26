@@ -38,6 +38,7 @@ type BACnetConstructedDataTimerMaxPresValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataTimerMaxPresValue) IsBACnetConstructedDataTimerMaxPresValue() {}
+
+func (m *_BACnetConstructedDataTimerMaxPresValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimerMaxPresValue) deepCopy() *_BACnetConstructedDataTimerMaxPresValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimerMaxPresValueCopy := &_BACnetConstructedDataTimerMaxPresValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaxPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimerMaxPresValueCopy
+}
 
 func (m *_BACnetConstructedDataTimerMaxPresValue) String() string {
 	if m == nil {

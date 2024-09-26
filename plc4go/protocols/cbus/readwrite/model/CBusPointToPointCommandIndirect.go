@@ -38,6 +38,7 @@ type CBusPointToPointCommandIndirect interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToPointCommand
 	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() BridgeAddress
@@ -226,6 +227,24 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_CBusPointToPointCommandIndirect) IsCBusPointToPointCommandIndirect() {}
+
+func (m *_CBusPointToPointCommandIndirect) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointCommandIndirect) deepCopy() *_CBusPointToPointCommandIndirect {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointCommandIndirectCopy := &_CBusPointToPointCommandIndirect{
+		m.CBusPointToPointCommandContract.DeepCopy().(CBusPointToPointCommandContract),
+		m.BridgeAddress.DeepCopy().(BridgeAddress),
+		m.NetworkRoute.DeepCopy().(NetworkRoute),
+		m.UnitAddress.DeepCopy().(UnitAddress),
+	}
+	m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = m
+	return _CBusPointToPointCommandIndirectCopy
+}
 
 func (m *_CBusPointToPointCommandIndirect) String() string {
 	if m == nil {

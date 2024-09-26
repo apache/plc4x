@@ -38,6 +38,7 @@ type BACnetConstructedDataLifeSafetyPointPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetLifeSafetyStateTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) IsBACnetConstructedDataLifeSafetyPointPresentValue() {
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) deepCopy() *_BACnetConstructedDataLifeSafetyPointPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLifeSafetyPointPresentValueCopy := &_BACnetConstructedDataLifeSafetyPointPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetLifeSafetyStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLifeSafetyPointPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) String() string {

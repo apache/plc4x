@@ -40,6 +40,7 @@ type BVLCResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetCode returns Code (property field)
 	GetCode() BVLCResultCode
@@ -181,6 +182,22 @@ func (m *_BVLCResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_BVLCResult) IsBVLCResult() {}
+
+func (m *_BVLCResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCResult) deepCopy() *_BVLCResult {
+	if m == nil {
+		return nil
+	}
+	_BVLCResultCopy := &_BVLCResult{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.Code,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCResultCopy
+}
 
 func (m *_BVLCResult) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLightingCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLightingCommand returns LightingCommand (property field)
 	GetLightingCommand() BACnetLightingCommand
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataLightingCommand) IsBACnetConstructedDataLightingCommand() {}
+
+func (m *_BACnetConstructedDataLightingCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLightingCommand) deepCopy() *_BACnetConstructedDataLightingCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLightingCommandCopy := &_BACnetConstructedDataLightingCommand{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LightingCommand.DeepCopy().(BACnetLightingCommand),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLightingCommandCopy
+}
 
 func (m *_BACnetConstructedDataLightingCommand) String() string {
 	if m == nil {

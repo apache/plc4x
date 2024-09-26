@@ -40,12 +40,14 @@ type LogicalSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLogicalSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLogicalSegmentType()
 }
 
 // LogicalSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
 type LogicalSegmentTypeContract interface {
+	utils.Copyable
 	// IsLogicalSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLogicalSegmentType()
 }
@@ -194,3 +196,17 @@ func (pm *_LogicalSegmentType) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_LogicalSegmentType) IsLogicalSegmentType() {}
+
+func (m *_LogicalSegmentType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LogicalSegmentType) deepCopy() *_LogicalSegmentType {
+	if m == nil {
+		return nil
+	}
+	_LogicalSegmentTypeCopy := &_LogicalSegmentType{
+		nil, // will be set by child
+	}
+	return _LogicalSegmentTypeCopy
+}

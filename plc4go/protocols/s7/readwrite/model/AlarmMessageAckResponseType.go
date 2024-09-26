@@ -38,6 +38,7 @@ type AlarmMessageAckResponseType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
@@ -208,6 +209,22 @@ func (m *_AlarmMessageAckResponseType) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_AlarmMessageAckResponseType) IsAlarmMessageAckResponseType() {}
+
+func (m *_AlarmMessageAckResponseType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageAckResponseType) deepCopy() *_AlarmMessageAckResponseType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageAckResponseTypeCopy := &_AlarmMessageAckResponseType{
+		m.FunctionId,
+		m.NumberOfObjects,
+		utils.DeepCopySlice[uint8, uint8](m.MessageObjects),
+	}
+	return _AlarmMessageAckResponseTypeCopy
+}
 
 func (m *_AlarmMessageAckResponseType) String() string {
 	if m == nil {

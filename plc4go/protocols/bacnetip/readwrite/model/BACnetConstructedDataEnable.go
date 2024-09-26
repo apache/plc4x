@@ -38,6 +38,7 @@ type BACnetConstructedDataEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEnable returns Enable (property field)
 	GetEnable() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEnable) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetConstructedDataEnable) IsBACnetConstructedDataEnable() {}
+
+func (m *_BACnetConstructedDataEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEnable) deepCopy() *_BACnetConstructedDataEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEnableCopy := &_BACnetConstructedDataEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Enable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEnableCopy
+}
 
 func (m *_BACnetConstructedDataEnable) String() string {
 	if m == nil {

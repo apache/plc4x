@@ -42,6 +42,7 @@ type EipConnectionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsEipConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipConnectionRequest()
@@ -204,6 +205,21 @@ func (m *_EipConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_EipConnectionRequest) IsEipConnectionRequest() {}
+
+func (m *_EipConnectionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipConnectionRequest) deepCopy() *_EipConnectionRequest {
+	if m == nil {
+		return nil
+	}
+	_EipConnectionRequestCopy := &_EipConnectionRequest{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _EipConnectionRequestCopy
+}
 
 func (m *_EipConnectionRequest) String() string {
 	if m == nil {

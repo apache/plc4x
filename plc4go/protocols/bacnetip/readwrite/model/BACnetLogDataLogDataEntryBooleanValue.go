@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryBooleanValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetLogDataLogDataEntryBooleanValue) IsBACnetLogDataLogDataEntryBooleanValue() {}
+
+func (m *_BACnetLogDataLogDataEntryBooleanValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryBooleanValue) deepCopy() *_BACnetLogDataLogDataEntryBooleanValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryBooleanValueCopy := &_BACnetLogDataLogDataEntryBooleanValue{
+		m.BACnetLogDataLogDataEntryContract.DeepCopy().(BACnetLogDataLogDataEntryContract),
+		m.BooleanValue.DeepCopy().(BACnetContextTagBoolean),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryBooleanValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryBooleanValue) String() string {
 	if m == nil {

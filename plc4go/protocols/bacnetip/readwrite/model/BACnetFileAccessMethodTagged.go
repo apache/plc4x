@@ -38,6 +38,7 @@ type BACnetFileAccessMethodTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetFileAccessMethodTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetFileAccessMethodTagged) IsBACnetFileAccessMethodTagged() {}
+
+func (m *_BACnetFileAccessMethodTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFileAccessMethodTagged) deepCopy() *_BACnetFileAccessMethodTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetFileAccessMethodTaggedCopy := &_BACnetFileAccessMethodTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetFileAccessMethodTaggedCopy
+}
 
 func (m *_BACnetFileAccessMethodTagged) String() string {
 	if m == nil {

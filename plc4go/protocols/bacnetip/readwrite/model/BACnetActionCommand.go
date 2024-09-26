@@ -38,6 +38,7 @@ type BACnetActionCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetContextTagObjectIdentifier
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
@@ -368,6 +369,28 @@ func (m *_BACnetActionCommand) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetActionCommand) IsBACnetActionCommand() {}
+
+func (m *_BACnetActionCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetActionCommand) deepCopy() *_BACnetActionCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetActionCommandCopy := &_BACnetActionCommand{
+		m.DeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.PostDelay.DeepCopy().(BACnetContextTagBoolean),
+		m.QuitOnFailure.DeepCopy().(BACnetContextTagBoolean),
+		m.WriteSuccessful.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetActionCommandCopy
+}
 
 func (m *_BACnetActionCommand) String() string {
 	if m == nil {

@@ -37,6 +37,7 @@ type BVLCReadBroadcastDistributionTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// IsBVLCReadBroadcastDistributionTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCReadBroadcastDistributionTable()
@@ -147,6 +148,21 @@ func (m *_BVLCReadBroadcastDistributionTable) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BVLCReadBroadcastDistributionTable) IsBVLCReadBroadcastDistributionTable() {}
+
+func (m *_BVLCReadBroadcastDistributionTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCReadBroadcastDistributionTable) deepCopy() *_BVLCReadBroadcastDistributionTable {
+	if m == nil {
+		return nil
+	}
+	_BVLCReadBroadcastDistributionTableCopy := &_BVLCReadBroadcastDistributionTable{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCReadBroadcastDistributionTableCopy
+}
 
 func (m *_BVLCReadBroadcastDistributionTable) String() string {
 	if m == nil {

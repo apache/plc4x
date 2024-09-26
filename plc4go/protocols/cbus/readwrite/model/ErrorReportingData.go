@@ -40,12 +40,14 @@ type ErrorReportingData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsErrorReportingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingData()
 }
 
 // ErrorReportingDataContract provides a set of functions which can be overwritten by a sub struct
 type ErrorReportingDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() ErrorReportingCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
@@ -242,3 +244,18 @@ func (pm *_ErrorReportingData) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_ErrorReportingData) IsErrorReportingData() {}
+
+func (m *_ErrorReportingData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingData) deepCopy() *_ErrorReportingData {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingDataCopy := &_ErrorReportingData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+	}
+	return _ErrorReportingDataCopy
+}

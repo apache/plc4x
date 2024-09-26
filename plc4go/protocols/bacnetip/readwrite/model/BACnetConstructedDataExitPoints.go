@@ -38,6 +38,7 @@ type BACnetConstructedDataExitPoints interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetExitPoints returns ExitPoints (property field)
 	GetExitPoints() []BACnetDeviceObjectReference
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataExitPoints) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataExitPoints) IsBACnetConstructedDataExitPoints() {}
+
+func (m *_BACnetConstructedDataExitPoints) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExitPoints) deepCopy() *_BACnetConstructedDataExitPoints {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExitPointsCopy := &_BACnetConstructedDataExitPoints{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.ExitPoints),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExitPointsCopy
+}
 
 func (m *_BACnetConstructedDataExitPoints) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetNameValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetName returns Name (property field)
 	GetName() BACnetContextTagCharacterString
 	// GetValue returns Value (property field)
@@ -195,6 +196,21 @@ func (m *_BACnetNameValue) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetNameValue) IsBACnetNameValue() {}
+
+func (m *_BACnetNameValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNameValue) deepCopy() *_BACnetNameValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetNameValueCopy := &_BACnetNameValue{
+		m.Name.DeepCopy().(BACnetContextTagCharacterString),
+		m.Value.DeepCopy().(BACnetConstructedData),
+	}
+	return _BACnetNameValueCopy
+}
 
 func (m *_BACnetNameValue) String() string {
 	if m == nil {

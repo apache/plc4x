@@ -38,6 +38,7 @@ type VariantQualifiedName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -210,6 +211,23 @@ func (m *_VariantQualifiedName) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_VariantQualifiedName) IsVariantQualifiedName() {}
+
+func (m *_VariantQualifiedName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantQualifiedName) deepCopy() *_VariantQualifiedName {
+	if m == nil {
+		return nil
+	}
+	_VariantQualifiedNameCopy := &_VariantQualifiedName{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[QualifiedName, QualifiedName](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantQualifiedNameCopy
+}
 
 func (m *_VariantQualifiedName) String() string {
 	if m == nil {

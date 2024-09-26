@@ -38,6 +38,7 @@ type ReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -280,6 +281,26 @@ func (m *_ReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_ReadResponse) IsReadResponse() {}
+
+func (m *_ReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReadResponse) deepCopy() *_ReadResponse {
+	if m == nil {
+		return nil
+	}
+	_ReadResponseCopy := &_ReadResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[DataValue, DataValue](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReadResponseCopy
+}
 
 func (m *_ReadResponse) String() string {
 	if m == nil {

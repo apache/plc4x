@@ -38,6 +38,7 @@ type CustomTypes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string
 	// IsCustomTypes is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -179,6 +180,21 @@ func (m *_CustomTypes) GetNumBytes() uint8 {
 ////
 
 func (m *_CustomTypes) IsCustomTypes() {}
+
+func (m *_CustomTypes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CustomTypes) deepCopy() *_CustomTypes {
+	if m == nil {
+		return nil
+	}
+	_CustomTypesCopy := &_CustomTypes{
+		m.CustomString,
+		m.NumBytes,
+	}
+	return _CustomTypesCopy
+}
 
 func (m *_CustomTypes) String() string {
 	if m == nil {

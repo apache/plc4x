@@ -36,6 +36,7 @@ type SecurityDataEntryDelayStarted interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataEntryDelayStarted is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataEntryDelayStarted()
@@ -142,6 +143,21 @@ func (m *_SecurityDataEntryDelayStarted) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_SecurityDataEntryDelayStarted) IsSecurityDataEntryDelayStarted() {}
+
+func (m *_SecurityDataEntryDelayStarted) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataEntryDelayStarted) deepCopy() *_SecurityDataEntryDelayStarted {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataEntryDelayStartedCopy := &_SecurityDataEntryDelayStarted{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataEntryDelayStartedCopy
+}
 
 func (m *_SecurityDataEntryDelayStarted) String() string {
 	if m == nil {

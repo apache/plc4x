@@ -38,6 +38,7 @@ type BACnetPropertyStatesReliability interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetReliability returns Reliability (property field)
 	GetReliability() BACnetReliabilityTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesReliability) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesReliability) IsBACnetPropertyStatesReliability() {}
+
+func (m *_BACnetPropertyStatesReliability) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesReliability) deepCopy() *_BACnetPropertyStatesReliability {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesReliabilityCopy := &_BACnetPropertyStatesReliability{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.Reliability.DeepCopy().(BACnetReliabilityTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesReliabilityCopy
+}
 
 func (m *_BACnetPropertyStatesReliability) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type NodeIdTwoByte interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NodeIdTypeDefinition
 	// GetId returns Id (property field)
 	GetId() uint8
@@ -210,6 +211,22 @@ func (m *_NodeIdTwoByte) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_NodeIdTwoByte) IsNodeIdTwoByte() {}
+
+func (m *_NodeIdTwoByte) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdTwoByte) deepCopy() *_NodeIdTwoByte {
+	if m == nil {
+		return nil
+	}
+	_NodeIdTwoByteCopy := &_NodeIdTwoByte{
+		m.NodeIdTypeDefinitionContract.DeepCopy().(NodeIdTypeDefinitionContract),
+		m.Id,
+	}
+	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	return _NodeIdTwoByteCopy
+}
 
 func (m *_NodeIdTwoByte) String() string {
 	if m == nil {

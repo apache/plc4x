@@ -38,6 +38,7 @@ type ModbusPDUWriteFileRecordResponseItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() uint8
 	// GetFileNumber returns FileNumber (property field)
@@ -241,6 +242,23 @@ func (m *_ModbusPDUWriteFileRecordResponseItem) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_ModbusPDUWriteFileRecordResponseItem) IsModbusPDUWriteFileRecordResponseItem() {}
+
+func (m *_ModbusPDUWriteFileRecordResponseItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteFileRecordResponseItem) deepCopy() *_ModbusPDUWriteFileRecordResponseItem {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteFileRecordResponseItemCopy := &_ModbusPDUWriteFileRecordResponseItem{
+		m.ReferenceType,
+		m.FileNumber,
+		m.RecordNumber,
+		utils.DeepCopySlice[byte, byte](m.RecordData),
+	}
+	return _ModbusPDUWriteFileRecordResponseItemCopy
+}
 
 func (m *_ModbusPDUWriteFileRecordResponseItem) String() string {
 	if m == nil {

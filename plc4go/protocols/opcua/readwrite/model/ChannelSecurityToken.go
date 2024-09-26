@@ -38,6 +38,7 @@ type ChannelSecurityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetChannelId returns ChannelId (property field)
 	GetChannelId() uint32
@@ -242,6 +243,25 @@ func (m *_ChannelSecurityToken) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ChannelSecurityToken) IsChannelSecurityToken() {}
+
+func (m *_ChannelSecurityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ChannelSecurityToken) deepCopy() *_ChannelSecurityToken {
+	if m == nil {
+		return nil
+	}
+	_ChannelSecurityTokenCopy := &_ChannelSecurityToken{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ChannelId,
+		m.TokenId,
+		m.CreatedAt,
+		m.RevisedLifetime,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ChannelSecurityTokenCopy
+}
 
 func (m *_ChannelSecurityToken) String() string {
 	if m == nil {

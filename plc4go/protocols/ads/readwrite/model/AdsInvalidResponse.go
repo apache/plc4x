@@ -36,6 +36,7 @@ type AdsInvalidResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsInvalidResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsInvalidResponse()
@@ -150,6 +151,21 @@ func (m *_AdsInvalidResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_AdsInvalidResponse) IsAdsInvalidResponse() {}
+
+func (m *_AdsInvalidResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsInvalidResponse) deepCopy() *_AdsInvalidResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsInvalidResponseCopy := &_AdsInvalidResponse{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsInvalidResponseCopy
+}
 
 func (m *_AdsInvalidResponse) String() string {
 	if m == nil {

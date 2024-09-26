@@ -38,6 +38,7 @@ type BACnetChannelValueReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueReal) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetChannelValueReal) IsBACnetChannelValueReal() {}
+
+func (m *_BACnetChannelValueReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueReal) deepCopy() *_BACnetChannelValueReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueRealCopy := &_BACnetChannelValueReal{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueRealCopy
+}
 
 func (m *_BACnetChannelValueReal) String() string {
 	if m == nil {

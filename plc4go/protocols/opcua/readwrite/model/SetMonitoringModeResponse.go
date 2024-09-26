@@ -38,6 +38,7 @@ type SetMonitoringModeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -280,6 +281,26 @@ func (m *_SetMonitoringModeResponse) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SetMonitoringModeResponse) IsSetMonitoringModeResponse() {}
+
+func (m *_SetMonitoringModeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetMonitoringModeResponse) deepCopy() *_SetMonitoringModeResponse {
+	if m == nil {
+		return nil
+	}
+	_SetMonitoringModeResponseCopy := &_SetMonitoringModeResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetMonitoringModeResponseCopy
+}
 
 func (m *_SetMonitoringModeResponse) String() string {
 	if m == nil {

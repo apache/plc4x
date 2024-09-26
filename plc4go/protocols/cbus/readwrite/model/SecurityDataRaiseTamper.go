@@ -36,6 +36,7 @@ type SecurityDataRaiseTamper interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataRaiseTamper is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataRaiseTamper()
@@ -142,6 +143,21 @@ func (m *_SecurityDataRaiseTamper) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_SecurityDataRaiseTamper) IsSecurityDataRaiseTamper() {}
+
+func (m *_SecurityDataRaiseTamper) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataRaiseTamper) deepCopy() *_SecurityDataRaiseTamper {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataRaiseTamperCopy := &_SecurityDataRaiseTamper{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataRaiseTamperCopy
+}
 
 func (m *_SecurityDataRaiseTamper) String() string {
 	if m == nil {

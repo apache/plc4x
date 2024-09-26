@@ -38,6 +38,7 @@ type NLMRouterBusyToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddresses returns DestinationNetworkAddresses (property field)
 	GetDestinationNetworkAddresses() []uint16
@@ -181,6 +182,22 @@ func (m *_NLMRouterBusyToNetwork) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_NLMRouterBusyToNetwork) IsNLMRouterBusyToNetwork() {}
+
+func (m *_NLMRouterBusyToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRouterBusyToNetwork) deepCopy() *_NLMRouterBusyToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMRouterBusyToNetworkCopy := &_NLMRouterBusyToNetwork{
+		m.NLMContract.DeepCopy().(NLMContract),
+		utils.DeepCopySlice[uint16, uint16](m.DestinationNetworkAddresses),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRouterBusyToNetworkCopy
+}
 
 func (m *_NLMRouterBusyToNetwork) String() string {
 	if m == nil {

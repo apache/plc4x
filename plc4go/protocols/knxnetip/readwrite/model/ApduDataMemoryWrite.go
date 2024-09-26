@@ -36,6 +36,7 @@ type ApduDataMemoryWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataMemoryWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataMemoryWrite()
@@ -146,6 +147,21 @@ func (m *_ApduDataMemoryWrite) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ApduDataMemoryWrite) IsApduDataMemoryWrite() {}
+
+func (m *_ApduDataMemoryWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataMemoryWrite) deepCopy() *_ApduDataMemoryWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataMemoryWriteCopy := &_ApduDataMemoryWrite{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataMemoryWriteCopy
+}
 
 func (m *_ApduDataMemoryWrite) String() string {
 	if m == nil {

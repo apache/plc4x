@@ -38,6 +38,7 @@ type BACnetConstructedDataDutyWindow interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDutyWindow returns DutyWindow (property field)
 	GetDutyWindow() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDutyWindow) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataDutyWindow) IsBACnetConstructedDataDutyWindow() {}
+
+func (m *_BACnetConstructedDataDutyWindow) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDutyWindow) deepCopy() *_BACnetConstructedDataDutyWindow {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDutyWindowCopy := &_BACnetConstructedDataDutyWindow{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DutyWindow.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDutyWindowCopy
+}
 
 func (m *_BACnetConstructedDataDutyWindow) String() string {
 	if m == nil {

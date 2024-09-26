@@ -38,6 +38,7 @@ type BACnetConstructedDataLoggingRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLoggingRecord returns LoggingRecord (property field)
 	GetLoggingRecord() BACnetAccumulatorRecord
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoggingRecord) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataLoggingRecord) IsBACnetConstructedDataLoggingRecord() {}
+
+func (m *_BACnetConstructedDataLoggingRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoggingRecord) deepCopy() *_BACnetConstructedDataLoggingRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoggingRecordCopy := &_BACnetConstructedDataLoggingRecord{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LoggingRecord.DeepCopy().(BACnetAccumulatorRecord),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoggingRecordCopy
+}
 
 func (m *_BACnetConstructedDataLoggingRecord) String() string {
 	if m == nil {

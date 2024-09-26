@@ -36,6 +36,7 @@ type BACnetConstructedDataAnalogInputAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataAnalogInputAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAnalogInputAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataAnalogInputAll) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataAnalogInputAll) IsBACnetConstructedDataAnalogInputAll() {}
+
+func (m *_BACnetConstructedDataAnalogInputAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAnalogInputAll) deepCopy() *_BACnetConstructedDataAnalogInputAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAnalogInputAllCopy := &_BACnetConstructedDataAnalogInputAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAnalogInputAllCopy
+}
 
 func (m *_BACnetConstructedDataAnalogInputAll) String() string {
 	if m == nil {

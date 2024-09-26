@@ -38,6 +38,7 @@ type BACnetConstructedDataErrorLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetErrorLimit returns ErrorLimit (property field)
 	GetErrorLimit() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataErrorLimit) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataErrorLimit) IsBACnetConstructedDataErrorLimit() {}
+
+func (m *_BACnetConstructedDataErrorLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataErrorLimit) deepCopy() *_BACnetConstructedDataErrorLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataErrorLimitCopy := &_BACnetConstructedDataErrorLimit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ErrorLimit.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataErrorLimitCopy
+}
 
 func (m *_BACnetConstructedDataErrorLimit) String() string {
 	if m == nil {

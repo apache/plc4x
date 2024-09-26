@@ -38,6 +38,7 @@ type BACnetConstructedDataDefaultRampRate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDefaultRampRate returns DefaultRampRate (property field)
 	GetDefaultRampRate() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDefaultRampRate) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataDefaultRampRate) IsBACnetConstructedDataDefaultRampRate() {}
+
+func (m *_BACnetConstructedDataDefaultRampRate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDefaultRampRate) deepCopy() *_BACnetConstructedDataDefaultRampRate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDefaultRampRateCopy := &_BACnetConstructedDataDefaultRampRate{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DefaultRampRate.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDefaultRampRateCopy
+}
 
 func (m *_BACnetConstructedDataDefaultRampRate) String() string {
 	if m == nil {

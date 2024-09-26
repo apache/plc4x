@@ -38,6 +38,7 @@ type BACnetConstructedDataPositiveIntegerValueMinPresValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinPresValue returns MinPresValue (property field)
 	GetMinPresValue() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) SerializeWithWr
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) IsBACnetConstructedDataPositiveIntegerValueMinPresValue() {
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) deepCopy() *_BACnetConstructedDataPositiveIntegerValueMinPresValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPositiveIntegerValueMinPresValueCopy := &_BACnetConstructedDataPositiveIntegerValueMinPresValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MinPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPositiveIntegerValueMinPresValueCopy
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) String() string {

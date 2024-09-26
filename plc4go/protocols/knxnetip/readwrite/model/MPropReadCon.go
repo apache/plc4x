@@ -38,6 +38,7 @@ type MPropReadCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetInterfaceObjectType returns InterfaceObjectType (property field)
 	GetInterfaceObjectType() uint16
@@ -284,6 +285,27 @@ func (m *_MPropReadCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_MPropReadCon) IsMPropReadCon() {}
+
+func (m *_MPropReadCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropReadCon) deepCopy() *_MPropReadCon {
+	if m == nil {
+		return nil
+	}
+	_MPropReadConCopy := &_MPropReadCon{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.InterfaceObjectType,
+		m.ObjectInstance,
+		m.PropertyId,
+		m.NumberOfElements,
+		m.StartIndex,
+		m.Data,
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropReadConCopy
+}
 
 func (m *_MPropReadCon) String() string {
 	if m == nil {

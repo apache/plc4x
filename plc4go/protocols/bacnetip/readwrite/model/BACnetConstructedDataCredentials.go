@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentials interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCredentials returns Credentials (property field)
 	GetCredentials() []BACnetDeviceObjectReference
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataCredentials) IsBACnetConstructedDataCredentials() {}
+
+func (m *_BACnetConstructedDataCredentials) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentials) deepCopy() *_BACnetConstructedDataCredentials {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialsCopy := &_BACnetConstructedDataCredentials{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.Credentials),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialsCopy
+}
 
 func (m *_BACnetConstructedDataCredentials) String() string {
 	if m == nil {

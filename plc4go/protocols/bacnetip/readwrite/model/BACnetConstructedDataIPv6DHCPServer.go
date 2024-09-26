@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6DHCPServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDhcpServer returns DhcpServer (property field)
 	GetDhcpServer() BACnetApplicationTagOctetString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPServer) IsBACnetConstructedDataIPv6DHCPServer() {}
+
+func (m *_BACnetConstructedDataIPv6DHCPServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6DHCPServer) deepCopy() *_BACnetConstructedDataIPv6DHCPServer {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6DHCPServerCopy := &_BACnetConstructedDataIPv6DHCPServer{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DhcpServer.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6DHCPServerCopy
+}
 
 func (m *_BACnetConstructedDataIPv6DHCPServer) String() string {
 	if m == nil {

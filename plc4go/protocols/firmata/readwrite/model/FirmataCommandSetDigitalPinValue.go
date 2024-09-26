@@ -38,6 +38,7 @@ type FirmataCommandSetDigitalPinValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -215,6 +216,24 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_FirmataCommandSetDigitalPinValue) IsFirmataCommandSetDigitalPinValue() {}
+
+func (m *_FirmataCommandSetDigitalPinValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandSetDigitalPinValue) deepCopy() *_FirmataCommandSetDigitalPinValue {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandSetDigitalPinValueCopy := &_FirmataCommandSetDigitalPinValue{
+		m.FirmataCommandContract.DeepCopy().(FirmataCommandContract),
+		m.Pin,
+		m.On,
+		m.reservedField0,
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandSetDigitalPinValueCopy
+}
 
 func (m *_FirmataCommandSetDigitalPinValue) String() string {
 	if m == nil {

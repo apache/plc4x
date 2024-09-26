@@ -38,6 +38,7 @@ type CALDataAcknowledge interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -196,6 +197,23 @@ func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_CALDataAcknowledge) IsCALDataAcknowledge() {}
+
+func (m *_CALDataAcknowledge) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataAcknowledge) deepCopy() *_CALDataAcknowledge {
+	if m == nil {
+		return nil
+	}
+	_CALDataAcknowledgeCopy := &_CALDataAcknowledge{
+		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.ParamNo,
+		m.Code,
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataAcknowledgeCopy
+}
 
 func (m *_CALDataAcknowledge) String() string {
 	if m == nil {

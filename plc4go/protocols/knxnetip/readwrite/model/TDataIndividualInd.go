@@ -36,6 +36,7 @@ type TDataIndividualInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsTDataIndividualInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataIndividualInd()
@@ -146,6 +147,21 @@ func (m *_TDataIndividualInd) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_TDataIndividualInd) IsTDataIndividualInd() {}
+
+func (m *_TDataIndividualInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TDataIndividualInd) deepCopy() *_TDataIndividualInd {
+	if m == nil {
+		return nil
+	}
+	_TDataIndividualIndCopy := &_TDataIndividualInd{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _TDataIndividualIndCopy
+}
 
 func (m *_TDataIndividualInd) String() string {
 	if m == nil {

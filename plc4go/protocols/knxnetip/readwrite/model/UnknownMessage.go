@@ -40,6 +40,7 @@ type UnknownMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
@@ -196,6 +197,23 @@ func (m *_UnknownMessage) GetTotalLength() uint16 {
 ////
 
 func (m *_UnknownMessage) IsUnknownMessage() {}
+
+func (m *_UnknownMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnknownMessage) deepCopy() *_UnknownMessage {
+	if m == nil {
+		return nil
+	}
+	_UnknownMessageCopy := &_UnknownMessage{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		utils.DeepCopySlice[byte, byte](m.UnknownData),
+		m.TotalLength,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _UnknownMessageCopy
+}
 
 func (m *_UnknownMessage) String() string {
 	if m == nil {

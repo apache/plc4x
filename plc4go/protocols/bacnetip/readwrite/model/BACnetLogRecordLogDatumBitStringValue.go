@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumBitStringValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetContextTagBitString
@@ -178,6 +179,22 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetLogRecordLogDatumBitStringValue) IsBACnetLogRecordLogDatumBitStringValue() {}
+
+func (m *_BACnetLogRecordLogDatumBitStringValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumBitStringValue) deepCopy() *_BACnetLogRecordLogDatumBitStringValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumBitStringValueCopy := &_BACnetLogRecordLogDatumBitStringValue{
+		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.BitStringValue.DeepCopy().(BACnetContextTagBitString),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumBitStringValueCopy
+}
 
 func (m *_BACnetLogRecordLogDatumBitStringValue) String() string {
 	if m == nil {

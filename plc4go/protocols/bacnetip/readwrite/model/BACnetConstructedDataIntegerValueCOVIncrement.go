@@ -38,6 +38,7 @@ type BACnetConstructedDataIntegerValueCOVIncrement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIntegerValueCOVIncrement) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataIntegerValueCOVIncrement) IsBACnetConstructedDataIntegerValueCOVIncrement() {
+}
+
+func (m *_BACnetConstructedDataIntegerValueCOVIncrement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntegerValueCOVIncrement) deepCopy() *_BACnetConstructedDataIntegerValueCOVIncrement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntegerValueCOVIncrementCopy := &_BACnetConstructedDataIntegerValueCOVIncrement{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CovIncrement.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntegerValueCOVIncrementCopy
 }
 
 func (m *_BACnetConstructedDataIntegerValueCOVIncrement) String() string {

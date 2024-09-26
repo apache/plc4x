@@ -38,6 +38,7 @@ type NLMSecurityPayload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetPayloadLength returns PayloadLength (property field)
 	GetPayloadLength() uint16
@@ -202,6 +203,23 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_NLMSecurityPayload) IsNLMSecurityPayload() {}
+
+func (m *_NLMSecurityPayload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMSecurityPayload) deepCopy() *_NLMSecurityPayload {
+	if m == nil {
+		return nil
+	}
+	_NLMSecurityPayloadCopy := &_NLMSecurityPayload{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.PayloadLength,
+		utils.DeepCopySlice[byte, byte](m.Payload),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMSecurityPayloadCopy
+}
 
 func (m *_NLMSecurityPayload) String() string {
 	if m == nil {

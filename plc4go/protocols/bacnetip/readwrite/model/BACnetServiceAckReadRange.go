@@ -38,6 +38,7 @@ type BACnetServiceAckReadRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -335,6 +336,28 @@ func (m *_BACnetServiceAckReadRange) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetServiceAckReadRange) IsBACnetServiceAckReadRange() {}
+
+func (m *_BACnetServiceAckReadRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckReadRange) deepCopy() *_BACnetServiceAckReadRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckReadRangeCopy := &_BACnetServiceAckReadRange{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.PropertyArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ResultFlags.DeepCopy().(BACnetResultFlagsTagged),
+		m.ItemCount.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ItemData.DeepCopy().(BACnetConstructedData),
+		m.FirstSequenceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckReadRangeCopy
+}
 
 func (m *_BACnetServiceAckReadRange) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type SysexCommandSamplingInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandSamplingInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandSamplingInterval()
@@ -150,6 +151,21 @@ func (m *_SysexCommandSamplingInterval) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SysexCommandSamplingInterval) IsSysexCommandSamplingInterval() {}
+
+func (m *_SysexCommandSamplingInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandSamplingInterval) deepCopy() *_SysexCommandSamplingInterval {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandSamplingIntervalCopy := &_SysexCommandSamplingInterval{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandSamplingIntervalCopy
+}
 
 func (m *_SysexCommandSamplingInterval) String() string {
 	if m == nil {

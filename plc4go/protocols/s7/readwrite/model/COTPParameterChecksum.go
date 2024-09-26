@@ -38,6 +38,7 @@ type COTPParameterChecksum interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPParameter
 	// GetCrc returns Crc (property field)
 	GetCrc() uint8
@@ -179,6 +180,22 @@ func (m *_COTPParameterChecksum) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_COTPParameterChecksum) IsCOTPParameterChecksum() {}
+
+func (m *_COTPParameterChecksum) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameterChecksum) deepCopy() *_COTPParameterChecksum {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterChecksumCopy := &_COTPParameterChecksum{
+		m.COTPParameterContract.DeepCopy().(COTPParameterContract),
+		m.Crc,
+	}
+	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	return _COTPParameterChecksumCopy
+}
 
 func (m *_COTPParameterChecksum) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryUnsignedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetLogDataLogDataEntryUnsignedValue) IsBACnetLogDataLogDataEntryUnsignedValue() {}
+
+func (m *_BACnetLogDataLogDataEntryUnsignedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryUnsignedValue) deepCopy() *_BACnetLogDataLogDataEntryUnsignedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryUnsignedValueCopy := &_BACnetLogDataLogDataEntryUnsignedValue{
+		m.BACnetLogDataLogDataEntryContract.DeepCopy().(BACnetLogDataLogDataEntryContract),
+		m.UnsignedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryUnsignedValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryUnsignedValue) String() string {
 	if m == nil {

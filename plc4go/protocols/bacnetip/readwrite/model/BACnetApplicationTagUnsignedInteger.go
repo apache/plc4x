@@ -38,6 +38,7 @@ type BACnetApplicationTagUnsignedInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadUnsignedInteger
@@ -209,6 +210,22 @@ func (m *_BACnetApplicationTagUnsignedInteger) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetApplicationTagUnsignedInteger) IsBACnetApplicationTagUnsignedInteger() {}
+
+func (m *_BACnetApplicationTagUnsignedInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagUnsignedInteger) deepCopy() *_BACnetApplicationTagUnsignedInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagUnsignedIntegerCopy := &_BACnetApplicationTagUnsignedInteger{
+		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadUnsignedInteger),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagUnsignedIntegerCopy
+}
 
 func (m *_BACnetApplicationTagUnsignedInteger) String() string {
 	if m == nil {

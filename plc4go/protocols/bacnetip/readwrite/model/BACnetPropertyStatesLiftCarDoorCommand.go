@@ -38,6 +38,7 @@ type BACnetPropertyStatesLiftCarDoorCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLiftCarDoorCommand returns LiftCarDoorCommand (property field)
 	GetLiftCarDoorCommand() BACnetLiftCarDoorCommandTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetPropertyStatesLiftCarDoorCommand) IsBACnetPropertyStatesLiftCarDoorCommand() {}
+
+func (m *_BACnetPropertyStatesLiftCarDoorCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLiftCarDoorCommand) deepCopy() *_BACnetPropertyStatesLiftCarDoorCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLiftCarDoorCommandCopy := &_BACnetPropertyStatesLiftCarDoorCommand{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.LiftCarDoorCommand.DeepCopy().(BACnetLiftCarDoorCommandTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLiftCarDoorCommandCopy
+}
 
 func (m *_BACnetPropertyStatesLiftCarDoorCommand) String() string {
 	if m == nil {

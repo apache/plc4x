@@ -36,6 +36,7 @@ type MeteringDataMeasureElectricity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// IsMeteringDataMeasureElectricity is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureElectricity()
@@ -142,6 +143,21 @@ func (m *_MeteringDataMeasureElectricity) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_MeteringDataMeasureElectricity) IsMeteringDataMeasureElectricity() {}
+
+func (m *_MeteringDataMeasureElectricity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataMeasureElectricity) deepCopy() *_MeteringDataMeasureElectricity {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataMeasureElectricityCopy := &_MeteringDataMeasureElectricity{
+		m.MeteringDataContract.DeepCopy().(MeteringDataContract),
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataMeasureElectricityCopy
+}
 
 func (m *_MeteringDataMeasureElectricity) String() string {
 	if m == nil {

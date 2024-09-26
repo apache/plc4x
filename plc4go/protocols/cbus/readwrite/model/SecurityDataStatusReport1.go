@@ -38,6 +38,7 @@ type SecurityDataStatusReport1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetArmCodeType returns ArmCodeType (property field)
 	GetArmCodeType() SecurityArmCode
@@ -254,6 +255,25 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SecurityDataStatusReport1) IsSecurityDataStatusReport1() {}
+
+func (m *_SecurityDataStatusReport1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataStatusReport1) deepCopy() *_SecurityDataStatusReport1 {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataStatusReport1Copy := &_SecurityDataStatusReport1{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.ArmCodeType.DeepCopy().(SecurityArmCode),
+		m.TamperStatus.DeepCopy().(TamperStatus),
+		m.PanicStatus.DeepCopy().(PanicStatus),
+		utils.DeepCopySlice[ZoneStatus, ZoneStatus](m.ZoneStatus),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataStatusReport1Copy
+}
 
 func (m *_SecurityDataStatusReport1) String() string {
 	if m == nil {

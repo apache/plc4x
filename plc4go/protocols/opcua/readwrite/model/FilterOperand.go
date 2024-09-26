@@ -36,6 +36,7 @@ type FilterOperand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsFilterOperand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFilterOperand()
@@ -146,6 +147,21 @@ func (m *_FilterOperand) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_FilterOperand) IsFilterOperand() {}
+
+func (m *_FilterOperand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FilterOperand) deepCopy() *_FilterOperand {
+	if m == nil {
+		return nil
+	}
+	_FilterOperandCopy := &_FilterOperand{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FilterOperandCopy
+}
 
 func (m *_FilterOperand) String() string {
 	if m == nil {

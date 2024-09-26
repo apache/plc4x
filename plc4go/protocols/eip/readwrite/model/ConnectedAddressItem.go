@@ -38,6 +38,7 @@ type ConnectedAddressItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetConnectionId returns ConnectionId (property field)
 	GetConnectionId() uint32
@@ -194,6 +195,23 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ConnectedAddressItem) IsConnectedAddressItem() {}
+
+func (m *_ConnectedAddressItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectedAddressItem) deepCopy() *_ConnectedAddressItem {
+	if m == nil {
+		return nil
+	}
+	_ConnectedAddressItemCopy := &_ConnectedAddressItem{
+		m.TypeIdContract.DeepCopy().(TypeIdContract),
+		m.ConnectionId,
+		m.reservedField0,
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _ConnectedAddressItemCopy
+}
 
 func (m *_ConnectedAddressItem) String() string {
 	if m == nil {

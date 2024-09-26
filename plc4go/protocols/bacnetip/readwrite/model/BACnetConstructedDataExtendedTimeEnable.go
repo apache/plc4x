@@ -38,6 +38,7 @@ type BACnetConstructedDataExtendedTimeEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetExtendedTimeEnable returns ExtendedTimeEnable (property field)
 	GetExtendedTimeEnable() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) IsBACnetConstructedDataExtendedTimeEnable() {}
+
+func (m *_BACnetConstructedDataExtendedTimeEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExtendedTimeEnable) deepCopy() *_BACnetConstructedDataExtendedTimeEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExtendedTimeEnableCopy := &_BACnetConstructedDataExtendedTimeEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ExtendedTimeEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExtendedTimeEnableCopy
+}
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) String() string {
 	if m == nil {

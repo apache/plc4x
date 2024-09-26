@@ -38,6 +38,7 @@ type CBusPointToPointCommandDirect interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToPointCommand
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
@@ -193,6 +194,23 @@ func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_CBusPointToPointCommandDirect) IsCBusPointToPointCommandDirect() {}
+
+func (m *_CBusPointToPointCommandDirect) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointCommandDirect) deepCopy() *_CBusPointToPointCommandDirect {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointCommandDirectCopy := &_CBusPointToPointCommandDirect{
+		m.CBusPointToPointCommandContract.DeepCopy().(CBusPointToPointCommandContract),
+		m.UnitAddress.DeepCopy().(UnitAddress),
+		m.reservedField0,
+	}
+	m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = m
+	return _CBusPointToPointCommandDirectCopy
+}
 
 func (m *_CBusPointToPointCommandDirect) String() string {
 	if m == nil {

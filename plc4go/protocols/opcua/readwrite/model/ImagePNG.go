@@ -36,6 +36,7 @@ type ImagePNG interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsImagePNG is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsImagePNG()
 }
@@ -134,6 +135,18 @@ func (m *_ImagePNG) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_ImagePNG) IsImagePNG() {}
+
+func (m *_ImagePNG) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ImagePNG) deepCopy() *_ImagePNG {
+	if m == nil {
+		return nil
+	}
+	_ImagePNGCopy := &_ImagePNG{}
+	return _ImagePNGCopy
+}
 
 func (m *_ImagePNG) String() string {
 	if m == nil {

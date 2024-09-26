@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveCOVMultipleSubscriptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveCOVMultipleSubscriptions returns ActiveCOVMultipleSubscriptions (property field)
 	GetActiveCOVMultipleSubscriptions() []BACnetCOVMultipleSubscription
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) IsBACnetConstructedDataActiveCOVMultipleSubscriptions() {
+}
+
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) deepCopy() *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveCOVMultipleSubscriptionsCopy := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetCOVMultipleSubscription, BACnetCOVMultipleSubscription](m.ActiveCOVMultipleSubscriptions),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveCOVMultipleSubscriptionsCopy
 }
 
 func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) String() string {

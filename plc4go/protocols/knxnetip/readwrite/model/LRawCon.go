@@ -36,6 +36,7 @@ type LRawCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsLRawCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLRawCon()
@@ -146,6 +147,21 @@ func (m *_LRawCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_LRawCon) IsLRawCon() {}
+
+func (m *_LRawCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LRawCon) deepCopy() *_LRawCon {
+	if m == nil {
+		return nil
+	}
+	_LRawConCopy := &_LRawCon{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LRawConCopy
+}
 
 func (m *_LRawCon) String() string {
 	if m == nil {

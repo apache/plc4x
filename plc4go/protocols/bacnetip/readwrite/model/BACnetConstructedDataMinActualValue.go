@@ -38,6 +38,7 @@ type BACnetConstructedDataMinActualValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinActualValue returns MinActualValue (property field)
 	GetMinActualValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMinActualValue) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataMinActualValue) IsBACnetConstructedDataMinActualValue() {}
+
+func (m *_BACnetConstructedDataMinActualValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMinActualValue) deepCopy() *_BACnetConstructedDataMinActualValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMinActualValueCopy := &_BACnetConstructedDataMinActualValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MinActualValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMinActualValueCopy
+}
 
 func (m *_BACnetConstructedDataMinActualValue) String() string {
 	if m == nil {

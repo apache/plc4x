@@ -36,6 +36,7 @@ type MeteringDataMeasureOil interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// IsMeteringDataMeasureOil is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureOil()
@@ -142,6 +143,21 @@ func (m *_MeteringDataMeasureOil) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_MeteringDataMeasureOil) IsMeteringDataMeasureOil() {}
+
+func (m *_MeteringDataMeasureOil) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataMeasureOil) deepCopy() *_MeteringDataMeasureOil {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataMeasureOilCopy := &_MeteringDataMeasureOil{
+		m.MeteringDataContract.DeepCopy().(MeteringDataContract),
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataMeasureOilCopy
+}
 
 func (m *_MeteringDataMeasureOil) String() string {
 	if m == nil {

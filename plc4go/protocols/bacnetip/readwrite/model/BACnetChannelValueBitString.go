@@ -38,6 +38,7 @@ type BACnetChannelValueBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueBitString) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetChannelValueBitString) IsBACnetChannelValueBitString() {}
+
+func (m *_BACnetChannelValueBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueBitString) deepCopy() *_BACnetChannelValueBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueBitStringCopy := &_BACnetChannelValueBitString{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueBitStringCopy
+}
 
 func (m *_BACnetChannelValueBitString) String() string {
 	if m == nil {

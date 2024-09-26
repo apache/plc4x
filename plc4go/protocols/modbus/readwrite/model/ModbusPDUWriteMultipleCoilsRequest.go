@@ -38,6 +38,7 @@ type ModbusPDUWriteMultipleCoilsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
@@ -244,6 +245,24 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ModbusPDUWriteMultipleCoilsRequest) IsModbusPDUWriteMultipleCoilsRequest() {}
+
+func (m *_ModbusPDUWriteMultipleCoilsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsRequest) deepCopy() *_ModbusPDUWriteMultipleCoilsRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteMultipleCoilsRequestCopy := &_ModbusPDUWriteMultipleCoilsRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.StartingAddress,
+		m.Quantity,
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteMultipleCoilsRequestCopy
+}
 
 func (m *_ModbusPDUWriteMultipleCoilsRequest) String() string {
 	if m == nil {

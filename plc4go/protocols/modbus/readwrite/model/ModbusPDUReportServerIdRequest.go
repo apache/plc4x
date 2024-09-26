@@ -36,6 +36,7 @@ type ModbusPDUReportServerIdRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// IsModbusPDUReportServerIdRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReportServerIdRequest()
@@ -154,6 +155,21 @@ func (m *_ModbusPDUReportServerIdRequest) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ModbusPDUReportServerIdRequest) IsModbusPDUReportServerIdRequest() {}
+
+func (m *_ModbusPDUReportServerIdRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReportServerIdRequest) deepCopy() *_ModbusPDUReportServerIdRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReportServerIdRequestCopy := &_ModbusPDUReportServerIdRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReportServerIdRequestCopy
+}
 
 func (m *_ModbusPDUReportServerIdRequest) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type BACnetOptionalCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetOptionalCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalCharacterString()
 }
 
 // BACnetOptionalCharacterStringContract provides a set of functions which can be overwritten by a sub struct
 type BACnetOptionalCharacterStringContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -237,3 +239,18 @@ func (pm *_BACnetOptionalCharacterString) serializeParent(ctx context.Context, w
 }
 
 func (m *_BACnetOptionalCharacterString) IsBACnetOptionalCharacterString() {}
+
+func (m *_BACnetOptionalCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalCharacterString) deepCopy() *_BACnetOptionalCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalCharacterStringCopy := &_BACnetOptionalCharacterString{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetOptionalCharacterStringCopy
+}

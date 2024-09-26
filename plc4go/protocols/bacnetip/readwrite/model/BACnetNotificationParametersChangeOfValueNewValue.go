@@ -40,12 +40,14 @@ type BACnetNotificationParametersChangeOfValueNewValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetNotificationParametersChangeOfValueNewValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfValueNewValue()
 }
 
 // BACnetNotificationParametersChangeOfValueNewValueContract provides a set of functions which can be overwritten by a sub struct
 type BACnetNotificationParametersChangeOfValueNewValueContract interface {
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -298,4 +300,22 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValue) GetTagNumber() uint
 ////
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValue) IsBACnetNotificationParametersChangeOfValueNewValue() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) deepCopy() *_BACnetNotificationParametersChangeOfValueNewValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfValueNewValueCopy := &_BACnetNotificationParametersChangeOfValueNewValue{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetNotificationParametersChangeOfValueNewValueCopy
 }

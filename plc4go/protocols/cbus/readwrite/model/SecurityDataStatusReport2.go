@@ -38,6 +38,7 @@ type SecurityDataStatusReport2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneStatus returns ZoneStatus (property field)
 	GetZoneStatus() []ZoneStatus
@@ -182,6 +183,22 @@ func (m *_SecurityDataStatusReport2) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SecurityDataStatusReport2) IsSecurityDataStatusReport2() {}
+
+func (m *_SecurityDataStatusReport2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataStatusReport2) deepCopy() *_SecurityDataStatusReport2 {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataStatusReport2Copy := &_SecurityDataStatusReport2{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		utils.DeepCopySlice[ZoneStatus, ZoneStatus](m.ZoneStatus),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataStatusReport2Copy
+}
 
 func (m *_SecurityDataStatusReport2) String() string {
 	if m == nil {

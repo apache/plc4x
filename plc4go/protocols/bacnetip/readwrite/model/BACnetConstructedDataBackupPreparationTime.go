@@ -38,6 +38,7 @@ type BACnetConstructedDataBackupPreparationTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBackupPreparationTime returns BackupPreparationTime (property field)
 	GetBackupPreparationTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBackupPreparationTime) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataBackupPreparationTime) IsBACnetConstructedDataBackupPreparationTime() {
+}
+
+func (m *_BACnetConstructedDataBackupPreparationTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBackupPreparationTime) deepCopy() *_BACnetConstructedDataBackupPreparationTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBackupPreparationTimeCopy := &_BACnetConstructedDataBackupPreparationTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BackupPreparationTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBackupPreparationTimeCopy
 }
 
 func (m *_BACnetConstructedDataBackupPreparationTime) String() string {

@@ -38,6 +38,7 @@ type TunnelingRequestDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
@@ -214,6 +215,22 @@ func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_TunnelingRequestDataBlock) IsTunnelingRequestDataBlock() {}
+
+func (m *_TunnelingRequestDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TunnelingRequestDataBlock) deepCopy() *_TunnelingRequestDataBlock {
+	if m == nil {
+		return nil
+	}
+	_TunnelingRequestDataBlockCopy := &_TunnelingRequestDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.reservedField0,
+	}
+	return _TunnelingRequestDataBlockCopy
+}
 
 func (m *_TunnelingRequestDataBlock) String() string {
 	if m == nil {

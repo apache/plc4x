@@ -38,6 +38,7 @@ type NLMNetworkNumberIs interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() uint16
@@ -215,6 +216,24 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_NLMNetworkNumberIs) IsNLMNetworkNumberIs() {}
+
+func (m *_NLMNetworkNumberIs) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMNetworkNumberIs) deepCopy() *_NLMNetworkNumberIs {
+	if m == nil {
+		return nil
+	}
+	_NLMNetworkNumberIsCopy := &_NLMNetworkNumberIs{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.NetworkNumber,
+		m.NetworkNumberConfigured,
+		m.reservedField0,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMNetworkNumberIsCopy
+}
 
 func (m *_NLMNetworkNumberIs) String() string {
 	if m == nil {

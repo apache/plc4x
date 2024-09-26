@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfValueCivCriteriaBitmask interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetBitmask returns Bitmask (property field)
 	GetBitmask() BACnetContextTagBitString
@@ -178,6 +179,22 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) SerializeWithWrit
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) IsBACnetEventParameterChangeOfValueCivCriteriaBitmask() {
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) deepCopy() *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfValueCivCriteriaBitmaskCopy := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
+		m.BACnetEventParameterChangeOfValueCivCriteriaContract.DeepCopy().(BACnetEventParameterChangeOfValueCivCriteriaContract),
+		m.Bitmask.DeepCopy().(BACnetContextTagBitString),
+	}
+	m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = m
+	return _BACnetEventParameterChangeOfValueCivCriteriaBitmaskCopy
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) String() string {

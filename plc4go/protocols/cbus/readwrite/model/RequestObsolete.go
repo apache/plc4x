@@ -38,6 +38,7 @@ type RequestObsolete interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
@@ -235,6 +236,23 @@ func (m *_RequestObsolete) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_RequestObsolete) IsRequestObsolete() {}
+
+func (m *_RequestObsolete) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestObsolete) deepCopy() *_RequestObsolete {
+	if m == nil {
+		return nil
+	}
+	_RequestObsoleteCopy := &_RequestObsolete{
+		m.RequestContract.DeepCopy().(RequestContract),
+		m.CalData.DeepCopy().(CALData),
+		m.Alpha.DeepCopy().(Alpha),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestObsoleteCopy
+}
 
 func (m *_RequestObsolete) String() string {
 	if m == nil {

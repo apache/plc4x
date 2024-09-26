@@ -38,6 +38,7 @@ type AdsDiscoveryBlockRouteName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetRouteName returns RouteName (property field)
 	GetRouteName() AmsString
@@ -182,6 +183,22 @@ func (m *_AdsDiscoveryBlockRouteName) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_AdsDiscoveryBlockRouteName) IsAdsDiscoveryBlockRouteName() {}
+
+func (m *_AdsDiscoveryBlockRouteName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockRouteName) deepCopy() *_AdsDiscoveryBlockRouteName {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockRouteNameCopy := &_AdsDiscoveryBlockRouteName{
+		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.RouteName.DeepCopy().(AmsString),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockRouteNameCopy
+}
 
 func (m *_AdsDiscoveryBlockRouteName) String() string {
 	if m == nil {

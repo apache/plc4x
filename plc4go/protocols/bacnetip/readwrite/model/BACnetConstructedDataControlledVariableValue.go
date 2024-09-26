@@ -38,6 +38,7 @@ type BACnetConstructedDataControlledVariableValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetControlledVariableValue returns ControlledVariableValue (property field)
 	GetControlledVariableValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataControlledVariableValue) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataControlledVariableValue) IsBACnetConstructedDataControlledVariableValue() {
+}
+
+func (m *_BACnetConstructedDataControlledVariableValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataControlledVariableValue) deepCopy() *_BACnetConstructedDataControlledVariableValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataControlledVariableValueCopy := &_BACnetConstructedDataControlledVariableValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ControlledVariableValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataControlledVariableValueCopy
 }
 
 func (m *_BACnetConstructedDataControlledVariableValue) String() string {

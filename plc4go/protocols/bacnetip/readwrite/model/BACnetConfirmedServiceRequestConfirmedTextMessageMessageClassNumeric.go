@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric interf
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	// GetNumericValue returns NumericValue (property field)
 	GetNumericValue() BACnetContextTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() {
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) deepCopy() *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{
+		m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract),
+		m.NumericValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = m
+	return _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) String() string {

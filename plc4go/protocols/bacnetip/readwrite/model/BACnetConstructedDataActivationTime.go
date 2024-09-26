@@ -38,6 +38,7 @@ type BACnetConstructedDataActivationTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActivationTime returns ActivationTime (property field)
 	GetActivationTime() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataActivationTime) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataActivationTime) IsBACnetConstructedDataActivationTime() {}
+
+func (m *_BACnetConstructedDataActivationTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActivationTime) deepCopy() *_BACnetConstructedDataActivationTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActivationTimeCopy := &_BACnetConstructedDataActivationTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ActivationTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActivationTimeCopy
+}
 
 func (m *_BACnetConstructedDataActivationTime) String() string {
 	if m == nil {

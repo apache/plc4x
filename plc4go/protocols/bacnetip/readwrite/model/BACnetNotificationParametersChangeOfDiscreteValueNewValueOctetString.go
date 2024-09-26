@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString interf
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) deepCopy() *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString{
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfDiscreteValueNewValueContract),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) String() string {

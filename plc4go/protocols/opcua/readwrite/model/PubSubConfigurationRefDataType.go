@@ -38,6 +38,7 @@ type PubSubConfigurationRefDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetConfigurationMask returns ConfigurationMask (property field)
 	GetConfigurationMask() PubSubConfigurationRefMask
@@ -242,6 +243,25 @@ func (m *_PubSubConfigurationRefDataType) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_PubSubConfigurationRefDataType) IsPubSubConfigurationRefDataType() {}
+
+func (m *_PubSubConfigurationRefDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubConfigurationRefDataType) deepCopy() *_PubSubConfigurationRefDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubConfigurationRefDataTypeCopy := &_PubSubConfigurationRefDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ConfigurationMask,
+		m.ElementIndex,
+		m.ConnectionIndex,
+		m.GroupIndex,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubConfigurationRefDataTypeCopy
+}
 
 func (m *_PubSubConfigurationRefDataType) String() string {
 	if m == nil {

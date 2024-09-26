@@ -38,6 +38,7 @@ type TriggerControlDataTriggerEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// GetActionSelector returns ActionSelector (property field)
 	GetActionSelector() byte
@@ -175,6 +176,22 @@ func (m *_TriggerControlDataTriggerEvent) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_TriggerControlDataTriggerEvent) IsTriggerControlDataTriggerEvent() {}
+
+func (m *_TriggerControlDataTriggerEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataTriggerEvent) deepCopy() *_TriggerControlDataTriggerEvent {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataTriggerEventCopy := &_TriggerControlDataTriggerEvent{
+		m.TriggerControlDataContract.DeepCopy().(TriggerControlDataContract),
+		m.ActionSelector,
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataTriggerEventCopy
+}
 
 func (m *_TriggerControlDataTriggerEvent) String() string {
 	if m == nil {

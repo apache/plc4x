@@ -38,6 +38,7 @@ type BACnetConstructedDataAutoSlaveDiscovery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAutoSlaveDiscovery returns AutoSlaveDiscovery (property field)
 	GetAutoSlaveDiscovery() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataAutoSlaveDiscovery) IsBACnetConstructedDataAutoSlaveDiscovery() {}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) deepCopy() *_BACnetConstructedDataAutoSlaveDiscovery {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAutoSlaveDiscoveryCopy := &_BACnetConstructedDataAutoSlaveDiscovery{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AutoSlaveDiscovery.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAutoSlaveDiscoveryCopy
+}
 
 func (m *_BACnetConstructedDataAutoSlaveDiscovery) String() string {
 	if m == nil {

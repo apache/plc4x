@@ -38,6 +38,7 @@ type BACnetConstructedDataAuthenticationStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAuthenticationStatus returns AuthenticationStatus (property field)
 	GetAuthenticationStatus() BACnetAuthenticationStatusTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAuthenticationStatus) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataAuthenticationStatus) IsBACnetConstructedDataAuthenticationStatus() {}
+
+func (m *_BACnetConstructedDataAuthenticationStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAuthenticationStatus) deepCopy() *_BACnetConstructedDataAuthenticationStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAuthenticationStatusCopy := &_BACnetConstructedDataAuthenticationStatus{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AuthenticationStatus.DeepCopy().(BACnetAuthenticationStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAuthenticationStatusCopy
+}
 
 func (m *_BACnetConstructedDataAuthenticationStatus) String() string {
 	if m == nil {

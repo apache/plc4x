@@ -40,12 +40,14 @@ type BACnetServiceAckAtomicReadFileStreamOrRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetServiceAckAtomicReadFileStreamOrRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckAtomicReadFileStreamOrRecord()
 }
 
 // BACnetServiceAckAtomicReadFileStreamOrRecordContract provides a set of functions which can be overwritten by a sub struct
 type BACnetServiceAckAtomicReadFileStreamOrRecordContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetOpeningTag returns OpeningTag (property field)
@@ -283,4 +285,21 @@ func (pm *_BACnetServiceAckAtomicReadFileStreamOrRecord) serializeParent(ctx con
 }
 
 func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) IsBACnetServiceAckAtomicReadFileStreamOrRecord() {
+}
+
+func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) deepCopy() *_BACnetServiceAckAtomicReadFileStreamOrRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAtomicReadFileStreamOrRecordCopy := &_BACnetServiceAckAtomicReadFileStreamOrRecord{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetServiceAckAtomicReadFileStreamOrRecordCopy
 }

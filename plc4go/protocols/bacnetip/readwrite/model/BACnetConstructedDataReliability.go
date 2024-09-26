@@ -38,6 +38,7 @@ type BACnetConstructedDataReliability interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReliability returns Reliability (property field)
 	GetReliability() BACnetReliabilityTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataReliability) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataReliability) IsBACnetConstructedDataReliability() {}
+
+func (m *_BACnetConstructedDataReliability) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReliability) deepCopy() *_BACnetConstructedDataReliability {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReliabilityCopy := &_BACnetConstructedDataReliability{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Reliability.DeepCopy().(BACnetReliabilityTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReliabilityCopy
+}
 
 func (m *_BACnetConstructedDataReliability) String() string {
 	if m == nil {

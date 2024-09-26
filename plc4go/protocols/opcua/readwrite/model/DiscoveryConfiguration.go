@@ -36,6 +36,7 @@ type DiscoveryConfiguration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsDiscoveryConfiguration is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDiscoveryConfiguration()
@@ -146,6 +147,21 @@ func (m *_DiscoveryConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_DiscoveryConfiguration) IsDiscoveryConfiguration() {}
+
+func (m *_DiscoveryConfiguration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DiscoveryConfiguration) deepCopy() *_DiscoveryConfiguration {
+	if m == nil {
+		return nil
+	}
+	_DiscoveryConfigurationCopy := &_DiscoveryConfiguration{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DiscoveryConfigurationCopy
+}
 
 func (m *_DiscoveryConfiguration) String() string {
 	if m == nil {

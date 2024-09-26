@@ -43,12 +43,14 @@ type CycServiceItemType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCycServiceItemType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCycServiceItemType()
 }
 
 // CycServiceItemTypeContract provides a set of functions which can be overwritten by a sub struct
 type CycServiceItemTypeContract interface {
+	utils.Copyable
 	// GetByteLength returns ByteLength (property field)
 	GetByteLength() uint8
 	// GetSyntaxId returns SyntaxId (property field)
@@ -258,3 +260,19 @@ func (pm *_CycServiceItemType) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_CycServiceItemType) IsCycServiceItemType() {}
+
+func (m *_CycServiceItemType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CycServiceItemType) deepCopy() *_CycServiceItemType {
+	if m == nil {
+		return nil
+	}
+	_CycServiceItemTypeCopy := &_CycServiceItemType{
+		nil, // will be set by child
+		m.ByteLength,
+		m.SyntaxId,
+	}
+	return _CycServiceItemTypeCopy
+}

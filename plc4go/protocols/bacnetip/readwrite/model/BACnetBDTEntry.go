@@ -38,6 +38,7 @@ type BACnetBDTEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetBbmdAddress returns BbmdAddress (property field)
 	GetBbmdAddress() BACnetHostNPortEnclosed
 	// GetBroadcastMask returns BroadcastMask (property field)
@@ -195,6 +196,21 @@ func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetBDTEntry) IsBACnetBDTEntry() {}
+
+func (m *_BACnetBDTEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetBDTEntry) deepCopy() *_BACnetBDTEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetBDTEntryCopy := &_BACnetBDTEntry{
+		m.BbmdAddress.DeepCopy().(BACnetHostNPortEnclosed),
+		m.BroadcastMask.DeepCopy().(BACnetContextTagOctetString),
+	}
+	return _BACnetBDTEntryCopy
+}
 
 func (m *_BACnetBDTEntry) String() string {
 	if m == nil {

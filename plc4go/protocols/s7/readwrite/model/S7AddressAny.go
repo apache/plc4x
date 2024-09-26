@@ -38,6 +38,7 @@ type S7AddressAny interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Address
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() TransportSize
@@ -299,6 +300,28 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_S7AddressAny) IsS7AddressAny() {}
+
+func (m *_S7AddressAny) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7AddressAny) deepCopy() *_S7AddressAny {
+	if m == nil {
+		return nil
+	}
+	_S7AddressAnyCopy := &_S7AddressAny{
+		m.S7AddressContract.DeepCopy().(S7AddressContract),
+		m.TransportSize,
+		m.NumberOfElements,
+		m.DbNumber,
+		m.Area,
+		m.ByteAddress,
+		m.BitAddress,
+		m.reservedField0,
+	}
+	m.S7AddressContract.(*_S7Address)._SubType = m
+	return _S7AddressAnyCopy
+}
 
 func (m *_S7AddressAny) String() string {
 	if m == nil {

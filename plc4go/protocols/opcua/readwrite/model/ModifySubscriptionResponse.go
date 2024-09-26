@@ -38,6 +38,7 @@ type ModifySubscriptionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -245,6 +246,25 @@ func (m *_ModifySubscriptionResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ModifySubscriptionResponse) IsModifySubscriptionResponse() {}
+
+func (m *_ModifySubscriptionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModifySubscriptionResponse) deepCopy() *_ModifySubscriptionResponse {
+	if m == nil {
+		return nil
+	}
+	_ModifySubscriptionResponseCopy := &_ModifySubscriptionResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RevisedPublishingInterval,
+		m.RevisedLifetimeCount,
+		m.RevisedMaxKeepAliveCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModifySubscriptionResponseCopy
+}
 
 func (m *_ModifySubscriptionResponse) String() string {
 	if m == nil {

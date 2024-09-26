@@ -41,6 +41,7 @@ type AdsDiscoveryBlockStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetStatus returns Status (property field)
 	GetStatus() Status
@@ -208,6 +209,22 @@ func (m *_AdsDiscoveryBlockStatus) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_AdsDiscoveryBlockStatus) IsAdsDiscoveryBlockStatus() {}
+
+func (m *_AdsDiscoveryBlockStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockStatus) deepCopy() *_AdsDiscoveryBlockStatus {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockStatusCopy := &_AdsDiscoveryBlockStatus{
+		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.Status,
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockStatusCopy
+}
 
 func (m *_AdsDiscoveryBlockStatus) String() string {
 	if m == nil {

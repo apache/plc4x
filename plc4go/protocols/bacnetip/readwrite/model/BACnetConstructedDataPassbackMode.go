@@ -38,6 +38,7 @@ type BACnetConstructedDataPassbackMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPassbackMode returns PassbackMode (property field)
 	GetPassbackMode() BACnetAccessPassbackModeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPassbackMode) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataPassbackMode) IsBACnetConstructedDataPassbackMode() {}
+
+func (m *_BACnetConstructedDataPassbackMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPassbackMode) deepCopy() *_BACnetConstructedDataPassbackMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPassbackModeCopy := &_BACnetConstructedDataPassbackMode{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PassbackMode.DeepCopy().(BACnetAccessPassbackModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPassbackModeCopy
+}
 
 func (m *_BACnetConstructedDataPassbackMode) String() string {
 	if m == nil {

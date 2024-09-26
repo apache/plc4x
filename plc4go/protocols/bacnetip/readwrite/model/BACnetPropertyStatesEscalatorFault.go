@@ -38,6 +38,7 @@ type BACnetPropertyStatesEscalatorFault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetEscalatorFault returns EscalatorFault (property field)
 	GetEscalatorFault() BACnetEscalatorFaultTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetPropertyStatesEscalatorFault) IsBACnetPropertyStatesEscalatorFault() {}
+
+func (m *_BACnetPropertyStatesEscalatorFault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEscalatorFault) deepCopy() *_BACnetPropertyStatesEscalatorFault {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEscalatorFaultCopy := &_BACnetPropertyStatesEscalatorFault{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.EscalatorFault.DeepCopy().(BACnetEscalatorFaultTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesEscalatorFaultCopy
+}
 
 func (m *_BACnetPropertyStatesEscalatorFault) String() string {
 	if m == nil {

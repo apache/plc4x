@@ -38,6 +38,7 @@ type IdentifyReplyCommandManufacturer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetManufacturerName returns ManufacturerName (property field)
 	GetManufacturerName() string
@@ -179,6 +180,22 @@ func (m *_IdentifyReplyCommandManufacturer) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_IdentifyReplyCommandManufacturer) IsIdentifyReplyCommandManufacturer() {}
+
+func (m *_IdentifyReplyCommandManufacturer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandManufacturer) deepCopy() *_IdentifyReplyCommandManufacturer {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandManufacturerCopy := &_IdentifyReplyCommandManufacturer{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.ManufacturerName,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandManufacturerCopy
+}
 
 func (m *_IdentifyReplyCommandManufacturer) String() string {
 	if m == nil {

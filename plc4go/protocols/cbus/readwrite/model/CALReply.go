@@ -40,12 +40,14 @@ type CALReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReply()
 }
 
 // CALReplyContract provides a set of functions which can be overwritten by a sub struct
 type CALReplyContract interface {
+	utils.Copyable
 	// GetCalType returns CalType (property field)
 	GetCalType() byte
 	// GetCalData returns CalData (property field)
@@ -246,3 +248,21 @@ func (m *_CALReply) GetRequestContext() RequestContext {
 ////
 
 func (m *_CALReply) IsCALReply() {}
+
+func (m *_CALReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALReply) deepCopy() *_CALReply {
+	if m == nil {
+		return nil
+	}
+	_CALReplyCopy := &_CALReply{
+		nil, // will be set by child
+		m.CalType,
+		m.CalData.DeepCopy().(CALData),
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _CALReplyCopy
+}

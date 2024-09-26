@@ -38,6 +38,7 @@ type APDUSegmentAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetNegativeAck returns NegativeAck (property field)
 	GetNegativeAck() bool
@@ -278,6 +279,27 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_APDUSegmentAck) IsAPDUSegmentAck() {}
+
+func (m *_APDUSegmentAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUSegmentAck) deepCopy() *_APDUSegmentAck {
+	if m == nil {
+		return nil
+	}
+	_APDUSegmentAckCopy := &_APDUSegmentAck{
+		m.APDUContract.DeepCopy().(APDUContract),
+		m.NegativeAck,
+		m.Server,
+		m.OriginalInvokeId,
+		m.SequenceNumber,
+		m.ActualWindowSize,
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUSegmentAckCopy
+}
 
 func (m *_APDUSegmentAck) String() string {
 	if m == nil {

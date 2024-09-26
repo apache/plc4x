@@ -38,6 +38,7 @@ type BACnetConstructedDataGroupMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetGroupMode returns GroupMode (property field)
 	GetGroupMode() BACnetLiftGroupModeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataGroupMode) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataGroupMode) IsBACnetConstructedDataGroupMode() {}
+
+func (m *_BACnetConstructedDataGroupMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGroupMode) deepCopy() *_BACnetConstructedDataGroupMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGroupModeCopy := &_BACnetConstructedDataGroupMode{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.GroupMode.DeepCopy().(BACnetLiftGroupModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGroupModeCopy
+}
 
 func (m *_BACnetConstructedDataGroupMode) String() string {
 	if m == nil {

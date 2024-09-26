@@ -38,6 +38,7 @@ type SzlId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTypeClass returns TypeClass (property field)
 	GetTypeClass() SzlModuleTypeClass
 	// GetSublistExtract returns SublistExtract (property field)
@@ -206,6 +207,22 @@ func (m *_SzlId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_SzlId) IsSzlId() {}
+
+func (m *_SzlId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SzlId) deepCopy() *_SzlId {
+	if m == nil {
+		return nil
+	}
+	_SzlIdCopy := &_SzlId{
+		m.TypeClass,
+		m.SublistExtract,
+		m.SublistList,
+	}
+	return _SzlIdCopy
+}
 
 func (m *_SzlId) String() string {
 	if m == nil {

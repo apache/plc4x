@@ -38,6 +38,7 @@ type CreateObjectError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -206,6 +207,23 @@ func (m *_CreateObjectError) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_CreateObjectError) IsCreateObjectError() {}
+
+func (m *_CreateObjectError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CreateObjectError) deepCopy() *_CreateObjectError {
+	if m == nil {
+		return nil
+	}
+	_CreateObjectErrorCopy := &_CreateObjectError{
+		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.FirstFailedElementNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _CreateObjectErrorCopy
+}
 
 func (m *_CreateObjectError) String() string {
 	if m == nil {

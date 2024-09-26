@@ -38,6 +38,7 @@ type BACnetConstructedDataEgressTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEgressTime returns EgressTime (property field)
 	GetEgressTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEgressTime) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataEgressTime) IsBACnetConstructedDataEgressTime() {}
+
+func (m *_BACnetConstructedDataEgressTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEgressTime) deepCopy() *_BACnetConstructedDataEgressTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEgressTimeCopy := &_BACnetConstructedDataEgressTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.EgressTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEgressTimeCopy
+}
 
 func (m *_BACnetConstructedDataEgressTime) String() string {
 	if m == nil {

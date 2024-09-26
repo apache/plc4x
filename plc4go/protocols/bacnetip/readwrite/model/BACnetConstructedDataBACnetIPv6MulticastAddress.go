@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPv6MulticastAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6MulticastAddress returns Ipv6MulticastAddress (property field)
 	GetIpv6MulticastAddress() BACnetApplicationTagOctetString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) IsBACnetConstructedDataBACnetIPv6MulticastAddress() {
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) deepCopy() *_BACnetConstructedDataBACnetIPv6MulticastAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPv6MulticastAddressCopy := &_BACnetConstructedDataBACnetIPv6MulticastAddress{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Ipv6MulticastAddress.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPv6MulticastAddressCopy
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) String() string {

@@ -38,6 +38,7 @@ type OpcuaHelloRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetVersion returns Version (property field)
 	GetVersion() uint32
@@ -231,6 +232,24 @@ func (m *_OpcuaHelloRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_OpcuaHelloRequest) IsOpcuaHelloRequest() {}
+
+func (m *_OpcuaHelloRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaHelloRequest) deepCopy() *_OpcuaHelloRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaHelloRequestCopy := &_OpcuaHelloRequest{
+		m.MessagePDUContract.DeepCopy().(MessagePDUContract),
+		m.Version,
+		m.Limits.DeepCopy().(OpcuaProtocolLimits),
+		m.Endpoint.DeepCopy().(PascalString),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaHelloRequestCopy
+}
 
 func (m *_OpcuaHelloRequest) String() string {
 	if m == nil {

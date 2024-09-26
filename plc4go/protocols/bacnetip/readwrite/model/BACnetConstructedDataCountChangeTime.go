@@ -38,6 +38,7 @@ type BACnetConstructedDataCountChangeTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCountChangeTime returns CountChangeTime (property field)
 	GetCountChangeTime() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCountChangeTime) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataCountChangeTime) IsBACnetConstructedDataCountChangeTime() {}
+
+func (m *_BACnetConstructedDataCountChangeTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCountChangeTime) deepCopy() *_BACnetConstructedDataCountChangeTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCountChangeTimeCopy := &_BACnetConstructedDataCountChangeTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CountChangeTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCountChangeTimeCopy
+}
 
 func (m *_BACnetConstructedDataCountChangeTime) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type VariantFloat interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -205,6 +206,23 @@ func (m *_VariantFloat) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_VariantFloat) IsVariantFloat() {}
+
+func (m *_VariantFloat) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantFloat) deepCopy() *_VariantFloat {
+	if m == nil {
+		return nil
+	}
+	_VariantFloatCopy := &_VariantFloat{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[float32, float32](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantFloatCopy
+}
 
 func (m *_VariantFloat) String() string {
 	if m == nil {

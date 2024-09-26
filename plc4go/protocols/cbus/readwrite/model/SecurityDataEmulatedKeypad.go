@@ -38,6 +38,7 @@ type SecurityDataEmulatedKeypad interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetKey returns Key (property field)
 	GetKey() byte
@@ -426,6 +427,22 @@ func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataEmulatedKeypad) IsSecurityDataEmulatedKeypad() {}
+
+func (m *_SecurityDataEmulatedKeypad) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataEmulatedKeypad) deepCopy() *_SecurityDataEmulatedKeypad {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataEmulatedKeypadCopy := &_SecurityDataEmulatedKeypad{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.Key,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataEmulatedKeypadCopy
+}
 
 func (m *_SecurityDataEmulatedKeypad) String() string {
 	if m == nil {

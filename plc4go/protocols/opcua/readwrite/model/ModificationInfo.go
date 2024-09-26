@@ -38,6 +38,7 @@ type ModificationInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetModificationTime returns ModificationTime (property field)
 	GetModificationTime() int64
@@ -224,6 +225,24 @@ func (m *_ModificationInfo) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_ModificationInfo) IsModificationInfo() {}
+
+func (m *_ModificationInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModificationInfo) deepCopy() *_ModificationInfo {
+	if m == nil {
+		return nil
+	}
+	_ModificationInfoCopy := &_ModificationInfo{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ModificationTime,
+		m.UpdateType,
+		m.UserName.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModificationInfoCopy
+}
 
 func (m *_ModificationInfo) String() string {
 	if m == nil {

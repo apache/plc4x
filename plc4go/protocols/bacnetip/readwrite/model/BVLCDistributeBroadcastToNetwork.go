@@ -40,6 +40,7 @@ type BVLCDistributeBroadcastToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
@@ -197,6 +198,23 @@ func (m *_BVLCDistributeBroadcastToNetwork) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCDistributeBroadcastToNetwork) IsBVLCDistributeBroadcastToNetwork() {}
+
+func (m *_BVLCDistributeBroadcastToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCDistributeBroadcastToNetwork) deepCopy() *_BVLCDistributeBroadcastToNetwork {
+	if m == nil {
+		return nil
+	}
+	_BVLCDistributeBroadcastToNetworkCopy := &_BVLCDistributeBroadcastToNetwork{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.Npdu.DeepCopy().(NPDU),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCDistributeBroadcastToNetworkCopy
+}
 
 func (m *_BVLCDistributeBroadcastToNetwork) String() string {
 	if m == nil {

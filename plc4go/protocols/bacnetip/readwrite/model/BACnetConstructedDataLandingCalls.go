@@ -38,6 +38,7 @@ type BACnetConstructedDataLandingCalls interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLandingCallStatus returns LandingCallStatus (property field)
 	GetLandingCallStatus() []BACnetLandingCallStatus
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataLandingCalls) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataLandingCalls) IsBACnetConstructedDataLandingCalls() {}
+
+func (m *_BACnetConstructedDataLandingCalls) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLandingCalls) deepCopy() *_BACnetConstructedDataLandingCalls {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLandingCallsCopy := &_BACnetConstructedDataLandingCalls{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetLandingCallStatus, BACnetLandingCallStatus](m.LandingCallStatus),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLandingCallsCopy
+}
 
 func (m *_BACnetConstructedDataLandingCalls) String() string {
 	if m == nil {

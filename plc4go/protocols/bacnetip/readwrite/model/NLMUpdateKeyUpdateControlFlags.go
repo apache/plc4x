@@ -38,6 +38,7 @@ type NLMUpdateKeyUpdateControlFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSet1KeyRevisionActivationTimeExpirationTimePresent returns Set1KeyRevisionActivationTimeExpirationTimePresent (property field)
 	GetSet1KeyRevisionActivationTimeExpirationTimePresent() bool
 	// GetSet1KeyCountKeyParametersPresent returns Set1KeyCountKeyParametersPresent (property field)
@@ -306,6 +307,27 @@ func (m *_NLMUpdateKeyUpdateControlFlags) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_NLMUpdateKeyUpdateControlFlags) IsNLMUpdateKeyUpdateControlFlags() {}
+
+func (m *_NLMUpdateKeyUpdateControlFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMUpdateKeyUpdateControlFlags) deepCopy() *_NLMUpdateKeyUpdateControlFlags {
+	if m == nil {
+		return nil
+	}
+	_NLMUpdateKeyUpdateControlFlagsCopy := &_NLMUpdateKeyUpdateControlFlags{
+		m.Set1KeyRevisionActivationTimeExpirationTimePresent,
+		m.Set1KeyCountKeyParametersPresent,
+		m.Set1ShouldBeCleared,
+		m.Set2KeyRevisionActivationTimeExpirationTimePresent,
+		m.Set2KeyCountKeyParametersPresent,
+		m.Set2ShouldBeCleared,
+		m.MoreMessagesToBeExpected,
+		m.RemoveAllKeys,
+	}
+	return _NLMUpdateKeyUpdateControlFlagsCopy
+}
 
 func (m *_NLMUpdateKeyUpdateControlFlags) String() string {
 	if m == nil {

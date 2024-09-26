@@ -36,6 +36,7 @@ type Structure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsStructure is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStructure()
 }
@@ -134,6 +135,18 @@ func (m *_Structure) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_Structure) IsStructure() {}
+
+func (m *_Structure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Structure) deepCopy() *_Structure {
+	if m == nil {
+		return nil
+	}
+	_StructureCopy := &_Structure{}
+	return _StructureCopy
+}
 
 func (m *_Structure) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type S7Address interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7Address is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Address()
 }
 
 // S7AddressContract provides a set of functions which can be overwritten by a sub struct
 type S7AddressContract interface {
+	utils.Copyable
 	// IsS7Address is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Address()
 }
@@ -186,3 +188,17 @@ func (pm *_S7Address) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_S7Address) IsS7Address() {}
+
+func (m *_S7Address) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7Address) deepCopy() *_S7Address {
+	if m == nil {
+		return nil
+	}
+	_S7AddressCopy := &_S7Address{
+		nil, // will be set by child
+	}
+	return _S7AddressCopy
+}

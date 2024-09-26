@@ -36,6 +36,7 @@ type MFuncPropCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMFuncPropCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropCon()
@@ -146,6 +147,21 @@ func (m *_MFuncPropCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_MFuncPropCon) IsMFuncPropCon() {}
+
+func (m *_MFuncPropCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MFuncPropCon) deepCopy() *_MFuncPropCon {
+	if m == nil {
+		return nil
+	}
+	_MFuncPropConCopy := &_MFuncPropCon{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MFuncPropConCopy
+}
 
 func (m *_MFuncPropCon) String() string {
 	if m == nil {

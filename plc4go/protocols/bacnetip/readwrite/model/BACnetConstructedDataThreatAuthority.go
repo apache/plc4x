@@ -38,6 +38,7 @@ type BACnetConstructedDataThreatAuthority interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetThreatAuthority returns ThreatAuthority (property field)
 	GetThreatAuthority() BACnetAccessThreatLevel
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataThreatAuthority) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataThreatAuthority) IsBACnetConstructedDataThreatAuthority() {}
+
+func (m *_BACnetConstructedDataThreatAuthority) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataThreatAuthority) deepCopy() *_BACnetConstructedDataThreatAuthority {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataThreatAuthorityCopy := &_BACnetConstructedDataThreatAuthority{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ThreatAuthority.DeepCopy().(BACnetAccessThreatLevel),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataThreatAuthorityCopy
+}
 
 func (m *_BACnetConstructedDataThreatAuthority) String() string {
 	if m == nil {

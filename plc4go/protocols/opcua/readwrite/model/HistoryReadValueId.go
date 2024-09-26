@@ -38,6 +38,7 @@ type HistoryReadValueId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -254,6 +255,25 @@ func (m *_HistoryReadValueId) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_HistoryReadValueId) IsHistoryReadValueId() {}
+
+func (m *_HistoryReadValueId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadValueId) deepCopy() *_HistoryReadValueId {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadValueIdCopy := &_HistoryReadValueId{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NodeId.DeepCopy().(NodeId),
+		m.IndexRange.DeepCopy().(PascalString),
+		m.DataEncoding.DeepCopy().(QualifiedName),
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadValueIdCopy
+}
 
 func (m *_HistoryReadValueId) String() string {
 	if m == nil {

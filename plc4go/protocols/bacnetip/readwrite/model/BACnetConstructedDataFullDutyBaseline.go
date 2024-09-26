@@ -38,6 +38,7 @@ type BACnetConstructedDataFullDutyBaseline interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFullDutyBaseLine returns FullDutyBaseLine (property field)
 	GetFullDutyBaseLine() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFullDutyBaseline) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataFullDutyBaseline) IsBACnetConstructedDataFullDutyBaseline() {}
+
+func (m *_BACnetConstructedDataFullDutyBaseline) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFullDutyBaseline) deepCopy() *_BACnetConstructedDataFullDutyBaseline {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFullDutyBaselineCopy := &_BACnetConstructedDataFullDutyBaseline{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FullDutyBaseLine.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFullDutyBaselineCopy
+}
 
 func (m *_BACnetConstructedDataFullDutyBaseline) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type S7VarRequestParameterItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7VarRequestParameterItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7VarRequestParameterItem()
 }
 
 // S7VarRequestParameterItemContract provides a set of functions which can be overwritten by a sub struct
 type S7VarRequestParameterItemContract interface {
+	utils.Copyable
 	// IsS7VarRequestParameterItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7VarRequestParameterItem()
 }
@@ -186,3 +188,17 @@ func (pm *_S7VarRequestParameterItem) serializeParent(ctx context.Context, write
 }
 
 func (m *_S7VarRequestParameterItem) IsS7VarRequestParameterItem() {}
+
+func (m *_S7VarRequestParameterItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7VarRequestParameterItem) deepCopy() *_S7VarRequestParameterItem {
+	if m == nil {
+		return nil
+	}
+	_S7VarRequestParameterItemCopy := &_S7VarRequestParameterItem{
+		nil, // will be set by child
+	}
+	return _S7VarRequestParameterItemCopy
+}

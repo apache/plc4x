@@ -38,6 +38,7 @@ type BACnetConstructedDataIsUTC interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIsUtc returns IsUtc (property field)
 	GetIsUtc() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIsUTC) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetConstructedDataIsUTC) IsBACnetConstructedDataIsUTC() {}
+
+func (m *_BACnetConstructedDataIsUTC) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIsUTC) deepCopy() *_BACnetConstructedDataIsUTC {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIsUTCCopy := &_BACnetConstructedDataIsUTC{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IsUtc.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIsUTCCopy
+}
 
 func (m *_BACnetConstructedDataIsUTC) String() string {
 	if m == nil {

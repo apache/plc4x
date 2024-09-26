@@ -36,6 +36,7 @@ type BACnetConstructedDataAccumulatorAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataAccumulatorAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccumulatorAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataAccumulatorAll) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataAccumulatorAll) IsBACnetConstructedDataAccumulatorAll() {}
+
+func (m *_BACnetConstructedDataAccumulatorAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccumulatorAll) deepCopy() *_BACnetConstructedDataAccumulatorAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccumulatorAllCopy := &_BACnetConstructedDataAccumulatorAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccumulatorAllCopy
+}
 
 func (m *_BACnetConstructedDataAccumulatorAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataAllowGroupDelayInhibit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAllowGroupDelayInhibit returns AllowGroupDelayInhibit (property field)
 	GetAllowGroupDelayInhibit() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataAllowGroupDelayInhibit) IsBACnetConstructedDataAllowGroupDelayInhibit() {
+}
+
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAllowGroupDelayInhibit) deepCopy() *_BACnetConstructedDataAllowGroupDelayInhibit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAllowGroupDelayInhibitCopy := &_BACnetConstructedDataAllowGroupDelayInhibit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AllowGroupDelayInhibit.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAllowGroupDelayInhibitCopy
 }
 
 func (m *_BACnetConstructedDataAllowGroupDelayInhibit) String() string {

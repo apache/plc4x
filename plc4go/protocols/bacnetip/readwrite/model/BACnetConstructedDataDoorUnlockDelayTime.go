@@ -38,6 +38,7 @@ type BACnetConstructedDataDoorUnlockDelayTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoorUnlockDelayTime returns DoorUnlockDelayTime (property field)
 	GetDoorUnlockDelayTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataDoorUnlockDelayTime) IsBACnetConstructedDataDoorUnlockDelayTime() {}
+
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoorUnlockDelayTime) deepCopy() *_BACnetConstructedDataDoorUnlockDelayTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoorUnlockDelayTimeCopy := &_BACnetConstructedDataDoorUnlockDelayTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DoorUnlockDelayTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoorUnlockDelayTimeCopy
+}
 
 func (m *_BACnetConstructedDataDoorUnlockDelayTime) String() string {
 	if m == nil {

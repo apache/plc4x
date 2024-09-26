@@ -40,6 +40,7 @@ type CIPEncapsulationReadRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CIPEncapsulationPacket
 	// GetRequest returns Request (property field)
 	GetRequest() DF1RequestMessage
@@ -184,6 +185,22 @@ func (m *_CIPEncapsulationReadRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_CIPEncapsulationReadRequest) IsCIPEncapsulationReadRequest() {}
+
+func (m *_CIPEncapsulationReadRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationReadRequest) deepCopy() *_CIPEncapsulationReadRequest {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationReadRequestCopy := &_CIPEncapsulationReadRequest{
+		m.CIPEncapsulationPacketContract.DeepCopy().(CIPEncapsulationPacketContract),
+		m.Request.DeepCopy().(DF1RequestMessage),
+	}
+	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	return _CIPEncapsulationReadRequestCopy
+}
 
 func (m *_CIPEncapsulationReadRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLastCredentialAddedTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastCredentialAddedTime returns LastCredentialAddedTime (property field)
 	GetLastCredentialAddedTime() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastCredentialAddedTime) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataLastCredentialAddedTime) IsBACnetConstructedDataLastCredentialAddedTime() {
+}
+
+func (m *_BACnetConstructedDataLastCredentialAddedTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastCredentialAddedTime) deepCopy() *_BACnetConstructedDataLastCredentialAddedTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastCredentialAddedTimeCopy := &_BACnetConstructedDataLastCredentialAddedTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastCredentialAddedTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastCredentialAddedTimeCopy
 }
 
 func (m *_BACnetConstructedDataLastCredentialAddedTime) String() string {

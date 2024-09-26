@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueNull) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetTimerStateChangeValueNull) IsBACnetTimerStateChangeValueNull() {}
+
+func (m *_BACnetTimerStateChangeValueNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueNull) deepCopy() *_BACnetTimerStateChangeValueNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueNullCopy := &_BACnetTimerStateChangeValueNull{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueNullCopy
+}
 
 func (m *_BACnetTimerStateChangeValueNull) String() string {
 	if m == nil {

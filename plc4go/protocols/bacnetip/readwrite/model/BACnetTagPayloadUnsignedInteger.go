@@ -38,6 +38,7 @@ type BACnetTagPayloadUnsignedInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValueUint8 returns ValueUint8 (property field)
 	GetValueUint8() *uint8
 	// GetValueUint16 returns ValueUint16 (property field)
@@ -723,6 +724,28 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadUnsignedInteger) IsBACnetTagPayloadUnsignedInteger() {}
+
+func (m *_BACnetTagPayloadUnsignedInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadUnsignedInteger) deepCopy() *_BACnetTagPayloadUnsignedInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadUnsignedIntegerCopy := &_BACnetTagPayloadUnsignedInteger{
+		utils.CopyPtr[uint8](m.ValueUint8),
+		utils.CopyPtr[uint16](m.ValueUint16),
+		utils.CopyPtr[uint32](m.ValueUint24),
+		utils.CopyPtr[uint32](m.ValueUint32),
+		utils.CopyPtr[uint64](m.ValueUint40),
+		utils.CopyPtr[uint64](m.ValueUint48),
+		utils.CopyPtr[uint64](m.ValueUint56),
+		utils.CopyPtr[uint64](m.ValueUint64),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadUnsignedIntegerCopy
+}
 
 func (m *_BACnetTagPayloadUnsignedInteger) String() string {
 	if m == nil {

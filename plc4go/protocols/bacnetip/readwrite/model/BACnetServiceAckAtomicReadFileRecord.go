@@ -38,6 +38,7 @@ type BACnetServiceAckAtomicReadFileRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAckAtomicReadFileStreamOrRecord
 	// GetFileStartRecord returns FileStartRecord (property field)
 	GetFileStartRecord() BACnetApplicationTagSignedInteger
@@ -230,6 +231,24 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) IsBACnetServiceAckAtomicReadFileRecord() {}
+
+func (m *_BACnetServiceAckAtomicReadFileRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecord) deepCopy() *_BACnetServiceAckAtomicReadFileRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAtomicReadFileRecordCopy := &_BACnetServiceAckAtomicReadFileRecord{
+		m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.DeepCopy().(BACnetServiceAckAtomicReadFileStreamOrRecordContract),
+		m.FileStartRecord.DeepCopy().(BACnetApplicationTagSignedInteger),
+		m.ReturnedRecordCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagOctetString, BACnetApplicationTagOctetString](m.FileRecordData),
+	}
+	m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = m
+	return _BACnetServiceAckAtomicReadFileRecordCopy
+}
 
 func (m *_BACnetServiceAckAtomicReadFileRecord) String() string {
 	if m == nil {

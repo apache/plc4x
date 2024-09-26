@@ -38,6 +38,7 @@ type BACnetPropertyStatesProtocolLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesProtocolLevel) IsBACnetPropertyStatesProtocolLevel() {}
+
+func (m *_BACnetPropertyStatesProtocolLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesProtocolLevel) deepCopy() *_BACnetPropertyStatesProtocolLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesProtocolLevelCopy := &_BACnetPropertyStatesProtocolLevel{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.ProtocolLevel.DeepCopy().(BACnetProtocolLevelTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesProtocolLevelCopy
+}
 
 func (m *_BACnetPropertyStatesProtocolLevel) String() string {
 	if m == nil {

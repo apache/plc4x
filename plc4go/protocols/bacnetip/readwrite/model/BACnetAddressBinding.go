@@ -38,6 +38,7 @@ type BACnetAddressBinding interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetDeviceAddress returns DeviceAddress (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetAddressBinding) IsBACnetAddressBinding() {}
+
+func (m *_BACnetAddressBinding) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAddressBinding) deepCopy() *_BACnetAddressBinding {
+	if m == nil {
+		return nil
+	}
+	_BACnetAddressBindingCopy := &_BACnetAddressBinding{
+		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.DeviceAddress.DeepCopy().(BACnetAddress),
+	}
+	return _BACnetAddressBindingCopy
+}
 
 func (m *_BACnetAddressBinding) String() string {
 	if m == nil {

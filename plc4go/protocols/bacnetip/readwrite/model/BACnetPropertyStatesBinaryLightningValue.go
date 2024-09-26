@@ -38,6 +38,7 @@ type BACnetPropertyStatesBinaryLightningValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBinaryLightningValue returns BinaryLightningValue (property field)
 	GetBinaryLightningValue() BACnetBinaryLightingPVTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetPropertyStatesBinaryLightningValue) IsBACnetPropertyStatesBinaryLightningValue() {}
+
+func (m *_BACnetPropertyStatesBinaryLightningValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBinaryLightningValue) deepCopy() *_BACnetPropertyStatesBinaryLightningValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBinaryLightningValueCopy := &_BACnetPropertyStatesBinaryLightningValue{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BinaryLightningValue.DeepCopy().(BACnetBinaryLightingPVTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBinaryLightningValueCopy
+}
 
 func (m *_BACnetPropertyStatesBinaryLightningValue) String() string {
 	if m == nil {

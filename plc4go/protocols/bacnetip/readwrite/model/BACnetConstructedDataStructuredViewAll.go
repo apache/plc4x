@@ -36,6 +36,7 @@ type BACnetConstructedDataStructuredViewAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataStructuredViewAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataStructuredViewAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataStructuredViewAll) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataStructuredViewAll) IsBACnetConstructedDataStructuredViewAll() {}
+
+func (m *_BACnetConstructedDataStructuredViewAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStructuredViewAll) deepCopy() *_BACnetConstructedDataStructuredViewAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStructuredViewAllCopy := &_BACnetConstructedDataStructuredViewAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStructuredViewAllCopy
+}
 
 func (m *_BACnetConstructedDataStructuredViewAll) String() string {
 	if m == nil {

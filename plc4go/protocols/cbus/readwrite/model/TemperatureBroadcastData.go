@@ -38,6 +38,7 @@ type TemperatureBroadcastData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() TemperatureBroadcastCommandTypeContainer
 	// GetTemperatureGroup returns TemperatureGroup (property field)
@@ -264,6 +265,22 @@ func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_TemperatureBroadcastData) IsTemperatureBroadcastData() {}
+
+func (m *_TemperatureBroadcastData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TemperatureBroadcastData) deepCopy() *_TemperatureBroadcastData {
+	if m == nil {
+		return nil
+	}
+	_TemperatureBroadcastDataCopy := &_TemperatureBroadcastData{
+		m.CommandTypeContainer,
+		m.TemperatureGroup,
+		m.TemperatureByte,
+	}
+	return _TemperatureBroadcastDataCopy
+}
 
 func (m *_TemperatureBroadcastData) String() string {
 	if m == nil {

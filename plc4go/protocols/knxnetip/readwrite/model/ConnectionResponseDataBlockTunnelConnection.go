@@ -38,6 +38,7 @@ type ConnectionResponseDataBlockTunnelConnection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ConnectionResponseDataBlock
 	// GetKnxAddress returns KnxAddress (property field)
 	GetKnxAddress() KnxAddress
@@ -182,6 +183,22 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) SerializeWithWriteBuffer(
 }
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) IsConnectionResponseDataBlockTunnelConnection() {
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnection) deepCopy() *_ConnectionResponseDataBlockTunnelConnection {
+	if m == nil {
+		return nil
+	}
+	_ConnectionResponseDataBlockTunnelConnectionCopy := &_ConnectionResponseDataBlockTunnelConnection{
+		m.ConnectionResponseDataBlockContract.DeepCopy().(ConnectionResponseDataBlockContract),
+		m.KnxAddress.DeepCopy().(KnxAddress),
+	}
+	m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = m
+	return _ConnectionResponseDataBlockTunnelConnectionCopy
 }
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) String() string {

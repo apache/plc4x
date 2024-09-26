@@ -38,6 +38,7 @@ type Confirmation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
 	// GetSecondAlpha returns SecondAlpha (property field)
@@ -248,6 +249,22 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_Confirmation) IsConfirmation() {}
+
+func (m *_Confirmation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Confirmation) deepCopy() *_Confirmation {
+	if m == nil {
+		return nil
+	}
+	_ConfirmationCopy := &_Confirmation{
+		m.Alpha.DeepCopy().(Alpha),
+		m.SecondAlpha.DeepCopy().(Alpha),
+		m.ConfirmationType,
+	}
+	return _ConfirmationCopy
+}
 
 func (m *_Confirmation) String() string {
 	if m == nil {

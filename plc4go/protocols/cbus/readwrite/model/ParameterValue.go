@@ -38,12 +38,14 @@ type ParameterValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValue()
 }
 
 // ParameterValueContract provides a set of functions which can be overwritten by a sub struct
 type ParameterValueContract interface {
+	utils.Copyable
 	// GetNumBytes() returns a parser argument
 	GetNumBytes() uint8
 	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -228,3 +230,18 @@ func (m *_ParameterValue) GetNumBytes() uint8 {
 ////
 
 func (m *_ParameterValue) IsParameterValue() {}
+
+func (m *_ParameterValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValue) deepCopy() *_ParameterValue {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueCopy := &_ParameterValue{
+		nil, // will be set by child
+		m.NumBytes,
+	}
+	return _ParameterValueCopy
+}

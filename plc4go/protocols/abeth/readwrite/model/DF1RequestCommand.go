@@ -40,12 +40,14 @@ type DF1RequestCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1RequestCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestCommand()
 }
 
 // DF1RequestCommandContract provides a set of functions which can be overwritten by a sub struct
 type DF1RequestCommandContract interface {
+	utils.Copyable
 	// IsDF1RequestCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestCommand()
 }
@@ -186,3 +188,17 @@ func (pm *_DF1RequestCommand) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_DF1RequestCommand) IsDF1RequestCommand() {}
+
+func (m *_DF1RequestCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1RequestCommand) deepCopy() *_DF1RequestCommand {
+	if m == nil {
+		return nil
+	}
+	_DF1RequestCommandCopy := &_DF1RequestCommand{
+		nil, // will be set by child
+	}
+	return _DF1RequestCommandCopy
+}

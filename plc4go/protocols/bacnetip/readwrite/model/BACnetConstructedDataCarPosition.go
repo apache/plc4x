@@ -38,6 +38,7 @@ type BACnetConstructedDataCarPosition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarPosition returns CarPosition (property field)
 	GetCarPosition() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCarPosition) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataCarPosition) IsBACnetConstructedDataCarPosition() {}
+
+func (m *_BACnetConstructedDataCarPosition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarPosition) deepCopy() *_BACnetConstructedDataCarPosition {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarPositionCopy := &_BACnetConstructedDataCarPosition{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CarPosition.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarPositionCopy
+}
 
 func (m *_BACnetConstructedDataCarPosition) String() string {
 	if m == nil {

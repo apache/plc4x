@@ -38,6 +38,7 @@ type BACnetTagPayloadEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetData returns Data (property field)
 	GetData() []byte
 	// GetActualValue returns ActualValue (virtual field)
@@ -212,6 +213,21 @@ func (m *_BACnetTagPayloadEnumerated) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadEnumerated) IsBACnetTagPayloadEnumerated() {}
+
+func (m *_BACnetTagPayloadEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadEnumerated) deepCopy() *_BACnetTagPayloadEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadEnumeratedCopy := &_BACnetTagPayloadEnumerated{
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadEnumeratedCopy
+}
 
 func (m *_BACnetTagPayloadEnumerated) String() string {
 	if m == nil {

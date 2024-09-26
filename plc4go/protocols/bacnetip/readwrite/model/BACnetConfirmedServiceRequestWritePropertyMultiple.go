@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestWritePropertyMultiple interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetData returns Data (property field)
 	GetData() []BACnetWriteAccessSpecification
@@ -196,6 +197,23 @@ func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) GetServiceRequestP
 ////
 
 func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) IsBACnetConfirmedServiceRequestWritePropertyMultiple() {
+}
+
+func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) deepCopy() *_BACnetConfirmedServiceRequestWritePropertyMultiple {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestWritePropertyMultipleCopy := &_BACnetConfirmedServiceRequestWritePropertyMultiple{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		utils.DeepCopySlice[BACnetWriteAccessSpecification, BACnetWriteAccessSpecification](m.Data),
+		m.ServiceRequestPayloadLength,
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestWritePropertyMultipleCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestWritePropertyMultiple) String() string {

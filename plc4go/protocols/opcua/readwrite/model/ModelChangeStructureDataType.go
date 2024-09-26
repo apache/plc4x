@@ -38,6 +38,7 @@ type ModelChangeStructureDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAffected returns Affected (property field)
 	GetAffected() NodeId
@@ -227,6 +228,24 @@ func (m *_ModelChangeStructureDataType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ModelChangeStructureDataType) IsModelChangeStructureDataType() {}
+
+func (m *_ModelChangeStructureDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModelChangeStructureDataType) deepCopy() *_ModelChangeStructureDataType {
+	if m == nil {
+		return nil
+	}
+	_ModelChangeStructureDataTypeCopy := &_ModelChangeStructureDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Affected.DeepCopy().(NodeId),
+		m.AffectedType.DeepCopy().(NodeId),
+		m.Verb,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModelChangeStructureDataTypeCopy
+}
 
 func (m *_ModelChangeStructureDataType) String() string {
 	if m == nil {

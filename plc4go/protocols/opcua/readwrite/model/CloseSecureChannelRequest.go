@@ -38,6 +38,7 @@ type CloseSecureChannelRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -182,6 +183,22 @@ func (m *_CloseSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_CloseSecureChannelRequest) IsCloseSecureChannelRequest() {}
+
+func (m *_CloseSecureChannelRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CloseSecureChannelRequest) deepCopy() *_CloseSecureChannelRequest {
+	if m == nil {
+		return nil
+	}
+	_CloseSecureChannelRequestCopy := &_CloseSecureChannelRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CloseSecureChannelRequestCopy
+}
 
 func (m *_CloseSecureChannelRequest) String() string {
 	if m == nil {

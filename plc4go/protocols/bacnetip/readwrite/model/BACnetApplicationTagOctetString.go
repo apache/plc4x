@@ -38,6 +38,7 @@ type BACnetApplicationTagOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadOctetString
@@ -178,6 +179,22 @@ func (m *_BACnetApplicationTagOctetString) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetApplicationTagOctetString) IsBACnetApplicationTagOctetString() {}
+
+func (m *_BACnetApplicationTagOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagOctetString) deepCopy() *_BACnetApplicationTagOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagOctetStringCopy := &_BACnetApplicationTagOctetString{
+		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadOctetString),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagOctetStringCopy
+}
 
 func (m *_BACnetApplicationTagOctetString) String() string {
 	if m == nil {

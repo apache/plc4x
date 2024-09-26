@@ -41,6 +41,7 @@ type AlarmMessageAckObjectPushType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLengthSpec returns LengthSpec (property field)
 	GetLengthSpec() uint8
 	// GetSyntaxId returns SyntaxId (property field)
@@ -301,6 +302,25 @@ func (m *_AlarmMessageAckObjectPushType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_AlarmMessageAckObjectPushType) IsAlarmMessageAckObjectPushType() {}
+
+func (m *_AlarmMessageAckObjectPushType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageAckObjectPushType) deepCopy() *_AlarmMessageAckObjectPushType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageAckObjectPushTypeCopy := &_AlarmMessageAckObjectPushType{
+		m.LengthSpec,
+		m.SyntaxId,
+		m.NumberOfValues,
+		m.EventId,
+		m.AckStateGoing.DeepCopy().(State),
+		m.AckStateComing.DeepCopy().(State),
+	}
+	return _AlarmMessageAckObjectPushTypeCopy
+}
 
 func (m *_AlarmMessageAckObjectPushType) String() string {
 	if m == nil {

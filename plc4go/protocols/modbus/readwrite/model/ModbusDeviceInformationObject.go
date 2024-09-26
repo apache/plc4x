@@ -38,6 +38,7 @@ type ModbusDeviceInformationObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectId returns ObjectId (property field)
 	GetObjectId() uint8
 	// GetData returns Data (property field)
@@ -201,6 +202,21 @@ func (m *_ModbusDeviceInformationObject) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_ModbusDeviceInformationObject) IsModbusDeviceInformationObject() {}
+
+func (m *_ModbusDeviceInformationObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusDeviceInformationObject) deepCopy() *_ModbusDeviceInformationObject {
+	if m == nil {
+		return nil
+	}
+	_ModbusDeviceInformationObjectCopy := &_ModbusDeviceInformationObject{
+		m.ObjectId,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	return _ModbusDeviceInformationObjectCopy
+}
 
 func (m *_ModbusDeviceInformationObject) String() string {
 	if m == nil {

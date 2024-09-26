@@ -36,6 +36,7 @@ type SALDataReserved interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataReserved is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataReserved()
@@ -151,6 +152,21 @@ func (m *_SALDataReserved) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SALDataReserved) IsSALDataReserved() {}
+
+func (m *_SALDataReserved) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataReserved) deepCopy() *_SALDataReserved {
+	if m == nil {
+		return nil
+	}
+	_SALDataReservedCopy := &_SALDataReserved{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataReservedCopy
+}
 
 func (m *_SALDataReserved) String() string {
 	if m == nil {

@@ -38,12 +38,14 @@ type ExtensionObjectDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsExtensionObjectDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExtensionObjectDefinition()
 }
 
 // ExtensionObjectDefinitionContract provides a set of functions which can be overwritten by a sub struct
 type ExtensionObjectDefinitionContract interface {
+	utils.Copyable
 	// IsExtensionObjectDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExtensionObjectDefinition()
 }
@@ -1097,3 +1099,17 @@ func (pm *_ExtensionObjectDefinition) serializeParent(ctx context.Context, write
 }
 
 func (m *_ExtensionObjectDefinition) IsExtensionObjectDefinition() {}
+
+func (m *_ExtensionObjectDefinition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExtensionObjectDefinition) deepCopy() *_ExtensionObjectDefinition {
+	if m == nil {
+		return nil
+	}
+	_ExtensionObjectDefinitionCopy := &_ExtensionObjectDefinition{
+		nil, // will be set by child
+	}
+	return _ExtensionObjectDefinitionCopy
+}

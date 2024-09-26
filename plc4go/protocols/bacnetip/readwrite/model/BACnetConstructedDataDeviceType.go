@@ -38,6 +38,7 @@ type BACnetConstructedDataDeviceType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeviceType returns DeviceType (property field)
 	GetDeviceType() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDeviceType) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataDeviceType) IsBACnetConstructedDataDeviceType() {}
+
+func (m *_BACnetConstructedDataDeviceType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDeviceType) deepCopy() *_BACnetConstructedDataDeviceType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDeviceTypeCopy := &_BACnetConstructedDataDeviceType{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DeviceType.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDeviceTypeCopy
+}
 
 func (m *_BACnetConstructedDataDeviceType) String() string {
 	if m == nil {

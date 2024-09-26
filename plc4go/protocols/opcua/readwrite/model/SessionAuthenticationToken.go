@@ -36,6 +36,7 @@ type SessionAuthenticationToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSessionAuthenticationToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSessionAuthenticationToken()
 }
@@ -134,6 +135,18 @@ func (m *_SessionAuthenticationToken) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SessionAuthenticationToken) IsSessionAuthenticationToken() {}
+
+func (m *_SessionAuthenticationToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SessionAuthenticationToken) deepCopy() *_SessionAuthenticationToken {
+	if m == nil {
+		return nil
+	}
+	_SessionAuthenticationTokenCopy := &_SessionAuthenticationToken{}
+	return _SessionAuthenticationTokenCopy
+}
 
 func (m *_SessionAuthenticationToken) String() string {
 	if m == nil {

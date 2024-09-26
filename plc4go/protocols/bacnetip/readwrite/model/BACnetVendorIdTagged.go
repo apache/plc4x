@@ -38,6 +38,7 @@ type BACnetVendorIdTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetVendorIdTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetVendorIdTagged) IsBACnetVendorIdTagged() {}
+
+func (m *_BACnetVendorIdTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetVendorIdTagged) deepCopy() *_BACnetVendorIdTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetVendorIdTaggedCopy := &_BACnetVendorIdTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.UnknownId,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetVendorIdTaggedCopy
+}
 
 func (m *_BACnetVendorIdTagged) String() string {
 	if m == nil {

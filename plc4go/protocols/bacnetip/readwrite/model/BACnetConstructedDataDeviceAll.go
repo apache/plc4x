@@ -36,6 +36,7 @@ type BACnetConstructedDataDeviceAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataDeviceAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDeviceAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataDeviceAll) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataDeviceAll) IsBACnetConstructedDataDeviceAll() {}
+
+func (m *_BACnetConstructedDataDeviceAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDeviceAll) deepCopy() *_BACnetConstructedDataDeviceAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDeviceAllCopy := &_BACnetConstructedDataDeviceAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDeviceAllCopy
+}
 
 func (m *_BACnetConstructedDataDeviceAll) String() string {
 	if m == nil {

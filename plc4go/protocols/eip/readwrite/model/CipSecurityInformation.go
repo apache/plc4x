@@ -38,6 +38,7 @@ type CipSecurityInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CommandSpecificDataItem
 	// GetTodoImplement returns TodoImplement (property field)
 	GetTodoImplement() []uint8
@@ -194,6 +195,22 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_CipSecurityInformation) IsCipSecurityInformation() {}
+
+func (m *_CipSecurityInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipSecurityInformation) deepCopy() *_CipSecurityInformation {
+	if m == nil {
+		return nil
+	}
+	_CipSecurityInformationCopy := &_CipSecurityInformation{
+		m.CommandSpecificDataItemContract.DeepCopy().(CommandSpecificDataItemContract),
+		utils.DeepCopySlice[uint8, uint8](m.TodoImplement),
+	}
+	m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = m
+	return _CipSecurityInformationCopy
+}
 
 func (m *_CipSecurityInformation) String() string {
 	if m == nil {

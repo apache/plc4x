@@ -38,6 +38,7 @@ type BACnetAccessCredentialDisableReasonTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetAccessCredentialDisableReasonTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAccessCredentialDisableReasonTagged) IsBACnetAccessCredentialDisableReasonTagged() {}
+
+func (m *_BACnetAccessCredentialDisableReasonTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessCredentialDisableReasonTagged) deepCopy() *_BACnetAccessCredentialDisableReasonTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessCredentialDisableReasonTaggedCopy := &_BACnetAccessCredentialDisableReasonTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessCredentialDisableReasonTaggedCopy
+}
 
 func (m *_BACnetAccessCredentialDisableReasonTagged) String() string {
 	if m == nil {

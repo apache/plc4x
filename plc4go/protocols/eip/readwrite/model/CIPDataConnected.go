@@ -38,6 +38,7 @@ type CIPDataConnected interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() uint32
 	// GetTagStatus returns TagStatus (property field)
@@ -186,6 +187,21 @@ func (m *_CIPDataConnected) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_CIPDataConnected) IsCIPDataConnected() {}
+
+func (m *_CIPDataConnected) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPDataConnected) deepCopy() *_CIPDataConnected {
+	if m == nil {
+		return nil
+	}
+	_CIPDataConnectedCopy := &_CIPDataConnected{
+		m.Value,
+		m.TagStatus,
+	}
+	return _CIPDataConnectedCopy
+}
 
 func (m *_CIPDataConnected) String() string {
 	if m == nil {

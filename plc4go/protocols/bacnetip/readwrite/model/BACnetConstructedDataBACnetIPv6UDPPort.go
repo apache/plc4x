@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPv6UDPPort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6UdpPort returns Ipv6UdpPort (property field)
 	GetIpv6UdpPort() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6UDPPort) IsBACnetConstructedDataBACnetIPv6UDPPort() {}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPort) deepCopy() *_BACnetConstructedDataBACnetIPv6UDPPort {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPv6UDPPortCopy := &_BACnetConstructedDataBACnetIPv6UDPPort{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Ipv6UdpPort.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPv6UDPPortCopy
+}
 
 func (m *_BACnetConstructedDataBACnetIPv6UDPPort) String() string {
 	if m == nil {

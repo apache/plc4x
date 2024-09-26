@@ -40,12 +40,14 @@ type MonitoredSAL interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSAL()
 }
 
 // MonitoredSALContract provides a set of functions which can be overwritten by a sub struct
 type MonitoredSALContract interface {
+	utils.Copyable
 	// GetSalType returns SalType (property field)
 	GetSalType() byte
 	// GetCBusOptions() returns a parser argument
@@ -217,3 +219,19 @@ func (m *_MonitoredSAL) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_MonitoredSAL) IsMonitoredSAL() {}
+
+func (m *_MonitoredSAL) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSAL) deepCopy() *_MonitoredSAL {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALCopy := &_MonitoredSAL{
+		nil, // will be set by child
+		m.SalType,
+		m.CBusOptions,
+	}
+	return _MonitoredSALCopy
+}

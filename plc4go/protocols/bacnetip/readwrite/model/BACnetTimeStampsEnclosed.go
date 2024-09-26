@@ -38,6 +38,7 @@ type BACnetTimeStampsEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetTimestamps returns Timestamps (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetTimeStampsEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetTimeStampsEnclosed) IsBACnetTimeStampsEnclosed() {}
+
+func (m *_BACnetTimeStampsEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStampsEnclosed) deepCopy() *_BACnetTimeStampsEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampsEnclosedCopy := &_BACnetTimeStampsEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimeStamp, BACnetTimeStamp](m.Timestamps),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetTimeStampsEnclosedCopy
+}
 
 func (m *_BACnetTimeStampsEnclosed) String() string {
 	if m == nil {

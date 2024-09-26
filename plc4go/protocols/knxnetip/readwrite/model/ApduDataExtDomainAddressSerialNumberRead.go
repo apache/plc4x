@@ -36,6 +36,7 @@ type ApduDataExtDomainAddressSerialNumberRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtDomainAddressSerialNumberRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressSerialNumberRead()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) IsApduDataExtDomainAddressSerialNumberRead() {}
+
+func (m *_ApduDataExtDomainAddressSerialNumberRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberRead) deepCopy() *_ApduDataExtDomainAddressSerialNumberRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtDomainAddressSerialNumberReadCopy := &_ApduDataExtDomainAddressSerialNumberRead{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtDomainAddressSerialNumberReadCopy
+}
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) String() string {
 	if m == nil {

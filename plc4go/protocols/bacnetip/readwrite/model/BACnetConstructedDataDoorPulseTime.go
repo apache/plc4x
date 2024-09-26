@@ -38,6 +38,7 @@ type BACnetConstructedDataDoorPulseTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoorPulseTime returns DoorPulseTime (property field)
 	GetDoorPulseTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDoorPulseTime) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataDoorPulseTime) IsBACnetConstructedDataDoorPulseTime() {}
+
+func (m *_BACnetConstructedDataDoorPulseTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoorPulseTime) deepCopy() *_BACnetConstructedDataDoorPulseTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoorPulseTimeCopy := &_BACnetConstructedDataDoorPulseTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DoorPulseTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoorPulseTimeCopy
+}
 
 func (m *_BACnetConstructedDataDoorPulseTime) String() string {
 	if m == nil {

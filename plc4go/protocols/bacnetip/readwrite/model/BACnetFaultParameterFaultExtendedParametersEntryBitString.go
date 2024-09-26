@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) SerializeWi
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) IsBACnetFaultParameterFaultExtendedParametersEntryBitString() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryBitStringCopy := &_BACnetFaultParameterFaultExtendedParametersEntryBitString{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryBitStringCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) String() string {

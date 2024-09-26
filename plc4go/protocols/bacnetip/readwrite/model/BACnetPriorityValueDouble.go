@@ -38,6 +38,7 @@ type BACnetPriorityValueDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueDouble) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetPriorityValueDouble) IsBACnetPriorityValueDouble() {}
+
+func (m *_BACnetPriorityValueDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueDouble) deepCopy() *_BACnetPriorityValueDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueDoubleCopy := &_BACnetPriorityValueDouble{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueDoubleCopy
+}
 
 func (m *_BACnetPriorityValueDouble) String() string {
 	if m == nil {

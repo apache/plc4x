@@ -40,12 +40,14 @@ type SecurityData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSecurityData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityData()
 }
 
 // SecurityDataContract provides a set of functions which can be overwritten by a sub struct
 type SecurityDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() SecurityCommandTypeContainer
 	// GetArgument returns Argument (property field)
@@ -452,3 +454,19 @@ func (pm *_SecurityData) serializeParent(ctx context.Context, writeBuffer utils.
 }
 
 func (m *_SecurityData) IsSecurityData() {}
+
+func (m *_SecurityData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityData) deepCopy() *_SecurityData {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataCopy := &_SecurityData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.Argument,
+	}
+	return _SecurityDataCopy
+}

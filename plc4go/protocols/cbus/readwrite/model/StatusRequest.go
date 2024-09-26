@@ -40,12 +40,14 @@ type StatusRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStatusRequest()
 }
 
 // StatusRequestContract provides a set of functions which can be overwritten by a sub struct
 type StatusRequestContract interface {
+	utils.Copyable
 	// GetStatusType returns StatusType (property field)
 	GetStatusType() byte
 	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -206,3 +208,18 @@ func (pm *_StatusRequest) serializeParent(ctx context.Context, writeBuffer utils
 }
 
 func (m *_StatusRequest) IsStatusRequest() {}
+
+func (m *_StatusRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusRequest) deepCopy() *_StatusRequest {
+	if m == nil {
+		return nil
+	}
+	_StatusRequestCopy := &_StatusRequest{
+		nil, // will be set by child
+		m.StatusType,
+	}
+	return _StatusRequestCopy
+}

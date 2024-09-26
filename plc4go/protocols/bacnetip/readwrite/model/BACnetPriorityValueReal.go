@@ -38,6 +38,7 @@ type BACnetPriorityValueReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueReal) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetPriorityValueReal) IsBACnetPriorityValueReal() {}
+
+func (m *_BACnetPriorityValueReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueReal) deepCopy() *_BACnetPriorityValueReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueRealCopy := &_BACnetPriorityValueReal{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueRealCopy
+}
 
 func (m *_BACnetPriorityValueReal) String() string {
 	if m == nil {

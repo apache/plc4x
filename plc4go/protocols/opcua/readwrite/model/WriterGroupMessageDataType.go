@@ -36,6 +36,7 @@ type WriterGroupMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsWriterGroupMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsWriterGroupMessageDataType()
@@ -146,6 +147,21 @@ func (m *_WriterGroupMessageDataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_WriterGroupMessageDataType) IsWriterGroupMessageDataType() {}
+
+func (m *_WriterGroupMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WriterGroupMessageDataType) deepCopy() *_WriterGroupMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_WriterGroupMessageDataTypeCopy := &_WriterGroupMessageDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _WriterGroupMessageDataTypeCopy
+}
 
 func (m *_WriterGroupMessageDataType) String() string {
 	if m == nil {

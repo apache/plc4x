@@ -38,6 +38,7 @@ type MonitoredItemCreateResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -269,6 +270,26 @@ func (m *_MonitoredItemCreateResult) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_MonitoredItemCreateResult) IsMonitoredItemCreateResult() {}
+
+func (m *_MonitoredItemCreateResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredItemCreateResult) deepCopy() *_MonitoredItemCreateResult {
+	if m == nil {
+		return nil
+	}
+	_MonitoredItemCreateResultCopy := &_MonitoredItemCreateResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.MonitoredItemId,
+		m.RevisedSamplingInterval,
+		m.RevisedQueueSize,
+		m.FilterResult.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoredItemCreateResultCopy
+}
 
 func (m *_MonitoredItemCreateResult) String() string {
 	if m == nil {

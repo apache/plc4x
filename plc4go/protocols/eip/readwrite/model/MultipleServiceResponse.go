@@ -38,6 +38,7 @@ type MultipleServiceResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -290,6 +291,27 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_MultipleServiceResponse) IsMultipleServiceResponse() {}
+
+func (m *_MultipleServiceResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MultipleServiceResponse) deepCopy() *_MultipleServiceResponse {
+	if m == nil {
+		return nil
+	}
+	_MultipleServiceResponseCopy := &_MultipleServiceResponse{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.Status,
+		m.ExtStatus,
+		m.ServiceNb,
+		utils.DeepCopySlice[uint16, uint16](m.Offsets),
+		utils.DeepCopySlice[byte, byte](m.ServicesData),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _MultipleServiceResponseCopy
+}
 
 func (m *_MultipleServiceResponse) String() string {
 	if m == nil {

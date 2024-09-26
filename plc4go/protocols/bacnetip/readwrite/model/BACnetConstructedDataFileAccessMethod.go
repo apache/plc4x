@@ -38,6 +38,7 @@ type BACnetConstructedDataFileAccessMethod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFileAccessMethod returns FileAccessMethod (property field)
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFileAccessMethod) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataFileAccessMethod) IsBACnetConstructedDataFileAccessMethod() {}
+
+func (m *_BACnetConstructedDataFileAccessMethod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFileAccessMethod) deepCopy() *_BACnetConstructedDataFileAccessMethod {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFileAccessMethodCopy := &_BACnetConstructedDataFileAccessMethod{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FileAccessMethod.DeepCopy().(BACnetFileAccessMethodTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFileAccessMethodCopy
+}
 
 func (m *_BACnetConstructedDataFileAccessMethod) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataMultiStateOutputFeedbackValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) SerializeWithWrite
 }
 
 func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) IsBACnetConstructedDataMultiStateOutputFeedbackValue() {
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) deepCopy() *_BACnetConstructedDataMultiStateOutputFeedbackValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMultiStateOutputFeedbackValueCopy := &_BACnetConstructedDataMultiStateOutputFeedbackValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FeedbackValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMultiStateOutputFeedbackValueCopy
 }
 
 func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) String() string {

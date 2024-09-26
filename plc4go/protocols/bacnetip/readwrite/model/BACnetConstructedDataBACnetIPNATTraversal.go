@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPNATTraversal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBacnetIPNATTraversal returns BacnetIPNATTraversal (property field)
 	GetBacnetIPNATTraversal() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) IsBACnetConstructedDataBACnetIPNATTraversal() {}
+
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) deepCopy() *_BACnetConstructedDataBACnetIPNATTraversal {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPNATTraversalCopy := &_BACnetConstructedDataBACnetIPNATTraversal{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BacnetIPNATTraversal.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPNATTraversalCopy
+}
 
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) String() string {
 	if m == nil {

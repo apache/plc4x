@@ -38,6 +38,7 @@ type BACnetConstructedDataSubordinateRelationships interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataSubordinateRelationships) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataSubordinateRelationships) IsBACnetConstructedDataSubordinateRelationships() {
+}
+
+func (m *_BACnetConstructedDataSubordinateRelationships) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSubordinateRelationships) deepCopy() *_BACnetConstructedDataSubordinateRelationships {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSubordinateRelationshipsCopy := &_BACnetConstructedDataSubordinateRelationships{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetRelationshipTagged, BACnetRelationshipTagged](m.SubordinateRelationships),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSubordinateRelationshipsCopy
 }
 
 func (m *_BACnetConstructedDataSubordinateRelationships) String() string {

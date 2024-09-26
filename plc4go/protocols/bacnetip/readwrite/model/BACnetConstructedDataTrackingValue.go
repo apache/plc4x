@@ -38,6 +38,7 @@ type BACnetConstructedDataTrackingValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTrackingValue returns TrackingValue (property field)
 	GetTrackingValue() BACnetLifeSafetyStateTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTrackingValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataTrackingValue) IsBACnetConstructedDataTrackingValue() {}
+
+func (m *_BACnetConstructedDataTrackingValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrackingValue) deepCopy() *_BACnetConstructedDataTrackingValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTrackingValueCopy := &_BACnetConstructedDataTrackingValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TrackingValue.DeepCopy().(BACnetLifeSafetyStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTrackingValueCopy
+}
 
 func (m *_BACnetConstructedDataTrackingValue) String() string {
 	if m == nil {

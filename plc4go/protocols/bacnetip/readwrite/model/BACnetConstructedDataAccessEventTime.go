@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessEventTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccessEventTime returns AccessEventTime (property field)
 	GetAccessEventTime() BACnetTimeStamp
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccessEventTime) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataAccessEventTime) IsBACnetConstructedDataAccessEventTime() {}
+
+func (m *_BACnetConstructedDataAccessEventTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessEventTime) deepCopy() *_BACnetConstructedDataAccessEventTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessEventTimeCopy := &_BACnetConstructedDataAccessEventTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AccessEventTime.DeepCopy().(BACnetTimeStamp),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessEventTimeCopy
+}
 
 func (m *_BACnetConstructedDataAccessEventTime) String() string {
 	if m == nil {

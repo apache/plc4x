@@ -38,6 +38,7 @@ type CipWriteRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetTag returns Tag (property field)
 	GetTag() []byte
@@ -267,6 +268,25 @@ func (m *_CipWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_CipWriteRequest) IsCipWriteRequest() {}
+
+func (m *_CipWriteRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipWriteRequest) deepCopy() *_CipWriteRequest {
+	if m == nil {
+		return nil
+	}
+	_CipWriteRequestCopy := &_CipWriteRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		utils.DeepCopySlice[byte, byte](m.Tag),
+		m.DataType,
+		m.ElementNb,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipWriteRequestCopy
+}
 
 func (m *_CipWriteRequest) String() string {
 	if m == nil {

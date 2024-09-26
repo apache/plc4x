@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -482,6 +483,34 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) IsBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) deepCopy() *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationCopy := &_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{
+		m.BACnetUnconfirmedServiceRequestContract.DeepCopy().(BACnetUnconfirmedServiceRequestContract),
+		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
+		m.NotificationClass.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.EventType.DeepCopy().(BACnetEventTypeTagged),
+		m.MessageText.DeepCopy().(BACnetContextTagCharacterString),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+		m.AckRequired.DeepCopy().(BACnetContextTagBoolean),
+		m.FromState.DeepCopy().(BACnetEventStateTagged),
+		m.ToState.DeepCopy().(BACnetEventStateTagged),
+		m.EventValues.DeepCopy().(BACnetNotificationParameters),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationCopy
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) String() string {

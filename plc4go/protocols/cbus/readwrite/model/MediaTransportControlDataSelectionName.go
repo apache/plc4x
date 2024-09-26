@@ -38,6 +38,7 @@ type MediaTransportControlDataSelectionName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetSelectionName returns SelectionName (property field)
 	GetSelectionName() string
@@ -175,6 +176,22 @@ func (m *_MediaTransportControlDataSelectionName) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_MediaTransportControlDataSelectionName) IsMediaTransportControlDataSelectionName() {}
+
+func (m *_MediaTransportControlDataSelectionName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSelectionName) deepCopy() *_MediaTransportControlDataSelectionName {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSelectionNameCopy := &_MediaTransportControlDataSelectionName{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.SelectionName,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSelectionNameCopy
+}
 
 func (m *_MediaTransportControlDataSelectionName) String() string {
 	if m == nil {

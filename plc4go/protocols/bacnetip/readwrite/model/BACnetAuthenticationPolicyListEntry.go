@@ -38,6 +38,7 @@ type BACnetAuthenticationPolicyListEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCredentialDataInput returns CredentialDataInput (property field)
 	GetCredentialDataInput() BACnetDeviceObjectReferenceEnclosed
 	// GetIndex returns Index (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetAuthenticationPolicyListEntry) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetAuthenticationPolicyListEntry) IsBACnetAuthenticationPolicyListEntry() {}
+
+func (m *_BACnetAuthenticationPolicyListEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationPolicyListEntry) deepCopy() *_BACnetAuthenticationPolicyListEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationPolicyListEntryCopy := &_BACnetAuthenticationPolicyListEntry{
+		m.CredentialDataInput.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+		m.Index.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetAuthenticationPolicyListEntryCopy
+}
 
 func (m *_BACnetAuthenticationPolicyListEntry) String() string {
 	if m == nil {

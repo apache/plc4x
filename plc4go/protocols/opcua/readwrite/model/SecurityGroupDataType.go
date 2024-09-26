@@ -38,6 +38,7 @@ type SecurityGroupDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -440,6 +441,33 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SecurityGroupDataType) IsSecurityGroupDataType() {}
+
+func (m *_SecurityGroupDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityGroupDataType) deepCopy() *_SecurityGroupDataType {
+	if m == nil {
+		return nil
+	}
+	_SecurityGroupDataTypeCopy := &_SecurityGroupDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Name.DeepCopy().(PascalString),
+		m.NoOfSecurityGroupFolder,
+		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroupFolder),
+		m.KeyLifetime,
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.MaxFutureKeyCount,
+		m.MaxPastKeyCount,
+		m.SecurityGroupId.DeepCopy().(PascalString),
+		m.NoOfRolePermissions,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.RolePermissions),
+		m.NoOfGroupProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.GroupProperties),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SecurityGroupDataTypeCopy
+}
 
 func (m *_SecurityGroupDataType) String() string {
 	if m == nil {

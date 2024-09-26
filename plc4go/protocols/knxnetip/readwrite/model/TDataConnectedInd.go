@@ -36,6 +36,7 @@ type TDataConnectedInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsTDataConnectedInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataConnectedInd()
@@ -146,6 +147,21 @@ func (m *_TDataConnectedInd) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_TDataConnectedInd) IsTDataConnectedInd() {}
+
+func (m *_TDataConnectedInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TDataConnectedInd) deepCopy() *_TDataConnectedInd {
+	if m == nil {
+		return nil
+	}
+	_TDataConnectedIndCopy := &_TDataConnectedInd{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _TDataConnectedIndCopy
+}
 
 func (m *_TDataConnectedInd) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestSubscribeCOV interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -260,6 +261,25 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOV) IsBACnetConfirmedServiceRequestSubscribeCOV() {}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) deepCopy() *_BACnetConfirmedServiceRequestSubscribeCOV {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestSubscribeCOVCopy := &_BACnetConfirmedServiceRequestSubscribeCOV{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.SubscriberProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.IssueConfirmed.DeepCopy().(BACnetContextTagBoolean),
+		m.LifetimeInSeconds.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestSubscribeCOVCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOV) String() string {
 	if m == nil {

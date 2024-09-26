@@ -38,6 +38,7 @@ type FirmataCommandSysex interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// GetCommand returns Command (property field)
 	GetCommand() SysexCommand
@@ -197,6 +198,23 @@ func (m *_FirmataCommandSysex) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_FirmataCommandSysex) IsFirmataCommandSysex() {}
+
+func (m *_FirmataCommandSysex) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandSysex) deepCopy() *_FirmataCommandSysex {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandSysexCopy := &_FirmataCommandSysex{
+		m.FirmataCommandContract.DeepCopy().(FirmataCommandContract),
+		m.Command.DeepCopy().(SysexCommand),
+		m.reservedField0,
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandSysexCopy
+}
 
 func (m *_FirmataCommandSysex) String() string {
 	if m == nil {

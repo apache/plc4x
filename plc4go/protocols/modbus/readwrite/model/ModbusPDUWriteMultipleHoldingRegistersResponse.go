@@ -38,6 +38,7 @@ type ModbusPDUWriteMultipleHoldingRegistersResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
@@ -208,6 +209,23 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) SerializeWithWriteBuff
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) IsModbusPDUWriteMultipleHoldingRegistersResponse() {
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) deepCopy() *_ModbusPDUWriteMultipleHoldingRegistersResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteMultipleHoldingRegistersResponseCopy := &_ModbusPDUWriteMultipleHoldingRegistersResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.StartingAddress,
+		m.Quantity,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteMultipleHoldingRegistersResponseCopy
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) String() string {

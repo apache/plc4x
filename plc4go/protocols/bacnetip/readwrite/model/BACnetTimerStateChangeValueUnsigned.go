@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueUnsigned) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetTimerStateChangeValueUnsigned) IsBACnetTimerStateChangeValueUnsigned() {}
+
+func (m *_BACnetTimerStateChangeValueUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueUnsigned) deepCopy() *_BACnetTimerStateChangeValueUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueUnsignedCopy := &_BACnetTimerStateChangeValueUnsigned{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueUnsignedCopy
+}
 
 func (m *_BACnetTimerStateChangeValueUnsigned) String() string {
 	if m == nil {

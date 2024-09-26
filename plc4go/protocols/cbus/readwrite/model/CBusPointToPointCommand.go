@@ -40,12 +40,14 @@ type CBusPointToPointCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusPointToPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointCommand()
 }
 
 // CBusPointToPointCommandContract provides a set of functions which can be overwritten by a sub struct
 type CBusPointToPointCommandContract interface {
+	utils.Copyable
 	// GetBridgeAddressCountPeek returns BridgeAddressCountPeek (property field)
 	GetBridgeAddressCountPeek() uint16
 	// GetCalData returns CalData (property field)
@@ -272,3 +274,20 @@ func (m *_CBusPointToPointCommand) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusPointToPointCommand) IsCBusPointToPointCommand() {}
+
+func (m *_CBusPointToPointCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointCommand) deepCopy() *_CBusPointToPointCommand {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointCommandCopy := &_CBusPointToPointCommand{
+		nil, // will be set by child
+		m.BridgeAddressCountPeek,
+		m.CalData.DeepCopy().(CALData),
+		m.CBusOptions,
+	}
+	return _CBusPointToPointCommandCopy
+}

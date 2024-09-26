@@ -38,6 +38,7 @@ type IdentifyReplyCommandDSIStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetChannelStatus1 returns ChannelStatus1 (property field)
 	GetChannelStatus1() ChannelStatus
@@ -368,6 +369,31 @@ func (m *_IdentifyReplyCommandDSIStatus) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_IdentifyReplyCommandDSIStatus) IsIdentifyReplyCommandDSIStatus() {}
+
+func (m *_IdentifyReplyCommandDSIStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandDSIStatus) deepCopy() *_IdentifyReplyCommandDSIStatus {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandDSIStatusCopy := &_IdentifyReplyCommandDSIStatus{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.ChannelStatus1,
+		m.ChannelStatus2,
+		m.ChannelStatus3,
+		m.ChannelStatus4,
+		m.ChannelStatus5,
+		m.ChannelStatus6,
+		m.ChannelStatus7,
+		m.ChannelStatus8,
+		m.UnitStatus,
+		m.DimmingUCRevisionNumber,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandDSIStatusCopy
+}
 
 func (m *_IdentifyReplyCommandDSIStatus) String() string {
 	if m == nil {

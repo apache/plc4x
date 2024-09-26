@@ -38,6 +38,7 @@ type BACnetPriorityValueConstructedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetConstructedValue returns ConstructedValue (property field)
 	GetConstructedValue() BACnetConstructedData
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueConstructedValue) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetPriorityValueConstructedValue) IsBACnetPriorityValueConstructedValue() {}
+
+func (m *_BACnetPriorityValueConstructedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueConstructedValue) deepCopy() *_BACnetPriorityValueConstructedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueConstructedValueCopy := &_BACnetPriorityValueConstructedValue{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.ConstructedValue.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueConstructedValueCopy
+}
 
 func (m *_BACnetPriorityValueConstructedValue) String() string {
 	if m == nil {

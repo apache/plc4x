@@ -38,6 +38,7 @@ type FindServersRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -304,6 +305,27 @@ func (m *_FindServersRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_FindServersRequest) IsFindServersRequest() {}
+
+func (m *_FindServersRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FindServersRequest) deepCopy() *_FindServersRequest {
+	if m == nil {
+		return nil
+	}
+	_FindServersRequestCopy := &_FindServersRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.NoOfLocaleIds,
+		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
+		m.NoOfServerUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FindServersRequestCopy
+}
 
 func (m *_FindServersRequest) String() string {
 	if m == nil {

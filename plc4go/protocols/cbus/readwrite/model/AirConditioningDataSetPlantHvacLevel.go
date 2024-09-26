@@ -38,6 +38,7 @@ type AirConditioningDataSetPlantHvacLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -325,6 +326,28 @@ func (m *_AirConditioningDataSetPlantHvacLevel) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_AirConditioningDataSetPlantHvacLevel) IsAirConditioningDataSetPlantHvacLevel() {}
+
+func (m *_AirConditioningDataSetPlantHvacLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataSetPlantHvacLevel) deepCopy() *_AirConditioningDataSetPlantHvacLevel {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataSetPlantHvacLevelCopy := &_AirConditioningDataSetPlantHvacLevel{
+		m.AirConditioningDataContract.DeepCopy().(AirConditioningDataContract),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.HvacModeAndFlags.DeepCopy().(HVACModeAndFlags),
+		m.HvacType,
+		m.Level.DeepCopy().(HVACTemperature),
+		m.RawLevel.DeepCopy().(HVACRawLevels),
+		m.AuxLevel.DeepCopy().(HVACAuxiliaryLevel),
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataSetPlantHvacLevelCopy
+}
 
 func (m *_AirConditioningDataSetPlantHvacLevel) String() string {
 	if m == nil {

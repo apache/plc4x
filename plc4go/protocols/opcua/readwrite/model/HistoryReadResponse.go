@@ -38,6 +38,7 @@ type HistoryReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -280,6 +281,26 @@ func (m *_HistoryReadResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_HistoryReadResponse) IsHistoryReadResponse() {}
+
+func (m *_HistoryReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadResponse) deepCopy() *_HistoryReadResponse {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadResponseCopy := &_HistoryReadResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadResponseCopy
+}
 
 func (m *_HistoryReadResponse) String() string {
 	if m == nil {

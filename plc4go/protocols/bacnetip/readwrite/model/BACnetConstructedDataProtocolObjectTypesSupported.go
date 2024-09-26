@@ -38,6 +38,7 @@ type BACnetConstructedDataProtocolObjectTypesSupported interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProtocolObjectTypesSupported returns ProtocolObjectTypesSupported (property field)
 	GetProtocolObjectTypesSupported() BACnetObjectTypesSupportedTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) SerializeWithWriteB
 }
 
 func (m *_BACnetConstructedDataProtocolObjectTypesSupported) IsBACnetConstructedDataProtocolObjectTypesSupported() {
+}
+
+func (m *_BACnetConstructedDataProtocolObjectTypesSupported) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProtocolObjectTypesSupported) deepCopy() *_BACnetConstructedDataProtocolObjectTypesSupported {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProtocolObjectTypesSupportedCopy := &_BACnetConstructedDataProtocolObjectTypesSupported{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProtocolObjectTypesSupported.DeepCopy().(BACnetObjectTypesSupportedTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProtocolObjectTypesSupportedCopy
 }
 
 func (m *_BACnetConstructedDataProtocolObjectTypesSupported) String() string {

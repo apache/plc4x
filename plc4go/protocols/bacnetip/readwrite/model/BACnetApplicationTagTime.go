@@ -38,6 +38,7 @@ type BACnetApplicationTagTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadTime
@@ -178,6 +179,22 @@ func (m *_BACnetApplicationTagTime) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetApplicationTagTime) IsBACnetApplicationTagTime() {}
+
+func (m *_BACnetApplicationTagTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagTime) deepCopy() *_BACnetApplicationTagTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagTimeCopy := &_BACnetApplicationTagTime{
+		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadTime),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagTimeCopy
+}
 
 func (m *_BACnetApplicationTagTime) String() string {
 	if m == nil {

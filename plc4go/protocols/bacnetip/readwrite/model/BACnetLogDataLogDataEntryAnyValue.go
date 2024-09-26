@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryAnyValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetAnyValue returns AnyValue (property field)
 	GetAnyValue() BACnetConstructedData
@@ -181,6 +182,22 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetLogDataLogDataEntryAnyValue) IsBACnetLogDataLogDataEntryAnyValue() {}
+
+func (m *_BACnetLogDataLogDataEntryAnyValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryAnyValue) deepCopy() *_BACnetLogDataLogDataEntryAnyValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryAnyValueCopy := &_BACnetLogDataLogDataEntryAnyValue{
+		m.BACnetLogDataLogDataEntryContract.DeepCopy().(BACnetLogDataLogDataEntryContract),
+		m.AnyValue.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryAnyValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryAnyValue) String() string {
 	if m == nil {

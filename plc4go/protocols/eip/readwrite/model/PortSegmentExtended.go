@@ -38,6 +38,7 @@ type PortSegmentExtended interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PortSegmentType
 	// GetPort returns Port (property field)
 	GetPort() uint8
@@ -252,6 +253,24 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_PortSegmentExtended) IsPortSegmentExtended() {}
+
+func (m *_PortSegmentExtended) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegmentExtended) deepCopy() *_PortSegmentExtended {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentExtendedCopy := &_PortSegmentExtended{
+		m.PortSegmentTypeContract.DeepCopy().(PortSegmentTypeContract),
+		m.Port,
+		m.LinkAddressSize,
+		m.Address,
+	}
+	m.PortSegmentTypeContract.(*_PortSegmentType)._SubType = m
+	return _PortSegmentExtendedCopy
+}
 
 func (m *_PortSegmentExtended) String() string {
 	if m == nil {

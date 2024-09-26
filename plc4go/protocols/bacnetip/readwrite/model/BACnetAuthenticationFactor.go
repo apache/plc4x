@@ -38,6 +38,7 @@ type BACnetAuthenticationFactor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFormatType returns FormatType (property field)
 	GetFormatType() BACnetAuthenticationFactorTypeTagged
 	// GetFormatClass returns FormatClass (property field)
@@ -215,6 +216,22 @@ func (m *_BACnetAuthenticationFactor) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetAuthenticationFactor) IsBACnetAuthenticationFactor() {}
+
+func (m *_BACnetAuthenticationFactor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationFactor) deepCopy() *_BACnetAuthenticationFactor {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationFactorCopy := &_BACnetAuthenticationFactor{
+		m.FormatType.DeepCopy().(BACnetAuthenticationFactorTypeTagged),
+		m.FormatClass.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Value.DeepCopy().(BACnetContextTagOctetString),
+	}
+	return _BACnetAuthenticationFactorCopy
+}
 
 func (m *_BACnetAuthenticationFactor) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLastStateChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastStateChange returns LastStateChange (property field)
 	GetLastStateChange() BACnetTimerTransitionTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastStateChange) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataLastStateChange) IsBACnetConstructedDataLastStateChange() {}
+
+func (m *_BACnetConstructedDataLastStateChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastStateChange) deepCopy() *_BACnetConstructedDataLastStateChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastStateChangeCopy := &_BACnetConstructedDataLastStateChange{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastStateChange.DeepCopy().(BACnetTimerTransitionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastStateChangeCopy
+}
 
 func (m *_BACnetConstructedDataLastStateChange) String() string {
 	if m == nil {

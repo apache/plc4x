@@ -38,6 +38,7 @@ type MediaTransportControlDataSourcePowerControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetState returns State (property field)
 	GetState() byte
@@ -228,6 +229,22 @@ func (m *_MediaTransportControlDataSourcePowerControl) SerializeWithWriteBuffer(
 }
 
 func (m *_MediaTransportControlDataSourcePowerControl) IsMediaTransportControlDataSourcePowerControl() {
+}
+
+func (m *_MediaTransportControlDataSourcePowerControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSourcePowerControl) deepCopy() *_MediaTransportControlDataSourcePowerControl {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSourcePowerControlCopy := &_MediaTransportControlDataSourcePowerControl{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.State,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSourcePowerControlCopy
 }
 
 func (m *_MediaTransportControlDataSourcePowerControl) String() string {

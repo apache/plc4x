@@ -38,6 +38,7 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventLogRecordLogDatum
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -226,6 +227,24 @@ func (m *_BACnetEventLogRecordLogDatumNotification) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetEventLogRecordLogDatumNotification) IsBACnetEventLogRecordLogDatumNotification() {}
+
+func (m *_BACnetEventLogRecordLogDatumNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotification) deepCopy() *_BACnetEventLogRecordLogDatumNotification {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventLogRecordLogDatumNotificationCopy := &_BACnetEventLogRecordLogDatumNotification{
+		m.BACnetEventLogRecordLogDatumContract.DeepCopy().(BACnetEventLogRecordLogDatumContract),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.Notification.DeepCopy().(ConfirmedEventNotificationRequest),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = m
+	return _BACnetEventLogRecordLogDatumNotificationCopy
+}
 
 func (m *_BACnetEventLogRecordLogDatumNotification) String() string {
 	if m == nil {

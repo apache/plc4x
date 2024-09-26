@@ -38,6 +38,7 @@ type ErrorReportingSystemCategoryTypeReserved interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingSystemCategoryType
 	// GetReservedValue returns ReservedValue (property field)
 	GetReservedValue() uint8
@@ -179,6 +180,22 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_ErrorReportingSystemCategoryTypeReserved) IsErrorReportingSystemCategoryTypeReserved() {}
+
+func (m *_ErrorReportingSystemCategoryTypeReserved) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryTypeReserved) deepCopy() *_ErrorReportingSystemCategoryTypeReserved {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeReservedCopy := &_ErrorReportingSystemCategoryTypeReserved{
+		m.ErrorReportingSystemCategoryTypeContract.DeepCopy().(ErrorReportingSystemCategoryTypeContract),
+		m.ReservedValue,
+	}
+	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	return _ErrorReportingSystemCategoryTypeReservedCopy
+}
 
 func (m *_ErrorReportingSystemCategoryTypeReserved) String() string {
 	if m == nil {

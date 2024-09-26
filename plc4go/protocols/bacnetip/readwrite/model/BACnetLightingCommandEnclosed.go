@@ -38,6 +38,7 @@ type BACnetLightingCommandEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetLightingCommand returns LightingCommand (property field)
@@ -228,6 +229,23 @@ func (m *_BACnetLightingCommandEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetLightingCommandEnclosed) IsBACnetLightingCommandEnclosed() {}
+
+func (m *_BACnetLightingCommandEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingCommandEnclosed) deepCopy() *_BACnetLightingCommandEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingCommandEnclosedCopy := &_BACnetLightingCommandEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.LightingCommand.DeepCopy().(BACnetLightingCommand),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetLightingCommandEnclosedCopy
+}
 
 func (m *_BACnetLightingCommandEnclosed) String() string {
 	if m == nil {

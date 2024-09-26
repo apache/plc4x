@@ -38,6 +38,7 @@ type ApduControlContainer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Apdu
 	// GetControlApdu returns ControlApdu (property field)
 	GetControlApdu() ApduControl
@@ -182,6 +183,22 @@ func (m *_ApduControlContainer) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ApduControlContainer) IsApduControlContainer() {}
+
+func (m *_ApduControlContainer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlContainer) deepCopy() *_ApduControlContainer {
+	if m == nil {
+		return nil
+	}
+	_ApduControlContainerCopy := &_ApduControlContainer{
+		m.ApduContract.DeepCopy().(ApduContract),
+		m.ControlApdu.DeepCopy().(ApduControl),
+	}
+	m.ApduContract.(*_Apdu)._SubType = m
+	return _ApduControlContainerCopy
+}
 
 func (m *_ApduControlContainer) String() string {
 	if m == nil {

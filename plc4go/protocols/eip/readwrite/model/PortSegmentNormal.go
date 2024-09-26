@@ -38,6 +38,7 @@ type PortSegmentNormal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PortSegmentType
 	// GetPort returns Port (property field)
 	GetPort() uint8
@@ -200,6 +201,23 @@ func (m *_PortSegmentNormal) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_PortSegmentNormal) IsPortSegmentNormal() {}
+
+func (m *_PortSegmentNormal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegmentNormal) deepCopy() *_PortSegmentNormal {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentNormalCopy := &_PortSegmentNormal{
+		m.PortSegmentTypeContract.DeepCopy().(PortSegmentTypeContract),
+		m.Port,
+		m.LinkAddress,
+	}
+	m.PortSegmentTypeContract.(*_PortSegmentType)._SubType = m
+	return _PortSegmentNormalCopy
+}
 
 func (m *_PortSegmentNormal) String() string {
 	if m == nil {

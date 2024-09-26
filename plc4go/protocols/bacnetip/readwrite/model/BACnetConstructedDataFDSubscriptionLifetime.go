@@ -38,6 +38,7 @@ type BACnetConstructedDataFDSubscriptionLifetime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFdSubscriptionLifetime returns FdSubscriptionLifetime (property field)
 	GetFdSubscriptionLifetime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFDSubscriptionLifetime) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) IsBACnetConstructedDataFDSubscriptionLifetime() {
+}
+
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFDSubscriptionLifetime) deepCopy() *_BACnetConstructedDataFDSubscriptionLifetime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFDSubscriptionLifetimeCopy := &_BACnetConstructedDataFDSubscriptionLifetime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FdSubscriptionLifetime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFDSubscriptionLifetimeCopy
 }
 
 func (m *_BACnetConstructedDataFDSubscriptionLifetime) String() string {

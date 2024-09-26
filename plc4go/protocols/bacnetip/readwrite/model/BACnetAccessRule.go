@@ -38,6 +38,7 @@ type BACnetAccessRule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimeRangeSpecifier returns TimeRangeSpecifier (property field)
 	GetTimeRangeSpecifier() BACnetAccessRuleTimeRangeSpecifierTagged
 	// GetTimeRange returns TimeRange (property field)
@@ -267,6 +268,24 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_BACnetAccessRule) IsBACnetAccessRule() {}
+
+func (m *_BACnetAccessRule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessRule) deepCopy() *_BACnetAccessRule {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessRuleCopy := &_BACnetAccessRule{
+		m.TimeRangeSpecifier.DeepCopy().(BACnetAccessRuleTimeRangeSpecifierTagged),
+		m.TimeRange.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.LocationSpecifier.DeepCopy().(BACnetAccessRuleLocationSpecifierTagged),
+		m.Location.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetAccessRuleCopy
+}
 
 func (m *_BACnetAccessRule) String() string {
 	if m == nil {

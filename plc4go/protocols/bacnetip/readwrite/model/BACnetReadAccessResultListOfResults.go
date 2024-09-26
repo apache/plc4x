@@ -38,6 +38,7 @@ type BACnetReadAccessResultListOfResults interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfReadAccessProperty returns ListOfReadAccessProperty (property field)
@@ -233,6 +234,24 @@ func (m *_BACnetReadAccessResultListOfResults) GetObjectTypeArgument() BACnetObj
 ////
 
 func (m *_BACnetReadAccessResultListOfResults) IsBACnetReadAccessResultListOfResults() {}
+
+func (m *_BACnetReadAccessResultListOfResults) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessResultListOfResults) deepCopy() *_BACnetReadAccessResultListOfResults {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessResultListOfResultsCopy := &_BACnetReadAccessResultListOfResults{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetReadAccessProperty, BACnetReadAccessProperty](m.ListOfReadAccessProperty),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+		m.ObjectTypeArgument,
+	}
+	return _BACnetReadAccessResultListOfResultsCopy
+}
 
 func (m *_BACnetReadAccessResultListOfResults) String() string {
 	if m == nil {

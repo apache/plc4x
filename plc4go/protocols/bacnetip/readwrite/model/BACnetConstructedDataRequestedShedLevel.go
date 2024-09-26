@@ -38,6 +38,7 @@ type BACnetConstructedDataRequestedShedLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRequestedShedLevel returns RequestedShedLevel (property field)
 	GetRequestedShedLevel() BACnetShedLevel
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRequestedShedLevel) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataRequestedShedLevel) IsBACnetConstructedDataRequestedShedLevel() {}
+
+func (m *_BACnetConstructedDataRequestedShedLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRequestedShedLevel) deepCopy() *_BACnetConstructedDataRequestedShedLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRequestedShedLevelCopy := &_BACnetConstructedDataRequestedShedLevel{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.RequestedShedLevel.DeepCopy().(BACnetShedLevel),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRequestedShedLevelCopy
+}
 
 func (m *_BACnetConstructedDataRequestedShedLevel) String() string {
 	if m == nil {

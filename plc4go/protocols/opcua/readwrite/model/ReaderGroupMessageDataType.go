@@ -36,6 +36,7 @@ type ReaderGroupMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsReaderGroupMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReaderGroupMessageDataType()
@@ -146,6 +147,21 @@ func (m *_ReaderGroupMessageDataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ReaderGroupMessageDataType) IsReaderGroupMessageDataType() {}
+
+func (m *_ReaderGroupMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReaderGroupMessageDataType) deepCopy() *_ReaderGroupMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_ReaderGroupMessageDataTypeCopy := &_ReaderGroupMessageDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReaderGroupMessageDataTypeCopy
+}
 
 func (m *_ReaderGroupMessageDataType) String() string {
 	if m == nil {

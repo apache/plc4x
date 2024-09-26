@@ -38,6 +38,7 @@ type BACnetPropertyStatesAccessEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetAccessEvent returns AccessEvent (property field)
 	GetAccessEvent() BACnetAccessEventTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesAccessEvent) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesAccessEvent) IsBACnetPropertyStatesAccessEvent() {}
+
+func (m *_BACnetPropertyStatesAccessEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesAccessEvent) deepCopy() *_BACnetPropertyStatesAccessEvent {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesAccessEventCopy := &_BACnetPropertyStatesAccessEvent{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.AccessEvent.DeepCopy().(BACnetAccessEventTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesAccessEventCopy
+}
 
 func (m *_BACnetPropertyStatesAccessEvent) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataShedLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataShedLevels) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataShedLevels) IsBACnetConstructedDataShedLevels() {}
+
+func (m *_BACnetConstructedDataShedLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataShedLevels) deepCopy() *_BACnetConstructedDataShedLevels {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataShedLevelsCopy := &_BACnetConstructedDataShedLevels{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ShedLevels),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataShedLevelsCopy
+}
 
 func (m *_BACnetConstructedDataShedLevels) String() string {
 	if m == nil {

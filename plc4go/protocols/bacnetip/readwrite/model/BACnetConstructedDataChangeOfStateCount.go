@@ -38,6 +38,7 @@ type BACnetConstructedDataChangeOfStateCount interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetChangeIfStateCount returns ChangeIfStateCount (property field)
 	GetChangeIfStateCount() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataChangeOfStateCount) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataChangeOfStateCount) IsBACnetConstructedDataChangeOfStateCount() {}
+
+func (m *_BACnetConstructedDataChangeOfStateCount) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataChangeOfStateCount) deepCopy() *_BACnetConstructedDataChangeOfStateCount {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataChangeOfStateCountCopy := &_BACnetConstructedDataChangeOfStateCount{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ChangeIfStateCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataChangeOfStateCountCopy
+}
 
 func (m *_BACnetConstructedDataChangeOfStateCount) String() string {
 	if m == nil {

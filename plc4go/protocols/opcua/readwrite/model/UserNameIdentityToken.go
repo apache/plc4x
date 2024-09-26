@@ -38,6 +38,7 @@ type UserNameIdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	UserIdentityTokenDefinition
 	// GetUserName returns UserName (property field)
 	GetUserName() PascalString
@@ -230,6 +231,24 @@ func (m *_UserNameIdentityToken) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_UserNameIdentityToken) IsUserNameIdentityToken() {}
+
+func (m *_UserNameIdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UserNameIdentityToken) deepCopy() *_UserNameIdentityToken {
+	if m == nil {
+		return nil
+	}
+	_UserNameIdentityTokenCopy := &_UserNameIdentityToken{
+		m.UserIdentityTokenDefinitionContract.DeepCopy().(UserIdentityTokenDefinitionContract),
+		m.UserName.DeepCopy().(PascalString),
+		m.Password.DeepCopy().(PascalByteString),
+		m.EncryptionAlgorithm.DeepCopy().(PascalString),
+	}
+	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	return _UserNameIdentityTokenCopy
+}
 
 func (m *_UserNameIdentityToken) String() string {
 	if m == nil {

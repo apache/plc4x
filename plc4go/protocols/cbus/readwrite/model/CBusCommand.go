@@ -40,12 +40,14 @@ type CBusCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommand()
 }
 
 // CBusCommandContract provides a set of functions which can be overwritten by a sub struct
 type CBusCommandContract interface {
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() CBusHeader
 	// GetIsDeviceManagement returns IsDeviceManagement (virtual field)
@@ -292,3 +294,19 @@ func (m *_CBusCommand) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusCommand) IsCBusCommand() {}
+
+func (m *_CBusCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusCommand) deepCopy() *_CBusCommand {
+	if m == nil {
+		return nil
+	}
+	_CBusCommandCopy := &_CBusCommand{
+		nil, // will be set by child
+		m.Header.DeepCopy().(CBusHeader),
+		m.CBusOptions,
+	}
+	return _CBusCommandCopy
+}

@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueBoolean) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetTimerStateChangeValueBoolean) IsBACnetTimerStateChangeValueBoolean() {}
+
+func (m *_BACnetTimerStateChangeValueBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueBoolean) deepCopy() *_BACnetTimerStateChangeValueBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueBooleanCopy := &_BACnetTimerStateChangeValueBoolean{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueBooleanCopy
+}
 
 func (m *_BACnetTimerStateChangeValueBoolean) String() string {
 	if m == nil {

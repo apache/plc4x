@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetMinPriority returns MinPriority (property field)
@@ -251,6 +252,24 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetTa
 ////
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() {
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) deepCopy() *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.MinPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.MaxPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) String() string {

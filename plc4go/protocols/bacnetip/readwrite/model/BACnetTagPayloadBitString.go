@@ -38,6 +38,7 @@ type BACnetTagPayloadBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetUnusedBits returns UnusedBits (property field)
 	GetUnusedBits() uint8
 	// GetData returns Data (property field)
@@ -223,6 +224,23 @@ func (m *_BACnetTagPayloadBitString) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadBitString) IsBACnetTagPayloadBitString() {}
+
+func (m *_BACnetTagPayloadBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadBitString) deepCopy() *_BACnetTagPayloadBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadBitStringCopy := &_BACnetTagPayloadBitString{
+		m.UnusedBits,
+		utils.DeepCopySlice[bool, bool](m.Data),
+		utils.DeepCopySlice[bool, bool](m.Unused),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadBitStringCopy
+}
 
 func (m *_BACnetTagPayloadBitString) String() string {
 	if m == nil {

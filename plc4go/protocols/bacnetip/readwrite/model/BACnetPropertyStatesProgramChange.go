@@ -38,6 +38,7 @@ type BACnetPropertyStatesProgramChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetProgramState returns ProgramState (property field)
 	GetProgramState() BACnetProgramStateTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesProgramChange) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesProgramChange) IsBACnetPropertyStatesProgramChange() {}
+
+func (m *_BACnetPropertyStatesProgramChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesProgramChange) deepCopy() *_BACnetPropertyStatesProgramChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesProgramChangeCopy := &_BACnetPropertyStatesProgramChange{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.ProgramState.DeepCopy().(BACnetProgramStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesProgramChangeCopy
+}
 
 func (m *_BACnetPropertyStatesProgramChange) String() string {
 	if m == nil {

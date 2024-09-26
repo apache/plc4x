@@ -38,6 +38,7 @@ type BACnetPropertyStatesUnits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesUnits) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetPropertyStatesUnits) IsBACnetPropertyStatesUnits() {}
+
+func (m *_BACnetPropertyStatesUnits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesUnits) deepCopy() *_BACnetPropertyStatesUnits {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesUnitsCopy := &_BACnetPropertyStatesUnits{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.Units.DeepCopy().(BACnetEngineeringUnitsTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesUnitsCopy
+}
 
 func (m *_BACnetPropertyStatesUnits) String() string {
 	if m == nil {

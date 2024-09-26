@@ -38,6 +38,7 @@ type BACnetConstructedDataUserInformationReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUserInformationReference returns UserInformationReference (property field)
 	GetUserInformationReference() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUserInformationReference) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataUserInformationReference) IsBACnetConstructedDataUserInformationReference() {
+}
+
+func (m *_BACnetConstructedDataUserInformationReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUserInformationReference) deepCopy() *_BACnetConstructedDataUserInformationReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUserInformationReferenceCopy := &_BACnetConstructedDataUserInformationReference{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.UserInformationReference.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUserInformationReferenceCopy
 }
 
 func (m *_BACnetConstructedDataUserInformationReference) String() string {

@@ -38,6 +38,7 @@ type BACnetConstructedDataRestoreCompletionTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCompletionTime returns CompletionTime (property field)
 	GetCompletionTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) IsBACnetConstructedDataRestoreCompletionTime() {
+}
+
+func (m *_BACnetConstructedDataRestoreCompletionTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRestoreCompletionTime) deepCopy() *_BACnetConstructedDataRestoreCompletionTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRestoreCompletionTimeCopy := &_BACnetConstructedDataRestoreCompletionTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CompletionTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRestoreCompletionTimeCopy
 }
 
 func (m *_BACnetConstructedDataRestoreCompletionTime) String() string {

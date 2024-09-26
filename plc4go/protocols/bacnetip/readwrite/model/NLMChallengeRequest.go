@@ -38,6 +38,7 @@ type NLMChallengeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetMessageChallenge returns MessageChallenge (property field)
 	GetMessageChallenge() byte
@@ -221,6 +222,24 @@ func (m *_NLMChallengeRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NLMChallengeRequest) IsNLMChallengeRequest() {}
+
+func (m *_NLMChallengeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMChallengeRequest) deepCopy() *_NLMChallengeRequest {
+	if m == nil {
+		return nil
+	}
+	_NLMChallengeRequestCopy := &_NLMChallengeRequest{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.MessageChallenge,
+		m.OriginalMessageId,
+		m.OriginalTimestamp,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMChallengeRequestCopy
+}
 
 func (m *_NLMChallengeRequest) String() string {
 	if m == nil {

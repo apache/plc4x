@@ -36,6 +36,7 @@ type SysexCommandAnalogMappingQueryRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandAnalogMappingQueryRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandAnalogMappingQueryRequest()
@@ -150,6 +151,21 @@ func (m *_SysexCommandAnalogMappingQueryRequest) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_SysexCommandAnalogMappingQueryRequest) IsSysexCommandAnalogMappingQueryRequest() {}
+
+func (m *_SysexCommandAnalogMappingQueryRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandAnalogMappingQueryRequest) deepCopy() *_SysexCommandAnalogMappingQueryRequest {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandAnalogMappingQueryRequestCopy := &_SysexCommandAnalogMappingQueryRequest{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandAnalogMappingQueryRequestCopy
+}
 
 func (m *_SysexCommandAnalogMappingQueryRequest) String() string {
 	if m == nil {

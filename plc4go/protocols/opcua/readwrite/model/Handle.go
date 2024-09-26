@@ -36,6 +36,7 @@ type Handle interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsHandle is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHandle()
 }
@@ -134,6 +135,18 @@ func (m *_Handle) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 }
 
 func (m *_Handle) IsHandle() {}
+
+func (m *_Handle) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Handle) deepCopy() *_Handle {
+	if m == nil {
+		return nil
+	}
+	_HandleCopy := &_Handle{}
+	return _HandleCopy
+}
 
 func (m *_Handle) String() string {
 	if m == nil {

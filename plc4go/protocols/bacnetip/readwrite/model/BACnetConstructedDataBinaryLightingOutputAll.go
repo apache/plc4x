@@ -36,6 +36,7 @@ type BACnetConstructedDataBinaryLightingOutputAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataBinaryLightingOutputAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBinaryLightingOutputAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataBinaryLightingOutputAll) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputAll) IsBACnetConstructedDataBinaryLightingOutputAll() {
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputAll) deepCopy() *_BACnetConstructedDataBinaryLightingOutputAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryLightingOutputAllCopy := &_BACnetConstructedDataBinaryLightingOutputAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryLightingOutputAllCopy
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputAll) String() string {

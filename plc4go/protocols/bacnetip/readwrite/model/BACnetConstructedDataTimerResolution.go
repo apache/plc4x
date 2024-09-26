@@ -38,6 +38,7 @@ type BACnetConstructedDataTimerResolution interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimerResolution) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataTimerResolution) IsBACnetConstructedDataTimerResolution() {}
+
+func (m *_BACnetConstructedDataTimerResolution) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimerResolution) deepCopy() *_BACnetConstructedDataTimerResolution {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimerResolutionCopy := &_BACnetConstructedDataTimerResolution{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Resolution.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimerResolutionCopy
+}
 
 func (m *_BACnetConstructedDataTimerResolution) String() string {
 	if m == nil {

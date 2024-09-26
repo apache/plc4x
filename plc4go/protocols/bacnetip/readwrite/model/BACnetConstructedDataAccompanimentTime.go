@@ -38,6 +38,7 @@ type BACnetConstructedDataAccompanimentTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccompanimentTime returns AccompanimentTime (property field)
 	GetAccompanimentTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccompanimentTime) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataAccompanimentTime) IsBACnetConstructedDataAccompanimentTime() {}
+
+func (m *_BACnetConstructedDataAccompanimentTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccompanimentTime) deepCopy() *_BACnetConstructedDataAccompanimentTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccompanimentTimeCopy := &_BACnetConstructedDataAccompanimentTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AccompanimentTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccompanimentTimeCopy
+}
 
 func (m *_BACnetConstructedDataAccompanimentTime) String() string {
 	if m == nil {

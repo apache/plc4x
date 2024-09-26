@@ -38,6 +38,7 @@ type BACnetDailySchedule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetDaySchedule returns DaySchedule (property field)
@@ -216,6 +217,22 @@ func (m *_BACnetDailySchedule) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetDailySchedule) IsBACnetDailySchedule() {}
+
+func (m *_BACnetDailySchedule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDailySchedule) deepCopy() *_BACnetDailySchedule {
+	if m == nil {
+		return nil
+	}
+	_BACnetDailyScheduleCopy := &_BACnetDailySchedule{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimeValue, BACnetTimeValue](m.DaySchedule),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetDailyScheduleCopy
+}
 
 func (m *_BACnetDailySchedule) String() string {
 	if m == nil {

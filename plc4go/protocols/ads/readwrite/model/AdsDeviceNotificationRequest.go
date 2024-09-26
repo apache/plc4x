@@ -38,6 +38,7 @@ type AdsDeviceNotificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetLength returns Length (property field)
 	GetLength() uint32
@@ -232,6 +233,24 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_AdsDeviceNotificationRequest) IsAdsDeviceNotificationRequest() {}
+
+func (m *_AdsDeviceNotificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDeviceNotificationRequest) deepCopy() *_AdsDeviceNotificationRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsDeviceNotificationRequestCopy := &_AdsDeviceNotificationRequest{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.Length,
+		m.Stamps,
+		utils.DeepCopySlice[AdsStampHeader, AdsStampHeader](m.AdsStampHeaders),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsDeviceNotificationRequestCopy
+}
 
 func (m *_AdsDeviceNotificationRequest) String() string {
 	if m == nil {

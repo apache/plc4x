@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeOfDeviceRestart interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeOfDeviceRestart returns TimeOfDeviceRestart (property field)
 	GetTimeOfDeviceRestart() BACnetTimeStamp
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataTimeOfDeviceRestart) IsBACnetConstructedDataTimeOfDeviceRestart() {}
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) deepCopy() *_BACnetConstructedDataTimeOfDeviceRestart {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeOfDeviceRestartCopy := &_BACnetConstructedDataTimeOfDeviceRestart{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TimeOfDeviceRestart.DeepCopy().(BACnetTimeStamp),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeOfDeviceRestartCopy
+}
 
 func (m *_BACnetConstructedDataTimeOfDeviceRestart) String() string {
 	if m == nil {

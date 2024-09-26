@@ -38,6 +38,7 @@ type ReadRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -273,6 +274,26 @@ func (m *_ReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_ReadRequest) IsReadRequest() {}
+
+func (m *_ReadRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReadRequest) deepCopy() *_ReadRequest {
+	if m == nil {
+		return nil
+	}
+	_ReadRequestCopy := &_ReadRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.MaxAge,
+		m.TimestampsToReturn,
+		m.NoOfNodesToRead,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToRead),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReadRequestCopy
+}
 
 func (m *_ReadRequest) String() string {
 	if m == nil {

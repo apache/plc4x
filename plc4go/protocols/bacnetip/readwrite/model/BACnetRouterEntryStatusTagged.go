@@ -38,6 +38,7 @@ type BACnetRouterEntryStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetRouterEntryStatusTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetRouterEntryStatusTagged) IsBACnetRouterEntryStatusTagged() {}
+
+func (m *_BACnetRouterEntryStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRouterEntryStatusTagged) deepCopy() *_BACnetRouterEntryStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetRouterEntryStatusTaggedCopy := &_BACnetRouterEntryStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetRouterEntryStatusTaggedCopy
+}
 
 func (m *_BACnetRouterEntryStatusTagged) String() string {
 	if m == nil {

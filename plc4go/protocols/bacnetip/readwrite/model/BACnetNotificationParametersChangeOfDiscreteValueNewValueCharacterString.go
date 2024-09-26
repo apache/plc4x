@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString in
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStri
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) deepCopy() *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString{
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfDiscreteValueNewValueContract),
+		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) String() string {

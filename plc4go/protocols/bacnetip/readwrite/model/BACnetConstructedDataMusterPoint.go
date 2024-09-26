@@ -38,6 +38,7 @@ type BACnetConstructedDataMusterPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMusterPoint returns MusterPoint (property field)
 	GetMusterPoint() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataMusterPoint) IsBACnetConstructedDataMusterPoint() {}
+
+func (m *_BACnetConstructedDataMusterPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMusterPoint) deepCopy() *_BACnetConstructedDataMusterPoint {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMusterPointCopy := &_BACnetConstructedDataMusterPoint{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MusterPoint.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMusterPointCopy
+}
 
 func (m *_BACnetConstructedDataMusterPoint) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetCalendarEntryEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetCalendarEntry returns CalendarEntry (property field)
@@ -228,6 +229,23 @@ func (m *_BACnetCalendarEntryEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetCalendarEntryEnclosed) IsBACnetCalendarEntryEnclosed() {}
+
+func (m *_BACnetCalendarEntryEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCalendarEntryEnclosed) deepCopy() *_BACnetCalendarEntryEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetCalendarEntryEnclosedCopy := &_BACnetCalendarEntryEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.CalendarEntry.DeepCopy().(BACnetCalendarEntry),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetCalendarEntryEnclosedCopy
+}
 
 func (m *_BACnetCalendarEntryEnclosed) String() string {
 	if m == nil {

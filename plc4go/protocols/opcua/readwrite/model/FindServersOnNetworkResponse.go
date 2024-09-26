@@ -38,6 +38,7 @@ type FindServersOnNetworkResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -252,6 +253,25 @@ func (m *_FindServersOnNetworkResponse) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_FindServersOnNetworkResponse) IsFindServersOnNetworkResponse() {}
+
+func (m *_FindServersOnNetworkResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FindServersOnNetworkResponse) deepCopy() *_FindServersOnNetworkResponse {
+	if m == nil {
+		return nil
+	}
+	_FindServersOnNetworkResponseCopy := &_FindServersOnNetworkResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.LastCounterResetTime,
+		m.NoOfServers,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Servers),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FindServersOnNetworkResponseCopy
+}
 
 func (m *_FindServersOnNetworkResponse) String() string {
 	if m == nil {

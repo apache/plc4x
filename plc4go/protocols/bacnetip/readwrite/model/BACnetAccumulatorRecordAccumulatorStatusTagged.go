@@ -38,6 +38,7 @@ type BACnetAccumulatorRecordAccumulatorStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetTagClass() TagClass
 ////
 
 func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) IsBACnetAccumulatorRecordAccumulatorStatusTagged() {
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) deepCopy() *_BACnetAccumulatorRecordAccumulatorStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccumulatorRecordAccumulatorStatusTaggedCopy := &_BACnetAccumulatorRecordAccumulatorStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccumulatorRecordAccumulatorStatusTaggedCopy
 }
 
 func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) String() string {

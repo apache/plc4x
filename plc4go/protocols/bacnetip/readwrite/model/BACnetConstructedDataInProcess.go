@@ -38,6 +38,7 @@ type BACnetConstructedDataInProcess interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInProcess returns InProcess (property field)
 	GetInProcess() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataInProcess) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataInProcess) IsBACnetConstructedDataInProcess() {}
+
+func (m *_BACnetConstructedDataInProcess) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInProcess) deepCopy() *_BACnetConstructedDataInProcess {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInProcessCopy := &_BACnetConstructedDataInProcess{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.InProcess.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInProcessCopy
+}
 
 func (m *_BACnetConstructedDataInProcess) String() string {
 	if m == nil {

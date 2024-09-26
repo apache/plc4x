@@ -38,6 +38,7 @@ type RequestHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAuthenticationToken returns AuthenticationToken (property field)
 	GetAuthenticationToken() NodeId
@@ -314,6 +315,28 @@ func (m *_RequestHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_RequestHeader) IsRequestHeader() {}
+
+func (m *_RequestHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestHeader) deepCopy() *_RequestHeader {
+	if m == nil {
+		return nil
+	}
+	_RequestHeaderCopy := &_RequestHeader{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.AuthenticationToken.DeepCopy().(NodeId),
+		m.Timestamp,
+		m.RequestHandle,
+		m.ReturnDiagnostics,
+		m.AuditEntryId.DeepCopy().(PascalString),
+		m.TimeoutHint,
+		m.AdditionalHeader.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RequestHeaderCopy
+}
 
 func (m *_RequestHeader) String() string {
 	if m == nil {

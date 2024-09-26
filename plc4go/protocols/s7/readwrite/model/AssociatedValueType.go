@@ -38,6 +38,7 @@ type AssociatedValueType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
@@ -228,6 +229,23 @@ func (m *_AssociatedValueType) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_AssociatedValueType) IsAssociatedValueType() {}
+
+func (m *_AssociatedValueType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AssociatedValueType) deepCopy() *_AssociatedValueType {
+	if m == nil {
+		return nil
+	}
+	_AssociatedValueTypeCopy := &_AssociatedValueType{
+		m.ReturnCode,
+		m.TransportSize,
+		m.ValueLength,
+		utils.DeepCopySlice[uint8, uint8](m.Data),
+	}
+	return _AssociatedValueTypeCopy
+}
 
 func (m *_AssociatedValueType) String() string {
 	if m == nil {

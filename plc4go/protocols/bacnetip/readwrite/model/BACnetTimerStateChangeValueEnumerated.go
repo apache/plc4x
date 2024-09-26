@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueEnumerated) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetTimerStateChangeValueEnumerated) IsBACnetTimerStateChangeValueEnumerated() {}
+
+func (m *_BACnetTimerStateChangeValueEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueEnumerated) deepCopy() *_BACnetTimerStateChangeValueEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueEnumeratedCopy := &_BACnetTimerStateChangeValueEnumerated{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueEnumeratedCopy
+}
 
 func (m *_BACnetTimerStateChangeValueEnumerated) String() string {
 	if m == nil {

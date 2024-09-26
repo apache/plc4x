@@ -38,6 +38,7 @@ type BACnetConstructedDataIntegralConstant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIntegralConstant returns IntegralConstant (property field)
 	GetIntegralConstant() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIntegralConstant) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataIntegralConstant) IsBACnetConstructedDataIntegralConstant() {}
+
+func (m *_BACnetConstructedDataIntegralConstant) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntegralConstant) deepCopy() *_BACnetConstructedDataIntegralConstant {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntegralConstantCopy := &_BACnetConstructedDataIntegralConstant{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IntegralConstant.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntegralConstantCopy
+}
 
 func (m *_BACnetConstructedDataIntegralConstant) String() string {
 	if m == nil {

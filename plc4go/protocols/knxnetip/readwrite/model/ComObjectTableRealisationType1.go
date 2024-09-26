@@ -38,6 +38,7 @@ type ComObjectTableRealisationType1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ComObjectTable
 	// GetNumEntries returns NumEntries (property field)
 	GetNumEntries() uint8
@@ -228,6 +229,24 @@ func (m *_ComObjectTableRealisationType1) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ComObjectTableRealisationType1) IsComObjectTableRealisationType1() {}
+
+func (m *_ComObjectTableRealisationType1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ComObjectTableRealisationType1) deepCopy() *_ComObjectTableRealisationType1 {
+	if m == nil {
+		return nil
+	}
+	_ComObjectTableRealisationType1Copy := &_ComObjectTableRealisationType1{
+		m.ComObjectTableContract.DeepCopy().(ComObjectTableContract),
+		m.NumEntries,
+		m.RamFlagsTablePointer,
+		utils.DeepCopySlice[GroupObjectDescriptorRealisationType1, GroupObjectDescriptorRealisationType1](m.ComObjectDescriptors),
+	}
+	m.ComObjectTableContract.(*_ComObjectTable)._SubType = m
+	return _ComObjectTableRealisationType1Copy
+}
 
 func (m *_ComObjectTableRealisationType1) String() string {
 	if m == nil {

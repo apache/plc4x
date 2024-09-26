@@ -38,6 +38,7 @@ type ListOfCovNotificationsValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -257,6 +258,24 @@ func (m *_ListOfCovNotificationsValue) GetObjectTypeArgument() BACnetObjectType 
 ////
 
 func (m *_ListOfCovNotificationsValue) IsListOfCovNotificationsValue() {}
+
+func (m *_ListOfCovNotificationsValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListOfCovNotificationsValue) deepCopy() *_ListOfCovNotificationsValue {
+	if m == nil {
+		return nil
+	}
+	_ListOfCovNotificationsValueCopy := &_ListOfCovNotificationsValue{
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+		m.TimeOfChange.DeepCopy().(BACnetContextTagTime),
+		m.ObjectTypeArgument,
+	}
+	return _ListOfCovNotificationsValueCopy
+}
 
 func (m *_ListOfCovNotificationsValue) String() string {
 	if m == nil {

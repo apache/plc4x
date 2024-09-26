@@ -38,6 +38,7 @@ type BACnetConstructedDataElevatorGroupGroupMembers interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataElevatorGroupGroupMembers) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataElevatorGroupGroupMembers) IsBACnetConstructedDataElevatorGroupGroupMembers() {
+}
+
+func (m *_BACnetConstructedDataElevatorGroupGroupMembers) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataElevatorGroupGroupMembers) deepCopy() *_BACnetConstructedDataElevatorGroupGroupMembers {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataElevatorGroupGroupMembersCopy := &_BACnetConstructedDataElevatorGroupGroupMembers{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagObjectIdentifier, BACnetApplicationTagObjectIdentifier](m.GroupMembers),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataElevatorGroupGroupMembersCopy
 }
 
 func (m *_BACnetConstructedDataElevatorGroupGroupMembers) String() string {

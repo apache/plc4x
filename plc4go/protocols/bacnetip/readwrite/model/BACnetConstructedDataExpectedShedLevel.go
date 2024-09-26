@@ -38,6 +38,7 @@ type BACnetConstructedDataExpectedShedLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetExpectedShedLevel returns ExpectedShedLevel (property field)
 	GetExpectedShedLevel() BACnetShedLevel
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataExpectedShedLevel) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataExpectedShedLevel) IsBACnetConstructedDataExpectedShedLevel() {}
+
+func (m *_BACnetConstructedDataExpectedShedLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExpectedShedLevel) deepCopy() *_BACnetConstructedDataExpectedShedLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExpectedShedLevelCopy := &_BACnetConstructedDataExpectedShedLevel{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ExpectedShedLevel.DeepCopy().(BACnetShedLevel),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExpectedShedLevelCopy
+}
 
 func (m *_BACnetConstructedDataExpectedShedLevel) String() string {
 	if m == nil {

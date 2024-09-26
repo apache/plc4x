@@ -38,6 +38,7 @@ type BACnetChannelValueDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueDouble) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetChannelValueDouble) IsBACnetChannelValueDouble() {}
+
+func (m *_BACnetChannelValueDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueDouble) deepCopy() *_BACnetChannelValueDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueDoubleCopy := &_BACnetChannelValueDouble{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueDoubleCopy
+}
 
 func (m *_BACnetChannelValueDouble) String() string {
 	if m == nil {

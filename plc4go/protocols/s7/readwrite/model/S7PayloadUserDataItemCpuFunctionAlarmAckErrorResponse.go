@@ -36,6 +36,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse()
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) SerializeWithWr
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseCopy := &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) String() string {

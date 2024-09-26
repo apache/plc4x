@@ -38,6 +38,7 @@ type RegisterNodesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_RegisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_RegisterNodesRequest) IsRegisterNodesRequest() {}
+
+func (m *_RegisterNodesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterNodesRequest) deepCopy() *_RegisterNodesRequest {
+	if m == nil {
+		return nil
+	}
+	_RegisterNodesRequestCopy := &_RegisterNodesRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodesToRegister,
+		utils.DeepCopySlice[NodeId, NodeId](m.NodesToRegister),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterNodesRequestCopy
+}
 
 func (m *_RegisterNodesRequest) String() string {
 	if m == nil {

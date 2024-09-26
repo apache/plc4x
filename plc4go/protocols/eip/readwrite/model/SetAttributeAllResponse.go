@@ -36,6 +36,7 @@ type SetAttributeAllResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeAllResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeAllResponse()
@@ -154,6 +155,21 @@ func (m *_SetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_SetAttributeAllResponse) IsSetAttributeAllResponse() {}
+
+func (m *_SetAttributeAllResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeAllResponse) deepCopy() *_SetAttributeAllResponse {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeAllResponseCopy := &_SetAttributeAllResponse{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeAllResponseCopy
+}
 
 func (m *_SetAttributeAllResponse) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type BACnetEventParameterChangeOfValueCivCriteria interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetEventParameterChangeOfValueCivCriteria is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterChangeOfValueCivCriteria()
 }
 
 // BACnetEventParameterChangeOfValueCivCriteriaContract provides a set of functions which can be overwritten by a sub struct
 type BACnetEventParameterChangeOfValueCivCriteriaContract interface {
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -298,4 +300,22 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteria) IsBACnetEventParameterChangeOfValueCivCriteria() {
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) deepCopy() *_BACnetEventParameterChangeOfValueCivCriteria {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfValueCivCriteriaCopy := &_BACnetEventParameterChangeOfValueCivCriteria{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterChangeOfValueCivCriteriaCopy
 }

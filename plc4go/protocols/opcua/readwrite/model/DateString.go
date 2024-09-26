@@ -36,6 +36,7 @@ type DateString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDateString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDateString()
 }
@@ -134,6 +135,18 @@ func (m *_DateString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_DateString) IsDateString() {}
+
+func (m *_DateString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DateString) deepCopy() *_DateString {
+	if m == nil {
+		return nil
+	}
+	_DateStringCopy := &_DateString{}
+	return _DateStringCopy
+}
 
 func (m *_DateString) String() string {
 	if m == nil {

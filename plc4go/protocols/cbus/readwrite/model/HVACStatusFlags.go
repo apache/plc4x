@@ -38,6 +38,7 @@ type HVACStatusFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetExpansion returns Expansion (property field)
 	GetExpansion() bool
 	// GetError returns Error (property field)
@@ -354,6 +355,27 @@ func (m *_HVACStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_HVACStatusFlags) IsHVACStatusFlags() {}
+
+func (m *_HVACStatusFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACStatusFlags) deepCopy() *_HVACStatusFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACStatusFlagsCopy := &_HVACStatusFlags{
+		m.Expansion,
+		m.Error,
+		m.Busy,
+		m.DamperState,
+		m.FanActive,
+		m.HeatingPlant,
+		m.CoolingPlant,
+		m.reservedField0,
+	}
+	return _HVACStatusFlagsCopy
+}
 
 func (m *_HVACStatusFlags) String() string {
 	if m == nil {

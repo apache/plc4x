@@ -38,6 +38,7 @@ type BACnetConstructedDataIPAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() BACnetApplicationTagOctetString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPAddress) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataIPAddress) IsBACnetConstructedDataIPAddress() {}
+
+func (m *_BACnetConstructedDataIPAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPAddress) deepCopy() *_BACnetConstructedDataIPAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPAddressCopy := &_BACnetConstructedDataIPAddress{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IpAddress.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPAddressCopy
+}
 
 func (m *_BACnetConstructedDataIPAddress) String() string {
 	if m == nil {

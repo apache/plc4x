@@ -38,6 +38,7 @@ type BACnetConstructedDataStopTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStopTime returns StopTime (property field)
 	GetStopTime() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataStopTime) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataStopTime) IsBACnetConstructedDataStopTime() {}
+
+func (m *_BACnetConstructedDataStopTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStopTime) deepCopy() *_BACnetConstructedDataStopTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStopTimeCopy := &_BACnetConstructedDataStopTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.StopTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStopTimeCopy
+}
 
 func (m *_BACnetConstructedDataStopTime) String() string {
 	if m == nil {

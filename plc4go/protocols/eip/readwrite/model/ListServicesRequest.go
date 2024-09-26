@@ -36,6 +36,7 @@ type ListServicesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsListServicesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsListServicesRequest()
@@ -154,6 +155,21 @@ func (m *_ListServicesRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ListServicesRequest) IsListServicesRequest() {}
+
+func (m *_ListServicesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListServicesRequest) deepCopy() *_ListServicesRequest {
+	if m == nil {
+		return nil
+	}
+	_ListServicesRequestCopy := &_ListServicesRequest{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _ListServicesRequestCopy
+}
 
 func (m *_ListServicesRequest) String() string {
 	if m == nil {

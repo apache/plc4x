@@ -42,6 +42,7 @@ type IdentifyReplyCommandNetworkVoltage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetVolts returns Volts (property field)
 	GetVolts() string
@@ -247,6 +248,23 @@ func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_IdentifyReplyCommandNetworkVoltage) IsIdentifyReplyCommandNetworkVoltage() {}
+
+func (m *_IdentifyReplyCommandNetworkVoltage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandNetworkVoltage) deepCopy() *_IdentifyReplyCommandNetworkVoltage {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandNetworkVoltageCopy := &_IdentifyReplyCommandNetworkVoltage{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.Volts,
+		m.VoltsDecimalPlace,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandNetworkVoltageCopy
+}
 
 func (m *_IdentifyReplyCommandNetworkVoltage) String() string {
 	if m == nil {

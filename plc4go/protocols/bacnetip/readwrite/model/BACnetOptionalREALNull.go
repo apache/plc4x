@@ -38,6 +38,7 @@ type BACnetOptionalREALNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalREAL
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalREALNull) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetOptionalREALNull) IsBACnetOptionalREALNull() {}
+
+func (m *_BACnetOptionalREALNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalREALNull) deepCopy() *_BACnetOptionalREALNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalREALNullCopy := &_BACnetOptionalREALNull{
+		m.BACnetOptionalREALContract.DeepCopy().(BACnetOptionalREALContract),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = m
+	return _BACnetOptionalREALNullCopy
+}
 
 func (m *_BACnetOptionalREALNull) String() string {
 	if m == nil {

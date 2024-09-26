@@ -38,6 +38,7 @@ type BACnetPriorityValueBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueBitString) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetPriorityValueBitString) IsBACnetPriorityValueBitString() {}
+
+func (m *_BACnetPriorityValueBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueBitString) deepCopy() *_BACnetPriorityValueBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueBitStringCopy := &_BACnetPriorityValueBitString{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueBitStringCopy
+}
 
 func (m *_BACnetPriorityValueBitString) String() string {
 	if m == nil {

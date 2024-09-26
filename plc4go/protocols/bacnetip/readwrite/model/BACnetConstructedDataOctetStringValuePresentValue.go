@@ -38,6 +38,7 @@ type BACnetConstructedDataOctetStringValuePresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagOctetString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOctetStringValuePresentValue) SerializeWithWriteB
 }
 
 func (m *_BACnetConstructedDataOctetStringValuePresentValue) IsBACnetConstructedDataOctetStringValuePresentValue() {
+}
+
+func (m *_BACnetConstructedDataOctetStringValuePresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOctetStringValuePresentValue) deepCopy() *_BACnetConstructedDataOctetStringValuePresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOctetStringValuePresentValueCopy := &_BACnetConstructedDataOctetStringValuePresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOctetStringValuePresentValueCopy
 }
 
 func (m *_BACnetConstructedDataOctetStringValuePresentValue) String() string {

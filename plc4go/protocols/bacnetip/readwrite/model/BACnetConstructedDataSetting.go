@@ -38,6 +38,7 @@ type BACnetConstructedDataSetting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSetting returns Setting (property field)
 	GetSetting() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSetting) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataSetting) IsBACnetConstructedDataSetting() {}
+
+func (m *_BACnetConstructedDataSetting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSetting) deepCopy() *_BACnetConstructedDataSetting {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSettingCopy := &_BACnetConstructedDataSetting{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Setting.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSettingCopy
+}
 
 func (m *_BACnetConstructedDataSetting) String() string {
 	if m == nil {

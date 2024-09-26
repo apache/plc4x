@@ -38,6 +38,7 @@ type GetEndpointsResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_GetEndpointsResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_GetEndpointsResponse) IsGetEndpointsResponse() {}
+
+func (m *_GetEndpointsResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetEndpointsResponse) deepCopy() *_GetEndpointsResponse {
+	if m == nil {
+		return nil
+	}
+	_GetEndpointsResponseCopy := &_GetEndpointsResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfEndpoints,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Endpoints),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _GetEndpointsResponseCopy
+}
 
 func (m *_GetEndpointsResponse) String() string {
 	if m == nil {

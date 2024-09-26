@@ -38,6 +38,7 @@ type BACnetConstructedDataPower interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPower returns Power (property field)
 	GetPower() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetConstructedDataPower) IsBACnetConstructedDataPower() {}
+
+func (m *_BACnetConstructedDataPower) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPower) deepCopy() *_BACnetConstructedDataPower {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPowerCopy := &_BACnetConstructedDataPower{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Power.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPowerCopy
+}
 
 func (m *_BACnetConstructedDataPower) String() string {
 	if m == nil {

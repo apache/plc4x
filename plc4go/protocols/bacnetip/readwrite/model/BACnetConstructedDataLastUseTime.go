@@ -38,6 +38,7 @@ type BACnetConstructedDataLastUseTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastUseTime returns LastUseTime (property field)
 	GetLastUseTime() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastUseTime) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataLastUseTime) IsBACnetConstructedDataLastUseTime() {}
+
+func (m *_BACnetConstructedDataLastUseTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastUseTime) deepCopy() *_BACnetConstructedDataLastUseTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastUseTimeCopy := &_BACnetConstructedDataLastUseTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastUseTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastUseTimeCopy
+}
 
 func (m *_BACnetConstructedDataLastUseTime) String() string {
 	if m == nil {

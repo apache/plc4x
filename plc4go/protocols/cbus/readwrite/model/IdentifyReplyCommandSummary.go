@@ -38,6 +38,7 @@ type IdentifyReplyCommandSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetPartName returns PartName (property field)
 	GetPartName() string
@@ -221,6 +222,24 @@ func (m *_IdentifyReplyCommandSummary) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_IdentifyReplyCommandSummary) IsIdentifyReplyCommandSummary() {}
+
+func (m *_IdentifyReplyCommandSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandSummary) deepCopy() *_IdentifyReplyCommandSummary {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandSummaryCopy := &_IdentifyReplyCommandSummary{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.PartName,
+		m.UnitServiceType,
+		m.Version,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandSummaryCopy
+}
 
 func (m *_IdentifyReplyCommandSummary) String() string {
 	if m == nil {

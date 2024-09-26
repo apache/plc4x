@@ -36,6 +36,7 @@ type BACnetConstructedDataCommandAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataCommandAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCommandAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataCommandAll) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataCommandAll) IsBACnetConstructedDataCommandAll() {}
+
+func (m *_BACnetConstructedDataCommandAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCommandAll) deepCopy() *_BACnetConstructedDataCommandAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCommandAllCopy := &_BACnetConstructedDataCommandAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCommandAllCopy
+}
 
 func (m *_BACnetConstructedDataCommandAll) String() string {
 	if m == nil {

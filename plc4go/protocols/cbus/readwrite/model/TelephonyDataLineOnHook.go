@@ -36,6 +36,7 @@ type TelephonyDataLineOnHook interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// IsTelephonyDataLineOnHook is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataLineOnHook()
@@ -142,6 +143,21 @@ func (m *_TelephonyDataLineOnHook) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_TelephonyDataLineOnHook) IsTelephonyDataLineOnHook() {}
+
+func (m *_TelephonyDataLineOnHook) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataLineOnHook) deepCopy() *_TelephonyDataLineOnHook {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataLineOnHookCopy := &_TelephonyDataLineOnHook{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataLineOnHookCopy
+}
 
 func (m *_TelephonyDataLineOnHook) String() string {
 	if m == nil {

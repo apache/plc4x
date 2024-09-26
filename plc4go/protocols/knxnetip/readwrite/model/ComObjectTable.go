@@ -38,12 +38,14 @@ type ComObjectTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsComObjectTable()
 }
 
 // ComObjectTableContract provides a set of functions which can be overwritten by a sub struct
 type ComObjectTableContract interface {
+	utils.Copyable
 	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsComObjectTable()
 }
@@ -181,3 +183,17 @@ func (pm *_ComObjectTable) serializeParent(ctx context.Context, writeBuffer util
 }
 
 func (m *_ComObjectTable) IsComObjectTable() {}
+
+func (m *_ComObjectTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ComObjectTable) deepCopy() *_ComObjectTable {
+	if m == nil {
+		return nil
+	}
+	_ComObjectTableCopy := &_ComObjectTable{
+		nil, // will be set by child
+	}
+	return _ComObjectTableCopy
+}

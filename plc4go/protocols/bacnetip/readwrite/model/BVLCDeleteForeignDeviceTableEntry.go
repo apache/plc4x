@@ -40,6 +40,7 @@ type BVLCDeleteForeignDeviceTableEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
@@ -204,6 +205,23 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) IsBVLCDeleteForeignDeviceTableEntry() {}
+
+func (m *_BVLCDeleteForeignDeviceTableEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCDeleteForeignDeviceTableEntry) deepCopy() *_BVLCDeleteForeignDeviceTableEntry {
+	if m == nil {
+		return nil
+	}
+	_BVLCDeleteForeignDeviceTableEntryCopy := &_BVLCDeleteForeignDeviceTableEntry{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+		utils.DeepCopySlice[uint8, uint8](m.Ip),
+		m.Port,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCDeleteForeignDeviceTableEntryCopy
+}
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) String() string {
 	if m == nil {

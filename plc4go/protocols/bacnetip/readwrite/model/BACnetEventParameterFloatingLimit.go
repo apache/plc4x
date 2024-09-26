@@ -38,6 +38,7 @@ type BACnetEventParameterFloatingLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -322,6 +323,28 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetEventParameterFloatingLimit) IsBACnetEventParameterFloatingLimit() {}
+
+func (m *_BACnetEventParameterFloatingLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterFloatingLimit) deepCopy() *_BACnetEventParameterFloatingLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterFloatingLimitCopy := &_BACnetEventParameterFloatingLimit{
+		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.SetpointReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.LowDiffLimit.DeepCopy().(BACnetContextTagReal),
+		m.HighDiffLimit.DeepCopy().(BACnetContextTagReal),
+		m.Deadband.DeepCopy().(BACnetContextTagReal),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterFloatingLimitCopy
+}
 
 func (m *_BACnetEventParameterFloatingLimit) String() string {
 	if m == nil {

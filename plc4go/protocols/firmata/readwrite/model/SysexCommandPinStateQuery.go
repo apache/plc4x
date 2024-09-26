@@ -38,6 +38,7 @@ type SysexCommandPinStateQuery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -183,6 +184,22 @@ func (m *_SysexCommandPinStateQuery) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SysexCommandPinStateQuery) IsSysexCommandPinStateQuery() {}
+
+func (m *_SysexCommandPinStateQuery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandPinStateQuery) deepCopy() *_SysexCommandPinStateQuery {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandPinStateQueryCopy := &_SysexCommandPinStateQuery{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.Pin,
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandPinStateQueryCopy
+}
 
 func (m *_SysexCommandPinStateQuery) String() string {
 	if m == nil {

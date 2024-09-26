@@ -40,12 +40,14 @@ type NLM interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsNLM is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLM()
 }
 
 // NLMContract provides a set of functions which can be overwritten by a sub struct
 type NLMContract interface {
+	utils.Copyable
 	// GetIsVendorProprietaryMessage returns IsVendorProprietaryMessage (virtual field)
 	GetIsVendorProprietaryMessage() bool
 	// GetApduLength() returns a parser argument
@@ -320,3 +322,18 @@ func (m *_NLM) GetApduLength() uint16 {
 ////
 
 func (m *_NLM) IsNLM() {}
+
+func (m *_NLM) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLM) deepCopy() *_NLM {
+	if m == nil {
+		return nil
+	}
+	_NLMCopy := &_NLM{
+		nil, // will be set by child
+		m.ApduLength,
+	}
+	return _NLMCopy
+}

@@ -38,6 +38,7 @@ type NLMEstablishConnectionToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
@@ -200,6 +201,23 @@ func (m *_NLMEstablishConnectionToNetwork) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_NLMEstablishConnectionToNetwork) IsNLMEstablishConnectionToNetwork() {}
+
+func (m *_NLMEstablishConnectionToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMEstablishConnectionToNetwork) deepCopy() *_NLMEstablishConnectionToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMEstablishConnectionToNetworkCopy := &_NLMEstablishConnectionToNetwork{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.DestinationNetworkAddress,
+		m.TerminationTime,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMEstablishConnectionToNetworkCopy
+}
 
 func (m *_NLMEstablishConnectionToNetwork) String() string {
 	if m == nil {

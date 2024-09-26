@@ -38,6 +38,7 @@ type BACnetConstructedDataLastRestoreTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastRestoreTime returns LastRestoreTime (property field)
 	GetLastRestoreTime() BACnetTimeStamp
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastRestoreTime) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataLastRestoreTime) IsBACnetConstructedDataLastRestoreTime() {}
+
+func (m *_BACnetConstructedDataLastRestoreTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastRestoreTime) deepCopy() *_BACnetConstructedDataLastRestoreTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastRestoreTimeCopy := &_BACnetConstructedDataLastRestoreTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastRestoreTime.DeepCopy().(BACnetTimeStamp),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastRestoreTimeCopy
+}
 
 func (m *_BACnetConstructedDataLastRestoreTime) String() string {
 	if m == nil {

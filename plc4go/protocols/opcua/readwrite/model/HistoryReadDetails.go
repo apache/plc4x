@@ -36,6 +36,7 @@ type HistoryReadDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsHistoryReadDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryReadDetails()
@@ -146,6 +147,21 @@ func (m *_HistoryReadDetails) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_HistoryReadDetails) IsHistoryReadDetails() {}
+
+func (m *_HistoryReadDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadDetails) deepCopy() *_HistoryReadDetails {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadDetailsCopy := &_HistoryReadDetails{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadDetailsCopy
+}
 
 func (m *_HistoryReadDetails) String() string {
 	if m == nil {

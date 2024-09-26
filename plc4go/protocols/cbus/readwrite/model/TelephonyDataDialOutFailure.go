@@ -38,6 +38,7 @@ type TelephonyDataDialOutFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetReason returns Reason (property field)
 	GetReason() DialOutFailureReason
@@ -175,6 +176,22 @@ func (m *_TelephonyDataDialOutFailure) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_TelephonyDataDialOutFailure) IsTelephonyDataDialOutFailure() {}
+
+func (m *_TelephonyDataDialOutFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataDialOutFailure) deepCopy() *_TelephonyDataDialOutFailure {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataDialOutFailureCopy := &_TelephonyDataDialOutFailure{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.Reason,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataDialOutFailureCopy
+}
 
 func (m *_TelephonyDataDialOutFailure) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type SALDataLighting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetLightingData returns LightingData (property field)
 	GetLightingData() LightingData
@@ -182,6 +183,22 @@ func (m *_SALDataLighting) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SALDataLighting) IsSALDataLighting() {}
+
+func (m *_SALDataLighting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataLighting) deepCopy() *_SALDataLighting {
+	if m == nil {
+		return nil
+	}
+	_SALDataLightingCopy := &_SALDataLighting{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.LightingData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataLightingCopy
+}
 
 func (m *_SALDataLighting) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type AirConditioningDataZoneTemperature interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -244,6 +245,25 @@ func (m *_AirConditioningDataZoneTemperature) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_AirConditioningDataZoneTemperature) IsAirConditioningDataZoneTemperature() {}
+
+func (m *_AirConditioningDataZoneTemperature) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataZoneTemperature) deepCopy() *_AirConditioningDataZoneTemperature {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataZoneTemperatureCopy := &_AirConditioningDataZoneTemperature{
+		m.AirConditioningDataContract.DeepCopy().(AirConditioningDataContract),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Temperature.DeepCopy().(HVACTemperature),
+		m.SensorStatus,
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataZoneTemperatureCopy
+}
 
 func (m *_AirConditioningDataZoneTemperature) String() string {
 	if m == nil {

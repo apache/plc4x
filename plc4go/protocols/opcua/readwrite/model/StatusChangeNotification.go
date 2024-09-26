@@ -38,6 +38,7 @@ type StatusChangeNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatus returns Status (property field)
 	GetStatus() StatusCode
@@ -219,6 +220,23 @@ func (m *_StatusChangeNotification) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_StatusChangeNotification) IsStatusChangeNotification() {}
+
+func (m *_StatusChangeNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusChangeNotification) deepCopy() *_StatusChangeNotification {
+	if m == nil {
+		return nil
+	}
+	_StatusChangeNotificationCopy := &_StatusChangeNotification{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Status.DeepCopy().(StatusCode),
+		m.DiagnosticInfo.DeepCopy().(DiagnosticInfo),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _StatusChangeNotificationCopy
+}
 
 func (m *_StatusChangeNotification) String() string {
 	if m == nil {

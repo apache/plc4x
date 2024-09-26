@@ -38,6 +38,7 @@ type BACnetConstructedDataGroupPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() []BACnetReadAccessResult
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataGroupPresentValue) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataGroupPresentValue) IsBACnetConstructedDataGroupPresentValue() {}
+
+func (m *_BACnetConstructedDataGroupPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGroupPresentValue) deepCopy() *_BACnetConstructedDataGroupPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGroupPresentValueCopy := &_BACnetConstructedDataGroupPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetReadAccessResult, BACnetReadAccessResult](m.PresentValue),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGroupPresentValueCopy
+}
 
 func (m *_BACnetConstructedDataGroupPresentValue) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type AdsReadStateRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsReadStateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadStateRequest()
@@ -150,6 +151,21 @@ func (m *_AdsReadStateRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_AdsReadStateRequest) IsAdsReadStateRequest() {}
+
+func (m *_AdsReadStateRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadStateRequest) deepCopy() *_AdsReadStateRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsReadStateRequestCopy := &_AdsReadStateRequest{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadStateRequestCopy
+}
 
 func (m *_AdsReadStateRequest) String() string {
 	if m == nil {

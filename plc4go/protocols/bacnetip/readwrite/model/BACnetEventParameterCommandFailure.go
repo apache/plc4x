@@ -38,6 +38,7 @@ type BACnetEventParameterCommandFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -250,6 +251,25 @@ func (m *_BACnetEventParameterCommandFailure) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetEventParameterCommandFailure) IsBACnetEventParameterCommandFailure() {}
+
+func (m *_BACnetEventParameterCommandFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterCommandFailure) deepCopy() *_BACnetEventParameterCommandFailure {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterCommandFailureCopy := &_BACnetEventParameterCommandFailure{
+		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.FeedbackPropertyReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterCommandFailureCopy
+}
 
 func (m *_BACnetEventParameterCommandFailure) String() string {
 	if m == nil {

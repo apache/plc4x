@@ -38,6 +38,7 @@ type BACnetLifeSafetyModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetLifeSafetyModeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLifeSafetyModeTagged) IsBACnetLifeSafetyModeTagged() {}
+
+func (m *_BACnetLifeSafetyModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLifeSafetyModeTagged) deepCopy() *_BACnetLifeSafetyModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLifeSafetyModeTaggedCopy := &_BACnetLifeSafetyModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLifeSafetyModeTaggedCopy
+}
 
 func (m *_BACnetLifeSafetyModeTagged) String() string {
 	if m == nil {

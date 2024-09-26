@@ -38,6 +38,7 @@ type BACnetGroupChannelValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetChannel returns Channel (property field)
 	GetChannel() BACnetContextTagUnsignedInteger
 	// GetOverridingPriority returns OverridingPriority (property field)
@@ -218,6 +219,22 @@ func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetGroupChannelValue) IsBACnetGroupChannelValue() {}
+
+func (m *_BACnetGroupChannelValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetGroupChannelValue) deepCopy() *_BACnetGroupChannelValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetGroupChannelValueCopy := &_BACnetGroupChannelValue{
+		m.Channel.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.OverridingPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Value.DeepCopy().(BACnetChannelValue),
+	}
+	return _BACnetGroupChannelValueCopy
+}
 
 func (m *_BACnetGroupChannelValue) String() string {
 	if m == nil {

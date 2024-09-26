@@ -38,6 +38,7 @@ type StatusCode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() uint32
 	// IsStatusCode is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -166,6 +167,20 @@ func (m *_StatusCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_StatusCode) IsStatusCode() {}
+
+func (m *_StatusCode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusCode) deepCopy() *_StatusCode {
+	if m == nil {
+		return nil
+	}
+	_StatusCodeCopy := &_StatusCode{
+		m.StatusCode,
+	}
+	return _StatusCodeCopy
+}
 
 func (m *_StatusCode) String() string {
 	if m == nil {

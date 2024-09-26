@@ -36,6 +36,7 @@ type AdsInvalidRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsInvalidRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsInvalidRequest()
@@ -150,6 +151,21 @@ func (m *_AdsInvalidRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_AdsInvalidRequest) IsAdsInvalidRequest() {}
+
+func (m *_AdsInvalidRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsInvalidRequest) deepCopy() *_AdsInvalidRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsInvalidRequestCopy := &_AdsInvalidRequest{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsInvalidRequestCopy
+}
 
 func (m *_AdsInvalidRequest) String() string {
 	if m == nil {

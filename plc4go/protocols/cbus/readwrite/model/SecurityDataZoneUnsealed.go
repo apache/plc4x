@@ -38,6 +38,7 @@ type SecurityDataZoneUnsealed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
@@ -175,6 +176,22 @@ func (m *_SecurityDataZoneUnsealed) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SecurityDataZoneUnsealed) IsSecurityDataZoneUnsealed() {}
+
+func (m *_SecurityDataZoneUnsealed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataZoneUnsealed) deepCopy() *_SecurityDataZoneUnsealed {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataZoneUnsealedCopy := &_SecurityDataZoneUnsealed{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.ZoneNumber,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataZoneUnsealedCopy
+}
 
 func (m *_SecurityDataZoneUnsealed) String() string {
 	if m == nil {

@@ -43,6 +43,7 @@ type ModbusTcpADU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusADU
 	// GetTransactionIdentifier returns TransactionIdentifier (property field)
 	GetTransactionIdentifier() uint16
@@ -268,6 +269,24 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_ModbusTcpADU) IsModbusTcpADU() {}
+
+func (m *_ModbusTcpADU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusTcpADU) deepCopy() *_ModbusTcpADU {
+	if m == nil {
+		return nil
+	}
+	_ModbusTcpADUCopy := &_ModbusTcpADU{
+		m.ModbusADUContract.DeepCopy().(ModbusADUContract),
+		m.TransactionIdentifier,
+		m.UnitIdentifier,
+		m.Pdu.DeepCopy().(ModbusPDU),
+	}
+	m.ModbusADUContract.(*_ModbusADU)._SubType = m
+	return _ModbusTcpADUCopy
+}
 
 func (m *_ModbusTcpADU) String() string {
 	if m == nil {

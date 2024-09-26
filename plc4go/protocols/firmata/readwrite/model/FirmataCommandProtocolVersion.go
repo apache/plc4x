@@ -38,6 +38,7 @@ type FirmataCommandProtocolVersion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// GetMajorVersion returns MajorVersion (property field)
 	GetMajorVersion() uint8
@@ -200,6 +201,23 @@ func (m *_FirmataCommandProtocolVersion) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_FirmataCommandProtocolVersion) IsFirmataCommandProtocolVersion() {}
+
+func (m *_FirmataCommandProtocolVersion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandProtocolVersion) deepCopy() *_FirmataCommandProtocolVersion {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandProtocolVersionCopy := &_FirmataCommandProtocolVersion{
+		m.FirmataCommandContract.DeepCopy().(FirmataCommandContract),
+		m.MajorVersion,
+		m.MinorVersion,
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandProtocolVersionCopy
+}
 
 func (m *_FirmataCommandProtocolVersion) String() string {
 	if m == nil {

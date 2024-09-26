@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkAccessSecurityPolicies interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) SerializeWithWrite
 }
 
 func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) IsBACnetConstructedDataNetworkAccessSecurityPolicies() {
+}
+
+func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) deepCopy() *_BACnetConstructedDataNetworkAccessSecurityPolicies {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkAccessSecurityPoliciesCopy := &_BACnetConstructedDataNetworkAccessSecurityPolicies{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetNetworkSecurityPolicy, BACnetNetworkSecurityPolicy](m.NetworkAccessSecurityPolicies),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkAccessSecurityPoliciesCopy
 }
 
 func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) String() string {

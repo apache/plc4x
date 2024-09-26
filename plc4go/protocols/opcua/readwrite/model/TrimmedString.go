@@ -36,6 +36,7 @@ type TrimmedString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTrimmedString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTrimmedString()
 }
@@ -134,6 +135,18 @@ func (m *_TrimmedString) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_TrimmedString) IsTrimmedString() {}
+
+func (m *_TrimmedString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TrimmedString) deepCopy() *_TrimmedString {
+	if m == nil {
+		return nil
+	}
+	_TrimmedStringCopy := &_TrimmedString{}
+	return _TrimmedStringCopy
+}
 
 func (m *_TrimmedString) String() string {
 	if m == nil {

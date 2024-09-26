@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumBooleanValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
@@ -178,6 +179,22 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetLogRecordLogDatumBooleanValue) IsBACnetLogRecordLogDatumBooleanValue() {}
+
+func (m *_BACnetLogRecordLogDatumBooleanValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumBooleanValue) deepCopy() *_BACnetLogRecordLogDatumBooleanValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumBooleanValueCopy := &_BACnetLogRecordLogDatumBooleanValue{
+		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.BooleanValue.DeepCopy().(BACnetContextTagBoolean),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumBooleanValueCopy
+}
 
 func (m *_BACnetLogRecordLogDatumBooleanValue) String() string {
 	if m == nil {

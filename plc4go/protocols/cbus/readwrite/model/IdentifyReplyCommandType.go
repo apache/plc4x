@@ -38,6 +38,7 @@ type IdentifyReplyCommandType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetUnitType returns UnitType (property field)
 	GetUnitType() string
@@ -179,6 +180,22 @@ func (m *_IdentifyReplyCommandType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_IdentifyReplyCommandType) IsIdentifyReplyCommandType() {}
+
+func (m *_IdentifyReplyCommandType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandType) deepCopy() *_IdentifyReplyCommandType {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandTypeCopy := &_IdentifyReplyCommandType{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.UnitType,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandTypeCopy
+}
 
 func (m *_IdentifyReplyCommandType) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type BACnetConstructedDataAccessUserAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataAccessUserAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessUserAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataAccessUserAll) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataAccessUserAll) IsBACnetConstructedDataAccessUserAll() {}
+
+func (m *_BACnetConstructedDataAccessUserAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessUserAll) deepCopy() *_BACnetConstructedDataAccessUserAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessUserAllCopy := &_BACnetConstructedDataAccessUserAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessUserAllCopy
+}
 
 func (m *_BACnetConstructedDataAccessUserAll) String() string {
 	if m == nil {

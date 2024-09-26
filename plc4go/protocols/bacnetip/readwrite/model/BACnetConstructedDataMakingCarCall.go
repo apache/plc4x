@@ -38,6 +38,7 @@ type BACnetConstructedDataMakingCarCall interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataMakingCarCall) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataMakingCarCall) IsBACnetConstructedDataMakingCarCall() {}
+
+func (m *_BACnetConstructedDataMakingCarCall) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMakingCarCall) deepCopy() *_BACnetConstructedDataMakingCarCall {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMakingCarCallCopy := &_BACnetConstructedDataMakingCarCall{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.MakingCarCall),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMakingCarCallCopy
+}
 
 func (m *_BACnetConstructedDataMakingCarCall) String() string {
 	if m == nil {

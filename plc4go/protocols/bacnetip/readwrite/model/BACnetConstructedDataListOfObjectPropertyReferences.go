@@ -38,6 +38,7 @@ type BACnetConstructedDataListOfObjectPropertyReferences interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReferences returns References (property field)
 	GetReferences() []BACnetDeviceObjectPropertyReference
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataListOfObjectPropertyReferences) IsBACnetConstructedDataListOfObjectPropertyReferences() {
+}
+
+func (m *_BACnetConstructedDataListOfObjectPropertyReferences) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataListOfObjectPropertyReferences) deepCopy() *_BACnetConstructedDataListOfObjectPropertyReferences {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataListOfObjectPropertyReferencesCopy := &_BACnetConstructedDataListOfObjectPropertyReferences{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.References),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataListOfObjectPropertyReferencesCopy
 }
 
 func (m *_BACnetConstructedDataListOfObjectPropertyReferences) String() string {

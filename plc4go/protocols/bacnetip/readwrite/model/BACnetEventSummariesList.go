@@ -38,6 +38,7 @@ type BACnetEventSummariesList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetEventSummariesList) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventSummariesList) IsBACnetEventSummariesList() {}
+
+func (m *_BACnetEventSummariesList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventSummariesList) deepCopy() *_BACnetEventSummariesList {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventSummariesListCopy := &_BACnetEventSummariesList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetEventSummary, BACnetEventSummary](m.ListOfEventSummaries),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventSummariesListCopy
+}
 
 func (m *_BACnetEventSummariesList) String() string {
 	if m == nil {

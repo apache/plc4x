@@ -38,6 +38,7 @@ type UnConnectedDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetService returns Service (property field)
 	GetService() CipService
@@ -195,6 +196,22 @@ func (m *_UnConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_UnConnectedDataItem) IsUnConnectedDataItem() {}
+
+func (m *_UnConnectedDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnConnectedDataItem) deepCopy() *_UnConnectedDataItem {
+	if m == nil {
+		return nil
+	}
+	_UnConnectedDataItemCopy := &_UnConnectedDataItem{
+		m.TypeIdContract.DeepCopy().(TypeIdContract),
+		m.Service.DeepCopy().(CipService),
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _UnConnectedDataItemCopy
+}
 
 func (m *_UnConnectedDataItem) String() string {
 	if m == nil {

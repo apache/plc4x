@@ -38,6 +38,7 @@ type ApduDataContainer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Apdu
 	// GetDataApdu returns DataApdu (property field)
 	GetDataApdu() ApduData
@@ -182,6 +183,22 @@ func (m *_ApduDataContainer) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ApduDataContainer) IsApduDataContainer() {}
+
+func (m *_ApduDataContainer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataContainer) deepCopy() *_ApduDataContainer {
+	if m == nil {
+		return nil
+	}
+	_ApduDataContainerCopy := &_ApduDataContainer{
+		m.ApduContract.DeepCopy().(ApduContract),
+		m.DataApdu.DeepCopy().(ApduData),
+	}
+	m.ApduContract.(*_Apdu)._SubType = m
+	return _ApduDataContainerCopy
+}
 
 func (m *_ApduDataContainer) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLockoutRelinquishTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLockoutRelinquishTime returns LockoutRelinquishTime (property field)
 	GetLockoutRelinquishTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataLockoutRelinquishTime) IsBACnetConstructedDataLockoutRelinquishTime() {
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTime) deepCopy() *_BACnetConstructedDataLockoutRelinquishTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLockoutRelinquishTimeCopy := &_BACnetConstructedDataLockoutRelinquishTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LockoutRelinquishTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLockoutRelinquishTimeCopy
 }
 
 func (m *_BACnetConstructedDataLockoutRelinquishTime) String() string {

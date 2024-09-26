@@ -38,6 +38,7 @@ type BACnetClientCOVObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetClientCOV
 	// GetRealIncrement returns RealIncrement (property field)
 	GetRealIncrement() BACnetApplicationTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetClientCOVObject) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetClientCOVObject) IsBACnetClientCOVObject() {}
+
+func (m *_BACnetClientCOVObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetClientCOVObject) deepCopy() *_BACnetClientCOVObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetClientCOVObjectCopy := &_BACnetClientCOVObject{
+		m.BACnetClientCOVContract.DeepCopy().(BACnetClientCOVContract),
+		m.RealIncrement.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = m
+	return _BACnetClientCOVObjectCopy
+}
 
 func (m *_BACnetClientCOVObject) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ReferenceDescriptionDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSourceNode returns SourceNode (property field)
 	GetSourceNode() NodeId
@@ -266,6 +267,26 @@ func (m *_ReferenceDescriptionDataType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ReferenceDescriptionDataType) IsReferenceDescriptionDataType() {}
+
+func (m *_ReferenceDescriptionDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReferenceDescriptionDataType) deepCopy() *_ReferenceDescriptionDataType {
+	if m == nil {
+		return nil
+	}
+	_ReferenceDescriptionDataTypeCopy := &_ReferenceDescriptionDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SourceNode.DeepCopy().(NodeId),
+		m.ReferenceType.DeepCopy().(NodeId),
+		m.IsForward,
+		m.TargetNode.DeepCopy().(ExpandedNodeId),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReferenceDescriptionDataTypeCopy
+}
 
 func (m *_ReferenceDescriptionDataType) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type QosDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsQosDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQosDataType()
@@ -146,6 +147,21 @@ func (m *_QosDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_QosDataType) IsQosDataType() {}
+
+func (m *_QosDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QosDataType) deepCopy() *_QosDataType {
+	if m == nil {
+		return nil
+	}
+	_QosDataTypeCopy := &_QosDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QosDataTypeCopy
+}
 
 func (m *_QosDataType) String() string {
 	if m == nil {

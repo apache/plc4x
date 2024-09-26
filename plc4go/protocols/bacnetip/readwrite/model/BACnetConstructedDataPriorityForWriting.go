@@ -38,6 +38,7 @@ type BACnetConstructedDataPriorityForWriting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPriorityForWriting returns PriorityForWriting (property field)
 	GetPriorityForWriting() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPriorityForWriting) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataPriorityForWriting) IsBACnetConstructedDataPriorityForWriting() {}
+
+func (m *_BACnetConstructedDataPriorityForWriting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPriorityForWriting) deepCopy() *_BACnetConstructedDataPriorityForWriting {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPriorityForWritingCopy := &_BACnetConstructedDataPriorityForWriting{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PriorityForWriting.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPriorityForWritingCopy
+}
 
 func (m *_BACnetConstructedDataPriorityForWriting) String() string {
 	if m == nil {

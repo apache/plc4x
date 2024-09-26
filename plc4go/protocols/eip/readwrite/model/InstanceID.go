@@ -38,6 +38,7 @@ type InstanceID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LogicalSegmentType
 	// GetFormat returns Format (property field)
 	GetFormat() uint8
@@ -200,6 +201,23 @@ func (m *_InstanceID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_InstanceID) IsInstanceID() {}
+
+func (m *_InstanceID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InstanceID) deepCopy() *_InstanceID {
+	if m == nil {
+		return nil
+	}
+	_InstanceIDCopy := &_InstanceID{
+		m.LogicalSegmentTypeContract.DeepCopy().(LogicalSegmentTypeContract),
+		m.Format,
+		m.Instance,
+	}
+	m.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
+	return _InstanceIDCopy
+}
 
 func (m *_InstanceID) String() string {
 	if m == nil {

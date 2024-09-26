@@ -38,6 +38,7 @@ type AggregateConfiguration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTreatUncertainAsBad returns TreatUncertainAsBad (property field)
 	GetTreatUncertainAsBad() bool
@@ -292,6 +293,28 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_AggregateConfiguration) IsAggregateConfiguration() {}
+
+func (m *_AggregateConfiguration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AggregateConfiguration) deepCopy() *_AggregateConfiguration {
+	if m == nil {
+		return nil
+	}
+	_AggregateConfigurationCopy := &_AggregateConfiguration{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.TreatUncertainAsBad,
+		m.UseServerCapabilitiesDefaults,
+		m.PercentDataBad,
+		m.PercentDataGood,
+		m.UseSlopedExtrapolation,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AggregateConfigurationCopy
+}
 
 func (m *_AggregateConfiguration) String() string {
 	if m == nil {

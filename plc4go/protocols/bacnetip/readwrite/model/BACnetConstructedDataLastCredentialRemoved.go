@@ -38,6 +38,7 @@ type BACnetConstructedDataLastCredentialRemoved interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastCredentialRemoved returns LastCredentialRemoved (property field)
 	GetLastCredentialRemoved() BACnetDeviceObjectReference
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataLastCredentialRemoved) IsBACnetConstructedDataLastCredentialRemoved() {
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemoved) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemoved) deepCopy() *_BACnetConstructedDataLastCredentialRemoved {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastCredentialRemovedCopy := &_BACnetConstructedDataLastCredentialRemoved{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastCredentialRemoved.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastCredentialRemovedCopy
 }
 
 func (m *_BACnetConstructedDataLastCredentialRemoved) String() string {

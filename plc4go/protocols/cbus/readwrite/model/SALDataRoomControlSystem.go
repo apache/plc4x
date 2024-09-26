@@ -36,6 +36,7 @@ type SALDataRoomControlSystem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataRoomControlSystem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataRoomControlSystem()
@@ -151,6 +152,21 @@ func (m *_SALDataRoomControlSystem) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SALDataRoomControlSystem) IsSALDataRoomControlSystem() {}
+
+func (m *_SALDataRoomControlSystem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataRoomControlSystem) deepCopy() *_SALDataRoomControlSystem {
+	if m == nil {
+		return nil
+	}
+	_SALDataRoomControlSystemCopy := &_SALDataRoomControlSystem{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataRoomControlSystemCopy
+}
 
 func (m *_SALDataRoomControlSystem) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetChannelValueTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueTime) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetChannelValueTime) IsBACnetChannelValueTime() {}
+
+func (m *_BACnetChannelValueTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueTime) deepCopy() *_BACnetChannelValueTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueTimeCopy := &_BACnetChannelValueTime{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueTimeCopy
+}
 
 func (m *_BACnetChannelValueTime) String() string {
 	if m == nil {

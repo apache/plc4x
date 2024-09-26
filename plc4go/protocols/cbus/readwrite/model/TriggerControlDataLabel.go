@@ -38,6 +38,7 @@ type TriggerControlDataLabel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// GetTriggerControlOptions returns TriggerControlOptions (property field)
 	GetTriggerControlOptions() TriggerControlLabelOptions
@@ -246,6 +247,25 @@ func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_TriggerControlDataLabel) IsTriggerControlDataLabel() {}
+
+func (m *_TriggerControlDataLabel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataLabel) deepCopy() *_TriggerControlDataLabel {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataLabelCopy := &_TriggerControlDataLabel{
+		m.TriggerControlDataContract.DeepCopy().(TriggerControlDataContract),
+		m.TriggerControlOptions.DeepCopy().(TriggerControlLabelOptions),
+		m.ActionSelector,
+		utils.CopyPtr[Language](m.Language),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataLabelCopy
+}
 
 func (m *_TriggerControlDataLabel) String() string {
 	if m == nil {

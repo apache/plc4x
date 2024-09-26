@@ -38,6 +38,7 @@ type BACnetOptionalUnsignedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalUnsigned
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalUnsignedValue) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetOptionalUnsignedValue) IsBACnetOptionalUnsignedValue() {}
+
+func (m *_BACnetOptionalUnsignedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalUnsignedValue) deepCopy() *_BACnetOptionalUnsignedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalUnsignedValueCopy := &_BACnetOptionalUnsignedValue{
+		m.BACnetOptionalUnsignedContract.DeepCopy().(BACnetOptionalUnsignedContract),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = m
+	return _BACnetOptionalUnsignedValueCopy
+}
 
 func (m *_BACnetOptionalUnsignedValue) String() string {
 	if m == nil {

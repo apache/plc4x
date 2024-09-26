@@ -38,6 +38,7 @@ type BACnetServiceAckAuthenticate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
@@ -194,6 +195,23 @@ func (m *_BACnetServiceAckAuthenticate) GetServiceAckPayloadLength() uint32 {
 ////
 
 func (m *_BACnetServiceAckAuthenticate) IsBACnetServiceAckAuthenticate() {}
+
+func (m *_BACnetServiceAckAuthenticate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAuthenticate) deepCopy() *_BACnetServiceAckAuthenticate {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAuthenticateCopy := &_BACnetServiceAckAuthenticate{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
+		m.ServiceAckPayloadLength,
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckAuthenticateCopy
+}
 
 func (m *_BACnetServiceAckAuthenticate) String() string {
 	if m == nil {

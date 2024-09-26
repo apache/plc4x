@@ -38,6 +38,7 @@ type ContentFilterElementResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -280,6 +281,26 @@ func (m *_ContentFilterElementResult) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ContentFilterElementResult) IsContentFilterElementResult() {}
+
+func (m *_ContentFilterElementResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ContentFilterElementResult) deepCopy() *_ContentFilterElementResult {
+	if m == nil {
+		return nil
+	}
+	_ContentFilterElementResultCopy := &_ContentFilterElementResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfOperandStatusCodes,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.OperandStatusCodes),
+		m.NoOfOperandDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.OperandDiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ContentFilterElementResultCopy
+}
 
 func (m *_ContentFilterElementResult) String() string {
 	if m == nil {

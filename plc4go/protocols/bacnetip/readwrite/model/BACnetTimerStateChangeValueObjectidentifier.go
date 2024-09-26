@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueObjectidentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueObjectidentifier) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetTimerStateChangeValueObjectidentifier) IsBACnetTimerStateChangeValueObjectidentifier() {
+}
+
+func (m *_BACnetTimerStateChangeValueObjectidentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueObjectidentifier) deepCopy() *_BACnetTimerStateChangeValueObjectidentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueObjectidentifierCopy := &_BACnetTimerStateChangeValueObjectidentifier{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueObjectidentifierCopy
 }
 
 func (m *_BACnetTimerStateChangeValueObjectidentifier) String() string {

@@ -38,6 +38,7 @@ type NLMRequestKeyUpdate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetSet1KeyRevision returns Set1KeyRevision (property field)
 	GetSet1KeyRevision() byte
@@ -305,6 +306,28 @@ func (m *_NLMRequestKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NLMRequestKeyUpdate) IsNLMRequestKeyUpdate() {}
+
+func (m *_NLMRequestKeyUpdate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRequestKeyUpdate) deepCopy() *_NLMRequestKeyUpdate {
+	if m == nil {
+		return nil
+	}
+	_NLMRequestKeyUpdateCopy := &_NLMRequestKeyUpdate{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.Set1KeyRevision,
+		m.Set1ActivationTime,
+		m.Set1ExpirationTime,
+		m.Set2KeyRevision,
+		m.Set2ActivationTime,
+		m.Set2ExpirationTime,
+		m.DistributionKeyRevision,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRequestKeyUpdateCopy
+}
 
 func (m *_NLMRequestKeyUpdate) String() string {
 	if m == nil {

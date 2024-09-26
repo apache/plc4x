@@ -38,6 +38,7 @@ type BACnetEventSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetEventState returns EventState (property field)
@@ -307,6 +308,26 @@ func (m *_BACnetEventSummary) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_BACnetEventSummary) IsBACnetEventSummary() {}
+
+func (m *_BACnetEventSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventSummary) deepCopy() *_BACnetEventSummary {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventSummaryCopy := &_BACnetEventSummary{
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.EventState.DeepCopy().(BACnetEventStateTagged),
+		m.AcknowledgedTransitions.DeepCopy().(BACnetEventTransitionBitsTagged),
+		m.EventTimestamps.DeepCopy().(BACnetEventTimestampsEnclosed),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+		m.EventEnable.DeepCopy().(BACnetEventTransitionBitsTagged),
+		m.EventPriorities.DeepCopy().(BACnetEventPriorities),
+	}
+	return _BACnetEventSummaryCopy
+}
 
 func (m *_BACnetEventSummary) String() string {
 	if m == nil {

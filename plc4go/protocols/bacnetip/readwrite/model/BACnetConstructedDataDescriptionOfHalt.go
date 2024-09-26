@@ -38,6 +38,7 @@ type BACnetConstructedDataDescriptionOfHalt interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDescriptionForHalt returns DescriptionForHalt (property field)
 	GetDescriptionForHalt() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataDescriptionOfHalt) IsBACnetConstructedDataDescriptionOfHalt() {}
+
+func (m *_BACnetConstructedDataDescriptionOfHalt) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDescriptionOfHalt) deepCopy() *_BACnetConstructedDataDescriptionOfHalt {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDescriptionOfHaltCopy := &_BACnetConstructedDataDescriptionOfHalt{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DescriptionForHalt.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDescriptionOfHaltCopy
+}
 
 func (m *_BACnetConstructedDataDescriptionOfHalt) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type InterfaceOptions2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetBurden returns Burden (property field)
 	GetBurden() bool
 	// GetClockGen returns ClockGen (property field)
@@ -271,6 +272,27 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_InterfaceOptions2) IsInterfaceOptions2() {}
+
+func (m *_InterfaceOptions2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InterfaceOptions2) deepCopy() *_InterfaceOptions2 {
+	if m == nil {
+		return nil
+	}
+	_InterfaceOptions2Copy := &_InterfaceOptions2{
+		m.Burden,
+		m.ClockGen,
+		m.reservedField0,
+		m.reservedField1,
+		m.reservedField2,
+		m.reservedField3,
+		m.reservedField4,
+		m.reservedField5,
+	}
+	return _InterfaceOptions2Copy
+}
 
 func (m *_InterfaceOptions2) String() string {
 	if m == nil {

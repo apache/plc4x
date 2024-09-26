@@ -38,6 +38,7 @@ type BACnetConstructedDataAllWritesSuccessful interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAllWritesSuccessful returns AllWritesSuccessful (property field)
 	GetAllWritesSuccessful() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) IsBACnetConstructedDataAllWritesSuccessful() {}
+
+func (m *_BACnetConstructedDataAllWritesSuccessful) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessful) deepCopy() *_BACnetConstructedDataAllWritesSuccessful {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAllWritesSuccessfulCopy := &_BACnetConstructedDataAllWritesSuccessful{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AllWritesSuccessful.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAllWritesSuccessfulCopy
+}
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) String() string {
 	if m == nil {

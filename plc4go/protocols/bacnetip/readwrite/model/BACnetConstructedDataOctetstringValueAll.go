@@ -36,6 +36,7 @@ type BACnetConstructedDataOctetstringValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataOctetstringValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOctetstringValueAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataOctetstringValueAll) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataOctetstringValueAll) IsBACnetConstructedDataOctetstringValueAll() {}
+
+func (m *_BACnetConstructedDataOctetstringValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOctetstringValueAll) deepCopy() *_BACnetConstructedDataOctetstringValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOctetstringValueAllCopy := &_BACnetConstructedDataOctetstringValueAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOctetstringValueAllCopy
+}
 
 func (m *_BACnetConstructedDataOctetstringValueAll) String() string {
 	if m == nil {

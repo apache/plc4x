@@ -38,6 +38,7 @@ type BACnetDateRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStartDate returns StartDate (property field)
 	GetStartDate() BACnetApplicationTagDate
 	// GetEndDate returns EndDate (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetDateRange) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetDateRange) IsBACnetDateRange() {}
+
+func (m *_BACnetDateRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDateRange) deepCopy() *_BACnetDateRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetDateRangeCopy := &_BACnetDateRange{
+		m.StartDate.DeepCopy().(BACnetApplicationTagDate),
+		m.EndDate.DeepCopy().(BACnetApplicationTagDate),
+	}
+	return _BACnetDateRangeCopy
+}
 
 func (m *_BACnetDateRange) String() string {
 	if m == nil {

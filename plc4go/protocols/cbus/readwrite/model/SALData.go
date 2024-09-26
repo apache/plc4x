@@ -40,12 +40,14 @@ type SALData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALData()
 }
 
 // SALDataContract provides a set of functions which can be overwritten by a sub struct
 type SALDataContract interface {
+	utils.Copyable
 	// GetSalData returns SalData (property field)
 	GetSalData() SALData
 	// IsSALData is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -299,3 +301,18 @@ func (pm *_SALData) serializeParent(ctx context.Context, writeBuffer utils.Write
 }
 
 func (m *_SALData) IsSALData() {}
+
+func (m *_SALData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALData) deepCopy() *_SALData {
+	if m == nil {
+		return nil
+	}
+	_SALDataCopy := &_SALData{
+		nil, // will be set by child
+		m.SalData.DeepCopy().(SALData),
+	}
+	return _SALDataCopy
+}

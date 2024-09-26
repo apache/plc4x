@@ -38,6 +38,7 @@ type BACnetPriorityValueCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueCharacterString) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetPriorityValueCharacterString) IsBACnetPriorityValueCharacterString() {}
+
+func (m *_BACnetPriorityValueCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueCharacterString) deepCopy() *_BACnetPriorityValueCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueCharacterStringCopy := &_BACnetPriorityValueCharacterString{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueCharacterStringCopy
+}
 
 func (m *_BACnetPriorityValueCharacterString) String() string {
 	if m == nil {

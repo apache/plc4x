@@ -38,6 +38,7 @@ type RegisteredServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetServerUri returns ServerUri (property field)
 	GetServerUri() PascalString
@@ -409,6 +410,32 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_RegisteredServer) IsRegisteredServer() {}
+
+func (m *_RegisteredServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisteredServer) deepCopy() *_RegisteredServer {
+	if m == nil {
+		return nil
+	}
+	_RegisteredServerCopy := &_RegisteredServer{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ServerUri.DeepCopy().(PascalString),
+		m.ProductUri.DeepCopy().(PascalString),
+		m.NoOfServerNames,
+		utils.DeepCopySlice[LocalizedText, LocalizedText](m.ServerNames),
+		m.ServerType,
+		m.GatewayServerUri.DeepCopy().(PascalString),
+		m.NoOfDiscoveryUrls,
+		utils.DeepCopySlice[PascalString, PascalString](m.DiscoveryUrls),
+		m.SemaphoreFilePath.DeepCopy().(PascalString),
+		m.IsOnline,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisteredServerCopy
+}
 
 func (m *_RegisteredServer) String() string {
 	if m == nil {

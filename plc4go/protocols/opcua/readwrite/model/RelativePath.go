@@ -38,6 +38,7 @@ type RelativePath interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfElements returns NoOfElements (property field)
 	GetNoOfElements() int32
@@ -207,6 +208,23 @@ func (m *_RelativePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_RelativePath) IsRelativePath() {}
+
+func (m *_RelativePath) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RelativePath) deepCopy() *_RelativePath {
+	if m == nil {
+		return nil
+	}
+	_RelativePathCopy := &_RelativePath{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfElements,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Elements),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RelativePathCopy
+}
 
 func (m *_RelativePath) String() string {
 	if m == nil {

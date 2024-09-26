@@ -38,6 +38,7 @@ type BACnetConstructedDataDateTimePatternValueRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) SerializeW
 }
 
 func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) IsBACnetConstructedDataDateTimePatternValueRelinquishDefault() {
+}
+
+func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) deepCopy() *_BACnetConstructedDataDateTimePatternValueRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDateTimePatternValueRelinquishDefaultCopy := &_BACnetConstructedDataDateTimePatternValueRelinquishDefault{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.RelinquishDefault.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDateTimePatternValueRelinquishDefaultCopy
 }
 
 func (m *_BACnetConstructedDataDateTimePatternValueRelinquishDefault) String() string {

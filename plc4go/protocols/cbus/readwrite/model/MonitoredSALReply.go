@@ -38,6 +38,7 @@ type MonitoredSALReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EncodedReply
 	// GetMonitoredSAL returns MonitoredSAL (property field)
 	GetMonitoredSAL() MonitoredSAL
@@ -178,6 +179,22 @@ func (m *_MonitoredSALReply) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_MonitoredSALReply) IsMonitoredSALReply() {}
+
+func (m *_MonitoredSALReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSALReply) deepCopy() *_MonitoredSALReply {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALReplyCopy := &_MonitoredSALReply{
+		m.EncodedReplyContract.DeepCopy().(EncodedReplyContract),
+		m.MonitoredSAL.DeepCopy().(MonitoredSAL),
+	}
+	m.EncodedReplyContract.(*_EncodedReply)._SubType = m
+	return _MonitoredSALReplyCopy
+}
 
 func (m *_MonitoredSALReply) String() string {
 	if m == nil {

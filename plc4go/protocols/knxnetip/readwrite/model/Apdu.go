@@ -40,12 +40,14 @@ type Apdu interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApdu is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApdu()
 }
 
 // ApduContract provides a set of functions which can be overwritten by a sub struct
 type ApduContract interface {
+	utils.Copyable
 	// GetNumbered returns Numbered (property field)
 	GetNumbered() bool
 	// GetCounter returns Counter (property field)
@@ -255,3 +257,20 @@ func (m *_Apdu) GetDataLength() uint8 {
 ////
 
 func (m *_Apdu) IsApdu() {}
+
+func (m *_Apdu) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Apdu) deepCopy() *_Apdu {
+	if m == nil {
+		return nil
+	}
+	_ApduCopy := &_Apdu{
+		nil, // will be set by child
+		m.Numbered,
+		m.Counter,
+		m.DataLength,
+	}
+	return _ApduCopy
+}

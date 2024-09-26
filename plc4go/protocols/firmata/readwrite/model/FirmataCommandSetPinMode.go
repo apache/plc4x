@@ -38,6 +38,7 @@ type FirmataCommandSetPinMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -200,6 +201,23 @@ func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_FirmataCommandSetPinMode) IsFirmataCommandSetPinMode() {}
+
+func (m *_FirmataCommandSetPinMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandSetPinMode) deepCopy() *_FirmataCommandSetPinMode {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandSetPinModeCopy := &_FirmataCommandSetPinMode{
+		m.FirmataCommandContract.DeepCopy().(FirmataCommandContract),
+		m.Pin,
+		m.Mode,
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandSetPinModeCopy
+}
 
 func (m *_FirmataCommandSetPinMode) String() string {
 	if m == nil {

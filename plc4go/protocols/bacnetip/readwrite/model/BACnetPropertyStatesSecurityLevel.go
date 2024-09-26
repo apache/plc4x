@@ -38,6 +38,7 @@ type BACnetPropertyStatesSecurityLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityLevelTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesSecurityLevel) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesSecurityLevel) IsBACnetPropertyStatesSecurityLevel() {}
+
+func (m *_BACnetPropertyStatesSecurityLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesSecurityLevel) deepCopy() *_BACnetPropertyStatesSecurityLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesSecurityLevelCopy := &_BACnetPropertyStatesSecurityLevel{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.SecurityLevel.DeepCopy().(BACnetSecurityLevelTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesSecurityLevelCopy
+}
 
 func (m *_BACnetPropertyStatesSecurityLevel) String() string {
 	if m == nil {

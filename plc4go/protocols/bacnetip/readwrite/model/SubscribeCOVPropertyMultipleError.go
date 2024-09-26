@@ -38,6 +38,7 @@ type SubscribeCOVPropertyMultipleError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -206,6 +207,23 @@ func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_SubscribeCOVPropertyMultipleError) IsSubscribeCOVPropertyMultipleError() {}
+
+func (m *_SubscribeCOVPropertyMultipleError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscribeCOVPropertyMultipleError) deepCopy() *_SubscribeCOVPropertyMultipleError {
+	if m == nil {
+		return nil
+	}
+	_SubscribeCOVPropertyMultipleErrorCopy := &_SubscribeCOVPropertyMultipleError{
+		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.FirstFailedSubscription.DeepCopy().(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _SubscribeCOVPropertyMultipleErrorCopy
+}
 
 func (m *_SubscribeCOVPropertyMultipleError) String() string {
 	if m == nil {

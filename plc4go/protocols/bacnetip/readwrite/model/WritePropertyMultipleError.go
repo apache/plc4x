@@ -38,6 +38,7 @@ type WritePropertyMultipleError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -206,6 +207,23 @@ func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_WritePropertyMultipleError) IsWritePropertyMultipleError() {}
+
+func (m *_WritePropertyMultipleError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WritePropertyMultipleError) deepCopy() *_WritePropertyMultipleError {
+	if m == nil {
+		return nil
+	}
+	_WritePropertyMultipleErrorCopy := &_WritePropertyMultipleError{
+		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.FirstFailedWriteAttempt.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _WritePropertyMultipleErrorCopy
+}
 
 func (m *_WritePropertyMultipleError) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CBusMessageToServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusMessage
 	// GetRequest returns Request (property field)
 	GetRequest() Request
@@ -182,6 +183,22 @@ func (m *_CBusMessageToServer) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_CBusMessageToServer) IsCBusMessageToServer() {}
+
+func (m *_CBusMessageToServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusMessageToServer) deepCopy() *_CBusMessageToServer {
+	if m == nil {
+		return nil
+	}
+	_CBusMessageToServerCopy := &_CBusMessageToServer{
+		m.CBusMessageContract.DeepCopy().(CBusMessageContract),
+		m.Request.DeepCopy().(Request),
+	}
+	m.CBusMessageContract.(*_CBusMessage)._SubType = m
+	return _CBusMessageToServerCopy
+}
 
 func (m *_CBusMessageToServer) String() string {
 	if m == nil {

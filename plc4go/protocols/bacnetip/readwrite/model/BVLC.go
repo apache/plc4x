@@ -45,12 +45,14 @@ type BVLC interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBVLC is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLC()
 }
 
 // BVLCContract provides a set of functions which can be overwritten by a sub struct
 type BVLCContract interface {
+	utils.Copyable
 	// GetBvlcPayloadLength returns BvlcPayloadLength (virtual field)
 	GetBvlcPayloadLength() uint16
 	// IsBVLC is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -311,3 +313,17 @@ func (pm *_BVLC) serializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 }
 
 func (m *_BVLC) IsBVLC() {}
+
+func (m *_BVLC) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLC) deepCopy() *_BVLC {
+	if m == nil {
+		return nil
+	}
+	_BVLCCopy := &_BVLC{
+		nil, // will be set by child
+	}
+	return _BVLCCopy
+}

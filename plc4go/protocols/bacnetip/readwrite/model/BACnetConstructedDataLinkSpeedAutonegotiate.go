@@ -38,6 +38,7 @@ type BACnetConstructedDataLinkSpeedAutonegotiate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLinkSpeedAutonegotiate returns LinkSpeedAutonegotiate (property field)
 	GetLinkSpeedAutonegotiate() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) IsBACnetConstructedDataLinkSpeedAutonegotiate() {
+}
+
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) deepCopy() *_BACnetConstructedDataLinkSpeedAutonegotiate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLinkSpeedAutonegotiateCopy := &_BACnetConstructedDataLinkSpeedAutonegotiate{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LinkSpeedAutonegotiate.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLinkSpeedAutonegotiateCopy
 }
 
 func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) String() string {

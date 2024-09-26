@@ -38,6 +38,7 @@ type ErrorReportingDataGeneric interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingData
 	// GetSystemCategory returns SystemCategory (property field)
 	GetSystemCategory() ErrorReportingSystemCategory
@@ -405,6 +406,29 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_ErrorReportingDataGeneric) IsErrorReportingDataGeneric() {}
+
+func (m *_ErrorReportingDataGeneric) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingDataGeneric) deepCopy() *_ErrorReportingDataGeneric {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingDataGenericCopy := &_ErrorReportingDataGeneric{
+		m.ErrorReportingDataContract.DeepCopy().(ErrorReportingDataContract),
+		m.SystemCategory.DeepCopy().(ErrorReportingSystemCategory),
+		m.MostRecent,
+		m.Acknowledge,
+		m.MostSevere,
+		m.Severity,
+		m.DeviceId,
+		m.ErrorData1,
+		m.ErrorData2,
+	}
+	m.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = m
+	return _ErrorReportingDataGenericCopy
+}
 
 func (m *_ErrorReportingDataGeneric) String() string {
 	if m == nil {

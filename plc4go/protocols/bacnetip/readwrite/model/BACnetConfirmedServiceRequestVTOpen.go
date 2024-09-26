@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestVTOpen interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetVtClass returns VtClass (property field)
 	GetVtClass() BACnetVTClassTagged
@@ -206,6 +207,23 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) IsBACnetConfirmedServiceRequestVTOpen() {}
+
+func (m *_BACnetConfirmedServiceRequestVTOpen) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpen) deepCopy() *_BACnetConfirmedServiceRequestVTOpen {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestVTOpenCopy := &_BACnetConfirmedServiceRequestVTOpen{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.VtClass.DeepCopy().(BACnetVTClassTagged),
+		m.LocalVtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestVTOpenCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) String() string {
 	if m == nil {

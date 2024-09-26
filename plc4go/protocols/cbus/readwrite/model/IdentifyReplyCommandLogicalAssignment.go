@@ -38,6 +38,7 @@ type IdentifyReplyCommandLogicalAssignment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetLogicAssigment returns LogicAssigment (property field)
 	GetLogicAssigment() []LogicAssignment
@@ -186,6 +187,22 @@ func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_IdentifyReplyCommandLogicalAssignment) IsIdentifyReplyCommandLogicalAssignment() {}
+
+func (m *_IdentifyReplyCommandLogicalAssignment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandLogicalAssignment) deepCopy() *_IdentifyReplyCommandLogicalAssignment {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandLogicalAssignmentCopy := &_IdentifyReplyCommandLogicalAssignment{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		utils.DeepCopySlice[LogicAssignment, LogicAssignment](m.LogicAssigment),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandLogicalAssignmentCopy
+}
 
 func (m *_IdentifyReplyCommandLogicalAssignment) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type TamperStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetIsNoTamper returns IsNoTamper (virtual field)
@@ -241,6 +242,20 @@ func (m *_TamperStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_TamperStatus) IsTamperStatus() {}
+
+func (m *_TamperStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TamperStatus) deepCopy() *_TamperStatus {
+	if m == nil {
+		return nil
+	}
+	_TamperStatusCopy := &_TamperStatus{
+		m.Status,
+	}
+	return _TamperStatusCopy
+}
 
 func (m *_TamperStatus) String() string {
 	if m == nil {

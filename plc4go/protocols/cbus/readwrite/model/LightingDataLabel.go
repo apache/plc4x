@@ -38,6 +38,7 @@ type LightingDataLabel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
@@ -246,6 +247,25 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_LightingDataLabel) IsLightingDataLabel() {}
+
+func (m *_LightingDataLabel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataLabel) deepCopy() *_LightingDataLabel {
+	if m == nil {
+		return nil
+	}
+	_LightingDataLabelCopy := &_LightingDataLabel{
+		m.LightingDataContract.DeepCopy().(LightingDataContract),
+		m.Group,
+		m.LabelOptions.DeepCopy().(LightingLabelOptions),
+		utils.CopyPtr[Language](m.Language),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataLabelCopy
+}
 
 func (m *_LightingDataLabel) String() string {
 	if m == nil {

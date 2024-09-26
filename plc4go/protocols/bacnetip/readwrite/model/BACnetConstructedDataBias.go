@@ -38,6 +38,7 @@ type BACnetConstructedDataBias interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBias returns Bias (property field)
 	GetBias() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBias) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetConstructedDataBias) IsBACnetConstructedDataBias() {}
+
+func (m *_BACnetConstructedDataBias) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBias) deepCopy() *_BACnetConstructedDataBias {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBiasCopy := &_BACnetConstructedDataBias{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Bias.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBiasCopy
+}
 
 func (m *_BACnetConstructedDataBias) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type S7PayloadUserData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7PayloadUserDataItem
@@ -190,6 +191,22 @@ func (m *_S7PayloadUserData) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_S7PayloadUserData) IsS7PayloadUserData() {}
+
+func (m *_S7PayloadUserData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserData) deepCopy() *_S7PayloadUserData {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataCopy := &_S7PayloadUserData{
+		m.S7PayloadContract.DeepCopy().(S7PayloadContract),
+		utils.DeepCopySlice[S7PayloadUserDataItem, S7PayloadUserDataItem](m.Items),
+	}
+	m.S7PayloadContract.(*_S7Payload)._SubType = m
+	return _S7PayloadUserDataCopy
+}
 
 func (m *_S7PayloadUserData) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetCalendarEntryDateRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetCalendarEntry
 	// GetDateRange returns DateRange (property field)
 	GetDateRange() BACnetDateRangeEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetCalendarEntryDateRange) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetCalendarEntryDateRange) IsBACnetCalendarEntryDateRange() {}
+
+func (m *_BACnetCalendarEntryDateRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCalendarEntryDateRange) deepCopy() *_BACnetCalendarEntryDateRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetCalendarEntryDateRangeCopy := &_BACnetCalendarEntryDateRange{
+		m.BACnetCalendarEntryContract.DeepCopy().(BACnetCalendarEntryContract),
+		m.DateRange.DeepCopy().(BACnetDateRangeEnclosed),
+	}
+	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
+	return _BACnetCalendarEntryDateRangeCopy
+}
 
 func (m *_BACnetCalendarEntryDateRange) String() string {
 	if m == nil {

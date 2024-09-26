@@ -38,6 +38,7 @@ type BACnetPropertyStatesDoorStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetDoorStatus returns DoorStatus (property field)
 	GetDoorStatus() BACnetDoorStatusTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesDoorStatus) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetPropertyStatesDoorStatus) IsBACnetPropertyStatesDoorStatus() {}
+
+func (m *_BACnetPropertyStatesDoorStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesDoorStatus) deepCopy() *_BACnetPropertyStatesDoorStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesDoorStatusCopy := &_BACnetPropertyStatesDoorStatus{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.DoorStatus.DeepCopy().(BACnetDoorStatusTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesDoorStatusCopy
+}
 
 func (m *_BACnetPropertyStatesDoorStatus) String() string {
 	if m == nil {

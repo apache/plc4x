@@ -38,6 +38,7 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMonitoredProperty returns MonitoredProperty (property field)
 	GetMonitoredProperty() BACnetPropertyReferenceEnclosed
 	// GetCovIncrement returns CovIncrement (property field)
@@ -218,6 +219,22 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry() {
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) deepCopy() *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryCopy := &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry{
+		m.MonitoredProperty.DeepCopy().(BACnetPropertyReferenceEnclosed),
+		m.CovIncrement.DeepCopy().(BACnetContextTagReal),
+		m.Timestamped.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntryCopy
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) String() string {

@@ -40,12 +40,14 @@ type BACnetLandingCallStatusCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetLandingCallStatusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLandingCallStatusCommand()
 }
 
 // BACnetLandingCallStatusCommandContract provides a set of functions which can be overwritten by a sub struct
 type BACnetLandingCallStatusCommandContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -237,3 +239,18 @@ func (pm *_BACnetLandingCallStatusCommand) serializeParent(ctx context.Context, 
 }
 
 func (m *_BACnetLandingCallStatusCommand) IsBACnetLandingCallStatusCommand() {}
+
+func (m *_BACnetLandingCallStatusCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingCallStatusCommand) deepCopy() *_BACnetLandingCallStatusCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingCallStatusCommandCopy := &_BACnetLandingCallStatusCommand{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetLandingCallStatusCommandCopy
+}

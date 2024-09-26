@@ -40,12 +40,14 @@ type AirConditioningData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAirConditioningData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningData()
 }
 
 // AirConditioningDataContract provides a set of functions which can be overwritten by a sub struct
 type AirConditioningDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() AirConditioningCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
@@ -314,3 +316,18 @@ func (pm *_AirConditioningData) serializeParent(ctx context.Context, writeBuffer
 }
 
 func (m *_AirConditioningData) IsAirConditioningData() {}
+
+func (m *_AirConditioningData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningData) deepCopy() *_AirConditioningData {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataCopy := &_AirConditioningData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+	}
+	return _AirConditioningDataCopy
+}

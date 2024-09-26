@@ -38,6 +38,7 @@ type CreateSessionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -442,6 +443,33 @@ func (m *_CreateSessionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_CreateSessionResponse) IsCreateSessionResponse() {}
+
+func (m *_CreateSessionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CreateSessionResponse) deepCopy() *_CreateSessionResponse {
+	if m == nil {
+		return nil
+	}
+	_CreateSessionResponseCopy := &_CreateSessionResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SessionId.DeepCopy().(NodeId),
+		m.AuthenticationToken.DeepCopy().(NodeId),
+		m.RevisedSessionTimeout,
+		m.ServerNonce.DeepCopy().(PascalByteString),
+		m.ServerCertificate.DeepCopy().(PascalByteString),
+		m.NoOfServerEndpoints,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ServerEndpoints),
+		m.NoOfServerSoftwareCertificates,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ServerSoftwareCertificates),
+		m.ServerSignature.DeepCopy().(ExtensionObjectDefinition),
+		m.MaxRequestMessageSize,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CreateSessionResponseCopy
+}
 
 func (m *_CreateSessionResponse) String() string {
 	if m == nil {

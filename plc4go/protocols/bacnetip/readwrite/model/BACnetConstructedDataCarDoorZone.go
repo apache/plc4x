@@ -38,6 +38,7 @@ type BACnetConstructedDataCarDoorZone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarDoorZone returns CarDoorZone (property field)
 	GetCarDoorZone() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCarDoorZone) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataCarDoorZone) IsBACnetConstructedDataCarDoorZone() {}
+
+func (m *_BACnetConstructedDataCarDoorZone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarDoorZone) deepCopy() *_BACnetConstructedDataCarDoorZone {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarDoorZoneCopy := &_BACnetConstructedDataCarDoorZone{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CarDoorZone.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarDoorZoneCopy
+}
 
 func (m *_BACnetConstructedDataCarDoorZone) String() string {
 	if m == nil {

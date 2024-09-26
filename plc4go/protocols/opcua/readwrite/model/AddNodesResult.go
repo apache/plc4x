@@ -38,6 +38,7 @@ type AddNodesResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -206,6 +207,23 @@ func (m *_AddNodesResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_AddNodesResult) IsAddNodesResult() {}
+
+func (m *_AddNodesResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddNodesResult) deepCopy() *_AddNodesResult {
+	if m == nil {
+		return nil
+	}
+	_AddNodesResultCopy := &_AddNodesResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.AddedNodeId.DeepCopy().(NodeId),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddNodesResultCopy
+}
 
 func (m *_AddNodesResult) String() string {
 	if m == nil {

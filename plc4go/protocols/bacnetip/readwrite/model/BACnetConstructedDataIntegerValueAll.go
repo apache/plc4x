@@ -36,6 +36,7 @@ type BACnetConstructedDataIntegerValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataIntegerValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIntegerValueAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataIntegerValueAll) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataIntegerValueAll) IsBACnetConstructedDataIntegerValueAll() {}
+
+func (m *_BACnetConstructedDataIntegerValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntegerValueAll) deepCopy() *_BACnetConstructedDataIntegerValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntegerValueAllCopy := &_BACnetConstructedDataIntegerValueAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntegerValueAllCopy
+}
 
 func (m *_BACnetConstructedDataIntegerValueAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetFailure returns Failure (property field)
 	GetFailure() ErrorEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetLogRecordLogDatumFailure) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetLogRecordLogDatumFailure) IsBACnetLogRecordLogDatumFailure() {}
+
+func (m *_BACnetLogRecordLogDatumFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumFailure) deepCopy() *_BACnetLogRecordLogDatumFailure {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumFailureCopy := &_BACnetLogRecordLogDatumFailure{
+		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.Failure.DeepCopy().(ErrorEnclosed),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumFailureCopy
+}
 
 func (m *_BACnetLogRecordLogDatumFailure) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesLockStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLockStatus returns LockStatus (property field)
 	GetLockStatus() BACnetLockStatusTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLockStatus) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetPropertyStatesLockStatus) IsBACnetPropertyStatesLockStatus() {}
+
+func (m *_BACnetPropertyStatesLockStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLockStatus) deepCopy() *_BACnetPropertyStatesLockStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLockStatusCopy := &_BACnetPropertyStatesLockStatus{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.LockStatus.DeepCopy().(BACnetLockStatusTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLockStatusCopy
+}
 
 func (m *_BACnetPropertyStatesLockStatus) String() string {
 	if m == nil {

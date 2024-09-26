@@ -38,6 +38,7 @@ type TrustListDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSpecifiedLists returns SpecifiedLists (property field)
 	GetSpecifiedLists() uint32
@@ -375,6 +376,30 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_TrustListDataType) IsTrustListDataType() {}
+
+func (m *_TrustListDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TrustListDataType) deepCopy() *_TrustListDataType {
+	if m == nil {
+		return nil
+	}
+	_TrustListDataTypeCopy := &_TrustListDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SpecifiedLists,
+		m.NoOfTrustedCertificates,
+		utils.DeepCopySlice[PascalByteString, PascalByteString](m.TrustedCertificates),
+		m.NoOfTrustedCrls,
+		utils.DeepCopySlice[PascalByteString, PascalByteString](m.TrustedCrls),
+		m.NoOfIssuerCertificates,
+		utils.DeepCopySlice[PascalByteString, PascalByteString](m.IssuerCertificates),
+		m.NoOfIssuerCrls,
+		utils.DeepCopySlice[PascalByteString, PascalByteString](m.IssuerCrls),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TrustListDataTypeCopy
+}
 
 func (m *_TrustListDataType) String() string {
 	if m == nil {

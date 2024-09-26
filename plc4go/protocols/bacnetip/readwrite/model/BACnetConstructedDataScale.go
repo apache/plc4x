@@ -38,6 +38,7 @@ type BACnetConstructedDataScale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetScale returns Scale (property field)
 	GetScale() BACnetScale
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataScale) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetConstructedDataScale) IsBACnetConstructedDataScale() {}
+
+func (m *_BACnetConstructedDataScale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataScale) deepCopy() *_BACnetConstructedDataScale {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataScaleCopy := &_BACnetConstructedDataScale{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Scale.DeepCopy().(BACnetScale),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataScaleCopy
+}
 
 func (m *_BACnetConstructedDataScale) String() string {
 	if m == nil {

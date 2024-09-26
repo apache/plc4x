@@ -40,6 +40,7 @@ type BVLCSecureBVLL interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetSecurityWrapper returns SecurityWrapper (property field)
 	GetSecurityWrapper() []byte
@@ -196,6 +197,23 @@ func (m *_BVLCSecureBVLL) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCSecureBVLL) IsBVLCSecureBVLL() {}
+
+func (m *_BVLCSecureBVLL) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCSecureBVLL) deepCopy() *_BVLCSecureBVLL {
+	if m == nil {
+		return nil
+	}
+	_BVLCSecureBVLLCopy := &_BVLCSecureBVLL{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+		utils.DeepCopySlice[byte, byte](m.SecurityWrapper),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCSecureBVLLCopy
+}
 
 func (m *_BVLCSecureBVLL) String() string {
 	if m == nil {

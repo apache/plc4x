@@ -38,6 +38,7 @@ type AdsNotificationSample interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
 	// GetSampleSize returns SampleSize (property field)
@@ -208,6 +209,22 @@ func (m *_AdsNotificationSample) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_AdsNotificationSample) IsAdsNotificationSample() {}
+
+func (m *_AdsNotificationSample) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsNotificationSample) deepCopy() *_AdsNotificationSample {
+	if m == nil {
+		return nil
+	}
+	_AdsNotificationSampleCopy := &_AdsNotificationSample{
+		m.NotificationHandle,
+		m.SampleSize,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	return _AdsNotificationSampleCopy
+}
 
 func (m *_AdsNotificationSample) String() string {
 	if m == nil {

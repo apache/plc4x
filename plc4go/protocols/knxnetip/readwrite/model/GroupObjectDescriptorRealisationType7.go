@@ -38,6 +38,7 @@ type GroupObjectDescriptorRealisationType7 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDataAddress returns DataAddress (property field)
 	GetDataAddress() uint16
 	// GetUpdateEnable returns UpdateEnable (property field)
@@ -326,6 +327,28 @@ func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_GroupObjectDescriptorRealisationType7) IsGroupObjectDescriptorRealisationType7() {}
+
+func (m *_GroupObjectDescriptorRealisationType7) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GroupObjectDescriptorRealisationType7) deepCopy() *_GroupObjectDescriptorRealisationType7 {
+	if m == nil {
+		return nil
+	}
+	_GroupObjectDescriptorRealisationType7Copy := &_GroupObjectDescriptorRealisationType7{
+		m.DataAddress,
+		m.UpdateEnable,
+		m.TransmitEnable,
+		m.SegmentSelectorEnable,
+		m.WriteEnable,
+		m.ReadEnable,
+		m.CommunicationEnable,
+		m.Priority,
+		m.ValueType,
+	}
+	return _GroupObjectDescriptorRealisationType7Copy
+}
 
 func (m *_GroupObjectDescriptorRealisationType7) String() string {
 	if m == nil {

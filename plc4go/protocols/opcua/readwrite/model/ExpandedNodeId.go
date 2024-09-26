@@ -38,6 +38,7 @@ type ExpandedNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceURISpecified returns NamespaceURISpecified (property field)
 	GetNamespaceURISpecified() bool
 	// GetServerIndexSpecified returns ServerIndexSpecified (property field)
@@ -293,6 +294,24 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ExpandedNodeId) IsExpandedNodeId() {}
+
+func (m *_ExpandedNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExpandedNodeId) deepCopy() *_ExpandedNodeId {
+	if m == nil {
+		return nil
+	}
+	_ExpandedNodeIdCopy := &_ExpandedNodeId{
+		m.NamespaceURISpecified,
+		m.ServerIndexSpecified,
+		m.NodeId.DeepCopy().(NodeIdTypeDefinition),
+		m.NamespaceURI.DeepCopy().(PascalString),
+		utils.CopyPtr[uint32](m.ServerIndex),
+	}
+	return _ExpandedNodeIdCopy
+}
 
 func (m *_ExpandedNodeId) String() string {
 	if m == nil {

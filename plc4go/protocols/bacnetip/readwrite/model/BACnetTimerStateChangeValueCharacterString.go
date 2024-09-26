@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueCharacterString) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetTimerStateChangeValueCharacterString) IsBACnetTimerStateChangeValueCharacterString() {
+}
+
+func (m *_BACnetTimerStateChangeValueCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueCharacterString) deepCopy() *_BACnetTimerStateChangeValueCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueCharacterStringCopy := &_BACnetTimerStateChangeValueCharacterString{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueCharacterStringCopy
 }
 
 func (m *_BACnetTimerStateChangeValueCharacterString) String() string {

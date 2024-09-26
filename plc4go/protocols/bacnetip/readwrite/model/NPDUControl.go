@@ -38,6 +38,7 @@ type NPDUControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMessageTypeFieldPresent returns MessageTypeFieldPresent (property field)
 	GetMessageTypeFieldPresent() bool
 	// GetDestinationSpecified returns DestinationSpecified (property field)
@@ -275,6 +276,26 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_NPDUControl) IsNPDUControl() {}
+
+func (m *_NPDUControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NPDUControl) deepCopy() *_NPDUControl {
+	if m == nil {
+		return nil
+	}
+	_NPDUControlCopy := &_NPDUControl{
+		m.MessageTypeFieldPresent,
+		m.DestinationSpecified,
+		m.SourceSpecified,
+		m.ExpectingReply,
+		m.NetworkPriority,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _NPDUControlCopy
+}
 
 func (m *_NPDUControl) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ServiceFault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -182,6 +183,22 @@ func (m *_ServiceFault) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_ServiceFault) IsServiceFault() {}
+
+func (m *_ServiceFault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServiceFault) deepCopy() *_ServiceFault {
+	if m == nil {
+		return nil
+	}
+	_ServiceFaultCopy := &_ServiceFault{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServiceFaultCopy
+}
 
 func (m *_ServiceFault) String() string {
 	if m == nil {

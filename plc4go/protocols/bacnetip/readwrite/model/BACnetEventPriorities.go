@@ -38,6 +38,7 @@ type BACnetEventPriorities interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetToOffnormal returns ToOffnormal (property field)
@@ -274,6 +275,25 @@ func (m *_BACnetEventPriorities) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventPriorities) IsBACnetEventPriorities() {}
+
+func (m *_BACnetEventPriorities) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventPriorities) deepCopy() *_BACnetEventPriorities {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventPrioritiesCopy := &_BACnetEventPriorities{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ToOffnormal.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.ToFault.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.ToNormal.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventPrioritiesCopy
+}
 
 func (m *_BACnetEventPriorities) String() string {
 	if m == nil {

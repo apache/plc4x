@@ -36,6 +36,7 @@ type ApduDataExtOpenRoutingTableRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtOpenRoutingTableRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtOpenRoutingTableRequest()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtOpenRoutingTableRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ApduDataExtOpenRoutingTableRequest) IsApduDataExtOpenRoutingTableRequest() {}
+
+func (m *_ApduDataExtOpenRoutingTableRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtOpenRoutingTableRequest) deepCopy() *_ApduDataExtOpenRoutingTableRequest {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtOpenRoutingTableRequestCopy := &_ApduDataExtOpenRoutingTableRequest{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtOpenRoutingTableRequestCopy
+}
 
 func (m *_ApduDataExtOpenRoutingTableRequest) String() string {
 	if m == nil {

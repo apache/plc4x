@@ -38,6 +38,7 @@ type BACnetPropertyStatesNodeType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetNodeType returns NodeType (property field)
 	GetNodeType() BACnetNodeTypeTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesNodeType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetPropertyStatesNodeType) IsBACnetPropertyStatesNodeType() {}
+
+func (m *_BACnetPropertyStatesNodeType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesNodeType) deepCopy() *_BACnetPropertyStatesNodeType {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesNodeTypeCopy := &_BACnetPropertyStatesNodeType{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.NodeType.DeepCopy().(BACnetNodeTypeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesNodeTypeCopy
+}
 
 func (m *_BACnetPropertyStatesNodeType) String() string {
 	if m == nil {

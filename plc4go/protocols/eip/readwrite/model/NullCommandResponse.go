@@ -36,6 +36,7 @@ type NullCommandResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsNullCommandResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullCommandResponse()
@@ -154,6 +155,21 @@ func (m *_NullCommandResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NullCommandResponse) IsNullCommandResponse() {}
+
+func (m *_NullCommandResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullCommandResponse) deepCopy() *_NullCommandResponse {
+	if m == nil {
+		return nil
+	}
+	_NullCommandResponseCopy := &_NullCommandResponse{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _NullCommandResponseCopy
+}
 
 func (m *_NullCommandResponse) String() string {
 	if m == nil {

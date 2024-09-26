@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfLifeSavety interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -298,6 +299,27 @@ func (m *_BACnetEventParameterChangeOfLifeSavety) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavety) IsBACnetEventParameterChangeOfLifeSavety() {}
+
+func (m *_BACnetEventParameterChangeOfLifeSavety) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavety) deepCopy() *_BACnetEventParameterChangeOfLifeSavety {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfLifeSavetyCopy := &_BACnetEventParameterChangeOfLifeSavety{
+		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfLifeSavetyAlarmValues.DeepCopy().(BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues),
+		m.ListOfAlarmValues.DeepCopy().(BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues),
+		m.ModePropertyReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterChangeOfLifeSavetyCopy
+}
 
 func (m *_BACnetEventParameterChangeOfLifeSavety) String() string {
 	if m == nil {

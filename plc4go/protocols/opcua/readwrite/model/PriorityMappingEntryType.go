@@ -38,6 +38,7 @@ type PriorityMappingEntryType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMappingUri returns MappingUri (property field)
 	GetMappingUri() PascalString
@@ -248,6 +249,25 @@ func (m *_PriorityMappingEntryType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_PriorityMappingEntryType) IsPriorityMappingEntryType() {}
+
+func (m *_PriorityMappingEntryType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PriorityMappingEntryType) deepCopy() *_PriorityMappingEntryType {
+	if m == nil {
+		return nil
+	}
+	_PriorityMappingEntryTypeCopy := &_PriorityMappingEntryType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.MappingUri.DeepCopy().(PascalString),
+		m.PriorityLabel.DeepCopy().(PascalString),
+		m.PriorityValue_PCP,
+		m.PriorityValue_DSCP,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PriorityMappingEntryTypeCopy
+}
 
 func (m *_PriorityMappingEntryType) String() string {
 	if m == nil {

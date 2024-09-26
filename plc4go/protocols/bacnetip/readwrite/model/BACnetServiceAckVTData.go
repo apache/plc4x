@@ -38,6 +38,7 @@ type BACnetServiceAckVTData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetVtSessionIdentifier returns VtSessionIdentifier (property field)
 	GetVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
@@ -230,6 +231,24 @@ func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetServiceAckVTData) IsBACnetServiceAckVTData() {}
+
+func (m *_BACnetServiceAckVTData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckVTData) deepCopy() *_BACnetServiceAckVTData {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckVTDataCopy := &_BACnetServiceAckVTData{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.VtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.VtNewData.DeepCopy().(BACnetApplicationTagOctetString),
+		m.VtDataFlag.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckVTDataCopy
+}
 
 func (m *_BACnetServiceAckVTData) String() string {
 	if m == nil {

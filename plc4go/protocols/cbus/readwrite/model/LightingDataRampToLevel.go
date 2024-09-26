@@ -38,6 +38,7 @@ type LightingDataRampToLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
@@ -196,6 +197,23 @@ func (m *_LightingDataRampToLevel) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_LightingDataRampToLevel) IsLightingDataRampToLevel() {}
+
+func (m *_LightingDataRampToLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataRampToLevel) deepCopy() *_LightingDataRampToLevel {
+	if m == nil {
+		return nil
+	}
+	_LightingDataRampToLevelCopy := &_LightingDataRampToLevel{
+		m.LightingDataContract.DeepCopy().(LightingDataContract),
+		m.Group,
+		m.Level,
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataRampToLevelCopy
+}
 
 func (m *_LightingDataRampToLevel) String() string {
 	if m == nil {

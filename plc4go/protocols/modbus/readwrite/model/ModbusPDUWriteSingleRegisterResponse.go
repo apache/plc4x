@@ -38,6 +38,7 @@ type ModbusPDUWriteSingleRegisterResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -208,6 +209,23 @@ func (m *_ModbusPDUWriteSingleRegisterResponse) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_ModbusPDUWriteSingleRegisterResponse) IsModbusPDUWriteSingleRegisterResponse() {}
+
+func (m *_ModbusPDUWriteSingleRegisterResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteSingleRegisterResponse) deepCopy() *_ModbusPDUWriteSingleRegisterResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteSingleRegisterResponseCopy := &_ModbusPDUWriteSingleRegisterResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.Address,
+		m.Value,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteSingleRegisterResponseCopy
+}
 
 func (m *_ModbusPDUWriteSingleRegisterResponse) String() string {
 	if m == nil {

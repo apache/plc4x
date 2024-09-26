@@ -38,6 +38,7 @@ type TransferResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -226,6 +227,24 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_TransferResult) IsTransferResult() {}
+
+func (m *_TransferResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransferResult) deepCopy() *_TransferResult {
+	if m == nil {
+		return nil
+	}
+	_TransferResultCopy := &_TransferResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfAvailableSequenceNumbers,
+		utils.DeepCopySlice[uint32, uint32](m.AvailableSequenceNumbers),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TransferResultCopy
+}
 
 func (m *_TransferResult) String() string {
 	if m == nil {

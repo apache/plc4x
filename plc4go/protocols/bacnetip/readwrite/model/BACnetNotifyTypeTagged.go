@@ -38,6 +38,7 @@ type BACnetNotifyTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetNotifyTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetNotifyTypeTagged) IsBACnetNotifyTypeTagged() {}
+
+func (m *_BACnetNotifyTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotifyTypeTagged) deepCopy() *_BACnetNotifyTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotifyTypeTaggedCopy := &_BACnetNotifyTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetNotifyTypeTaggedCopy
+}
 
 func (m *_BACnetNotifyTypeTagged) String() string {
 	if m == nil {

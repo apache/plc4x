@@ -38,6 +38,7 @@ type BACnetSegmentationTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetSegmentationTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetSegmentationTagged) IsBACnetSegmentationTagged() {}
+
+func (m *_BACnetSegmentationTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSegmentationTagged) deepCopy() *_BACnetSegmentationTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetSegmentationTaggedCopy := &_BACnetSegmentationTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetSegmentationTaggedCopy
+}
 
 func (m *_BACnetSegmentationTagged) String() string {
 	if m == nil {

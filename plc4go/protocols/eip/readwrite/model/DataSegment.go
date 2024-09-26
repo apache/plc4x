@@ -38,6 +38,7 @@ type DataSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() DataSegmentType
@@ -182,6 +183,22 @@ func (m *_DataSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_DataSegment) IsDataSegment() {}
+
+func (m *_DataSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSegment) deepCopy() *_DataSegment {
+	if m == nil {
+		return nil
+	}
+	_DataSegmentCopy := &_DataSegment{
+		m.PathSegmentContract.DeepCopy().(PathSegmentContract),
+		m.SegmentType.DeepCopy().(DataSegmentType),
+	}
+	m.PathSegmentContract.(*_PathSegment)._SubType = m
+	return _DataSegmentCopy
+}
 
 func (m *_DataSegment) String() string {
 	if m == nil {

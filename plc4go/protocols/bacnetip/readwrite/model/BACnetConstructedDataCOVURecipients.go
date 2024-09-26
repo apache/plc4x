@@ -38,6 +38,7 @@ type BACnetConstructedDataCOVURecipients interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovuRecipients returns CovuRecipients (property field)
 	GetCovuRecipients() []BACnetRecipient
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataCOVURecipients) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataCOVURecipients) IsBACnetConstructedDataCOVURecipients() {}
+
+func (m *_BACnetConstructedDataCOVURecipients) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCOVURecipients) deepCopy() *_BACnetConstructedDataCOVURecipients {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCOVURecipientsCopy := &_BACnetConstructedDataCOVURecipients{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetRecipient, BACnetRecipient](m.CovuRecipients),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCOVURecipientsCopy
+}
 
 func (m *_BACnetConstructedDataCOVURecipients) String() string {
 	if m == nil {

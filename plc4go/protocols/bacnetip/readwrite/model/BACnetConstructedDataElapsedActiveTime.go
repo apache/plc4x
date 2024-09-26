@@ -38,6 +38,7 @@ type BACnetConstructedDataElapsedActiveTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetElapsedActiveTime returns ElapsedActiveTime (property field)
 	GetElapsedActiveTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataElapsedActiveTime) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataElapsedActiveTime) IsBACnetConstructedDataElapsedActiveTime() {}
+
+func (m *_BACnetConstructedDataElapsedActiveTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataElapsedActiveTime) deepCopy() *_BACnetConstructedDataElapsedActiveTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataElapsedActiveTimeCopy := &_BACnetConstructedDataElapsedActiveTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ElapsedActiveTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataElapsedActiveTimeCopy
+}
 
 func (m *_BACnetConstructedDataElapsedActiveTime) String() string {
 	if m == nil {

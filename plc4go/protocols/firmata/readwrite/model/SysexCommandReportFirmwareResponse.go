@@ -38,6 +38,7 @@ type SysexCommandReportFirmwareResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetMajorVersion returns MajorVersion (property field)
 	GetMajorVersion() uint8
@@ -227,6 +228,24 @@ func (m *_SysexCommandReportFirmwareResponse) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_SysexCommandReportFirmwareResponse) IsSysexCommandReportFirmwareResponse() {}
+
+func (m *_SysexCommandReportFirmwareResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandReportFirmwareResponse) deepCopy() *_SysexCommandReportFirmwareResponse {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandReportFirmwareResponseCopy := &_SysexCommandReportFirmwareResponse{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.MajorVersion,
+		m.MinorVersion,
+		utils.DeepCopySlice[byte, byte](m.FileName),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandReportFirmwareResponseCopy
+}
 
 func (m *_SysexCommandReportFirmwareResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type S7ParameterUserData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7ParameterUserDataItem
@@ -203,6 +204,22 @@ func (m *_S7ParameterUserData) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_S7ParameterUserData) IsS7ParameterUserData() {}
+
+func (m *_S7ParameterUserData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterUserData) deepCopy() *_S7ParameterUserData {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterUserDataCopy := &_S7ParameterUserData{
+		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		utils.DeepCopySlice[S7ParameterUserDataItem, S7ParameterUserDataItem](m.Items),
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterUserDataCopy
+}
 
 func (m *_S7ParameterUserData) String() string {
 	if m == nil {

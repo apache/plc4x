@@ -36,6 +36,7 @@ type VariantNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// IsVariantNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantNull()
@@ -146,6 +147,21 @@ func (m *_VariantNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_VariantNull) IsVariantNull() {}
+
+func (m *_VariantNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantNull) deepCopy() *_VariantNull {
+	if m == nil {
+		return nil
+	}
+	_VariantNullCopy := &_VariantNull{
+		m.VariantContract.DeepCopy().(VariantContract),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantNullCopy
+}
 
 func (m *_VariantNull) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPriorityValueBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueBoolean) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetPriorityValueBoolean) IsBACnetPriorityValueBoolean() {}
+
+func (m *_BACnetPriorityValueBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueBoolean) deepCopy() *_BACnetPriorityValueBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueBooleanCopy := &_BACnetPriorityValueBoolean{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueBooleanCopy
+}
 
 func (m *_BACnetPriorityValueBoolean) String() string {
 	if m == nil {

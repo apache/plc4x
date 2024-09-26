@@ -38,6 +38,7 @@ type BACnetConstructedDataMinimumValueTimestamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinimumValueTimestamp returns MinimumValueTimestamp (property field)
 	GetMinimumValueTimestamp() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataMinimumValueTimestamp) IsBACnetConstructedDataMinimumValueTimestamp() {
+}
+
+func (m *_BACnetConstructedDataMinimumValueTimestamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMinimumValueTimestamp) deepCopy() *_BACnetConstructedDataMinimumValueTimestamp {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMinimumValueTimestampCopy := &_BACnetConstructedDataMinimumValueTimestamp{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MinimumValueTimestamp.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMinimumValueTimestampCopy
 }
 
 func (m *_BACnetConstructedDataMinimumValueTimestamp) String() string {

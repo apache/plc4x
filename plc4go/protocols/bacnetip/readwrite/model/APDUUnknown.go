@@ -38,6 +38,7 @@ type APDUUnknown interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetUnknownTypeRest returns UnknownTypeRest (property field)
 	GetUnknownTypeRest() uint8
@@ -202,6 +203,23 @@ func (m *_APDUUnknown) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_APDUUnknown) IsAPDUUnknown() {}
+
+func (m *_APDUUnknown) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUUnknown) deepCopy() *_APDUUnknown {
+	if m == nil {
+		return nil
+	}
+	_APDUUnknownCopy := &_APDUUnknown{
+		m.APDUContract.DeepCopy().(APDUContract),
+		m.UnknownTypeRest,
+		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUUnknownCopy
+}
 
 func (m *_APDUUnknown) String() string {
 	if m == nil {

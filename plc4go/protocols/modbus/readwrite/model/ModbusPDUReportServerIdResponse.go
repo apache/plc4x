@@ -38,6 +38,7 @@ type ModbusPDUReportServerIdResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
@@ -202,6 +203,22 @@ func (m *_ModbusPDUReportServerIdResponse) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ModbusPDUReportServerIdResponse) IsModbusPDUReportServerIdResponse() {}
+
+func (m *_ModbusPDUReportServerIdResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReportServerIdResponse) deepCopy() *_ModbusPDUReportServerIdResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReportServerIdResponseCopy := &_ModbusPDUReportServerIdResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReportServerIdResponseCopy
+}
 
 func (m *_ModbusPDUReportServerIdResponse) String() string {
 	if m == nil {

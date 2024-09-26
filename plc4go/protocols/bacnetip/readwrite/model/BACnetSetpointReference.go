@@ -38,6 +38,7 @@ type BACnetSetpointReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSetPointReference returns SetPointReference (property field)
 	GetSetPointReference() BACnetObjectPropertyReferenceEnclosed
 	// IsBACnetSetpointReference is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -172,6 +173,20 @@ func (m *_BACnetSetpointReference) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetSetpointReference) IsBACnetSetpointReference() {}
+
+func (m *_BACnetSetpointReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSetpointReference) deepCopy() *_BACnetSetpointReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetSetpointReferenceCopy := &_BACnetSetpointReference{
+		m.SetPointReference.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+	}
+	return _BACnetSetpointReferenceCopy
+}
 
 func (m *_BACnetSetpointReference) String() string {
 	if m == nil {

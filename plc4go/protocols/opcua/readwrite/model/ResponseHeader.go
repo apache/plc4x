@@ -38,6 +38,7 @@ type ResponseHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() int64
@@ -321,6 +322,28 @@ func (m *_ResponseHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ResponseHeader) IsResponseHeader() {}
+
+func (m *_ResponseHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ResponseHeader) deepCopy() *_ResponseHeader {
+	if m == nil {
+		return nil
+	}
+	_ResponseHeaderCopy := &_ResponseHeader{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Timestamp,
+		m.RequestHandle,
+		m.ServiceResult.DeepCopy().(StatusCode),
+		m.ServiceDiagnostics.DeepCopy().(DiagnosticInfo),
+		m.NoOfStringTable,
+		utils.DeepCopySlice[PascalString, PascalString](m.StringTable),
+		m.AdditionalHeader.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ResponseHeaderCopy
+}
 
 func (m *_ResponseHeader) String() string {
 	if m == nil {

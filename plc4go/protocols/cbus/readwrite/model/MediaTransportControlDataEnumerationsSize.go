@@ -38,6 +38,7 @@ type MediaTransportControlDataEnumerationsSize interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetSizeType returns SizeType (property field)
 	GetSizeType() byte
@@ -314,6 +315,24 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 }
 
 func (m *_MediaTransportControlDataEnumerationsSize) IsMediaTransportControlDataEnumerationsSize() {}
+
+func (m *_MediaTransportControlDataEnumerationsSize) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataEnumerationsSize) deepCopy() *_MediaTransportControlDataEnumerationsSize {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataEnumerationsSizeCopy := &_MediaTransportControlDataEnumerationsSize{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.SizeType,
+		m.Start,
+		m.Size,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataEnumerationsSizeCopy
+}
 
 func (m *_MediaTransportControlDataEnumerationsSize) String() string {
 	if m == nil {

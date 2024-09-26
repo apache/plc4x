@@ -36,6 +36,7 @@ type MeteringDataMeasureDrinkingWater interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// IsMeteringDataMeasureDrinkingWater is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureDrinkingWater()
@@ -142,6 +143,21 @@ func (m *_MeteringDataMeasureDrinkingWater) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_MeteringDataMeasureDrinkingWater) IsMeteringDataMeasureDrinkingWater() {}
+
+func (m *_MeteringDataMeasureDrinkingWater) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataMeasureDrinkingWater) deepCopy() *_MeteringDataMeasureDrinkingWater {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataMeasureDrinkingWaterCopy := &_MeteringDataMeasureDrinkingWater{
+		m.MeteringDataContract.DeepCopy().(MeteringDataContract),
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataMeasureDrinkingWaterCopy
+}
 
 func (m *_MeteringDataMeasureDrinkingWater) String() string {
 	if m == nil {

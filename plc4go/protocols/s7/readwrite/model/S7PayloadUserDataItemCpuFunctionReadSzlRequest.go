@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetSzlId returns SzlId (property field)
 	GetSzlId() SzlId
@@ -211,6 +212,23 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) SerializeWithWriteBuff
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) IsS7PayloadUserDataItemCpuFunctionReadSzlRequest() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) deepCopy() *_S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionReadSzlRequestCopy := &_S7PayloadUserDataItemCpuFunctionReadSzlRequest{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.SzlId.DeepCopy().(SzlId),
+		m.SzlIndex,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionReadSzlRequestCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {

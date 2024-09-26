@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestAddListElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -260,6 +261,25 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConfirmedServiceRequestAddListElement) IsBACnetConfirmedServiceRequestAddListElement() {
+}
+
+func (m *_BACnetConfirmedServiceRequestAddListElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestAddListElement) deepCopy() *_BACnetConfirmedServiceRequestAddListElement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestAddListElementCopy := &_BACnetConfirmedServiceRequestAddListElement{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfElements.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestAddListElementCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestAddListElement) String() string {

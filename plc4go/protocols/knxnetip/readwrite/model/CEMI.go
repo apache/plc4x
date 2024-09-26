@@ -40,12 +40,14 @@ type CEMI interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCEMI is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMI()
 }
 
 // CEMIContract provides a set of functions which can be overwritten by a sub struct
 type CEMIContract interface {
+	utils.Copyable
 	// GetSize() returns a parser argument
 	GetSize() uint16
 	// IsCEMI is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -289,3 +291,18 @@ func (m *_CEMI) GetSize() uint16 {
 ////
 
 func (m *_CEMI) IsCEMI() {}
+
+func (m *_CEMI) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CEMI) deepCopy() *_CEMI {
+	if m == nil {
+		return nil
+	}
+	_CEMICopy := &_CEMI{
+		nil, // will be set by child
+		m.Size,
+	}
+	return _CEMICopy
+}

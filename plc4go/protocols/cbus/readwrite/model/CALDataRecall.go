@@ -38,6 +38,7 @@ type CALDataRecall interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -196,6 +197,23 @@ func (m *_CALDataRecall) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_CALDataRecall) IsCALDataRecall() {}
+
+func (m *_CALDataRecall) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataRecall) deepCopy() *_CALDataRecall {
+	if m == nil {
+		return nil
+	}
+	_CALDataRecallCopy := &_CALDataRecall{
+		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.ParamNo,
+		m.Count,
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataRecallCopy
+}
 
 func (m *_CALDataRecall) String() string {
 	if m == nil {

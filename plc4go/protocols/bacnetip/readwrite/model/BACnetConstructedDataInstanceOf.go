@@ -38,6 +38,7 @@ type BACnetConstructedDataInstanceOf interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInstanceOf returns InstanceOf (property field)
 	GetInstanceOf() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataInstanceOf) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataInstanceOf) IsBACnetConstructedDataInstanceOf() {}
+
+func (m *_BACnetConstructedDataInstanceOf) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInstanceOf) deepCopy() *_BACnetConstructedDataInstanceOf {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInstanceOfCopy := &_BACnetConstructedDataInstanceOf{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.InstanceOf.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInstanceOfCopy
+}
 
 func (m *_BACnetConstructedDataInstanceOf) String() string {
 	if m == nil {

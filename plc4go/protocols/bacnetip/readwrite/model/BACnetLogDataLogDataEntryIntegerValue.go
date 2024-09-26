@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryIntegerValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetContextTagSignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetLogDataLogDataEntryIntegerValue) IsBACnetLogDataLogDataEntryIntegerValue() {}
+
+func (m *_BACnetLogDataLogDataEntryIntegerValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryIntegerValue) deepCopy() *_BACnetLogDataLogDataEntryIntegerValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryIntegerValueCopy := &_BACnetLogDataLogDataEntryIntegerValue{
+		m.BACnetLogDataLogDataEntryContract.DeepCopy().(BACnetLogDataLogDataEntryContract),
+		m.IntegerValue.DeepCopy().(BACnetContextTagSignedInteger),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryIntegerValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryIntegerValue) String() string {
 	if m == nil {

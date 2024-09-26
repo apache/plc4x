@@ -38,6 +38,7 @@ type S7PayloadDiagnosticMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetEventId returns EventId (property field)
 	GetEventId() uint16
@@ -316,6 +317,28 @@ func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_S7PayloadDiagnosticMessage) IsS7PayloadDiagnosticMessage() {}
+
+func (m *_S7PayloadDiagnosticMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadDiagnosticMessage) deepCopy() *_S7PayloadDiagnosticMessage {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadDiagnosticMessageCopy := &_S7PayloadDiagnosticMessage{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.EventId,
+		m.PriorityClass,
+		m.ObNumber,
+		m.DatId,
+		m.Info1,
+		m.Info2,
+		m.TimeStamp.DeepCopy().(DateAndTime),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadDiagnosticMessageCopy
+}
 
 func (m *_S7PayloadDiagnosticMessage) String() string {
 	if m == nil {

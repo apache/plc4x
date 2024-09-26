@@ -38,6 +38,7 @@ type UserManagementDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetUserName returns UserName (property field)
 	GetUserName() PascalString
@@ -227,6 +228,24 @@ func (m *_UserManagementDataType) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_UserManagementDataType) IsUserManagementDataType() {}
+
+func (m *_UserManagementDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UserManagementDataType) deepCopy() *_UserManagementDataType {
+	if m == nil {
+		return nil
+	}
+	_UserManagementDataTypeCopy := &_UserManagementDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.UserName.DeepCopy().(PascalString),
+		m.UserConfiguration,
+		m.Description.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UserManagementDataTypeCopy
+}
 
 func (m *_UserManagementDataType) String() string {
 	if m == nil {

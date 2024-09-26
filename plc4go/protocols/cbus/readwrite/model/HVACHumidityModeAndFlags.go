@@ -38,6 +38,7 @@ type HVACHumidityModeAndFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAuxiliaryLevel returns AuxiliaryLevel (property field)
 	GetAuxiliaryLevel() bool
 	// GetGuard returns Guard (property field)
@@ -446,6 +447,25 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_HVACHumidityModeAndFlags) IsHVACHumidityModeAndFlags() {}
+
+func (m *_HVACHumidityModeAndFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACHumidityModeAndFlags) deepCopy() *_HVACHumidityModeAndFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACHumidityModeAndFlagsCopy := &_HVACHumidityModeAndFlags{
+		m.AuxiliaryLevel,
+		m.Guard,
+		m.Setback,
+		m.Level,
+		m.Mode,
+		m.reservedField0,
+	}
+	return _HVACHumidityModeAndFlagsCopy
+}
 
 func (m *_HVACHumidityModeAndFlags) String() string {
 	if m == nil {

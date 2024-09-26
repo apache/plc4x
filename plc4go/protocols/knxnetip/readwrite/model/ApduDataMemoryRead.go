@@ -38,6 +38,7 @@ type ApduDataMemoryRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetNumBytes returns NumBytes (property field)
 	GetNumBytes() uint8
@@ -200,6 +201,23 @@ func (m *_ApduDataMemoryRead) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_ApduDataMemoryRead) IsApduDataMemoryRead() {}
+
+func (m *_ApduDataMemoryRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataMemoryRead) deepCopy() *_ApduDataMemoryRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataMemoryReadCopy := &_ApduDataMemoryRead{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.NumBytes,
+		m.Address,
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataMemoryReadCopy
+}
 
 func (m *_ApduDataMemoryRead) String() string {
 	if m == nil {

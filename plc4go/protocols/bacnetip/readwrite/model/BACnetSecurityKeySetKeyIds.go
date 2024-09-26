@@ -38,6 +38,7 @@ type BACnetSecurityKeySetKeyIds interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetKeyIds returns KeyIds (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetSecurityKeySetKeyIds) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetSecurityKeySetKeyIds) IsBACnetSecurityKeySetKeyIds() {}
+
+func (m *_BACnetSecurityKeySetKeyIds) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSecurityKeySetKeyIds) deepCopy() *_BACnetSecurityKeySetKeyIds {
+	if m == nil {
+		return nil
+	}
+	_BACnetSecurityKeySetKeyIdsCopy := &_BACnetSecurityKeySetKeyIds{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetKeyIdentifier, BACnetKeyIdentifier](m.KeyIds),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetSecurityKeySetKeyIdsCopy
+}
 
 func (m *_BACnetSecurityKeySetKeyIds) String() string {
 	if m == nil {

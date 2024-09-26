@@ -38,6 +38,7 @@ type BACnetErrorGeneral interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetError returns Error (property field)
 	GetError() Error
@@ -182,6 +183,22 @@ func (m *_BACnetErrorGeneral) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_BACnetErrorGeneral) IsBACnetErrorGeneral() {}
+
+func (m *_BACnetErrorGeneral) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetErrorGeneral) deepCopy() *_BACnetErrorGeneral {
+	if m == nil {
+		return nil
+	}
+	_BACnetErrorGeneralCopy := &_BACnetErrorGeneral{
+		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.Error.DeepCopy().(Error),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _BACnetErrorGeneralCopy
+}
 
 func (m *_BACnetErrorGeneral) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type CALData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALData()
 }
 
 // CALDataContract provides a set of functions which can be overwritten by a sub struct
 type CALDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() CALCommandTypeContainer
 	// GetAdditionalData returns AdditionalData (property field)
@@ -348,3 +350,20 @@ func (m *_CALData) GetRequestContext() RequestContext {
 ////
 
 func (m *_CALData) IsCALData() {}
+
+func (m *_CALData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALData) deepCopy() *_CALData {
+	if m == nil {
+		return nil
+	}
+	_CALDataCopy := &_CALData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.AdditionalData.DeepCopy().(CALData),
+		m.RequestContext,
+	}
+	return _CALDataCopy
+}

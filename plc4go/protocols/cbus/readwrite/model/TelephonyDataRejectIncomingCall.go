@@ -36,6 +36,7 @@ type TelephonyDataRejectIncomingCall interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// IsTelephonyDataRejectIncomingCall is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataRejectIncomingCall()
@@ -142,6 +143,21 @@ func (m *_TelephonyDataRejectIncomingCall) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_TelephonyDataRejectIncomingCall) IsTelephonyDataRejectIncomingCall() {}
+
+func (m *_TelephonyDataRejectIncomingCall) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataRejectIncomingCall) deepCopy() *_TelephonyDataRejectIncomingCall {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataRejectIncomingCallCopy := &_TelephonyDataRejectIncomingCall{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataRejectIncomingCallCopy
+}
 
 func (m *_TelephonyDataRejectIncomingCall) String() string {
 	if m == nil {

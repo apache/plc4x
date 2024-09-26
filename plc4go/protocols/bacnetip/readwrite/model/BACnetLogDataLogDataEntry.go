@@ -40,12 +40,14 @@ type BACnetLogDataLogDataEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetLogDataLogDataEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogDataEntry()
 }
 
 // BACnetLogDataLogDataEntryContract provides a set of functions which can be overwritten by a sub struct
 type BACnetLogDataLogDataEntryContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -265,3 +267,18 @@ func (pm *_BACnetLogDataLogDataEntry) serializeParent(ctx context.Context, write
 }
 
 func (m *_BACnetLogDataLogDataEntry) IsBACnetLogDataLogDataEntry() {}
+
+func (m *_BACnetLogDataLogDataEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntry) deepCopy() *_BACnetLogDataLogDataEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryCopy := &_BACnetLogDataLogDataEntry{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetLogDataLogDataEntryCopy
+}

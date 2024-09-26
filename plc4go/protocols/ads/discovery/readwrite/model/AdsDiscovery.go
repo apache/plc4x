@@ -43,6 +43,7 @@ type AdsDiscovery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRequestId returns RequestId (property field)
 	GetRequestId() uint32
 	// GetOperation returns Operation (property field)
@@ -300,6 +301,24 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_AdsDiscovery) IsAdsDiscovery() {}
+
+func (m *_AdsDiscovery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscovery) deepCopy() *_AdsDiscovery {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryCopy := &_AdsDiscovery{
+		m.RequestId,
+		m.Operation,
+		m.AmsNetId.DeepCopy().(AmsNetId),
+		m.PortNumber,
+		utils.DeepCopySlice[AdsDiscoveryBlock, AdsDiscoveryBlock](m.Blocks),
+	}
+	return _AdsDiscoveryCopy
+}
 
 func (m *_AdsDiscovery) String() string {
 	if m == nil {

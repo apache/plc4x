@@ -38,6 +38,7 @@ type BACnetContextTagBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetValue returns Value (property field)
 	GetValue() uint8
@@ -239,6 +240,23 @@ func (m *_BACnetContextTagBoolean) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetContextTagBoolean) IsBACnetContextTagBoolean() {}
+
+func (m *_BACnetContextTagBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagBoolean) deepCopy() *_BACnetContextTagBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagBooleanCopy := &_BACnetContextTagBoolean{
+		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		m.Value,
+		m.Payload.DeepCopy().(BACnetTagPayloadBoolean),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagBooleanCopy
+}
 
 func (m *_BACnetContextTagBoolean) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetChannelValueOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueOctetString) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetChannelValueOctetString) IsBACnetChannelValueOctetString() {}
+
+func (m *_BACnetChannelValueOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueOctetString) deepCopy() *_BACnetChannelValueOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueOctetStringCopy := &_BACnetChannelValueOctetString{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueOctetStringCopy
+}
 
 func (m *_BACnetChannelValueOctetString) String() string {
 	if m == nil {

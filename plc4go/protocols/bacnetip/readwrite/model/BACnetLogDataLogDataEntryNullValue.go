@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryNullValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetContextTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryNullValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetLogDataLogDataEntryNullValue) IsBACnetLogDataLogDataEntryNullValue() {}
+
+func (m *_BACnetLogDataLogDataEntryNullValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryNullValue) deepCopy() *_BACnetLogDataLogDataEntryNullValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryNullValueCopy := &_BACnetLogDataLogDataEntryNullValue{
+		m.BACnetLogDataLogDataEntryContract.DeepCopy().(BACnetLogDataLogDataEntryContract),
+		m.NullValue.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryNullValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryNullValue) String() string {
 	if m == nil {

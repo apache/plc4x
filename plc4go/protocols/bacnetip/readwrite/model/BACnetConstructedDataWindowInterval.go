@@ -38,6 +38,7 @@ type BACnetConstructedDataWindowInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetWindowInterval returns WindowInterval (property field)
 	GetWindowInterval() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataWindowInterval) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataWindowInterval) IsBACnetConstructedDataWindowInterval() {}
+
+func (m *_BACnetConstructedDataWindowInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataWindowInterval) deepCopy() *_BACnetConstructedDataWindowInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataWindowIntervalCopy := &_BACnetConstructedDataWindowInterval{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.WindowInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataWindowIntervalCopy
+}
 
 func (m *_BACnetConstructedDataWindowInterval) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type TDataIndividualReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsTDataIndividualReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataIndividualReq()
@@ -146,6 +147,21 @@ func (m *_TDataIndividualReq) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_TDataIndividualReq) IsTDataIndividualReq() {}
+
+func (m *_TDataIndividualReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TDataIndividualReq) deepCopy() *_TDataIndividualReq {
+	if m == nil {
+		return nil
+	}
+	_TDataIndividualReqCopy := &_TDataIndividualReq{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _TDataIndividualReqCopy
+}
 
 func (m *_TDataIndividualReq) String() string {
 	if m == nil {

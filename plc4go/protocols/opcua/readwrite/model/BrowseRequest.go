@@ -38,6 +38,7 @@ type BrowseRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -276,6 +277,26 @@ func (m *_BrowseRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_BrowseRequest) IsBrowseRequest() {}
+
+func (m *_BrowseRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseRequest) deepCopy() *_BrowseRequest {
+	if m == nil {
+		return nil
+	}
+	_BrowseRequestCopy := &_BrowseRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.View.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestedMaxReferencesPerNode,
+		m.NoOfNodesToBrowse,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToBrowse),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseRequestCopy
+}
 
 func (m *_BrowseRequest) String() string {
 	if m == nil {

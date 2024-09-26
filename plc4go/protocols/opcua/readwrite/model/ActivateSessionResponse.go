@@ -38,6 +38,7 @@ type ActivateSessionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -304,6 +305,27 @@ func (m *_ActivateSessionResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_ActivateSessionResponse) IsActivateSessionResponse() {}
+
+func (m *_ActivateSessionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ActivateSessionResponse) deepCopy() *_ActivateSessionResponse {
+	if m == nil {
+		return nil
+	}
+	_ActivateSessionResponseCopy := &_ActivateSessionResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerNonce.DeepCopy().(PascalByteString),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ActivateSessionResponseCopy
+}
 
 func (m *_ActivateSessionResponse) String() string {
 	if m == nil {

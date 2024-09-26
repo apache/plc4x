@@ -38,6 +38,7 @@ type StatusRequestBinaryState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -204,6 +205,24 @@ func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_StatusRequestBinaryState) IsStatusRequestBinaryState() {}
+
+func (m *_StatusRequestBinaryState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusRequestBinaryState) deepCopy() *_StatusRequestBinaryState {
+	if m == nil {
+		return nil
+	}
+	_StatusRequestBinaryStateCopy := &_StatusRequestBinaryState{
+		m.StatusRequestContract.DeepCopy().(StatusRequestContract),
+		m.Application,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.StatusRequestContract.(*_StatusRequest)._SubType = m
+	return _StatusRequestBinaryStateCopy
+}
 
 func (m *_StatusRequestBinaryState) String() string {
 	if m == nil {

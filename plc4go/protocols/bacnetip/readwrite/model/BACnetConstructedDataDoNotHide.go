@@ -38,6 +38,7 @@ type BACnetConstructedDataDoNotHide interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoNotHide returns DoNotHide (property field)
 	GetDoNotHide() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDoNotHide) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataDoNotHide) IsBACnetConstructedDataDoNotHide() {}
+
+func (m *_BACnetConstructedDataDoNotHide) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoNotHide) deepCopy() *_BACnetConstructedDataDoNotHide {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoNotHideCopy := &_BACnetConstructedDataDoNotHide{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DoNotHide.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoNotHideCopy
+}
 
 func (m *_BACnetConstructedDataDoNotHide) String() string {
 	if m == nil {

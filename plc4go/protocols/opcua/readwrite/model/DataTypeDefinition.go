@@ -36,6 +36,7 @@ type DataTypeDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsDataTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataTypeDefinition()
@@ -146,6 +147,21 @@ func (m *_DataTypeDefinition) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_DataTypeDefinition) IsDataTypeDefinition() {}
+
+func (m *_DataTypeDefinition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataTypeDefinition) deepCopy() *_DataTypeDefinition {
+	if m == nil {
+		return nil
+	}
+	_DataTypeDefinitionCopy := &_DataTypeDefinition{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataTypeDefinitionCopy
+}
 
 func (m *_DataTypeDefinition) String() string {
 	if m == nil {

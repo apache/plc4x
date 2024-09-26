@@ -38,6 +38,7 @@ type VariantDateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -205,6 +206,23 @@ func (m *_VariantDateTime) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_VariantDateTime) IsVariantDateTime() {}
+
+func (m *_VariantDateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantDateTime) deepCopy() *_VariantDateTime {
+	if m == nil {
+		return nil
+	}
+	_VariantDateTimeCopy := &_VariantDateTime{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[int64, int64](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantDateTimeCopy
+}
 
 func (m *_VariantDateTime) String() string {
 	if m == nil {

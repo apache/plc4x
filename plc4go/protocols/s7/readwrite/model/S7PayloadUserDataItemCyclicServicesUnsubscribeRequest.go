@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetFunction returns Function (property field)
 	GetFunction() uint8
@@ -208,6 +209,23 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) SerializeWithWr
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() {
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) deepCopy() *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestCopy := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.Function,
+		m.JobId,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCyclicServicesUnsubscribeRequestCopy
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) String() string {

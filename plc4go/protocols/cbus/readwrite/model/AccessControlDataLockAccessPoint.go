@@ -36,6 +36,7 @@ type AccessControlDataLockAccessPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AccessControlData
 	// IsAccessControlDataLockAccessPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataLockAccessPoint()
@@ -142,6 +143,21 @@ func (m *_AccessControlDataLockAccessPoint) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_AccessControlDataLockAccessPoint) IsAccessControlDataLockAccessPoint() {}
+
+func (m *_AccessControlDataLockAccessPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlDataLockAccessPoint) deepCopy() *_AccessControlDataLockAccessPoint {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataLockAccessPointCopy := &_AccessControlDataLockAccessPoint{
+		m.AccessControlDataContract.DeepCopy().(AccessControlDataContract),
+	}
+	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	return _AccessControlDataLockAccessPointCopy
+}
 
 func (m *_AccessControlDataLockAccessPoint) String() string {
 	if m == nil {

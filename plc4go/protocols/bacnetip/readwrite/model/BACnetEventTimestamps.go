@@ -38,6 +38,7 @@ type BACnetEventTimestamps interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetToOffnormal returns ToOffnormal (property field)
 	GetToOffnormal() BACnetTimeStamp
 	// GetToFault returns ToFault (property field)
@@ -215,6 +216,22 @@ func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetEventTimestamps) IsBACnetEventTimestamps() {}
+
+func (m *_BACnetEventTimestamps) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventTimestamps) deepCopy() *_BACnetEventTimestamps {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventTimestampsCopy := &_BACnetEventTimestamps{
+		m.ToOffnormal.DeepCopy().(BACnetTimeStamp),
+		m.ToFault.DeepCopy().(BACnetTimeStamp),
+		m.ToNormal.DeepCopy().(BACnetTimeStamp),
+	}
+	return _BACnetEventTimestampsCopy
+}
 
 func (m *_BACnetEventTimestamps) String() string {
 	if m == nil {

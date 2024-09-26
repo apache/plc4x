@@ -38,6 +38,7 @@ type DeviceDescriptorType2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetManufacturerId returns ManufacturerId (property field)
 	GetManufacturerId() uint16
 	// GetDeviceType returns DeviceType (property field)
@@ -358,6 +359,29 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_DeviceDescriptorType2) IsDeviceDescriptorType2() {}
+
+func (m *_DeviceDescriptorType2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceDescriptorType2) deepCopy() *_DeviceDescriptorType2 {
+	if m == nil {
+		return nil
+	}
+	_DeviceDescriptorType2Copy := &_DeviceDescriptorType2{
+		m.ManufacturerId,
+		m.DeviceType,
+		m.Version,
+		m.ReadSupported,
+		m.WriteSupported,
+		m.LogicalTagBase,
+		m.ChannelInfo1.DeepCopy().(ChannelInformation),
+		m.ChannelInfo2.DeepCopy().(ChannelInformation),
+		m.ChannelInfo3.DeepCopy().(ChannelInformation),
+		m.ChannelInfo4.DeepCopy().(ChannelInformation),
+	}
+	return _DeviceDescriptorType2Copy
+}
 
 func (m *_DeviceDescriptorType2) String() string {
 	if m == nil {

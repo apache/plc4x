@@ -38,6 +38,7 @@ type DIBSuppSvcFamilies interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
 	// GetServiceIds returns ServiceIds (property field)
@@ -203,6 +204,21 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_DIBSuppSvcFamilies) IsDIBSuppSvcFamilies() {}
+
+func (m *_DIBSuppSvcFamilies) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DIBSuppSvcFamilies) deepCopy() *_DIBSuppSvcFamilies {
+	if m == nil {
+		return nil
+	}
+	_DIBSuppSvcFamiliesCopy := &_DIBSuppSvcFamilies{
+		m.DescriptionType,
+		utils.DeepCopySlice[ServiceId, ServiceId](m.ServiceIds),
+	}
+	return _DIBSuppSvcFamiliesCopy
+}
 
 func (m *_DIBSuppSvcFamilies) String() string {
 	if m == nil {

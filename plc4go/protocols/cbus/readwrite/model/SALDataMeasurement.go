@@ -38,6 +38,7 @@ type SALDataMeasurement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetMeasurementData returns MeasurementData (property field)
 	GetMeasurementData() MeasurementData
@@ -182,6 +183,22 @@ func (m *_SALDataMeasurement) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_SALDataMeasurement) IsSALDataMeasurement() {}
+
+func (m *_SALDataMeasurement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataMeasurement) deepCopy() *_SALDataMeasurement {
+	if m == nil {
+		return nil
+	}
+	_SALDataMeasurementCopy := &_SALDataMeasurement{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.MeasurementData.DeepCopy().(MeasurementData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataMeasurementCopy
+}
 
 func (m *_SALDataMeasurement) String() string {
 	if m == nil {

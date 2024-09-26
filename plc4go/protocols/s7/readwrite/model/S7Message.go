@@ -43,12 +43,14 @@ type S7Message interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7Message is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Message()
 }
 
 // S7MessageContract provides a set of functions which can be overwritten by a sub struct
 type S7MessageContract interface {
+	utils.Copyable
 	// GetTpduReference returns TpduReference (property field)
 	GetTpduReference() uint16
 	// GetParameter returns Parameter (property field)
@@ -350,3 +352,21 @@ func (pm *_S7Message) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_S7Message) IsS7Message() {}
+
+func (m *_S7Message) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7Message) deepCopy() *_S7Message {
+	if m == nil {
+		return nil
+	}
+	_S7MessageCopy := &_S7Message{
+		nil, // will be set by child
+		m.TpduReference,
+		m.Parameter.DeepCopy().(S7Parameter),
+		m.Payload.DeepCopy().(S7Payload),
+		m.reservedField0,
+	}
+	return _S7MessageCopy
+}

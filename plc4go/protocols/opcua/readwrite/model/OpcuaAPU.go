@@ -40,6 +40,7 @@ type OpcuaAPU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMessage returns Message (property field)
 	GetMessage() MessagePDU
 	// IsOpcuaAPU is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -184,6 +185,21 @@ func (m *_OpcuaAPU) GetResponse() bool {
 ////
 
 func (m *_OpcuaAPU) IsOpcuaAPU() {}
+
+func (m *_OpcuaAPU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaAPU) deepCopy() *_OpcuaAPU {
+	if m == nil {
+		return nil
+	}
+	_OpcuaAPUCopy := &_OpcuaAPU{
+		m.Message.DeepCopy().(MessagePDU),
+		m.Response,
+	}
+	return _OpcuaAPUCopy
+}
 
 func (m *_OpcuaAPU) String() string {
 	if m == nil {

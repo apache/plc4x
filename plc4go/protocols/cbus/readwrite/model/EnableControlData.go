@@ -38,6 +38,7 @@ type EnableControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() EnableControlCommandTypeContainer
 	// GetEnableNetworkVariable returns EnableNetworkVariable (property field)
@@ -242,6 +243,22 @@ func (m *_EnableControlData) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_EnableControlData) IsEnableControlData() {}
+
+func (m *_EnableControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EnableControlData) deepCopy() *_EnableControlData {
+	if m == nil {
+		return nil
+	}
+	_EnableControlDataCopy := &_EnableControlData{
+		m.CommandTypeContainer,
+		m.EnableNetworkVariable,
+		m.Value,
+	}
+	return _EnableControlDataCopy
+}
 
 func (m *_EnableControlData) String() string {
 	if m == nil {

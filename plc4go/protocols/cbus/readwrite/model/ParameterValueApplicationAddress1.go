@@ -38,6 +38,7 @@ type ParameterValueApplicationAddress1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() ApplicationAddress1
@@ -210,6 +211,23 @@ func (m *_ParameterValueApplicationAddress1) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_ParameterValueApplicationAddress1) IsParameterValueApplicationAddress1() {}
+
+func (m *_ParameterValueApplicationAddress1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueApplicationAddress1) deepCopy() *_ParameterValueApplicationAddress1 {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueApplicationAddress1Copy := &_ParameterValueApplicationAddress1{
+		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.Value.DeepCopy().(ApplicationAddress1),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueApplicationAddress1Copy
+}
 
 func (m *_ParameterValueApplicationAddress1) String() string {
 	if m == nil {

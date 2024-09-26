@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkNumberQuality interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNetworkNumberQuality returns NetworkNumberQuality (property field)
 	GetNetworkNumberQuality() BACnetNetworkNumberQualityTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNetworkNumberQuality) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataNetworkNumberQuality) IsBACnetConstructedDataNetworkNumberQuality() {}
+
+func (m *_BACnetConstructedDataNetworkNumberQuality) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkNumberQuality) deepCopy() *_BACnetConstructedDataNetworkNumberQuality {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkNumberQualityCopy := &_BACnetConstructedDataNetworkNumberQuality{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NetworkNumberQuality.DeepCopy().(BACnetNetworkNumberQualityTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkNumberQualityCopy
+}
 
 func (m *_BACnetConstructedDataNetworkNumberQuality) String() string {
 	if m == nil {

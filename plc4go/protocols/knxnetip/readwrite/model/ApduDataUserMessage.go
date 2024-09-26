@@ -36,6 +36,7 @@ type ApduDataUserMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataUserMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataUserMessage()
@@ -146,6 +147,21 @@ func (m *_ApduDataUserMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ApduDataUserMessage) IsApduDataUserMessage() {}
+
+func (m *_ApduDataUserMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataUserMessage) deepCopy() *_ApduDataUserMessage {
+	if m == nil {
+		return nil
+	}
+	_ApduDataUserMessageCopy := &_ApduDataUserMessage{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataUserMessageCopy
+}
 
 func (m *_ApduDataUserMessage) String() string {
 	if m == nil {

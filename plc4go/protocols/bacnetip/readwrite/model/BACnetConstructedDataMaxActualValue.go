@@ -38,6 +38,7 @@ type BACnetConstructedDataMaxActualValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxActualValue returns MaxActualValue (property field)
 	GetMaxActualValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMaxActualValue) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataMaxActualValue) IsBACnetConstructedDataMaxActualValue() {}
+
+func (m *_BACnetConstructedDataMaxActualValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaxActualValue) deepCopy() *_BACnetConstructedDataMaxActualValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaxActualValueCopy := &_BACnetConstructedDataMaxActualValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaxActualValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaxActualValueCopy
+}
 
 func (m *_BACnetConstructedDataMaxActualValue) String() string {
 	if m == nil {

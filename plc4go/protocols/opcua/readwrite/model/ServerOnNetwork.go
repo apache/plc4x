@@ -38,6 +38,7 @@ type ServerOnNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRecordId returns RecordId (property field)
 	GetRecordId() uint32
@@ -276,6 +277,26 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ServerOnNetwork) IsServerOnNetwork() {}
+
+func (m *_ServerOnNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServerOnNetwork) deepCopy() *_ServerOnNetwork {
+	if m == nil {
+		return nil
+	}
+	_ServerOnNetworkCopy := &_ServerOnNetwork{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RecordId,
+		m.ServerName.DeepCopy().(PascalString),
+		m.DiscoveryUrl.DeepCopy().(PascalString),
+		m.NoOfServerCapabilities,
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerCapabilities),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServerOnNetworkCopy
+}
 
 func (m *_ServerOnNetwork) String() string {
 	if m == nil {

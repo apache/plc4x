@@ -38,6 +38,7 @@ type BACnetTimeStampTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimeStamp
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetContextTagTime
@@ -178,6 +179,22 @@ func (m *_BACnetTimeStampTime) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetTimeStampTime) IsBACnetTimeStampTime() {}
+
+func (m *_BACnetTimeStampTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStampTime) deepCopy() *_BACnetTimeStampTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampTimeCopy := &_BACnetTimeStampTime{
+		m.BACnetTimeStampContract.DeepCopy().(BACnetTimeStampContract),
+		m.TimeValue.DeepCopy().(BACnetContextTagTime),
+	}
+	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
+	return _BACnetTimeStampTimeCopy
+}
 
 func (m *_BACnetTimeStampTime) String() string {
 	if m == nil {

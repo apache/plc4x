@@ -38,6 +38,7 @@ type BACnetChannelValueInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueInteger) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetChannelValueInteger) IsBACnetChannelValueInteger() {}
+
+func (m *_BACnetChannelValueInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueInteger) deepCopy() *_BACnetChannelValueInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueIntegerCopy := &_BACnetChannelValueInteger{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueIntegerCopy
+}
 
 func (m *_BACnetChannelValueInteger) String() string {
 	if m == nil {

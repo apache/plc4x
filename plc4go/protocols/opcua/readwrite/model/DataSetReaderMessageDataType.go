@@ -36,6 +36,7 @@ type DataSetReaderMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsDataSetReaderMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSetReaderMessageDataType()
@@ -146,6 +147,21 @@ func (m *_DataSetReaderMessageDataType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_DataSetReaderMessageDataType) IsDataSetReaderMessageDataType() {}
+
+func (m *_DataSetReaderMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSetReaderMessageDataType) deepCopy() *_DataSetReaderMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_DataSetReaderMessageDataTypeCopy := &_DataSetReaderMessageDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataSetReaderMessageDataTypeCopy
+}
 
 func (m *_DataSetReaderMessageDataType) String() string {
 	if m == nil {

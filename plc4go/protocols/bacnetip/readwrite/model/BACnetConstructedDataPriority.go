@@ -38,6 +38,7 @@ type BACnetConstructedDataPriority interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -252,6 +253,23 @@ func (m *_BACnetConstructedDataPriority) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataPriority) IsBACnetConstructedDataPriority() {}
+
+func (m *_BACnetConstructedDataPriority) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPriority) deepCopy() *_BACnetConstructedDataPriority {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPriorityCopy := &_BACnetConstructedDataPriority{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.Priority),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPriorityCopy
+}
 
 func (m *_BACnetConstructedDataPriority) String() string {
 	if m == nil {

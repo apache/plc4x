@@ -38,6 +38,7 @@ type AdsReadDeviceInfoResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -269,6 +270,26 @@ func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AdsReadDeviceInfoResponse) IsAdsReadDeviceInfoResponse() {}
+
+func (m *_AdsReadDeviceInfoResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadDeviceInfoResponse) deepCopy() *_AdsReadDeviceInfoResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsReadDeviceInfoResponseCopy := &_AdsReadDeviceInfoResponse{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.Result,
+		m.MajorVersion,
+		m.MinorVersion,
+		m.Version,
+		utils.DeepCopySlice[byte, byte](m.Device),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadDeviceInfoResponseCopy
+}
 
 func (m *_AdsReadDeviceInfoResponse) String() string {
 	if m == nil {

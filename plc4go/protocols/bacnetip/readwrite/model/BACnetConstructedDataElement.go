@@ -38,6 +38,7 @@ type BACnetConstructedDataElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetApplicationTag returns ApplicationTag (property field)
@@ -392,6 +393,26 @@ func (m *_BACnetConstructedDataElement) GetArrayIndexArgument() BACnetTagPayload
 ////
 
 func (m *_BACnetConstructedDataElement) IsBACnetConstructedDataElement() {}
+
+func (m *_BACnetConstructedDataElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataElement) deepCopy() *_BACnetConstructedDataElement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataElementCopy := &_BACnetConstructedDataElement{
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ApplicationTag.DeepCopy().(BACnetApplicationTag),
+		m.ContextTag.DeepCopy().(BACnetContextTag),
+		m.ConstructedData.DeepCopy().(BACnetConstructedData),
+		m.ObjectTypeArgument,
+		m.PropertyIdentifierArgument,
+		m.ArrayIndexArgument,
+	}
+	return _BACnetConstructedDataElementCopy
+}
 
 func (m *_BACnetConstructedDataElement) String() string {
 	if m == nil {

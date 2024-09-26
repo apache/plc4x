@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReadRangeRangeByTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequestReadRangeRange
 	// GetReferenceTime returns ReferenceTime (property field)
 	GetReferenceTime() BACnetDateTime
@@ -202,6 +203,23 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) SerializeWithWriteB
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) IsBACnetConfirmedServiceRequestReadRangeRangeByTime() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) deepCopy() *_BACnetConfirmedServiceRequestReadRangeRangeByTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadRangeRangeByTimeCopy := &_BACnetConfirmedServiceRequestReadRangeRangeByTime{
+		m.BACnetConfirmedServiceRequestReadRangeRangeContract.DeepCopy().(BACnetConfirmedServiceRequestReadRangeRangeContract),
+		m.ReferenceTime.DeepCopy().(BACnetDateTime),
+		m.Count.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = m
+	return _BACnetConfirmedServiceRequestReadRangeRangeByTimeCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) String() string {

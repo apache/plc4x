@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestWhoIs interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetDeviceInstanceRangeLowLimit returns DeviceInstanceRangeLowLimit (property field)
 	GetDeviceInstanceRangeLowLimit() BACnetContextTagUnsignedInteger
@@ -212,6 +213,23 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoIs) IsBACnetUnconfirmedServiceRequestWhoIs() {}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoIs) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoIs) deepCopy() *_BACnetUnconfirmedServiceRequestWhoIs {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestWhoIsCopy := &_BACnetUnconfirmedServiceRequestWhoIs{
+		m.BACnetUnconfirmedServiceRequestContract.DeepCopy().(BACnetUnconfirmedServiceRequestContract),
+		m.DeviceInstanceRangeLowLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.DeviceInstanceRangeHighLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestWhoIsCopy
+}
 
 func (m *_BACnetUnconfirmedServiceRequestWhoIs) String() string {
 	if m == nil {

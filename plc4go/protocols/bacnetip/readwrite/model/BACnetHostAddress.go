@@ -40,12 +40,14 @@ type BACnetHostAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetHostAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostAddress()
 }
 
 // BACnetHostAddressContract provides a set of functions which can be overwritten by a sub struct
 type BACnetHostAddressContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -241,3 +243,18 @@ func (pm *_BACnetHostAddress) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_BACnetHostAddress) IsBACnetHostAddress() {}
+
+func (m *_BACnetHostAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddress) deepCopy() *_BACnetHostAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressCopy := &_BACnetHostAddress{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetHostAddressCopy
+}

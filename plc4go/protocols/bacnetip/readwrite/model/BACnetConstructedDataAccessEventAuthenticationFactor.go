@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessEventAuthenticationFactor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccessEventAuthenticationFactor returns AccessEventAuthenticationFactor (property field)
 	GetAccessEventAuthenticationFactor() BACnetAuthenticationFactor
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) SerializeWithWri
 }
 
 func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) IsBACnetConstructedDataAccessEventAuthenticationFactor() {
+}
+
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) deepCopy() *_BACnetConstructedDataAccessEventAuthenticationFactor {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessEventAuthenticationFactorCopy := &_BACnetConstructedDataAccessEventAuthenticationFactor{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AccessEventAuthenticationFactor.DeepCopy().(BACnetAuthenticationFactor),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessEventAuthenticationFactorCopy
 }
 
 func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) String() string {

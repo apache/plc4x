@@ -36,6 +36,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse()
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) SerializeWith
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseCopy := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) String() string {

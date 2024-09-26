@@ -38,6 +38,7 @@ type SessionDiagnosticsDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSessionId returns SessionId (property field)
 	GetSessionId() NodeId
@@ -1191,6 +1192,65 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SessionDiagnosticsDataType) IsSessionDiagnosticsDataType() {}
+
+func (m *_SessionDiagnosticsDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SessionDiagnosticsDataType) deepCopy() *_SessionDiagnosticsDataType {
+	if m == nil {
+		return nil
+	}
+	_SessionDiagnosticsDataTypeCopy := &_SessionDiagnosticsDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SessionId.DeepCopy().(NodeId),
+		m.SessionName.DeepCopy().(PascalString),
+		m.ClientDescription.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerUri.DeepCopy().(PascalString),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.NoOfLocaleIds,
+		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
+		m.ActualSessionTimeout,
+		m.MaxResponseMessageSize,
+		m.ClientConnectionTime,
+		m.ClientLastContactTime,
+		m.CurrentSubscriptionsCount,
+		m.CurrentMonitoredItemsCount,
+		m.CurrentPublishRequestsInQueue,
+		m.TotalRequestCount.DeepCopy().(ExtensionObjectDefinition),
+		m.UnauthorizedRequestCount,
+		m.ReadCount.DeepCopy().(ExtensionObjectDefinition),
+		m.HistoryReadCount.DeepCopy().(ExtensionObjectDefinition),
+		m.WriteCount.DeepCopy().(ExtensionObjectDefinition),
+		m.HistoryUpdateCount.DeepCopy().(ExtensionObjectDefinition),
+		m.CallCount.DeepCopy().(ExtensionObjectDefinition),
+		m.CreateMonitoredItemsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.ModifyMonitoredItemsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.SetMonitoringModeCount.DeepCopy().(ExtensionObjectDefinition),
+		m.SetTriggeringCount.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteMonitoredItemsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.CreateSubscriptionCount.DeepCopy().(ExtensionObjectDefinition),
+		m.ModifySubscriptionCount.DeepCopy().(ExtensionObjectDefinition),
+		m.SetPublishingModeCount.DeepCopy().(ExtensionObjectDefinition),
+		m.PublishCount.DeepCopy().(ExtensionObjectDefinition),
+		m.RepublishCount.DeepCopy().(ExtensionObjectDefinition),
+		m.TransferSubscriptionsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteSubscriptionsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.AddNodesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.AddReferencesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteNodesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteReferencesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.BrowseCount.DeepCopy().(ExtensionObjectDefinition),
+		m.BrowseNextCount.DeepCopy().(ExtensionObjectDefinition),
+		m.TranslateBrowsePathsToNodeIdsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.QueryFirstCount.DeepCopy().(ExtensionObjectDefinition),
+		m.QueryNextCount.DeepCopy().(ExtensionObjectDefinition),
+		m.RegisterNodesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.UnregisterNodesCount.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SessionDiagnosticsDataTypeCopy
+}
 
 func (m *_SessionDiagnosticsDataType) String() string {
 	if m == nil {

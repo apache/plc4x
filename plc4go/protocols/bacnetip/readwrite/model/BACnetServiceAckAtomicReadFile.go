@@ -38,6 +38,7 @@ type BACnetServiceAckAtomicReadFile interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetEndOfFile returns EndOfFile (property field)
 	GetEndOfFile() BACnetApplicationTagBoolean
@@ -206,6 +207,23 @@ func (m *_BACnetServiceAckAtomicReadFile) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetServiceAckAtomicReadFile) IsBACnetServiceAckAtomicReadFile() {}
+
+func (m *_BACnetServiceAckAtomicReadFile) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAtomicReadFile) deepCopy() *_BACnetServiceAckAtomicReadFile {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAtomicReadFileCopy := &_BACnetServiceAckAtomicReadFile{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.EndOfFile.DeepCopy().(BACnetApplicationTagBoolean),
+		m.AccessMethod.DeepCopy().(BACnetServiceAckAtomicReadFileStreamOrRecord),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckAtomicReadFileCopy
+}
 
 func (m *_BACnetServiceAckAtomicReadFile) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ServerStatusDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStartTime returns StartTime (property field)
 	GetStartTime() int64
@@ -290,6 +291,27 @@ func (m *_ServerStatusDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ServerStatusDataType) IsServerStatusDataType() {}
+
+func (m *_ServerStatusDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServerStatusDataType) deepCopy() *_ServerStatusDataType {
+	if m == nil {
+		return nil
+	}
+	_ServerStatusDataTypeCopy := &_ServerStatusDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StartTime,
+		m.CurrentTime,
+		m.State,
+		m.BuildInfo.DeepCopy().(ExtensionObjectDefinition),
+		m.SecondsTillShutdown,
+		m.ShutdownReason.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServerStatusDataTypeCopy
+}
 
 func (m *_ServerStatusDataType) String() string {
 	if m == nil {

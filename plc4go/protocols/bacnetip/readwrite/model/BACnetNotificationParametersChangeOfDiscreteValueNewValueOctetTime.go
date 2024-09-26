@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime interfac
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Se
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) deepCopy() *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfDiscreteValueNewValueContract),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) String() string {

@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueDouble) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetTimerStateChangeValueDouble) IsBACnetTimerStateChangeValueDouble() {}
+
+func (m *_BACnetTimerStateChangeValueDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueDouble) deepCopy() *_BACnetTimerStateChangeValueDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueDoubleCopy := &_BACnetTimerStateChangeValueDouble{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueDoubleCopy
+}
 
 func (m *_BACnetTimerStateChangeValueDouble) String() string {
 	if m == nil {

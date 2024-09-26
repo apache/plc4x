@@ -38,6 +38,7 @@ type BACnetConstructedDataAcceptedModes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAcceptedModes returns AcceptedModes (property field)
 	GetAcceptedModes() []BACnetLifeSafetyModeTagged
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAcceptedModes) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataAcceptedModes) IsBACnetConstructedDataAcceptedModes() {}
+
+func (m *_BACnetConstructedDataAcceptedModes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAcceptedModes) deepCopy() *_BACnetConstructedDataAcceptedModes {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAcceptedModesCopy := &_BACnetConstructedDataAcceptedModes{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetLifeSafetyModeTagged, BACnetLifeSafetyModeTagged](m.AcceptedModes),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAcceptedModesCopy
+}
 
 func (m *_BACnetConstructedDataAcceptedModes) String() string {
 	if m == nil {

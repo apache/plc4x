@@ -37,6 +37,7 @@ type DF1SymbolMessageFrameNAK interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1Symbol
 	// IsDF1SymbolMessageFrameNAK is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1SymbolMessageFrameNAK()
@@ -147,6 +148,21 @@ func (m *_DF1SymbolMessageFrameNAK) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_DF1SymbolMessageFrameNAK) IsDF1SymbolMessageFrameNAK() {}
+
+func (m *_DF1SymbolMessageFrameNAK) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1SymbolMessageFrameNAK) deepCopy() *_DF1SymbolMessageFrameNAK {
+	if m == nil {
+		return nil
+	}
+	_DF1SymbolMessageFrameNAKCopy := &_DF1SymbolMessageFrameNAK{
+		m.DF1SymbolContract.DeepCopy().(DF1SymbolContract),
+	}
+	m.DF1SymbolContract.(*_DF1Symbol)._SubType = m
+	return _DF1SymbolMessageFrameNAKCopy
+}
 
 func (m *_DF1SymbolMessageFrameNAK) String() string {
 	if m == nil {

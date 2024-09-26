@@ -37,6 +37,7 @@ type BACnetRejectReasonTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() BACnetRejectReason
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -231,6 +232,22 @@ func (m *_BACnetRejectReasonTagged) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetRejectReasonTagged) IsBACnetRejectReasonTagged() {}
+
+func (m *_BACnetRejectReasonTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRejectReasonTagged) deepCopy() *_BACnetRejectReasonTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetRejectReasonTaggedCopy := &_BACnetRejectReasonTagged{
+		m.Value,
+		m.ProprietaryValue,
+		m.ActualLength,
+	}
+	return _BACnetRejectReasonTaggedCopy
+}
 
 func (m *_BACnetRejectReasonTagged) String() string {
 	if m == nil {

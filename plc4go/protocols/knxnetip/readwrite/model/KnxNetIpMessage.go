@@ -45,12 +45,14 @@ type KnxNetIpMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsKnxNetIpMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpMessage()
 }
 
 // KnxNetIpMessageContract provides a set of functions which can be overwritten by a sub struct
 type KnxNetIpMessageContract interface {
+	utils.Copyable
 	// IsKnxNetIpMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpMessage()
 }
@@ -304,3 +306,17 @@ func (pm *_KnxNetIpMessage) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_KnxNetIpMessage) IsKnxNetIpMessage() {}
+
+func (m *_KnxNetIpMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpMessage) deepCopy() *_KnxNetIpMessage {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpMessageCopy := &_KnxNetIpMessage{
+		nil, // will be set by child
+	}
+	return _KnxNetIpMessageCopy
+}

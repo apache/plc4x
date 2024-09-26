@@ -38,6 +38,7 @@ type SysexCommandPinStateResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -225,6 +226,24 @@ func (m *_SysexCommandPinStateResponse) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SysexCommandPinStateResponse) IsSysexCommandPinStateResponse() {}
+
+func (m *_SysexCommandPinStateResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandPinStateResponse) deepCopy() *_SysexCommandPinStateResponse {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandPinStateResponseCopy := &_SysexCommandPinStateResponse{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.Pin,
+		m.PinMode,
+		m.PinState,
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandPinStateResponseCopy
+}
 
 func (m *_SysexCommandPinStateResponse) String() string {
 	if m == nil {

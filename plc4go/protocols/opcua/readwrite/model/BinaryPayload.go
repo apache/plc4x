@@ -38,6 +38,7 @@ type BinaryPayload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Payload
 	// GetPayload returns Payload (property field)
 	GetPayload() []byte
@@ -181,6 +182,22 @@ func (m *_BinaryPayload) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_BinaryPayload) IsBinaryPayload() {}
+
+func (m *_BinaryPayload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BinaryPayload) deepCopy() *_BinaryPayload {
+	if m == nil {
+		return nil
+	}
+	_BinaryPayloadCopy := &_BinaryPayload{
+		m.PayloadContract.DeepCopy().(PayloadContract),
+		utils.DeepCopySlice[byte, byte](m.Payload),
+	}
+	m.PayloadContract.(*_Payload)._SubType = m
+	return _BinaryPayloadCopy
+}
 
 func (m *_BinaryPayload) String() string {
 	if m == nil {

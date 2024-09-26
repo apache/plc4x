@@ -36,6 +36,7 @@ type SysexCommandCapabilityResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandCapabilityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandCapabilityResponse()
@@ -150,6 +151,21 @@ func (m *_SysexCommandCapabilityResponse) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_SysexCommandCapabilityResponse) IsSysexCommandCapabilityResponse() {}
+
+func (m *_SysexCommandCapabilityResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandCapabilityResponse) deepCopy() *_SysexCommandCapabilityResponse {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandCapabilityResponseCopy := &_SysexCommandCapabilityResponse{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandCapabilityResponseCopy
+}
 
 func (m *_SysexCommandCapabilityResponse) String() string {
 	if m == nil {

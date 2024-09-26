@@ -38,6 +38,7 @@ type BACnetConstructedDataLoggingType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLoggingType returns LoggingType (property field)
 	GetLoggingType() BACnetLoggingTypeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoggingType) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataLoggingType) IsBACnetConstructedDataLoggingType() {}
+
+func (m *_BACnetConstructedDataLoggingType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoggingType) deepCopy() *_BACnetConstructedDataLoggingType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoggingTypeCopy := &_BACnetConstructedDataLoggingType{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LoggingType.DeepCopy().(BACnetLoggingTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoggingTypeCopy
+}
 
 func (m *_BACnetConstructedDataLoggingType) String() string {
 	if m == nil {

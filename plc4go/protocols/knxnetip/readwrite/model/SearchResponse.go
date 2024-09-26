@@ -40,6 +40,7 @@ type SearchResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
@@ -232,6 +233,24 @@ func (m *_SearchResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SearchResponse) IsSearchResponse() {}
+
+func (m *_SearchResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SearchResponse) deepCopy() *_SearchResponse {
+	if m == nil {
+		return nil
+	}
+	_SearchResponseCopy := &_SearchResponse{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+		m.DibDeviceInfo.DeepCopy().(DIBDeviceInfo),
+		m.DibSuppSvcFamilies.DeepCopy().(DIBSuppSvcFamilies),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _SearchResponseCopy
+}
 
 func (m *_SearchResponse) String() string {
 	if m == nil {

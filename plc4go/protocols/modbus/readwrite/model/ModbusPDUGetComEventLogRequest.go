@@ -36,6 +36,7 @@ type ModbusPDUGetComEventLogRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// IsModbusPDUGetComEventLogRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUGetComEventLogRequest()
@@ -154,6 +155,21 @@ func (m *_ModbusPDUGetComEventLogRequest) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ModbusPDUGetComEventLogRequest) IsModbusPDUGetComEventLogRequest() {}
+
+func (m *_ModbusPDUGetComEventLogRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUGetComEventLogRequest) deepCopy() *_ModbusPDUGetComEventLogRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUGetComEventLogRequestCopy := &_ModbusPDUGetComEventLogRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUGetComEventLogRequestCopy
+}
 
 func (m *_ModbusPDUGetComEventLogRequest) String() string {
 	if m == nil {

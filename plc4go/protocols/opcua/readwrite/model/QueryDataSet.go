@@ -38,6 +38,7 @@ type QueryDataSet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() ExpandedNodeId
@@ -255,6 +256,25 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_QueryDataSet) IsQueryDataSet() {}
+
+func (m *_QueryDataSet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryDataSet) deepCopy() *_QueryDataSet {
+	if m == nil {
+		return nil
+	}
+	_QueryDataSetCopy := &_QueryDataSet{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NodeId.DeepCopy().(ExpandedNodeId),
+		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
+		m.NoOfValues,
+		utils.DeepCopySlice[Variant, Variant](m.Values),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryDataSetCopy
+}
 
 func (m *_QueryDataSet) String() string {
 	if m == nil {

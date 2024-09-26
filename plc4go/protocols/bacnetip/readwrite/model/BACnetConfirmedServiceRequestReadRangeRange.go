@@ -40,12 +40,14 @@ type BACnetConfirmedServiceRequestReadRangeRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetConfirmedServiceRequestReadRangeRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadRangeRange()
 }
 
 // BACnetConfirmedServiceRequestReadRangeRangeContract provides a set of functions which can be overwritten by a sub struct
 type BACnetConfirmedServiceRequestReadRangeRangeContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetOpeningTag returns OpeningTag (property field)
@@ -287,4 +289,21 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) serializeParent(ctx cont
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRange) IsBACnetConfirmedServiceRequestReadRangeRange() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) deepCopy() *_BACnetConfirmedServiceRequestReadRangeRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadRangeRangeCopy := &_BACnetConfirmedServiceRequestReadRangeRange{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetConfirmedServiceRequestReadRangeRangeCopy
 }

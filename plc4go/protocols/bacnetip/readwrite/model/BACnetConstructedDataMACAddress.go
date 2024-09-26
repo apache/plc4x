@@ -38,6 +38,7 @@ type BACnetConstructedDataMACAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMacAddress returns MacAddress (property field)
 	GetMacAddress() BACnetApplicationTagOctetString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMACAddress) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataMACAddress) IsBACnetConstructedDataMACAddress() {}
+
+func (m *_BACnetConstructedDataMACAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMACAddress) deepCopy() *_BACnetConstructedDataMACAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMACAddressCopy := &_BACnetConstructedDataMACAddress{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MacAddress.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMACAddressCopy
+}
 
 func (m *_BACnetConstructedDataMACAddress) String() string {
 	if m == nil {

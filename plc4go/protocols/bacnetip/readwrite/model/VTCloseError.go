@@ -38,6 +38,7 @@ type VTCloseError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -209,6 +210,23 @@ func (m *_VTCloseError) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_VTCloseError) IsVTCloseError() {}
+
+func (m *_VTCloseError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VTCloseError) deepCopy() *_VTCloseError {
+	if m == nil {
+		return nil
+	}
+	_VTCloseErrorCopy := &_VTCloseError{
+		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.ListOfVtSessionIdentifiers.DeepCopy().(VTCloseErrorListOfVTSessionIdentifiers),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _VTCloseErrorCopy
+}
 
 func (m *_VTCloseError) String() string {
 	if m == nil {

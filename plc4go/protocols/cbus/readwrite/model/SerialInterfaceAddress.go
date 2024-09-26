@@ -38,6 +38,7 @@ type SerialInterfaceAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
 	// IsSerialInterfaceAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -166,6 +167,20 @@ func (m *_SerialInterfaceAddress) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SerialInterfaceAddress) IsSerialInterfaceAddress() {}
+
+func (m *_SerialInterfaceAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SerialInterfaceAddress) deepCopy() *_SerialInterfaceAddress {
+	if m == nil {
+		return nil
+	}
+	_SerialInterfaceAddressCopy := &_SerialInterfaceAddress{
+		m.Address,
+	}
+	return _SerialInterfaceAddressCopy
+}
 
 func (m *_SerialInterfaceAddress) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type DF1RequestProtectedTypedLogicalRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1RequestCommand
 	// GetByteSize returns ByteSize (property field)
 	GetByteSize() uint8
@@ -263,6 +264,26 @@ func (m *_DF1RequestProtectedTypedLogicalRead) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_DF1RequestProtectedTypedLogicalRead) IsDF1RequestProtectedTypedLogicalRead() {}
+
+func (m *_DF1RequestProtectedTypedLogicalRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1RequestProtectedTypedLogicalRead) deepCopy() *_DF1RequestProtectedTypedLogicalRead {
+	if m == nil {
+		return nil
+	}
+	_DF1RequestProtectedTypedLogicalReadCopy := &_DF1RequestProtectedTypedLogicalRead{
+		m.DF1RequestCommandContract.DeepCopy().(DF1RequestCommandContract),
+		m.ByteSize,
+		m.FileNumber,
+		m.FileType,
+		m.ElementNumber,
+		m.SubElementNumber,
+	}
+	m.DF1RequestCommandContract.(*_DF1RequestCommand)._SubType = m
+	return _DF1RequestProtectedTypedLogicalReadCopy
+}
 
 func (m *_DF1RequestProtectedTypedLogicalRead) String() string {
 	if m == nil {

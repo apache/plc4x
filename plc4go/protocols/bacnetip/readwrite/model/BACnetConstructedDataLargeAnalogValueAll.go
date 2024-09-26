@@ -36,6 +36,7 @@ type BACnetConstructedDataLargeAnalogValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataLargeAnalogValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLargeAnalogValueAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataLargeAnalogValueAll) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueAll) IsBACnetConstructedDataLargeAnalogValueAll() {}
+
+func (m *_BACnetConstructedDataLargeAnalogValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueAll) deepCopy() *_BACnetConstructedDataLargeAnalogValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLargeAnalogValueAllCopy := &_BACnetConstructedDataLargeAnalogValueAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLargeAnalogValueAllCopy
+}
 
 func (m *_BACnetConstructedDataLargeAnalogValueAll) String() string {
 	if m == nil {

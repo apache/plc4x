@@ -36,6 +36,7 @@ type BitFieldMaskDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBitFieldMaskDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBitFieldMaskDataType()
 }
@@ -134,6 +135,18 @@ func (m *_BitFieldMaskDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BitFieldMaskDataType) IsBitFieldMaskDataType() {}
+
+func (m *_BitFieldMaskDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BitFieldMaskDataType) deepCopy() *_BitFieldMaskDataType {
+	if m == nil {
+		return nil
+	}
+	_BitFieldMaskDataTypeCopy := &_BitFieldMaskDataType{}
+	return _BitFieldMaskDataTypeCopy
+}
 
 func (m *_BitFieldMaskDataType) String() string {
 	if m == nil {

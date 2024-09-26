@@ -38,12 +38,14 @@ type CBusMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusMessage()
 }
 
 // CBusMessageContract provides a set of functions which can be overwritten by a sub struct
 type CBusMessageContract interface {
+	utils.Copyable
 	// GetRequestContext() returns a parser argument
 	GetRequestContext() RequestContext
 	// GetCBusOptions() returns a parser argument
@@ -208,3 +210,19 @@ func (m *_CBusMessage) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusMessage) IsCBusMessage() {}
+
+func (m *_CBusMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusMessage) deepCopy() *_CBusMessage {
+	if m == nil {
+		return nil
+	}
+	_CBusMessageCopy := &_CBusMessage{
+		nil, // will be set by child
+		m.RequestContext,
+		m.CBusOptions,
+	}
+	return _CBusMessageCopy
+}

@@ -38,6 +38,7 @@ type WriteRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_WriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_WriteRequest) IsWriteRequest() {}
+
+func (m *_WriteRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WriteRequest) deepCopy() *_WriteRequest {
+	if m == nil {
+		return nil
+	}
+	_WriteRequestCopy := &_WriteRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodesToWrite,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToWrite),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _WriteRequestCopy
+}
 
 func (m *_WriteRequest) String() string {
 	if m == nil {

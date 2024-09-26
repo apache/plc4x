@@ -38,6 +38,7 @@ type BACnetSpecialEventPeriodCalendarReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetSpecialEventPeriod
 	// GetCalendarReference returns CalendarReference (property field)
 	GetCalendarReference() BACnetContextTagObjectIdentifier
@@ -178,6 +179,22 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetSpecialEventPeriodCalendarReference) IsBACnetSpecialEventPeriodCalendarReference() {}
+
+func (m *_BACnetSpecialEventPeriodCalendarReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarReference) deepCopy() *_BACnetSpecialEventPeriodCalendarReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetSpecialEventPeriodCalendarReferenceCopy := &_BACnetSpecialEventPeriodCalendarReference{
+		m.BACnetSpecialEventPeriodContract.DeepCopy().(BACnetSpecialEventPeriodContract),
+		m.CalendarReference.DeepCopy().(BACnetContextTagObjectIdentifier),
+	}
+	m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = m
+	return _BACnetSpecialEventPeriodCalendarReferenceCopy
+}
 
 func (m *_BACnetSpecialEventPeriodCalendarReference) String() string {
 	if m == nil {

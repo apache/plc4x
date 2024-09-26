@@ -40,12 +40,14 @@ type BACnetNotificationParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetNotificationParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParameters()
 }
 
 // BACnetNotificationParametersContract provides a set of functions which can be overwritten by a sub struct
 type BACnetNotificationParametersContract interface {
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -376,3 +378,22 @@ func (m *_BACnetNotificationParameters) GetObjectTypeArgument() BACnetObjectType
 ////
 
 func (m *_BACnetNotificationParameters) IsBACnetNotificationParameters() {}
+
+func (m *_BACnetNotificationParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParameters) deepCopy() *_BACnetNotificationParameters {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersCopy := &_BACnetNotificationParameters{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+		m.ObjectTypeArgument,
+	}
+	return _BACnetNotificationParametersCopy
+}

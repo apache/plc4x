@@ -36,6 +36,7 @@ type ConnectionTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsConnectionTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionTransportDataType()
@@ -146,6 +147,21 @@ func (m *_ConnectionTransportDataType) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_ConnectionTransportDataType) IsConnectionTransportDataType() {}
+
+func (m *_ConnectionTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionTransportDataType) deepCopy() *_ConnectionTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_ConnectionTransportDataTypeCopy := &_ConnectionTransportDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ConnectionTransportDataTypeCopy
+}
 
 func (m *_ConnectionTransportDataType) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type SearchRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint (property field)
 	GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint
@@ -184,6 +185,22 @@ func (m *_SearchRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_SearchRequest) IsSearchRequest() {}
+
+func (m *_SearchRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SearchRequest) deepCopy() *_SearchRequest {
+	if m == nil {
+		return nil
+	}
+	_SearchRequestCopy := &_SearchRequest{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.HpaiIDiscoveryEndpoint.DeepCopy().(HPAIDiscoveryEndpoint),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _SearchRequestCopy
+}
 
 func (m *_SearchRequest) String() string {
 	if m == nil {

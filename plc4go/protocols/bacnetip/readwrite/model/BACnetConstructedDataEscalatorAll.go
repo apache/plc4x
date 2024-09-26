@@ -36,6 +36,7 @@ type BACnetConstructedDataEscalatorAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataEscalatorAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEscalatorAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataEscalatorAll) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataEscalatorAll) IsBACnetConstructedDataEscalatorAll() {}
+
+func (m *_BACnetConstructedDataEscalatorAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEscalatorAll) deepCopy() *_BACnetConstructedDataEscalatorAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEscalatorAllCopy := &_BACnetConstructedDataEscalatorAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEscalatorAllCopy
+}
 
 func (m *_BACnetConstructedDataEscalatorAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ModbusPDUReadDiscreteInputsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
@@ -208,6 +209,23 @@ func (m *_ModbusPDUReadDiscreteInputsRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ModbusPDUReadDiscreteInputsRequest) IsModbusPDUReadDiscreteInputsRequest() {}
+
+func (m *_ModbusPDUReadDiscreteInputsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadDiscreteInputsRequest) deepCopy() *_ModbusPDUReadDiscreteInputsRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadDiscreteInputsRequestCopy := &_ModbusPDUReadDiscreteInputsRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.StartingAddress,
+		m.Quantity,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadDiscreteInputsRequestCopy
+}
 
 func (m *_ModbusPDUReadDiscreteInputsRequest) String() string {
 	if m == nil {

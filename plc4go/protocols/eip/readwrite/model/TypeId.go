@@ -40,12 +40,14 @@ type TypeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTypeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTypeId()
 }
 
 // TypeIdContract provides a set of functions which can be overwritten by a sub struct
 type TypeIdContract interface {
+	utils.Copyable
 	// IsTypeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTypeId()
 }
@@ -202,3 +204,17 @@ func (pm *_TypeId) serializeParent(ctx context.Context, writeBuffer utils.WriteB
 }
 
 func (m *_TypeId) IsTypeId() {}
+
+func (m *_TypeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TypeId) deepCopy() *_TypeId {
+	if m == nil {
+		return nil
+	}
+	_TypeIdCopy := &_TypeId{
+		nil, // will be set by child
+	}
+	return _TypeIdCopy
+}

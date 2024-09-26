@@ -41,6 +41,7 @@ type SendUnitData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// GetTimeout returns Timeout (property field)
 	GetTimeout() uint16
@@ -257,6 +258,23 @@ func (m *_SendUnitData) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_SendUnitData) IsSendUnitData() {}
+
+func (m *_SendUnitData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SendUnitData) deepCopy() *_SendUnitData {
+	if m == nil {
+		return nil
+	}
+	_SendUnitDataCopy := &_SendUnitData{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		m.Timeout,
+		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _SendUnitDataCopy
+}
 
 func (m *_SendUnitData) String() string {
 	if m == nil {

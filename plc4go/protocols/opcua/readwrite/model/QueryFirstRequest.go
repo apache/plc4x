@@ -38,6 +38,7 @@ type QueryFirstRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -321,6 +322,28 @@ func (m *_QueryFirstRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_QueryFirstRequest) IsQueryFirstRequest() {}
+
+func (m *_QueryFirstRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryFirstRequest) deepCopy() *_QueryFirstRequest {
+	if m == nil {
+		return nil
+	}
+	_QueryFirstRequestCopy := &_QueryFirstRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.View.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodeTypes,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodeTypes),
+		m.Filter.DeepCopy().(ExtensionObjectDefinition),
+		m.MaxDataSetsToReturn,
+		m.MaxReferencesToReturn,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryFirstRequestCopy
+}
 
 func (m *_QueryFirstRequest) String() string {
 	if m == nil {

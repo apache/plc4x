@@ -38,6 +38,7 @@ type BACnetConstructedDataTrigger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTrigger returns Trigger (property field)
 	GetTrigger() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataTrigger) IsBACnetConstructedDataTrigger() {}
+
+func (m *_BACnetConstructedDataTrigger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrigger) deepCopy() *_BACnetConstructedDataTrigger {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTriggerCopy := &_BACnetConstructedDataTrigger{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Trigger.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTriggerCopy
+}
 
 func (m *_BACnetConstructedDataTrigger) String() string {
 	if m == nil {

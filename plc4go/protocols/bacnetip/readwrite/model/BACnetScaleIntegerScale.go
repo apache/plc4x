@@ -38,6 +38,7 @@ type BACnetScaleIntegerScale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetScale
 	// GetIntegerScale returns IntegerScale (property field)
 	GetIntegerScale() BACnetContextTagSignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetScaleIntegerScale) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetScaleIntegerScale) IsBACnetScaleIntegerScale() {}
+
+func (m *_BACnetScaleIntegerScale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetScaleIntegerScale) deepCopy() *_BACnetScaleIntegerScale {
+	if m == nil {
+		return nil
+	}
+	_BACnetScaleIntegerScaleCopy := &_BACnetScaleIntegerScale{
+		m.BACnetScaleContract.DeepCopy().(BACnetScaleContract),
+		m.IntegerScale.DeepCopy().(BACnetContextTagSignedInteger),
+	}
+	m.BACnetScaleContract.(*_BACnetScale)._SubType = m
+	return _BACnetScaleIntegerScaleCopy
+}
 
 func (m *_BACnetScaleIntegerScale) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type VariantBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -205,6 +206,23 @@ func (m *_VariantBoolean) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_VariantBoolean) IsVariantBoolean() {}
+
+func (m *_VariantBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantBoolean) deepCopy() *_VariantBoolean {
+	if m == nil {
+		return nil
+	}
+	_VariantBooleanCopy := &_VariantBoolean{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantBooleanCopy
+}
 
 func (m *_VariantBoolean) String() string {
 	if m == nil {

@@ -309,12 +309,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public boolean needsPointerAccess(PropertyField field) {
         boolean isAnTypeOfOptional = "optional".equals(field.getTypeName());
-        return isAnTypeOfOptional && needPointerAccess(field.getType());
+        return isAnTypeOfOptional && isNonComplexOrArrayElementNonComplex(field.getType());
     }
 
-    public boolean needPointerAccess(TypeReference typeReference) {
+    public boolean isNonComplexOrArrayElementNonComplex(TypeReference typeReference) {
         boolean isNotAnComplexTypeReference = !typeReference.isComplexTypeReference();
-        boolean arrayTypeIsNotAnComplexTypeReference = !(typeReference.isArrayTypeReference() && typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference().isComplexTypeReference());
+        boolean arrayTypeIsNotAnComplexTypeReference = !(
+            typeReference.isArrayTypeReference() &&
+                typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference().isComplexTypeReference()
+        );
         return isNotAnComplexTypeReference && arrayTypeIsNotAnComplexTypeReference;
     }
 
@@ -1100,7 +1103,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else if ((serializerArguments != null) && serializerArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("serialization argument");
-            return tracer + "m.Get" + capitalize(variableLiteralName) +"()"+
+            return tracer + "m.Get" + capitalize(variableLiteralName) + "()" +
                 variableLiteral.getChild()
                     .map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");

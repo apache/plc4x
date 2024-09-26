@@ -38,6 +38,7 @@ type BACnetConstructedDataProtocolRevision interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProtocolRevision returns ProtocolRevision (property field)
 	GetProtocolRevision() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProtocolRevision) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataProtocolRevision) IsBACnetConstructedDataProtocolRevision() {}
+
+func (m *_BACnetConstructedDataProtocolRevision) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProtocolRevision) deepCopy() *_BACnetConstructedDataProtocolRevision {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProtocolRevisionCopy := &_BACnetConstructedDataProtocolRevision{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProtocolRevision.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProtocolRevisionCopy
+}
 
 func (m *_BACnetConstructedDataProtocolRevision) String() string {
 	if m == nil {

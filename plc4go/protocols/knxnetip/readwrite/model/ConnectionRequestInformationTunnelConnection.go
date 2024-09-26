@@ -38,6 +38,7 @@ type ConnectionRequestInformationTunnelConnection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ConnectionRequestInformation
 	// GetKnxLayer returns KnxLayer (property field)
 	GetKnxLayer() KnxLayer
@@ -194,6 +195,23 @@ func (m *_ConnectionRequestInformationTunnelConnection) SerializeWithWriteBuffer
 }
 
 func (m *_ConnectionRequestInformationTunnelConnection) IsConnectionRequestInformationTunnelConnection() {
+}
+
+func (m *_ConnectionRequestInformationTunnelConnection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequestInformationTunnelConnection) deepCopy() *_ConnectionRequestInformationTunnelConnection {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestInformationTunnelConnectionCopy := &_ConnectionRequestInformationTunnelConnection{
+		m.ConnectionRequestInformationContract.DeepCopy().(ConnectionRequestInformationContract),
+		m.KnxLayer,
+		m.reservedField0,
+	}
+	m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = m
+	return _ConnectionRequestInformationTunnelConnectionCopy
 }
 
 func (m *_ConnectionRequestInformationTunnelConnection) String() string {

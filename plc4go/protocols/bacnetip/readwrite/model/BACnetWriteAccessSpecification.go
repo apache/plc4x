@@ -38,6 +38,7 @@ type BACnetWriteAccessSpecification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetOpeningTag returns OpeningTag (property field)
@@ -239,6 +240,23 @@ func (m *_BACnetWriteAccessSpecification) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetWriteAccessSpecification) IsBACnetWriteAccessSpecification() {}
+
+func (m *_BACnetWriteAccessSpecification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetWriteAccessSpecification) deepCopy() *_BACnetWriteAccessSpecification {
+	if m == nil {
+		return nil
+	}
+	_BACnetWriteAccessSpecificationCopy := &_BACnetWriteAccessSpecification{
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetPropertyWriteDefinition, BACnetPropertyWriteDefinition](m.ListOfPropertyWriteDefinition),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetWriteAccessSpecificationCopy
+}
 
 func (m *_BACnetWriteAccessSpecification) String() string {
 	if m == nil {

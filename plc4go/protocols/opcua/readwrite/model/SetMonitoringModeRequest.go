@@ -38,6 +38,7 @@ type SetMonitoringModeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -268,6 +269,26 @@ func (m *_SetMonitoringModeRequest) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SetMonitoringModeRequest) IsSetMonitoringModeRequest() {}
+
+func (m *_SetMonitoringModeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetMonitoringModeRequest) deepCopy() *_SetMonitoringModeRequest {
+	if m == nil {
+		return nil
+	}
+	_SetMonitoringModeRequestCopy := &_SetMonitoringModeRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.MonitoringMode,
+		m.NoOfMonitoredItemIds,
+		utils.DeepCopySlice[uint32, uint32](m.MonitoredItemIds),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetMonitoringModeRequestCopy
+}
 
 func (m *_SetMonitoringModeRequest) String() string {
 	if m == nil {

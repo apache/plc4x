@@ -38,6 +38,7 @@ type SALDataPoolsSpasPondsFountainsControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetPoolsSpaPondsFountainsData returns PoolsSpaPondsFountainsData (property field)
 	GetPoolsSpaPondsFountainsData() LightingData
@@ -182,6 +183,22 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) IsSALDataPoolsSpasPondsFountainsControl() {}
+
+func (m *_SALDataPoolsSpasPondsFountainsControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataPoolsSpasPondsFountainsControl) deepCopy() *_SALDataPoolsSpasPondsFountainsControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataPoolsSpasPondsFountainsControlCopy := &_SALDataPoolsSpasPondsFountainsControl{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.PoolsSpaPondsFountainsData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataPoolsSpasPondsFountainsControlCopy
+}
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) String() string {
 	if m == nil {

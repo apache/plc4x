@@ -38,6 +38,7 @@ type UnsignedRationalNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNumerator returns Numerator (property field)
 	GetNumerator() uint32
@@ -200,6 +201,23 @@ func (m *_UnsignedRationalNumber) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_UnsignedRationalNumber) IsUnsignedRationalNumber() {}
+
+func (m *_UnsignedRationalNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnsignedRationalNumber) deepCopy() *_UnsignedRationalNumber {
+	if m == nil {
+		return nil
+	}
+	_UnsignedRationalNumberCopy := &_UnsignedRationalNumber{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Numerator,
+		m.Denominator,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UnsignedRationalNumberCopy
+}
 
 func (m *_UnsignedRationalNumber) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetChannelValueBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueBoolean) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetChannelValueBoolean) IsBACnetChannelValueBoolean() {}
+
+func (m *_BACnetChannelValueBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueBoolean) deepCopy() *_BACnetChannelValueBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueBooleanCopy := &_BACnetChannelValueBoolean{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueBooleanCopy
+}
 
 func (m *_BACnetChannelValueBoolean) String() string {
 	if m == nil {

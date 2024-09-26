@@ -38,12 +38,14 @@ type AdsMultiRequestItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAdsMultiRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsMultiRequestItem()
 }
 
 // AdsMultiRequestItemContract provides a set of functions which can be overwritten by a sub struct
 type AdsMultiRequestItemContract interface {
+	utils.Copyable
 	// IsAdsMultiRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsMultiRequestItem()
 }
@@ -181,3 +183,17 @@ func (pm *_AdsMultiRequestItem) serializeParent(ctx context.Context, writeBuffer
 }
 
 func (m *_AdsMultiRequestItem) IsAdsMultiRequestItem() {}
+
+func (m *_AdsMultiRequestItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsMultiRequestItem) deepCopy() *_AdsMultiRequestItem {
+	if m == nil {
+		return nil
+	}
+	_AdsMultiRequestItemCopy := &_AdsMultiRequestItem{
+		nil, // will be set by child
+	}
+	return _AdsMultiRequestItemCopy
+}

@@ -36,6 +36,7 @@ type SysexCommandStringData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandStringData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandStringData()
@@ -150,6 +151,21 @@ func (m *_SysexCommandStringData) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SysexCommandStringData) IsSysexCommandStringData() {}
+
+func (m *_SysexCommandStringData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandStringData) deepCopy() *_SysexCommandStringData {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandStringDataCopy := &_SysexCommandStringData{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandStringDataCopy
+}
 
 func (m *_SysexCommandStringData) String() string {
 	if m == nil {

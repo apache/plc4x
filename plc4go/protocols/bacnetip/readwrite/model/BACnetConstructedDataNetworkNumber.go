@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNetworkNumber) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataNetworkNumber) IsBACnetConstructedDataNetworkNumber() {}
+
+func (m *_BACnetConstructedDataNetworkNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkNumber) deepCopy() *_BACnetConstructedDataNetworkNumber {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkNumberCopy := &_BACnetConstructedDataNetworkNumber{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NetworkNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkNumberCopy
+}
 
 func (m *_BACnetConstructedDataNetworkNumber) String() string {
 	if m == nil {

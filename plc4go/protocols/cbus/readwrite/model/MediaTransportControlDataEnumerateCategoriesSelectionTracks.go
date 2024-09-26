@@ -38,6 +38,7 @@ type MediaTransportControlDataEnumerateCategoriesSelectionTracks interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetEnumerateType returns EnumerateType (property field)
 	GetEnumerateType() byte
@@ -293,6 +294,23 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) IsMediaTransportControlDataEnumerateCategoriesSelectionTracks() {
+}
+
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) deepCopy() *_MediaTransportControlDataEnumerateCategoriesSelectionTracks {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataEnumerateCategoriesSelectionTracksCopy := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.EnumerateType,
+		m.Start,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataEnumerateCategoriesSelectionTracksCopy
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) String() string {

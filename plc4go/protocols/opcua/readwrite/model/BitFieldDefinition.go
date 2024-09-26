@@ -38,6 +38,7 @@ type BitFieldDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -277,6 +278,27 @@ func (m *_BitFieldDefinition) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_BitFieldDefinition) IsBitFieldDefinition() {}
+
+func (m *_BitFieldDefinition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BitFieldDefinition) deepCopy() *_BitFieldDefinition {
+	if m == nil {
+		return nil
+	}
+	_BitFieldDefinitionCopy := &_BitFieldDefinition{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Name.DeepCopy().(PascalString),
+		m.Description.DeepCopy().(LocalizedText),
+		m.StartingBitPosition,
+		m.EndingBitPosition,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BitFieldDefinitionCopy
+}
 
 func (m *_BitFieldDefinition) String() string {
 	if m == nil {

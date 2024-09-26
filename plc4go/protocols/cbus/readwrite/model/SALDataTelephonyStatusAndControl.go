@@ -38,6 +38,7 @@ type SALDataTelephonyStatusAndControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetTelephonyData returns TelephonyData (property field)
 	GetTelephonyData() TelephonyData
@@ -182,6 +183,22 @@ func (m *_SALDataTelephonyStatusAndControl) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_SALDataTelephonyStatusAndControl) IsSALDataTelephonyStatusAndControl() {}
+
+func (m *_SALDataTelephonyStatusAndControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataTelephonyStatusAndControl) deepCopy() *_SALDataTelephonyStatusAndControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataTelephonyStatusAndControlCopy := &_SALDataTelephonyStatusAndControl{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.TelephonyData.DeepCopy().(TelephonyData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataTelephonyStatusAndControlCopy
+}
 
 func (m *_SALDataTelephonyStatusAndControl) String() string {
 	if m == nil {

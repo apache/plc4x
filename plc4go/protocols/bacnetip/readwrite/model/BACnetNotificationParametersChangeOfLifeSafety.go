@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfLifeSafety interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -298,6 +299,27 @@ func (m *_BACnetNotificationParametersChangeOfLifeSafety) SerializeWithWriteBuff
 }
 
 func (m *_BACnetNotificationParametersChangeOfLifeSafety) IsBACnetNotificationParametersChangeOfLifeSafety() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfLifeSafety) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfLifeSafety) deepCopy() *_BACnetNotificationParametersChangeOfLifeSafety {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfLifeSafetyCopy := &_BACnetNotificationParametersChangeOfLifeSafety{
+		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.NewState.DeepCopy().(BACnetLifeSafetyStateTagged),
+		m.NewMode.DeepCopy().(BACnetLifeSafetyModeTagged),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.OperationExpected.DeepCopy().(BACnetLifeSafetyOperationTagged),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersChangeOfLifeSafetyCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfLifeSafety) String() string {

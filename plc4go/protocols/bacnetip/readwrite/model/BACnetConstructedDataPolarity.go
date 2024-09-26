@@ -38,6 +38,7 @@ type BACnetConstructedDataPolarity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPolarity returns Polarity (property field)
 	GetPolarity() BACnetPolarityTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPolarity) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataPolarity) IsBACnetConstructedDataPolarity() {}
+
+func (m *_BACnetConstructedDataPolarity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPolarity) deepCopy() *_BACnetConstructedDataPolarity {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPolarityCopy := &_BACnetConstructedDataPolarity{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Polarity.DeepCopy().(BACnetPolarityTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPolarityCopy
+}
 
 func (m *_BACnetConstructedDataPolarity) String() string {
 	if m == nil {

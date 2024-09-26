@@ -38,6 +38,7 @@ type AddNodesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -280,6 +281,26 @@ func (m *_AddNodesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_AddNodesResponse) IsAddNodesResponse() {}
+
+func (m *_AddNodesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddNodesResponse) deepCopy() *_AddNodesResponse {
+	if m == nil {
+		return nil
+	}
+	_AddNodesResponseCopy := &_AddNodesResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddNodesResponseCopy
+}
 
 func (m *_AddNodesResponse) String() string {
 	if m == nil {

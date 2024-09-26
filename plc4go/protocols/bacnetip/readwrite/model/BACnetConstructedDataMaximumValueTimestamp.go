@@ -38,6 +38,7 @@ type BACnetConstructedDataMaximumValueTimestamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaximumValueTimestamp returns MaximumValueTimestamp (property field)
 	GetMaximumValueTimestamp() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataMaximumValueTimestamp) IsBACnetConstructedDataMaximumValueTimestamp() {
+}
+
+func (m *_BACnetConstructedDataMaximumValueTimestamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaximumValueTimestamp) deepCopy() *_BACnetConstructedDataMaximumValueTimestamp {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaximumValueTimestampCopy := &_BACnetConstructedDataMaximumValueTimestamp{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaximumValueTimestamp.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaximumValueTimestampCopy
 }
 
 func (m *_BACnetConstructedDataMaximumValueTimestamp) String() string {

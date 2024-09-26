@@ -40,12 +40,14 @@ type BACnetConfirmedServiceRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetConfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequest()
 }
 
 // BACnetConfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
 type BACnetConfirmedServiceRequestContract interface {
+	utils.Copyable
 	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
 	GetServiceRequestPayloadLength() uint32
 	// GetServiceRequestLength() returns a parser argument
@@ -358,3 +360,18 @@ func (m *_BACnetConfirmedServiceRequest) GetServiceRequestLength() uint32 {
 ////
 
 func (m *_BACnetConfirmedServiceRequest) IsBACnetConfirmedServiceRequest() {}
+
+func (m *_BACnetConfirmedServiceRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequest) deepCopy() *_BACnetConfirmedServiceRequest {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestCopy := &_BACnetConfirmedServiceRequest{
+		nil, // will be set by child
+		m.ServiceRequestLength,
+	}
+	return _BACnetConfirmedServiceRequestCopy
+}

@@ -38,6 +38,7 @@ type UnregisterNodesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_UnregisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_UnregisterNodesRequest) IsUnregisterNodesRequest() {}
+
+func (m *_UnregisterNodesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnregisterNodesRequest) deepCopy() *_UnregisterNodesRequest {
+	if m == nil {
+		return nil
+	}
+	_UnregisterNodesRequestCopy := &_UnregisterNodesRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodesToUnregister,
+		utils.DeepCopySlice[NodeId, NodeId](m.NodesToUnregister),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UnregisterNodesRequestCopy
+}
 
 func (m *_UnregisterNodesRequest) String() string {
 	if m == nil {

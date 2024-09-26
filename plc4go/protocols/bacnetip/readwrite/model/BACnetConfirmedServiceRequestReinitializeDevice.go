@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReinitializeDevice interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetReinitializedStateOfDevice returns ReinitializedStateOfDevice (property field)
 	GetReinitializedStateOfDevice() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
@@ -209,6 +210,23 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDevice) IsBACnetConfirmedServiceRequestReinitializeDevice() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) deepCopy() *_BACnetConfirmedServiceRequestReinitializeDevice {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReinitializeDeviceCopy := &_BACnetConfirmedServiceRequestReinitializeDevice{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.ReinitializedStateOfDevice.DeepCopy().(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged),
+		m.Password.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestReinitializeDeviceCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDevice) String() string {

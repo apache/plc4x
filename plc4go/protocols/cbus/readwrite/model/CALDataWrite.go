@@ -38,6 +38,7 @@ type CALDataWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -220,6 +221,24 @@ func (m *_CALDataWrite) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_CALDataWrite) IsCALDataWrite() {}
+
+func (m *_CALDataWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataWrite) deepCopy() *_CALDataWrite {
+	if m == nil {
+		return nil
+	}
+	_CALDataWriteCopy := &_CALDataWrite{
+		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.ParamNo,
+		m.Code,
+		m.ParameterValue.DeepCopy().(ParameterValue),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataWriteCopy
+}
 
 func (m *_CALDataWrite) String() string {
 	if m == nil {

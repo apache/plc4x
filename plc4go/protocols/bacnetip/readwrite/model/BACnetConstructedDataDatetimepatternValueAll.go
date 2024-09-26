@@ -36,6 +36,7 @@ type BACnetConstructedDataDatetimepatternValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataDatetimepatternValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDatetimepatternValueAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataDatetimepatternValueAll) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataDatetimepatternValueAll) IsBACnetConstructedDataDatetimepatternValueAll() {
+}
+
+func (m *_BACnetConstructedDataDatetimepatternValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDatetimepatternValueAll) deepCopy() *_BACnetConstructedDataDatetimepatternValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDatetimepatternValueAllCopy := &_BACnetConstructedDataDatetimepatternValueAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDatetimepatternValueAllCopy
 }
 
 func (m *_BACnetConstructedDataDatetimepatternValueAll) String() string {

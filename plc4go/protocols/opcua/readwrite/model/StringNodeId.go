@@ -38,6 +38,7 @@ type StringNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
@@ -189,6 +190,21 @@ func (m *_StringNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_StringNodeId) IsStringNodeId() {}
+
+func (m *_StringNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StringNodeId) deepCopy() *_StringNodeId {
+	if m == nil {
+		return nil
+	}
+	_StringNodeIdCopy := &_StringNodeId{
+		m.NamespaceIndex,
+		m.Identifier.DeepCopy().(PascalString),
+	}
+	return _StringNodeIdCopy
+}
 
 func (m *_StringNodeId) String() string {
 	if m == nil {

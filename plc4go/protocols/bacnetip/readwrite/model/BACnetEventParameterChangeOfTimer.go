@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfTimer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -274,6 +275,26 @@ func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetEventParameterChangeOfTimer) IsBACnetEventParameterChangeOfTimer() {}
+
+func (m *_BACnetEventParameterChangeOfTimer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfTimer) deepCopy() *_BACnetEventParameterChangeOfTimer {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfTimerCopy := &_BACnetEventParameterChangeOfTimer{
+		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.AlarmValues.DeepCopy().(BACnetEventParameterChangeOfTimerAlarmValue),
+		m.UpdateTimeReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterChangeOfTimerCopy
+}
 
 func (m *_BACnetEventParameterChangeOfTimer) String() string {
 	if m == nil {

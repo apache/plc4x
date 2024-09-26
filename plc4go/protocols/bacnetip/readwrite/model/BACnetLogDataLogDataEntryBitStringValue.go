@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryBitStringValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetContextTagBitString
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetLogDataLogDataEntryBitStringValue) IsBACnetLogDataLogDataEntryBitStringValue() {}
+
+func (m *_BACnetLogDataLogDataEntryBitStringValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryBitStringValue) deepCopy() *_BACnetLogDataLogDataEntryBitStringValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryBitStringValueCopy := &_BACnetLogDataLogDataEntryBitStringValue{
+		m.BACnetLogDataLogDataEntryContract.DeepCopy().(BACnetLogDataLogDataEntryContract),
+		m.BitStringValue.DeepCopy().(BACnetContextTagBitString),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryBitStringValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryBitStringValue) String() string {
 	if m == nil {

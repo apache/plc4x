@@ -38,6 +38,7 @@ type BACnetConstructedDataEventDetectionEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEventDetectionEnable returns EventDetectionEnable (property field)
 	GetEventDetectionEnable() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEventDetectionEnable) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataEventDetectionEnable) IsBACnetConstructedDataEventDetectionEnable() {}
+
+func (m *_BACnetConstructedDataEventDetectionEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventDetectionEnable) deepCopy() *_BACnetConstructedDataEventDetectionEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventDetectionEnableCopy := &_BACnetConstructedDataEventDetectionEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.EventDetectionEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventDetectionEnableCopy
+}
 
 func (m *_BACnetConstructedDataEventDetectionEnable) String() string {
 	if m == nil {

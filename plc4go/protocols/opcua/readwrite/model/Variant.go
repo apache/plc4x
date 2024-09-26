@@ -40,12 +40,14 @@ type Variant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsVariant is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariant()
 }
 
 // VariantContract provides a set of functions which can be overwritten by a sub struct
 type VariantContract interface {
+	utils.Copyable
 	// GetArrayLengthSpecified returns ArrayLengthSpecified (property field)
 	GetArrayLengthSpecified() bool
 	// GetArrayDimensionsSpecified returns ArrayDimensionsSpecified (property field)
@@ -383,3 +385,21 @@ func (pm *_Variant) serializeParent(ctx context.Context, writeBuffer utils.Write
 }
 
 func (m *_Variant) IsVariant() {}
+
+func (m *_Variant) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Variant) deepCopy() *_Variant {
+	if m == nil {
+		return nil
+	}
+	_VariantCopy := &_Variant{
+		nil, // will be set by child
+		m.ArrayLengthSpecified,
+		m.ArrayDimensionsSpecified,
+		utils.CopyPtr[int32](m.NoOfArrayDimensions),
+		utils.DeepCopySlice[bool, bool](m.ArrayDimensions),
+	}
+	return _VariantCopy
+}

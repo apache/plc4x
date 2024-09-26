@@ -38,6 +38,7 @@ type BACnetOptionalBinaryPVValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalBinaryPV
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalBinaryPVValue) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetOptionalBinaryPVValue) IsBACnetOptionalBinaryPVValue() {}
+
+func (m *_BACnetOptionalBinaryPVValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalBinaryPVValue) deepCopy() *_BACnetOptionalBinaryPVValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalBinaryPVValueCopy := &_BACnetOptionalBinaryPVValue{
+		m.BACnetOptionalBinaryPVContract.DeepCopy().(BACnetOptionalBinaryPVContract),
+		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = m
+	return _BACnetOptionalBinaryPVValueCopy
+}
 
 func (m *_BACnetOptionalBinaryPVValue) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type AdsTableSizes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSymbolCount returns SymbolCount (property field)
 	GetSymbolCount() uint32
 	// GetSymbolLength returns SymbolLength (property field)
@@ -268,6 +269,25 @@ func (m *_AdsTableSizes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_AdsTableSizes) IsAdsTableSizes() {}
+
+func (m *_AdsTableSizes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsTableSizes) deepCopy() *_AdsTableSizes {
+	if m == nil {
+		return nil
+	}
+	_AdsTableSizesCopy := &_AdsTableSizes{
+		m.SymbolCount,
+		m.SymbolLength,
+		m.DataTypeCount,
+		m.DataTypeLength,
+		m.ExtraCount,
+		m.ExtraLength,
+	}
+	return _AdsTableSizesCopy
+}
 
 func (m *_AdsTableSizes) String() string {
 	if m == nil {

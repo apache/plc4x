@@ -42,6 +42,7 @@ type MultipleServiceRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetData returns Data (property field)
 	GetData() Services
@@ -237,6 +238,22 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_MultipleServiceRequest) IsMultipleServiceRequest() {}
+
+func (m *_MultipleServiceRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MultipleServiceRequest) deepCopy() *_MultipleServiceRequest {
+	if m == nil {
+		return nil
+	}
+	_MultipleServiceRequestCopy := &_MultipleServiceRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.Data.DeepCopy().(Services),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _MultipleServiceRequestCopy
+}
 
 func (m *_MultipleServiceRequest) String() string {
 	if m == nil {

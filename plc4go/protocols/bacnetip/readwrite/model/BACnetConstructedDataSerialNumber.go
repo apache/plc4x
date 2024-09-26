@@ -38,6 +38,7 @@ type BACnetConstructedDataSerialNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSerialNumber returns SerialNumber (property field)
 	GetSerialNumber() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSerialNumber) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataSerialNumber) IsBACnetConstructedDataSerialNumber() {}
+
+func (m *_BACnetConstructedDataSerialNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSerialNumber) deepCopy() *_BACnetConstructedDataSerialNumber {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSerialNumberCopy := &_BACnetConstructedDataSerialNumber{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.SerialNumber.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSerialNumberCopy
+}
 
 func (m *_BACnetConstructedDataSerialNumber) String() string {
 	if m == nil {

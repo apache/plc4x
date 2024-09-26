@@ -38,6 +38,7 @@ type SignedSoftwareCertificate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetCertificateData returns CertificateData (property field)
 	GetCertificateData() PascalByteString
@@ -206,6 +207,23 @@ func (m *_SignedSoftwareCertificate) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SignedSoftwareCertificate) IsSignedSoftwareCertificate() {}
+
+func (m *_SignedSoftwareCertificate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SignedSoftwareCertificate) deepCopy() *_SignedSoftwareCertificate {
+	if m == nil {
+		return nil
+	}
+	_SignedSoftwareCertificateCopy := &_SignedSoftwareCertificate{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.CertificateData.DeepCopy().(PascalByteString),
+		m.Signature.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SignedSoftwareCertificateCopy
+}
 
 func (m *_SignedSoftwareCertificate) String() string {
 	if m == nil {

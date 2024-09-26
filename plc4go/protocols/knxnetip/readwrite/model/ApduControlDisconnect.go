@@ -36,6 +36,7 @@ type ApduControlDisconnect interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduControl
 	// IsApduControlDisconnect is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControlDisconnect()
@@ -146,6 +147,21 @@ func (m *_ApduControlDisconnect) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_ApduControlDisconnect) IsApduControlDisconnect() {}
+
+func (m *_ApduControlDisconnect) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlDisconnect) deepCopy() *_ApduControlDisconnect {
+	if m == nil {
+		return nil
+	}
+	_ApduControlDisconnectCopy := &_ApduControlDisconnect{
+		m.ApduControlContract.DeepCopy().(ApduControlContract),
+	}
+	m.ApduControlContract.(*_ApduControl)._SubType = m
+	return _ApduControlDisconnectCopy
+}
 
 func (m *_ApduControlDisconnect) String() string {
 	if m == nil {

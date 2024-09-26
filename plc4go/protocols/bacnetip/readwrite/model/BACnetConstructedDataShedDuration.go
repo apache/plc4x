@@ -38,6 +38,7 @@ type BACnetConstructedDataShedDuration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetShedDuration returns ShedDuration (property field)
 	GetShedDuration() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataShedDuration) IsBACnetConstructedDataShedDuration() {}
+
+func (m *_BACnetConstructedDataShedDuration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataShedDuration) deepCopy() *_BACnetConstructedDataShedDuration {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataShedDurationCopy := &_BACnetConstructedDataShedDuration{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ShedDuration.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataShedDurationCopy
+}
 
 func (m *_BACnetConstructedDataShedDuration) String() string {
 	if m == nil {

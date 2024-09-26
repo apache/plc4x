@@ -38,6 +38,7 @@ type S7MessageResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Message
 	// GetErrorClass returns ErrorClass (property field)
 	GetErrorClass() uint8
@@ -200,6 +201,23 @@ func (m *_S7MessageResponse) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_S7MessageResponse) IsS7MessageResponse() {}
+
+func (m *_S7MessageResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageResponse) deepCopy() *_S7MessageResponse {
+	if m == nil {
+		return nil
+	}
+	_S7MessageResponseCopy := &_S7MessageResponse{
+		m.S7MessageContract.DeepCopy().(S7MessageContract),
+		m.ErrorClass,
+		m.ErrorCode,
+	}
+	m.S7MessageContract.(*_S7Message)._SubType = m
+	return _S7MessageResponseCopy
+}
 
 func (m *_S7MessageResponse) String() string {
 	if m == nil {

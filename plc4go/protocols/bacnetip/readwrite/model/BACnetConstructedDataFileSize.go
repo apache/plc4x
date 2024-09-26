@@ -38,6 +38,7 @@ type BACnetConstructedDataFileSize interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFileSize returns FileSize (property field)
 	GetFileSize() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFileSize) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataFileSize) IsBACnetConstructedDataFileSize() {}
+
+func (m *_BACnetConstructedDataFileSize) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFileSize) deepCopy() *_BACnetConstructedDataFileSize {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFileSizeCopy := &_BACnetConstructedDataFileSize{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FileSize.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFileSizeCopy
+}
 
 func (m *_BACnetConstructedDataFileSize) String() string {
 	if m == nil {

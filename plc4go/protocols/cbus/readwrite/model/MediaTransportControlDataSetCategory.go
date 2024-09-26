@@ -38,6 +38,7 @@ type MediaTransportControlDataSetCategory interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetCategoryNumber returns CategoryNumber (property field)
 	GetCategoryNumber() uint8
@@ -175,6 +176,22 @@ func (m *_MediaTransportControlDataSetCategory) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataSetCategory) IsMediaTransportControlDataSetCategory() {}
+
+func (m *_MediaTransportControlDataSetCategory) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSetCategory) deepCopy() *_MediaTransportControlDataSetCategory {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSetCategoryCopy := &_MediaTransportControlDataSetCategory{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.CategoryNumber,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSetCategoryCopy
+}
 
 func (m *_MediaTransportControlDataSetCategory) String() string {
 	if m == nil {

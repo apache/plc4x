@@ -38,6 +38,7 @@ type SecurityArmCode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCode returns Code (property field)
 	GetCode() uint8
 	// GetIsDisarmed returns IsDisarmed (virtual field)
@@ -285,6 +286,20 @@ func (m *_SecurityArmCode) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SecurityArmCode) IsSecurityArmCode() {}
+
+func (m *_SecurityArmCode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityArmCode) deepCopy() *_SecurityArmCode {
+	if m == nil {
+		return nil
+	}
+	_SecurityArmCodeCopy := &_SecurityArmCode{
+		m.Code,
+	}
+	return _SecurityArmCodeCopy
+}
 
 func (m *_SecurityArmCode) String() string {
 	if m == nil {

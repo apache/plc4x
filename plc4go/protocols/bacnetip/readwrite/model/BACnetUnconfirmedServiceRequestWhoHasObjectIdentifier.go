@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequestWhoHasObject
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -178,6 +179,22 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) SerializeWithWr
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) IsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) deepCopy() *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierCopy := &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{
+		m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.DeepCopy().(BACnetUnconfirmedServiceRequestWhoHasObjectContract),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+	}
+	m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = m
+	return _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierCopy
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) String() string {

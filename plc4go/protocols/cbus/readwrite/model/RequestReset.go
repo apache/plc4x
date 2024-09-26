@@ -38,6 +38,7 @@ type RequestReset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// GetTildePeek returns TildePeek (property field)
 	GetTildePeek() RequestType
@@ -230,6 +231,25 @@ func (m *_RequestReset) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_RequestReset) IsRequestReset() {}
+
+func (m *_RequestReset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestReset) deepCopy() *_RequestReset {
+	if m == nil {
+		return nil
+	}
+	_RequestResetCopy := &_RequestReset{
+		m.RequestContract.DeepCopy().(RequestContract),
+		m.TildePeek,
+		utils.CopyPtr[RequestType](m.SecondTilde),
+		m.TildePeek2,
+		utils.CopyPtr[RequestType](m.ThirdTilde),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestResetCopy
+}
 
 func (m *_RequestReset) String() string {
 	if m == nil {

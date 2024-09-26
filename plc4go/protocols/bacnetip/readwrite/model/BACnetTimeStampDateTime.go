@@ -38,6 +38,7 @@ type BACnetTimeStampDateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimeStamp
 	// GetDateTimeValue returns DateTimeValue (property field)
 	GetDateTimeValue() BACnetDateTimeEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetTimeStampDateTime) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetTimeStampDateTime) IsBACnetTimeStampDateTime() {}
+
+func (m *_BACnetTimeStampDateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStampDateTime) deepCopy() *_BACnetTimeStampDateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampDateTimeCopy := &_BACnetTimeStampDateTime{
+		m.BACnetTimeStampContract.DeepCopy().(BACnetTimeStampContract),
+		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
+	}
+	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
+	return _BACnetTimeStampDateTimeCopy
+}
 
 func (m *_BACnetTimeStampDateTime) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataUpdateInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUpdateInterval returns UpdateInterval (property field)
 	GetUpdateInterval() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUpdateInterval) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataUpdateInterval) IsBACnetConstructedDataUpdateInterval() {}
+
+func (m *_BACnetConstructedDataUpdateInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUpdateInterval) deepCopy() *_BACnetConstructedDataUpdateInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUpdateIntervalCopy := &_BACnetConstructedDataUpdateInterval{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.UpdateInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUpdateIntervalCopy
+}
 
 func (m *_BACnetConstructedDataUpdateInterval) String() string {
 	if m == nil {

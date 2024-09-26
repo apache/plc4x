@@ -38,6 +38,7 @@ type NetworkGroupDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetServerUri returns ServerUri (property field)
 	GetServerUri() PascalString
@@ -231,6 +232,24 @@ func (m *_NetworkGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_NetworkGroupDataType) IsNetworkGroupDataType() {}
+
+func (m *_NetworkGroupDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkGroupDataType) deepCopy() *_NetworkGroupDataType {
+	if m == nil {
+		return nil
+	}
+	_NetworkGroupDataTypeCopy := &_NetworkGroupDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ServerUri.DeepCopy().(PascalString),
+		m.NoOfNetworkPaths,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NetworkPaths),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NetworkGroupDataTypeCopy
+}
 
 func (m *_NetworkGroupDataType) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type EncodedTicket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsEncodedTicket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedTicket()
 }
@@ -134,6 +135,18 @@ func (m *_EncodedTicket) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_EncodedTicket) IsEncodedTicket() {}
+
+func (m *_EncodedTicket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EncodedTicket) deepCopy() *_EncodedTicket {
+	if m == nil {
+		return nil
+	}
+	_EncodedTicketCopy := &_EncodedTicket{}
+	return _EncodedTicketCopy
+}
 
 func (m *_EncodedTicket) String() string {
 	if m == nil {

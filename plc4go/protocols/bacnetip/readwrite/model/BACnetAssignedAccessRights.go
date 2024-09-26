@@ -38,6 +38,7 @@ type BACnetAssignedAccessRights interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAssignedAccessRights returns AssignedAccessRights (property field)
 	GetAssignedAccessRights() BACnetDeviceObjectReferenceEnclosed
 	// GetEnable returns Enable (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetAssignedAccessRights) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetAssignedAccessRights) IsBACnetAssignedAccessRights() {}
+
+func (m *_BACnetAssignedAccessRights) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAssignedAccessRights) deepCopy() *_BACnetAssignedAccessRights {
+	if m == nil {
+		return nil
+	}
+	_BACnetAssignedAccessRightsCopy := &_BACnetAssignedAccessRights{
+		m.AssignedAccessRights.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetAssignedAccessRightsCopy
+}
 
 func (m *_BACnetAssignedAccessRights) String() string {
 	if m == nil {

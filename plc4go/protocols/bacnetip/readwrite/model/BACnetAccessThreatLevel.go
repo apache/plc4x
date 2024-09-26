@@ -38,6 +38,7 @@ type BACnetAccessThreatLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetThreatLevel returns ThreatLevel (property field)
 	GetThreatLevel() BACnetApplicationTagUnsignedInteger
 	// IsBACnetAccessThreatLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -169,6 +170,20 @@ func (m *_BACnetAccessThreatLevel) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetAccessThreatLevel) IsBACnetAccessThreatLevel() {}
+
+func (m *_BACnetAccessThreatLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessThreatLevel) deepCopy() *_BACnetAccessThreatLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessThreatLevelCopy := &_BACnetAccessThreatLevel{
+		m.ThreatLevel.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	return _BACnetAccessThreatLevelCopy
+}
 
 func (m *_BACnetAccessThreatLevel) String() string {
 	if m == nil {

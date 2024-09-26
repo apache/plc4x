@@ -38,6 +38,7 @@ type LDataCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
@@ -228,6 +229,24 @@ func (m *_LDataCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_LDataCon) IsLDataCon() {}
+
+func (m *_LDataCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataCon) deepCopy() *_LDataCon {
+	if m == nil {
+		return nil
+	}
+	_LDataConCopy := &_LDataCon{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.AdditionalInformationLength,
+		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
+		m.DataFrame.DeepCopy().(LDataFrame),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LDataConCopy
+}
 
 func (m *_LDataCon) String() string {
 	if m == nil {

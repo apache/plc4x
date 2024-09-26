@@ -38,6 +38,7 @@ type BACnetConstructedDataCalendarPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCalendarPresentValue) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataCalendarPresentValue) IsBACnetConstructedDataCalendarPresentValue() {}
+
+func (m *_BACnetConstructedDataCalendarPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCalendarPresentValue) deepCopy() *_BACnetConstructedDataCalendarPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCalendarPresentValueCopy := &_BACnetConstructedDataCalendarPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCalendarPresentValueCopy
+}
 
 func (m *_BACnetConstructedDataCalendarPresentValue) String() string {
 	if m == nil {

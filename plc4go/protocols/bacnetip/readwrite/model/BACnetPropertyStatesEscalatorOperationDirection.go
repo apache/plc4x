@@ -38,6 +38,7 @@ type BACnetPropertyStatesEscalatorOperationDirection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetEscalatorOperationDirection returns EscalatorOperationDirection (property field)
 	GetEscalatorOperationDirection() BACnetEscalatorOperationDirectionTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) SerializeWithWriteBuf
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) IsBACnetPropertyStatesEscalatorOperationDirection() {
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) deepCopy() *_BACnetPropertyStatesEscalatorOperationDirection {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEscalatorOperationDirectionCopy := &_BACnetPropertyStatesEscalatorOperationDirection{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.EscalatorOperationDirection.DeepCopy().(BACnetEscalatorOperationDirectionTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesEscalatorOperationDirectionCopy
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) String() string {

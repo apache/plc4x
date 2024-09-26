@@ -38,6 +38,7 @@ type BACnetConstructedDataEscalatorMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEscalatorMode returns EscalatorMode (property field)
 	GetEscalatorMode() BACnetEscalatorModeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEscalatorMode) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataEscalatorMode) IsBACnetConstructedDataEscalatorMode() {}
+
+func (m *_BACnetConstructedDataEscalatorMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEscalatorMode) deepCopy() *_BACnetConstructedDataEscalatorMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEscalatorModeCopy := &_BACnetConstructedDataEscalatorMode{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.EscalatorMode.DeepCopy().(BACnetEscalatorModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEscalatorModeCopy
+}
 
 func (m *_BACnetConstructedDataEscalatorMode) String() string {
 	if m == nil {

@@ -38,12 +38,14 @@ type BACnetError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetError()
 }
 
 // BACnetErrorContract provides a set of functions which can be overwritten by a sub struct
 type BACnetErrorContract interface {
+	utils.Copyable
 	// IsBACnetError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetError()
 }
@@ -201,3 +203,17 @@ func (pm *_BACnetError) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_BACnetError) IsBACnetError() {}
+
+func (m *_BACnetError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetError) deepCopy() *_BACnetError {
+	if m == nil {
+		return nil
+	}
+	_BACnetErrorCopy := &_BACnetError{
+		nil, // will be set by child
+	}
+	return _BACnetErrorCopy
+}

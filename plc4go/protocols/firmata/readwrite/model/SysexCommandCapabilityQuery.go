@@ -36,6 +36,7 @@ type SysexCommandCapabilityQuery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandCapabilityQuery is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandCapabilityQuery()
@@ -150,6 +151,21 @@ func (m *_SysexCommandCapabilityQuery) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_SysexCommandCapabilityQuery) IsSysexCommandCapabilityQuery() {}
+
+func (m *_SysexCommandCapabilityQuery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandCapabilityQuery) deepCopy() *_SysexCommandCapabilityQuery {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandCapabilityQueryCopy := &_SysexCommandCapabilityQuery{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandCapabilityQueryCopy
+}
 
 func (m *_SysexCommandCapabilityQuery) String() string {
 	if m == nil {

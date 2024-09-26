@@ -38,6 +38,7 @@ type ModifyMonitoredItemsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -273,6 +274,26 @@ func (m *_ModifyMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_ModifyMonitoredItemsRequest) IsModifyMonitoredItemsRequest() {}
+
+func (m *_ModifyMonitoredItemsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModifyMonitoredItemsRequest) deepCopy() *_ModifyMonitoredItemsRequest {
+	if m == nil {
+		return nil
+	}
+	_ModifyMonitoredItemsRequestCopy := &_ModifyMonitoredItemsRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.TimestampsToReturn,
+		m.NoOfItemsToModify,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ItemsToModify),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModifyMonitoredItemsRequestCopy
+}
 
 func (m *_ModifyMonitoredItemsRequest) String() string {
 	if m == nil {

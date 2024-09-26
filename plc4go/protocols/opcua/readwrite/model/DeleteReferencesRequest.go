@@ -38,6 +38,7 @@ type DeleteReferencesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_DeleteReferencesRequest) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_DeleteReferencesRequest) IsDeleteReferencesRequest() {}
+
+func (m *_DeleteReferencesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteReferencesRequest) deepCopy() *_DeleteReferencesRequest {
+	if m == nil {
+		return nil
+	}
+	_DeleteReferencesRequestCopy := &_DeleteReferencesRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfReferencesToDelete,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ReferencesToDelete),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteReferencesRequestCopy
+}
 
 func (m *_DeleteReferencesRequest) String() string {
 	if m == nil {

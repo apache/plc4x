@@ -38,6 +38,7 @@ type DF1CommandRequestMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1RequestMessage
 	// GetCommand returns Command (property field)
 	GetCommand() DF1RequestCommand
@@ -182,6 +183,22 @@ func (m *_DF1CommandRequestMessage) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_DF1CommandRequestMessage) IsDF1CommandRequestMessage() {}
+
+func (m *_DF1CommandRequestMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1CommandRequestMessage) deepCopy() *_DF1CommandRequestMessage {
+	if m == nil {
+		return nil
+	}
+	_DF1CommandRequestMessageCopy := &_DF1CommandRequestMessage{
+		m.DF1RequestMessageContract.DeepCopy().(DF1RequestMessageContract),
+		m.Command.DeepCopy().(DF1RequestCommand),
+	}
+	m.DF1RequestMessageContract.(*_DF1RequestMessage)._SubType = m
+	return _DF1CommandRequestMessageCopy
+}
 
 func (m *_DF1CommandRequestMessage) String() string {
 	if m == nil {

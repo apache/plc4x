@@ -38,6 +38,7 @@ type OpcuaProtocolLimits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReceiveBufferSize returns ReceiveBufferSize (property field)
 	GetReceiveBufferSize() uint32
 	// GetSendBufferSize returns SendBufferSize (property field)
@@ -226,6 +227,23 @@ func (m *_OpcuaProtocolLimits) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_OpcuaProtocolLimits) IsOpcuaProtocolLimits() {}
+
+func (m *_OpcuaProtocolLimits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaProtocolLimits) deepCopy() *_OpcuaProtocolLimits {
+	if m == nil {
+		return nil
+	}
+	_OpcuaProtocolLimitsCopy := &_OpcuaProtocolLimits{
+		m.ReceiveBufferSize,
+		m.SendBufferSize,
+		m.MaxMessageSize,
+		m.MaxChunkCount,
+	}
+	return _OpcuaProtocolLimitsCopy
+}
 
 func (m *_OpcuaProtocolLimits) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type MediaTransportControlDataPlay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// IsMediaTransportControlDataPlay is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataPlay()
@@ -142,6 +143,21 @@ func (m *_MediaTransportControlDataPlay) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_MediaTransportControlDataPlay) IsMediaTransportControlDataPlay() {}
+
+func (m *_MediaTransportControlDataPlay) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataPlay) deepCopy() *_MediaTransportControlDataPlay {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataPlayCopy := &_MediaTransportControlDataPlay{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataPlayCopy
+}
 
 func (m *_MediaTransportControlDataPlay) String() string {
 	if m == nil {

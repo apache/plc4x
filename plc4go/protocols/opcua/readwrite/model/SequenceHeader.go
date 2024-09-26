@@ -38,6 +38,7 @@ type SequenceHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() int32
 	// GetRequestId returns RequestId (property field)
@@ -186,6 +187,21 @@ func (m *_SequenceHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SequenceHeader) IsSequenceHeader() {}
+
+func (m *_SequenceHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SequenceHeader) deepCopy() *_SequenceHeader {
+	if m == nil {
+		return nil
+	}
+	_SequenceHeaderCopy := &_SequenceHeader{
+		m.SequenceNumber,
+		m.RequestId,
+	}
+	return _SequenceHeaderCopy
+}
 
 func (m *_SequenceHeader) String() string {
 	if m == nil {

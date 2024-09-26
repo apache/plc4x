@@ -38,6 +38,7 @@ type APDUReject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
@@ -218,6 +219,24 @@ func (m *_APDUReject) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_APDUReject) IsAPDUReject() {}
+
+func (m *_APDUReject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUReject) deepCopy() *_APDUReject {
+	if m == nil {
+		return nil
+	}
+	_APDURejectCopy := &_APDUReject{
+		m.APDUContract.DeepCopy().(APDUContract),
+		m.OriginalInvokeId,
+		m.RejectReason.DeepCopy().(BACnetRejectReasonTagged),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDURejectCopy
+}
 
 func (m *_APDUReject) String() string {
 	if m == nil {

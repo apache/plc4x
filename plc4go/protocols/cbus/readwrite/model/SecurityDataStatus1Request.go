@@ -36,6 +36,7 @@ type SecurityDataStatus1Request interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataStatus1Request is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataStatus1Request()
@@ -142,6 +143,21 @@ func (m *_SecurityDataStatus1Request) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataStatus1Request) IsSecurityDataStatus1Request() {}
+
+func (m *_SecurityDataStatus1Request) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataStatus1Request) deepCopy() *_SecurityDataStatus1Request {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataStatus1RequestCopy := &_SecurityDataStatus1Request{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataStatus1RequestCopy
+}
 
 func (m *_SecurityDataStatus1Request) String() string {
 	if m == nil {

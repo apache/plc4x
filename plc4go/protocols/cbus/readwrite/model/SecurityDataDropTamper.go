@@ -36,6 +36,7 @@ type SecurityDataDropTamper interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataDropTamper is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataDropTamper()
@@ -142,6 +143,21 @@ func (m *_SecurityDataDropTamper) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SecurityDataDropTamper) IsSecurityDataDropTamper() {}
+
+func (m *_SecurityDataDropTamper) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataDropTamper) deepCopy() *_SecurityDataDropTamper {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataDropTamperCopy := &_SecurityDataDropTamper{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataDropTamperCopy
+}
 
 func (m *_SecurityDataDropTamper) String() string {
 	if m == nil {

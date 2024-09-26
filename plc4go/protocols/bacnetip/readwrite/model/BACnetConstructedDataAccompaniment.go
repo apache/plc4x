@@ -38,6 +38,7 @@ type BACnetConstructedDataAccompaniment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccompaniment returns Accompaniment (property field)
 	GetAccompaniment() BACnetDeviceObjectReference
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccompaniment) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataAccompaniment) IsBACnetConstructedDataAccompaniment() {}
+
+func (m *_BACnetConstructedDataAccompaniment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccompaniment) deepCopy() *_BACnetConstructedDataAccompaniment {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccompanimentCopy := &_BACnetConstructedDataAccompaniment{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Accompaniment.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccompanimentCopy
+}
 
 func (m *_BACnetConstructedDataAccompaniment) String() string {
 	if m == nil {

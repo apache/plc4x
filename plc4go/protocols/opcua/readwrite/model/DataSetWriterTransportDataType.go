@@ -36,6 +36,7 @@ type DataSetWriterTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsDataSetWriterTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSetWriterTransportDataType()
@@ -146,6 +147,21 @@ func (m *_DataSetWriterTransportDataType) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_DataSetWriterTransportDataType) IsDataSetWriterTransportDataType() {}
+
+func (m *_DataSetWriterTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSetWriterTransportDataType) deepCopy() *_DataSetWriterTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_DataSetWriterTransportDataTypeCopy := &_DataSetWriterTransportDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataSetWriterTransportDataTypeCopy
+}
 
 func (m *_DataSetWriterTransportDataType) String() string {
 	if m == nil {

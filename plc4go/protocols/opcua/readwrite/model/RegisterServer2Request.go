@@ -38,6 +38,7 @@ type RegisterServer2Request interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -255,6 +256,25 @@ func (m *_RegisterServer2Request) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_RegisterServer2Request) IsRegisterServer2Request() {}
+
+func (m *_RegisterServer2Request) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterServer2Request) deepCopy() *_RegisterServer2Request {
+	if m == nil {
+		return nil
+	}
+	_RegisterServer2RequestCopy := &_RegisterServer2Request{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.Server.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfDiscoveryConfiguration,
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DiscoveryConfiguration),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterServer2RequestCopy
+}
 
 func (m *_RegisterServer2Request) String() string {
 	if m == nil {

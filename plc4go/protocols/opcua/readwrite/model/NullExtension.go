@@ -36,6 +36,7 @@ type NullExtension interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsNullExtension is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullExtension()
@@ -146,6 +147,21 @@ func (m *_NullExtension) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_NullExtension) IsNullExtension() {}
+
+func (m *_NullExtension) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullExtension) deepCopy() *_NullExtension {
+	if m == nil {
+		return nil
+	}
+	_NullExtensionCopy := &_NullExtension{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NullExtensionCopy
+}
 
 func (m *_NullExtension) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetEscalatorModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetEscalatorModeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetEscalatorModeTagged) IsBACnetEscalatorModeTagged() {}
+
+func (m *_BACnetEscalatorModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEscalatorModeTagged) deepCopy() *_BACnetEscalatorModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetEscalatorModeTaggedCopy := &_BACnetEscalatorModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetEscalatorModeTaggedCopy
+}
 
 func (m *_BACnetEscalatorModeTagged) String() string {
 	if m == nil {

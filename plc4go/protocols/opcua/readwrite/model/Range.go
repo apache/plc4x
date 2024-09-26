@@ -38,6 +38,7 @@ type Range interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetLow returns Low (property field)
 	GetLow() float64
@@ -200,6 +201,23 @@ func (m *_Range) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Range) IsRange() {}
+
+func (m *_Range) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Range) deepCopy() *_Range {
+	if m == nil {
+		return nil
+	}
+	_RangeCopy := &_Range{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Low,
+		m.High,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RangeCopy
+}
 
 func (m *_Range) String() string {
 	if m == nil {

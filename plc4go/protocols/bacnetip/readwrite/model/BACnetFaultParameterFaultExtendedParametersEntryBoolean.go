@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) SerializeWith
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) IsBACnetFaultParameterFaultExtendedParametersEntryBoolean() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryBooleanCopy := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryBooleanCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) String() string {

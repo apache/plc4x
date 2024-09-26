@@ -38,6 +38,7 @@ type ContentFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfElements returns NoOfElements (property field)
 	GetNoOfElements() int32
@@ -207,6 +208,23 @@ func (m *_ContentFilter) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_ContentFilter) IsContentFilter() {}
+
+func (m *_ContentFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ContentFilter) deepCopy() *_ContentFilter {
+	if m == nil {
+		return nil
+	}
+	_ContentFilterCopy := &_ContentFilter{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfElements,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Elements),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ContentFilterCopy
+}
 
 func (m *_ContentFilter) String() string {
 	if m == nil {

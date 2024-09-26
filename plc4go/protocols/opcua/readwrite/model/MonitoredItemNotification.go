@@ -38,6 +38,7 @@ type MonitoredItemNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetClientHandle returns ClientHandle (property field)
 	GetClientHandle() uint32
@@ -203,6 +204,23 @@ func (m *_MonitoredItemNotification) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_MonitoredItemNotification) IsMonitoredItemNotification() {}
+
+func (m *_MonitoredItemNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredItemNotification) deepCopy() *_MonitoredItemNotification {
+	if m == nil {
+		return nil
+	}
+	_MonitoredItemNotificationCopy := &_MonitoredItemNotification{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ClientHandle,
+		m.Value.DeepCopy().(DataValue),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoredItemNotificationCopy
+}
 
 func (m *_MonitoredItemNotification) String() string {
 	if m == nil {

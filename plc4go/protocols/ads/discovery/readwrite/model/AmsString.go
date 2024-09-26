@@ -39,6 +39,7 @@ type AmsString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetText returns Text (property field)
 	GetText() string
 	// IsAmsString is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -195,6 +196,21 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_AmsString) IsAmsString() {}
+
+func (m *_AmsString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsString) deepCopy() *_AmsString {
+	if m == nil {
+		return nil
+	}
+	_AmsStringCopy := &_AmsString{
+		m.Text,
+		m.reservedField0,
+	}
+	return _AmsStringCopy
+}
 
 func (m *_AmsString) String() string {
 	if m == nil {

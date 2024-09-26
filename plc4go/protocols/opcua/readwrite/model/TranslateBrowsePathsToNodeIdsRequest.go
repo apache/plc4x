@@ -38,6 +38,7 @@ type TranslateBrowsePathsToNodeIdsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_TranslateBrowsePathsToNodeIdsRequest) IsTranslateBrowsePathsToNodeIdsRequest() {}
+
+func (m *_TranslateBrowsePathsToNodeIdsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsRequest) deepCopy() *_TranslateBrowsePathsToNodeIdsRequest {
+	if m == nil {
+		return nil
+	}
+	_TranslateBrowsePathsToNodeIdsRequestCopy := &_TranslateBrowsePathsToNodeIdsRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfBrowsePaths,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.BrowsePaths),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TranslateBrowsePathsToNodeIdsRequestCopy
+}
 
 func (m *_TranslateBrowsePathsToNodeIdsRequest) String() string {
 	if m == nil {

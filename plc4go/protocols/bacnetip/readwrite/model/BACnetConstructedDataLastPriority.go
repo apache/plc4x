@@ -38,6 +38,7 @@ type BACnetConstructedDataLastPriority interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastPriority returns LastPriority (property field)
 	GetLastPriority() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastPriority) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataLastPriority) IsBACnetConstructedDataLastPriority() {}
+
+func (m *_BACnetConstructedDataLastPriority) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastPriority) deepCopy() *_BACnetConstructedDataLastPriority {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastPriorityCopy := &_BACnetConstructedDataLastPriority{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastPriority.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastPriorityCopy
+}
 
 func (m *_BACnetConstructedDataLastPriority) String() string {
 	if m == nil {

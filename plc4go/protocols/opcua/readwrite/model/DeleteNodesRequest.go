@@ -38,6 +38,7 @@ type DeleteNodesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_DeleteNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_DeleteNodesRequest) IsDeleteNodesRequest() {}
+
+func (m *_DeleteNodesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteNodesRequest) deepCopy() *_DeleteNodesRequest {
+	if m == nil {
+		return nil
+	}
+	_DeleteNodesRequestCopy := &_DeleteNodesRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodesToDelete,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToDelete),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteNodesRequestCopy
+}
 
 func (m *_DeleteNodesRequest) String() string {
 	if m == nil {

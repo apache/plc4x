@@ -38,6 +38,7 @@ type BACnetPropertyStatesLiftGroupMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLiftGroupMode returns LiftGroupMode (property field)
 	GetLiftGroupMode() BACnetLiftGroupModeTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLiftGroupMode) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesLiftGroupMode) IsBACnetPropertyStatesLiftGroupMode() {}
+
+func (m *_BACnetPropertyStatesLiftGroupMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLiftGroupMode) deepCopy() *_BACnetPropertyStatesLiftGroupMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLiftGroupModeCopy := &_BACnetPropertyStatesLiftGroupMode{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.LiftGroupMode.DeepCopy().(BACnetLiftGroupModeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLiftGroupModeCopy
+}
 
 func (m *_BACnetPropertyStatesLiftGroupMode) String() string {
 	if m == nil {

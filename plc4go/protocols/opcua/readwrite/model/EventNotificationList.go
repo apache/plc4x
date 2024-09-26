@@ -38,6 +38,7 @@ type EventNotificationList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfEvents returns NoOfEvents (property field)
 	GetNoOfEvents() int32
@@ -220,6 +221,23 @@ func (m *_EventNotificationList) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_EventNotificationList) IsEventNotificationList() {}
+
+func (m *_EventNotificationList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EventNotificationList) deepCopy() *_EventNotificationList {
+	if m == nil {
+		return nil
+	}
+	_EventNotificationListCopy := &_EventNotificationList{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfEvents,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Events),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EventNotificationListCopy
+}
 
 func (m *_EventNotificationList) String() string {
 	if m == nil {

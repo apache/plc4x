@@ -38,6 +38,7 @@ type BACnetConstructedDataBBMDAcceptFDRegistrations interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBbmdAcceptFDRegistrations returns BbmdAcceptFDRegistrations (property field)
 	GetBbmdAcceptFDRegistrations() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) IsBACnetConstructedDataBBMDAcceptFDRegistrations() {
+}
+
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) deepCopy() *_BACnetConstructedDataBBMDAcceptFDRegistrations {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBBMDAcceptFDRegistrationsCopy := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BbmdAcceptFDRegistrations.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBBMDAcceptFDRegistrationsCopy
 }
 
 func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) String() string {

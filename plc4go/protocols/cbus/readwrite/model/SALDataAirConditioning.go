@@ -38,6 +38,7 @@ type SALDataAirConditioning interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetAirConditioningData returns AirConditioningData (property field)
 	GetAirConditioningData() AirConditioningData
@@ -182,6 +183,22 @@ func (m *_SALDataAirConditioning) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SALDataAirConditioning) IsSALDataAirConditioning() {}
+
+func (m *_SALDataAirConditioning) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataAirConditioning) deepCopy() *_SALDataAirConditioning {
+	if m == nil {
+		return nil
+	}
+	_SALDataAirConditioningCopy := &_SALDataAirConditioning{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.AirConditioningData.DeepCopy().(AirConditioningData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataAirConditioningCopy
+}
 
 func (m *_SALDataAirConditioning) String() string {
 	if m == nil {

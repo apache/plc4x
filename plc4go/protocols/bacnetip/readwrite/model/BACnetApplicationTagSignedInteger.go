@@ -38,6 +38,7 @@ type BACnetApplicationTagSignedInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadSignedInteger
@@ -209,6 +210,22 @@ func (m *_BACnetApplicationTagSignedInteger) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetApplicationTagSignedInteger) IsBACnetApplicationTagSignedInteger() {}
+
+func (m *_BACnetApplicationTagSignedInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagSignedInteger) deepCopy() *_BACnetApplicationTagSignedInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagSignedIntegerCopy := &_BACnetApplicationTagSignedInteger{
+		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadSignedInteger),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagSignedIntegerCopy
+}
 
 func (m *_BACnetApplicationTagSignedInteger) String() string {
 	if m == nil {

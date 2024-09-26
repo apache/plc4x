@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestAtomicWriteFile interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
@@ -284,6 +285,26 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) IsBACnetConfirmedServiceRequestAtomicWriteFile() {
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) deepCopy() *_BACnetConfirmedServiceRequestAtomicWriteFile {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestAtomicWriteFileCopy := &_BACnetConfirmedServiceRequestAtomicWriteFile{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.FileStartPosition.DeepCopy().(BACnetApplicationTagSignedInteger),
+		m.FileData.DeepCopy().(BACnetApplicationTagOctetString),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestAtomicWriteFileCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) String() string {

@@ -38,6 +38,7 @@ type BACnetSecurityKeySet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetKeyRevision returns KeyRevision (property field)
 	GetKeyRevision() BACnetContextTagUnsignedInteger
 	// GetActivationTime returns ActivationTime (property field)
@@ -238,6 +239,23 @@ func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetSecurityKeySet) IsBACnetSecurityKeySet() {}
+
+func (m *_BACnetSecurityKeySet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSecurityKeySet) deepCopy() *_BACnetSecurityKeySet {
+	if m == nil {
+		return nil
+	}
+	_BACnetSecurityKeySetCopy := &_BACnetSecurityKeySet{
+		m.KeyRevision.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ActivationTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.ExpirationTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.KeyIds.DeepCopy().(BACnetSecurityKeySetKeyIds),
+	}
+	return _BACnetSecurityKeySetCopy
+}
 
 func (m *_BACnetSecurityKeySet) String() string {
 	if m == nil {

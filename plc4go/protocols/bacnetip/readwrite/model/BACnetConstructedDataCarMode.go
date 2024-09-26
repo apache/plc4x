@@ -38,6 +38,7 @@ type BACnetConstructedDataCarMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarMode returns CarMode (property field)
 	GetCarMode() BACnetLiftCarModeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCarMode) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataCarMode) IsBACnetConstructedDataCarMode() {}
+
+func (m *_BACnetConstructedDataCarMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarMode) deepCopy() *_BACnetConstructedDataCarMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarModeCopy := &_BACnetConstructedDataCarMode{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CarMode.DeepCopy().(BACnetLiftCarModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarModeCopy
+}
 
 func (m *_BACnetConstructedDataCarMode) String() string {
 	if m == nil {

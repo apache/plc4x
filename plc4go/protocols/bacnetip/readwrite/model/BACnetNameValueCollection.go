@@ -38,6 +38,7 @@ type BACnetNameValueCollection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetMembers returns Members (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetNameValueCollection) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetNameValueCollection) IsBACnetNameValueCollection() {}
+
+func (m *_BACnetNameValueCollection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNameValueCollection) deepCopy() *_BACnetNameValueCollection {
+	if m == nil {
+		return nil
+	}
+	_BACnetNameValueCollectionCopy := &_BACnetNameValueCollection{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetNameValue, BACnetNameValue](m.Members),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetNameValueCollectionCopy
+}
 
 func (m *_BACnetNameValueCollection) String() string {
 	if m == nil {

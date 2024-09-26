@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6ZoneIndex interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6ZoneIndex returns Ipv6ZoneIndex (property field)
 	GetIpv6ZoneIndex() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) IsBACnetConstructedDataIPv6ZoneIndex() {}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndex) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndex) deepCopy() *_BACnetConstructedDataIPv6ZoneIndex {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6ZoneIndexCopy := &_BACnetConstructedDataIPv6ZoneIndex{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Ipv6ZoneIndex.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6ZoneIndexCopy
+}
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) String() string {
 	if m == nil {

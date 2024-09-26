@@ -38,6 +38,7 @@ type BACnetConstructedDataScaleFactor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetScaleFactor returns ScaleFactor (property field)
 	GetScaleFactor() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataScaleFactor) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataScaleFactor) IsBACnetConstructedDataScaleFactor() {}
+
+func (m *_BACnetConstructedDataScaleFactor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataScaleFactor) deepCopy() *_BACnetConstructedDataScaleFactor {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataScaleFactorCopy := &_BACnetConstructedDataScaleFactor{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ScaleFactor.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataScaleFactorCopy
+}
 
 func (m *_BACnetConstructedDataScaleFactor) String() string {
 	if m == nil {

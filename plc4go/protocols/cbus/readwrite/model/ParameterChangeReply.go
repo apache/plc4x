@@ -38,6 +38,7 @@ type ParameterChangeReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Reply
 	// GetParameterChange returns ParameterChange (property field)
 	GetParameterChange() ParameterChange
@@ -178,6 +179,22 @@ func (m *_ParameterChangeReply) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ParameterChangeReply) IsParameterChangeReply() {}
+
+func (m *_ParameterChangeReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterChangeReply) deepCopy() *_ParameterChangeReply {
+	if m == nil {
+		return nil
+	}
+	_ParameterChangeReplyCopy := &_ParameterChangeReply{
+		m.ReplyContract.DeepCopy().(ReplyContract),
+		m.ParameterChange.DeepCopy().(ParameterChange),
+	}
+	m.ReplyContract.(*_Reply)._SubType = m
+	return _ParameterChangeReplyCopy
+}
 
 func (m *_ParameterChangeReply) String() string {
 	if m == nil {

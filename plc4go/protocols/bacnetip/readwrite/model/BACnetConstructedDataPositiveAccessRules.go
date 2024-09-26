@@ -38,6 +38,7 @@ type BACnetConstructedDataPositiveAccessRules interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataPositiveAccessRules) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataPositiveAccessRules) IsBACnetConstructedDataPositiveAccessRules() {}
+
+func (m *_BACnetConstructedDataPositiveAccessRules) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPositiveAccessRules) deepCopy() *_BACnetConstructedDataPositiveAccessRules {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPositiveAccessRulesCopy := &_BACnetConstructedDataPositiveAccessRules{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetAccessRule, BACnetAccessRule](m.PositiveAccessRules),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPositiveAccessRulesCopy
+}
 
 func (m *_BACnetConstructedDataPositiveAccessRules) String() string {
 	if m == nil {

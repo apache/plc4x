@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetTimeDuration returns TimeDuration (property field)
 	GetTimeDuration() BACnetContextTagUnsignedInteger
@@ -236,6 +237,24 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) IsBACnetConfirmedServiceRequestDeviceCommunicationControl() {
+}
+
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) deepCopy() *_BACnetConfirmedServiceRequestDeviceCommunicationControl {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestDeviceCommunicationControlCopy := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.TimeDuration.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.EnableDisable.DeepCopy().(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged),
+		m.Password.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestDeviceCommunicationControlCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) String() string {

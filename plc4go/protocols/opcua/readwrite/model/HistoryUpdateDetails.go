@@ -36,6 +36,7 @@ type HistoryUpdateDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsHistoryUpdateDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryUpdateDetails()
@@ -146,6 +147,21 @@ func (m *_HistoryUpdateDetails) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_HistoryUpdateDetails) IsHistoryUpdateDetails() {}
+
+func (m *_HistoryUpdateDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryUpdateDetails) deepCopy() *_HistoryUpdateDetails {
+	if m == nil {
+		return nil
+	}
+	_HistoryUpdateDetailsCopy := &_HistoryUpdateDetails{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryUpdateDetailsCopy
+}
 
 func (m *_HistoryUpdateDetails) String() string {
 	if m == nil {

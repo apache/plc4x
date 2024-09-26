@@ -38,6 +38,7 @@ type SALDataSecurity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetSecurityData returns SecurityData (property field)
 	GetSecurityData() SecurityData
@@ -182,6 +183,22 @@ func (m *_SALDataSecurity) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SALDataSecurity) IsSALDataSecurity() {}
+
+func (m *_SALDataSecurity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataSecurity) deepCopy() *_SALDataSecurity {
+	if m == nil {
+		return nil
+	}
+	_SALDataSecurityCopy := &_SALDataSecurity{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.SecurityData.DeepCopy().(SecurityData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataSecurityCopy
+}
 
 func (m *_SALDataSecurity) String() string {
 	if m == nil {

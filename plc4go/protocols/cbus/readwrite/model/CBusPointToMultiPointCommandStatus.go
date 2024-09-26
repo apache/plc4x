@@ -38,6 +38,7 @@ type CBusPointToMultiPointCommandStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToMultiPointCommand
 	// GetStatusRequest returns StatusRequest (property field)
 	GetStatusRequest() StatusRequest
@@ -207,6 +208,24 @@ func (m *_CBusPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_CBusPointToMultiPointCommandStatus) IsCBusPointToMultiPointCommandStatus() {}
+
+func (m *_CBusPointToMultiPointCommandStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToMultiPointCommandStatus) deepCopy() *_CBusPointToMultiPointCommandStatus {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToMultiPointCommandStatusCopy := &_CBusPointToMultiPointCommandStatus{
+		m.CBusPointToMultiPointCommandContract.DeepCopy().(CBusPointToMultiPointCommandContract),
+		m.StatusRequest.DeepCopy().(StatusRequest),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = m
+	return _CBusPointToMultiPointCommandStatusCopy
+}
 
 func (m *_CBusPointToMultiPointCommandStatus) String() string {
 	if m == nil {

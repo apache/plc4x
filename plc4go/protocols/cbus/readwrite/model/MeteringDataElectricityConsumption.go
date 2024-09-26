@@ -38,6 +38,7 @@ type MeteringDataElectricityConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetKWhr returns KWhr (property field)
 	GetKWhr() uint32
@@ -175,6 +176,22 @@ func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_MeteringDataElectricityConsumption) IsMeteringDataElectricityConsumption() {}
+
+func (m *_MeteringDataElectricityConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataElectricityConsumption) deepCopy() *_MeteringDataElectricityConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataElectricityConsumptionCopy := &_MeteringDataElectricityConsumption{
+		m.MeteringDataContract.DeepCopy().(MeteringDataContract),
+		m.KWhr,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataElectricityConsumptionCopy
+}
 
 func (m *_MeteringDataElectricityConsumption) String() string {
 	if m == nil {

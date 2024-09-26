@@ -38,6 +38,7 @@ type MeteringDataOtherWaterConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetKL returns KL (property field)
 	GetKL() uint32
@@ -175,6 +176,22 @@ func (m *_MeteringDataOtherWaterConsumption) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_MeteringDataOtherWaterConsumption) IsMeteringDataOtherWaterConsumption() {}
+
+func (m *_MeteringDataOtherWaterConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataOtherWaterConsumption) deepCopy() *_MeteringDataOtherWaterConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataOtherWaterConsumptionCopy := &_MeteringDataOtherWaterConsumption{
+		m.MeteringDataContract.DeepCopy().(MeteringDataContract),
+		m.KL,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataOtherWaterConsumptionCopy
+}
 
 func (m *_MeteringDataOtherWaterConsumption) String() string {
 	if m == nil {

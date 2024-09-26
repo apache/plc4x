@@ -38,6 +38,7 @@ type KnxNetIpDeviceManagement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -179,6 +180,22 @@ func (m *_KnxNetIpDeviceManagement) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_KnxNetIpDeviceManagement) IsKnxNetIpDeviceManagement() {}
+
+func (m *_KnxNetIpDeviceManagement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpDeviceManagement) deepCopy() *_KnxNetIpDeviceManagement {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpDeviceManagementCopy := &_KnxNetIpDeviceManagement{
+		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpDeviceManagementCopy
+}
 
 func (m *_KnxNetIpDeviceManagement) String() string {
 	if m == nil {

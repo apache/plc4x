@@ -38,6 +38,7 @@ type ModbusPDUGetComEventLogResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStatus returns Status (property field)
 	GetStatus() uint16
@@ -265,6 +266,25 @@ func (m *_ModbusPDUGetComEventLogResponse) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ModbusPDUGetComEventLogResponse) IsModbusPDUGetComEventLogResponse() {}
+
+func (m *_ModbusPDUGetComEventLogResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUGetComEventLogResponse) deepCopy() *_ModbusPDUGetComEventLogResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUGetComEventLogResponseCopy := &_ModbusPDUGetComEventLogResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.Status,
+		m.EventCount,
+		m.MessageCount,
+		utils.DeepCopySlice[byte, byte](m.Events),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUGetComEventLogResponseCopy
+}
 
 func (m *_ModbusPDUGetComEventLogResponse) String() string {
 	if m == nil {

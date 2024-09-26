@@ -38,6 +38,7 @@ type SALDataAccessControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetAccessControlData returns AccessControlData (property field)
 	GetAccessControlData() AccessControlData
@@ -182,6 +183,22 @@ func (m *_SALDataAccessControl) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SALDataAccessControl) IsSALDataAccessControl() {}
+
+func (m *_SALDataAccessControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataAccessControl) deepCopy() *_SALDataAccessControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataAccessControlCopy := &_SALDataAccessControl{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.AccessControlData.DeepCopy().(AccessControlData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataAccessControlCopy
+}
 
 func (m *_SALDataAccessControl) String() string {
 	if m == nil {

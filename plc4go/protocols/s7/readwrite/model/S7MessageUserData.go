@@ -36,6 +36,7 @@ type S7MessageUserData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Message
 	// IsS7MessageUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7MessageUserData()
@@ -146,6 +147,21 @@ func (m *_S7MessageUserData) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_S7MessageUserData) IsS7MessageUserData() {}
+
+func (m *_S7MessageUserData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageUserData) deepCopy() *_S7MessageUserData {
+	if m == nil {
+		return nil
+	}
+	_S7MessageUserDataCopy := &_S7MessageUserData{
+		m.S7MessageContract.DeepCopy().(S7MessageContract),
+	}
+	m.S7MessageContract.(*_S7Message)._SubType = m
+	return _S7MessageUserDataCopy
+}
 
 func (m *_S7MessageUserData) String() string {
 	if m == nil {

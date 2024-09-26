@@ -36,6 +36,7 @@ type ErrorResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorResponse()
@@ -150,6 +151,21 @@ func (m *_ErrorResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_ErrorResponse) IsErrorResponse() {}
+
+func (m *_ErrorResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorResponse) deepCopy() *_ErrorResponse {
+	if m == nil {
+		return nil
+	}
+	_ErrorResponseCopy := &_ErrorResponse{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _ErrorResponseCopy
+}
 
 func (m *_ErrorResponse) String() string {
 	if m == nil {

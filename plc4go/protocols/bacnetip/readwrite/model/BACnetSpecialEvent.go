@@ -38,6 +38,7 @@ type BACnetSpecialEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPeriod returns Period (property field)
 	GetPeriod() BACnetSpecialEventPeriod
 	// GetListOfTimeValues returns ListOfTimeValues (property field)
@@ -215,6 +216,22 @@ func (m *_BACnetSpecialEvent) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_BACnetSpecialEvent) IsBACnetSpecialEvent() {}
+
+func (m *_BACnetSpecialEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSpecialEvent) deepCopy() *_BACnetSpecialEvent {
+	if m == nil {
+		return nil
+	}
+	_BACnetSpecialEventCopy := &_BACnetSpecialEvent{
+		m.Period.DeepCopy().(BACnetSpecialEventPeriod),
+		m.ListOfTimeValues.DeepCopy().(BACnetSpecialEventListOfTimeValues),
+		m.EventPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetSpecialEventCopy
+}
 
 func (m *_BACnetSpecialEvent) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CurrencyUnitType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNumericCode returns NumericCode (property field)
 	GetNumericCode() int16
@@ -248,6 +249,25 @@ func (m *_CurrencyUnitType) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_CurrencyUnitType) IsCurrencyUnitType() {}
+
+func (m *_CurrencyUnitType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CurrencyUnitType) deepCopy() *_CurrencyUnitType {
+	if m == nil {
+		return nil
+	}
+	_CurrencyUnitTypeCopy := &_CurrencyUnitType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NumericCode,
+		m.Exponent,
+		m.AlphabeticCode.DeepCopy().(PascalString),
+		m.Currency.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CurrencyUnitTypeCopy
+}
 
 func (m *_CurrencyUnitType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetDestination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValidDays returns ValidDays (property field)
 	GetValidDays() BACnetDaysOfWeekTagged
 	// GetFromTime returns FromTime (property field)
@@ -307,6 +308,26 @@ func (m *_BACnetDestination) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_BACnetDestination) IsBACnetDestination() {}
+
+func (m *_BACnetDestination) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDestination) deepCopy() *_BACnetDestination {
+	if m == nil {
+		return nil
+	}
+	_BACnetDestinationCopy := &_BACnetDestination{
+		m.ValidDays.DeepCopy().(BACnetDaysOfWeekTagged),
+		m.FromTime.DeepCopy().(BACnetApplicationTagTime),
+		m.ToTime.DeepCopy().(BACnetApplicationTagTime),
+		m.Recipient.DeepCopy().(BACnetRecipient),
+		m.ProcessIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.IssueConfirmedNotifications.DeepCopy().(BACnetApplicationTagBoolean),
+		m.Transitions.DeepCopy().(BACnetEventTransitionBitsTagged),
+	}
+	return _BACnetDestinationCopy
+}
 
 func (m *_BACnetDestination) String() string {
 	if m == nil {

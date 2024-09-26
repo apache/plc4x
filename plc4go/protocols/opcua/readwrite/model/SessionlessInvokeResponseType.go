@@ -38,6 +38,7 @@ type SessionlessInvokeResponseType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfNamespaceUris returns NoOfNamespaceUris (property field)
 	GetNoOfNamespaceUris() int32
@@ -277,6 +278,26 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_SessionlessInvokeResponseType) IsSessionlessInvokeResponseType() {}
+
+func (m *_SessionlessInvokeResponseType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SessionlessInvokeResponseType) deepCopy() *_SessionlessInvokeResponseType {
+	if m == nil {
+		return nil
+	}
+	_SessionlessInvokeResponseTypeCopy := &_SessionlessInvokeResponseType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfNamespaceUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.NamespaceUris),
+		m.NoOfServerUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
+		m.ServiceId,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SessionlessInvokeResponseTypeCopy
+}
 
 func (m *_SessionlessInvokeResponseType) String() string {
 	if m == nil {

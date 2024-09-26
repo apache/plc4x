@@ -38,6 +38,7 @@ type BACnetServiceAckConfirmedPrivateTransfer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
@@ -233,6 +234,24 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetServiceAckConfirmedPrivateTransfer) IsBACnetServiceAckConfirmedPrivateTransfer() {}
+
+func (m *_BACnetServiceAckConfirmedPrivateTransfer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckConfirmedPrivateTransfer) deepCopy() *_BACnetServiceAckConfirmedPrivateTransfer {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckConfirmedPrivateTransferCopy := &_BACnetServiceAckConfirmedPrivateTransfer{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+		m.ServiceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ResultBlock.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckConfirmedPrivateTransferCopy
+}
 
 func (m *_BACnetServiceAckConfirmedPrivateTransfer) String() string {
 	if m == nil {

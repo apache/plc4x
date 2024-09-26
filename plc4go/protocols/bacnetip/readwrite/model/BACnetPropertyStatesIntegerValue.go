@@ -38,6 +38,7 @@ type BACnetPropertyStatesIntegerValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetContextTagSignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesIntegerValue) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetPropertyStatesIntegerValue) IsBACnetPropertyStatesIntegerValue() {}
+
+func (m *_BACnetPropertyStatesIntegerValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesIntegerValue) deepCopy() *_BACnetPropertyStatesIntegerValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesIntegerValueCopy := &_BACnetPropertyStatesIntegerValue{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.IntegerValue.DeepCopy().(BACnetContextTagSignedInteger),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesIntegerValueCopy
+}
 
 func (m *_BACnetPropertyStatesIntegerValue) String() string {
 	if m == nil {

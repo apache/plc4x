@@ -38,6 +38,7 @@ type BACnetConstructedDataMinimumOutput interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinimumOutput returns MinimumOutput (property field)
 	GetMinimumOutput() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMinimumOutput) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataMinimumOutput) IsBACnetConstructedDataMinimumOutput() {}
+
+func (m *_BACnetConstructedDataMinimumOutput) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMinimumOutput) deepCopy() *_BACnetConstructedDataMinimumOutput {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMinimumOutputCopy := &_BACnetConstructedDataMinimumOutput{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MinimumOutput.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMinimumOutputCopy
+}
 
 func (m *_BACnetConstructedDataMinimumOutput) String() string {
 	if m == nil {

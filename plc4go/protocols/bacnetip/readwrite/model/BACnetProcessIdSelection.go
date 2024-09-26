@@ -40,12 +40,14 @@ type BACnetProcessIdSelection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetProcessIdSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProcessIdSelection()
 }
 
 // BACnetProcessIdSelectionContract provides a set of functions which can be overwritten by a sub struct
 type BACnetProcessIdSelectionContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -237,3 +239,18 @@ func (pm *_BACnetProcessIdSelection) serializeParent(ctx context.Context, writeB
 }
 
 func (m *_BACnetProcessIdSelection) IsBACnetProcessIdSelection() {}
+
+func (m *_BACnetProcessIdSelection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProcessIdSelection) deepCopy() *_BACnetProcessIdSelection {
+	if m == nil {
+		return nil
+	}
+	_BACnetProcessIdSelectionCopy := &_BACnetProcessIdSelection{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetProcessIdSelectionCopy
+}

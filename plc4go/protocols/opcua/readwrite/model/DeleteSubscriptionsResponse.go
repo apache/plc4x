@@ -38,6 +38,7 @@ type DeleteSubscriptionsResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -280,6 +281,26 @@ func (m *_DeleteSubscriptionsResponse) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_DeleteSubscriptionsResponse) IsDeleteSubscriptionsResponse() {}
+
+func (m *_DeleteSubscriptionsResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteSubscriptionsResponse) deepCopy() *_DeleteSubscriptionsResponse {
+	if m == nil {
+		return nil
+	}
+	_DeleteSubscriptionsResponseCopy := &_DeleteSubscriptionsResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteSubscriptionsResponseCopy
+}
 
 func (m *_DeleteSubscriptionsResponse) String() string {
 	if m == nil {

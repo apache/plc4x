@@ -38,6 +38,7 @@ type BACnetConstructedDataLimitMonitoringInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLimitMonitoringInterval returns LimitMonitoringInterval (property field)
 	GetLimitMonitoringInterval() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataLimitMonitoringInterval) IsBACnetConstructedDataLimitMonitoringInterval() {
+}
+
+func (m *_BACnetConstructedDataLimitMonitoringInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLimitMonitoringInterval) deepCopy() *_BACnetConstructedDataLimitMonitoringInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLimitMonitoringIntervalCopy := &_BACnetConstructedDataLimitMonitoringInterval{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LimitMonitoringInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLimitMonitoringIntervalCopy
 }
 
 func (m *_BACnetConstructedDataLimitMonitoringInterval) String() string {

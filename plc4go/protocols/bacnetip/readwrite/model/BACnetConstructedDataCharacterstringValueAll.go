@@ -36,6 +36,7 @@ type BACnetConstructedDataCharacterstringValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataCharacterstringValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCharacterstringValueAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataCharacterstringValueAll) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataCharacterstringValueAll) IsBACnetConstructedDataCharacterstringValueAll() {
+}
+
+func (m *_BACnetConstructedDataCharacterstringValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCharacterstringValueAll) deepCopy() *_BACnetConstructedDataCharacterstringValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCharacterstringValueAllCopy := &_BACnetConstructedDataCharacterstringValueAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCharacterstringValueAllCopy
 }
 
 func (m *_BACnetConstructedDataCharacterstringValueAll) String() string {

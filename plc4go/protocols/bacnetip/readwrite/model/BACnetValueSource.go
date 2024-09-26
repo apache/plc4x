@@ -40,12 +40,14 @@ type BACnetValueSource interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetValueSource()
 }
 
 // BACnetValueSourceContract provides a set of functions which can be overwritten by a sub struct
 type BACnetValueSourceContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -241,3 +243,18 @@ func (pm *_BACnetValueSource) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_BACnetValueSource) IsBACnetValueSource() {}
+
+func (m *_BACnetValueSource) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSource) deepCopy() *_BACnetValueSource {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceCopy := &_BACnetValueSource{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetValueSourceCopy
+}

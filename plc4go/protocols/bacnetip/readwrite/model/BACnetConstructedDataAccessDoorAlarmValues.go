@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessDoorAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetDoorAlarmStateTagged
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAccessDoorAlarmValues) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataAccessDoorAlarmValues) IsBACnetConstructedDataAccessDoorAlarmValues() {
+}
+
+func (m *_BACnetConstructedDataAccessDoorAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessDoorAlarmValues) deepCopy() *_BACnetConstructedDataAccessDoorAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessDoorAlarmValuesCopy := &_BACnetConstructedDataAccessDoorAlarmValues{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetDoorAlarmStateTagged, BACnetDoorAlarmStateTagged](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessDoorAlarmValuesCopy
 }
 
 func (m *_BACnetConstructedDataAccessDoorAlarmValues) String() string {

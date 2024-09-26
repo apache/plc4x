@@ -38,6 +38,7 @@ type ListOfCovNotificationsList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetSpecifications returns Specifications (property field)
@@ -229,6 +230,23 @@ func (m *_ListOfCovNotificationsList) GetTagNumber() uint8 {
 ////
 
 func (m *_ListOfCovNotificationsList) IsListOfCovNotificationsList() {}
+
+func (m *_ListOfCovNotificationsList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListOfCovNotificationsList) deepCopy() *_ListOfCovNotificationsList {
+	if m == nil {
+		return nil
+	}
+	_ListOfCovNotificationsListCopy := &_ListOfCovNotificationsList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[ListOfCovNotifications, ListOfCovNotifications](m.Specifications),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _ListOfCovNotificationsListCopy
+}
 
 func (m *_ListOfCovNotificationsList) String() string {
 	if m == nil {

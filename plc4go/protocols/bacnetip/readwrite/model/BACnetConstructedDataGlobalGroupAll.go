@@ -36,6 +36,7 @@ type BACnetConstructedDataGlobalGroupAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataGlobalGroupAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGlobalGroupAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataGlobalGroupAll) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataGlobalGroupAll) IsBACnetConstructedDataGlobalGroupAll() {}
+
+func (m *_BACnetConstructedDataGlobalGroupAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGlobalGroupAll) deepCopy() *_BACnetConstructedDataGlobalGroupAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGlobalGroupAllCopy := &_BACnetConstructedDataGlobalGroupAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGlobalGroupAllCopy
+}
 
 func (m *_BACnetConstructedDataGlobalGroupAll) String() string {
 	if m == nil {

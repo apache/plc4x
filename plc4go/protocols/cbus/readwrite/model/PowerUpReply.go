@@ -38,6 +38,7 @@ type PowerUpReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Reply
 	// GetPowerUpIndicator returns PowerUpIndicator (property field)
 	GetPowerUpIndicator() PowerUp
@@ -178,6 +179,22 @@ func (m *_PowerUpReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_PowerUpReply) IsPowerUpReply() {}
+
+func (m *_PowerUpReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PowerUpReply) deepCopy() *_PowerUpReply {
+	if m == nil {
+		return nil
+	}
+	_PowerUpReplyCopy := &_PowerUpReply{
+		m.ReplyContract.DeepCopy().(ReplyContract),
+		m.PowerUpIndicator.DeepCopy().(PowerUp),
+	}
+	m.ReplyContract.(*_Reply)._SubType = m
+	return _PowerUpReplyCopy
+}
 
 func (m *_PowerUpReply) String() string {
 	if m == nil {

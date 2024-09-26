@@ -36,6 +36,7 @@ type CALReplyShort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALReply
 	// IsCALReplyShort is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReplyShort()
@@ -142,6 +143,21 @@ func (m *_CALReplyShort) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_CALReplyShort) IsCALReplyShort() {}
+
+func (m *_CALReplyShort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALReplyShort) deepCopy() *_CALReplyShort {
+	if m == nil {
+		return nil
+	}
+	_CALReplyShortCopy := &_CALReplyShort{
+		m.CALReplyContract.DeepCopy().(CALReplyContract),
+	}
+	m.CALReplyContract.(*_CALReply)._SubType = m
+	return _CALReplyShortCopy
+}
 
 func (m *_CALReplyShort) String() string {
 	if m == nil {

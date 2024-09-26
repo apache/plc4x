@@ -38,6 +38,7 @@ type NodeAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSpecifiedAttributes returns SpecifiedAttributes (property field)
 	GetSpecifiedAttributes() uint32
@@ -269,6 +270,26 @@ func (m *_NodeAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_NodeAttributes) IsNodeAttributes() {}
+
+func (m *_NodeAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeAttributes) deepCopy() *_NodeAttributes {
+	if m == nil {
+		return nil
+	}
+	_NodeAttributesCopy := &_NodeAttributes{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SpecifiedAttributes,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+		m.WriteMask,
+		m.UserWriteMask,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NodeAttributesCopy
+}
 
 func (m *_NodeAttributes) String() string {
 	if m == nil {

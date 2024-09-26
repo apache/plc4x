@@ -38,6 +38,7 @@ type BACnetConstructedDataPassengerAlarm interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPassengerAlarm returns PassengerAlarm (property field)
 	GetPassengerAlarm() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPassengerAlarm) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataPassengerAlarm) IsBACnetConstructedDataPassengerAlarm() {}
+
+func (m *_BACnetConstructedDataPassengerAlarm) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPassengerAlarm) deepCopy() *_BACnetConstructedDataPassengerAlarm {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPassengerAlarmCopy := &_BACnetConstructedDataPassengerAlarm{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PassengerAlarm.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPassengerAlarmCopy
+}
 
 func (m *_BACnetConstructedDataPassengerAlarm) String() string {
 	if m == nil {

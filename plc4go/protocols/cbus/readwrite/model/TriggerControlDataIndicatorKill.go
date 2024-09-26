@@ -36,6 +36,7 @@ type TriggerControlDataIndicatorKill interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// IsTriggerControlDataIndicatorKill is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlDataIndicatorKill()
@@ -142,6 +143,21 @@ func (m *_TriggerControlDataIndicatorKill) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_TriggerControlDataIndicatorKill) IsTriggerControlDataIndicatorKill() {}
+
+func (m *_TriggerControlDataIndicatorKill) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataIndicatorKill) deepCopy() *_TriggerControlDataIndicatorKill {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataIndicatorKillCopy := &_TriggerControlDataIndicatorKill{
+		m.TriggerControlDataContract.DeepCopy().(TriggerControlDataContract),
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataIndicatorKillCopy
+}
 
 func (m *_TriggerControlDataIndicatorKill) String() string {
 	if m == nil {

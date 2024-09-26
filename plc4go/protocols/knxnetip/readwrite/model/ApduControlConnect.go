@@ -36,6 +36,7 @@ type ApduControlConnect interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduControl
 	// IsApduControlConnect is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControlConnect()
@@ -146,6 +147,21 @@ func (m *_ApduControlConnect) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_ApduControlConnect) IsApduControlConnect() {}
+
+func (m *_ApduControlConnect) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlConnect) deepCopy() *_ApduControlConnect {
+	if m == nil {
+		return nil
+	}
+	_ApduControlConnectCopy := &_ApduControlConnect{
+		m.ApduControlContract.DeepCopy().(ApduControlContract),
+	}
+	m.ApduControlContract.(*_ApduControl)._SubType = m
+	return _ApduControlConnectCopy
+}
 
 func (m *_ApduControlConnect) String() string {
 	if m == nil {

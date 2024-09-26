@@ -36,6 +36,7 @@ type FirmataCommandSystemReset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// IsFirmataCommandSystemReset is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommandSystemReset()
@@ -146,6 +147,21 @@ func (m *_FirmataCommandSystemReset) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_FirmataCommandSystemReset) IsFirmataCommandSystemReset() {}
+
+func (m *_FirmataCommandSystemReset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandSystemReset) deepCopy() *_FirmataCommandSystemReset {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandSystemResetCopy := &_FirmataCommandSystemReset{
+		m.FirmataCommandContract.DeepCopy().(FirmataCommandContract),
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandSystemResetCopy
+}
 
 func (m *_FirmataCommandSystemReset) String() string {
 	if m == nil {

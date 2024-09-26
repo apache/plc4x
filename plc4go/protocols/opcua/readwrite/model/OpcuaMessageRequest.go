@@ -38,6 +38,7 @@ type OpcuaMessageRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetSecurityHeader returns SecurityHeader (property field)
 	GetSecurityHeader() SecurityHeader
@@ -223,6 +224,24 @@ func (m *_OpcuaMessageRequest) GetTotalLength() uint32 {
 ////
 
 func (m *_OpcuaMessageRequest) IsOpcuaMessageRequest() {}
+
+func (m *_OpcuaMessageRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaMessageRequest) deepCopy() *_OpcuaMessageRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaMessageRequestCopy := &_OpcuaMessageRequest{
+		m.MessagePDUContract.DeepCopy().(MessagePDUContract),
+		m.SecurityHeader.DeepCopy().(SecurityHeader),
+		m.Message.DeepCopy().(Payload),
+		m.TotalLength,
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaMessageRequestCopy
+}
 
 func (m *_OpcuaMessageRequest) String() string {
 	if m == nil {

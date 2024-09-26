@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueOctetString) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetTimerStateChangeValueOctetString) IsBACnetTimerStateChangeValueOctetString() {}
+
+func (m *_BACnetTimerStateChangeValueOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueOctetString) deepCopy() *_BACnetTimerStateChangeValueOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueOctetStringCopy := &_BACnetTimerStateChangeValueOctetString{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueOctetStringCopy
+}
 
 func (m *_BACnetTimerStateChangeValueOctetString) String() string {
 	if m == nil {

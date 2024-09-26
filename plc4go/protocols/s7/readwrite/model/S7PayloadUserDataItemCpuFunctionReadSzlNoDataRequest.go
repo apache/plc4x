@@ -36,6 +36,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest()
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) SerializeWithWri
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) deepCopy() *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestCopy := &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) String() string {

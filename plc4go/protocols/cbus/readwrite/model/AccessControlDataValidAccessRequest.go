@@ -38,6 +38,7 @@ type AccessControlDataValidAccessRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AccessControlData
 	// GetAccessControlDirection returns AccessControlDirection (property field)
 	GetAccessControlDirection() AccessControlDirection
@@ -198,6 +199,23 @@ func (m *_AccessControlDataValidAccessRequest) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_AccessControlDataValidAccessRequest) IsAccessControlDataValidAccessRequest() {}
+
+func (m *_AccessControlDataValidAccessRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlDataValidAccessRequest) deepCopy() *_AccessControlDataValidAccessRequest {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataValidAccessRequestCopy := &_AccessControlDataValidAccessRequest{
+		m.AccessControlDataContract.DeepCopy().(AccessControlDataContract),
+		m.AccessControlDirection,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	return _AccessControlDataValidAccessRequestCopy
+}
 
 func (m *_AccessControlDataValidAccessRequest) String() string {
 	if m == nil {

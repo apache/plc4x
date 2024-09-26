@@ -38,6 +38,7 @@ type RedundantServerDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetServerId returns ServerId (property field)
 	GetServerId() PascalString
@@ -224,6 +225,24 @@ func (m *_RedundantServerDataType) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_RedundantServerDataType) IsRedundantServerDataType() {}
+
+func (m *_RedundantServerDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RedundantServerDataType) deepCopy() *_RedundantServerDataType {
+	if m == nil {
+		return nil
+	}
+	_RedundantServerDataTypeCopy := &_RedundantServerDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ServerId.DeepCopy().(PascalString),
+		m.ServiceLevel,
+		m.ServerState,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RedundantServerDataTypeCopy
+}
 
 func (m *_RedundantServerDataType) String() string {
 	if m == nil {

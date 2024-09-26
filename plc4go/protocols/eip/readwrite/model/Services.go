@@ -38,6 +38,7 @@ type Services interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOffsets returns Offsets (property field)
 	GetOffsets() []uint16
 	// GetServices returns Services (property field)
@@ -221,6 +222,22 @@ func (m *_Services) GetServicesLen() uint16 {
 ////
 
 func (m *_Services) IsServices() {}
+
+func (m *_Services) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Services) deepCopy() *_Services {
+	if m == nil {
+		return nil
+	}
+	_ServicesCopy := &_Services{
+		utils.DeepCopySlice[uint16, uint16](m.Offsets),
+		utils.DeepCopySlice[CipService, CipService](m.Services),
+		m.ServicesLen,
+	}
+	return _ServicesCopy
+}
 
 func (m *_Services) String() string {
 	if m == nil {

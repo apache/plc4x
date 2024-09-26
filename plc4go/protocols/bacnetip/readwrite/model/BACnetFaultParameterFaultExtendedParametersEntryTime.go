@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) SerializeWithWri
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) IsBACnetFaultParameterFaultExtendedParametersEntryTime() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryTimeCopy := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryTimeCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) String() string {

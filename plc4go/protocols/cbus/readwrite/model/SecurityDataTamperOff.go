@@ -36,6 +36,7 @@ type SecurityDataTamperOff interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataTamperOff is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataTamperOff()
@@ -142,6 +143,21 @@ func (m *_SecurityDataTamperOff) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SecurityDataTamperOff) IsSecurityDataTamperOff() {}
+
+func (m *_SecurityDataTamperOff) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataTamperOff) deepCopy() *_SecurityDataTamperOff {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataTamperOffCopy := &_SecurityDataTamperOff{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataTamperOffCopy
+}
 
 func (m *_SecurityDataTamperOff) String() string {
 	if m == nil {

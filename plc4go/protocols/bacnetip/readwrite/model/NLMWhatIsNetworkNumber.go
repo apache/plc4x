@@ -36,6 +36,7 @@ type NLMWhatIsNetworkNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// IsNLMWhatIsNetworkNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMWhatIsNetworkNumber()
@@ -146,6 +147,21 @@ func (m *_NLMWhatIsNetworkNumber) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_NLMWhatIsNetworkNumber) IsNLMWhatIsNetworkNumber() {}
+
+func (m *_NLMWhatIsNetworkNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMWhatIsNetworkNumber) deepCopy() *_NLMWhatIsNetworkNumber {
+	if m == nil {
+		return nil
+	}
+	_NLMWhatIsNetworkNumberCopy := &_NLMWhatIsNetworkNumber{
+		m.NLMContract.DeepCopy().(NLMContract),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMWhatIsNetworkNumberCopy
+}
 
 func (m *_NLMWhatIsNetworkNumber) String() string {
 	if m == nil {

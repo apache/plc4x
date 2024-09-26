@@ -38,6 +38,7 @@ type BACnetConstructedDataUpdateKeySetTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUpdateKeySetTimeout returns UpdateKeySetTimeout (property field)
 	GetUpdateKeySetTimeout() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) IsBACnetConstructedDataUpdateKeySetTimeout() {}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) deepCopy() *_BACnetConstructedDataUpdateKeySetTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUpdateKeySetTimeoutCopy := &_BACnetConstructedDataUpdateKeySetTimeout{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.UpdateKeySetTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUpdateKeySetTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) String() string {
 	if m == nil {

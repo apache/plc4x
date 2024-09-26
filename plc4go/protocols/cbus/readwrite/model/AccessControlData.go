@@ -40,12 +40,14 @@ type AccessControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAccessControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlData()
 }
 
 // AccessControlDataContract provides a set of functions which can be overwritten by a sub struct
 type AccessControlDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() AccessControlCommandTypeContainer
 	// GetNetworkId returns NetworkId (property field)
@@ -310,3 +312,20 @@ func (pm *_AccessControlData) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_AccessControlData) IsAccessControlData() {}
+
+func (m *_AccessControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlData) deepCopy() *_AccessControlData {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataCopy := &_AccessControlData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.NetworkId,
+		m.AccessPointId,
+	}
+	return _AccessControlDataCopy
+}

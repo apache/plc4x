@@ -38,6 +38,7 @@ type ContentFilterElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetFilterOperator returns FilterOperator (property field)
 	GetFilterOperator() FilterOperator
@@ -228,6 +229,24 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ContentFilterElement) IsContentFilterElement() {}
+
+func (m *_ContentFilterElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ContentFilterElement) deepCopy() *_ContentFilterElement {
+	if m == nil {
+		return nil
+	}
+	_ContentFilterElementCopy := &_ContentFilterElement{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.FilterOperator,
+		m.NoOfFilterOperands,
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.FilterOperands),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ContentFilterElementCopy
+}
 
 func (m *_ContentFilterElement) String() string {
 	if m == nil {

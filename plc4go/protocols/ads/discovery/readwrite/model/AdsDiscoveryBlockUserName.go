@@ -38,6 +38,7 @@ type AdsDiscoveryBlockUserName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetUserName returns UserName (property field)
 	GetUserName() AmsString
@@ -182,6 +183,22 @@ func (m *_AdsDiscoveryBlockUserName) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AdsDiscoveryBlockUserName) IsAdsDiscoveryBlockUserName() {}
+
+func (m *_AdsDiscoveryBlockUserName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockUserName) deepCopy() *_AdsDiscoveryBlockUserName {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockUserNameCopy := &_AdsDiscoveryBlockUserName{
+		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.UserName.DeepCopy().(AmsString),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockUserNameCopy
+}
 
 func (m *_AdsDiscoveryBlockUserName) String() string {
 	if m == nil {

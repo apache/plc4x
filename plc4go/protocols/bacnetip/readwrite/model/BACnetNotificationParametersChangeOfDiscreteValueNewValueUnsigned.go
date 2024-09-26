@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned interface
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) Ser
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) deepCopy() *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned{
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfDiscreteValueNewValueContract),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) String() string {

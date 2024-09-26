@@ -38,6 +38,7 @@ type BACnetConstructedDataModelName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetModelName returns ModelName (property field)
 	GetModelName() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataModelName) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataModelName) IsBACnetConstructedDataModelName() {}
+
+func (m *_BACnetConstructedDataModelName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataModelName) deepCopy() *_BACnetConstructedDataModelName {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataModelNameCopy := &_BACnetConstructedDataModelName{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ModelName.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataModelNameCopy
+}
 
 func (m *_BACnetConstructedDataModelName) String() string {
 	if m == nil {

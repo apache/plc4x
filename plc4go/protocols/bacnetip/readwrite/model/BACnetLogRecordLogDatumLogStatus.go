@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumLogStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetLogStatus returns LogStatus (property field)
 	GetLogStatus() BACnetLogStatusTagged
@@ -178,6 +179,22 @@ func (m *_BACnetLogRecordLogDatumLogStatus) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetLogRecordLogDatumLogStatus) IsBACnetLogRecordLogDatumLogStatus() {}
+
+func (m *_BACnetLogRecordLogDatumLogStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumLogStatus) deepCopy() *_BACnetLogRecordLogDatumLogStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumLogStatusCopy := &_BACnetLogRecordLogDatumLogStatus{
+		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.LogStatus.DeepCopy().(BACnetLogStatusTagged),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumLogStatusCopy
+}
 
 func (m *_BACnetLogRecordLogDatumLogStatus) String() string {
 	if m == nil {

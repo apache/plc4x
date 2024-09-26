@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetRawObjectType returns RawObjectType (property field)
@@ -349,6 +350,24 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetTagNumber
 ////
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) IsBACnetConfirmedServiceRequestCreateObjectObjectSpecifier() {
+}
+
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) deepCopy() *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierCopy := &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.RawObjectType.DeepCopy().(BACnetContextTagEnumerated),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetConfirmedServiceRequestCreateObjectObjectSpecifierCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) String() string {

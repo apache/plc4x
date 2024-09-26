@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessDoorPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetDoorValueTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccessDoorPresentValue) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataAccessDoorPresentValue) IsBACnetConstructedDataAccessDoorPresentValue() {
+}
+
+func (m *_BACnetConstructedDataAccessDoorPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessDoorPresentValue) deepCopy() *_BACnetConstructedDataAccessDoorPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessDoorPresentValueCopy := &_BACnetConstructedDataAccessDoorPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetDoorValueTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessDoorPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataAccessDoorPresentValue) String() string {

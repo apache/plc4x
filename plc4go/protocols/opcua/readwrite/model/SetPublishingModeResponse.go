@@ -38,6 +38,7 @@ type SetPublishingModeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -280,6 +281,26 @@ func (m *_SetPublishingModeResponse) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SetPublishingModeResponse) IsSetPublishingModeResponse() {}
+
+func (m *_SetPublishingModeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetPublishingModeResponse) deepCopy() *_SetPublishingModeResponse {
+	if m == nil {
+		return nil
+	}
+	_SetPublishingModeResponseCopy := &_SetPublishingModeResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetPublishingModeResponseCopy
+}
 
 func (m *_SetPublishingModeResponse) String() string {
 	if m == nil {

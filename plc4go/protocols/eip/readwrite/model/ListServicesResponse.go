@@ -38,6 +38,7 @@ type ListServicesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// GetTypeIds returns TypeIds (property field)
 	GetTypeIds() []TypeId
@@ -207,6 +208,22 @@ func (m *_ListServicesResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ListServicesResponse) IsListServicesResponse() {}
+
+func (m *_ListServicesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListServicesResponse) deepCopy() *_ListServicesResponse {
+	if m == nil {
+		return nil
+	}
+	_ListServicesResponseCopy := &_ListServicesResponse{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _ListServicesResponseCopy
+}
 
 func (m *_ListServicesResponse) String() string {
 	if m == nil {

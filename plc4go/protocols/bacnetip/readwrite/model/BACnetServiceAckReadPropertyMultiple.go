@@ -38,6 +38,7 @@ type BACnetServiceAckReadPropertyMultiple interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetData returns Data (property field)
 	GetData() []BACnetReadAccessResult
@@ -196,6 +197,23 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetServiceAckPayloadLength() uin
 ////
 
 func (m *_BACnetServiceAckReadPropertyMultiple) IsBACnetServiceAckReadPropertyMultiple() {}
+
+func (m *_BACnetServiceAckReadPropertyMultiple) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckReadPropertyMultiple) deepCopy() *_BACnetServiceAckReadPropertyMultiple {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckReadPropertyMultipleCopy := &_BACnetServiceAckReadPropertyMultiple{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		utils.DeepCopySlice[BACnetReadAccessResult, BACnetReadAccessResult](m.Data),
+		m.ServiceAckPayloadLength,
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckReadPropertyMultipleCopy
+}
 
 func (m *_BACnetServiceAckReadPropertyMultiple) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type NumericRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsNumericRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNumericRange()
 }
@@ -134,6 +135,18 @@ func (m *_NumericRange) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_NumericRange) IsNumericRange() {}
+
+func (m *_NumericRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NumericRange) deepCopy() *_NumericRange {
+	if m == nil {
+		return nil
+	}
+	_NumericRangeCopy := &_NumericRange{}
+	return _NumericRangeCopy
+}
 
 func (m *_NumericRange) String() string {
 	if m == nil {

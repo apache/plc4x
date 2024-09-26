@@ -36,6 +36,7 @@ type ApduDataExtWriteRouterStatusRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtWriteRouterStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtWriteRouterStatusRequest()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtWriteRouterStatusRequest) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ApduDataExtWriteRouterStatusRequest) IsApduDataExtWriteRouterStatusRequest() {}
+
+func (m *_ApduDataExtWriteRouterStatusRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtWriteRouterStatusRequest) deepCopy() *_ApduDataExtWriteRouterStatusRequest {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtWriteRouterStatusRequestCopy := &_ApduDataExtWriteRouterStatusRequest{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtWriteRouterStatusRequestCopy
+}
 
 func (m *_ApduDataExtWriteRouterStatusRequest) String() string {
 	if m == nil {

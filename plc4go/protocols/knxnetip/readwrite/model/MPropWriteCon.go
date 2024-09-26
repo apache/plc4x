@@ -36,6 +36,7 @@ type MPropWriteCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMPropWriteCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropWriteCon()
@@ -146,6 +147,21 @@ func (m *_MPropWriteCon) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_MPropWriteCon) IsMPropWriteCon() {}
+
+func (m *_MPropWriteCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropWriteCon) deepCopy() *_MPropWriteCon {
+	if m == nil {
+		return nil
+	}
+	_MPropWriteConCopy := &_MPropWriteCon{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropWriteConCopy
+}
 
 func (m *_MPropWriteCon) String() string {
 	if m == nil {

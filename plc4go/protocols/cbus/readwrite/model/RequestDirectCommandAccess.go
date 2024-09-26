@@ -41,6 +41,7 @@ type RequestDirectCommandAccess interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
@@ -264,6 +265,23 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_RequestDirectCommandAccess) IsRequestDirectCommandAccess() {}
+
+func (m *_RequestDirectCommandAccess) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestDirectCommandAccess) deepCopy() *_RequestDirectCommandAccess {
+	if m == nil {
+		return nil
+	}
+	_RequestDirectCommandAccessCopy := &_RequestDirectCommandAccess{
+		m.RequestContract.DeepCopy().(RequestContract),
+		m.CalData.DeepCopy().(CALData),
+		m.Alpha.DeepCopy().(Alpha),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestDirectCommandAccessCopy
+}
 
 func (m *_RequestDirectCommandAccess) String() string {
 	if m == nil {

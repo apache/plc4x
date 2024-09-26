@@ -38,6 +38,7 @@ type TelephonyDataDivert interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetNumber returns Number (property field)
 	GetNumber() string
@@ -175,6 +176,22 @@ func (m *_TelephonyDataDivert) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_TelephonyDataDivert) IsTelephonyDataDivert() {}
+
+func (m *_TelephonyDataDivert) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataDivert) deepCopy() *_TelephonyDataDivert {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataDivertCopy := &_TelephonyDataDivert{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.Number,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataDivertCopy
+}
 
 func (m *_TelephonyDataDivert) String() string {
 	if m == nil {

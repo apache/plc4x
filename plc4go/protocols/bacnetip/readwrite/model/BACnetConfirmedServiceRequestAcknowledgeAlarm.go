@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetAcknowledgingProcessIdentifier returns AcknowledgingProcessIdentifier (property field)
 	GetAcknowledgingProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -302,6 +303,27 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) IsBACnetConfirmedServiceRequestAcknowledgeAlarm() {
+}
+
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) deepCopy() *_BACnetConfirmedServiceRequestAcknowledgeAlarm {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestAcknowledgeAlarmCopy := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.AcknowledgingProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.EventStateAcknowledged.DeepCopy().(BACnetEventStateTagged),
+		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
+		m.AcknowledgmentSource.DeepCopy().(BACnetContextTagCharacterString),
+		m.TimeOfAcknowledgment.DeepCopy().(BACnetTimeStampEnclosed),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestAcknowledgeAlarmCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {

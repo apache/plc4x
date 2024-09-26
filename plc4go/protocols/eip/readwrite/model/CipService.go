@@ -40,12 +40,14 @@ type CipService interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCipService is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipService()
 }
 
 // CipServiceContract provides a set of functions which can be overwritten by a sub struct
 type CipServiceContract interface {
+	utils.Copyable
 	// GetServiceLen() returns a parser argument
 	GetServiceLen() uint16
 	// IsCipService is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -312,3 +314,18 @@ func (m *_CipService) GetServiceLen() uint16 {
 ////
 
 func (m *_CipService) IsCipService() {}
+
+func (m *_CipService) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipService) deepCopy() *_CipService {
+	if m == nil {
+		return nil
+	}
+	_CipServiceCopy := &_CipService{
+		nil, // will be set by child
+		m.ServiceLen,
+	}
+	return _CipServiceCopy
+}

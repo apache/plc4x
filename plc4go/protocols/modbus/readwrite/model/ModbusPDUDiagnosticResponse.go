@@ -38,6 +38,7 @@ type ModbusPDUDiagnosticResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetSubFunction returns SubFunction (property field)
 	GetSubFunction() uint16
@@ -208,6 +209,23 @@ func (m *_ModbusPDUDiagnosticResponse) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_ModbusPDUDiagnosticResponse) IsModbusPDUDiagnosticResponse() {}
+
+func (m *_ModbusPDUDiagnosticResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUDiagnosticResponse) deepCopy() *_ModbusPDUDiagnosticResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUDiagnosticResponseCopy := &_ModbusPDUDiagnosticResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.SubFunction,
+		m.Data,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUDiagnosticResponseCopy
+}
 
 func (m *_ModbusPDUDiagnosticResponse) String() string {
 	if m == nil {

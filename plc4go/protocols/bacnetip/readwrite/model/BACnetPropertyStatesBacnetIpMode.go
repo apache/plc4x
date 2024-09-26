@@ -38,6 +38,7 @@ type BACnetPropertyStatesBacnetIpMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBacnetIpMode returns BacnetIpMode (property field)
 	GetBacnetIpMode() BACnetIPModeTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetPropertyStatesBacnetIpMode) IsBACnetPropertyStatesBacnetIpMode() {}
+
+func (m *_BACnetPropertyStatesBacnetIpMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBacnetIpMode) deepCopy() *_BACnetPropertyStatesBacnetIpMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBacnetIpModeCopy := &_BACnetPropertyStatesBacnetIpMode{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BacnetIpMode.DeepCopy().(BACnetIPModeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBacnetIpModeCopy
+}
 
 func (m *_BACnetPropertyStatesBacnetIpMode) String() string {
 	if m == nil {

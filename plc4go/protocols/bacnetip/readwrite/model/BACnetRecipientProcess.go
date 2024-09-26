@@ -38,6 +38,7 @@ type BACnetRecipientProcess interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientEnclosed
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
@@ -195,6 +196,21 @@ func (m *_BACnetRecipientProcess) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetRecipientProcess) IsBACnetRecipientProcess() {}
+
+func (m *_BACnetRecipientProcess) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipientProcess) deepCopy() *_BACnetRecipientProcess {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientProcessCopy := &_BACnetRecipientProcess{
+		m.Recipient.DeepCopy().(BACnetRecipientEnclosed),
+		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetRecipientProcessCopy
+}
 
 func (m *_BACnetRecipientProcess) String() string {
 	if m == nil {

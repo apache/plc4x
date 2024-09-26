@@ -38,6 +38,7 @@ type BACnetAccessAuthenticationFactorDisableTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetTagClass() TagClass 
 ////
 
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) IsBACnetAccessAuthenticationFactorDisableTagged() {
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) deepCopy() *_BACnetAccessAuthenticationFactorDisableTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessAuthenticationFactorDisableTaggedCopy := &_BACnetAccessAuthenticationFactorDisableTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessAuthenticationFactorDisableTaggedCopy
 }
 
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) String() string {

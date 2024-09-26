@@ -38,6 +38,7 @@ type BACnetConstructedDataRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRelinquishDefault) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataRelinquishDefault) IsBACnetConstructedDataRelinquishDefault() {}
+
+func (m *_BACnetConstructedDataRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRelinquishDefault) deepCopy() *_BACnetConstructedDataRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRelinquishDefaultCopy := &_BACnetConstructedDataRelinquishDefault{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.RelinquishDefault.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRelinquishDefaultCopy
+}
 
 func (m *_BACnetConstructedDataRelinquishDefault) String() string {
 	if m == nil {

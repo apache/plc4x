@@ -38,6 +38,7 @@ type BACnetServiceAckAtomicWriteFile interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetContextTagSignedInteger
@@ -182,6 +183,22 @@ func (m *_BACnetServiceAckAtomicWriteFile) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetServiceAckAtomicWriteFile) IsBACnetServiceAckAtomicWriteFile() {}
+
+func (m *_BACnetServiceAckAtomicWriteFile) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAtomicWriteFile) deepCopy() *_BACnetServiceAckAtomicWriteFile {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAtomicWriteFileCopy := &_BACnetServiceAckAtomicWriteFile{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.FileStartPosition.DeepCopy().(BACnetContextTagSignedInteger),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckAtomicWriteFileCopy
+}
 
 func (m *_BACnetServiceAckAtomicWriteFile) String() string {
 	if m == nil {

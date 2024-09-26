@@ -38,6 +38,7 @@ type BACnetRestartReasonTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetRestartReasonTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetRestartReasonTagged) IsBACnetRestartReasonTagged() {}
+
+func (m *_BACnetRestartReasonTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRestartReasonTagged) deepCopy() *_BACnetRestartReasonTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetRestartReasonTaggedCopy := &_BACnetRestartReasonTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetRestartReasonTaggedCopy
+}
 
 func (m *_BACnetRestartReasonTagged) String() string {
 	if m == nil {

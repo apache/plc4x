@@ -38,6 +38,7 @@ type LogicAssignment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetGreaterOfOrLogic returns GreaterOfOrLogic (property field)
 	GetGreaterOfOrLogic() bool
 	// GetReStrikeDelay returns ReStrikeDelay (property field)
@@ -295,6 +296,27 @@ func (m *_LogicAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_LogicAssignment) IsLogicAssignment() {}
+
+func (m *_LogicAssignment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LogicAssignment) deepCopy() *_LogicAssignment {
+	if m == nil {
+		return nil
+	}
+	_LogicAssignmentCopy := &_LogicAssignment{
+		m.GreaterOfOrLogic,
+		m.ReStrikeDelay,
+		m.AssignedToGav16,
+		m.AssignedToGav15,
+		m.AssignedToGav14,
+		m.AssignedToGav13,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _LogicAssignmentCopy
+}
 
 func (m *_LogicAssignment) String() string {
 	if m == nil {

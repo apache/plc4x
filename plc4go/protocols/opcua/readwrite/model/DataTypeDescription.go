@@ -38,6 +38,7 @@ type DataTypeDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataTypeId returns DataTypeId (property field)
 	GetDataTypeId() NodeId
@@ -206,6 +207,23 @@ func (m *_DataTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_DataTypeDescription) IsDataTypeDescription() {}
+
+func (m *_DataTypeDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataTypeDescription) deepCopy() *_DataTypeDescription {
+	if m == nil {
+		return nil
+	}
+	_DataTypeDescriptionCopy := &_DataTypeDescription{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.DataTypeId.DeepCopy().(NodeId),
+		m.Name.DeepCopy().(QualifiedName),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataTypeDescriptionCopy
+}
 
 func (m *_DataTypeDescription) String() string {
 	if m == nil {

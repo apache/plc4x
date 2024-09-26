@@ -36,6 +36,7 @@ type ConnectionRequestInformationDeviceManagement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ConnectionRequestInformation
 	// IsConnectionRequestInformationDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequestInformationDeviceManagement()
@@ -146,6 +147,21 @@ func (m *_ConnectionRequestInformationDeviceManagement) SerializeWithWriteBuffer
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) IsConnectionRequestInformationDeviceManagement() {
+}
+
+func (m *_ConnectionRequestInformationDeviceManagement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequestInformationDeviceManagement) deepCopy() *_ConnectionRequestInformationDeviceManagement {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestInformationDeviceManagementCopy := &_ConnectionRequestInformationDeviceManagement{
+		m.ConnectionRequestInformationContract.DeepCopy().(ConnectionRequestInformationContract),
+	}
+	m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = m
+	return _ConnectionRequestInformationDeviceManagementCopy
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) String() string {

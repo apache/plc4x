@@ -38,6 +38,7 @@ type BACnetPropertyStatesRestartReason interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetRestartReason returns RestartReason (property field)
 	GetRestartReason() BACnetRestartReasonTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesRestartReason) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesRestartReason) IsBACnetPropertyStatesRestartReason() {}
+
+func (m *_BACnetPropertyStatesRestartReason) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesRestartReason) deepCopy() *_BACnetPropertyStatesRestartReason {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesRestartReasonCopy := &_BACnetPropertyStatesRestartReason{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.RestartReason.DeepCopy().(BACnetRestartReasonTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesRestartReasonCopy
+}
 
 func (m *_BACnetPropertyStatesRestartReason) String() string {
 	if m == nil {

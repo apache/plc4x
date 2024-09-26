@@ -38,6 +38,7 @@ type QuantityDimension interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMassExponent returns MassExponent (property field)
 	GetMassExponent() int8
@@ -326,6 +327,29 @@ func (m *_QuantityDimension) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_QuantityDimension) IsQuantityDimension() {}
+
+func (m *_QuantityDimension) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QuantityDimension) deepCopy() *_QuantityDimension {
+	if m == nil {
+		return nil
+	}
+	_QuantityDimensionCopy := &_QuantityDimension{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.MassExponent,
+		m.LengthExponent,
+		m.TimeExponent,
+		m.ElectricCurrentExponent,
+		m.AmountOfSubstanceExponent,
+		m.LuminousIntensityExponent,
+		m.AbsoluteTemperatureExponent,
+		m.DimensionlessExponent,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QuantityDimensionCopy
+}
 
 func (m *_QuantityDimension) String() string {
 	if m == nil {

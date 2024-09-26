@@ -38,6 +38,7 @@ type AdditionalParametersType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfParameters returns NoOfParameters (property field)
 	GetNoOfParameters() int32
@@ -207,6 +208,23 @@ func (m *_AdditionalParametersType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_AdditionalParametersType) IsAdditionalParametersType() {}
+
+func (m *_AdditionalParametersType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdditionalParametersType) deepCopy() *_AdditionalParametersType {
+	if m == nil {
+		return nil
+	}
+	_AdditionalParametersTypeCopy := &_AdditionalParametersType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfParameters,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Parameters),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AdditionalParametersTypeCopy
+}
 
 func (m *_AdditionalParametersType) String() string {
 	if m == nil {

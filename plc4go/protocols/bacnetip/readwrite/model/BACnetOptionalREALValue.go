@@ -38,6 +38,7 @@ type BACnetOptionalREALValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalREAL
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalREALValue) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetOptionalREALValue) IsBACnetOptionalREALValue() {}
+
+func (m *_BACnetOptionalREALValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalREALValue) deepCopy() *_BACnetOptionalREALValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalREALValueCopy := &_BACnetOptionalREALValue{
+		m.BACnetOptionalREALContract.DeepCopy().(BACnetOptionalREALContract),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = m
+	return _BACnetOptionalREALValueCopy
+}
 
 func (m *_BACnetOptionalREALValue) String() string {
 	if m == nil {

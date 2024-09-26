@@ -38,6 +38,7 @@ type PubSubKeyPushTargetDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetApplicationUri returns ApplicationUri (property field)
 	GetApplicationUri() PascalString
@@ -443,6 +444,33 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_PubSubKeyPushTargetDataType) IsPubSubKeyPushTargetDataType() {}
+
+func (m *_PubSubKeyPushTargetDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubKeyPushTargetDataType) deepCopy() *_PubSubKeyPushTargetDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubKeyPushTargetDataTypeCopy := &_PubSubKeyPushTargetDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ApplicationUri.DeepCopy().(PascalString),
+		m.NoOfPushTargetFolder,
+		utils.DeepCopySlice[PascalString, PascalString](m.PushTargetFolder),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.UserTokenType.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestedKeyCount,
+		m.RetryInterval,
+		m.NoOfPushTargetProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.PushTargetProperties),
+		m.NoOfSecurityGroups,
+		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroups),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubKeyPushTargetDataTypeCopy
+}
 
 func (m *_PubSubKeyPushTargetDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type S7PayloadUserDataItemClkFResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetRes returns Res (property field)
 	GetRes() uint8
@@ -232,6 +233,24 @@ func (m *_S7PayloadUserDataItemClkFResponse) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_S7PayloadUserDataItemClkFResponse) IsS7PayloadUserDataItemClkFResponse() {}
+
+func (m *_S7PayloadUserDataItemClkFResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemClkFResponse) deepCopy() *_S7PayloadUserDataItemClkFResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemClkFResponseCopy := &_S7PayloadUserDataItemClkFResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.Res,
+		m.Year1,
+		m.TimeStamp.DeepCopy().(DateAndTime),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemClkFResponseCopy
+}
 
 func (m *_S7PayloadUserDataItemClkFResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataTransactionNotificationClass interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTransactionNotificationClass returns TransactionNotificationClass (property field)
 	GetTransactionNotificationClass() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTransactionNotificationClass) SerializeWithWriteB
 }
 
 func (m *_BACnetConstructedDataTransactionNotificationClass) IsBACnetConstructedDataTransactionNotificationClass() {
+}
+
+func (m *_BACnetConstructedDataTransactionNotificationClass) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTransactionNotificationClass) deepCopy() *_BACnetConstructedDataTransactionNotificationClass {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTransactionNotificationClassCopy := &_BACnetConstructedDataTransactionNotificationClass{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TransactionNotificationClass.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTransactionNotificationClassCopy
 }
 
 func (m *_BACnetConstructedDataTransactionNotificationClass) String() string {

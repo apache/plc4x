@@ -38,6 +38,7 @@ type DeleteNodesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -280,6 +281,26 @@ func (m *_DeleteNodesResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_DeleteNodesResponse) IsDeleteNodesResponse() {}
+
+func (m *_DeleteNodesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteNodesResponse) deepCopy() *_DeleteNodesResponse {
+	if m == nil {
+		return nil
+	}
+	_DeleteNodesResponseCopy := &_DeleteNodesResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteNodesResponseCopy
+}
 
 func (m *_DeleteNodesResponse) String() string {
 	if m == nil {

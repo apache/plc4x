@@ -38,6 +38,7 @@ type BACnetConstructedDataClientCOVIncrement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetClientCOV
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataClientCOVIncrement) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataClientCOVIncrement) IsBACnetConstructedDataClientCOVIncrement() {}
+
+func (m *_BACnetConstructedDataClientCOVIncrement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataClientCOVIncrement) deepCopy() *_BACnetConstructedDataClientCOVIncrement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataClientCOVIncrementCopy := &_BACnetConstructedDataClientCOVIncrement{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CovIncrement.DeepCopy().(BACnetClientCOV),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataClientCOVIncrementCopy
+}
 
 func (m *_BACnetConstructedDataClientCOVIncrement) String() string {
 	if m == nil {

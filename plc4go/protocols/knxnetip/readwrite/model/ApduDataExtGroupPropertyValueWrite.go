@@ -36,6 +36,7 @@ type ApduDataExtGroupPropertyValueWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtGroupPropertyValueWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtGroupPropertyValueWrite()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtGroupPropertyValueWrite) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ApduDataExtGroupPropertyValueWrite) IsApduDataExtGroupPropertyValueWrite() {}
+
+func (m *_ApduDataExtGroupPropertyValueWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtGroupPropertyValueWrite) deepCopy() *_ApduDataExtGroupPropertyValueWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtGroupPropertyValueWriteCopy := &_ApduDataExtGroupPropertyValueWrite{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtGroupPropertyValueWriteCopy
+}
 
 func (m *_ApduDataExtGroupPropertyValueWrite) String() string {
 	if m == nil {

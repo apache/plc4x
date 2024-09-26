@@ -40,12 +40,14 @@ type Request interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequest()
 }
 
 // RequestContract provides a set of functions which can be overwritten by a sub struct
 type RequestContract interface {
+	utils.Copyable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() RequestType
 	// GetStartingCR returns StartingCR (property field)
@@ -355,3 +357,23 @@ func (m *_Request) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_Request) IsRequest() {}
+
+func (m *_Request) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Request) deepCopy() *_Request {
+	if m == nil {
+		return nil
+	}
+	_RequestCopy := &_Request{
+		nil, // will be set by child
+		m.PeekedByte,
+		utils.CopyPtr[RequestType](m.StartingCR),
+		utils.CopyPtr[RequestType](m.ResetMode),
+		m.SecondPeek,
+		m.Termination.DeepCopy().(RequestTermination),
+		m.CBusOptions,
+	}
+	return _RequestCopy
+}

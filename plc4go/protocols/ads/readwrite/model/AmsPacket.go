@@ -50,12 +50,14 @@ type AmsPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAmsPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsPacket()
 }
 
 // AmsPacketContract provides a set of functions which can be overwritten by a sub struct
 type AmsPacketContract interface {
+	utils.Copyable
 	// GetTargetAmsNetId returns TargetAmsNetId (property field)
 	GetTargetAmsNetId() AmsNetId
 	// GetTargetAmsPort returns TargetAmsPort (property field)
@@ -600,3 +602,24 @@ func (pm *_AmsPacket) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_AmsPacket) IsAmsPacket() {}
+
+func (m *_AmsPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsPacket) deepCopy() *_AmsPacket {
+	if m == nil {
+		return nil
+	}
+	_AmsPacketCopy := &_AmsPacket{
+		nil, // will be set by child
+		m.TargetAmsNetId.DeepCopy().(AmsNetId),
+		m.TargetAmsPort,
+		m.SourceAmsNetId.DeepCopy().(AmsNetId),
+		m.SourceAmsPort,
+		m.ErrorCode,
+		m.InvokeId,
+		m.reservedField0,
+	}
+	return _AmsPacketCopy
+}

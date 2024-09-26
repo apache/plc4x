@@ -38,6 +38,7 @@ type CloseSessionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -182,6 +183,22 @@ func (m *_CloseSessionResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_CloseSessionResponse) IsCloseSessionResponse() {}
+
+func (m *_CloseSessionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CloseSessionResponse) deepCopy() *_CloseSessionResponse {
+	if m == nil {
+		return nil
+	}
+	_CloseSessionResponseCopy := &_CloseSessionResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CloseSessionResponseCopy
+}
 
 func (m *_CloseSessionResponse) String() string {
 	if m == nil {

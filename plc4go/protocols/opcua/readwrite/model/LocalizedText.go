@@ -38,6 +38,7 @@ type LocalizedText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTextSpecified returns TextSpecified (property field)
 	GetTextSpecified() bool
 	// GetLocaleSpecified returns LocaleSpecified (property field)
@@ -253,6 +254,24 @@ func (m *_LocalizedText) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_LocalizedText) IsLocalizedText() {}
+
+func (m *_LocalizedText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LocalizedText) deepCopy() *_LocalizedText {
+	if m == nil {
+		return nil
+	}
+	_LocalizedTextCopy := &_LocalizedText{
+		m.TextSpecified,
+		m.LocaleSpecified,
+		m.Locale.DeepCopy().(PascalString),
+		m.Text.DeepCopy().(PascalString),
+		m.reservedField0,
+	}
+	return _LocalizedTextCopy
+}
 
 func (m *_LocalizedText) String() string {
 	if m == nil {

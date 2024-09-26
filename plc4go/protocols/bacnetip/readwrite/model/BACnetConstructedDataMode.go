@@ -38,6 +38,7 @@ type BACnetConstructedDataMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMode returns Mode (property field)
 	GetMode() BACnetLifeSafetyModeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMode) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetConstructedDataMode) IsBACnetConstructedDataMode() {}
+
+func (m *_BACnetConstructedDataMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMode) deepCopy() *_BACnetConstructedDataMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataModeCopy := &_BACnetConstructedDataMode{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Mode.DeepCopy().(BACnetLifeSafetyModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataModeCopy
+}
 
 func (m *_BACnetConstructedDataMode) String() string {
 	if m == nil {

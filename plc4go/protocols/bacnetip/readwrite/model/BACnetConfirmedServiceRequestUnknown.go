@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestUnknown interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
@@ -194,6 +195,23 @@ func (m *_BACnetConfirmedServiceRequestUnknown) GetServiceRequestPayloadLength()
 ////
 
 func (m *_BACnetConfirmedServiceRequestUnknown) IsBACnetConfirmedServiceRequestUnknown() {}
+
+func (m *_BACnetConfirmedServiceRequestUnknown) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestUnknown) deepCopy() *_BACnetConfirmedServiceRequestUnknown {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestUnknownCopy := &_BACnetConfirmedServiceRequestUnknown{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
+		m.ServiceRequestPayloadLength,
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestUnknownCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestUnknown) String() string {
 	if m == nil {

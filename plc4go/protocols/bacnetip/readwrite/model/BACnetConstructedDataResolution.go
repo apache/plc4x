@@ -38,6 +38,7 @@ type BACnetConstructedDataResolution interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataResolution) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataResolution) IsBACnetConstructedDataResolution() {}
+
+func (m *_BACnetConstructedDataResolution) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataResolution) deepCopy() *_BACnetConstructedDataResolution {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataResolutionCopy := &_BACnetConstructedDataResolution{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Resolution.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataResolutionCopy
+}
 
 func (m *_BACnetConstructedDataResolution) String() string {
 	if m == nil {

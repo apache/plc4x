@@ -38,6 +38,7 @@ type MediaTransportControlDataPauseResume interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetOperation returns Operation (property field)
 	GetOperation() byte
@@ -228,6 +229,22 @@ func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataPauseResume) IsMediaTransportControlDataPauseResume() {}
+
+func (m *_MediaTransportControlDataPauseResume) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataPauseResume) deepCopy() *_MediaTransportControlDataPauseResume {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataPauseResumeCopy := &_MediaTransportControlDataPauseResume{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.Operation,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataPauseResumeCopy
+}
 
 func (m *_MediaTransportControlDataPauseResume) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPriorityValueEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueEnumerated) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetPriorityValueEnumerated) IsBACnetPriorityValueEnumerated() {}
+
+func (m *_BACnetPriorityValueEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueEnumerated) deepCopy() *_BACnetPriorityValueEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueEnumeratedCopy := &_BACnetPriorityValueEnumerated{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueEnumeratedCopy
+}
 
 func (m *_BACnetPriorityValueEnumerated) String() string {
 	if m == nil {

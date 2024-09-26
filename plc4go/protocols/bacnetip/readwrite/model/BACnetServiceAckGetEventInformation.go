@@ -38,6 +38,7 @@ type BACnetServiceAckGetEventInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
 	GetListOfEventSummaries() BACnetEventSummariesList
@@ -206,6 +207,23 @@ func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetServiceAckGetEventInformation) IsBACnetServiceAckGetEventInformation() {}
+
+func (m *_BACnetServiceAckGetEventInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckGetEventInformation) deepCopy() *_BACnetServiceAckGetEventInformation {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckGetEventInformationCopy := &_BACnetServiceAckGetEventInformation{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.ListOfEventSummaries.DeepCopy().(BACnetEventSummariesList),
+		m.MoreEvents.DeepCopy().(BACnetContextTagBoolean),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckGetEventInformationCopy
+}
 
 func (m *_BACnetServiceAckGetEventInformation) String() string {
 	if m == nil {

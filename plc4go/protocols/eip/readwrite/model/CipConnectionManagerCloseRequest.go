@@ -38,6 +38,7 @@ type CipConnectionManagerCloseRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetRequestPathSize returns RequestPathSize (property field)
 	GetRequestPathSize() uint8
@@ -422,6 +423,33 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_CipConnectionManagerCloseRequest) IsCipConnectionManagerCloseRequest() {}
+
+func (m *_CipConnectionManagerCloseRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectionManagerCloseRequest) deepCopy() *_CipConnectionManagerCloseRequest {
+	if m == nil {
+		return nil
+	}
+	_CipConnectionManagerCloseRequestCopy := &_CipConnectionManagerCloseRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.RequestPathSize,
+		m.ClassSegment.DeepCopy().(PathSegment),
+		m.InstanceSegment.DeepCopy().(PathSegment),
+		m.Priority,
+		m.TickTime,
+		m.TimeoutTicks,
+		m.ConnectionSerialNumber,
+		m.OriginatorVendorId,
+		m.OriginatorSerialNumber,
+		m.ConnectionPathSize,
+		utils.DeepCopySlice[PathSegment, PathSegment](m.ConnectionPaths),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectionManagerCloseRequestCopy
+}
 
 func (m *_CipConnectionManagerCloseRequest) String() string {
 	if m == nil {

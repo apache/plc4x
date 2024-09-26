@@ -38,6 +38,7 @@ type ApduDataExtAuthorizeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetLevel returns Level (property field)
 	GetLevel() uint8
@@ -179,6 +180,22 @@ func (m *_ApduDataExtAuthorizeResponse) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ApduDataExtAuthorizeResponse) IsApduDataExtAuthorizeResponse() {}
+
+func (m *_ApduDataExtAuthorizeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtAuthorizeResponse) deepCopy() *_ApduDataExtAuthorizeResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtAuthorizeResponseCopy := &_ApduDataExtAuthorizeResponse{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.Level,
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtAuthorizeResponseCopy
+}
 
 func (m *_ApduDataExtAuthorizeResponse) String() string {
 	if m == nil {

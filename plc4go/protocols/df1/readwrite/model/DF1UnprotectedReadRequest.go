@@ -38,6 +38,7 @@ type DF1UnprotectedReadRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1Command
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -200,6 +201,23 @@ func (m *_DF1UnprotectedReadRequest) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_DF1UnprotectedReadRequest) IsDF1UnprotectedReadRequest() {}
+
+func (m *_DF1UnprotectedReadRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1UnprotectedReadRequest) deepCopy() *_DF1UnprotectedReadRequest {
+	if m == nil {
+		return nil
+	}
+	_DF1UnprotectedReadRequestCopy := &_DF1UnprotectedReadRequest{
+		m.DF1CommandContract.DeepCopy().(DF1CommandContract),
+		m.Address,
+		m.Size,
+	}
+	m.DF1CommandContract.(*_DF1Command)._SubType = m
+	return _DF1UnprotectedReadRequestCopy
+}
 
 func (m *_DF1UnprotectedReadRequest) String() string {
 	if m == nil {

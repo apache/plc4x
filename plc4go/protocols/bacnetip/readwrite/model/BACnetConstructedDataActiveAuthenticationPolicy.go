@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveAuthenticationPolicy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveAuthenticationPolicy returns ActiveAuthenticationPolicy (property field)
 	GetActiveAuthenticationPolicy() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataActiveAuthenticationPolicy) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataActiveAuthenticationPolicy) IsBACnetConstructedDataActiveAuthenticationPolicy() {
+}
+
+func (m *_BACnetConstructedDataActiveAuthenticationPolicy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveAuthenticationPolicy) deepCopy() *_BACnetConstructedDataActiveAuthenticationPolicy {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveAuthenticationPolicyCopy := &_BACnetConstructedDataActiveAuthenticationPolicy{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ActiveAuthenticationPolicy.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveAuthenticationPolicyCopy
 }
 
 func (m *_BACnetConstructedDataActiveAuthenticationPolicy) String() string {

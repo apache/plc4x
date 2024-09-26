@@ -36,6 +36,7 @@ type MonitoringFilterResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsMonitoringFilterResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoringFilterResult()
@@ -146,6 +147,21 @@ func (m *_MonitoringFilterResult) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_MonitoringFilterResult) IsMonitoringFilterResult() {}
+
+func (m *_MonitoringFilterResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoringFilterResult) deepCopy() *_MonitoringFilterResult {
+	if m == nil {
+		return nil
+	}
+	_MonitoringFilterResultCopy := &_MonitoringFilterResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoringFilterResultCopy
+}
 
 func (m *_MonitoringFilterResult) String() string {
 	if m == nil {

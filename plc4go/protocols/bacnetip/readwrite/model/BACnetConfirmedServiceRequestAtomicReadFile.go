@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestAtomicReadFile interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetFileIdentifier returns FileIdentifier (property field)
 	GetFileIdentifier() BACnetApplicationTagObjectIdentifier
@@ -206,6 +207,23 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFile) IsBACnetConfirmedServiceRequestAtomicReadFile() {
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFile) deepCopy() *_BACnetConfirmedServiceRequestAtomicReadFile {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestAtomicReadFileCopy := &_BACnetConfirmedServiceRequestAtomicReadFile{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.FileIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.AccessMethod.DeepCopy().(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestAtomicReadFileCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFile) String() string {

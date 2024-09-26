@@ -36,6 +36,7 @@ type SecurityDataLowBatteryDetected interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataLowBatteryDetected is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLowBatteryDetected()
@@ -142,6 +143,21 @@ func (m *_SecurityDataLowBatteryDetected) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_SecurityDataLowBatteryDetected) IsSecurityDataLowBatteryDetected() {}
+
+func (m *_SecurityDataLowBatteryDetected) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataLowBatteryDetected) deepCopy() *_SecurityDataLowBatteryDetected {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataLowBatteryDetectedCopy := &_SecurityDataLowBatteryDetected{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataLowBatteryDetectedCopy
+}
 
 func (m *_SecurityDataLowBatteryDetected) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataMultiStateInputAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetApplicationTagUnsignedInteger
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataMultiStateInputAlarmValues) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataMultiStateInputAlarmValues) IsBACnetConstructedDataMultiStateInputAlarmValues() {
+}
+
+func (m *_BACnetConstructedDataMultiStateInputAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMultiStateInputAlarmValues) deepCopy() *_BACnetConstructedDataMultiStateInputAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMultiStateInputAlarmValuesCopy := &_BACnetConstructedDataMultiStateInputAlarmValues{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMultiStateInputAlarmValuesCopy
 }
 
 func (m *_BACnetConstructedDataMultiStateInputAlarmValues) String() string {

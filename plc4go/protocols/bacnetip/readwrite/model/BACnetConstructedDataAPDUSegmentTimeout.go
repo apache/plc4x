@@ -38,6 +38,7 @@ type BACnetConstructedDataAPDUSegmentTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetApduSegmentTimeout returns ApduSegmentTimeout (property field)
 	GetApduSegmentTimeout() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) IsBACnetConstructedDataAPDUSegmentTimeout() {}
+
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) deepCopy() *_BACnetConstructedDataAPDUSegmentTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAPDUSegmentTimeoutCopy := &_BACnetConstructedDataAPDUSegmentTimeout{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ApduSegmentTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAPDUSegmentTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) String() string {
 	if m == nil {

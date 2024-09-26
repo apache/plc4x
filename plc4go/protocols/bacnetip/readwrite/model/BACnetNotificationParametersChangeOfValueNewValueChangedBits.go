@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedBits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfValueNewValue
 	// GetChangedBits returns ChangedBits (property field)
 	GetChangedBits() BACnetContextTagBitString
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) Serializ
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) IsBACnetNotificationParametersChangeOfValueNewValueChangedBits() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) deepCopy() *_BACnetNotificationParametersChangeOfValueNewValueChangedBits {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfValueNewValueChangedBitsCopy := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
+		m.BACnetNotificationParametersChangeOfValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfValueNewValueContract),
+		m.ChangedBits.DeepCopy().(BACnetContextTagBitString),
+	}
+	m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfValueNewValueChangedBitsCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) String() string {

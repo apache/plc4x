@@ -38,6 +38,7 @@ type ModbusPDUReadFifoQueueResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetFifoValue returns FifoValue (property field)
 	GetFifoValue() []uint16
@@ -215,6 +216,22 @@ func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ModbusPDUReadFifoQueueResponse) IsModbusPDUReadFifoQueueResponse() {}
+
+func (m *_ModbusPDUReadFifoQueueResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFifoQueueResponse) deepCopy() *_ModbusPDUReadFifoQueueResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFifoQueueResponseCopy := &_ModbusPDUReadFifoQueueResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		utils.DeepCopySlice[uint16, uint16](m.FifoValue),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadFifoQueueResponseCopy
+}
 
 func (m *_ModbusPDUReadFifoQueueResponse) String() string {
 	if m == nil {

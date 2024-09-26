@@ -44,12 +44,14 @@ type S7DataAlarmMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7DataAlarmMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7DataAlarmMessage()
 }
 
 // S7DataAlarmMessageContract provides a set of functions which can be overwritten by a sub struct
 type S7DataAlarmMessageContract interface {
+	utils.Copyable
 	// IsS7DataAlarmMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7DataAlarmMessage()
 }
@@ -227,3 +229,17 @@ func (pm *_S7DataAlarmMessage) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_S7DataAlarmMessage) IsS7DataAlarmMessage() {}
+
+func (m *_S7DataAlarmMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7DataAlarmMessage) deepCopy() *_S7DataAlarmMessage {
+	if m == nil {
+		return nil
+	}
+	_S7DataAlarmMessageCopy := &_S7DataAlarmMessage{
+		nil, // will be set by child
+	}
+	return _S7DataAlarmMessageCopy
+}

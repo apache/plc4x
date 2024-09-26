@@ -38,6 +38,7 @@ type CancelRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -203,6 +204,23 @@ func (m *_CancelRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_CancelRequest) IsCancelRequest() {}
+
+func (m *_CancelRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CancelRequest) deepCopy() *_CancelRequest {
+	if m == nil {
+		return nil
+	}
+	_CancelRequestCopy := &_CancelRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHandle,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CancelRequestCopy
+}
 
 func (m *_CancelRequest) String() string {
 	if m == nil {

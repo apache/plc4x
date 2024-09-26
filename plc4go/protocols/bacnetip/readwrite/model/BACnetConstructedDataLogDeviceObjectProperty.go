@@ -38,6 +38,7 @@ type BACnetConstructedDataLogDeviceObjectProperty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLogDeviceObjectProperty returns LogDeviceObjectProperty (property field)
 	GetLogDeviceObjectProperty() BACnetDeviceObjectPropertyReference
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataLogDeviceObjectProperty) IsBACnetConstructedDataLogDeviceObjectProperty() {
+}
+
+func (m *_BACnetConstructedDataLogDeviceObjectProperty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLogDeviceObjectProperty) deepCopy() *_BACnetConstructedDataLogDeviceObjectProperty {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLogDeviceObjectPropertyCopy := &_BACnetConstructedDataLogDeviceObjectProperty{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LogDeviceObjectProperty.DeepCopy().(BACnetDeviceObjectPropertyReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLogDeviceObjectPropertyCopy
 }
 
 func (m *_BACnetConstructedDataLogDeviceObjectProperty) String() string {

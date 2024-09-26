@@ -38,6 +38,7 @@ type BACnetConstructedDataLinkSpeed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLinkSpeed returns LinkSpeed (property field)
 	GetLinkSpeed() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLinkSpeed) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataLinkSpeed) IsBACnetConstructedDataLinkSpeed() {}
+
+func (m *_BACnetConstructedDataLinkSpeed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLinkSpeed) deepCopy() *_BACnetConstructedDataLinkSpeed {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLinkSpeedCopy := &_BACnetConstructedDataLinkSpeed{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LinkSpeed.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLinkSpeedCopy
+}
 
 func (m *_BACnetConstructedDataLinkSpeed) String() string {
 	if m == nil {

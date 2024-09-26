@@ -38,6 +38,7 @@ type CipConnectionManagerRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
@@ -591,6 +592,40 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_CipConnectionManagerRequest) IsCipConnectionManagerRequest() {}
+
+func (m *_CipConnectionManagerRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectionManagerRequest) deepCopy() *_CipConnectionManagerRequest {
+	if m == nil {
+		return nil
+	}
+	_CipConnectionManagerRequestCopy := &_CipConnectionManagerRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.ClassSegment.DeepCopy().(PathSegment),
+		m.InstanceSegment.DeepCopy().(PathSegment),
+		m.Priority,
+		m.TickTime,
+		m.TimeoutTicks,
+		m.OtConnectionId,
+		m.ToConnectionId,
+		m.ConnectionSerialNumber,
+		m.OriginatorVendorId,
+		m.OriginatorSerialNumber,
+		m.TimeoutMultiplier,
+		m.OtRpi,
+		m.OtConnectionParameters.DeepCopy().(NetworkConnectionParameters),
+		m.ToRpi,
+		m.ToConnectionParameters.DeepCopy().(NetworkConnectionParameters),
+		m.TransportType.DeepCopy().(TransportType),
+		m.ConnectionPathSize,
+		utils.DeepCopySlice[PathSegment, PathSegment](m.ConnectionPaths),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectionManagerRequestCopy
+}
 
 func (m *_CipConnectionManagerRequest) String() string {
 	if m == nil {

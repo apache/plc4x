@@ -36,6 +36,7 @@ type S7PayloadUserDataItemClkFRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemClkFRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemClkFRequest()
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemClkFRequest) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_S7PayloadUserDataItemClkFRequest) IsS7PayloadUserDataItemClkFRequest() {}
+
+func (m *_S7PayloadUserDataItemClkFRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemClkFRequest) deepCopy() *_S7PayloadUserDataItemClkFRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemClkFRequestCopy := &_S7PayloadUserDataItemClkFRequest{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemClkFRequestCopy
+}
 
 func (m *_S7PayloadUserDataItemClkFRequest) String() string {
 	if m == nil {

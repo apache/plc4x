@@ -42,6 +42,7 @@ type EipConnectionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsEipConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipConnectionResponse()
@@ -204,6 +205,21 @@ func (m *_EipConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_EipConnectionResponse) IsEipConnectionResponse() {}
+
+func (m *_EipConnectionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipConnectionResponse) deepCopy() *_EipConnectionResponse {
+	if m == nil {
+		return nil
+	}
+	_EipConnectionResponseCopy := &_EipConnectionResponse{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _EipConnectionResponseCopy
+}
 
 func (m *_EipConnectionResponse) String() string {
 	if m == nil {

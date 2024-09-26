@@ -38,6 +38,7 @@ type AdsWriteRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
@@ -240,6 +241,24 @@ func (m *_AdsWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_AdsWriteRequest) IsAdsWriteRequest() {}
+
+func (m *_AdsWriteRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsWriteRequest) deepCopy() *_AdsWriteRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsWriteRequestCopy := &_AdsWriteRequest{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.IndexGroup,
+		m.IndexOffset,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsWriteRequestCopy
+}
 
 func (m *_AdsWriteRequest) String() string {
 	if m == nil {

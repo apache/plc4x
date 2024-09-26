@@ -36,6 +36,7 @@ type EipListIdentityRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsEipListIdentityRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipListIdentityRequest()
@@ -154,6 +155,21 @@ func (m *_EipListIdentityRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_EipListIdentityRequest) IsEipListIdentityRequest() {}
+
+func (m *_EipListIdentityRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipListIdentityRequest) deepCopy() *_EipListIdentityRequest {
+	if m == nil {
+		return nil
+	}
+	_EipListIdentityRequestCopy := &_EipListIdentityRequest{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _EipListIdentityRequestCopy
+}
 
 func (m *_EipListIdentityRequest) String() string {
 	if m == nil {

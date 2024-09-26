@@ -38,6 +38,7 @@ type BACnetAuthenticationPolicyList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetEntries returns Entries (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetAuthenticationPolicyList) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetAuthenticationPolicyList) IsBACnetAuthenticationPolicyList() {}
+
+func (m *_BACnetAuthenticationPolicyList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationPolicyList) deepCopy() *_BACnetAuthenticationPolicyList {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationPolicyListCopy := &_BACnetAuthenticationPolicyList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetAuthenticationPolicyListEntry, BACnetAuthenticationPolicyListEntry](m.Entries),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetAuthenticationPolicyListCopy
+}
 
 func (m *_BACnetAuthenticationPolicyList) String() string {
 	if m == nil {

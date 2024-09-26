@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetResult returns Result (property field)
 	GetResult() uint8
@@ -271,6 +272,26 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serializ
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseCopy := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.Result,
+		m.Reserved01,
+		m.AlarmType,
+		m.Reserved02,
+		m.Reserved03,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) String() string {

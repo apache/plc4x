@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessEventCredential interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccessEventCredential returns AccessEventCredential (property field)
 	GetAccessEventCredential() BACnetDeviceObjectReference
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccessEventCredential) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataAccessEventCredential) IsBACnetConstructedDataAccessEventCredential() {
+}
+
+func (m *_BACnetConstructedDataAccessEventCredential) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessEventCredential) deepCopy() *_BACnetConstructedDataAccessEventCredential {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessEventCredentialCopy := &_BACnetConstructedDataAccessEventCredential{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AccessEventCredential.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessEventCredentialCopy
 }
 
 func (m *_BACnetConstructedDataAccessEventCredential) String() string {

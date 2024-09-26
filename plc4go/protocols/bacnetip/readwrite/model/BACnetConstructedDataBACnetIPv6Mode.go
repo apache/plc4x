@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPv6Mode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBacnetIpv6Mode returns BacnetIpv6Mode (property field)
 	GetBacnetIpv6Mode() BACnetIPModeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6Mode) IsBACnetConstructedDataBACnetIPv6Mode() {}
+
+func (m *_BACnetConstructedDataBACnetIPv6Mode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6Mode) deepCopy() *_BACnetConstructedDataBACnetIPv6Mode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPv6ModeCopy := &_BACnetConstructedDataBACnetIPv6Mode{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BacnetIpv6Mode.DeepCopy().(BACnetIPModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPv6ModeCopy
+}
 
 func (m *_BACnetConstructedDataBACnetIPv6Mode) String() string {
 	if m == nil {

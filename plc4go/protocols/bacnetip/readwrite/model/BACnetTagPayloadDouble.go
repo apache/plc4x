@@ -38,6 +38,7 @@ type BACnetTagPayloadDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() float64
 	// IsBACnetTagPayloadDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -166,6 +167,20 @@ func (m *_BACnetTagPayloadDouble) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetTagPayloadDouble) IsBACnetTagPayloadDouble() {}
+
+func (m *_BACnetTagPayloadDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadDouble) deepCopy() *_BACnetTagPayloadDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadDoubleCopy := &_BACnetTagPayloadDouble{
+		m.Value,
+	}
+	return _BACnetTagPayloadDoubleCopy
+}
 
 func (m *_BACnetTagPayloadDouble) String() string {
 	if m == nil {

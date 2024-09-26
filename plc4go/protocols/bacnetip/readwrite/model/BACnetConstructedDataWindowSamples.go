@@ -38,6 +38,7 @@ type BACnetConstructedDataWindowSamples interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetWindowSamples returns WindowSamples (property field)
 	GetWindowSamples() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataWindowSamples) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataWindowSamples) IsBACnetConstructedDataWindowSamples() {}
+
+func (m *_BACnetConstructedDataWindowSamples) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataWindowSamples) deepCopy() *_BACnetConstructedDataWindowSamples {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataWindowSamplesCopy := &_BACnetConstructedDataWindowSamples{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.WindowSamples.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataWindowSamplesCopy
+}
 
 func (m *_BACnetConstructedDataWindowSamples) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataAbsenteeLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAbsenteeLimit returns AbsenteeLimit (property field)
 	GetAbsenteeLimit() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAbsenteeLimit) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataAbsenteeLimit) IsBACnetConstructedDataAbsenteeLimit() {}
+
+func (m *_BACnetConstructedDataAbsenteeLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAbsenteeLimit) deepCopy() *_BACnetConstructedDataAbsenteeLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAbsenteeLimitCopy := &_BACnetConstructedDataAbsenteeLimit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AbsenteeLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAbsenteeLimitCopy
+}
 
 func (m *_BACnetConstructedDataAbsenteeLimit) String() string {
 	if m == nil {

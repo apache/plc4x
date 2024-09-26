@@ -38,6 +38,7 @@ type S7ParameterUserDataItemCPUFunctions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7ParameterUserDataItem
 	// GetMethod returns Method (property field)
 	GetMethod() uint8
@@ -348,6 +349,29 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_S7ParameterUserDataItemCPUFunctions) IsS7ParameterUserDataItemCPUFunctions() {}
+
+func (m *_S7ParameterUserDataItemCPUFunctions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterUserDataItemCPUFunctions) deepCopy() *_S7ParameterUserDataItemCPUFunctions {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterUserDataItemCPUFunctionsCopy := &_S7ParameterUserDataItemCPUFunctions{
+		m.S7ParameterUserDataItemContract.DeepCopy().(S7ParameterUserDataItemContract),
+		m.Method,
+		m.CpuFunctionType,
+		m.CpuFunctionGroup,
+		m.CpuSubfunction,
+		m.SequenceNumber,
+		utils.CopyPtr[uint8](m.DataUnitReferenceNumber),
+		utils.CopyPtr[uint8](m.LastDataUnit),
+		utils.CopyPtr[uint16](m.ErrorCode),
+	}
+	m.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem)._SubType = m
+	return _S7ParameterUserDataItemCPUFunctionsCopy
+}
 
 func (m *_S7ParameterUserDataItemCPUFunctions) String() string {
 	if m == nil {

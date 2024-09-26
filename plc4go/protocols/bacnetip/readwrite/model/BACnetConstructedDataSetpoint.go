@@ -38,6 +38,7 @@ type BACnetConstructedDataSetpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSetpoint returns Setpoint (property field)
 	GetSetpoint() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataSetpoint) IsBACnetConstructedDataSetpoint() {}
+
+func (m *_BACnetConstructedDataSetpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSetpoint) deepCopy() *_BACnetConstructedDataSetpoint {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSetpointCopy := &_BACnetConstructedDataSetpoint{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Setpoint.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSetpointCopy
+}
 
 func (m *_BACnetConstructedDataSetpoint) String() string {
 	if m == nil {

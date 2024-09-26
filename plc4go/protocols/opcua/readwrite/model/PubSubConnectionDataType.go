@@ -38,6 +38,7 @@ type PubSubConnectionDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -461,6 +462,34 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_PubSubConnectionDataType) IsPubSubConnectionDataType() {}
+
+func (m *_PubSubConnectionDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubConnectionDataType) deepCopy() *_PubSubConnectionDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubConnectionDataTypeCopy := &_PubSubConnectionDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Name.DeepCopy().(PascalString),
+		m.Enabled,
+		m.PublisherId.DeepCopy().(Variant),
+		m.TransportProfileUri.DeepCopy().(PascalString),
+		m.Address.DeepCopy().(ExtensionObject),
+		m.NoOfConnectionProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ConnectionProperties),
+		m.TransportSettings.DeepCopy().(ExtensionObject),
+		m.NoOfWriterGroups,
+		utils.DeepCopySlice[PubSubGroupDataType, PubSubGroupDataType](m.WriterGroups),
+		m.NoOfReaderGroups,
+		utils.DeepCopySlice[PubSubGroupDataType, PubSubGroupDataType](m.ReaderGroups),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubConnectionDataTypeCopy
+}
 
 func (m *_PubSubConnectionDataType) String() string {
 	if m == nil {

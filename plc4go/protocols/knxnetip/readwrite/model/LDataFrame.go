@@ -40,12 +40,14 @@ type LDataFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLDataFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataFrame()
 }
 
 // LDataFrameContract provides a set of functions which can be overwritten by a sub struct
 type LDataFrameContract interface {
+	utils.Copyable
 	// GetFrameType returns FrameType (property field)
 	GetFrameType() bool
 	// GetNotRepeated returns NotRepeated (property field)
@@ -317,3 +319,22 @@ func (pm *_LDataFrame) serializeParent(ctx context.Context, writeBuffer utils.Wr
 }
 
 func (m *_LDataFrame) IsLDataFrame() {}
+
+func (m *_LDataFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataFrame) deepCopy() *_LDataFrame {
+	if m == nil {
+		return nil
+	}
+	_LDataFrameCopy := &_LDataFrame{
+		nil, // will be set by child
+		m.FrameType,
+		m.NotRepeated,
+		m.Priority,
+		m.AcknowledgeRequested,
+		m.ErrorFlag,
+	}
+	return _LDataFrameCopy
+}

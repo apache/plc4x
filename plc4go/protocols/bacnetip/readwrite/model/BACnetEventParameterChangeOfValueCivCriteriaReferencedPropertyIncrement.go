@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement int
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetReferencedPropertyIncrement returns ReferencedPropertyIncrement (property field)
 	GetReferencedPropertyIncrement() BACnetContextTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) IsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() {
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) deepCopy() *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementCopy := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
+		m.BACnetEventParameterChangeOfValueCivCriteriaContract.DeepCopy().(BACnetEventParameterChangeOfValueCivCriteriaContract),
+		m.ReferencedPropertyIncrement.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = m
+	return _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementCopy
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) String() string {

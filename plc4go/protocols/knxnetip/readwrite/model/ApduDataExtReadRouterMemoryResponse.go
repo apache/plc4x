@@ -36,6 +36,7 @@ type ApduDataExtReadRouterMemoryResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtReadRouterMemoryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtReadRouterMemoryResponse()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtReadRouterMemoryResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ApduDataExtReadRouterMemoryResponse) IsApduDataExtReadRouterMemoryResponse() {}
+
+func (m *_ApduDataExtReadRouterMemoryResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtReadRouterMemoryResponse) deepCopy() *_ApduDataExtReadRouterMemoryResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtReadRouterMemoryResponseCopy := &_ApduDataExtReadRouterMemoryResponse{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtReadRouterMemoryResponseCopy
+}
 
 func (m *_ApduDataExtReadRouterMemoryResponse) String() string {
 	if m == nil {

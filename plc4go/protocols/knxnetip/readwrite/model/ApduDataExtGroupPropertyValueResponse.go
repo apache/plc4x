@@ -36,6 +36,7 @@ type ApduDataExtGroupPropertyValueResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtGroupPropertyValueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtGroupPropertyValueResponse()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtGroupPropertyValueResponse) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_ApduDataExtGroupPropertyValueResponse) IsApduDataExtGroupPropertyValueResponse() {}
+
+func (m *_ApduDataExtGroupPropertyValueResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtGroupPropertyValueResponse) deepCopy() *_ApduDataExtGroupPropertyValueResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtGroupPropertyValueResponseCopy := &_ApduDataExtGroupPropertyValueResponse{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtGroupPropertyValueResponseCopy
+}
 
 func (m *_ApduDataExtGroupPropertyValueResponse) String() string {
 	if m == nil {

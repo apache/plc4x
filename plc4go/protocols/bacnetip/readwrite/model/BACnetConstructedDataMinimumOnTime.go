@@ -38,6 +38,7 @@ type BACnetConstructedDataMinimumOnTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinimumOnTime returns MinimumOnTime (property field)
 	GetMinimumOnTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMinimumOnTime) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataMinimumOnTime) IsBACnetConstructedDataMinimumOnTime() {}
+
+func (m *_BACnetConstructedDataMinimumOnTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMinimumOnTime) deepCopy() *_BACnetConstructedDataMinimumOnTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMinimumOnTimeCopy := &_BACnetConstructedDataMinimumOnTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MinimumOnTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMinimumOnTimeCopy
+}
 
 func (m *_BACnetConstructedDataMinimumOnTime) String() string {
 	if m == nil {

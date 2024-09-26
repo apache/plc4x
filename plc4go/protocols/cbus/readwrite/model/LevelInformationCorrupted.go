@@ -38,6 +38,7 @@ type LevelInformationCorrupted interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LevelInformation
 	// GetCorruptedNibble1 returns CorruptedNibble1 (property field)
 	GetCorruptedNibble1() uint8
@@ -238,6 +239,25 @@ func (m *_LevelInformationCorrupted) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_LevelInformationCorrupted) IsLevelInformationCorrupted() {}
+
+func (m *_LevelInformationCorrupted) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LevelInformationCorrupted) deepCopy() *_LevelInformationCorrupted {
+	if m == nil {
+		return nil
+	}
+	_LevelInformationCorruptedCopy := &_LevelInformationCorrupted{
+		m.LevelInformationContract.DeepCopy().(LevelInformationContract),
+		m.CorruptedNibble1,
+		m.CorruptedNibble2,
+		m.CorruptedNibble3,
+		m.CorruptedNibble4,
+	}
+	m.LevelInformationContract.(*_LevelInformation)._SubType = m
+	return _LevelInformationCorruptedCopy
+}
 
 func (m *_LevelInformationCorrupted) String() string {
 	if m == nil {

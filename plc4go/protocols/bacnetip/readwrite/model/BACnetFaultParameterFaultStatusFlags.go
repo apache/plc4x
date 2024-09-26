@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultStatusFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -226,6 +227,24 @@ func (m *_BACnetFaultParameterFaultStatusFlags) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetFaultParameterFaultStatusFlags) IsBACnetFaultParameterFaultStatusFlags() {}
+
+func (m *_BACnetFaultParameterFaultStatusFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultStatusFlags) deepCopy() *_BACnetFaultParameterFaultStatusFlags {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultStatusFlagsCopy := &_BACnetFaultParameterFaultStatusFlags{
+		m.BACnetFaultParameterContract.DeepCopy().(BACnetFaultParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.StatusFlagsReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
+	return _BACnetFaultParameterFaultStatusFlagsCopy
+}
 
 func (m *_BACnetFaultParameterFaultStatusFlags) String() string {
 	if m == nil {

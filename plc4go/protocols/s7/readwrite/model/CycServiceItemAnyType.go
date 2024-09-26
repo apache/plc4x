@@ -38,6 +38,7 @@ type CycServiceItemAnyType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CycServiceItemType
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() TransportSize
@@ -259,6 +260,26 @@ func (m *_CycServiceItemAnyType) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_CycServiceItemAnyType) IsCycServiceItemAnyType() {}
+
+func (m *_CycServiceItemAnyType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CycServiceItemAnyType) deepCopy() *_CycServiceItemAnyType {
+	if m == nil {
+		return nil
+	}
+	_CycServiceItemAnyTypeCopy := &_CycServiceItemAnyType{
+		m.CycServiceItemTypeContract.DeepCopy().(CycServiceItemTypeContract),
+		m.TransportSize,
+		m.Length,
+		m.DbNumber,
+		m.MemoryArea,
+		m.Address,
+	}
+	m.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = m
+	return _CycServiceItemAnyTypeCopy
+}
 
 func (m *_CycServiceItemAnyType) String() string {
 	if m == nil {

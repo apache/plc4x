@@ -38,6 +38,7 @@ type SALDataVentilation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetVentilationData returns VentilationData (property field)
 	GetVentilationData() LightingData
@@ -182,6 +183,22 @@ func (m *_SALDataVentilation) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_SALDataVentilation) IsSALDataVentilation() {}
+
+func (m *_SALDataVentilation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataVentilation) deepCopy() *_SALDataVentilation {
+	if m == nil {
+		return nil
+	}
+	_SALDataVentilationCopy := &_SALDataVentilation{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.VentilationData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataVentilationCopy
+}
 
 func (m *_SALDataVentilation) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type ApduDataRestart interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataRestart is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataRestart()
@@ -146,6 +147,21 @@ func (m *_ApduDataRestart) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ApduDataRestart) IsApduDataRestart() {}
+
+func (m *_ApduDataRestart) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataRestart) deepCopy() *_ApduDataRestart {
+	if m == nil {
+		return nil
+	}
+	_ApduDataRestartCopy := &_ApduDataRestart{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataRestartCopy
+}
 
 func (m *_ApduDataRestart) String() string {
 	if m == nil {

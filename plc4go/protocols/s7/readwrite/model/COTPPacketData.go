@@ -38,6 +38,7 @@ type COTPPacketData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPPacket
 	// GetEot returns Eot (property field)
 	GetEot() bool
@@ -200,6 +201,23 @@ func (m *_COTPPacketData) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_COTPPacketData) IsCOTPPacketData() {}
+
+func (m *_COTPPacketData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPPacketData) deepCopy() *_COTPPacketData {
+	if m == nil {
+		return nil
+	}
+	_COTPPacketDataCopy := &_COTPPacketData{
+		m.COTPPacketContract.DeepCopy().(COTPPacketContract),
+		m.Eot,
+		m.TpduRef,
+	}
+	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	return _COTPPacketDataCopy
+}
 
 func (m *_COTPPacketData) String() string {
 	if m == nil {

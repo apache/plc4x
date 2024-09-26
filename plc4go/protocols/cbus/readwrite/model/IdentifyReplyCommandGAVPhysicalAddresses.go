@@ -38,6 +38,7 @@ type IdentifyReplyCommandGAVPhysicalAddresses interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetValues returns Values (property field)
 	GetValues() []byte
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandGAVPhysicalAddresses) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_IdentifyReplyCommandGAVPhysicalAddresses) IsIdentifyReplyCommandGAVPhysicalAddresses() {}
+
+func (m *_IdentifyReplyCommandGAVPhysicalAddresses) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandGAVPhysicalAddresses) deepCopy() *_IdentifyReplyCommandGAVPhysicalAddresses {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandGAVPhysicalAddressesCopy := &_IdentifyReplyCommandGAVPhysicalAddresses{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		utils.DeepCopySlice[byte, byte](m.Values),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandGAVPhysicalAddressesCopy
+}
 
 func (m *_IdentifyReplyCommandGAVPhysicalAddresses) String() string {
 	if m == nil {

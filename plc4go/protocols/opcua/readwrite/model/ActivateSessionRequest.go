@@ -38,6 +38,7 @@ type ActivateSessionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -352,6 +353,29 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ActivateSessionRequest) IsActivateSessionRequest() {}
+
+func (m *_ActivateSessionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ActivateSessionRequest) deepCopy() *_ActivateSessionRequest {
+	if m == nil {
+		return nil
+	}
+	_ActivateSessionRequestCopy := &_ActivateSessionRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ClientSignature.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfClientSoftwareCertificates,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ClientSoftwareCertificates),
+		m.NoOfLocaleIds,
+		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
+		m.UserIdentityToken.DeepCopy().(ExtensionObject),
+		m.UserTokenSignature.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ActivateSessionRequestCopy
+}
 
 func (m *_ActivateSessionRequest) String() string {
 	if m == nil {

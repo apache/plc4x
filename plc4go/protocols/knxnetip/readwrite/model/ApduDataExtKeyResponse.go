@@ -36,6 +36,7 @@ type ApduDataExtKeyResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtKeyResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtKeyResponse()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtKeyResponse) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ApduDataExtKeyResponse) IsApduDataExtKeyResponse() {}
+
+func (m *_ApduDataExtKeyResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtKeyResponse) deepCopy() *_ApduDataExtKeyResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtKeyResponseCopy := &_ApduDataExtKeyResponse{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtKeyResponseCopy
+}
 
 func (m *_ApduDataExtKeyResponse) String() string {
 	if m == nil {

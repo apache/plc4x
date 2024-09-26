@@ -38,6 +38,7 @@ type BACnetTagHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTagNumber returns TagNumber (property field)
 	GetTagNumber() uint8
 	// GetTagClass returns TagClass (property field)
@@ -465,6 +466,26 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetTagHeader) IsBACnetTagHeader() {}
+
+func (m *_BACnetTagHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagHeader) deepCopy() *_BACnetTagHeader {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagHeaderCopy := &_BACnetTagHeader{
+		m.TagNumber,
+		m.TagClass,
+		m.LengthValueType,
+		utils.CopyPtr[uint8](m.ExtTagNumber),
+		utils.CopyPtr[uint8](m.ExtLength),
+		utils.CopyPtr[uint16](m.ExtExtLength),
+		utils.CopyPtr[uint32](m.ExtExtExtLength),
+	}
+	return _BACnetTagHeaderCopy
+}
 
 func (m *_BACnetTagHeader) String() string {
 	if m == nil {

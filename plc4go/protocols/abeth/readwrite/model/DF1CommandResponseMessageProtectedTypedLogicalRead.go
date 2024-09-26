@@ -38,6 +38,7 @@ type DF1CommandResponseMessageProtectedTypedLogicalRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1ResponseMessage
 	// GetData returns Data (property field)
 	GetData() []uint8
@@ -181,6 +182,22 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWrite
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) IsDF1CommandResponseMessageProtectedTypedLogicalRead() {
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) deepCopy() *_DF1CommandResponseMessageProtectedTypedLogicalRead {
+	if m == nil {
+		return nil
+	}
+	_DF1CommandResponseMessageProtectedTypedLogicalReadCopy := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
+		m.DF1ResponseMessageContract.DeepCopy().(DF1ResponseMessageContract),
+		utils.DeepCopySlice[uint8, uint8](m.Data),
+	}
+	m.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = m
+	return _DF1CommandResponseMessageProtectedTypedLogicalReadCopy
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) String() string {

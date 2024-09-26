@@ -38,6 +38,7 @@ type LinearConversionDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetInitialAddend returns InitialAddend (property field)
 	GetInitialAddend() float32
@@ -242,6 +243,25 @@ func (m *_LinearConversionDataType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_LinearConversionDataType) IsLinearConversionDataType() {}
+
+func (m *_LinearConversionDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LinearConversionDataType) deepCopy() *_LinearConversionDataType {
+	if m == nil {
+		return nil
+	}
+	_LinearConversionDataTypeCopy := &_LinearConversionDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.InitialAddend,
+		m.Multiplicand,
+		m.Divisor,
+		m.FinalAddend,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _LinearConversionDataTypeCopy
+}
 
 func (m *_LinearConversionDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type OpcuaAcknowledgeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetVersion returns Version (property field)
 	GetVersion() uint32
@@ -207,6 +208,23 @@ func (m *_OpcuaAcknowledgeResponse) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_OpcuaAcknowledgeResponse) IsOpcuaAcknowledgeResponse() {}
+
+func (m *_OpcuaAcknowledgeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaAcknowledgeResponse) deepCopy() *_OpcuaAcknowledgeResponse {
+	if m == nil {
+		return nil
+	}
+	_OpcuaAcknowledgeResponseCopy := &_OpcuaAcknowledgeResponse{
+		m.MessagePDUContract.DeepCopy().(MessagePDUContract),
+		m.Version,
+		m.Limits.DeepCopy().(OpcuaProtocolLimits),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaAcknowledgeResponseCopy
+}
 
 func (m *_OpcuaAcknowledgeResponse) String() string {
 	if m == nil {

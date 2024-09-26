@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetResult returns Result (property field)
 	GetResult() uint8
@@ -208,6 +209,23 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) SerializeW
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseCopy := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.Result,
+		m.Reserved01,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) String() string {

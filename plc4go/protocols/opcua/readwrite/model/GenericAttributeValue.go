@@ -38,6 +38,7 @@ type GenericAttributeValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAttributeId returns AttributeId (property field)
 	GetAttributeId() uint32
@@ -203,6 +204,23 @@ func (m *_GenericAttributeValue) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_GenericAttributeValue) IsGenericAttributeValue() {}
+
+func (m *_GenericAttributeValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GenericAttributeValue) deepCopy() *_GenericAttributeValue {
+	if m == nil {
+		return nil
+	}
+	_GenericAttributeValueCopy := &_GenericAttributeValue{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.AttributeId,
+		m.Value.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _GenericAttributeValueCopy
+}
 
 func (m *_GenericAttributeValue) String() string {
 	if m == nil {

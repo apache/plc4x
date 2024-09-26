@@ -38,6 +38,7 @@ type BACnetConstructedDataMachineRoomID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMachineRoomId returns MachineRoomId (property field)
 	GetMachineRoomId() BACnetApplicationTagObjectIdentifier
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMachineRoomID) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataMachineRoomID) IsBACnetConstructedDataMachineRoomID() {}
+
+func (m *_BACnetConstructedDataMachineRoomID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMachineRoomID) deepCopy() *_BACnetConstructedDataMachineRoomID {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMachineRoomIDCopy := &_BACnetConstructedDataMachineRoomID{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MachineRoomId.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMachineRoomIDCopy
+}
 
 func (m *_BACnetConstructedDataMachineRoomID) String() string {
 	if m == nil {

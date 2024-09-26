@@ -38,6 +38,7 @@ type BACnetLandingCallStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFloorNumber returns FloorNumber (property field)
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetCommand returns Command (property field)
@@ -218,6 +219,22 @@ func (m *_BACnetLandingCallStatus) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetLandingCallStatus) IsBACnetLandingCallStatus() {}
+
+func (m *_BACnetLandingCallStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingCallStatus) deepCopy() *_BACnetLandingCallStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingCallStatusCopy := &_BACnetLandingCallStatus{
+		m.FloorNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Command.DeepCopy().(BACnetLandingCallStatusCommand),
+		m.FloorText.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	return _BACnetLandingCallStatusCopy
+}
 
 func (m *_BACnetLandingCallStatus) String() string {
 	if m == nil {

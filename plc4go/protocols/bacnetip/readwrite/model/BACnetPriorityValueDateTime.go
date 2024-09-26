@@ -38,6 +38,7 @@ type BACnetPriorityValueDateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetDateTimeValue returns DateTimeValue (property field)
 	GetDateTimeValue() BACnetDateTimeEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueDateTime) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetPriorityValueDateTime) IsBACnetPriorityValueDateTime() {}
+
+func (m *_BACnetPriorityValueDateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueDateTime) deepCopy() *_BACnetPriorityValueDateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueDateTimeCopy := &_BACnetPriorityValueDateTime{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueDateTimeCopy
+}
 
 func (m *_BACnetPriorityValueDateTime) String() string {
 	if m == nil {

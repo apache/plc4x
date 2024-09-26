@@ -38,6 +38,7 @@ type BACnetConstructedDataAuthorizationExemptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAuthorizationExemption returns AuthorizationExemption (property field)
 	GetAuthorizationExemption() []BACnetAuthorizationExemptionTagged
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) IsBACnetConstructedDataAuthorizationExemptions() {
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptions) deepCopy() *_BACnetConstructedDataAuthorizationExemptions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAuthorizationExemptionsCopy := &_BACnetConstructedDataAuthorizationExemptions{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetAuthorizationExemptionTagged, BACnetAuthorizationExemptionTagged](m.AuthorizationExemption),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAuthorizationExemptionsCopy
 }
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) String() string {

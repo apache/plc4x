@@ -38,6 +38,7 @@ type BACnetPriorityValueObjectidentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueObjectidentifier) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetPriorityValueObjectidentifier) IsBACnetPriorityValueObjectidentifier() {}
+
+func (m *_BACnetPriorityValueObjectidentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueObjectidentifier) deepCopy() *_BACnetPriorityValueObjectidentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueObjectidentifierCopy := &_BACnetPriorityValueObjectidentifier{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueObjectidentifierCopy
+}
 
 func (m *_BACnetPriorityValueObjectidentifier) String() string {
 	if m == nil {

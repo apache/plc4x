@@ -38,6 +38,7 @@ type RationalNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNumerator returns Numerator (property field)
 	GetNumerator() int32
@@ -200,6 +201,23 @@ func (m *_RationalNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_RationalNumber) IsRationalNumber() {}
+
+func (m *_RationalNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RationalNumber) deepCopy() *_RationalNumber {
+	if m == nil {
+		return nil
+	}
+	_RationalNumberCopy := &_RationalNumber{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Numerator,
+		m.Denominator,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RationalNumberCopy
+}
 
 func (m *_RationalNumber) String() string {
 	if m == nil {

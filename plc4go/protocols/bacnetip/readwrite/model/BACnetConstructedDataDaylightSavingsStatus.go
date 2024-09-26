@@ -38,6 +38,7 @@ type BACnetConstructedDataDaylightSavingsStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDaylightSavingsStatus returns DaylightSavingsStatus (property field)
 	GetDaylightSavingsStatus() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataDaylightSavingsStatus) IsBACnetConstructedDataDaylightSavingsStatus() {
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatus) deepCopy() *_BACnetConstructedDataDaylightSavingsStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDaylightSavingsStatusCopy := &_BACnetConstructedDataDaylightSavingsStatus{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DaylightSavingsStatus.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDaylightSavingsStatusCopy
 }
 
 func (m *_BACnetConstructedDataDaylightSavingsStatus) String() string {

@@ -36,6 +36,7 @@ type ApduDataAdcResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataAdcResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataAdcResponse()
@@ -146,6 +147,21 @@ func (m *_ApduDataAdcResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ApduDataAdcResponse) IsApduDataAdcResponse() {}
+
+func (m *_ApduDataAdcResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataAdcResponse) deepCopy() *_ApduDataAdcResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataAdcResponseCopy := &_ApduDataAdcResponse{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataAdcResponseCopy
+}
 
 func (m *_ApduDataAdcResponse) String() string {
 	if m == nil {

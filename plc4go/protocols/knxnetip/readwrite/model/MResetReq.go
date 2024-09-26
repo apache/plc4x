@@ -36,6 +36,7 @@ type MResetReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMResetReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMResetReq()
@@ -146,6 +147,21 @@ func (m *_MResetReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_MResetReq) IsMResetReq() {}
+
+func (m *_MResetReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MResetReq) deepCopy() *_MResetReq {
+	if m == nil {
+		return nil
+	}
+	_MResetReqCopy := &_MResetReq{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MResetReqCopy
+}
 
 func (m *_MResetReq) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type EUInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNamespaceUri returns NamespaceUri (property field)
 	GetNamespaceUri() PascalString
@@ -251,6 +252,25 @@ func (m *_EUInformation) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_EUInformation) IsEUInformation() {}
+
+func (m *_EUInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EUInformation) deepCopy() *_EUInformation {
+	if m == nil {
+		return nil
+	}
+	_EUInformationCopy := &_EUInformation{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NamespaceUri.DeepCopy().(PascalString),
+		m.UnitId,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EUInformationCopy
+}
 
 func (m *_EUInformation) String() string {
 	if m == nil {

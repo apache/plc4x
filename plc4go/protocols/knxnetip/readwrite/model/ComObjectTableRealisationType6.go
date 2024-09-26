@@ -38,6 +38,7 @@ type ComObjectTableRealisationType6 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ComObjectTable
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() GroupObjectDescriptorRealisationType6
@@ -182,6 +183,22 @@ func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ComObjectTableRealisationType6) IsComObjectTableRealisationType6() {}
+
+func (m *_ComObjectTableRealisationType6) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ComObjectTableRealisationType6) deepCopy() *_ComObjectTableRealisationType6 {
+	if m == nil {
+		return nil
+	}
+	_ComObjectTableRealisationType6Copy := &_ComObjectTableRealisationType6{
+		m.ComObjectTableContract.DeepCopy().(ComObjectTableContract),
+		m.ComObjectDescriptors.DeepCopy().(GroupObjectDescriptorRealisationType6),
+	}
+	m.ComObjectTableContract.(*_ComObjectTable)._SubType = m
+	return _ComObjectTableRealisationType6Copy
+}
 
 func (m *_ComObjectTableRealisationType6) String() string {
 	if m == nil {

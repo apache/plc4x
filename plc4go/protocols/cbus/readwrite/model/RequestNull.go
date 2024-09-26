@@ -41,6 +41,7 @@ type RequestNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// IsRequestNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestNull()
@@ -174,6 +175,21 @@ func (m *_RequestNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_RequestNull) IsRequestNull() {}
+
+func (m *_RequestNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestNull) deepCopy() *_RequestNull {
+	if m == nil {
+		return nil
+	}
+	_RequestNullCopy := &_RequestNull{
+		m.RequestContract.DeepCopy().(RequestContract),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestNullCopy
+}
 
 func (m *_RequestNull) String() string {
 	if m == nil {

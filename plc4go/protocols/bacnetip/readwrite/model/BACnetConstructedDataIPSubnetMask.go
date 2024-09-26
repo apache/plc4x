@@ -38,6 +38,7 @@ type BACnetConstructedDataIPSubnetMask interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpSubnetMask returns IpSubnetMask (property field)
 	GetIpSubnetMask() BACnetApplicationTagOctetString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPSubnetMask) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataIPSubnetMask) IsBACnetConstructedDataIPSubnetMask() {}
+
+func (m *_BACnetConstructedDataIPSubnetMask) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPSubnetMask) deepCopy() *_BACnetConstructedDataIPSubnetMask {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPSubnetMaskCopy := &_BACnetConstructedDataIPSubnetMask{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IpSubnetMask.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPSubnetMaskCopy
+}
 
 func (m *_BACnetConstructedDataIPSubnetMask) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) SerializeWithWri
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) IsBACnetFaultParameterFaultExtendedParametersEntryReal() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryRealCopy := &_BACnetFaultParameterFaultExtendedParametersEntryReal{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryRealCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) String() string {

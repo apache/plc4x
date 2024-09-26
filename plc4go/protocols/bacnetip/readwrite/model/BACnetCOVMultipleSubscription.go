@@ -38,6 +38,7 @@ type BACnetCOVMultipleSubscription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientProcessEnclosed
 	// GetIssueConfirmedNotifications returns IssueConfirmedNotifications (property field)
@@ -261,6 +262,24 @@ func (m *_BACnetCOVMultipleSubscription) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetCOVMultipleSubscription) IsBACnetCOVMultipleSubscription() {}
+
+func (m *_BACnetCOVMultipleSubscription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCOVMultipleSubscription) deepCopy() *_BACnetCOVMultipleSubscription {
+	if m == nil {
+		return nil
+	}
+	_BACnetCOVMultipleSubscriptionCopy := &_BACnetCOVMultipleSubscription{
+		m.Recipient.DeepCopy().(BACnetRecipientProcessEnclosed),
+		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
+		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.MaxNotificationDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfCovSubscriptionSpecification.DeepCopy().(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification),
+	}
+	return _BACnetCOVMultipleSubscriptionCopy
+}
 
 func (m *_BACnetCOVMultipleSubscription) String() string {
 	if m == nil {

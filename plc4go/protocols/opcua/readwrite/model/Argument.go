@@ -38,6 +38,7 @@ type Argument interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -295,6 +296,27 @@ func (m *_Argument) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_Argument) IsArgument() {}
+
+func (m *_Argument) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Argument) deepCopy() *_Argument {
+	if m == nil {
+		return nil
+	}
+	_ArgumentCopy := &_Argument{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Name.DeepCopy().(PascalString),
+		m.DataType.DeepCopy().(NodeId),
+		m.ValueRank,
+		m.NoOfArrayDimensions,
+		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
+		m.Description.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ArgumentCopy
+}
 
 func (m *_Argument) String() string {
 	if m == nil {

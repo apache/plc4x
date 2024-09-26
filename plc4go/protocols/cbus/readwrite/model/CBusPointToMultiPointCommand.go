@@ -40,12 +40,14 @@ type CBusPointToMultiPointCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusPointToMultiPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToMultiPointCommand()
 }
 
 // CBusPointToMultiPointCommandContract provides a set of functions which can be overwritten by a sub struct
 type CBusPointToMultiPointCommandContract interface {
+	utils.Copyable
 	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
 	// GetCBusOptions() returns a parser argument
@@ -217,3 +219,19 @@ func (m *_CBusPointToMultiPointCommand) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusPointToMultiPointCommand) IsCBusPointToMultiPointCommand() {}
+
+func (m *_CBusPointToMultiPointCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToMultiPointCommand) deepCopy() *_CBusPointToMultiPointCommand {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToMultiPointCommandCopy := &_CBusPointToMultiPointCommand{
+		nil, // will be set by child
+		m.PeekedApplication,
+		m.CBusOptions,
+	}
+	return _CBusPointToMultiPointCommandCopy
+}

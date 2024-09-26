@@ -38,6 +38,7 @@ type BACnetConstructedDataIPDefaultGateway interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpDefaultGateway returns IpDefaultGateway (property field)
 	GetIpDefaultGateway() BACnetApplicationTagOctetString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPDefaultGateway) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataIPDefaultGateway) IsBACnetConstructedDataIPDefaultGateway() {}
+
+func (m *_BACnetConstructedDataIPDefaultGateway) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPDefaultGateway) deepCopy() *_BACnetConstructedDataIPDefaultGateway {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPDefaultGatewayCopy := &_BACnetConstructedDataIPDefaultGateway{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IpDefaultGateway.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPDefaultGatewayCopy
+}
 
 func (m *_BACnetConstructedDataIPDefaultGateway) String() string {
 	if m == nil {

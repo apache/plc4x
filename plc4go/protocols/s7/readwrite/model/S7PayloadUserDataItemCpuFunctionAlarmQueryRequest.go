@@ -44,6 +44,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -341,6 +342,26 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) IsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestCopy := &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.SyntaxId,
+		m.QueryType,
+		m.AlarmType,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmQueryRequestCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) String() string {

@@ -38,6 +38,7 @@ type ReadValueId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -251,6 +252,25 @@ func (m *_ReadValueId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_ReadValueId) IsReadValueId() {}
+
+func (m *_ReadValueId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReadValueId) deepCopy() *_ReadValueId {
+	if m == nil {
+		return nil
+	}
+	_ReadValueIdCopy := &_ReadValueId{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NodeId.DeepCopy().(NodeId),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+		m.DataEncoding.DeepCopy().(QualifiedName),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReadValueIdCopy
+}
 
 func (m *_ReadValueId) String() string {
 	if m == nil {

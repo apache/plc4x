@@ -38,6 +38,7 @@ type BACnetConstructedDataLifeSafetyZoneMaintenanceRequired interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaintenanceRequired returns MaintenanceRequired (property field)
 	GetMaintenanceRequired() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) SerializeWithW
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) IsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() {
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) deepCopy() *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredCopy := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaintenanceRequired.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredCopy
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) String() string {

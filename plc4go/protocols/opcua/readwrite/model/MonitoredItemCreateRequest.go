@@ -38,6 +38,7 @@ type MonitoredItemCreateRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetItemToMonitor returns ItemToMonitor (property field)
 	GetItemToMonitor() ExtensionObjectDefinition
@@ -227,6 +228,24 @@ func (m *_MonitoredItemCreateRequest) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_MonitoredItemCreateRequest) IsMonitoredItemCreateRequest() {}
+
+func (m *_MonitoredItemCreateRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredItemCreateRequest) deepCopy() *_MonitoredItemCreateRequest {
+	if m == nil {
+		return nil
+	}
+	_MonitoredItemCreateRequestCopy := &_MonitoredItemCreateRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ItemToMonitor.DeepCopy().(ExtensionObjectDefinition),
+		m.MonitoringMode,
+		m.RequestedParameters.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoredItemCreateRequestCopy
+}
 
 func (m *_MonitoredItemCreateRequest) String() string {
 	if m == nil {

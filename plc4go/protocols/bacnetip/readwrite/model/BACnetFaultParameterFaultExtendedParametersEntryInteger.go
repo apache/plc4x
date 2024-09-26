@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) SerializeWith
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) IsBACnetFaultParameterFaultExtendedParametersEntryInteger() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryIntegerCopy := &_BACnetFaultParameterFaultExtendedParametersEntryInteger{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryIntegerCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) String() string {

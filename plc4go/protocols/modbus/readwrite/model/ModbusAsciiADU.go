@@ -40,6 +40,7 @@ type ModbusAsciiADU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusADU
 	// GetAddress returns Address (property field)
 	GetAddress() uint8
@@ -218,6 +219,23 @@ func (m *_ModbusAsciiADU) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ModbusAsciiADU) IsModbusAsciiADU() {}
+
+func (m *_ModbusAsciiADU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusAsciiADU) deepCopy() *_ModbusAsciiADU {
+	if m == nil {
+		return nil
+	}
+	_ModbusAsciiADUCopy := &_ModbusAsciiADU{
+		m.ModbusADUContract.DeepCopy().(ModbusADUContract),
+		m.Address,
+		m.Pdu.DeepCopy().(ModbusPDU),
+	}
+	m.ModbusADUContract.(*_ModbusADU)._SubType = m
+	return _ModbusAsciiADUCopy
+}
 
 func (m *_ModbusAsciiADU) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type Frame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFrame()
@@ -146,6 +147,21 @@ func (m *_Frame) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Frame) IsFrame() {}
+
+func (m *_Frame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Frame) deepCopy() *_Frame {
+	if m == nil {
+		return nil
+	}
+	_FrameCopy := &_Frame{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FrameCopy
+}
 
 func (m *_Frame) String() string {
 	if m == nil {

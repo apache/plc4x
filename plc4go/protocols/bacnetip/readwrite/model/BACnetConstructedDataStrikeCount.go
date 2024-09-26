@@ -38,6 +38,7 @@ type BACnetConstructedDataStrikeCount interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStrikeCount returns StrikeCount (property field)
 	GetStrikeCount() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataStrikeCount) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataStrikeCount) IsBACnetConstructedDataStrikeCount() {}
+
+func (m *_BACnetConstructedDataStrikeCount) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStrikeCount) deepCopy() *_BACnetConstructedDataStrikeCount {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStrikeCountCopy := &_BACnetConstructedDataStrikeCount{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.StrikeCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStrikeCountCopy
+}
 
 func (m *_BACnetConstructedDataStrikeCount) String() string {
 	if m == nil {

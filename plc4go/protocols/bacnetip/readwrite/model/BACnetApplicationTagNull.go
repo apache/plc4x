@@ -36,6 +36,7 @@ type BACnetApplicationTagNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// IsBACnetApplicationTagNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTagNull()
@@ -142,6 +143,21 @@ func (m *_BACnetApplicationTagNull) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetApplicationTagNull) IsBACnetApplicationTagNull() {}
+
+func (m *_BACnetApplicationTagNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagNull) deepCopy() *_BACnetApplicationTagNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagNullCopy := &_BACnetApplicationTagNull{
+		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagNullCopy
+}
 
 func (m *_BACnetApplicationTagNull) String() string {
 	if m == nil {

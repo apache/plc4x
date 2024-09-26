@@ -38,6 +38,7 @@ type LevelInformationAbsent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LevelInformation
 	// IsLevelInformationAbsent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLevelInformationAbsent()
@@ -159,6 +160,22 @@ func (m *_LevelInformationAbsent) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_LevelInformationAbsent) IsLevelInformationAbsent() {}
+
+func (m *_LevelInformationAbsent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LevelInformationAbsent) deepCopy() *_LevelInformationAbsent {
+	if m == nil {
+		return nil
+	}
+	_LevelInformationAbsentCopy := &_LevelInformationAbsent{
+		m.LevelInformationContract.DeepCopy().(LevelInformationContract),
+		m.reservedField0,
+	}
+	m.LevelInformationContract.(*_LevelInformation)._SubType = m
+	return _LevelInformationAbsentCopy
+}
 
 func (m *_LevelInformationAbsent) String() string {
 	if m == nil {

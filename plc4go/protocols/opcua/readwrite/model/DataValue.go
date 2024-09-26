@@ -38,6 +38,7 @@ type DataValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetServerPicosecondsSpecified returns ServerPicosecondsSpecified (property field)
 	GetServerPicosecondsSpecified() bool
 	// GetSourcePicosecondsSpecified returns SourcePicosecondsSpecified (property field)
@@ -425,6 +426,32 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_DataValue) IsDataValue() {}
+
+func (m *_DataValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataValue) deepCopy() *_DataValue {
+	if m == nil {
+		return nil
+	}
+	_DataValueCopy := &_DataValue{
+		m.ServerPicosecondsSpecified,
+		m.SourcePicosecondsSpecified,
+		m.ServerTimestampSpecified,
+		m.SourceTimestampSpecified,
+		m.StatusCodeSpecified,
+		m.ValueSpecified,
+		m.Value.DeepCopy().(Variant),
+		m.StatusCode.DeepCopy().(StatusCode),
+		utils.CopyPtr[int64](m.SourceTimestamp),
+		utils.CopyPtr[uint16](m.SourcePicoseconds),
+		utils.CopyPtr[int64](m.ServerTimestamp),
+		utils.CopyPtr[uint16](m.ServerPicoseconds),
+		m.reservedField0,
+	}
+	return _DataValueCopy
+}
 
 func (m *_DataValue) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
 	// GetData returns Data (property field)
@@ -233,6 +234,24 @@ func (m *_BACnetPropertyValues) GetObjectTypeArgument() BACnetObjectType {
 ////
 
 func (m *_BACnetPropertyValues) IsBACnetPropertyValues() {}
+
+func (m *_BACnetPropertyValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyValues) deepCopy() *_BACnetPropertyValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyValuesCopy := &_BACnetPropertyValues{
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetPropertyValue, BACnetPropertyValue](m.Data),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+		m.ObjectTypeArgument,
+	}
+	return _BACnetPropertyValuesCopy
+}
 
 func (m *_BACnetPropertyValues) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type SALDataFreeUsage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataFreeUsage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataFreeUsage()
@@ -151,6 +152,21 @@ func (m *_SALDataFreeUsage) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_SALDataFreeUsage) IsSALDataFreeUsage() {}
+
+func (m *_SALDataFreeUsage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataFreeUsage) deepCopy() *_SALDataFreeUsage {
+	if m == nil {
+		return nil
+	}
+	_SALDataFreeUsageCopy := &_SALDataFreeUsage{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataFreeUsageCopy
+}
 
 func (m *_SALDataFreeUsage) String() string {
 	if m == nil {

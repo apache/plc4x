@@ -38,6 +38,7 @@ type BACnetConstructedDataIntervalOffset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIntervalOffset returns IntervalOffset (property field)
 	GetIntervalOffset() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIntervalOffset) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataIntervalOffset) IsBACnetConstructedDataIntervalOffset() {}
+
+func (m *_BACnetConstructedDataIntervalOffset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntervalOffset) deepCopy() *_BACnetConstructedDataIntervalOffset {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntervalOffsetCopy := &_BACnetConstructedDataIntervalOffset{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IntervalOffset.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntervalOffsetCopy
+}
 
 func (m *_BACnetConstructedDataIntervalOffset) String() string {
 	if m == nil {

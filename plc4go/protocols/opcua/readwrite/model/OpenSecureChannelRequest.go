@@ -38,6 +38,7 @@ type OpenSecureChannelRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -290,6 +291,27 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_OpenSecureChannelRequest) IsOpenSecureChannelRequest() {}
+
+func (m *_OpenSecureChannelRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpenSecureChannelRequest) deepCopy() *_OpenSecureChannelRequest {
+	if m == nil {
+		return nil
+	}
+	_OpenSecureChannelRequestCopy := &_OpenSecureChannelRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ClientProtocolVersion,
+		m.RequestType,
+		m.SecurityMode,
+		m.ClientNonce.DeepCopy().(PascalByteString),
+		m.RequestedLifetime,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _OpenSecureChannelRequestCopy
+}
 
 func (m *_OpenSecureChannelRequest) String() string {
 	if m == nil {

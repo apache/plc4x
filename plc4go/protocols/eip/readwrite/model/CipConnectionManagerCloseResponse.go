@@ -38,6 +38,7 @@ type CipConnectionManagerCloseResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -321,6 +322,29 @@ func (m *_CipConnectionManagerCloseResponse) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_CipConnectionManagerCloseResponse) IsCipConnectionManagerCloseResponse() {}
+
+func (m *_CipConnectionManagerCloseResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectionManagerCloseResponse) deepCopy() *_CipConnectionManagerCloseResponse {
+	if m == nil {
+		return nil
+	}
+	_CipConnectionManagerCloseResponseCopy := &_CipConnectionManagerCloseResponse{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.Status,
+		m.AdditionalStatusWords,
+		m.ConnectionSerialNumber,
+		m.OriginatorVendorId,
+		m.OriginatorSerialNumber,
+		m.ApplicationReplySize,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectionManagerCloseResponseCopy
+}
 
 func (m *_CipConnectionManagerCloseResponse) String() string {
 	if m == nil {

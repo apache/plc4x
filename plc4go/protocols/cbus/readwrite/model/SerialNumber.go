@@ -38,6 +38,7 @@ type SerialNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOctet1 returns Octet1 (property field)
 	GetOctet1() byte
 	// GetOctet2 returns Octet2 (property field)
@@ -226,6 +227,23 @@ func (m *_SerialNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_SerialNumber) IsSerialNumber() {}
+
+func (m *_SerialNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SerialNumber) deepCopy() *_SerialNumber {
+	if m == nil {
+		return nil
+	}
+	_SerialNumberCopy := &_SerialNumber{
+		m.Octet1,
+		m.Octet2,
+		m.Octet3,
+		m.Octet4,
+	}
+	return _SerialNumberCopy
+}
 
 func (m *_SerialNumber) String() string {
 	if m == nil {

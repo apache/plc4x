@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessEventTag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccessEventTag returns AccessEventTag (property field)
 	GetAccessEventTag() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccessEventTag) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataAccessEventTag) IsBACnetConstructedDataAccessEventTag() {}
+
+func (m *_BACnetConstructedDataAccessEventTag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessEventTag) deepCopy() *_BACnetConstructedDataAccessEventTag {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessEventTagCopy := &_BACnetConstructedDataAccessEventTag{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AccessEventTag.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessEventTagCopy
+}
 
 func (m *_BACnetConstructedDataAccessEventTag) String() string {
 	if m == nil {

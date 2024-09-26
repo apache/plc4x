@@ -41,6 +41,7 @@ type AdsDiscoveryBlockAmsNetId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetAmsNetId returns AmsNetId (property field)
 	GetAmsNetId() AmsNetId
@@ -211,6 +212,22 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AdsDiscoveryBlockAmsNetId) IsAdsDiscoveryBlockAmsNetId() {}
+
+func (m *_AdsDiscoveryBlockAmsNetId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockAmsNetId) deepCopy() *_AdsDiscoveryBlockAmsNetId {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockAmsNetIdCopy := &_AdsDiscoveryBlockAmsNetId{
+		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.AmsNetId.DeepCopy().(AmsNetId),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockAmsNetIdCopy
+}
 
 func (m *_AdsDiscoveryBlockAmsNetId) String() string {
 	if m == nil {

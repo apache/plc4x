@@ -38,6 +38,7 @@ type BACnetConstructedDataReadOnly interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReadOnly returns ReadOnly (property field)
 	GetReadOnly() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataReadOnly) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataReadOnly) IsBACnetConstructedDataReadOnly() {}
+
+func (m *_BACnetConstructedDataReadOnly) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReadOnly) deepCopy() *_BACnetConstructedDataReadOnly {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReadOnlyCopy := &_BACnetConstructedDataReadOnly{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ReadOnly.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReadOnlyCopy
+}
 
 func (m *_BACnetConstructedDataReadOnly) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type ApduDataExtNetworkParameterWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtNetworkParameterWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtNetworkParameterWrite()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtNetworkParameterWrite) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_ApduDataExtNetworkParameterWrite) IsApduDataExtNetworkParameterWrite() {}
+
+func (m *_ApduDataExtNetworkParameterWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtNetworkParameterWrite) deepCopy() *_ApduDataExtNetworkParameterWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtNetworkParameterWriteCopy := &_ApduDataExtNetworkParameterWrite{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtNetworkParameterWriteCopy
+}
 
 func (m *_ApduDataExtNetworkParameterWrite) String() string {
 	if m == nil {

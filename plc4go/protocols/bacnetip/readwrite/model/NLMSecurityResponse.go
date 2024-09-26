@@ -38,6 +38,7 @@ type NLMSecurityResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetResponseCode returns ResponseCode (property field)
 	GetResponseCode() SecurityResponseCode
@@ -244,6 +245,25 @@ func (m *_NLMSecurityResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NLMSecurityResponse) IsNLMSecurityResponse() {}
+
+func (m *_NLMSecurityResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMSecurityResponse) deepCopy() *_NLMSecurityResponse {
+	if m == nil {
+		return nil
+	}
+	_NLMSecurityResponseCopy := &_NLMSecurityResponse{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.ResponseCode,
+		m.OriginalMessageId,
+		m.OriginalTimestamp,
+		utils.DeepCopySlice[byte, byte](m.VariableParameters),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMSecurityResponseCopy
+}
 
 func (m *_NLMSecurityResponse) String() string {
 	if m == nil {

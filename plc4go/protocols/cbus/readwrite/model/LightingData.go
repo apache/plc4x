@@ -40,12 +40,14 @@ type LightingData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLightingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingData()
 }
 
 // LightingDataContract provides a set of functions which can be overwritten by a sub struct
 type LightingDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() LightingCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)
@@ -258,3 +260,18 @@ func (pm *_LightingData) serializeParent(ctx context.Context, writeBuffer utils.
 }
 
 func (m *_LightingData) IsLightingData() {}
+
+func (m *_LightingData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingData) deepCopy() *_LightingData {
+	if m == nil {
+		return nil
+	}
+	_LightingDataCopy := &_LightingData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+	}
+	return _LightingDataCopy
+}

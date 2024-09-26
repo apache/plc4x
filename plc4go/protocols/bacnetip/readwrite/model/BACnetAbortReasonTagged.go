@@ -37,6 +37,7 @@ type BACnetAbortReasonTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() BACnetAbortReason
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -231,6 +232,22 @@ func (m *_BACnetAbortReasonTagged) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetAbortReasonTagged) IsBACnetAbortReasonTagged() {}
+
+func (m *_BACnetAbortReasonTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAbortReasonTagged) deepCopy() *_BACnetAbortReasonTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAbortReasonTaggedCopy := &_BACnetAbortReasonTagged{
+		m.Value,
+		m.ProprietaryValue,
+		m.ActualLength,
+	}
+	return _BACnetAbortReasonTaggedCopy
+}
 
 func (m *_BACnetAbortReasonTagged) String() string {
 	if m == nil {

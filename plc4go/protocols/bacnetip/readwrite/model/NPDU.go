@@ -38,6 +38,7 @@ type NPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetProtocolVersionNumber returns ProtocolVersionNumber (property field)
 	GetProtocolVersionNumber() uint8
 	// GetControl returns Control (property field)
@@ -545,6 +546,31 @@ func (m *_NPDU) GetNpduLength() uint16 {
 ////
 
 func (m *_NPDU) IsNPDU() {}
+
+func (m *_NPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NPDU) deepCopy() *_NPDU {
+	if m == nil {
+		return nil
+	}
+	_NPDUCopy := &_NPDU{
+		m.ProtocolVersionNumber,
+		m.Control.DeepCopy().(NPDUControl),
+		utils.CopyPtr[uint16](m.DestinationNetworkAddress),
+		utils.CopyPtr[uint8](m.DestinationLength),
+		utils.DeepCopySlice[uint8, uint8](m.DestinationAddress),
+		utils.CopyPtr[uint16](m.SourceNetworkAddress),
+		utils.CopyPtr[uint8](m.SourceLength),
+		utils.DeepCopySlice[uint8, uint8](m.SourceAddress),
+		utils.CopyPtr[uint8](m.HopCount),
+		m.Nlm.DeepCopy().(NLM),
+		m.Apdu.DeepCopy().(APDU),
+		m.NpduLength,
+	}
+	return _NPDUCopy
+}
 
 func (m *_NPDU) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type AdsReadWriteResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -219,6 +220,23 @@ func (m *_AdsReadWriteResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_AdsReadWriteResponse) IsAdsReadWriteResponse() {}
+
+func (m *_AdsReadWriteResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadWriteResponse) deepCopy() *_AdsReadWriteResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsReadWriteResponseCopy := &_AdsReadWriteResponse{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.Result,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadWriteResponseCopy
+}
 
 func (m *_AdsReadWriteResponse) String() string {
 	if m == nil {

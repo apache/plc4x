@@ -38,6 +38,7 @@ type BACnetConstructedDataPriorityArray interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPriorityArray returns PriorityArray (property field)
 	GetPriorityArray() BACnetPriorityArray
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPriorityArray) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataPriorityArray) IsBACnetConstructedDataPriorityArray() {}
+
+func (m *_BACnetConstructedDataPriorityArray) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPriorityArray) deepCopy() *_BACnetConstructedDataPriorityArray {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPriorityArrayCopy := &_BACnetConstructedDataPriorityArray{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PriorityArray.DeepCopy().(BACnetPriorityArray),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPriorityArrayCopy
+}
 
 func (m *_BACnetConstructedDataPriorityArray) String() string {
 	if m == nil {

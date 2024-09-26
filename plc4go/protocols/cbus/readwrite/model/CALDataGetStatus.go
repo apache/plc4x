@@ -38,6 +38,7 @@ type CALDataGetStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -196,6 +197,23 @@ func (m *_CALDataGetStatus) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_CALDataGetStatus) IsCALDataGetStatus() {}
+
+func (m *_CALDataGetStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataGetStatus) deepCopy() *_CALDataGetStatus {
+	if m == nil {
+		return nil
+	}
+	_CALDataGetStatusCopy := &_CALDataGetStatus{
+		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.ParamNo,
+		m.Count,
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataGetStatusCopy
+}
 
 func (m *_CALDataGetStatus) String() string {
 	if m == nil {

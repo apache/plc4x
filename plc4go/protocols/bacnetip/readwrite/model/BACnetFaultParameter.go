@@ -40,12 +40,14 @@ type BACnetFaultParameter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetFaultParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameter()
 }
 
 // BACnetFaultParameterContract provides a set of functions which can be overwritten by a sub struct
 type BACnetFaultParameterContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -261,3 +263,18 @@ func (pm *_BACnetFaultParameter) serializeParent(ctx context.Context, writeBuffe
 }
 
 func (m *_BACnetFaultParameter) IsBACnetFaultParameter() {}
+
+func (m *_BACnetFaultParameter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameter) deepCopy() *_BACnetFaultParameter {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterCopy := &_BACnetFaultParameter{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetFaultParameterCopy
+}

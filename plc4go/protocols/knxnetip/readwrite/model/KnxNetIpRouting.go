@@ -38,6 +38,7 @@ type KnxNetIpRouting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -179,6 +180,22 @@ func (m *_KnxNetIpRouting) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_KnxNetIpRouting) IsKnxNetIpRouting() {}
+
+func (m *_KnxNetIpRouting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpRouting) deepCopy() *_KnxNetIpRouting {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpRoutingCopy := &_KnxNetIpRouting{
+		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpRoutingCopy
+}
 
 func (m *_KnxNetIpRouting) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type BACnetConstructedDataNetworkPortAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataNetworkPortAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNetworkPortAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataNetworkPortAll) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataNetworkPortAll) IsBACnetConstructedDataNetworkPortAll() {}
+
+func (m *_BACnetConstructedDataNetworkPortAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkPortAll) deepCopy() *_BACnetConstructedDataNetworkPortAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkPortAllCopy := &_BACnetConstructedDataNetworkPortAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkPortAllCopy
+}
 
 func (m *_BACnetConstructedDataNetworkPortAll) String() string {
 	if m == nil {

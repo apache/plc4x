@@ -38,6 +38,7 @@ type BACnetConstructedDataVendorIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVendorIdentifier returns VendorIdentifier (property field)
 	GetVendorIdentifier() BACnetVendorIdTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataVendorIdentifier) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataVendorIdentifier) IsBACnetConstructedDataVendorIdentifier() {}
+
+func (m *_BACnetConstructedDataVendorIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVendorIdentifier) deepCopy() *_BACnetConstructedDataVendorIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVendorIdentifierCopy := &_BACnetConstructedDataVendorIdentifier{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.VendorIdentifier.DeepCopy().(BACnetVendorIdTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVendorIdentifierCopy
+}
 
 func (m *_BACnetConstructedDataVendorIdentifier) String() string {
 	if m == nil {

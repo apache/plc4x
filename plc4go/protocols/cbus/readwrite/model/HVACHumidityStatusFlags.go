@@ -38,6 +38,7 @@ type HVACHumidityStatusFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetExpansion returns Expansion (property field)
 	GetExpansion() bool
 	// GetError returns Error (property field)
@@ -354,6 +355,27 @@ func (m *_HVACHumidityStatusFlags) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_HVACHumidityStatusFlags) IsHVACHumidityStatusFlags() {}
+
+func (m *_HVACHumidityStatusFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACHumidityStatusFlags) deepCopy() *_HVACHumidityStatusFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACHumidityStatusFlagsCopy := &_HVACHumidityStatusFlags{
+		m.Expansion,
+		m.Error,
+		m.Busy,
+		m.DamperState,
+		m.FanActive,
+		m.DehumidifyingPlant,
+		m.HumidifyingPlant,
+		m.reservedField0,
+	}
+	return _HVACHumidityStatusFlagsCopy
+}
 
 func (m *_HVACHumidityStatusFlags) String() string {
 	if m == nil {

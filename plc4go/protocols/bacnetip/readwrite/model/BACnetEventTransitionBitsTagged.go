@@ -38,6 +38,7 @@ type BACnetEventTransitionBitsTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -294,6 +295,23 @@ func (m *_BACnetEventTransitionBitsTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetEventTransitionBitsTagged) IsBACnetEventTransitionBitsTagged() {}
+
+func (m *_BACnetEventTransitionBitsTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventTransitionBitsTagged) deepCopy() *_BACnetEventTransitionBitsTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventTransitionBitsTaggedCopy := &_BACnetEventTransitionBitsTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetEventTransitionBitsTaggedCopy
+}
 
 func (m *_BACnetEventTransitionBitsTagged) String() string {
 	if m == nil {

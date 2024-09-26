@@ -38,6 +38,7 @@ type PubSubGroupDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -382,6 +383,31 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_PubSubGroupDataType) IsPubSubGroupDataType() {}
+
+func (m *_PubSubGroupDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubGroupDataType) deepCopy() *_PubSubGroupDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubGroupDataTypeCopy := &_PubSubGroupDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Name.DeepCopy().(PascalString),
+		m.Enabled,
+		m.SecurityMode,
+		m.SecurityGroupId.DeepCopy().(PascalString),
+		m.NoOfSecurityKeyServices,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.SecurityKeyServices),
+		m.MaxNetworkMessageSize,
+		m.NoOfGroupProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.GroupProperties),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubGroupDataTypeCopy
+}
 
 func (m *_PubSubGroupDataType) String() string {
 	if m == nil {

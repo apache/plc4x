@@ -38,6 +38,7 @@ type Checksum interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() byte
 	// IsChecksum is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -166,6 +167,20 @@ func (m *_Checksum) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_Checksum) IsChecksum() {}
+
+func (m *_Checksum) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Checksum) deepCopy() *_Checksum {
+	if m == nil {
+		return nil
+	}
+	_ChecksumCopy := &_Checksum{
+		m.Value,
+	}
+	return _ChecksumCopy
+}
 
 func (m *_Checksum) String() string {
 	if m == nil {

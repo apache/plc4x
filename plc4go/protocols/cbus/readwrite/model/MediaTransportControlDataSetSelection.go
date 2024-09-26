@@ -38,6 +38,7 @@ type MediaTransportControlDataSetSelection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetSelectionHi returns SelectionHi (property field)
 	GetSelectionHi() byte
@@ -196,6 +197,23 @@ func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_MediaTransportControlDataSetSelection) IsMediaTransportControlDataSetSelection() {}
+
+func (m *_MediaTransportControlDataSetSelection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSetSelection) deepCopy() *_MediaTransportControlDataSetSelection {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSetSelectionCopy := &_MediaTransportControlDataSetSelection{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.SelectionHi,
+		m.SelectionLo,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSetSelectionCopy
+}
 
 func (m *_MediaTransportControlDataSetSelection) String() string {
 	if m == nil {

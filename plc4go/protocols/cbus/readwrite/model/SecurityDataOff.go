@@ -38,6 +38,7 @@ type SecurityDataOff interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -177,6 +178,22 @@ func (m *_SecurityDataOff) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SecurityDataOff) IsSecurityDataOff() {}
+
+func (m *_SecurityDataOff) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataOff) deepCopy() *_SecurityDataOff {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataOffCopy := &_SecurityDataOff{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataOffCopy
+}
 
 func (m *_SecurityDataOff) String() string {
 	if m == nil {

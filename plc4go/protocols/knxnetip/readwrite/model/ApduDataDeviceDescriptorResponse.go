@@ -38,6 +38,7 @@ type ApduDataDeviceDescriptorResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetDescriptorType returns DescriptorType (property field)
 	GetDescriptorType() uint8
@@ -202,6 +203,23 @@ func (m *_ApduDataDeviceDescriptorResponse) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_ApduDataDeviceDescriptorResponse) IsApduDataDeviceDescriptorResponse() {}
+
+func (m *_ApduDataDeviceDescriptorResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataDeviceDescriptorResponse) deepCopy() *_ApduDataDeviceDescriptorResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataDeviceDescriptorResponseCopy := &_ApduDataDeviceDescriptorResponse{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.DescriptorType,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataDeviceDescriptorResponseCopy
+}
 
 func (m *_ApduDataDeviceDescriptorResponse) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type NodeIdTypeDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsNodeIdTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdTypeDefinition()
 }
 
 // NodeIdTypeDefinitionContract provides a set of functions which can be overwritten by a sub struct
 type NodeIdTypeDefinitionContract interface {
+	utils.Copyable
 	// GetIdentifier returns Identifier (abstract field)
 	GetIdentifier() string
 	// IsNodeIdTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -224,3 +226,17 @@ func (pm *_NodeIdTypeDefinition) serializeParent(ctx context.Context, writeBuffe
 }
 
 func (m *_NodeIdTypeDefinition) IsNodeIdTypeDefinition() {}
+
+func (m *_NodeIdTypeDefinition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdTypeDefinition) deepCopy() *_NodeIdTypeDefinition {
+	if m == nil {
+		return nil
+	}
+	_NodeIdTypeDefinitionCopy := &_NodeIdTypeDefinition{
+		nil, // will be set by child
+	}
+	return _NodeIdTypeDefinitionCopy
+}

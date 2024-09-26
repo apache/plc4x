@@ -38,6 +38,7 @@ type SessionlessInvokeRequestType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetUrisVersion returns UrisVersion (property field)
 	GetUrisVersion() uint32
@@ -347,6 +348,29 @@ func (m *_SessionlessInvokeRequestType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SessionlessInvokeRequestType) IsSessionlessInvokeRequestType() {}
+
+func (m *_SessionlessInvokeRequestType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SessionlessInvokeRequestType) deepCopy() *_SessionlessInvokeRequestType {
+	if m == nil {
+		return nil
+	}
+	_SessionlessInvokeRequestTypeCopy := &_SessionlessInvokeRequestType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.UrisVersion,
+		m.NoOfNamespaceUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.NamespaceUris),
+		m.NoOfServerUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
+		m.NoOfLocaleIds,
+		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
+		m.ServiceId,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SessionlessInvokeRequestTypeCopy
+}
 
 func (m *_SessionlessInvokeRequestType) String() string {
 	if m == nil {

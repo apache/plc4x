@@ -38,6 +38,7 @@ type BACnetLandingDoorStatusLandingDoorsListEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFloorNumber returns FloorNumber (property field)
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetDoorStatus returns DoorStatus (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) IsBACnetLandingDoorStatusLandingDoorsListEntry() {
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) deepCopy() *_BACnetLandingDoorStatusLandingDoorsListEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingDoorStatusLandingDoorsListEntryCopy := &_BACnetLandingDoorStatusLandingDoorsListEntry{
+		m.FloorNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.DoorStatus.DeepCopy().(BACnetDoorStatusTagged),
+	}
+	return _BACnetLandingDoorStatusLandingDoorsListEntryCopy
 }
 
 func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) String() string {

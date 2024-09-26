@@ -38,6 +38,7 @@ type NLMInitializeRoutingTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetNumberOfPorts returns NumberOfPorts (property field)
 	GetNumberOfPorts() uint8
@@ -207,6 +208,23 @@ func (m *_NLMInitializeRoutingTable) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_NLMInitializeRoutingTable) IsNLMInitializeRoutingTable() {}
+
+func (m *_NLMInitializeRoutingTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMInitializeRoutingTable) deepCopy() *_NLMInitializeRoutingTable {
+	if m == nil {
+		return nil
+	}
+	_NLMInitializeRoutingTableCopy := &_NLMInitializeRoutingTable{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.NumberOfPorts,
+		utils.DeepCopySlice[NLMInitializeRoutingTablePortMapping, NLMInitializeRoutingTablePortMapping](m.PortMappings),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMInitializeRoutingTableCopy
+}
 
 func (m *_NLMInitializeRoutingTable) String() string {
 	if m == nil {

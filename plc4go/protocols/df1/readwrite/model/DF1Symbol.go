@@ -45,12 +45,14 @@ type DF1Symbol interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1Symbol is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1Symbol()
 }
 
 // DF1SymbolContract provides a set of functions which can be overwritten by a sub struct
 type DF1SymbolContract interface {
+	utils.Copyable
 	// IsDF1Symbol is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1Symbol()
 }
@@ -226,3 +228,17 @@ func (pm *_DF1Symbol) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_DF1Symbol) IsDF1Symbol() {}
+
+func (m *_DF1Symbol) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1Symbol) deepCopy() *_DF1Symbol {
+	if m == nil {
+		return nil
+	}
+	_DF1SymbolCopy := &_DF1Symbol{
+		nil, // will be set by child
+	}
+	return _DF1SymbolCopy
+}

@@ -38,6 +38,7 @@ type S7PayloadUserDataItemClkSetRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
@@ -219,6 +220,24 @@ func (m *_S7PayloadUserDataItemClkSetRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_S7PayloadUserDataItemClkSetRequest) IsS7PayloadUserDataItemClkSetRequest() {}
+
+func (m *_S7PayloadUserDataItemClkSetRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemClkSetRequest) deepCopy() *_S7PayloadUserDataItemClkSetRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemClkSetRequestCopy := &_S7PayloadUserDataItemClkSetRequest{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.TimeStamp.DeepCopy().(DateAndTime),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemClkSetRequestCopy
+}
 
 func (m *_S7PayloadUserDataItemClkSetRequest) String() string {
 	if m == nil {

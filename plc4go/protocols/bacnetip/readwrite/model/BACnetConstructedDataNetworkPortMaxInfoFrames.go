@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkPortMaxInfoFrames interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxInfoFrames returns MaxInfoFrames (property field)
 	GetMaxInfoFrames() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) IsBACnetConstructedDataNetworkPortMaxInfoFrames() {
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) deepCopy() *_BACnetConstructedDataNetworkPortMaxInfoFrames {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkPortMaxInfoFramesCopy := &_BACnetConstructedDataNetworkPortMaxInfoFrames{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaxInfoFrames.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkPortMaxInfoFramesCopy
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxInfoFrames) String() string {

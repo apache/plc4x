@@ -38,6 +38,7 @@ type BACnetPropertyStatesReasonForHalt interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetReasonForHalt returns ReasonForHalt (property field)
 	GetReasonForHalt() BACnetProgramErrorTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesReasonForHalt) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesReasonForHalt) IsBACnetPropertyStatesReasonForHalt() {}
+
+func (m *_BACnetPropertyStatesReasonForHalt) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesReasonForHalt) deepCopy() *_BACnetPropertyStatesReasonForHalt {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesReasonForHaltCopy := &_BACnetPropertyStatesReasonForHalt{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.ReasonForHalt.DeepCopy().(BACnetProgramErrorTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesReasonForHaltCopy
+}
 
 func (m *_BACnetPropertyStatesReasonForHalt) String() string {
 	if m == nil {

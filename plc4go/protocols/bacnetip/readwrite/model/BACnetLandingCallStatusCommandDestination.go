@@ -38,6 +38,7 @@ type BACnetLandingCallStatusCommandDestination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLandingCallStatusCommand
 	// GetDestination returns Destination (property field)
 	GetDestination() BACnetContextTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetLandingCallStatusCommandDestination) IsBACnetLandingCallStatusCommandDestination() {}
+
+func (m *_BACnetLandingCallStatusCommandDestination) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingCallStatusCommandDestination) deepCopy() *_BACnetLandingCallStatusCommandDestination {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingCallStatusCommandDestinationCopy := &_BACnetLandingCallStatusCommandDestination{
+		m.BACnetLandingCallStatusCommandContract.DeepCopy().(BACnetLandingCallStatusCommandContract),
+		m.Destination.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = m
+	return _BACnetLandingCallStatusCommandDestinationCopy
+}
 
 func (m *_BACnetLandingCallStatusCommandDestination) String() string {
 	if m == nil {

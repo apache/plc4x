@@ -38,6 +38,7 @@ type BACnetConstructedDataOccupancyLowerLimitEnforced interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOccupancyLowerLimitEnforced returns OccupancyLowerLimitEnforced (property field)
 	GetOccupancyLowerLimitEnforced() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) IsBACnetConstructedDataOccupancyLowerLimitEnforced() {
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) deepCopy() *_BACnetConstructedDataOccupancyLowerLimitEnforced {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOccupancyLowerLimitEnforcedCopy := &_BACnetConstructedDataOccupancyLowerLimitEnforced{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.OccupancyLowerLimitEnforced.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOccupancyLowerLimitEnforcedCopy
 }
 
 func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) String() string {

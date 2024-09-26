@@ -38,6 +38,7 @@ type BACnetConstructedDataOperationExpected interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLifeSafetyOperations returns LifeSafetyOperations (property field)
 	GetLifeSafetyOperations() BACnetLifeSafetyOperationTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOperationExpected) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataOperationExpected) IsBACnetConstructedDataOperationExpected() {}
+
+func (m *_BACnetConstructedDataOperationExpected) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOperationExpected) deepCopy() *_BACnetConstructedDataOperationExpected {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOperationExpectedCopy := &_BACnetConstructedDataOperationExpected{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LifeSafetyOperations.DeepCopy().(BACnetLifeSafetyOperationTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOperationExpectedCopy
+}
 
 func (m *_BACnetConstructedDataOperationExpected) String() string {
 	if m == nil {

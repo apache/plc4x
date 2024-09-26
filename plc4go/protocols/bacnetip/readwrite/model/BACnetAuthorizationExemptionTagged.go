@@ -38,6 +38,7 @@ type BACnetAuthorizationExemptionTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetAuthorizationExemptionTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAuthorizationExemptionTagged) IsBACnetAuthorizationExemptionTagged() {}
+
+func (m *_BACnetAuthorizationExemptionTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthorizationExemptionTagged) deepCopy() *_BACnetAuthorizationExemptionTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthorizationExemptionTaggedCopy := &_BACnetAuthorizationExemptionTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAuthorizationExemptionTaggedCopy
+}
 
 func (m *_BACnetAuthorizationExemptionTagged) String() string {
 	if m == nil {

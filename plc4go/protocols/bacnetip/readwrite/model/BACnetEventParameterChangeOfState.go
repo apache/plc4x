@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -250,6 +251,25 @@ func (m *_BACnetEventParameterChangeOfState) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetEventParameterChangeOfState) IsBACnetEventParameterChangeOfState() {}
+
+func (m *_BACnetEventParameterChangeOfState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfState) deepCopy() *_BACnetEventParameterChangeOfState {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfStateCopy := &_BACnetEventParameterChangeOfState{
+		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfValues.DeepCopy().(BACnetEventParameterChangeOfStateListOfValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterChangeOfStateCopy
+}
 
 func (m *_BACnetEventParameterChangeOfState) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataInProgress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInProgress returns InProgress (property field)
 	GetInProgress() BACnetLightingInProgressTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataInProgress) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataInProgress) IsBACnetConstructedDataInProgress() {}
+
+func (m *_BACnetConstructedDataInProgress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInProgress) deepCopy() *_BACnetConstructedDataInProgress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInProgressCopy := &_BACnetConstructedDataInProgress{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.InProgress.DeepCopy().(BACnetLightingInProgressTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInProgressCopy
+}
 
 func (m *_BACnetConstructedDataInProgress) String() string {
 	if m == nil {

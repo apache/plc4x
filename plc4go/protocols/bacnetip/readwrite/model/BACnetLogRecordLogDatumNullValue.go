@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumNullValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetContextTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetLogRecordLogDatumNullValue) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetLogRecordLogDatumNullValue) IsBACnetLogRecordLogDatumNullValue() {}
+
+func (m *_BACnetLogRecordLogDatumNullValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumNullValue) deepCopy() *_BACnetLogRecordLogDatumNullValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumNullValueCopy := &_BACnetLogRecordLogDatumNullValue{
+		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.NullValue.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumNullValueCopy
+}
 
 func (m *_BACnetLogRecordLogDatumNullValue) String() string {
 	if m == nil {

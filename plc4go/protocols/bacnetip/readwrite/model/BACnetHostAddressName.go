@@ -38,6 +38,7 @@ type BACnetHostAddressName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetHostAddress
 	// GetName returns Name (property field)
 	GetName() BACnetContextTagCharacterString
@@ -178,6 +179,22 @@ func (m *_BACnetHostAddressName) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetHostAddressName) IsBACnetHostAddressName() {}
+
+func (m *_BACnetHostAddressName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddressName) deepCopy() *_BACnetHostAddressName {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressNameCopy := &_BACnetHostAddressName{
+		m.BACnetHostAddressContract.DeepCopy().(BACnetHostAddressContract),
+		m.Name.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
+	return _BACnetHostAddressNameCopy
+}
 
 func (m *_BACnetHostAddressName) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataPortFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataPortFilter) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataPortFilter) IsBACnetConstructedDataPortFilter() {}
+
+func (m *_BACnetConstructedDataPortFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPortFilter) deepCopy() *_BACnetConstructedDataPortFilter {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPortFilterCopy := &_BACnetConstructedDataPortFilter{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetPortPermission, BACnetPortPermission](m.PortFilter),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPortFilterCopy
+}
 
 func (m *_BACnetConstructedDataPortFilter) String() string {
 	if m == nil {

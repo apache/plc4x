@@ -38,6 +38,7 @@ type EnumValueType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetValue returns Value (property field)
 	GetValue() int64
@@ -227,6 +228,24 @@ func (m *_EnumValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_EnumValueType) IsEnumValueType() {}
+
+func (m *_EnumValueType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EnumValueType) deepCopy() *_EnumValueType {
+	if m == nil {
+		return nil
+	}
+	_EnumValueTypeCopy := &_EnumValueType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Value,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EnumValueTypeCopy
+}
 
 func (m *_EnumValueType) String() string {
 	if m == nil {

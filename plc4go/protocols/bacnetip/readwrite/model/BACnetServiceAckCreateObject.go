@@ -38,6 +38,7 @@ type BACnetServiceAckCreateObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -182,6 +183,22 @@ func (m *_BACnetServiceAckCreateObject) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetServiceAckCreateObject) IsBACnetServiceAckCreateObject() {}
+
+func (m *_BACnetServiceAckCreateObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckCreateObject) deepCopy() *_BACnetServiceAckCreateObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckCreateObjectCopy := &_BACnetServiceAckCreateObject{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckCreateObjectCopy
+}
 
 func (m *_BACnetServiceAckCreateObject) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ApduDataGroupValueRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataGroupValueRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataGroupValueRead()
@@ -163,6 +164,22 @@ func (m *_ApduDataGroupValueRead) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ApduDataGroupValueRead) IsApduDataGroupValueRead() {}
+
+func (m *_ApduDataGroupValueRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataGroupValueRead) deepCopy() *_ApduDataGroupValueRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataGroupValueReadCopy := &_ApduDataGroupValueRead{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.reservedField0,
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataGroupValueReadCopy
+}
 
 func (m *_ApduDataGroupValueRead) String() string {
 	if m == nil {

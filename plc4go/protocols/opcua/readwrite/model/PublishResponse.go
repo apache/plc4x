@@ -38,6 +38,7 @@ type PublishResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -405,6 +406,32 @@ func (m *_PublishResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_PublishResponse) IsPublishResponse() {}
+
+func (m *_PublishResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishResponse) deepCopy() *_PublishResponse {
+	if m == nil {
+		return nil
+	}
+	_PublishResponseCopy := &_PublishResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.NoOfAvailableSequenceNumbers,
+		utils.DeepCopySlice[uint32, uint32](m.AvailableSequenceNumbers),
+		m.MoreNotifications,
+		m.NotificationMessage.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishResponseCopy
+}
 
 func (m *_PublishResponse) String() string {
 	if m == nil {

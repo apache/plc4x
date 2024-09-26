@@ -38,6 +38,7 @@ type BACnetConstructedDataPrescale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPrescale returns Prescale (property field)
 	GetPrescale() BACnetPrescale
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPrescale) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataPrescale) IsBACnetConstructedDataPrescale() {}
+
+func (m *_BACnetConstructedDataPrescale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPrescale) deepCopy() *_BACnetConstructedDataPrescale {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPrescaleCopy := &_BACnetConstructedDataPrescale{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Prescale.DeepCopy().(BACnetPrescale),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPrescaleCopy
+}
 
 func (m *_BACnetConstructedDataPrescale) String() string {
 	if m == nil {

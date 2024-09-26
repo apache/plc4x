@@ -38,6 +38,7 @@ type BACnetEventLogRecordLogDatumTimeChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventLogRecordLogDatum
 	// GetTimeChange returns TimeChange (property field)
 	GetTimeChange() BACnetContextTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetEventLogRecordLogDatumTimeChange) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetEventLogRecordLogDatumTimeChange) IsBACnetEventLogRecordLogDatumTimeChange() {}
+
+func (m *_BACnetEventLogRecordLogDatumTimeChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventLogRecordLogDatumTimeChange) deepCopy() *_BACnetEventLogRecordLogDatumTimeChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventLogRecordLogDatumTimeChangeCopy := &_BACnetEventLogRecordLogDatumTimeChange{
+		m.BACnetEventLogRecordLogDatumContract.DeepCopy().(BACnetEventLogRecordLogDatumContract),
+		m.TimeChange.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = m
+	return _BACnetEventLogRecordLogDatumTimeChangeCopy
+}
 
 func (m *_BACnetEventLogRecordLogDatumTimeChange) String() string {
 	if m == nil {

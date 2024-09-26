@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueConstructedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetConstructedValue returns ConstructedValue (property field)
 	GetConstructedValue() BACnetConstructedData
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetTimerStateChangeValueConstructedValue) IsBACnetTimerStateChangeValueConstructedValue() {
+}
+
+func (m *_BACnetTimerStateChangeValueConstructedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueConstructedValue) deepCopy() *_BACnetTimerStateChangeValueConstructedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueConstructedValueCopy := &_BACnetTimerStateChangeValueConstructedValue{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.ConstructedValue.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueConstructedValueCopy
 }
 
 func (m *_BACnetTimerStateChangeValueConstructedValue) String() string {

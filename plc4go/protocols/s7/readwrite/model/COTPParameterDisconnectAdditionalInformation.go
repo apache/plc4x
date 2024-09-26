@@ -38,6 +38,7 @@ type COTPParameterDisconnectAdditionalInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPParameter
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -181,6 +182,22 @@ func (m *_COTPParameterDisconnectAdditionalInformation) SerializeWithWriteBuffer
 }
 
 func (m *_COTPParameterDisconnectAdditionalInformation) IsCOTPParameterDisconnectAdditionalInformation() {
+}
+
+func (m *_COTPParameterDisconnectAdditionalInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameterDisconnectAdditionalInformation) deepCopy() *_COTPParameterDisconnectAdditionalInformation {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterDisconnectAdditionalInformationCopy := &_COTPParameterDisconnectAdditionalInformation{
+		m.COTPParameterContract.DeepCopy().(COTPParameterContract),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	return _COTPParameterDisconnectAdditionalInformationCopy
 }
 
 func (m *_COTPParameterDisconnectAdditionalInformation) String() string {

@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetItems returns Items (property field)
 	GetItems() []byte
@@ -189,6 +190,22 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) SerializeWithWriteBuf
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) IsS7PayloadUserDataItemCpuFunctionReadSzlResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionReadSzlResponseCopy := &_S7PayloadUserDataItemCpuFunctionReadSzlResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		utils.DeepCopySlice[byte, byte](m.Items),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionReadSzlResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) String() string {

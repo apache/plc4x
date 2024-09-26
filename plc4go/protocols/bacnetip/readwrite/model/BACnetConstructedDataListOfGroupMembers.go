@@ -38,6 +38,7 @@ type BACnetConstructedDataListOfGroupMembers interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetListOfGroupMembers returns ListOfGroupMembers (property field)
 	GetListOfGroupMembers() []BACnetReadAccessSpecification
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataListOfGroupMembers) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataListOfGroupMembers) IsBACnetConstructedDataListOfGroupMembers() {}
+
+func (m *_BACnetConstructedDataListOfGroupMembers) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataListOfGroupMembers) deepCopy() *_BACnetConstructedDataListOfGroupMembers {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataListOfGroupMembersCopy := &_BACnetConstructedDataListOfGroupMembers{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetReadAccessSpecification, BACnetReadAccessSpecification](m.ListOfGroupMembers),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataListOfGroupMembersCopy
+}
 
 func (m *_BACnetConstructedDataListOfGroupMembers) String() string {
 	if m == nil {

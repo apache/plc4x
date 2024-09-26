@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentialDisable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCredentialDisable returns CredentialDisable (property field)
 	GetCredentialDisable() BACnetAccessCredentialDisableTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCredentialDisable) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataCredentialDisable) IsBACnetConstructedDataCredentialDisable() {}
+
+func (m *_BACnetConstructedDataCredentialDisable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentialDisable) deepCopy() *_BACnetConstructedDataCredentialDisable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialDisableCopy := &_BACnetConstructedDataCredentialDisable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CredentialDisable.DeepCopy().(BACnetAccessCredentialDisableTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialDisableCopy
+}
 
 func (m *_BACnetConstructedDataCredentialDisable) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataControlledVariableReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetControlledVariableReference returns ControlledVariableReference (property field)
 	GetControlledVariableReference() BACnetObjectPropertyReference
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataControlledVariableReference) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataControlledVariableReference) IsBACnetConstructedDataControlledVariableReference() {
+}
+
+func (m *_BACnetConstructedDataControlledVariableReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataControlledVariableReference) deepCopy() *_BACnetConstructedDataControlledVariableReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataControlledVariableReferenceCopy := &_BACnetConstructedDataControlledVariableReference{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ControlledVariableReference.DeepCopy().(BACnetObjectPropertyReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataControlledVariableReferenceCopy
 }
 
 func (m *_BACnetConstructedDataControlledVariableReference) String() string {

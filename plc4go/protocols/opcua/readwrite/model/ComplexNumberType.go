@@ -38,6 +38,7 @@ type ComplexNumberType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReal returns Real (property field)
 	GetReal() float32
@@ -200,6 +201,23 @@ func (m *_ComplexNumberType) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ComplexNumberType) IsComplexNumberType() {}
+
+func (m *_ComplexNumberType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ComplexNumberType) deepCopy() *_ComplexNumberType {
+	if m == nil {
+		return nil
+	}
+	_ComplexNumberTypeCopy := &_ComplexNumberType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Real,
+		m.Imaginary,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ComplexNumberTypeCopy
+}
 
 func (m *_ComplexNumberType) String() string {
 	if m == nil {

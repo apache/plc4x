@@ -38,6 +38,7 @@ type BACnetConstructedDataCommandAction interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataCommandAction) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataCommandAction) IsBACnetConstructedDataCommandAction() {}
+
+func (m *_BACnetConstructedDataCommandAction) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCommandAction) deepCopy() *_BACnetConstructedDataCommandAction {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCommandActionCopy := &_BACnetConstructedDataCommandAction{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetActionList, BACnetActionList](m.ActionLists),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCommandActionCopy
+}
 
 func (m *_BACnetConstructedDataCommandAction) String() string {
 	if m == nil {

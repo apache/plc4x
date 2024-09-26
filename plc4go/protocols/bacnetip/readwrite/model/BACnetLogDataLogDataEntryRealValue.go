@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryRealValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetContextTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryRealValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetLogDataLogDataEntryRealValue) IsBACnetLogDataLogDataEntryRealValue() {}
+
+func (m *_BACnetLogDataLogDataEntryRealValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryRealValue) deepCopy() *_BACnetLogDataLogDataEntryRealValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryRealValueCopy := &_BACnetLogDataLogDataEntryRealValue{
+		m.BACnetLogDataLogDataEntryContract.DeepCopy().(BACnetLogDataLogDataEntryContract),
+		m.RealValue.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryRealValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryRealValue) String() string {
 	if m == nil {

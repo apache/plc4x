@@ -38,6 +38,7 @@ type BACnetCOVSubscription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientProcessEnclosed
 	// GetMonitoredPropertyReference returns MonitoredPropertyReference (property field)
@@ -264,6 +265,24 @@ func (m *_BACnetCOVSubscription) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetCOVSubscription) IsBACnetCOVSubscription() {}
+
+func (m *_BACnetCOVSubscription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCOVSubscription) deepCopy() *_BACnetCOVSubscription {
+	if m == nil {
+		return nil
+	}
+	_BACnetCOVSubscriptionCopy := &_BACnetCOVSubscription{
+		m.Recipient.DeepCopy().(BACnetRecipientProcessEnclosed),
+		m.MonitoredPropertyReference.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
+		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.CovIncrement.DeepCopy().(BACnetContextTagReal),
+	}
+	return _BACnetCOVSubscriptionCopy
+}
 
 func (m *_BACnetCOVSubscription) String() string {
 	if m == nil {

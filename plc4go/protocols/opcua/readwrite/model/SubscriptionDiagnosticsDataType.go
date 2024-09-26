@@ -38,6 +38,7 @@ type SubscriptionDiagnosticsDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSessionId returns SessionId (property field)
 	GetSessionId() NodeId
@@ -827,6 +828,53 @@ func (m *_SubscriptionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_SubscriptionDiagnosticsDataType) IsSubscriptionDiagnosticsDataType() {}
+
+func (m *_SubscriptionDiagnosticsDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscriptionDiagnosticsDataType) deepCopy() *_SubscriptionDiagnosticsDataType {
+	if m == nil {
+		return nil
+	}
+	_SubscriptionDiagnosticsDataTypeCopy := &_SubscriptionDiagnosticsDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SessionId.DeepCopy().(NodeId),
+		m.SubscriptionId,
+		m.Priority,
+		m.PublishingInterval,
+		m.MaxKeepAliveCount,
+		m.MaxLifetimeCount,
+		m.MaxNotificationsPerPublish,
+		m.PublishingEnabled,
+		m.ModifyCount,
+		m.EnableCount,
+		m.DisableCount,
+		m.RepublishRequestCount,
+		m.RepublishMessageRequestCount,
+		m.RepublishMessageCount,
+		m.TransferRequestCount,
+		m.TransferredToAltClientCount,
+		m.TransferredToSameClientCount,
+		m.PublishRequestCount,
+		m.DataChangeNotificationsCount,
+		m.EventNotificationsCount,
+		m.NotificationsCount,
+		m.LatePublishRequestCount,
+		m.CurrentKeepAliveCount,
+		m.CurrentLifetimeCount,
+		m.UnacknowledgedMessageCount,
+		m.DiscardedMessageCount,
+		m.MonitoredItemCount,
+		m.DisabledMonitoredItemCount,
+		m.MonitoringQueueOverflowCount,
+		m.NextSequenceNumber,
+		m.EventQueueOverFlowCount,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SubscriptionDiagnosticsDataTypeCopy
+}
 
 func (m *_SubscriptionDiagnosticsDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ChannelInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNumChannels returns NumChannels (property field)
 	GetNumChannels() uint8
 	// GetChannelCode returns ChannelCode (property field)
@@ -186,6 +187,21 @@ func (m *_ChannelInformation) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_ChannelInformation) IsChannelInformation() {}
+
+func (m *_ChannelInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ChannelInformation) deepCopy() *_ChannelInformation {
+	if m == nil {
+		return nil
+	}
+	_ChannelInformationCopy := &_ChannelInformation{
+		m.NumChannels,
+		m.ChannelCode,
+	}
+	return _ChannelInformationCopy
+}
 
 func (m *_ChannelInformation) String() string {
 	if m == nil {

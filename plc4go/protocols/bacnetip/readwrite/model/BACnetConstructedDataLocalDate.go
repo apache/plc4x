@@ -38,6 +38,7 @@ type BACnetConstructedDataLocalDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLocalDate returns LocalDate (property field)
 	GetLocalDate() BACnetApplicationTagDate
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLocalDate) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataLocalDate) IsBACnetConstructedDataLocalDate() {}
+
+func (m *_BACnetConstructedDataLocalDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLocalDate) deepCopy() *_BACnetConstructedDataLocalDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLocalDateCopy := &_BACnetConstructedDataLocalDate{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LocalDate.DeepCopy().(BACnetApplicationTagDate),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLocalDateCopy
+}
 
 func (m *_BACnetConstructedDataLocalDate) String() string {
 	if m == nil {

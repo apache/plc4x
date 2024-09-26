@@ -40,12 +40,14 @@ type BACnetPriorityValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValue()
 }
 
 // BACnetPriorityValueContract provides a set of functions which can be overwritten by a sub struct
 type BACnetPriorityValueContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -334,3 +336,19 @@ func (m *_BACnetPriorityValue) GetObjectTypeArgument() BACnetObjectType {
 ////
 
 func (m *_BACnetPriorityValue) IsBACnetPriorityValue() {}
+
+func (m *_BACnetPriorityValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValue) deepCopy() *_BACnetPriorityValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueCopy := &_BACnetPriorityValue{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ObjectTypeArgument,
+	}
+	return _BACnetPriorityValueCopy
+}

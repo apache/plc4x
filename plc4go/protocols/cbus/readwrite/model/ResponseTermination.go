@@ -42,6 +42,7 @@ type ResponseTermination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsResponseTermination is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsResponseTermination()
 }
@@ -184,6 +185,18 @@ func (m *_ResponseTermination) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ResponseTermination) IsResponseTermination() {}
+
+func (m *_ResponseTermination) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ResponseTermination) deepCopy() *_ResponseTermination {
+	if m == nil {
+		return nil
+	}
+	_ResponseTerminationCopy := &_ResponseTermination{}
+	return _ResponseTerminationCopy
+}
 
 func (m *_ResponseTermination) String() string {
 	if m == nil {

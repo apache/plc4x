@@ -40,6 +40,7 @@ type BVLCOriginalUnicastNPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
@@ -197,6 +198,23 @@ func (m *_BVLCOriginalUnicastNPDU) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCOriginalUnicastNPDU) IsBVLCOriginalUnicastNPDU() {}
+
+func (m *_BVLCOriginalUnicastNPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCOriginalUnicastNPDU) deepCopy() *_BVLCOriginalUnicastNPDU {
+	if m == nil {
+		return nil
+	}
+	_BVLCOriginalUnicastNPDUCopy := &_BVLCOriginalUnicastNPDU{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.Npdu.DeepCopy().(NPDU),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCOriginalUnicastNPDUCopy
+}
 
 func (m *_BVLCOriginalUnicastNPDU) String() string {
 	if m == nil {

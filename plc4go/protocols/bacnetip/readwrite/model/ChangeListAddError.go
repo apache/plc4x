@@ -38,6 +38,7 @@ type ChangeListAddError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -206,6 +207,23 @@ func (m *_ChangeListAddError) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_ChangeListAddError) IsChangeListAddError() {}
+
+func (m *_ChangeListAddError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ChangeListAddError) deepCopy() *_ChangeListAddError {
+	if m == nil {
+		return nil
+	}
+	_ChangeListAddErrorCopy := &_ChangeListAddError{
+		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.FirstFailedElementNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _ChangeListAddErrorCopy
+}
 
 func (m *_ChangeListAddError) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataMaxSegmentsAccepted interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxSegmentsAccepted returns MaxSegmentsAccepted (property field)
 	GetMaxSegmentsAccepted() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataMaxSegmentsAccepted) IsBACnetConstructedDataMaxSegmentsAccepted() {}
+
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) deepCopy() *_BACnetConstructedDataMaxSegmentsAccepted {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaxSegmentsAcceptedCopy := &_BACnetConstructedDataMaxSegmentsAccepted{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaxSegmentsAccepted.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaxSegmentsAcceptedCopy
+}
 
 func (m *_BACnetConstructedDataMaxSegmentsAccepted) String() string {
 	if m == nil {

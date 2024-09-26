@@ -38,6 +38,7 @@ type NullAddressItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// IsNullAddressItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullAddressItem()
@@ -163,6 +164,22 @@ func (m *_NullAddressItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_NullAddressItem) IsNullAddressItem() {}
+
+func (m *_NullAddressItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullAddressItem) deepCopy() *_NullAddressItem {
+	if m == nil {
+		return nil
+	}
+	_NullAddressItemCopy := &_NullAddressItem{
+		m.TypeIdContract.DeepCopy().(TypeIdContract),
+		m.reservedField0,
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _NullAddressItemCopy
+}
 
 func (m *_NullAddressItem) String() string {
 	if m == nil {

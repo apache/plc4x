@@ -38,6 +38,7 @@ type HVACRawLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRawValue returns RawValue (property field)
 	GetRawValue() int16
 	// GetValueInPercent returns ValueInPercent (virtual field)
@@ -197,6 +198,20 @@ func (m *_HVACRawLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_HVACRawLevels) IsHVACRawLevels() {}
+
+func (m *_HVACRawLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACRawLevels) deepCopy() *_HVACRawLevels {
+	if m == nil {
+		return nil
+	}
+	_HVACRawLevelsCopy := &_HVACRawLevels{
+		m.RawValue,
+	}
+	return _HVACRawLevelsCopy
+}
 
 func (m *_HVACRawLevels) String() string {
 	if m == nil {

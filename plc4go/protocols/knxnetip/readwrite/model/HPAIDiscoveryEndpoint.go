@@ -38,6 +38,7 @@ type HPAIDiscoveryEndpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
@@ -222,6 +223,22 @@ func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_HPAIDiscoveryEndpoint) IsHPAIDiscoveryEndpoint() {}
+
+func (m *_HPAIDiscoveryEndpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HPAIDiscoveryEndpoint) deepCopy() *_HPAIDiscoveryEndpoint {
+	if m == nil {
+		return nil
+	}
+	_HPAIDiscoveryEndpointCopy := &_HPAIDiscoveryEndpoint{
+		m.HostProtocolCode,
+		m.IpAddress.DeepCopy().(IPAddress),
+		m.IpPort,
+	}
+	return _HPAIDiscoveryEndpointCopy
+}
 
 func (m *_HPAIDiscoveryEndpoint) String() string {
 	if m == nil {

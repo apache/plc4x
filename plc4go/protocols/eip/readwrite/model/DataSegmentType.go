@@ -40,12 +40,14 @@ type DataSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDataSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSegmentType()
 }
 
 // DataSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
 type DataSegmentTypeContract interface {
+	utils.Copyable
 	// IsDataSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSegmentType()
 }
@@ -186,3 +188,17 @@ func (pm *_DataSegmentType) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_DataSegmentType) IsDataSegmentType() {}
+
+func (m *_DataSegmentType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSegmentType) deepCopy() *_DataSegmentType {
+	if m == nil {
+		return nil
+	}
+	_DataSegmentTypeCopy := &_DataSegmentType{
+		nil, // will be set by child
+	}
+	return _DataSegmentTypeCopy
+}

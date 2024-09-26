@@ -38,6 +38,7 @@ type BACnetConstructedDataSubscribedRecipients interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSubscribedRecipients returns SubscribedRecipients (property field)
 	GetSubscribedRecipients() []BACnetEventNotificationSubscription
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataSubscribedRecipients) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataSubscribedRecipients) IsBACnetConstructedDataSubscribedRecipients() {}
+
+func (m *_BACnetConstructedDataSubscribedRecipients) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSubscribedRecipients) deepCopy() *_BACnetConstructedDataSubscribedRecipients {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSubscribedRecipientsCopy := &_BACnetConstructedDataSubscribedRecipients{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetEventNotificationSubscription, BACnetEventNotificationSubscription](m.SubscribedRecipients),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSubscribedRecipientsCopy
+}
 
 func (m *_BACnetConstructedDataSubscribedRecipients) String() string {
 	if m == nil {

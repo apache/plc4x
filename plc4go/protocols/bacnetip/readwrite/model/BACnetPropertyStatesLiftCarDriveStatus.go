@@ -38,6 +38,7 @@ type BACnetPropertyStatesLiftCarDriveStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLiftCarDriveStatus returns LiftCarDriveStatus (property field)
 	GetLiftCarDriveStatus() BACnetLiftCarDriveStatusTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLiftCarDriveStatus) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetPropertyStatesLiftCarDriveStatus) IsBACnetPropertyStatesLiftCarDriveStatus() {}
+
+func (m *_BACnetPropertyStatesLiftCarDriveStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLiftCarDriveStatus) deepCopy() *_BACnetPropertyStatesLiftCarDriveStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLiftCarDriveStatusCopy := &_BACnetPropertyStatesLiftCarDriveStatus{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.LiftCarDriveStatus.DeepCopy().(BACnetLiftCarDriveStatusTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLiftCarDriveStatusCopy
+}
 
 func (m *_BACnetPropertyStatesLiftCarDriveStatus) String() string {
 	if m == nil {

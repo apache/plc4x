@@ -40,6 +40,7 @@ type FirmataMessageCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataMessage
 	// GetCommand returns Command (property field)
 	GetCommand() FirmataCommand
@@ -184,6 +185,22 @@ func (m *_FirmataMessageCommand) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_FirmataMessageCommand) IsFirmataMessageCommand() {}
+
+func (m *_FirmataMessageCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessageCommand) deepCopy() *_FirmataMessageCommand {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageCommandCopy := &_FirmataMessageCommand{
+		m.FirmataMessageContract.DeepCopy().(FirmataMessageContract),
+		m.Command.DeepCopy().(FirmataCommand),
+	}
+	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	return _FirmataMessageCommandCopy
+}
 
 func (m *_FirmataMessageCommand) String() string {
 	if m == nil {

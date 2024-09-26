@@ -36,6 +36,7 @@ type AccessControlDataAccessPointClosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AccessControlData
 	// IsAccessControlDataAccessPointClosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataAccessPointClosed()
@@ -142,6 +143,21 @@ func (m *_AccessControlDataAccessPointClosed) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_AccessControlDataAccessPointClosed) IsAccessControlDataAccessPointClosed() {}
+
+func (m *_AccessControlDataAccessPointClosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlDataAccessPointClosed) deepCopy() *_AccessControlDataAccessPointClosed {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataAccessPointClosedCopy := &_AccessControlDataAccessPointClosed{
+		m.AccessControlDataContract.DeepCopy().(AccessControlDataContract),
+	}
+	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	return _AccessControlDataAccessPointClosedCopy
+}
 
 func (m *_AccessControlDataAccessPointClosed) String() string {
 	if m == nil {

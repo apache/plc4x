@@ -38,6 +38,7 @@ type AdsStampHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() uint64
 	// GetSamples returns Samples (property field)
@@ -213,6 +214,22 @@ func (m *_AdsStampHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_AdsStampHeader) IsAdsStampHeader() {}
+
+func (m *_AdsStampHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsStampHeader) deepCopy() *_AdsStampHeader {
+	if m == nil {
+		return nil
+	}
+	_AdsStampHeaderCopy := &_AdsStampHeader{
+		m.Timestamp,
+		m.Samples,
+		utils.DeepCopySlice[AdsNotificationSample, AdsNotificationSample](m.AdsNotificationSamples),
+	}
+	return _AdsStampHeaderCopy
+}
 
 func (m *_AdsStampHeader) String() string {
 	if m == nil {

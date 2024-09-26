@@ -38,6 +38,7 @@ type BACnetVMACEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetVirtualMacAddress returns VirtualMacAddress (property field)
 	GetVirtualMacAddress() BACnetContextTagOctetString
 	// GetNativeMacAddress returns NativeMacAddress (property field)
@@ -198,6 +199,21 @@ func (m *_BACnetVMACEntry) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetVMACEntry) IsBACnetVMACEntry() {}
+
+func (m *_BACnetVMACEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetVMACEntry) deepCopy() *_BACnetVMACEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetVMACEntryCopy := &_BACnetVMACEntry{
+		m.VirtualMacAddress.DeepCopy().(BACnetContextTagOctetString),
+		m.NativeMacAddress.DeepCopy().(BACnetContextTagOctetString),
+	}
+	return _BACnetVMACEntryCopy
+}
 
 func (m *_BACnetVMACEntry) String() string {
 	if m == nil {

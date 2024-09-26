@@ -38,6 +38,7 @@ type Annotation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMessage returns Message (property field)
 	GetMessage() PascalString
@@ -227,6 +228,24 @@ func (m *_Annotation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_Annotation) IsAnnotation() {}
+
+func (m *_Annotation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Annotation) deepCopy() *_Annotation {
+	if m == nil {
+		return nil
+	}
+	_AnnotationCopy := &_Annotation{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Message.DeepCopy().(PascalString),
+		m.UserName.DeepCopy().(PascalString),
+		m.AnnotationTime,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AnnotationCopy
+}
 
 func (m *_Annotation) String() string {
 	if m == nil {

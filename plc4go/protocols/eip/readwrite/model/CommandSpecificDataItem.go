@@ -40,12 +40,14 @@ type CommandSpecificDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCommandSpecificDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCommandSpecificDataItem()
 }
 
 // CommandSpecificDataItemContract provides a set of functions which can be overwritten by a sub struct
 type CommandSpecificDataItemContract interface {
+	utils.Copyable
 	// IsCommandSpecificDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCommandSpecificDataItem()
 }
@@ -190,3 +192,17 @@ func (pm *_CommandSpecificDataItem) serializeParent(ctx context.Context, writeBu
 }
 
 func (m *_CommandSpecificDataItem) IsCommandSpecificDataItem() {}
+
+func (m *_CommandSpecificDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CommandSpecificDataItem) deepCopy() *_CommandSpecificDataItem {
+	if m == nil {
+		return nil
+	}
+	_CommandSpecificDataItemCopy := &_CommandSpecificDataItem{
+		nil, // will be set by child
+	}
+	return _CommandSpecificDataItemCopy
+}

@@ -38,6 +38,7 @@ type BACnetConstructedDataDefaultTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDefaultTimeout returns DefaultTimeout (property field)
 	GetDefaultTimeout() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDefaultTimeout) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataDefaultTimeout) IsBACnetConstructedDataDefaultTimeout() {}
+
+func (m *_BACnetConstructedDataDefaultTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDefaultTimeout) deepCopy() *_BACnetConstructedDataDefaultTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDefaultTimeoutCopy := &_BACnetConstructedDataDefaultTimeout{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DefaultTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDefaultTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataDefaultTimeout) String() string {
 	if m == nil {

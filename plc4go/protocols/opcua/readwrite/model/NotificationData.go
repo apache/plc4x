@@ -36,6 +36,7 @@ type NotificationData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsNotificationData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNotificationData()
@@ -146,6 +147,21 @@ func (m *_NotificationData) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_NotificationData) IsNotificationData() {}
+
+func (m *_NotificationData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NotificationData) deepCopy() *_NotificationData {
+	if m == nil {
+		return nil
+	}
+	_NotificationDataCopy := &_NotificationData{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NotificationDataCopy
+}
 
 func (m *_NotificationData) String() string {
 	if m == nil {

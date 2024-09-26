@@ -38,6 +38,7 @@ type NLMSetMasterKey interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetKey returns Key (property field)
 	GetKey() NLMUpdateKeyUpdateKeyEntry
@@ -182,6 +183,22 @@ func (m *_NLMSetMasterKey) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_NLMSetMasterKey) IsNLMSetMasterKey() {}
+
+func (m *_NLMSetMasterKey) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMSetMasterKey) deepCopy() *_NLMSetMasterKey {
+	if m == nil {
+		return nil
+	}
+	_NLMSetMasterKeyCopy := &_NLMSetMasterKey{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.Key.DeepCopy().(NLMUpdateKeyUpdateKeyEntry),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMSetMasterKeyCopy
+}
 
 func (m *_NLMSetMasterKey) String() string {
 	if m == nil {

@@ -42,6 +42,7 @@ type S7MessageObjectRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7DataAlarmMessage
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -297,6 +298,26 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_S7MessageObjectRequest) IsS7MessageObjectRequest() {}
+
+func (m *_S7MessageObjectRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageObjectRequest) deepCopy() *_S7MessageObjectRequest {
+	if m == nil {
+		return nil
+	}
+	_S7MessageObjectRequestCopy := &_S7MessageObjectRequest{
+		m.S7DataAlarmMessageContract.DeepCopy().(S7DataAlarmMessageContract),
+		m.SyntaxId,
+		m.QueryType,
+		m.AlarmType,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = m
+	return _S7MessageObjectRequestCopy
+}
 
 func (m *_S7MessageObjectRequest) String() string {
 	if m == nil {

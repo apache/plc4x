@@ -38,6 +38,7 @@ type SysexCommandExtendedId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetId returns Id (property field)
 	GetId() []int8
@@ -185,6 +186,22 @@ func (m *_SysexCommandExtendedId) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SysexCommandExtendedId) IsSysexCommandExtendedId() {}
+
+func (m *_SysexCommandExtendedId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandExtendedId) deepCopy() *_SysexCommandExtendedId {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandExtendedIdCopy := &_SysexCommandExtendedId{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		utils.DeepCopySlice[int8, int8](m.Id),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandExtendedIdCopy
+}
 
 func (m *_SysexCommandExtendedId) String() string {
 	if m == nil {

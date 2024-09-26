@@ -38,6 +38,7 @@ type VTCloseErrorListOfVTSessionIdentifiers interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfVtSessionIdentifiers returns ListOfVtSessionIdentifiers (property field)
@@ -229,6 +230,23 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) GetTagNumber() uint8 {
 ////
 
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) IsVTCloseErrorListOfVTSessionIdentifiers() {}
+
+func (m *_VTCloseErrorListOfVTSessionIdentifiers) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VTCloseErrorListOfVTSessionIdentifiers) deepCopy() *_VTCloseErrorListOfVTSessionIdentifiers {
+	if m == nil {
+		return nil
+	}
+	_VTCloseErrorListOfVTSessionIdentifiersCopy := &_VTCloseErrorListOfVTSessionIdentifiers{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ListOfVtSessionIdentifiers),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _VTCloseErrorListOfVTSessionIdentifiersCopy
+}
 
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type EipDisconnectRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsEipDisconnectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipDisconnectRequest()
@@ -154,6 +155,21 @@ func (m *_EipDisconnectRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_EipDisconnectRequest) IsEipDisconnectRequest() {}
+
+func (m *_EipDisconnectRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipDisconnectRequest) deepCopy() *_EipDisconnectRequest {
+	if m == nil {
+		return nil
+	}
+	_EipDisconnectRequestCopy := &_EipDisconnectRequest{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _EipDisconnectRequestCopy
+}
 
 func (m *_EipDisconnectRequest) String() string {
 	if m == nil {

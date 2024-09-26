@@ -38,6 +38,7 @@ type SamplingIntervalDiagnosticsDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSamplingInterval returns SamplingInterval (property field)
 	GetSamplingInterval() float64
@@ -242,6 +243,25 @@ func (m *_SamplingIntervalDiagnosticsDataType) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_SamplingIntervalDiagnosticsDataType) IsSamplingIntervalDiagnosticsDataType() {}
+
+func (m *_SamplingIntervalDiagnosticsDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SamplingIntervalDiagnosticsDataType) deepCopy() *_SamplingIntervalDiagnosticsDataType {
+	if m == nil {
+		return nil
+	}
+	_SamplingIntervalDiagnosticsDataTypeCopy := &_SamplingIntervalDiagnosticsDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SamplingInterval,
+		m.MonitoredItemCount,
+		m.MaxMonitoredItemCount,
+		m.DisabledMonitoredItemCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SamplingIntervalDiagnosticsDataTypeCopy
+}
 
 func (m *_SamplingIntervalDiagnosticsDataType) String() string {
 	if m == nil {

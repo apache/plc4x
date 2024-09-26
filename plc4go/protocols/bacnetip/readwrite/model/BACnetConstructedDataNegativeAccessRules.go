@@ -38,6 +38,7 @@ type BACnetConstructedDataNegativeAccessRules interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataNegativeAccessRules) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataNegativeAccessRules) IsBACnetConstructedDataNegativeAccessRules() {}
+
+func (m *_BACnetConstructedDataNegativeAccessRules) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNegativeAccessRules) deepCopy() *_BACnetConstructedDataNegativeAccessRules {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNegativeAccessRulesCopy := &_BACnetConstructedDataNegativeAccessRules{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetAccessRule, BACnetAccessRule](m.NegativeAccessRules),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNegativeAccessRulesCopy
+}
 
 func (m *_BACnetConstructedDataNegativeAccessRules) String() string {
 	if m == nil {

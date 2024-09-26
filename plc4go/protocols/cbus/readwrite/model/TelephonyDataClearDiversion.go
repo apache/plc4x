@@ -36,6 +36,7 @@ type TelephonyDataClearDiversion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// IsTelephonyDataClearDiversion is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataClearDiversion()
@@ -142,6 +143,21 @@ func (m *_TelephonyDataClearDiversion) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_TelephonyDataClearDiversion) IsTelephonyDataClearDiversion() {}
+
+func (m *_TelephonyDataClearDiversion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataClearDiversion) deepCopy() *_TelephonyDataClearDiversion {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataClearDiversionCopy := &_TelephonyDataClearDiversion{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataClearDiversionCopy
+}
 
 func (m *_TelephonyDataClearDiversion) String() string {
 	if m == nil {

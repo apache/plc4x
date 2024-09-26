@@ -38,6 +38,7 @@ type ClockAndTimekeepingDataUpdateDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ClockAndTimekeepingData
 	// GetYearHigh returns YearHigh (property field)
 	GetYearHigh() byte
@@ -259,6 +260,26 @@ func (m *_ClockAndTimekeepingDataUpdateDate) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_ClockAndTimekeepingDataUpdateDate) IsClockAndTimekeepingDataUpdateDate() {}
+
+func (m *_ClockAndTimekeepingDataUpdateDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ClockAndTimekeepingDataUpdateDate) deepCopy() *_ClockAndTimekeepingDataUpdateDate {
+	if m == nil {
+		return nil
+	}
+	_ClockAndTimekeepingDataUpdateDateCopy := &_ClockAndTimekeepingDataUpdateDate{
+		m.ClockAndTimekeepingDataContract.DeepCopy().(ClockAndTimekeepingDataContract),
+		m.YearHigh,
+		m.YearLow,
+		m.Month,
+		m.Day,
+		m.DayOfWeek,
+	}
+	m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
+	return _ClockAndTimekeepingDataUpdateDateCopy
+}
 
 func (m *_ClockAndTimekeepingDataUpdateDate) String() string {
 	if m == nil {

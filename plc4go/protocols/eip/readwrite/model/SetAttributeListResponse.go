@@ -36,6 +36,7 @@ type SetAttributeListResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeListResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeListResponse()
@@ -154,6 +155,21 @@ func (m *_SetAttributeListResponse) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SetAttributeListResponse) IsSetAttributeListResponse() {}
+
+func (m *_SetAttributeListResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeListResponse) deepCopy() *_SetAttributeListResponse {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeListResponseCopy := &_SetAttributeListResponse{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeListResponseCopy
+}
 
 func (m *_SetAttributeListResponse) String() string {
 	if m == nil {

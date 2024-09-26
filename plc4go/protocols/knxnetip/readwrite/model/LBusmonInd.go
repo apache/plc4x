@@ -38,6 +38,7 @@ type LBusmonInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
@@ -252,6 +253,25 @@ func (m *_LBusmonInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_LBusmonInd) IsLBusmonInd() {}
+
+func (m *_LBusmonInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LBusmonInd) deepCopy() *_LBusmonInd {
+	if m == nil {
+		return nil
+	}
+	_LBusmonIndCopy := &_LBusmonInd{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.AdditionalInformationLength,
+		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
+		m.DataFrame.DeepCopy().(LDataFrame),
+		utils.CopyPtr[uint8](m.Crc),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LBusmonIndCopy
+}
 
 func (m *_LBusmonInd) String() string {
 	if m == nil {

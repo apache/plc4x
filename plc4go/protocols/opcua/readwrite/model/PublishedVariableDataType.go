@@ -38,6 +38,7 @@ type PublishedVariableDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetPublishedVariable returns PublishedVariable (property field)
 	GetPublishedVariable() NodeId
@@ -363,6 +364,30 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_PublishedVariableDataType) IsPublishedVariableDataType() {}
+
+func (m *_PublishedVariableDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishedVariableDataType) deepCopy() *_PublishedVariableDataType {
+	if m == nil {
+		return nil
+	}
+	_PublishedVariableDataTypeCopy := &_PublishedVariableDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.PublishedVariable.DeepCopy().(NodeId),
+		m.AttributeId,
+		m.SamplingIntervalHint,
+		m.DeadbandType,
+		m.DeadbandValue,
+		m.IndexRange.DeepCopy().(PascalString),
+		m.SubstituteValue.DeepCopy().(Variant),
+		m.NoOfMetaDataProperties,
+		utils.DeepCopySlice[QualifiedName, QualifiedName](m.MetaDataProperties),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishedVariableDataTypeCopy
+}
 
 func (m *_PublishedVariableDataType) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type BVLCForwardedNPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
@@ -241,6 +242,25 @@ func (m *_BVLCForwardedNPDU) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCForwardedNPDU) IsBVLCForwardedNPDU() {}
+
+func (m *_BVLCForwardedNPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCForwardedNPDU) deepCopy() *_BVLCForwardedNPDU {
+	if m == nil {
+		return nil
+	}
+	_BVLCForwardedNPDUCopy := &_BVLCForwardedNPDU{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+		utils.DeepCopySlice[uint8, uint8](m.Ip),
+		m.Port,
+		m.Npdu.DeepCopy().(NPDU),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCForwardedNPDUCopy
+}
 
 func (m *_BVLCForwardedNPDU) String() string {
 	if m == nil {

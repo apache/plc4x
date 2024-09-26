@@ -38,6 +38,7 @@ type BACnetNotificationParametersOutOfRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -298,6 +299,27 @@ func (m *_BACnetNotificationParametersOutOfRange) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetNotificationParametersOutOfRange) IsBACnetNotificationParametersOutOfRange() {}
+
+func (m *_BACnetNotificationParametersOutOfRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersOutOfRange) deepCopy() *_BACnetNotificationParametersOutOfRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersOutOfRangeCopy := &_BACnetNotificationParametersOutOfRange{
+		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ExceedingValue.DeepCopy().(BACnetContextTagReal),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.Deadband.DeepCopy().(BACnetContextTagReal),
+		m.ExceededLimit.DeepCopy().(BACnetContextTagReal),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersOutOfRangeCopy
+}
 
 func (m *_BACnetNotificationParametersOutOfRange) String() string {
 	if m == nil {

@@ -44,6 +44,7 @@ type DF1SymbolMessageFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1Symbol
 	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() uint8
@@ -286,6 +287,24 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_DF1SymbolMessageFrame) IsDF1SymbolMessageFrame() {}
+
+func (m *_DF1SymbolMessageFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1SymbolMessageFrame) deepCopy() *_DF1SymbolMessageFrame {
+	if m == nil {
+		return nil
+	}
+	_DF1SymbolMessageFrameCopy := &_DF1SymbolMessageFrame{
+		m.DF1SymbolContract.DeepCopy().(DF1SymbolContract),
+		m.DestinationAddress,
+		m.SourceAddress,
+		m.Command.DeepCopy().(DF1Command),
+	}
+	m.DF1SymbolContract.(*_DF1Symbol)._SubType = m
+	return _DF1SymbolMessageFrameCopy
+}
 
 func (m *_DF1SymbolMessageFrame) String() string {
 	if m == nil {

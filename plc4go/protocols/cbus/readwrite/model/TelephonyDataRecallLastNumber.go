@@ -38,6 +38,7 @@ type TelephonyDataRecallLastNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetRecallLastNumberType returns RecallLastNumberType (property field)
 	GetRecallLastNumberType() byte
@@ -249,6 +250,23 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_TelephonyDataRecallLastNumber) IsTelephonyDataRecallLastNumber() {}
+
+func (m *_TelephonyDataRecallLastNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataRecallLastNumber) deepCopy() *_TelephonyDataRecallLastNumber {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataRecallLastNumberCopy := &_TelephonyDataRecallLastNumber{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.RecallLastNumberType,
+		m.Number,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataRecallLastNumberCopy
+}
 
 func (m *_TelephonyDataRecallLastNumber) String() string {
 	if m == nil {

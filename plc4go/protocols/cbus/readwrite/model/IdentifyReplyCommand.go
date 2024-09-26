@@ -38,12 +38,14 @@ type IdentifyReplyCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsIdentifyReplyCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommand()
 }
 
 // IdentifyReplyCommandContract provides a set of functions which can be overwritten by a sub struct
 type IdentifyReplyCommandContract interface {
+	utils.Copyable
 	// GetNumBytes() returns a parser argument
 	GetNumBytes() uint8
 	// IsIdentifyReplyCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -256,3 +258,18 @@ func (m *_IdentifyReplyCommand) GetNumBytes() uint8 {
 ////
 
 func (m *_IdentifyReplyCommand) IsIdentifyReplyCommand() {}
+
+func (m *_IdentifyReplyCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommand) deepCopy() *_IdentifyReplyCommand {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandCopy := &_IdentifyReplyCommand{
+		nil, // will be set by child
+		m.NumBytes,
+	}
+	return _IdentifyReplyCommandCopy
+}

@@ -38,6 +38,7 @@ type S7ParameterSetupCommunication interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetMaxAmqCaller returns MaxAmqCaller (property field)
 	GetMaxAmqCaller() uint16
@@ -240,6 +241,25 @@ func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_S7ParameterSetupCommunication) IsS7ParameterSetupCommunication() {}
+
+func (m *_S7ParameterSetupCommunication) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterSetupCommunication) deepCopy() *_S7ParameterSetupCommunication {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterSetupCommunicationCopy := &_S7ParameterSetupCommunication{
+		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		m.MaxAmqCaller,
+		m.MaxAmqCallee,
+		m.PduLength,
+		m.reservedField0,
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterSetupCommunicationCopy
+}
 
 func (m *_S7ParameterSetupCommunication) String() string {
 	if m == nil {

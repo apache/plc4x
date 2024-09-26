@@ -38,6 +38,7 @@ type BACnetConstructedDataTraceFlag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTraceFlag returns TraceFlag (property field)
 	GetTraceFlag() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTraceFlag) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataTraceFlag) IsBACnetConstructedDataTraceFlag() {}
+
+func (m *_BACnetConstructedDataTraceFlag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTraceFlag) deepCopy() *_BACnetConstructedDataTraceFlag {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTraceFlagCopy := &_BACnetConstructedDataTraceFlag{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TraceFlag.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTraceFlagCopy
+}
 
 func (m *_BACnetConstructedDataTraceFlag) String() string {
 	if m == nil {

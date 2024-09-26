@@ -38,6 +38,7 @@ type COTPParameterCalledTsap interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPParameter
 	// GetTsapId returns TsapId (property field)
 	GetTsapId() uint16
@@ -179,6 +180,22 @@ func (m *_COTPParameterCalledTsap) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_COTPParameterCalledTsap) IsCOTPParameterCalledTsap() {}
+
+func (m *_COTPParameterCalledTsap) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameterCalledTsap) deepCopy() *_COTPParameterCalledTsap {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterCalledTsapCopy := &_COTPParameterCalledTsap{
+		m.COTPParameterContract.DeepCopy().(COTPParameterContract),
+		m.TsapId,
+	}
+	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	return _COTPParameterCalledTsapCopy
+}
 
 func (m *_COTPParameterCalledTsap) String() string {
 	if m == nil {

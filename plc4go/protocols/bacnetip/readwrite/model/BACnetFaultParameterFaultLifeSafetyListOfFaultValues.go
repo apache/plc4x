@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultLifeSafetyListOfFaultValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListIfFaultValues returns ListIfFaultValues (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetTagNumber() u
 ////
 
 func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) IsBACnetFaultParameterFaultLifeSafetyListOfFaultValues() {
+}
+
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) deepCopy() *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesCopy := &_BACnetFaultParameterFaultLifeSafetyListOfFaultValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.ListIfFaultValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetFaultParameterFaultLifeSafetyListOfFaultValuesCopy
 }
 
 func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) String() string {

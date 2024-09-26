@@ -38,6 +38,7 @@ type BrowseResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -280,6 +281,26 @@ func (m *_BrowseResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_BrowseResponse) IsBrowseResponse() {}
+
+func (m *_BrowseResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseResponse) deepCopy() *_BrowseResponse {
+	if m == nil {
+		return nil
+	}
+	_BrowseResponseCopy := &_BrowseResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseResponseCopy
+}
 
 func (m *_BrowseResponse) String() string {
 	if m == nil {

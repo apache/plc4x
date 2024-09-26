@@ -38,6 +38,7 @@ type BACnetConstructedDataOutOfService interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOutOfService returns OutOfService (property field)
 	GetOutOfService() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOutOfService) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataOutOfService) IsBACnetConstructedDataOutOfService() {}
+
+func (m *_BACnetConstructedDataOutOfService) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOutOfService) deepCopy() *_BACnetConstructedDataOutOfService {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOutOfServiceCopy := &_BACnetConstructedDataOutOfService{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.OutOfService.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOutOfServiceCopy
+}
 
 func (m *_BACnetConstructedDataOutOfService) String() string {
 	if m == nil {

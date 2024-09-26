@@ -36,6 +36,7 @@ type BACnetConstructedDataEventLogAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataEventLogAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventLogAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataEventLogAll) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataEventLogAll) IsBACnetConstructedDataEventLogAll() {}
+
+func (m *_BACnetConstructedDataEventLogAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventLogAll) deepCopy() *_BACnetConstructedDataEventLogAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventLogAllCopy := &_BACnetConstructedDataEventLogAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventLogAllCopy
+}
 
 func (m *_BACnetConstructedDataEventLogAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesMaintenance interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetMaintenance returns Maintenance (property field)
 	GetMaintenance() BACnetMaintenanceTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesMaintenance) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesMaintenance) IsBACnetPropertyStatesMaintenance() {}
+
+func (m *_BACnetPropertyStatesMaintenance) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesMaintenance) deepCopy() *_BACnetPropertyStatesMaintenance {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesMaintenanceCopy := &_BACnetPropertyStatesMaintenance{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.Maintenance.DeepCopy().(BACnetMaintenanceTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesMaintenanceCopy
+}
 
 func (m *_BACnetPropertyStatesMaintenance) String() string {
 	if m == nil {

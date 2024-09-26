@@ -38,6 +38,7 @@ type ErrorClassTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_ErrorClassTagged) GetTagClass() TagClass {
 ////
 
 func (m *_ErrorClassTagged) IsErrorClassTagged() {}
+
+func (m *_ErrorClassTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorClassTagged) deepCopy() *_ErrorClassTagged {
+	if m == nil {
+		return nil
+	}
+	_ErrorClassTaggedCopy := &_ErrorClassTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _ErrorClassTaggedCopy
+}
 
 func (m *_ErrorClassTagged) String() string {
 	if m == nil {

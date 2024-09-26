@@ -38,6 +38,7 @@ type BACnetConstructedDataLockStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLockStatus returns LockStatus (property field)
 	GetLockStatus() BACnetLockStatusTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLockStatus) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataLockStatus) IsBACnetConstructedDataLockStatus() {}
+
+func (m *_BACnetConstructedDataLockStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLockStatus) deepCopy() *_BACnetConstructedDataLockStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLockStatusCopy := &_BACnetConstructedDataLockStatus{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LockStatus.DeepCopy().(BACnetLockStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLockStatusCopy
+}
 
 func (m *_BACnetConstructedDataLockStatus) String() string {
 	if m == nil {

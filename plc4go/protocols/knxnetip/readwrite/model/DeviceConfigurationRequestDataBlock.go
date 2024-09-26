@@ -38,6 +38,7 @@ type DeviceConfigurationRequestDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
@@ -214,6 +215,22 @@ func (m *_DeviceConfigurationRequestDataBlock) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_DeviceConfigurationRequestDataBlock) IsDeviceConfigurationRequestDataBlock() {}
+
+func (m *_DeviceConfigurationRequestDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationRequestDataBlock) deepCopy() *_DeviceConfigurationRequestDataBlock {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationRequestDataBlockCopy := &_DeviceConfigurationRequestDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.reservedField0,
+	}
+	return _DeviceConfigurationRequestDataBlockCopy
+}
 
 func (m *_DeviceConfigurationRequestDataBlock) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CancelResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -203,6 +204,23 @@ func (m *_CancelResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_CancelResponse) IsCancelResponse() {}
+
+func (m *_CancelResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CancelResponse) deepCopy() *_CancelResponse {
+	if m == nil {
+		return nil
+	}
+	_CancelResponseCopy := &_CancelResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.CancelCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CancelResponseCopy
+}
 
 func (m *_CancelResponse) String() string {
 	if m == nil {

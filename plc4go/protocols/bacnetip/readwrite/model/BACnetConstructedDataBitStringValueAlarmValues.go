@@ -38,6 +38,7 @@ type BACnetConstructedDataBitStringValueAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataBitStringValueAlarmValues) IsBACnetConstructedDataBitStringValueAlarmValues() {
+}
+
+func (m *_BACnetConstructedDataBitStringValueAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBitStringValueAlarmValues) deepCopy() *_BACnetConstructedDataBitStringValueAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBitStringValueAlarmValuesCopy := &_BACnetConstructedDataBitStringValueAlarmValues{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagBitString, BACnetApplicationTagBitString](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBitStringValueAlarmValuesCopy
 }
 
 func (m *_BACnetConstructedDataBitStringValueAlarmValues) String() string {

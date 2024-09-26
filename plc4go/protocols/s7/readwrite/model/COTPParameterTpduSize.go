@@ -38,6 +38,7 @@ type COTPParameterTpduSize interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPParameter
 	// GetTpduSize returns TpduSize (property field)
 	GetTpduSize() COTPTpduSize
@@ -179,6 +180,22 @@ func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_COTPParameterTpduSize) IsCOTPParameterTpduSize() {}
+
+func (m *_COTPParameterTpduSize) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameterTpduSize) deepCopy() *_COTPParameterTpduSize {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterTpduSizeCopy := &_COTPParameterTpduSize{
+		m.COTPParameterContract.DeepCopy().(COTPParameterContract),
+		m.TpduSize,
+	}
+	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	return _COTPParameterTpduSizeCopy
+}
 
 func (m *_COTPParameterTpduSize) String() string {
 	if m == nil {

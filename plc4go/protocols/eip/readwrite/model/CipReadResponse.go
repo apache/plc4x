@@ -38,6 +38,7 @@ type CipReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -250,6 +251,25 @@ func (m *_CipReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_CipReadResponse) IsCipReadResponse() {}
+
+func (m *_CipReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipReadResponse) deepCopy() *_CipReadResponse {
+	if m == nil {
+		return nil
+	}
+	_CipReadResponseCopy := &_CipReadResponse{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.Status,
+		m.ExtStatus,
+		m.Data.DeepCopy().(CIPData),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipReadResponseCopy
+}
 
 func (m *_CipReadResponse) String() string {
 	if m == nil {

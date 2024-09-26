@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfBitstring interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -274,6 +275,26 @@ func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetEventParameterChangeOfBitstring) IsBACnetEventParameterChangeOfBitstring() {}
+
+func (m *_BACnetEventParameterChangeOfBitstring) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfBitstring) deepCopy() *_BACnetEventParameterChangeOfBitstring {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfBitstringCopy := &_BACnetEventParameterChangeOfBitstring{
+		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Bitmask.DeepCopy().(BACnetContextTagBitString),
+		m.ListOfBitstringValues.DeepCopy().(BACnetEventParameterChangeOfBitstringListOfBitstringValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterChangeOfBitstringCopy
+}
 
 func (m *_BACnetEventParameterChangeOfBitstring) String() string {
 	if m == nil {

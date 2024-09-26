@@ -38,6 +38,7 @@ type BACnetChannelValueLightingCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetLigthingCommandValue returns LigthingCommandValue (property field)
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueLightingCommand) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetChannelValueLightingCommand) IsBACnetChannelValueLightingCommand() {}
+
+func (m *_BACnetChannelValueLightingCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueLightingCommand) deepCopy() *_BACnetChannelValueLightingCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueLightingCommandCopy := &_BACnetChannelValueLightingCommand{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.LigthingCommandValue.DeepCopy().(BACnetLightingCommandEnclosed),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueLightingCommandCopy
+}
 
 func (m *_BACnetChannelValueLightingCommand) String() string {
 	if m == nil {

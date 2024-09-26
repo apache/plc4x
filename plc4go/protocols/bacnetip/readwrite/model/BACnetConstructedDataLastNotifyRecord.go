@@ -38,6 +38,7 @@ type BACnetConstructedDataLastNotifyRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastNotifyRecord returns LastNotifyRecord (property field)
 	GetLastNotifyRecord() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastNotifyRecord) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataLastNotifyRecord) IsBACnetConstructedDataLastNotifyRecord() {}
+
+func (m *_BACnetConstructedDataLastNotifyRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastNotifyRecord) deepCopy() *_BACnetConstructedDataLastNotifyRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastNotifyRecordCopy := &_BACnetConstructedDataLastNotifyRecord{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastNotifyRecord.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastNotifyRecordCopy
+}
 
 func (m *_BACnetConstructedDataLastNotifyRecord) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataExpirationTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetExpirationTime returns ExpirationTime (property field)
 	GetExpirationTime() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataExpirationTime) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataExpirationTime) IsBACnetConstructedDataExpirationTime() {}
+
+func (m *_BACnetConstructedDataExpirationTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExpirationTime) deepCopy() *_BACnetConstructedDataExpirationTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExpirationTimeCopy := &_BACnetConstructedDataExpirationTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ExpirationTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExpirationTimeCopy
+}
 
 func (m *_BACnetConstructedDataExpirationTime) String() string {
 	if m == nil {

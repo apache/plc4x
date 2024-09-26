@@ -36,6 +36,7 @@ type MeteringDataMeasureGas interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// IsMeteringDataMeasureGas is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureGas()
@@ -142,6 +143,21 @@ func (m *_MeteringDataMeasureGas) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_MeteringDataMeasureGas) IsMeteringDataMeasureGas() {}
+
+func (m *_MeteringDataMeasureGas) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataMeasureGas) deepCopy() *_MeteringDataMeasureGas {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataMeasureGasCopy := &_MeteringDataMeasureGas{
+		m.MeteringDataContract.DeepCopy().(MeteringDataContract),
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataMeasureGasCopy
+}
 
 func (m *_MeteringDataMeasureGas) String() string {
 	if m == nil {

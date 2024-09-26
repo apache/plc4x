@@ -38,6 +38,7 @@ type GetAttributeAllRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
@@ -227,6 +228,23 @@ func (m *_GetAttributeAllRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_GetAttributeAllRequest) IsGetAttributeAllRequest() {}
+
+func (m *_GetAttributeAllRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetAttributeAllRequest) deepCopy() *_GetAttributeAllRequest {
+	if m == nil {
+		return nil
+	}
+	_GetAttributeAllRequestCopy := &_GetAttributeAllRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.ClassSegment.DeepCopy().(PathSegment),
+		m.InstanceSegment.DeepCopy().(PathSegment),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _GetAttributeAllRequestCopy
+}
 
 func (m *_GetAttributeAllRequest) String() string {
 	if m == nil {

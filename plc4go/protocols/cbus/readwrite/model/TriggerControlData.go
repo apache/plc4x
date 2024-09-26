@@ -40,12 +40,14 @@ type TriggerControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTriggerControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlData()
 }
 
 // TriggerControlDataContract provides a set of functions which can be overwritten by a sub struct
 type TriggerControlDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() TriggerControlCommandTypeContainer
 	// GetTriggerGroup returns TriggerGroup (property field)
@@ -301,3 +303,19 @@ func (pm *_TriggerControlData) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_TriggerControlData) IsTriggerControlData() {}
+
+func (m *_TriggerControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlData) deepCopy() *_TriggerControlData {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataCopy := &_TriggerControlData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.TriggerGroup,
+	}
+	return _TriggerControlDataCopy
+}

@@ -38,6 +38,7 @@ type Alpha interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCharacter returns Character (property field)
 	GetCharacter() byte
 	// IsAlpha is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -171,6 +172,20 @@ func (m *_Alpha) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Alpha) IsAlpha() {}
+
+func (m *_Alpha) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Alpha) deepCopy() *_Alpha {
+	if m == nil {
+		return nil
+	}
+	_AlphaCopy := &_Alpha{
+		m.Character,
+	}
+	return _AlphaCopy
+}
 
 func (m *_Alpha) String() string {
 	if m == nil {

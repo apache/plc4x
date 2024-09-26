@@ -40,12 +40,14 @@ type CBusPointToPointToMultiPointCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusPointToPointToMultiPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointToMultiPointCommand()
 }
 
 // CBusPointToPointToMultiPointCommandContract provides a set of functions which can be overwritten by a sub struct
 type CBusPointToPointToMultiPointCommandContract interface {
+	utils.Copyable
 	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() BridgeAddress
 	// GetNetworkRoute returns NetworkRoute (property field)
@@ -263,3 +265,21 @@ func (m *_CBusPointToPointToMultiPointCommand) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusPointToPointToMultiPointCommand) IsCBusPointToPointToMultiPointCommand() {}
+
+func (m *_CBusPointToPointToMultiPointCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointToMultiPointCommand) deepCopy() *_CBusPointToPointToMultiPointCommand {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointToMultiPointCommandCopy := &_CBusPointToPointToMultiPointCommand{
+		nil, // will be set by child
+		m.BridgeAddress.DeepCopy().(BridgeAddress),
+		m.NetworkRoute.DeepCopy().(NetworkRoute),
+		m.PeekedApplication,
+		m.CBusOptions,
+	}
+	return _CBusPointToPointToMultiPointCommandCopy
+}

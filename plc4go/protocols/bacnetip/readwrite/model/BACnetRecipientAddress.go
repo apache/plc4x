@@ -38,6 +38,7 @@ type BACnetRecipientAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetRecipient
 	// GetAddressValue returns AddressValue (property field)
 	GetAddressValue() BACnetAddressEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetRecipientAddress) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetRecipientAddress) IsBACnetRecipientAddress() {}
+
+func (m *_BACnetRecipientAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipientAddress) deepCopy() *_BACnetRecipientAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientAddressCopy := &_BACnetRecipientAddress{
+		m.BACnetRecipientContract.DeepCopy().(BACnetRecipientContract),
+		m.AddressValue.DeepCopy().(BACnetAddressEnclosed),
+	}
+	m.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m
+	return _BACnetRecipientAddressCopy
+}
 
 func (m *_BACnetRecipientAddress) String() string {
 	if m == nil {

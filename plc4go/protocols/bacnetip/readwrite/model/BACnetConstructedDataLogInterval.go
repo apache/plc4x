@@ -38,6 +38,7 @@ type BACnetConstructedDataLogInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLogInterval returns LogInterval (property field)
 	GetLogInterval() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLogInterval) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataLogInterval) IsBACnetConstructedDataLogInterval() {}
+
+func (m *_BACnetConstructedDataLogInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLogInterval) deepCopy() *_BACnetConstructedDataLogInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLogIntervalCopy := &_BACnetConstructedDataLogInterval{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LogInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLogIntervalCopy
+}
 
 func (m *_BACnetConstructedDataLogInterval) String() string {
 	if m == nil {

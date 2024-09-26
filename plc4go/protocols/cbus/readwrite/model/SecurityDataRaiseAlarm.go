@@ -36,6 +36,7 @@ type SecurityDataRaiseAlarm interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataRaiseAlarm is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataRaiseAlarm()
@@ -142,6 +143,21 @@ func (m *_SecurityDataRaiseAlarm) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SecurityDataRaiseAlarm) IsSecurityDataRaiseAlarm() {}
+
+func (m *_SecurityDataRaiseAlarm) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataRaiseAlarm) deepCopy() *_SecurityDataRaiseAlarm {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataRaiseAlarmCopy := &_SecurityDataRaiseAlarm{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataRaiseAlarmCopy
+}
 
 func (m *_SecurityDataRaiseAlarm) String() string {
 	if m == nil {

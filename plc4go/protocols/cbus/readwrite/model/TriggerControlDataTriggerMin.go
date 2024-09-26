@@ -36,6 +36,7 @@ type TriggerControlDataTriggerMin interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// IsTriggerControlDataTriggerMin is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlDataTriggerMin()
@@ -142,6 +143,21 @@ func (m *_TriggerControlDataTriggerMin) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_TriggerControlDataTriggerMin) IsTriggerControlDataTriggerMin() {}
+
+func (m *_TriggerControlDataTriggerMin) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataTriggerMin) deepCopy() *_TriggerControlDataTriggerMin {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataTriggerMinCopy := &_TriggerControlDataTriggerMin{
+		m.TriggerControlDataContract.DeepCopy().(TriggerControlDataContract),
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataTriggerMinCopy
+}
 
 func (m *_TriggerControlDataTriggerMin) String() string {
 	if m == nil {

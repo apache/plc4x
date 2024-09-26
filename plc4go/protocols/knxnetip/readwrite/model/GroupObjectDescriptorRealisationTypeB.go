@@ -38,6 +38,7 @@ type GroupObjectDescriptorRealisationTypeB interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetUpdateEnable returns UpdateEnable (property field)
 	GetUpdateEnable() bool
 	// GetTransmitEnable returns TransmitEnable (property field)
@@ -306,6 +307,27 @@ func (m *_GroupObjectDescriptorRealisationTypeB) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_GroupObjectDescriptorRealisationTypeB) IsGroupObjectDescriptorRealisationTypeB() {}
+
+func (m *_GroupObjectDescriptorRealisationTypeB) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GroupObjectDescriptorRealisationTypeB) deepCopy() *_GroupObjectDescriptorRealisationTypeB {
+	if m == nil {
+		return nil
+	}
+	_GroupObjectDescriptorRealisationTypeBCopy := &_GroupObjectDescriptorRealisationTypeB{
+		m.UpdateEnable,
+		m.TransmitEnable,
+		m.SegmentSelectorEnable,
+		m.WriteEnable,
+		m.ReadEnable,
+		m.CommunicationEnable,
+		m.Priority,
+		m.ValueType,
+	}
+	return _GroupObjectDescriptorRealisationTypeBCopy
+}
 
 func (m *_GroupObjectDescriptorRealisationTypeB) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ClockAndTimekeepingDataUpdateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ClockAndTimekeepingData
 	// GetHours returns Hours (property field)
 	GetHours() uint8
@@ -335,6 +336,25 @@ func (m *_ClockAndTimekeepingDataUpdateTime) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_ClockAndTimekeepingDataUpdateTime) IsClockAndTimekeepingDataUpdateTime() {}
+
+func (m *_ClockAndTimekeepingDataUpdateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ClockAndTimekeepingDataUpdateTime) deepCopy() *_ClockAndTimekeepingDataUpdateTime {
+	if m == nil {
+		return nil
+	}
+	_ClockAndTimekeepingDataUpdateTimeCopy := &_ClockAndTimekeepingDataUpdateTime{
+		m.ClockAndTimekeepingDataContract.DeepCopy().(ClockAndTimekeepingDataContract),
+		m.Hours,
+		m.Minute,
+		m.Second,
+		m.DaylightSaving,
+	}
+	m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
+	return _ClockAndTimekeepingDataUpdateTimeCopy
+}
 
 func (m *_ClockAndTimekeepingDataUpdateTime) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestAuthenticate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
@@ -194,6 +195,23 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) GetServiceRequestPayloadLen
 ////
 
 func (m *_BACnetConfirmedServiceRequestAuthenticate) IsBACnetConfirmedServiceRequestAuthenticate() {}
+
+func (m *_BACnetConfirmedServiceRequestAuthenticate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestAuthenticate) deepCopy() *_BACnetConfirmedServiceRequestAuthenticate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestAuthenticateCopy := &_BACnetConfirmedServiceRequestAuthenticate{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
+		m.ServiceRequestPayloadLength,
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestAuthenticateCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestAuthenticate) String() string {
 	if m == nil {

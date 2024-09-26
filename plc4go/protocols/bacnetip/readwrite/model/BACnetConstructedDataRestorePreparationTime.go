@@ -38,6 +38,7 @@ type BACnetConstructedDataRestorePreparationTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRestorePreparationTime returns RestorePreparationTime (property field)
 	GetRestorePreparationTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRestorePreparationTime) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataRestorePreparationTime) IsBACnetConstructedDataRestorePreparationTime() {
+}
+
+func (m *_BACnetConstructedDataRestorePreparationTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRestorePreparationTime) deepCopy() *_BACnetConstructedDataRestorePreparationTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRestorePreparationTimeCopy := &_BACnetConstructedDataRestorePreparationTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.RestorePreparationTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRestorePreparationTimeCopy
 }
 
 func (m *_BACnetConstructedDataRestorePreparationTime) String() string {

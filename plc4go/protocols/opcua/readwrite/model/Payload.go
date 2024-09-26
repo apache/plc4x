@@ -40,12 +40,14 @@ type Payload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPayload()
 }
 
 // PayloadContract provides a set of functions which can be overwritten by a sub struct
 type PayloadContract interface {
+	utils.Copyable
 	// GetSequenceHeader returns SequenceHeader (property field)
 	GetSequenceHeader() SequenceHeader
 	// GetByteCount() returns a parser argument
@@ -227,3 +229,19 @@ func (m *_Payload) GetByteCount() uint32 {
 ////
 
 func (m *_Payload) IsPayload() {}
+
+func (m *_Payload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Payload) deepCopy() *_Payload {
+	if m == nil {
+		return nil
+	}
+	_PayloadCopy := &_Payload{
+		nil, // will be set by child
+		m.SequenceHeader.DeepCopy().(SequenceHeader),
+		m.ByteCount,
+	}
+	return _PayloadCopy
+}

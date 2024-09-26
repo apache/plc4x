@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged inte
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 ////
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) IsBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged() {
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) deepCopy() *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) String() string {

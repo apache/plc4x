@@ -36,6 +36,7 @@ type MediaTransportControlDataStatusRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// IsMediaTransportControlDataStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataStatusRequest()
@@ -142,6 +143,21 @@ func (m *_MediaTransportControlDataStatusRequest) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_MediaTransportControlDataStatusRequest) IsMediaTransportControlDataStatusRequest() {}
+
+func (m *_MediaTransportControlDataStatusRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataStatusRequest) deepCopy() *_MediaTransportControlDataStatusRequest {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataStatusRequestCopy := &_MediaTransportControlDataStatusRequest{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataStatusRequestCopy
+}
 
 func (m *_MediaTransportControlDataStatusRequest) String() string {
 	if m == nil {

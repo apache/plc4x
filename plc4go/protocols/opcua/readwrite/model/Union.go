@@ -36,6 +36,7 @@ type Union interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsUnion is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnion()
@@ -146,6 +147,21 @@ func (m *_Union) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Union) IsUnion() {}
+
+func (m *_Union) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Union) deepCopy() *_Union {
+	if m == nil {
+		return nil
+	}
+	_UnionCopy := &_Union{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UnionCopy
+}
 
 func (m *_Union) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestGetEventInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetLastReceivedObjectIdentifier returns LastReceivedObjectIdentifier (property field)
 	GetLastReceivedObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -185,6 +186,22 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) SerializeWithWriteBu
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEventInformation) IsBACnetConfirmedServiceRequestGetEventInformation() {
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) deepCopy() *_BACnetConfirmedServiceRequestGetEventInformation {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestGetEventInformationCopy := &_BACnetConfirmedServiceRequestGetEventInformation{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.LastReceivedObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestGetEventInformationCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEventInformation) String() string {

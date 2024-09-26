@@ -38,6 +38,7 @@ type SALDataIrrigationControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetIrrigationControlData returns IrrigationControlData (property field)
 	GetIrrigationControlData() LightingData
@@ -182,6 +183,22 @@ func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SALDataIrrigationControl) IsSALDataIrrigationControl() {}
+
+func (m *_SALDataIrrigationControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataIrrigationControl) deepCopy() *_SALDataIrrigationControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataIrrigationControlCopy := &_SALDataIrrigationControl{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.IrrigationControlData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataIrrigationControlCopy
+}
 
 func (m *_SALDataIrrigationControl) String() string {
 	if m == nil {

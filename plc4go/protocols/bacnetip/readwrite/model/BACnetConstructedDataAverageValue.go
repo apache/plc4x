@@ -38,6 +38,7 @@ type BACnetConstructedDataAverageValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAverageValue returns AverageValue (property field)
 	GetAverageValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAverageValue) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataAverageValue) IsBACnetConstructedDataAverageValue() {}
+
+func (m *_BACnetConstructedDataAverageValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAverageValue) deepCopy() *_BACnetConstructedDataAverageValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAverageValueCopy := &_BACnetConstructedDataAverageValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AverageValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAverageValueCopy
+}
 
 func (m *_BACnetConstructedDataAverageValue) String() string {
 	if m == nil {

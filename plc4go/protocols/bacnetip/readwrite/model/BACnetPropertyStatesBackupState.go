@@ -38,6 +38,7 @@ type BACnetPropertyStatesBackupState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBackupState returns BackupState (property field)
 	GetBackupState() BACnetBackupStateTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBackupState) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesBackupState) IsBACnetPropertyStatesBackupState() {}
+
+func (m *_BACnetPropertyStatesBackupState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBackupState) deepCopy() *_BACnetPropertyStatesBackupState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBackupStateCopy := &_BACnetPropertyStatesBackupState{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BackupState.DeepCopy().(BACnetBackupStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBackupStateCopy
+}
 
 func (m *_BACnetPropertyStatesBackupState) String() string {
 	if m == nil {

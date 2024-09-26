@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 ////
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) IsBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged() {
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) deepCopy() *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) String() string {

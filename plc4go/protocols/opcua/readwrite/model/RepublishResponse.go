@@ -38,6 +38,7 @@ type RepublishResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -206,6 +207,23 @@ func (m *_RepublishResponse) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_RepublishResponse) IsRepublishResponse() {}
+
+func (m *_RepublishResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RepublishResponse) deepCopy() *_RepublishResponse {
+	if m == nil {
+		return nil
+	}
+	_RepublishResponseCopy := &_RepublishResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NotificationMessage.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RepublishResponseCopy
+}
 
 func (m *_RepublishResponse) String() string {
 	if m == nil {

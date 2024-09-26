@@ -36,6 +36,7 @@ type Counter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCounter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCounter()
 }
@@ -134,6 +135,18 @@ func (m *_Counter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_Counter) IsCounter() {}
+
+func (m *_Counter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Counter) deepCopy() *_Counter {
+	if m == nil {
+		return nil
+	}
+	_CounterCopy := &_Counter{}
+	return _CounterCopy
+}
 
 func (m *_Counter) String() string {
 	if m == nil {

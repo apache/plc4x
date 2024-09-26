@@ -36,6 +36,7 @@ type SysexCommandExtendedAnalog interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandExtendedAnalog is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandExtendedAnalog()
@@ -150,6 +151,21 @@ func (m *_SysexCommandExtendedAnalog) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SysexCommandExtendedAnalog) IsSysexCommandExtendedAnalog() {}
+
+func (m *_SysexCommandExtendedAnalog) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandExtendedAnalog) deepCopy() *_SysexCommandExtendedAnalog {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandExtendedAnalogCopy := &_SysexCommandExtendedAnalog{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandExtendedAnalogCopy
+}
 
 func (m *_SysexCommandExtendedAnalog) String() string {
 	if m == nil {

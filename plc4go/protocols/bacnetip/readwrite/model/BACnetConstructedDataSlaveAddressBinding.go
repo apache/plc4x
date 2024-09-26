@@ -38,6 +38,7 @@ type BACnetConstructedDataSlaveAddressBinding interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSlaveAddressBinding returns SlaveAddressBinding (property field)
 	GetSlaveAddressBinding() []BACnetAddressBinding
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataSlaveAddressBinding) IsBACnetConstructedDataSlaveAddressBinding() {}
+
+func (m *_BACnetConstructedDataSlaveAddressBinding) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSlaveAddressBinding) deepCopy() *_BACnetConstructedDataSlaveAddressBinding {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSlaveAddressBindingCopy := &_BACnetConstructedDataSlaveAddressBinding{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetAddressBinding, BACnetAddressBinding](m.SlaveAddressBinding),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSlaveAddressBindingCopy
+}
 
 func (m *_BACnetConstructedDataSlaveAddressBinding) String() string {
 	if m == nil {

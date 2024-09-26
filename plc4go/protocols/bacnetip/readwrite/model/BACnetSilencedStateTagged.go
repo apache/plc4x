@@ -38,6 +38,7 @@ type BACnetSilencedStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetSilencedStateTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetSilencedStateTagged) IsBACnetSilencedStateTagged() {}
+
+func (m *_BACnetSilencedStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSilencedStateTagged) deepCopy() *_BACnetSilencedStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetSilencedStateTaggedCopy := &_BACnetSilencedStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetSilencedStateTaggedCopy
+}
 
 func (m *_BACnetSilencedStateTagged) String() string {
 	if m == nil {

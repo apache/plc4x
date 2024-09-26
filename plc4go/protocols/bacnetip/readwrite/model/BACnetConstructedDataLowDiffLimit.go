@@ -38,6 +38,7 @@ type BACnetConstructedDataLowDiffLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLowDiffLimit returns LowDiffLimit (property field)
 	GetLowDiffLimit() BACnetOptionalREAL
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLowDiffLimit) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataLowDiffLimit) IsBACnetConstructedDataLowDiffLimit() {}
+
+func (m *_BACnetConstructedDataLowDiffLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLowDiffLimit) deepCopy() *_BACnetConstructedDataLowDiffLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLowDiffLimitCopy := &_BACnetConstructedDataLowDiffLimit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LowDiffLimit.DeepCopy().(BACnetOptionalREAL),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLowDiffLimitCopy
+}
 
 func (m *_BACnetConstructedDataLowDiffLimit) String() string {
 	if m == nil {

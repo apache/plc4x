@@ -36,6 +36,7 @@ type ApduDataIndividualAddressWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataIndividualAddressWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataIndividualAddressWrite()
@@ -146,6 +147,21 @@ func (m *_ApduDataIndividualAddressWrite) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ApduDataIndividualAddressWrite) IsApduDataIndividualAddressWrite() {}
+
+func (m *_ApduDataIndividualAddressWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataIndividualAddressWrite) deepCopy() *_ApduDataIndividualAddressWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataIndividualAddressWriteCopy := &_ApduDataIndividualAddressWrite{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataIndividualAddressWriteCopy
+}
 
 func (m *_ApduDataIndividualAddressWrite) String() string {
 	if m == nil {

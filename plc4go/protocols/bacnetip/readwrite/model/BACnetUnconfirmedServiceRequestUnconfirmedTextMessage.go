@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetTextMessageSourceDevice returns TextMessageSourceDevice (property field)
 	GetTextMessageSourceDevice() BACnetContextTagObjectIdentifier
@@ -257,6 +258,25 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) SerializeWithWr
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) IsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) deepCopy() *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageCopy := &_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
+		m.BACnetUnconfirmedServiceRequestContract.DeepCopy().(BACnetUnconfirmedServiceRequestContract),
+		m.TextMessageSourceDevice.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.MessageClass.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass),
+		m.MessagePriority.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged),
+		m.Message.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestUnconfirmedTextMessageCopy
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) String() string {

@@ -38,6 +38,7 @@ type QueryDataDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRelativePath returns RelativePath (property field)
 	GetRelativePath() ExtensionObjectDefinition
@@ -227,6 +228,24 @@ func (m *_QueryDataDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_QueryDataDescription) IsQueryDataDescription() {}
+
+func (m *_QueryDataDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryDataDescription) deepCopy() *_QueryDataDescription {
+	if m == nil {
+		return nil
+	}
+	_QueryDataDescriptionCopy := &_QueryDataDescription{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RelativePath.DeepCopy().(ExtensionObjectDefinition),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryDataDescriptionCopy
+}
 
 func (m *_QueryDataDescription) String() string {
 	if m == nil {

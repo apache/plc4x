@@ -38,6 +38,7 @@ type BACnetConstructedDataChannelListOfObjectPropertyReferences interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) SerializeW
 }
 
 func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) IsBACnetConstructedDataChannelListOfObjectPropertyReferences() {
+}
+
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) deepCopy() *_BACnetConstructedDataChannelListOfObjectPropertyReferences {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataChannelListOfObjectPropertyReferencesCopy := &_BACnetConstructedDataChannelListOfObjectPropertyReferences{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.References),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataChannelListOfObjectPropertyReferencesCopy
 }
 
 func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) String() string {

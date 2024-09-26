@@ -38,6 +38,7 @@ type NLMUpdateKeyDistributionKey interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetKeyRevision returns KeyRevision (property field)
 	GetKeyRevision() byte
@@ -203,6 +204,23 @@ func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_NLMUpdateKeyDistributionKey) IsNLMUpdateKeyDistributionKey() {}
+
+func (m *_NLMUpdateKeyDistributionKey) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMUpdateKeyDistributionKey) deepCopy() *_NLMUpdateKeyDistributionKey {
+	if m == nil {
+		return nil
+	}
+	_NLMUpdateKeyDistributionKeyCopy := &_NLMUpdateKeyDistributionKey{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.KeyRevision,
+		m.Key.DeepCopy().(NLMUpdateKeyUpdateKeyEntry),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMUpdateKeyDistributionKeyCopy
+}
 
 func (m *_NLMUpdateKeyDistributionKey) String() string {
 	if m == nil {

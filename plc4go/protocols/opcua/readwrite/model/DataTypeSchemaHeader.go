@@ -38,6 +38,7 @@ type DataTypeSchemaHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfNamespaces returns NoOfNamespaces (property field)
 	GetNoOfNamespaces() int32
@@ -354,6 +355,29 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_DataTypeSchemaHeader) IsDataTypeSchemaHeader() {}
+
+func (m *_DataTypeSchemaHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataTypeSchemaHeader) deepCopy() *_DataTypeSchemaHeader {
+	if m == nil {
+		return nil
+	}
+	_DataTypeSchemaHeaderCopy := &_DataTypeSchemaHeader{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfNamespaces,
+		utils.DeepCopySlice[PascalString, PascalString](m.Namespaces),
+		m.NoOfStructureDataTypes,
+		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.StructureDataTypes),
+		m.NoOfEnumDataTypes,
+		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.EnumDataTypes),
+		m.NoOfSimpleDataTypes,
+		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.SimpleDataTypes),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataTypeSchemaHeaderCopy
+}
 
 func (m *_DataTypeSchemaHeader) String() string {
 	if m == nil {

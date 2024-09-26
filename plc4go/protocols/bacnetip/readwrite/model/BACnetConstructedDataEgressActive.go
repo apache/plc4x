@@ -38,6 +38,7 @@ type BACnetConstructedDataEgressActive interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEgressActive returns EgressActive (property field)
 	GetEgressActive() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEgressActive) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataEgressActive) IsBACnetConstructedDataEgressActive() {}
+
+func (m *_BACnetConstructedDataEgressActive) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEgressActive) deepCopy() *_BACnetConstructedDataEgressActive {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEgressActiveCopy := &_BACnetConstructedDataEgressActive{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.EgressActive.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEgressActiveCopy
+}
 
 func (m *_BACnetConstructedDataEgressActive) String() string {
 	if m == nil {

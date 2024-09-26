@@ -38,6 +38,7 @@ type AdsDeleteDeviceNotificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
@@ -183,6 +184,22 @@ func (m *_AdsDeleteDeviceNotificationRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_AdsDeleteDeviceNotificationRequest) IsAdsDeleteDeviceNotificationRequest() {}
+
+func (m *_AdsDeleteDeviceNotificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDeleteDeviceNotificationRequest) deepCopy() *_AdsDeleteDeviceNotificationRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsDeleteDeviceNotificationRequestCopy := &_AdsDeleteDeviceNotificationRequest{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.NotificationHandle,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsDeleteDeviceNotificationRequestCopy
+}
 
 func (m *_AdsDeleteDeviceNotificationRequest) String() string {
 	if m == nil {

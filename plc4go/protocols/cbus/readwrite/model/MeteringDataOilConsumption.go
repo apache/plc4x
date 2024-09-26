@@ -38,6 +38,7 @@ type MeteringDataOilConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetL returns L (property field)
 	GetL() uint32
@@ -175,6 +176,22 @@ func (m *_MeteringDataOilConsumption) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_MeteringDataOilConsumption) IsMeteringDataOilConsumption() {}
+
+func (m *_MeteringDataOilConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataOilConsumption) deepCopy() *_MeteringDataOilConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataOilConsumptionCopy := &_MeteringDataOilConsumption{
+		m.MeteringDataContract.DeepCopy().(MeteringDataContract),
+		m.L,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataOilConsumptionCopy
+}
 
 func (m *_MeteringDataOilConsumption) String() string {
 	if m == nil {

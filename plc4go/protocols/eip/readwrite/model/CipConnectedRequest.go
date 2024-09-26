@@ -38,6 +38,7 @@ type CipConnectedRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetPathSegments returns PathSegments (property field)
 	GetPathSegments() []byte
@@ -231,6 +232,24 @@ func (m *_CipConnectedRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_CipConnectedRequest) IsCipConnectedRequest() {}
+
+func (m *_CipConnectedRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectedRequest) deepCopy() *_CipConnectedRequest {
+	if m == nil {
+		return nil
+	}
+	_CipConnectedRequestCopy := &_CipConnectedRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		utils.DeepCopySlice[byte, byte](m.PathSegments),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectedRequestCopy
+}
 
 func (m *_CipConnectedRequest) String() string {
 	if m == nil {

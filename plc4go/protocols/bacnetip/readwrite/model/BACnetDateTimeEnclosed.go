@@ -38,6 +38,7 @@ type BACnetDateTimeEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetDateTimeValue returns DateTimeValue (property field)
@@ -228,6 +229,23 @@ func (m *_BACnetDateTimeEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetDateTimeEnclosed) IsBACnetDateTimeEnclosed() {}
+
+func (m *_BACnetDateTimeEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDateTimeEnclosed) deepCopy() *_BACnetDateTimeEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetDateTimeEnclosedCopy := &_BACnetDateTimeEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.DateTimeValue.DeepCopy().(BACnetDateTime),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetDateTimeEnclosedCopy
+}
 
 func (m *_BACnetDateTimeEnclosed) String() string {
 	if m == nil {

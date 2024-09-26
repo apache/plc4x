@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned) SerializeWi
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned) IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned() {
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned) deepCopy() *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedCopy := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned{
+		m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.DeepCopy().(BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = m
+	return _BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedCopy
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned) String() string {

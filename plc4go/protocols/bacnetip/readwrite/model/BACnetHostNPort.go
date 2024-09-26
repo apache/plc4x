@@ -38,6 +38,7 @@ type BACnetHostNPort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHost returns Host (property field)
 	GetHost() BACnetHostAddressEnclosed
 	// GetPort returns Port (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetHostNPort) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetHostNPort) IsBACnetHostNPort() {}
+
+func (m *_BACnetHostNPort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostNPort) deepCopy() *_BACnetHostNPort {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostNPortCopy := &_BACnetHostNPort{
+		m.Host.DeepCopy().(BACnetHostAddressEnclosed),
+		m.Port.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetHostNPortCopy
+}
 
 func (m *_BACnetHostNPort) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessZoneAdjustValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() BACnetApplicationTagSignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataAccessZoneAdjustValue) IsBACnetConstructedDataAccessZoneAdjustValue() {
+}
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) deepCopy() *_BACnetConstructedDataAccessZoneAdjustValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessZoneAdjustValueCopy := &_BACnetConstructedDataAccessZoneAdjustValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AdjustValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessZoneAdjustValueCopy
 }
 
 func (m *_BACnetConstructedDataAccessZoneAdjustValue) String() string {

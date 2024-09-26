@@ -37,6 +37,7 @@ type ReplyEncodedReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Reply
 	// GetEncodedReply returns EncodedReply (property field)
 	GetEncodedReply() EncodedReply
@@ -250,6 +251,23 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ReplyEncodedReply) IsReplyEncodedReply() {}
+
+func (m *_ReplyEncodedReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReplyEncodedReply) deepCopy() *_ReplyEncodedReply {
+	if m == nil {
+		return nil
+	}
+	_ReplyEncodedReplyCopy := &_ReplyEncodedReply{
+		m.ReplyContract.DeepCopy().(ReplyContract),
+		m.EncodedReply.DeepCopy().(EncodedReply),
+		m.Chksum.DeepCopy().(Checksum),
+	}
+	m.ReplyContract.(*_Reply)._SubType = m
+	return _ReplyEncodedReplyCopy
+}
 
 func (m *_ReplyEncodedReply) String() string {
 	if m == nil {

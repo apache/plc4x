@@ -40,12 +40,14 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetFaultParameterFaultOutOfRangeMaxNormalValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultOutOfRangeMaxNormalValue()
 }
 
 // BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract provides a set of functions which can be overwritten by a sub struct
 type BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract interface {
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -311,4 +313,22 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) GetTagNumber() uint
 ////
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) IsBACnetFaultParameterFaultOutOfRangeMaxNormalValue() {
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue) deepCopy() *_BACnetFaultParameterFaultOutOfRangeMaxNormalValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultOutOfRangeMaxNormalValueCopy := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValue{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetFaultParameterFaultOutOfRangeMaxNormalValueCopy
 }

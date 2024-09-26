@@ -38,6 +38,7 @@ type BACnetConstructedDataOperationDirection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOperationDirection returns OperationDirection (property field)
 	GetOperationDirection() BACnetEscalatorOperationDirectionTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOperationDirection) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataOperationDirection) IsBACnetConstructedDataOperationDirection() {}
+
+func (m *_BACnetConstructedDataOperationDirection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOperationDirection) deepCopy() *_BACnetConstructedDataOperationDirection {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOperationDirectionCopy := &_BACnetConstructedDataOperationDirection{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.OperationDirection.DeepCopy().(BACnetEscalatorOperationDirectionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOperationDirectionCopy
+}
 
 func (m *_BACnetConstructedDataOperationDirection) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type AdsReadStateResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -225,6 +226,24 @@ func (m *_AdsReadStateResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_AdsReadStateResponse) IsAdsReadStateResponse() {}
+
+func (m *_AdsReadStateResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadStateResponse) deepCopy() *_AdsReadStateResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsReadStateResponseCopy := &_AdsReadStateResponse{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.Result,
+		m.AdsState,
+		m.DeviceState,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadStateResponseCopy
+}
 
 func (m *_AdsReadStateResponse) String() string {
 	if m == nil {

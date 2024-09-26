@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse interface 
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetItemsCount returns ItemsCount (property field)
 	GetItemsCount() uint16
@@ -215,6 +216,23 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) Seri
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) IsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) deepCopy() *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseCopy := &_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.ItemsCount,
+		utils.DeepCopySlice[AssociatedQueryValueType, AssociatedQueryValueType](m.Items),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) String() string {

@@ -42,6 +42,7 @@ type PowerUp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPowerUp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPowerUp()
 }
@@ -184,6 +185,18 @@ func (m *_PowerUp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_PowerUp) IsPowerUp() {}
+
+func (m *_PowerUp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PowerUp) deepCopy() *_PowerUp {
+	if m == nil {
+		return nil
+	}
+	_PowerUpCopy := &_PowerUp{}
+	return _PowerUpCopy
+}
 
 func (m *_PowerUp) String() string {
 	if m == nil {

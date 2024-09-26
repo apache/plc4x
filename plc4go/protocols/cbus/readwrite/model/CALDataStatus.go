@@ -38,6 +38,7 @@ type CALDataStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -224,6 +225,24 @@ func (m *_CALDataStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_CALDataStatus) IsCALDataStatus() {}
+
+func (m *_CALDataStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataStatus) deepCopy() *_CALDataStatus {
+	if m == nil {
+		return nil
+	}
+	_CALDataStatusCopy := &_CALDataStatus{
+		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.Application,
+		m.BlockStart,
+		utils.DeepCopySlice[StatusByte, StatusByte](m.StatusBytes),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataStatusCopy
+}
 
 func (m *_CALDataStatus) String() string {
 	if m == nil {

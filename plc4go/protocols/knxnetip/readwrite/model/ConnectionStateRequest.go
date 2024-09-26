@@ -40,6 +40,7 @@ type ConnectionStateRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
@@ -220,6 +221,24 @@ func (m *_ConnectionStateRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ConnectionStateRequest) IsConnectionStateRequest() {}
+
+func (m *_ConnectionStateRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionStateRequest) deepCopy() *_ConnectionStateRequest {
+	if m == nil {
+		return nil
+	}
+	_ConnectionStateRequestCopy := &_ConnectionStateRequest{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.CommunicationChannelId,
+		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+		m.reservedField0,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _ConnectionStateRequestCopy
+}
 
 func (m *_ConnectionStateRequest) String() string {
 	if m == nil {

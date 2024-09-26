@@ -38,6 +38,7 @@ type CIPAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetClassId returns ClassId (property field)
 	GetClassId() []uint16
 	// GetNumberAvailable returns NumberAvailable (property field)
@@ -264,6 +265,24 @@ func (m *_CIPAttributes) GetPacketLength() uint16 {
 ////
 
 func (m *_CIPAttributes) IsCIPAttributes() {}
+
+func (m *_CIPAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPAttributes) deepCopy() *_CIPAttributes {
+	if m == nil {
+		return nil
+	}
+	_CIPAttributesCopy := &_CIPAttributes{
+		utils.DeepCopySlice[uint16, uint16](m.ClassId),
+		utils.CopyPtr[uint16](m.NumberAvailable),
+		utils.CopyPtr[uint16](m.NumberActive),
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.PacketLength,
+	}
+	return _CIPAttributesCopy
+}
 
 func (m *_CIPAttributes) String() string {
 	if m == nil {

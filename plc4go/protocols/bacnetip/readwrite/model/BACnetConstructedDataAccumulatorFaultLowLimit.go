@@ -38,6 +38,7 @@ type BACnetConstructedDataAccumulatorFaultLowLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultLowLimit returns FaultLowLimit (property field)
 	GetFaultLowLimit() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccumulatorFaultLowLimit) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataAccumulatorFaultLowLimit) IsBACnetConstructedDataAccumulatorFaultLowLimit() {
+}
+
+func (m *_BACnetConstructedDataAccumulatorFaultLowLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccumulatorFaultLowLimit) deepCopy() *_BACnetConstructedDataAccumulatorFaultLowLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccumulatorFaultLowLimitCopy := &_BACnetConstructedDataAccumulatorFaultLowLimit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FaultLowLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccumulatorFaultLowLimitCopy
 }
 
 func (m *_BACnetConstructedDataAccumulatorFaultLowLimit) String() string {

@@ -38,6 +38,7 @@ type BACnetDateRangeEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetDateRange returns DateRange (property field)
@@ -228,6 +229,23 @@ func (m *_BACnetDateRangeEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetDateRangeEnclosed) IsBACnetDateRangeEnclosed() {}
+
+func (m *_BACnetDateRangeEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDateRangeEnclosed) deepCopy() *_BACnetDateRangeEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetDateRangeEnclosedCopy := &_BACnetDateRangeEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.DateRange.DeepCopy().(BACnetDateRange),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetDateRangeEnclosedCopy
+}
 
 func (m *_BACnetDateRangeEnclosed) String() string {
 	if m == nil {

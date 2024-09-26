@@ -36,6 +36,7 @@ type AnonymousIdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	UserIdentityTokenDefinition
 	// IsAnonymousIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAnonymousIdentityToken()
@@ -146,6 +147,21 @@ func (m *_AnonymousIdentityToken) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_AnonymousIdentityToken) IsAnonymousIdentityToken() {}
+
+func (m *_AnonymousIdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AnonymousIdentityToken) deepCopy() *_AnonymousIdentityToken {
+	if m == nil {
+		return nil
+	}
+	_AnonymousIdentityTokenCopy := &_AnonymousIdentityToken{
+		m.UserIdentityTokenDefinitionContract.DeepCopy().(UserIdentityTokenDefinitionContract),
+	}
+	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	return _AnonymousIdentityTokenCopy
+}
 
 func (m *_AnonymousIdentityToken) String() string {
 	if m == nil {

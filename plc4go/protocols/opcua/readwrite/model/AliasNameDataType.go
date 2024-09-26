@@ -38,6 +38,7 @@ type AliasNameDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAliasName returns AliasName (property field)
 	GetAliasName() QualifiedName
@@ -231,6 +232,24 @@ func (m *_AliasNameDataType) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_AliasNameDataType) IsAliasNameDataType() {}
+
+func (m *_AliasNameDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AliasNameDataType) deepCopy() *_AliasNameDataType {
+	if m == nil {
+		return nil
+	}
+	_AliasNameDataTypeCopy := &_AliasNameDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.AliasName.DeepCopy().(QualifiedName),
+		m.NoOfReferencedNodes,
+		utils.DeepCopySlice[ExpandedNodeId, ExpandedNodeId](m.ReferencedNodes),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AliasNameDataTypeCopy
+}
 
 func (m *_AliasNameDataType) String() string {
 	if m == nil {

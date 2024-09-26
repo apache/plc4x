@@ -38,6 +38,7 @@ type SetTriggeringRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -312,6 +313,28 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SetTriggeringRequest) IsSetTriggeringRequest() {}
+
+func (m *_SetTriggeringRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetTriggeringRequest) deepCopy() *_SetTriggeringRequest {
+	if m == nil {
+		return nil
+	}
+	_SetTriggeringRequestCopy := &_SetTriggeringRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.TriggeringItemId,
+		m.NoOfLinksToAdd,
+		utils.DeepCopySlice[uint32, uint32](m.LinksToAdd),
+		m.NoOfLinksToRemove,
+		utils.DeepCopySlice[uint32, uint32](m.LinksToRemove),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetTriggeringRequestCopy
+}
 
 func (m *_SetTriggeringRequest) String() string {
 	if m == nil {

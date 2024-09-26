@@ -38,6 +38,7 @@ type AdsWriteControlRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetAdsState returns AdsState (property field)
 	GetAdsState() uint16
@@ -240,6 +241,24 @@ func (m *_AdsWriteControlRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_AdsWriteControlRequest) IsAdsWriteControlRequest() {}
+
+func (m *_AdsWriteControlRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsWriteControlRequest) deepCopy() *_AdsWriteControlRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsWriteControlRequestCopy := &_AdsWriteControlRequest{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AdsState,
+		m.DeviceState,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsWriteControlRequestCopy
+}
 
 func (m *_AdsWriteControlRequest) String() string {
 	if m == nil {

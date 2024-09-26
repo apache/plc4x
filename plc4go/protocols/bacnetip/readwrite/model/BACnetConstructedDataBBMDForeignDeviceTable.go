@@ -38,6 +38,7 @@ type BACnetConstructedDataBBMDForeignDeviceTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBbmdForeignDeviceTable returns BbmdForeignDeviceTable (property field)
 	GetBbmdForeignDeviceTable() []BACnetBDTEntry
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataBBMDForeignDeviceTable) IsBACnetConstructedDataBBMDForeignDeviceTable() {
+}
+
+func (m *_BACnetConstructedDataBBMDForeignDeviceTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBBMDForeignDeviceTable) deepCopy() *_BACnetConstructedDataBBMDForeignDeviceTable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBBMDForeignDeviceTableCopy := &_BACnetConstructedDataBBMDForeignDeviceTable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetBDTEntry, BACnetBDTEntry](m.BbmdForeignDeviceTable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBBMDForeignDeviceTableCopy
 }
 
 func (m *_BACnetConstructedDataBBMDForeignDeviceTable) String() string {

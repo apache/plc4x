@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReadRangeRangeByPosition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequestReadRangeRange
 	// GetReferenceIndex returns ReferenceIndex (property field)
 	GetReferenceIndex() BACnetApplicationTagUnsignedInteger
@@ -202,6 +203,23 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWr
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) IsBACnetConfirmedServiceRequestReadRangeRangeByPosition() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) deepCopy() *_BACnetConfirmedServiceRequestReadRangeRangeByPosition {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadRangeRangeByPositionCopy := &_BACnetConfirmedServiceRequestReadRangeRangeByPosition{
+		m.BACnetConfirmedServiceRequestReadRangeRangeContract.DeepCopy().(BACnetConfirmedServiceRequestReadRangeRangeContract),
+		m.ReferenceIndex.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.Count.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = m
+	return _BACnetConfirmedServiceRequestReadRangeRangeByPositionCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) String() string {

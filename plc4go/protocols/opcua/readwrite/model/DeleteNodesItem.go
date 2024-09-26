@@ -38,6 +38,7 @@ type DeleteNodesItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -218,6 +219,24 @@ func (m *_DeleteNodesItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_DeleteNodesItem) IsDeleteNodesItem() {}
+
+func (m *_DeleteNodesItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteNodesItem) deepCopy() *_DeleteNodesItem {
+	if m == nil {
+		return nil
+	}
+	_DeleteNodesItemCopy := &_DeleteNodesItem{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NodeId.DeepCopy().(NodeId),
+		m.DeleteTargetReferences,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteNodesItemCopy
+}
 
 func (m *_DeleteNodesItem) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetNotificationParametersComplexEventType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersComplexEventType) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetNotificationParametersComplexEventType) IsBACnetNotificationParametersComplexEventType() {
+}
+
+func (m *_BACnetNotificationParametersComplexEventType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersComplexEventType) deepCopy() *_BACnetNotificationParametersComplexEventType {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersComplexEventTypeCopy := &_BACnetNotificationParametersComplexEventType{
+		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.ListOfValues.DeepCopy().(BACnetPropertyValues),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersComplexEventTypeCopy
 }
 
 func (m *_BACnetNotificationParametersComplexEventType) String() string {

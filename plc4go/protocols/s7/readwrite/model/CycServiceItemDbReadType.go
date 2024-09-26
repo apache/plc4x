@@ -38,6 +38,7 @@ type CycServiceItemDbReadType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CycServiceItemType
 	// GetNumberOfAreas returns NumberOfAreas (property field)
 	GetNumberOfAreas() uint8
@@ -203,6 +204,23 @@ func (m *_CycServiceItemDbReadType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_CycServiceItemDbReadType) IsCycServiceItemDbReadType() {}
+
+func (m *_CycServiceItemDbReadType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CycServiceItemDbReadType) deepCopy() *_CycServiceItemDbReadType {
+	if m == nil {
+		return nil
+	}
+	_CycServiceItemDbReadTypeCopy := &_CycServiceItemDbReadType{
+		m.CycServiceItemTypeContract.DeepCopy().(CycServiceItemTypeContract),
+		m.NumberOfAreas,
+		utils.DeepCopySlice[SubItem, SubItem](m.Items),
+	}
+	m.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = m
+	return _CycServiceItemDbReadTypeCopy
+}
 
 func (m *_CycServiceItemDbReadType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataVTClassesSupported interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVtClassesSupported returns VtClassesSupported (property field)
 	GetVtClassesSupported() []BACnetVTClassTagged
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataVTClassesSupported) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataVTClassesSupported) IsBACnetConstructedDataVTClassesSupported() {}
+
+func (m *_BACnetConstructedDataVTClassesSupported) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVTClassesSupported) deepCopy() *_BACnetConstructedDataVTClassesSupported {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVTClassesSupportedCopy := &_BACnetConstructedDataVTClassesSupported{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetVTClassTagged, BACnetVTClassTagged](m.VtClassesSupported),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVTClassesSupportedCopy
+}
 
 func (m *_BACnetConstructedDataVTClassesSupported) String() string {
 	if m == nil {

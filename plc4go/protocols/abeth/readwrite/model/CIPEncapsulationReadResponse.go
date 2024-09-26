@@ -40,6 +40,7 @@ type CIPEncapsulationReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CIPEncapsulationPacket
 	// GetResponse returns Response (property field)
 	GetResponse() DF1ResponseMessage
@@ -197,6 +198,23 @@ func (m *_CIPEncapsulationReadResponse) GetPacketLen() uint16 {
 ////
 
 func (m *_CIPEncapsulationReadResponse) IsCIPEncapsulationReadResponse() {}
+
+func (m *_CIPEncapsulationReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationReadResponse) deepCopy() *_CIPEncapsulationReadResponse {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationReadResponseCopy := &_CIPEncapsulationReadResponse{
+		m.CIPEncapsulationPacketContract.DeepCopy().(CIPEncapsulationPacketContract),
+		m.Response.DeepCopy().(DF1ResponseMessage),
+		m.PacketLen,
+	}
+	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	return _CIPEncapsulationReadResponseCopy
+}
 
 func (m *_CIPEncapsulationReadResponse) String() string {
 	if m == nil {

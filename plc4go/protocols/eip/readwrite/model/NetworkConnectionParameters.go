@@ -38,6 +38,7 @@ type NetworkConnectionParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetConnectionSize returns ConnectionSize (property field)
 	GetConnectionSize() uint16
 	// GetOwner returns Owner (property field)
@@ -289,6 +290,27 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_NetworkConnectionParameters) IsNetworkConnectionParameters() {}
+
+func (m *_NetworkConnectionParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkConnectionParameters) deepCopy() *_NetworkConnectionParameters {
+	if m == nil {
+		return nil
+	}
+	_NetworkConnectionParametersCopy := &_NetworkConnectionParameters{
+		m.ConnectionSize,
+		m.Owner,
+		m.ConnectionType,
+		m.Priority,
+		m.ConnectionSizeType,
+		m.reservedField0,
+		m.reservedField1,
+		m.reservedField2,
+	}
+	return _NetworkConnectionParametersCopy
+}
 
 func (m *_NetworkConnectionParameters) String() string {
 	if m == nil {

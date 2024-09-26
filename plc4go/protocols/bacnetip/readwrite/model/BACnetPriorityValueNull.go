@@ -38,6 +38,7 @@ type BACnetPriorityValueNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueNull) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetPriorityValueNull) IsBACnetPriorityValueNull() {}
+
+func (m *_BACnetPriorityValueNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueNull) deepCopy() *_BACnetPriorityValueNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueNullCopy := &_BACnetPriorityValueNull{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueNullCopy
+}
 
 func (m *_BACnetPriorityValueNull) String() string {
 	if m == nil {

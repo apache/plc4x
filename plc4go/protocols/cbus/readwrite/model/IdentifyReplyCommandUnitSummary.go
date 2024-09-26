@@ -38,6 +38,7 @@ type IdentifyReplyCommandUnitSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAssertingNetworkBurden returns AssertingNetworkBurden (property field)
 	GetAssertingNetworkBurden() bool
 	// GetRestrikeTimingActive returns RestrikeTimingActive (property field)
@@ -306,6 +307,27 @@ func (m *_IdentifyReplyCommandUnitSummary) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_IdentifyReplyCommandUnitSummary) IsIdentifyReplyCommandUnitSummary() {}
+
+func (m *_IdentifyReplyCommandUnitSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandUnitSummary) deepCopy() *_IdentifyReplyCommandUnitSummary {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandUnitSummaryCopy := &_IdentifyReplyCommandUnitSummary{
+		m.AssertingNetworkBurden,
+		m.RestrikeTimingActive,
+		m.RemoteOFFInputAsserted,
+		m.RemoteONInputAsserted,
+		m.LocalToggleEnabled,
+		m.LocalToggleActiveState,
+		m.ClockGenerationEnabled,
+		m.UnitGeneratingClock,
+	}
+	return _IdentifyReplyCommandUnitSummaryCopy
+}
 
 func (m *_IdentifyReplyCommandUnitSummary) String() string {
 	if m == nil {

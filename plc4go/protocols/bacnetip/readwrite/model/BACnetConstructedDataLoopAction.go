@@ -38,6 +38,7 @@ type BACnetConstructedDataLoopAction interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAction returns Action (property field)
 	GetAction() BACnetActionTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoopAction) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataLoopAction) IsBACnetConstructedDataLoopAction() {}
+
+func (m *_BACnetConstructedDataLoopAction) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoopAction) deepCopy() *_BACnetConstructedDataLoopAction {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoopActionCopy := &_BACnetConstructedDataLoopAction{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Action.DeepCopy().(BACnetActionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoopActionCopy
+}
 
 func (m *_BACnetConstructedDataLoopAction) String() string {
 	if m == nil {

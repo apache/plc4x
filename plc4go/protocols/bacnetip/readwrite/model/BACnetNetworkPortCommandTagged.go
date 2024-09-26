@@ -38,6 +38,7 @@ type BACnetNetworkPortCommandTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetNetworkPortCommandTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetNetworkPortCommandTagged) IsBACnetNetworkPortCommandTagged() {}
+
+func (m *_BACnetNetworkPortCommandTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNetworkPortCommandTagged) deepCopy() *_BACnetNetworkPortCommandTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetNetworkPortCommandTaggedCopy := &_BACnetNetworkPortCommandTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetNetworkPortCommandTaggedCopy
+}
 
 func (m *_BACnetNetworkPortCommandTagged) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ParameterValueSerialNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() SerialNumber
@@ -210,6 +211,23 @@ func (m *_ParameterValueSerialNumber) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ParameterValueSerialNumber) IsParameterValueSerialNumber() {}
+
+func (m *_ParameterValueSerialNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueSerialNumber) deepCopy() *_ParameterValueSerialNumber {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueSerialNumberCopy := &_ParameterValueSerialNumber{
+		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.Value.DeepCopy().(SerialNumber),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueSerialNumberCopy
+}
 
 func (m *_ParameterValueSerialNumber) String() string {
 	if m == nil {

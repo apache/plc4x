@@ -38,6 +38,7 @@ type LDataReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
@@ -228,6 +229,24 @@ func (m *_LDataReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_LDataReq) IsLDataReq() {}
+
+func (m *_LDataReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataReq) deepCopy() *_LDataReq {
+	if m == nil {
+		return nil
+	}
+	_LDataReqCopy := &_LDataReq{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.AdditionalInformationLength,
+		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
+		m.DataFrame.DeepCopy().(LDataFrame),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LDataReqCopy
+}
 
 func (m *_LDataReq) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataTimePatternValuePresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimePatternValuePresentValue) SerializeWithWriteB
 }
 
 func (m *_BACnetConstructedDataTimePatternValuePresentValue) IsBACnetConstructedDataTimePatternValuePresentValue() {
+}
+
+func (m *_BACnetConstructedDataTimePatternValuePresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimePatternValuePresentValue) deepCopy() *_BACnetConstructedDataTimePatternValuePresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimePatternValuePresentValueCopy := &_BACnetConstructedDataTimePatternValuePresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimePatternValuePresentValueCopy
 }
 
 func (m *_BACnetConstructedDataTimePatternValuePresentValue) String() string {

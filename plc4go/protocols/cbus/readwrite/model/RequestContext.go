@@ -38,6 +38,7 @@ type RequestContext interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (property field)
 	GetSendIdentifyRequestBefore() bool
 	// IsRequestContext is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -166,6 +167,20 @@ func (m *_RequestContext) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_RequestContext) IsRequestContext() {}
+
+func (m *_RequestContext) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestContext) deepCopy() *_RequestContext {
+	if m == nil {
+		return nil
+	}
+	_RequestContextCopy := &_RequestContext{
+		m.SendIdentifyRequestBefore,
+	}
+	return _RequestContextCopy
+}
 
 func (m *_RequestContext) String() string {
 	if m == nil {

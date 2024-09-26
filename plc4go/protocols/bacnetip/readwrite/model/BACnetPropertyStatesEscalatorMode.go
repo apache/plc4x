@@ -38,6 +38,7 @@ type BACnetPropertyStatesEscalatorMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetEscalatorMode returns EscalatorMode (property field)
 	GetEscalatorMode() BACnetEscalatorModeTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesEscalatorMode) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesEscalatorMode) IsBACnetPropertyStatesEscalatorMode() {}
+
+func (m *_BACnetPropertyStatesEscalatorMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEscalatorMode) deepCopy() *_BACnetPropertyStatesEscalatorMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEscalatorModeCopy := &_BACnetPropertyStatesEscalatorMode{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.EscalatorMode.DeepCopy().(BACnetEscalatorModeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesEscalatorModeCopy
+}
 
 func (m *_BACnetPropertyStatesEscalatorMode) String() string {
 	if m == nil {

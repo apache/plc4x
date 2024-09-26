@@ -38,6 +38,7 @@ type BACnetConstructedDataAPDULength interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetApduLength returns ApduLength (property field)
 	GetApduLength() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAPDULength) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataAPDULength) IsBACnetConstructedDataAPDULength() {}
+
+func (m *_BACnetConstructedDataAPDULength) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAPDULength) deepCopy() *_BACnetConstructedDataAPDULength {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAPDULengthCopy := &_BACnetConstructedDataAPDULength{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ApduLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAPDULengthCopy
+}
 
 func (m *_BACnetConstructedDataAPDULength) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataGroupID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetGroupId returns GroupId (property field)
 	GetGroupId() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataGroupID) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataGroupID) IsBACnetConstructedDataGroupID() {}
+
+func (m *_BACnetConstructedDataGroupID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGroupID) deepCopy() *_BACnetConstructedDataGroupID {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGroupIDCopy := &_BACnetConstructedDataGroupID{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.GroupId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGroupIDCopy
+}
 
 func (m *_BACnetConstructedDataGroupID) String() string {
 	if m == nil {

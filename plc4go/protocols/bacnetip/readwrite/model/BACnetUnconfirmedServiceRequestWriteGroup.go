@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestWriteGroup interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetGroupNumber returns GroupNumber (property field)
 	GetGroupNumber() BACnetContextTagUnsignedInteger
@@ -257,6 +258,25 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) IsBACnetUnconfirmedServiceRequestWriteGroup() {}
+
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) deepCopy() *_BACnetUnconfirmedServiceRequestWriteGroup {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestWriteGroupCopy := &_BACnetUnconfirmedServiceRequestWriteGroup{
+		m.BACnetUnconfirmedServiceRequestContract.DeepCopy().(BACnetUnconfirmedServiceRequestContract),
+		m.GroupNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.WritePriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ChangeList.DeepCopy().(BACnetGroupChannelValueList),
+		m.InhibitDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestWriteGroupCopy
+}
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) String() string {
 	if m == nil {

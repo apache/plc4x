@@ -38,6 +38,7 @@ type BACnetConstructedDataDeployedProfileLocation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeployedProfileLocation returns DeployedProfileLocation (property field)
 	GetDeployedProfileLocation() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) IsBACnetConstructedDataDeployedProfileLocation() {
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocation) deepCopy() *_BACnetConstructedDataDeployedProfileLocation {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDeployedProfileLocationCopy := &_BACnetConstructedDataDeployedProfileLocation{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DeployedProfileLocation.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDeployedProfileLocationCopy
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) String() string {

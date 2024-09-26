@@ -40,12 +40,14 @@ type SysexCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSysexCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommand()
 }
 
 // SysexCommandContract provides a set of functions which can be overwritten by a sub struct
 type SysexCommandContract interface {
+	utils.Copyable
 	// IsSysexCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommand()
 }
@@ -244,3 +246,17 @@ func (pm *_SysexCommand) serializeParent(ctx context.Context, writeBuffer utils.
 }
 
 func (m *_SysexCommand) IsSysexCommand() {}
+
+func (m *_SysexCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommand) deepCopy() *_SysexCommand {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandCopy := &_SysexCommand{
+		nil, // will be set by child
+	}
+	return _SysexCommandCopy
+}

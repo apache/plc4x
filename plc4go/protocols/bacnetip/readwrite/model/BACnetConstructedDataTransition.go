@@ -38,6 +38,7 @@ type BACnetConstructedDataTransition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTransition returns Transition (property field)
 	GetTransition() BACnetLightingTransitionTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataTransition) IsBACnetConstructedDataTransition() {}
+
+func (m *_BACnetConstructedDataTransition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTransition) deepCopy() *_BACnetConstructedDataTransition {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTransitionCopy := &_BACnetConstructedDataTransition{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Transition.DeepCopy().(BACnetLightingTransitionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTransitionCopy
+}
 
 func (m *_BACnetConstructedDataTransition) String() string {
 	if m == nil {

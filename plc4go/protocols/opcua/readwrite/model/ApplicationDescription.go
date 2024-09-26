@@ -38,6 +38,7 @@ type ApplicationDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetApplicationUri returns ApplicationUri (property field)
 	GetApplicationUri() PascalString
@@ -348,6 +349,29 @@ func (m *_ApplicationDescription) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ApplicationDescription) IsApplicationDescription() {}
+
+func (m *_ApplicationDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApplicationDescription) deepCopy() *_ApplicationDescription {
+	if m == nil {
+		return nil
+	}
+	_ApplicationDescriptionCopy := &_ApplicationDescription{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ApplicationUri.DeepCopy().(PascalString),
+		m.ProductUri.DeepCopy().(PascalString),
+		m.ApplicationName.DeepCopy().(LocalizedText),
+		m.ApplicationType,
+		m.GatewayServerUri.DeepCopy().(PascalString),
+		m.DiscoveryProfileUri.DeepCopy().(PascalString),
+		m.NoOfDiscoveryUrls,
+		utils.DeepCopySlice[PascalString, PascalString](m.DiscoveryUrls),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ApplicationDescriptionCopy
+}
 
 func (m *_ApplicationDescription) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetTagPayloadOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOctets returns Octets (property field)
 	GetOctets() []byte
 	// IsBACnetTagPayloadOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -181,6 +182,21 @@ func (m *_BACnetTagPayloadOctetString) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadOctetString) IsBACnetTagPayloadOctetString() {}
+
+func (m *_BACnetTagPayloadOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadOctetString) deepCopy() *_BACnetTagPayloadOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadOctetStringCopy := &_BACnetTagPayloadOctetString{
+		utils.DeepCopySlice[byte, byte](m.Octets),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadOctetStringCopy
+}
 
 func (m *_BACnetTagPayloadOctetString) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type BACnetConstructedDataLifeSafetyZoneAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataLifeSafetyZoneAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLifeSafetyZoneAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataLifeSafetyZoneAll) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneAll) IsBACnetConstructedDataLifeSafetyZoneAll() {}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) deepCopy() *_BACnetConstructedDataLifeSafetyZoneAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLifeSafetyZoneAllCopy := &_BACnetConstructedDataLifeSafetyZoneAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLifeSafetyZoneAllCopy
+}
 
 func (m *_BACnetConstructedDataLifeSafetyZoneAll) String() string {
 	if m == nil {

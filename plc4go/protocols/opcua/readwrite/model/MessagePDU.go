@@ -40,12 +40,14 @@ type MessagePDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMessagePDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMessagePDU()
 }
 
 // MessagePDUContract provides a set of functions which can be overwritten by a sub struct
 type MessagePDUContract interface {
+	utils.Copyable
 	// GetChunk returns Chunk (property field)
 	GetChunk() ChunkType
 	// IsMessagePDU is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -259,3 +261,18 @@ func (pm *_MessagePDU) serializeParent(ctx context.Context, writeBuffer utils.Wr
 }
 
 func (m *_MessagePDU) IsMessagePDU() {}
+
+func (m *_MessagePDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MessagePDU) deepCopy() *_MessagePDU {
+	if m == nil {
+		return nil
+	}
+	_MessagePDUCopy := &_MessagePDU{
+		nil, // will be set by child
+		m.Chunk,
+	}
+	return _MessagePDUCopy
+}

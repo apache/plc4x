@@ -38,6 +38,7 @@ type BACnetSpecialEventPeriodCalendarEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetSpecialEventPeriod
 	// GetCalendarEntry returns CalendarEntry (property field)
 	GetCalendarEntry() BACnetCalendarEntryEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetSpecialEventPeriodCalendarEntry) IsBACnetSpecialEventPeriodCalendarEntry() {}
+
+func (m *_BACnetSpecialEventPeriodCalendarEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarEntry) deepCopy() *_BACnetSpecialEventPeriodCalendarEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetSpecialEventPeriodCalendarEntryCopy := &_BACnetSpecialEventPeriodCalendarEntry{
+		m.BACnetSpecialEventPeriodContract.DeepCopy().(BACnetSpecialEventPeriodContract),
+		m.CalendarEntry.DeepCopy().(BACnetCalendarEntryEnclosed),
+	}
+	m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = m
+	return _BACnetSpecialEventPeriodCalendarEntryCopy
+}
 
 func (m *_BACnetSpecialEventPeriodCalendarEntry) String() string {
 	if m == nil {

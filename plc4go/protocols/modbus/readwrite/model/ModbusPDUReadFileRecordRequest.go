@@ -38,6 +38,7 @@ type ModbusPDUReadFileRecordRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetItems returns Items (property field)
 	GetItems() []ModbusPDUReadFileRecordRequestItem
@@ -211,6 +212,22 @@ func (m *_ModbusPDUReadFileRecordRequest) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ModbusPDUReadFileRecordRequest) IsModbusPDUReadFileRecordRequest() {}
+
+func (m *_ModbusPDUReadFileRecordRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFileRecordRequest) deepCopy() *_ModbusPDUReadFileRecordRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFileRecordRequestCopy := &_ModbusPDUReadFileRecordRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		utils.DeepCopySlice[ModbusPDUReadFileRecordRequestItem, ModbusPDUReadFileRecordRequestItem](m.Items),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadFileRecordRequestCopy
+}
 
 func (m *_ModbusPDUReadFileRecordRequest) String() string {
 	if m == nil {

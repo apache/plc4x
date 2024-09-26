@@ -38,6 +38,7 @@ type SALDataErrorReporting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetErrorReportingData returns ErrorReportingData (property field)
 	GetErrorReportingData() ErrorReportingData
@@ -182,6 +183,22 @@ func (m *_SALDataErrorReporting) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SALDataErrorReporting) IsSALDataErrorReporting() {}
+
+func (m *_SALDataErrorReporting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataErrorReporting) deepCopy() *_SALDataErrorReporting {
+	if m == nil {
+		return nil
+	}
+	_SALDataErrorReportingCopy := &_SALDataErrorReporting{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.ErrorReportingData.DeepCopy().(ErrorReportingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataErrorReportingCopy
+}
 
 func (m *_SALDataErrorReporting) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetEventParameterNone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetEventParameterNone) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetEventParameterNone) IsBACnetEventParameterNone() {}
+
+func (m *_BACnetEventParameterNone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterNone) deepCopy() *_BACnetEventParameterNone {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterNoneCopy := &_BACnetEventParameterNone{
+		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.None.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterNoneCopy
+}
 
 func (m *_BACnetEventParameterNone) String() string {
 	if m == nil {

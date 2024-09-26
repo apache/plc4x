@@ -38,12 +38,14 @@ type S7Payload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7Payload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Payload()
 }
 
 // S7PayloadContract provides a set of functions which can be overwritten by a sub struct
 type S7PayloadContract interface {
+	utils.Copyable
 	// GetParameter() returns a parser argument
 	GetParameter() S7Parameter
 	// IsS7Payload is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -202,3 +204,18 @@ func (m *_S7Payload) GetParameter() S7Parameter {
 ////
 
 func (m *_S7Payload) IsS7Payload() {}
+
+func (m *_S7Payload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7Payload) deepCopy() *_S7Payload {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadCopy := &_S7Payload{
+		nil, // will be set by child
+		m.Parameter,
+	}
+	return _S7PayloadCopy
+}

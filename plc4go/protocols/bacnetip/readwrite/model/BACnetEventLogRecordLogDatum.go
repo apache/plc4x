@@ -40,12 +40,14 @@ type BACnetEventLogRecordLogDatum interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetEventLogRecordLogDatum is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventLogRecordLogDatum()
 }
 
 // BACnetEventLogRecordLogDatumContract provides a set of functions which can be overwritten by a sub struct
 type BACnetEventLogRecordLogDatumContract interface {
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -302,3 +304,21 @@ func (m *_BACnetEventLogRecordLogDatum) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventLogRecordLogDatum) IsBACnetEventLogRecordLogDatum() {}
+
+func (m *_BACnetEventLogRecordLogDatum) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventLogRecordLogDatum) deepCopy() *_BACnetEventLogRecordLogDatum {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventLogRecordLogDatumCopy := &_BACnetEventLogRecordLogDatum{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventLogRecordLogDatumCopy
+}

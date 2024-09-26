@@ -38,6 +38,7 @@ type NodeReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -291,6 +292,27 @@ func (m *_NodeReference) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_NodeReference) IsNodeReference() {}
+
+func (m *_NodeReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeReference) deepCopy() *_NodeReference {
+	if m == nil {
+		return nil
+	}
+	_NodeReferenceCopy := &_NodeReference{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NodeId.DeepCopy().(NodeId),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IsForward,
+		m.NoOfReferencedNodeIds,
+		utils.DeepCopySlice[NodeId, NodeId](m.ReferencedNodeIds),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NodeReferenceCopy
+}
 
 func (m *_NodeReference) String() string {
 	if m == nil {

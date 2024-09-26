@@ -36,6 +36,7 @@ type ModbusPDUReadExceptionStatusRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// IsModbusPDUReadExceptionStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadExceptionStatusRequest()
@@ -154,6 +155,21 @@ func (m *_ModbusPDUReadExceptionStatusRequest) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ModbusPDUReadExceptionStatusRequest) IsModbusPDUReadExceptionStatusRequest() {}
+
+func (m *_ModbusPDUReadExceptionStatusRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadExceptionStatusRequest) deepCopy() *_ModbusPDUReadExceptionStatusRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadExceptionStatusRequestCopy := &_ModbusPDUReadExceptionStatusRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadExceptionStatusRequestCopy
+}
 
 func (m *_ModbusPDUReadExceptionStatusRequest) String() string {
 	if m == nil {

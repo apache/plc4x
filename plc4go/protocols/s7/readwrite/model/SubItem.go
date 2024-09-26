@@ -38,6 +38,7 @@ type SubItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetBytesToRead returns BytesToRead (property field)
 	GetBytesToRead() uint8
 	// GetDbNumber returns DbNumber (property field)
@@ -206,6 +207,22 @@ func (m *_SubItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_SubItem) IsSubItem() {}
+
+func (m *_SubItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubItem) deepCopy() *_SubItem {
+	if m == nil {
+		return nil
+	}
+	_SubItemCopy := &_SubItem{
+		m.BytesToRead,
+		m.DbNumber,
+		m.StartAddress,
+	}
+	return _SubItemCopy
+}
 
 func (m *_SubItem) String() string {
 	if m == nil {

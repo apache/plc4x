@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean interface 
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) Seri
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) deepCopy() *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean{
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfDiscreteValueNewValueContract),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean) String() string {

@@ -38,6 +38,7 @@ type ApplicationAddress2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
 	// GetIsWildcard returns IsWildcard (virtual field)
@@ -197,6 +198,20 @@ func (m *_ApplicationAddress2) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ApplicationAddress2) IsApplicationAddress2() {}
+
+func (m *_ApplicationAddress2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApplicationAddress2) deepCopy() *_ApplicationAddress2 {
+	if m == nil {
+		return nil
+	}
+	_ApplicationAddress2Copy := &_ApplicationAddress2{
+		m.Address,
+	}
+	return _ApplicationAddress2Copy
+}
 
 func (m *_ApplicationAddress2) String() string {
 	if m == nil {

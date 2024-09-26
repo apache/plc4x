@@ -40,12 +40,14 @@ type BACnetOptionalBinaryPV interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetOptionalBinaryPV is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalBinaryPV()
 }
 
 // BACnetOptionalBinaryPVContract provides a set of functions which can be overwritten by a sub struct
 type BACnetOptionalBinaryPVContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -237,3 +239,18 @@ func (pm *_BACnetOptionalBinaryPV) serializeParent(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetOptionalBinaryPV) IsBACnetOptionalBinaryPV() {}
+
+func (m *_BACnetOptionalBinaryPV) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalBinaryPV) deepCopy() *_BACnetOptionalBinaryPV {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalBinaryPVCopy := &_BACnetOptionalBinaryPV{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetOptionalBinaryPVCopy
+}

@@ -36,6 +36,7 @@ type ApduControlNack interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduControl
 	// IsApduControlNack is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControlNack()
@@ -146,6 +147,21 @@ func (m *_ApduControlNack) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ApduControlNack) IsApduControlNack() {}
+
+func (m *_ApduControlNack) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlNack) deepCopy() *_ApduControlNack {
+	if m == nil {
+		return nil
+	}
+	_ApduControlNackCopy := &_ApduControlNack{
+		m.ApduControlContract.DeepCopy().(ApduControlContract),
+	}
+	m.ApduControlContract.(*_ApduControl)._SubType = m
+	return _ApduControlNackCopy
+}
 
 func (m *_ApduControlNack) String() string {
 	if m == nil {

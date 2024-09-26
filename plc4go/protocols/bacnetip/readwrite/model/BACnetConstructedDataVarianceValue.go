@@ -38,6 +38,7 @@ type BACnetConstructedDataVarianceValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVarianceValue returns VarianceValue (property field)
 	GetVarianceValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataVarianceValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataVarianceValue) IsBACnetConstructedDataVarianceValue() {}
+
+func (m *_BACnetConstructedDataVarianceValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVarianceValue) deepCopy() *_BACnetConstructedDataVarianceValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVarianceValueCopy := &_BACnetConstructedDataVarianceValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.VarianceValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVarianceValueCopy
+}
 
 func (m *_BACnetConstructedDataVarianceValue) String() string {
 	if m == nil {

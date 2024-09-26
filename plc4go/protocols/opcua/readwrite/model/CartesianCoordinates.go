@@ -36,6 +36,7 @@ type CartesianCoordinates interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsCartesianCoordinates is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCartesianCoordinates()
@@ -146,6 +147,21 @@ func (m *_CartesianCoordinates) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_CartesianCoordinates) IsCartesianCoordinates() {}
+
+func (m *_CartesianCoordinates) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CartesianCoordinates) deepCopy() *_CartesianCoordinates {
+	if m == nil {
+		return nil
+	}
+	_CartesianCoordinatesCopy := &_CartesianCoordinates{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CartesianCoordinatesCopy
+}
 
 func (m *_CartesianCoordinates) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataUpdateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUpdateTime returns UpdateTime (property field)
 	GetUpdateTime() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUpdateTime) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataUpdateTime) IsBACnetConstructedDataUpdateTime() {}
+
+func (m *_BACnetConstructedDataUpdateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUpdateTime) deepCopy() *_BACnetConstructedDataUpdateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUpdateTimeCopy := &_BACnetConstructedDataUpdateTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.UpdateTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUpdateTimeCopy
+}
 
 func (m *_BACnetConstructedDataUpdateTime) String() string {
 	if m == nil {

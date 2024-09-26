@@ -38,6 +38,7 @@ type BACnetConstructedDataBaseDeviceSecurityPolicy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBaseDeviceSecurityPolicy returns BaseDeviceSecurityPolicy (property field)
 	GetBaseDeviceSecurityPolicy() BACnetSecurityLevelTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) IsBACnetConstructedDataBaseDeviceSecurityPolicy() {
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) deepCopy() *_BACnetConstructedDataBaseDeviceSecurityPolicy {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBaseDeviceSecurityPolicyCopy := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BaseDeviceSecurityPolicy.DeepCopy().(BACnetSecurityLevelTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBaseDeviceSecurityPolicyCopy
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) String() string {

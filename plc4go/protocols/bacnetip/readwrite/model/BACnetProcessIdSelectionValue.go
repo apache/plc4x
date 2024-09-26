@@ -38,6 +38,7 @@ type BACnetProcessIdSelectionValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetProcessIdSelection
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetApplicationTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetProcessIdSelectionValue) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetProcessIdSelectionValue) IsBACnetProcessIdSelectionValue() {}
+
+func (m *_BACnetProcessIdSelectionValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProcessIdSelectionValue) deepCopy() *_BACnetProcessIdSelectionValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetProcessIdSelectionValueCopy := &_BACnetProcessIdSelectionValue{
+		m.BACnetProcessIdSelectionContract.DeepCopy().(BACnetProcessIdSelectionContract),
+		m.ProcessIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = m
+	return _BACnetProcessIdSelectionValueCopy
+}
 
 func (m *_BACnetProcessIdSelectionValue) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type EndpointDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetEndpointUrl returns EndpointUrl (property field)
 	GetEndpointUrl() PascalString
@@ -369,6 +370,30 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_EndpointDescription) IsEndpointDescription() {}
+
+func (m *_EndpointDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EndpointDescription) deepCopy() *_EndpointDescription {
+	if m == nil {
+		return nil
+	}
+	_EndpointDescriptionCopy := &_EndpointDescription{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.Server.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerCertificate.DeepCopy().(PascalByteString),
+		m.SecurityMode,
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.NoOfUserIdentityTokens,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.UserIdentityTokens),
+		m.TransportProfileUri.DeepCopy().(PascalString),
+		m.SecurityLevel,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EndpointDescriptionCopy
+}
 
 func (m *_EndpointDescription) String() string {
 	if m == nil {

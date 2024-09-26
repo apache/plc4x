@@ -38,6 +38,7 @@ type TransferSubscriptionsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -262,6 +263,26 @@ func (m *_TransferSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_TransferSubscriptionsRequest) IsTransferSubscriptionsRequest() {}
+
+func (m *_TransferSubscriptionsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransferSubscriptionsRequest) deepCopy() *_TransferSubscriptionsRequest {
+	if m == nil {
+		return nil
+	}
+	_TransferSubscriptionsRequestCopy := &_TransferSubscriptionsRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfSubscriptionIds,
+		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
+		m.SendInitialValues,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TransferSubscriptionsRequestCopy
+}
 
 func (m *_TransferSubscriptionsRequest) String() string {
 	if m == nil {

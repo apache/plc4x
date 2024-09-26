@@ -38,6 +38,7 @@ type BACnetConstructedDataInstallationID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInstallationId returns InstallationId (property field)
 	GetInstallationId() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataInstallationID) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataInstallationID) IsBACnetConstructedDataInstallationID() {}
+
+func (m *_BACnetConstructedDataInstallationID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInstallationID) deepCopy() *_BACnetConstructedDataInstallationID {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInstallationIDCopy := &_BACnetConstructedDataInstallationID{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.InstallationId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInstallationIDCopy
+}
 
 func (m *_BACnetConstructedDataInstallationID) String() string {
 	if m == nil {

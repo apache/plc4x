@@ -38,6 +38,7 @@ type ServerDiagnosticsSummaryDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetServerViewCount returns ServerViewCount (property field)
 	GetServerViewCount() uint32
@@ -410,6 +411,33 @@ func (m *_ServerDiagnosticsSummaryDataType) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_ServerDiagnosticsSummaryDataType) IsServerDiagnosticsSummaryDataType() {}
+
+func (m *_ServerDiagnosticsSummaryDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServerDiagnosticsSummaryDataType) deepCopy() *_ServerDiagnosticsSummaryDataType {
+	if m == nil {
+		return nil
+	}
+	_ServerDiagnosticsSummaryDataTypeCopy := &_ServerDiagnosticsSummaryDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ServerViewCount,
+		m.CurrentSessionCount,
+		m.CumulatedSessionCount,
+		m.SecurityRejectedSessionCount,
+		m.RejectedSessionCount,
+		m.SessionTimeoutCount,
+		m.SessionAbortCount,
+		m.CurrentSubscriptionCount,
+		m.CumulatedSubscriptionCount,
+		m.PublishingIntervalCount,
+		m.SecurityRejectedRequestsCount,
+		m.RejectedRequestsCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServerDiagnosticsSummaryDataTypeCopy
+}
 
 func (m *_ServerDiagnosticsSummaryDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type GuidNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
@@ -189,6 +190,21 @@ func (m *_GuidNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_GuidNodeId) IsGuidNodeId() {}
+
+func (m *_GuidNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GuidNodeId) deepCopy() *_GuidNodeId {
+	if m == nil {
+		return nil
+	}
+	_GuidNodeIdCopy := &_GuidNodeId{
+		m.NamespaceIndex,
+		m.Identifier.DeepCopy().(GuidValue),
+	}
+	return _GuidNodeIdCopy
+}
 
 func (m *_GuidNodeId) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataDistributionKeyRevision interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDistributionKeyRevision returns DistributionKeyRevision (property field)
 	GetDistributionKeyRevision() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) IsBACnetConstructedDataDistributionKeyRevision() {
+}
+
+func (m *_BACnetConstructedDataDistributionKeyRevision) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDistributionKeyRevision) deepCopy() *_BACnetConstructedDataDistributionKeyRevision {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDistributionKeyRevisionCopy := &_BACnetConstructedDataDistributionKeyRevision{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DistributionKeyRevision.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDistributionKeyRevisionCopy
 }
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) String() string {

@@ -38,6 +38,7 @@ type TimeZoneDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetOffset returns Offset (property field)
 	GetOffset() int16
@@ -215,6 +216,24 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_TimeZoneDataType) IsTimeZoneDataType() {}
+
+func (m *_TimeZoneDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TimeZoneDataType) deepCopy() *_TimeZoneDataType {
+	if m == nil {
+		return nil
+	}
+	_TimeZoneDataTypeCopy := &_TimeZoneDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Offset,
+		m.DaylightSavingInOffset,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TimeZoneDataTypeCopy
+}
 
 func (m *_TimeZoneDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetParameters returns Parameters (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetFaultParameterFaultExtendedParameters) IsBACnetFaultParameterFaultExtendedParameters() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParameters) deepCopy() *_BACnetFaultParameterFaultExtendedParameters {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersCopy := &_BACnetFaultParameterFaultExtendedParameters{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetFaultParameterFaultExtendedParametersEntry, BACnetFaultParameterFaultExtendedParametersEntry](m.Parameters),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetFaultParameterFaultExtendedParametersCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParameters) String() string {

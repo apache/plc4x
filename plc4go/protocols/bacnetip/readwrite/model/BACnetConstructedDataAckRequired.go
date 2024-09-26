@@ -38,6 +38,7 @@ type BACnetConstructedDataAckRequired interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAckRequired returns AckRequired (property field)
 	GetAckRequired() BACnetEventTransitionBitsTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAckRequired) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataAckRequired) IsBACnetConstructedDataAckRequired() {}
+
+func (m *_BACnetConstructedDataAckRequired) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAckRequired) deepCopy() *_BACnetConstructedDataAckRequired {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAckRequiredCopy := &_BACnetConstructedDataAckRequired{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AckRequired.DeepCopy().(BACnetEventTransitionBitsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAckRequiredCopy
+}
 
 func (m *_BACnetConstructedDataAckRequired) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataElevatorGroup interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetElevatorGroup returns ElevatorGroup (property field)
 	GetElevatorGroup() BACnetApplicationTagObjectIdentifier
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataElevatorGroup) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataElevatorGroup) IsBACnetConstructedDataElevatorGroup() {}
+
+func (m *_BACnetConstructedDataElevatorGroup) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataElevatorGroup) deepCopy() *_BACnetConstructedDataElevatorGroup {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataElevatorGroupCopy := &_BACnetConstructedDataElevatorGroup{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ElevatorGroup.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataElevatorGroupCopy
+}
 
 func (m *_BACnetConstructedDataElevatorGroup) String() string {
 	if m == nil {

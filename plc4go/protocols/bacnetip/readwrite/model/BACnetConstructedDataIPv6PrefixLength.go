@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6PrefixLength interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6PrefixLength returns Ipv6PrefixLength (property field)
 	GetIpv6PrefixLength() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataIPv6PrefixLength) IsBACnetConstructedDataIPv6PrefixLength() {}
+
+func (m *_BACnetConstructedDataIPv6PrefixLength) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6PrefixLength) deepCopy() *_BACnetConstructedDataIPv6PrefixLength {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6PrefixLengthCopy := &_BACnetConstructedDataIPv6PrefixLength{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Ipv6PrefixLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6PrefixLengthCopy
+}
 
 func (m *_BACnetConstructedDataIPv6PrefixLength) String() string {
 	if m == nil {

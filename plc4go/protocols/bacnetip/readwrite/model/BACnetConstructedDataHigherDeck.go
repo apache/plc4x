@@ -38,6 +38,7 @@ type BACnetConstructedDataHigherDeck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetHigherDeck returns HigherDeck (property field)
 	GetHigherDeck() BACnetApplicationTagObjectIdentifier
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataHigherDeck) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataHigherDeck) IsBACnetConstructedDataHigherDeck() {}
+
+func (m *_BACnetConstructedDataHigherDeck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataHigherDeck) deepCopy() *_BACnetConstructedDataHigherDeck {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataHigherDeckCopy := &_BACnetConstructedDataHigherDeck{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.HigherDeck.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataHigherDeckCopy
+}
 
 func (m *_BACnetConstructedDataHigherDeck) String() string {
 	if m == nil {

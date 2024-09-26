@@ -36,6 +36,7 @@ type SecurityDataLineCutAlarmRaised interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataLineCutAlarmRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLineCutAlarmRaised()
@@ -142,6 +143,21 @@ func (m *_SecurityDataLineCutAlarmRaised) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_SecurityDataLineCutAlarmRaised) IsSecurityDataLineCutAlarmRaised() {}
+
+func (m *_SecurityDataLineCutAlarmRaised) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataLineCutAlarmRaised) deepCopy() *_SecurityDataLineCutAlarmRaised {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataLineCutAlarmRaisedCopy := &_SecurityDataLineCutAlarmRaised{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataLineCutAlarmRaisedCopy
+}
 
 func (m *_SecurityDataLineCutAlarmRaised) String() string {
 	if m == nil {

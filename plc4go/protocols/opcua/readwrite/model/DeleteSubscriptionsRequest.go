@@ -38,6 +38,7 @@ type DeleteSubscriptionsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -226,6 +227,24 @@ func (m *_DeleteSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_DeleteSubscriptionsRequest) IsDeleteSubscriptionsRequest() {}
+
+func (m *_DeleteSubscriptionsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteSubscriptionsRequest) deepCopy() *_DeleteSubscriptionsRequest {
+	if m == nil {
+		return nil
+	}
+	_DeleteSubscriptionsRequestCopy := &_DeleteSubscriptionsRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfSubscriptionIds,
+		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteSubscriptionsRequestCopy
+}
 
 func (m *_DeleteSubscriptionsRequest) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type VersionTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsVersionTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVersionTime()
 }
@@ -134,6 +135,18 @@ func (m *_VersionTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_VersionTime) IsVersionTime() {}
+
+func (m *_VersionTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VersionTime) deepCopy() *_VersionTime {
+	if m == nil {
+		return nil
+	}
+	_VersionTimeCopy := &_VersionTime{}
+	return _VersionTimeCopy
+}
 
 func (m *_VersionTime) String() string {
 	if m == nil {

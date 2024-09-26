@@ -38,6 +38,7 @@ type BACnetLandingDoorStatusLandingDoorsList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetLandingDoors returns LandingDoors (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetLandingDoorStatusLandingDoorsList) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetLandingDoorStatusLandingDoorsList) IsBACnetLandingDoorStatusLandingDoorsList() {}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsList) deepCopy() *_BACnetLandingDoorStatusLandingDoorsList {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingDoorStatusLandingDoorsListCopy := &_BACnetLandingDoorStatusLandingDoorsList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetLandingDoorStatusLandingDoorsListEntry, BACnetLandingDoorStatusLandingDoorsListEntry](m.LandingDoors),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetLandingDoorStatusLandingDoorsListCopy
+}
 
 func (m *_BACnetLandingDoorStatusLandingDoorsList) String() string {
 	if m == nil {

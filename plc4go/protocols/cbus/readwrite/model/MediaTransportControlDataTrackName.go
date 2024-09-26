@@ -38,6 +38,7 @@ type MediaTransportControlDataTrackName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetTrackName returns TrackName (property field)
 	GetTrackName() string
@@ -175,6 +176,22 @@ func (m *_MediaTransportControlDataTrackName) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_MediaTransportControlDataTrackName) IsMediaTransportControlDataTrackName() {}
+
+func (m *_MediaTransportControlDataTrackName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataTrackName) deepCopy() *_MediaTransportControlDataTrackName {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataTrackNameCopy := &_MediaTransportControlDataTrackName{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.TrackName,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataTrackNameCopy
+}
 
 func (m *_MediaTransportControlDataTrackName) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataSilenced interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSilenced returns Silenced (property field)
 	GetSilenced() BACnetSilencedStateTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSilenced) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataSilenced) IsBACnetConstructedDataSilenced() {}
+
+func (m *_BACnetConstructedDataSilenced) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSilenced) deepCopy() *_BACnetConstructedDataSilenced {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSilencedCopy := &_BACnetConstructedDataSilenced{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Silenced.DeepCopy().(BACnetSilencedStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSilencedCopy
+}
 
 func (m *_BACnetConstructedDataSilenced) String() string {
 	if m == nil {

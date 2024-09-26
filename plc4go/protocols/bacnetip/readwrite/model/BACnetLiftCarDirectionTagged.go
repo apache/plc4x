@@ -38,6 +38,7 @@ type BACnetLiftCarDirectionTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetLiftCarDirectionTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLiftCarDirectionTagged) IsBACnetLiftCarDirectionTagged() {}
+
+func (m *_BACnetLiftCarDirectionTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftCarDirectionTagged) deepCopy() *_BACnetLiftCarDirectionTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftCarDirectionTaggedCopy := &_BACnetLiftCarDirectionTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLiftCarDirectionTaggedCopy
+}
 
 func (m *_BACnetLiftCarDirectionTagged) String() string {
 	if m == nil {

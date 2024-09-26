@@ -38,6 +38,7 @@ type KeyValuePair interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetKey returns Key (property field)
 	GetKey() QualifiedName
@@ -206,6 +207,23 @@ func (m *_KeyValuePair) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_KeyValuePair) IsKeyValuePair() {}
+
+func (m *_KeyValuePair) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KeyValuePair) deepCopy() *_KeyValuePair {
+	if m == nil {
+		return nil
+	}
+	_KeyValuePairCopy := &_KeyValuePair{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Key.DeepCopy().(QualifiedName),
+		m.Value.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _KeyValuePairCopy
+}
 
 func (m *_KeyValuePair) String() string {
 	if m == nil {

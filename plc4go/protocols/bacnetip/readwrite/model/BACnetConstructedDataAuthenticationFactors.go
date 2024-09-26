@@ -38,6 +38,7 @@ type BACnetConstructedDataAuthenticationFactors interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataAuthenticationFactors) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataAuthenticationFactors) IsBACnetConstructedDataAuthenticationFactors() {
+}
+
+func (m *_BACnetConstructedDataAuthenticationFactors) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAuthenticationFactors) deepCopy() *_BACnetConstructedDataAuthenticationFactors {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAuthenticationFactorsCopy := &_BACnetConstructedDataAuthenticationFactors{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetCredentialAuthenticationFactor, BACnetCredentialAuthenticationFactor](m.AuthenticationFactors),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAuthenticationFactorsCopy
 }
 
 func (m *_BACnetConstructedDataAuthenticationFactors) String() string {

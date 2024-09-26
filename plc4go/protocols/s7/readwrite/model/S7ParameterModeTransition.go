@@ -38,6 +38,7 @@ type S7ParameterModeTransition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetMethod returns Method (property field)
 	GetMethod() uint8
@@ -295,6 +296,27 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_S7ParameterModeTransition) IsS7ParameterModeTransition() {}
+
+func (m *_S7ParameterModeTransition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterModeTransition) deepCopy() *_S7ParameterModeTransition {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterModeTransitionCopy := &_S7ParameterModeTransition{
+		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		m.Method,
+		m.CpuFunctionType,
+		m.CpuFunctionGroup,
+		m.CurrentMode,
+		m.SequenceNumber,
+		m.reservedField0,
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterModeTransitionCopy
+}
 
 func (m *_S7ParameterModeTransition) String() string {
 	if m == nil {

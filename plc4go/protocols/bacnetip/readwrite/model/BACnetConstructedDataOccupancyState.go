@@ -38,6 +38,7 @@ type BACnetConstructedDataOccupancyState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOccupancyState returns OccupancyState (property field)
 	GetOccupancyState() BACnetAccessZoneOccupancyStateTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOccupancyState) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataOccupancyState) IsBACnetConstructedDataOccupancyState() {}
+
+func (m *_BACnetConstructedDataOccupancyState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOccupancyState) deepCopy() *_BACnetConstructedDataOccupancyState {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOccupancyStateCopy := &_BACnetConstructedDataOccupancyState{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.OccupancyState.DeepCopy().(BACnetAccessZoneOccupancyStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOccupancyStateCopy
+}
 
 func (m *_BACnetConstructedDataOccupancyState) String() string {
 	if m == nil {

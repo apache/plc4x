@@ -36,6 +36,7 @@ type AdsReadDeviceInfoRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsReadDeviceInfoRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadDeviceInfoRequest()
@@ -150,6 +151,21 @@ func (m *_AdsReadDeviceInfoRequest) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_AdsReadDeviceInfoRequest) IsAdsReadDeviceInfoRequest() {}
+
+func (m *_AdsReadDeviceInfoRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadDeviceInfoRequest) deepCopy() *_AdsReadDeviceInfoRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsReadDeviceInfoRequestCopy := &_AdsReadDeviceInfoRequest{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadDeviceInfoRequestCopy
+}
 
 func (m *_AdsReadDeviceInfoRequest) String() string {
 	if m == nil {

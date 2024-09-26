@@ -38,6 +38,7 @@ type SecurityDataDisplayMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetMessage returns Message (property field)
 	GetMessage() string
@@ -175,6 +176,22 @@ func (m *_SecurityDataDisplayMessage) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataDisplayMessage) IsSecurityDataDisplayMessage() {}
+
+func (m *_SecurityDataDisplayMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataDisplayMessage) deepCopy() *_SecurityDataDisplayMessage {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataDisplayMessageCopy := &_SecurityDataDisplayMessage{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.Message,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataDisplayMessageCopy
+}
 
 func (m *_SecurityDataDisplayMessage) String() string {
 	if m == nil {

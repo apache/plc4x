@@ -38,6 +38,7 @@ type BACnetConstructedDataRecipientList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRecipientList returns RecipientList (property field)
 	GetRecipientList() []BACnetDestination
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataRecipientList) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataRecipientList) IsBACnetConstructedDataRecipientList() {}
+
+func (m *_BACnetConstructedDataRecipientList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRecipientList) deepCopy() *_BACnetConstructedDataRecipientList {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRecipientListCopy := &_BACnetConstructedDataRecipientList{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetDestination, BACnetDestination](m.RecipientList),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRecipientListCopy
+}
 
 func (m *_BACnetConstructedDataRecipientList) String() string {
 	if m == nil {

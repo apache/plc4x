@@ -40,12 +40,14 @@ type MediaTransportControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMediaTransportControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlData()
 }
 
 // MediaTransportControlDataContract provides a set of functions which can be overwritten by a sub struct
 type MediaTransportControlDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MediaTransportControlCommandTypeContainer
 	// GetMediaLinkGroup returns MediaLinkGroup (property field)
@@ -342,3 +344,19 @@ func (pm *_MediaTransportControlData) serializeParent(ctx context.Context, write
 }
 
 func (m *_MediaTransportControlData) IsMediaTransportControlData() {}
+
+func (m *_MediaTransportControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlData) deepCopy() *_MediaTransportControlData {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataCopy := &_MediaTransportControlData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.MediaLinkGroup,
+	}
+	return _MediaTransportControlDataCopy
+}

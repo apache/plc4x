@@ -38,6 +38,7 @@ type BACnetConstructedDataPulseRate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPulseRate returns PulseRate (property field)
 	GetPulseRate() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPulseRate) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataPulseRate) IsBACnetConstructedDataPulseRate() {}
+
+func (m *_BACnetConstructedDataPulseRate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPulseRate) deepCopy() *_BACnetConstructedDataPulseRate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPulseRateCopy := &_BACnetConstructedDataPulseRate{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PulseRate.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPulseRateCopy
+}
 
 func (m *_BACnetConstructedDataPulseRate) String() string {
 	if m == nil {

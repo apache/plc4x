@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentialDataInputPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetAuthenticationFactor
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCredentialDataInputPresentValue) SerializeWithWri
 }
 
 func (m *_BACnetConstructedDataCredentialDataInputPresentValue) IsBACnetConstructedDataCredentialDataInputPresentValue() {
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputPresentValue) deepCopy() *_BACnetConstructedDataCredentialDataInputPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialDataInputPresentValueCopy := &_BACnetConstructedDataCredentialDataInputPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetAuthenticationFactor),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialDataInputPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataCredentialDataInputPresentValue) String() string {

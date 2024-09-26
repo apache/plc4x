@@ -38,6 +38,7 @@ type BACnetConstructedDataNumberOfStates interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfState returns NumberOfState (property field)
 	GetNumberOfState() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNumberOfStates) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataNumberOfStates) IsBACnetConstructedDataNumberOfStates() {}
+
+func (m *_BACnetConstructedDataNumberOfStates) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNumberOfStates) deepCopy() *_BACnetConstructedDataNumberOfStates {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNumberOfStatesCopy := &_BACnetConstructedDataNumberOfStates{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfState.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNumberOfStatesCopy
+}
 
 func (m *_BACnetConstructedDataNumberOfStates) String() string {
 	if m == nil {

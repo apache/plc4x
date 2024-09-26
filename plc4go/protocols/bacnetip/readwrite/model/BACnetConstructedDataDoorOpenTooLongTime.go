@@ -38,6 +38,7 @@ type BACnetConstructedDataDoorOpenTooLongTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoorOpenTooLongTime returns DoorOpenTooLongTime (property field)
 	GetDoorOpenTooLongTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDoorOpenTooLongTime) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataDoorOpenTooLongTime) IsBACnetConstructedDataDoorOpenTooLongTime() {}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTime) deepCopy() *_BACnetConstructedDataDoorOpenTooLongTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoorOpenTooLongTimeCopy := &_BACnetConstructedDataDoorOpenTooLongTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DoorOpenTooLongTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoorOpenTooLongTimeCopy
+}
 
 func (m *_BACnetConstructedDataDoorOpenTooLongTime) String() string {
 	if m == nil {

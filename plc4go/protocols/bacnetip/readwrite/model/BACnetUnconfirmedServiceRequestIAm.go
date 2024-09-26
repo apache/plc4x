@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestIAm interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
@@ -254,6 +255,25 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIAm) IsBACnetUnconfirmedServiceRequestIAm() {}
+
+func (m *_BACnetUnconfirmedServiceRequestIAm) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestIAm) deepCopy() *_BACnetUnconfirmedServiceRequestIAm {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestIAmCopy := &_BACnetUnconfirmedServiceRequestIAm{
+		m.BACnetUnconfirmedServiceRequestContract.DeepCopy().(BACnetUnconfirmedServiceRequestContract),
+		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.MaximumApduLengthAcceptedLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.SegmentationSupported.DeepCopy().(BACnetSegmentationTagged),
+		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestIAmCopy
+}
 
 func (m *_BACnetUnconfirmedServiceRequestIAm) String() string {
 	if m == nil {

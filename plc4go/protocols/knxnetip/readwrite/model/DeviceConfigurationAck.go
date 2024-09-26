@@ -40,6 +40,7 @@ type DeviceConfigurationAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetDeviceConfigurationAckDataBlock returns DeviceConfigurationAckDataBlock (property field)
 	GetDeviceConfigurationAckDataBlock() DeviceConfigurationAckDataBlock
@@ -184,6 +185,22 @@ func (m *_DeviceConfigurationAck) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_DeviceConfigurationAck) IsDeviceConfigurationAck() {}
+
+func (m *_DeviceConfigurationAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationAck) deepCopy() *_DeviceConfigurationAck {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationAckCopy := &_DeviceConfigurationAck{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.DeviceConfigurationAckDataBlock.DeepCopy().(DeviceConfigurationAckDataBlock),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DeviceConfigurationAckCopy
+}
 
 func (m *_DeviceConfigurationAck) String() string {
 	if m == nil {

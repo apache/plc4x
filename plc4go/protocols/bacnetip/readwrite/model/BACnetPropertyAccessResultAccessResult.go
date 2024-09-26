@@ -40,12 +40,14 @@ type BACnetPropertyAccessResultAccessResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetPropertyAccessResultAccessResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyAccessResultAccessResult()
 }
 
 // BACnetPropertyAccessResultAccessResultContract provides a set of functions which can be overwritten by a sub struct
 type BACnetPropertyAccessResultAccessResultContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -264,3 +266,21 @@ func (m *_BACnetPropertyAccessResultAccessResult) GetPropertyArrayIndexArgument(
 ////
 
 func (m *_BACnetPropertyAccessResultAccessResult) IsBACnetPropertyAccessResultAccessResult() {}
+
+func (m *_BACnetPropertyAccessResultAccessResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyAccessResultAccessResult) deepCopy() *_BACnetPropertyAccessResultAccessResult {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyAccessResultAccessResultCopy := &_BACnetPropertyAccessResultAccessResult{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ObjectTypeArgument,
+		m.PropertyIdentifierArgument,
+		m.PropertyArrayIndexArgument,
+	}
+	return _BACnetPropertyAccessResultAccessResultCopy
+}

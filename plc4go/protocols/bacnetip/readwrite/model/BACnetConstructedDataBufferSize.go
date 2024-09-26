@@ -38,6 +38,7 @@ type BACnetConstructedDataBufferSize interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBufferSize returns BufferSize (property field)
 	GetBufferSize() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBufferSize) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataBufferSize) IsBACnetConstructedDataBufferSize() {}
+
+func (m *_BACnetConstructedDataBufferSize) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBufferSize) deepCopy() *_BACnetConstructedDataBufferSize {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBufferSizeCopy := &_BACnetConstructedDataBufferSize{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BufferSize.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBufferSizeCopy
+}
 
 func (m *_BACnetConstructedDataBufferSize) String() string {
 	if m == nil {

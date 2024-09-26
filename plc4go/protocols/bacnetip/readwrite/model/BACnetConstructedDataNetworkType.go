@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNetworkType returns NetworkType (property field)
 	GetNetworkType() BACnetNetworkTypeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNetworkType) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataNetworkType) IsBACnetConstructedDataNetworkType() {}
+
+func (m *_BACnetConstructedDataNetworkType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkType) deepCopy() *_BACnetConstructedDataNetworkType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkTypeCopy := &_BACnetConstructedDataNetworkType{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NetworkType.DeepCopy().(BACnetNetworkTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkTypeCopy
+}
 
 func (m *_BACnetConstructedDataNetworkType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestConfirmedEventNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -482,6 +483,34 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) IsBACnetConfirmedServiceRequestConfirmedEventNotification() {
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) deepCopy() *_BACnetConfirmedServiceRequestConfirmedEventNotification {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestConfirmedEventNotificationCopy := &_BACnetConfirmedServiceRequestConfirmedEventNotification{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
+		m.NotificationClass.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.EventType.DeepCopy().(BACnetEventTypeTagged),
+		m.MessageText.DeepCopy().(BACnetContextTagCharacterString),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+		m.AckRequired.DeepCopy().(BACnetContextTagBoolean),
+		m.FromState.DeepCopy().(BACnetEventStateTagged),
+		m.ToState.DeepCopy().(BACnetEventStateTagged),
+		m.EventValues.DeepCopy().(BACnetNotificationParameters),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestConfirmedEventNotificationCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) String() string {

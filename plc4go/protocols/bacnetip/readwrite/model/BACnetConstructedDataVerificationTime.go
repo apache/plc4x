@@ -38,6 +38,7 @@ type BACnetConstructedDataVerificationTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVerificationTime returns VerificationTime (property field)
 	GetVerificationTime() BACnetApplicationTagSignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataVerificationTime) IsBACnetConstructedDataVerificationTime() {}
+
+func (m *_BACnetConstructedDataVerificationTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVerificationTime) deepCopy() *_BACnetConstructedDataVerificationTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVerificationTimeCopy := &_BACnetConstructedDataVerificationTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.VerificationTime.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVerificationTimeCopy
+}
 
 func (m *_BACnetConstructedDataVerificationTime) String() string {
 	if m == nil {

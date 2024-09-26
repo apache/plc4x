@@ -36,6 +36,7 @@ type ApduDataExtFileStreamInfoReport interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtFileStreamInfoReport is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtFileStreamInfoReport()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtFileStreamInfoReport) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ApduDataExtFileStreamInfoReport) IsApduDataExtFileStreamInfoReport() {}
+
+func (m *_ApduDataExtFileStreamInfoReport) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtFileStreamInfoReport) deepCopy() *_ApduDataExtFileStreamInfoReport {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtFileStreamInfoReportCopy := &_ApduDataExtFileStreamInfoReport{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtFileStreamInfoReportCopy
+}
 
 func (m *_ApduDataExtFileStreamInfoReport) String() string {
 	if m == nil {

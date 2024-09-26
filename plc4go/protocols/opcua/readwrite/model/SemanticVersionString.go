@@ -36,6 +36,7 @@ type SemanticVersionString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSemanticVersionString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSemanticVersionString()
 }
@@ -134,6 +135,18 @@ func (m *_SemanticVersionString) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SemanticVersionString) IsSemanticVersionString() {}
+
+func (m *_SemanticVersionString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SemanticVersionString) deepCopy() *_SemanticVersionString {
+	if m == nil {
+		return nil
+	}
+	_SemanticVersionStringCopy := &_SemanticVersionString{}
+	return _SemanticVersionStringCopy
+}
 
 func (m *_SemanticVersionString) String() string {
 	if m == nil {

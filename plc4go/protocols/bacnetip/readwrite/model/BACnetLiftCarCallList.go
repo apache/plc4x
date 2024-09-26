@@ -38,6 +38,7 @@ type BACnetLiftCarCallList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFloorNumbers returns FloorNumbers (property field)
 	GetFloorNumbers() BACnetLiftCarCallListFloorList
 	// IsBACnetLiftCarCallList is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -169,6 +170,20 @@ func (m *_BACnetLiftCarCallList) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetLiftCarCallList) IsBACnetLiftCarCallList() {}
+
+func (m *_BACnetLiftCarCallList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftCarCallList) deepCopy() *_BACnetLiftCarCallList {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftCarCallListCopy := &_BACnetLiftCarCallList{
+		m.FloorNumbers.DeepCopy().(BACnetLiftCarCallListFloorList),
+	}
+	return _BACnetLiftCarCallListCopy
+}
 
 func (m *_BACnetLiftCarCallList) String() string {
 	if m == nil {

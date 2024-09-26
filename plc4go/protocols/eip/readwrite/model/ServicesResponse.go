@@ -38,6 +38,7 @@ type ServicesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetEncapsulationProtocol returns EncapsulationProtocol (property field)
 	GetEncapsulationProtocol() uint16
@@ -286,6 +287,27 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_ServicesResponse) IsServicesResponse() {}
+
+func (m *_ServicesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServicesResponse) deepCopy() *_ServicesResponse {
+	if m == nil {
+		return nil
+	}
+	_ServicesResponseCopy := &_ServicesResponse{
+		m.TypeIdContract.DeepCopy().(TypeIdContract),
+		m.EncapsulationProtocol,
+		m.SupportsCIPEncapsulation,
+		m.SupportsUDP,
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _ServicesResponseCopy
+}
 
 func (m *_ServicesResponse) String() string {
 	if m == nil {

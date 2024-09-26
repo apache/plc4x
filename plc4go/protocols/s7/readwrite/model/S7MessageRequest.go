@@ -36,6 +36,7 @@ type S7MessageRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Message
 	// IsS7MessageRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7MessageRequest()
@@ -146,6 +147,21 @@ func (m *_S7MessageRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_S7MessageRequest) IsS7MessageRequest() {}
+
+func (m *_S7MessageRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageRequest) deepCopy() *_S7MessageRequest {
+	if m == nil {
+		return nil
+	}
+	_S7MessageRequestCopy := &_S7MessageRequest{
+		m.S7MessageContract.DeepCopy().(S7MessageContract),
+	}
+	m.S7MessageContract.(*_S7Message)._SubType = m
+	return _S7MessageRequestCopy
+}
 
 func (m *_S7MessageRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeOfStrikeCountReset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeOfStrikeCountReset returns TimeOfStrikeCountReset (property field)
 	GetTimeOfStrikeCountReset() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimeOfStrikeCountReset) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataTimeOfStrikeCountReset) IsBACnetConstructedDataTimeOfStrikeCountReset() {
+}
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) deepCopy() *_BACnetConstructedDataTimeOfStrikeCountReset {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeOfStrikeCountResetCopy := &_BACnetConstructedDataTimeOfStrikeCountReset{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TimeOfStrikeCountReset.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeOfStrikeCountResetCopy
 }
 
 func (m *_BACnetConstructedDataTimeOfStrikeCountReset) String() string {

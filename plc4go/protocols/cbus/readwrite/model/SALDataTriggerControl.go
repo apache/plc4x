@@ -38,6 +38,7 @@ type SALDataTriggerControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetTriggerControlData returns TriggerControlData (property field)
 	GetTriggerControlData() TriggerControlData
@@ -182,6 +183,22 @@ func (m *_SALDataTriggerControl) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SALDataTriggerControl) IsSALDataTriggerControl() {}
+
+func (m *_SALDataTriggerControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataTriggerControl) deepCopy() *_SALDataTriggerControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataTriggerControlCopy := &_SALDataTriggerControl{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.TriggerControlData.DeepCopy().(TriggerControlData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataTriggerControlCopy
+}
 
 func (m *_SALDataTriggerControl) String() string {
 	if m == nil {

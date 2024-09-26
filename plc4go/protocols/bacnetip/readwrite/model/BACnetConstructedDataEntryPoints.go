@@ -38,6 +38,7 @@ type BACnetConstructedDataEntryPoints interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEntryPoints returns EntryPoints (property field)
 	GetEntryPoints() []BACnetDeviceObjectReference
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataEntryPoints) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataEntryPoints) IsBACnetConstructedDataEntryPoints() {}
+
+func (m *_BACnetConstructedDataEntryPoints) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEntryPoints) deepCopy() *_BACnetConstructedDataEntryPoints {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEntryPointsCopy := &_BACnetConstructedDataEntryPoints{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.EntryPoints),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEntryPointsCopy
+}
 
 func (m *_BACnetConstructedDataEntryPoints) String() string {
 	if m == nil {

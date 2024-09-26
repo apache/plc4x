@@ -36,6 +36,7 @@ type MPropWriteReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMPropWriteReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropWriteReq()
@@ -146,6 +147,21 @@ func (m *_MPropWriteReq) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_MPropWriteReq) IsMPropWriteReq() {}
+
+func (m *_MPropWriteReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropWriteReq) deepCopy() *_MPropWriteReq {
+	if m == nil {
+		return nil
+	}
+	_MPropWriteReqCopy := &_MPropWriteReq{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropWriteReqCopy
+}
 
 func (m *_MPropWriteReq) String() string {
 	if m == nil {

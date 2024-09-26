@@ -38,6 +38,7 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfCovSubscriptionSpecificationEntry returns ListOfCovSubscriptionSpecificationEntry (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) GetTa
 ////
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification() {
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) deepCopy() *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification {
+	if m == nil {
+		return nil
+	}
+	_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationCopy := &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry](m.ListOfCovSubscriptionSpecificationEntry),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationCopy
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) String() string {

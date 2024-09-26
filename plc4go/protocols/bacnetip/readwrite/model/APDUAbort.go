@@ -38,6 +38,7 @@ type APDUAbort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetServer returns Server (property field)
 	GetServer() bool
@@ -239,6 +240,25 @@ func (m *_APDUAbort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_APDUAbort) IsAPDUAbort() {}
+
+func (m *_APDUAbort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUAbort) deepCopy() *_APDUAbort {
+	if m == nil {
+		return nil
+	}
+	_APDUAbortCopy := &_APDUAbort{
+		m.APDUContract.DeepCopy().(APDUContract),
+		m.Server,
+		m.OriginalInvokeId,
+		m.AbortReason.DeepCopy().(BACnetAbortReasonTagged),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUAbortCopy
+}
 
 func (m *_APDUAbort) String() string {
 	if m == nil {

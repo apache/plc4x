@@ -38,6 +38,7 @@ type BACnetConstructedDataDateTimePatternValuePresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) SerializeWithWr
 }
 
 func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) IsBACnetConstructedDataDateTimePatternValuePresentValue() {
+}
+
+func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) deepCopy() *_BACnetConstructedDataDateTimePatternValuePresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDateTimePatternValuePresentValueCopy := &_BACnetConstructedDataDateTimePatternValuePresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDateTimePatternValuePresentValueCopy
 }
 
 func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) String() string {

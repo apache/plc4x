@@ -38,6 +38,7 @@ type BACnetNotificationParametersBufferReady interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -274,6 +275,26 @@ func (m *_BACnetNotificationParametersBufferReady) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetNotificationParametersBufferReady) IsBACnetNotificationParametersBufferReady() {}
+
+func (m *_BACnetNotificationParametersBufferReady) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersBufferReady) deepCopy() *_BACnetNotificationParametersBufferReady {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersBufferReadyCopy := &_BACnetNotificationParametersBufferReady{
+		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.BufferProperty.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.PreviousNotification.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.CurrentNotification.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersBufferReadyCopy
+}
 
 func (m *_BACnetNotificationParametersBufferReady) String() string {
 	if m == nil {

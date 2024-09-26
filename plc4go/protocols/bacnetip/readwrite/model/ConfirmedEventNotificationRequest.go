@@ -38,6 +38,7 @@ type ConfirmedEventNotificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
 	// GetInitiatingDeviceIdentifier returns InitiatingDeviceIdentifier (property field)
@@ -457,6 +458,32 @@ func (m *_ConfirmedEventNotificationRequest) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_ConfirmedEventNotificationRequest) IsConfirmedEventNotificationRequest() {}
+
+func (m *_ConfirmedEventNotificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConfirmedEventNotificationRequest) deepCopy() *_ConfirmedEventNotificationRequest {
+	if m == nil {
+		return nil
+	}
+	_ConfirmedEventNotificationRequestCopy := &_ConfirmedEventNotificationRequest{
+		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
+		m.NotificationClass.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.EventType.DeepCopy().(BACnetEventTypeTagged),
+		m.MessageText.DeepCopy().(BACnetContextTagCharacterString),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+		m.AckRequired.DeepCopy().(BACnetContextTagBoolean),
+		m.FromState.DeepCopy().(BACnetEventStateTagged),
+		m.ToState.DeepCopy().(BACnetEventStateTagged),
+		m.EventValues.DeepCopy().(BACnetNotificationParameters),
+	}
+	return _ConfirmedEventNotificationRequestCopy
+}
 
 func (m *_ConfirmedEventNotificationRequest) String() string {
 	if m == nil {

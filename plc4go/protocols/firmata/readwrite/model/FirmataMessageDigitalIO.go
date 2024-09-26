@@ -40,6 +40,7 @@ type FirmataMessageDigitalIO interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataMessage
 	// GetPinBlock returns PinBlock (property field)
 	GetPinBlock() uint8
@@ -204,6 +205,23 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_FirmataMessageDigitalIO) IsFirmataMessageDigitalIO() {}
+
+func (m *_FirmataMessageDigitalIO) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessageDigitalIO) deepCopy() *_FirmataMessageDigitalIO {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageDigitalIOCopy := &_FirmataMessageDigitalIO{
+		m.FirmataMessageContract.DeepCopy().(FirmataMessageContract),
+		m.PinBlock,
+		utils.DeepCopySlice[int8, int8](m.Data),
+	}
+	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	return _FirmataMessageDigitalIOCopy
+}
 
 func (m *_FirmataMessageDigitalIO) String() string {
 	if m == nil {

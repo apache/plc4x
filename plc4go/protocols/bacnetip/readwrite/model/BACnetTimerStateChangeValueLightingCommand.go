@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueLightingCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetLigthingCommandValue returns LigthingCommandValue (property field)
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetTimerStateChangeValueLightingCommand) IsBACnetTimerStateChangeValueLightingCommand() {
+}
+
+func (m *_BACnetTimerStateChangeValueLightingCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueLightingCommand) deepCopy() *_BACnetTimerStateChangeValueLightingCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueLightingCommandCopy := &_BACnetTimerStateChangeValueLightingCommand{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.LigthingCommandValue.DeepCopy().(BACnetLightingCommandEnclosed),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueLightingCommandCopy
 }
 
 func (m *_BACnetTimerStateChangeValueLightingCommand) String() string {

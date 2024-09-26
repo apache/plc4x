@@ -38,6 +38,7 @@ type IdentifyReplyCommandNetworkTerminalLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetNetworkTerminalLevels returns NetworkTerminalLevels (property field)
 	GetNetworkTerminalLevels() []byte
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) SerializeWithWriteBuffer(ct
 }
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) IsIdentifyReplyCommandNetworkTerminalLevels() {}
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) deepCopy() *_IdentifyReplyCommandNetworkTerminalLevels {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandNetworkTerminalLevelsCopy := &_IdentifyReplyCommandNetworkTerminalLevels{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		utils.DeepCopySlice[byte, byte](m.NetworkTerminalLevels),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandNetworkTerminalLevelsCopy
+}
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) String() string {
 	if m == nil {

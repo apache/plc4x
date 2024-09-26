@@ -38,6 +38,7 @@ type BACnetPropertyStatesTimerState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetTimerState returns TimerState (property field)
 	GetTimerState() BACnetTimerStateTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesTimerState) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetPropertyStatesTimerState) IsBACnetPropertyStatesTimerState() {}
+
+func (m *_BACnetPropertyStatesTimerState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesTimerState) deepCopy() *_BACnetPropertyStatesTimerState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesTimerStateCopy := &_BACnetPropertyStatesTimerState{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.TimerState.DeepCopy().(BACnetTimerStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesTimerStateCopy
+}
 
 func (m *_BACnetPropertyStatesTimerState) String() string {
 	if m == nil {

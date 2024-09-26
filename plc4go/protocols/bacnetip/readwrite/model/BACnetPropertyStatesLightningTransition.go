@@ -38,6 +38,7 @@ type BACnetPropertyStatesLightningTransition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLightningTransition returns LightningTransition (property field)
 	GetLightningTransition() BACnetLightingTransitionTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLightningTransition) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetPropertyStatesLightningTransition) IsBACnetPropertyStatesLightningTransition() {}
+
+func (m *_BACnetPropertyStatesLightningTransition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLightningTransition) deepCopy() *_BACnetPropertyStatesLightningTransition {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLightningTransitionCopy := &_BACnetPropertyStatesLightningTransition{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.LightningTransition.DeepCopy().(BACnetLightingTransitionTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLightningTransitionCopy
+}
 
 func (m *_BACnetPropertyStatesLightningTransition) String() string {
 	if m == nil {

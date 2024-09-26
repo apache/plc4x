@@ -38,6 +38,7 @@ type ModbusPDUReadDiscreteInputsResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
@@ -202,6 +203,22 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ModbusPDUReadDiscreteInputsResponse) IsModbusPDUReadDiscreteInputsResponse() {}
+
+func (m *_ModbusPDUReadDiscreteInputsResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadDiscreteInputsResponse) deepCopy() *_ModbusPDUReadDiscreteInputsResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadDiscreteInputsResponseCopy := &_ModbusPDUReadDiscreteInputsResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadDiscreteInputsResponseCopy
+}
 
 func (m *_ModbusPDUReadDiscreteInputsResponse) String() string {
 	if m == nil {

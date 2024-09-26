@@ -36,6 +36,7 @@ type ApduDataExtNetworkParameterRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtNetworkParameterRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtNetworkParameterRead()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtNetworkParameterRead) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ApduDataExtNetworkParameterRead) IsApduDataExtNetworkParameterRead() {}
+
+func (m *_ApduDataExtNetworkParameterRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtNetworkParameterRead) deepCopy() *_ApduDataExtNetworkParameterRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtNetworkParameterReadCopy := &_ApduDataExtNetworkParameterRead{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtNetworkParameterReadCopy
+}
 
 func (m *_ApduDataExtNetworkParameterRead) String() string {
 	if m == nil {

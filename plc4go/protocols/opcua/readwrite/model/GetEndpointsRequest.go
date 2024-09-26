@@ -38,6 +38,7 @@ type GetEndpointsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -304,6 +305,27 @@ func (m *_GetEndpointsRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_GetEndpointsRequest) IsGetEndpointsRequest() {}
+
+func (m *_GetEndpointsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetEndpointsRequest) deepCopy() *_GetEndpointsRequest {
+	if m == nil {
+		return nil
+	}
+	_GetEndpointsRequestCopy := &_GetEndpointsRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.NoOfLocaleIds,
+		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
+		m.NoOfProfileUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.ProfileUris),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _GetEndpointsRequestCopy
+}
 
 func (m *_GetEndpointsRequest) String() string {
 	if m == nil {

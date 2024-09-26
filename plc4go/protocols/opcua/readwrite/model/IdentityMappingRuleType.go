@@ -38,6 +38,7 @@ type IdentityMappingRuleType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetCriteriaType returns CriteriaType (property field)
 	GetCriteriaType() IdentityCriteriaType
@@ -203,6 +204,23 @@ func (m *_IdentityMappingRuleType) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_IdentityMappingRuleType) IsIdentityMappingRuleType() {}
+
+func (m *_IdentityMappingRuleType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentityMappingRuleType) deepCopy() *_IdentityMappingRuleType {
+	if m == nil {
+		return nil
+	}
+	_IdentityMappingRuleTypeCopy := &_IdentityMappingRuleType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.CriteriaType,
+		m.Criteria.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _IdentityMappingRuleTypeCopy
+}
 
 func (m *_IdentityMappingRuleType) String() string {
 	if m == nil {

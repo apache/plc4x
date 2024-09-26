@@ -38,6 +38,7 @@ type ViewDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetViewId returns ViewId (property field)
 	GetViewId() NodeId
@@ -224,6 +225,24 @@ func (m *_ViewDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ViewDescription) IsViewDescription() {}
+
+func (m *_ViewDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ViewDescription) deepCopy() *_ViewDescription {
+	if m == nil {
+		return nil
+	}
+	_ViewDescriptionCopy := &_ViewDescription{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ViewId.DeepCopy().(NodeId),
+		m.Timestamp,
+		m.ViewVersion,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ViewDescriptionCopy
+}
 
 func (m *_ViewDescription) String() string {
 	if m == nil {

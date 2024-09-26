@@ -38,6 +38,7 @@ type NodeTypeDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTypeDefinitionNode returns TypeDefinitionNode (property field)
 	GetTypeDefinitionNode() ExpandedNodeId
@@ -267,6 +268,26 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NodeTypeDescription) IsNodeTypeDescription() {}
+
+func (m *_NodeTypeDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeTypeDescription) deepCopy() *_NodeTypeDescription {
+	if m == nil {
+		return nil
+	}
+	_NodeTypeDescriptionCopy := &_NodeTypeDescription{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
+		m.IncludeSubTypes,
+		m.NoOfDataToReturn,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.DataToReturn),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NodeTypeDescriptionCopy
+}
 
 func (m *_NodeTypeDescription) String() string {
 	if m == nil {

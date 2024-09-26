@@ -40,12 +40,14 @@ type ServiceId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceId()
 }
 
 // ServiceIdContract provides a set of functions which can be overwritten by a sub struct
 type ServiceIdContract interface {
+	utils.Copyable
 	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceId()
 }
@@ -210,3 +212,17 @@ func (pm *_ServiceId) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_ServiceId) IsServiceId() {}
+
+func (m *_ServiceId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServiceId) deepCopy() *_ServiceId {
+	if m == nil {
+		return nil
+	}
+	_ServiceIdCopy := &_ServiceId{
+		nil, // will be set by child
+	}
+	return _ServiceIdCopy
+}

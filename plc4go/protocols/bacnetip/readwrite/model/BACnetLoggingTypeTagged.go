@@ -38,6 +38,7 @@ type BACnetLoggingTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetLoggingTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLoggingTypeTagged) IsBACnetLoggingTypeTagged() {}
+
+func (m *_BACnetLoggingTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLoggingTypeTagged) deepCopy() *_BACnetLoggingTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLoggingTypeTaggedCopy := &_BACnetLoggingTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLoggingTypeTaggedCopy
+}
 
 func (m *_BACnetLoggingTypeTagged) String() string {
 	if m == nil {

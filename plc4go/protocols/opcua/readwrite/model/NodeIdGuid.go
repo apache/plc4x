@@ -38,6 +38,7 @@ type NodeIdGuid interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NodeIdTypeDefinition
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
@@ -233,6 +234,23 @@ func (m *_NodeIdGuid) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_NodeIdGuid) IsNodeIdGuid() {}
+
+func (m *_NodeIdGuid) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdGuid) deepCopy() *_NodeIdGuid {
+	if m == nil {
+		return nil
+	}
+	_NodeIdGuidCopy := &_NodeIdGuid{
+		m.NodeIdTypeDefinitionContract.DeepCopy().(NodeIdTypeDefinitionContract),
+		m.NamespaceIndex,
+		utils.DeepCopySlice[byte, byte](m.Id),
+	}
+	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	return _NodeIdGuidCopy
+}
 
 func (m *_NodeIdGuid) String() string {
 	if m == nil {

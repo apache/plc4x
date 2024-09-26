@@ -38,6 +38,7 @@ type CloseSessionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -218,6 +219,24 @@ func (m *_CloseSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_CloseSessionRequest) IsCloseSessionRequest() {}
+
+func (m *_CloseSessionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CloseSessionRequest) deepCopy() *_CloseSessionRequest {
+	if m == nil {
+		return nil
+	}
+	_CloseSessionRequestCopy := &_CloseSessionRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteSubscriptions,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CloseSessionRequestCopy
+}
 
 func (m *_CloseSessionRequest) String() string {
 	if m == nil {

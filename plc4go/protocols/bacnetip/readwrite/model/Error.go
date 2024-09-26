@@ -38,6 +38,7 @@ type Error interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetErrorClass returns ErrorClass (property field)
 	GetErrorClass() ErrorClassTagged
 	// GetErrorCode returns ErrorCode (property field)
@@ -192,6 +193,21 @@ func (m *_Error) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Error) IsError() {}
+
+func (m *_Error) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Error) deepCopy() *_Error {
+	if m == nil {
+		return nil
+	}
+	_ErrorCopy := &_Error{
+		m.ErrorClass.DeepCopy().(ErrorClassTagged),
+		m.ErrorCode.DeepCopy().(ErrorCodeTagged),
+	}
+	return _ErrorCopy
+}
 
 func (m *_Error) String() string {
 	if m == nil {

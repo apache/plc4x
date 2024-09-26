@@ -38,6 +38,7 @@ type BACnetConstructedDataUserType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUserType returns UserType (property field)
 	GetUserType() BACnetAccessUserTypeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUserType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataUserType) IsBACnetConstructedDataUserType() {}
+
+func (m *_BACnetConstructedDataUserType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUserType) deepCopy() *_BACnetConstructedDataUserType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUserTypeCopy := &_BACnetConstructedDataUserType{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.UserType.DeepCopy().(BACnetAccessUserTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUserTypeCopy
+}
 
 func (m *_BACnetConstructedDataUserType) String() string {
 	if m == nil {

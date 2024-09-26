@@ -38,6 +38,7 @@ type BACnetConstructedDataUserExternalIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUserExternalIdentifier returns UserExternalIdentifier (property field)
 	GetUserExternalIdentifier() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataUserExternalIdentifier) IsBACnetConstructedDataUserExternalIdentifier() {
+}
+
+func (m *_BACnetConstructedDataUserExternalIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUserExternalIdentifier) deepCopy() *_BACnetConstructedDataUserExternalIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUserExternalIdentifierCopy := &_BACnetConstructedDataUserExternalIdentifier{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.UserExternalIdentifier.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUserExternalIdentifierCopy
 }
 
 func (m *_BACnetConstructedDataUserExternalIdentifier) String() string {

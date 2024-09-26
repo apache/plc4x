@@ -38,6 +38,7 @@ type BACnetConstructedDataLiftFaultSignals interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultSignals returns FaultSignals (property field)
 	GetFaultSignals() []BACnetLiftFaultTagged
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataLiftFaultSignals) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataLiftFaultSignals) IsBACnetConstructedDataLiftFaultSignals() {}
+
+func (m *_BACnetConstructedDataLiftFaultSignals) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLiftFaultSignals) deepCopy() *_BACnetConstructedDataLiftFaultSignals {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLiftFaultSignalsCopy := &_BACnetConstructedDataLiftFaultSignals{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetLiftFaultTagged, BACnetLiftFaultTagged](m.FaultSignals),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLiftFaultSignalsCopy
+}
 
 func (m *_BACnetConstructedDataLiftFaultSignals) String() string {
 	if m == nil {

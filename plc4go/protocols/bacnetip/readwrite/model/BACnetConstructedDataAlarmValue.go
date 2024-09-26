@@ -38,6 +38,7 @@ type BACnetConstructedDataAlarmValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAlarmValue) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataAlarmValue) IsBACnetConstructedDataAlarmValue() {}
+
+func (m *_BACnetConstructedDataAlarmValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAlarmValue) deepCopy() *_BACnetConstructedDataAlarmValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAlarmValueCopy := &_BACnetConstructedDataAlarmValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAlarmValueCopy
+}
 
 func (m *_BACnetConstructedDataAlarmValue) String() string {
 	if m == nil {

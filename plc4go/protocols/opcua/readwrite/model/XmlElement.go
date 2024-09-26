@@ -38,6 +38,7 @@ type XmlElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLength returns Length (property field)
 	GetLength() int32
 	// GetValue returns Value (property field)
@@ -188,6 +189,21 @@ func (m *_XmlElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_XmlElement) IsXmlElement() {}
+
+func (m *_XmlElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_XmlElement) deepCopy() *_XmlElement {
+	if m == nil {
+		return nil
+	}
+	_XmlElementCopy := &_XmlElement{
+		m.Length,
+		utils.DeepCopySlice[string, string](m.Value),
+	}
+	return _XmlElementCopy
+}
 
 func (m *_XmlElement) String() string {
 	if m == nil {

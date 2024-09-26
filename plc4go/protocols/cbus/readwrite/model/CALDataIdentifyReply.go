@@ -38,6 +38,7 @@ type CALDataIdentifyReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetAttribute returns Attribute (property field)
 	GetAttribute() Attribute
@@ -199,6 +200,23 @@ func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_CALDataIdentifyReply) IsCALDataIdentifyReply() {}
+
+func (m *_CALDataIdentifyReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataIdentifyReply) deepCopy() *_CALDataIdentifyReply {
+	if m == nil {
+		return nil
+	}
+	_CALDataIdentifyReplyCopy := &_CALDataIdentifyReply{
+		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.Attribute,
+		m.IdentifyReplyCommand.DeepCopy().(IdentifyReplyCommand),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataIdentifyReplyCopy
+}
 
 func (m *_CALDataIdentifyReply) String() string {
 	if m == nil {

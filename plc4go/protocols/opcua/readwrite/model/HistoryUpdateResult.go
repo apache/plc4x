@@ -38,6 +38,7 @@ type HistoryUpdateResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -280,6 +281,26 @@ func (m *_HistoryUpdateResult) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_HistoryUpdateResult) IsHistoryUpdateResult() {}
+
+func (m *_HistoryUpdateResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryUpdateResult) deepCopy() *_HistoryUpdateResult {
+	if m == nil {
+		return nil
+	}
+	_HistoryUpdateResultCopy := &_HistoryUpdateResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfOperationResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.OperationResults),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryUpdateResultCopy
+}
 
 func (m *_HistoryUpdateResult) String() string {
 	if m == nil {

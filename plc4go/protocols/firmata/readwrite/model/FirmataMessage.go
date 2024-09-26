@@ -42,12 +42,14 @@ type FirmataMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsFirmataMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataMessage()
 }
 
 // FirmataMessageContract provides a set of functions which can be overwritten by a sub struct
 type FirmataMessageContract interface {
+	utils.Copyable
 	// GetResponse() returns a parser argument
 	GetResponse() bool
 	// IsFirmataMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -219,3 +221,18 @@ func (m *_FirmataMessage) GetResponse() bool {
 ////
 
 func (m *_FirmataMessage) IsFirmataMessage() {}
+
+func (m *_FirmataMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessage) deepCopy() *_FirmataMessage {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageCopy := &_FirmataMessage{
+		nil, // will be set by child
+		m.Response,
+	}
+	return _FirmataMessageCopy
+}

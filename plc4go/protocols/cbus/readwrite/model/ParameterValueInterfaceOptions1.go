@@ -38,6 +38,7 @@ type ParameterValueInterfaceOptions1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() InterfaceOptions1
@@ -210,6 +211,23 @@ func (m *_ParameterValueInterfaceOptions1) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ParameterValueInterfaceOptions1) IsParameterValueInterfaceOptions1() {}
+
+func (m *_ParameterValueInterfaceOptions1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueInterfaceOptions1) deepCopy() *_ParameterValueInterfaceOptions1 {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueInterfaceOptions1Copy := &_ParameterValueInterfaceOptions1{
+		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.Value.DeepCopy().(InterfaceOptions1),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueInterfaceOptions1Copy
+}
 
 func (m *_ParameterValueInterfaceOptions1) String() string {
 	if m == nil {

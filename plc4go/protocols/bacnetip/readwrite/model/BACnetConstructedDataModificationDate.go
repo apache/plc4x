@@ -38,6 +38,7 @@ type BACnetConstructedDataModificationDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetModificationDate returns ModificationDate (property field)
 	GetModificationDate() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataModificationDate) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataModificationDate) IsBACnetConstructedDataModificationDate() {}
+
+func (m *_BACnetConstructedDataModificationDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataModificationDate) deepCopy() *_BACnetConstructedDataModificationDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataModificationDateCopy := &_BACnetConstructedDataModificationDate{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ModificationDate.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataModificationDateCopy
+}
 
 func (m *_BACnetConstructedDataModificationDate) String() string {
 	if m == nil {

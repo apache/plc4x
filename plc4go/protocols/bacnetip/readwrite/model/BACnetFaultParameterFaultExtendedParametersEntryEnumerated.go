@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) SerializeW
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) IsBACnetFaultParameterFaultExtendedParametersEntryEnumerated() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedCopy := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryEnumeratedCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) String() string {

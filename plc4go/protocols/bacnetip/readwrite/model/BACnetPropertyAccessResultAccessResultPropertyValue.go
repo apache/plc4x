@@ -38,6 +38,7 @@ type BACnetPropertyAccessResultAccessResultPropertyValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyAccessResultAccessResult
 	// GetPropertyValue returns PropertyValue (property field)
 	GetPropertyValue() BACnetConstructedData
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) SerializeWithWrit
 }
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) IsBACnetPropertyAccessResultAccessResultPropertyValue() {
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) deepCopy() *_BACnetPropertyAccessResultAccessResultPropertyValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyAccessResultAccessResultPropertyValueCopy := &_BACnetPropertyAccessResultAccessResultPropertyValue{
+		m.BACnetPropertyAccessResultAccessResultContract.DeepCopy().(BACnetPropertyAccessResultAccessResultContract),
+		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = m
+	return _BACnetPropertyAccessResultAccessResultPropertyValueCopy
 }
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) String() string {

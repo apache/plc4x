@@ -38,6 +38,7 @@ type BACnetClientCOVNone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetClientCOV
 	// GetDefaultIncrement returns DefaultIncrement (property field)
 	GetDefaultIncrement() BACnetApplicationTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetClientCOVNone) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetClientCOVNone) IsBACnetClientCOVNone() {}
+
+func (m *_BACnetClientCOVNone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetClientCOVNone) deepCopy() *_BACnetClientCOVNone {
+	if m == nil {
+		return nil
+	}
+	_BACnetClientCOVNoneCopy := &_BACnetClientCOVNone{
+		m.BACnetClientCOVContract.DeepCopy().(BACnetClientCOVContract),
+		m.DefaultIncrement.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = m
+	return _BACnetClientCOVNoneCopy
+}
 
 func (m *_BACnetClientCOVNone) String() string {
 	if m == nil {

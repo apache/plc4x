@@ -36,6 +36,7 @@ type MFuncPropStateReadReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMFuncPropStateReadReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropStateReadReq()
@@ -146,6 +147,21 @@ func (m *_MFuncPropStateReadReq) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_MFuncPropStateReadReq) IsMFuncPropStateReadReq() {}
+
+func (m *_MFuncPropStateReadReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MFuncPropStateReadReq) deepCopy() *_MFuncPropStateReadReq {
+	if m == nil {
+		return nil
+	}
+	_MFuncPropStateReadReqCopy := &_MFuncPropStateReadReq{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MFuncPropStateReadReqCopy
+}
 
 func (m *_MFuncPropStateReadReq) String() string {
 	if m == nil {

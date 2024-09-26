@@ -38,6 +38,7 @@ type ErrorReportingSystemCategoryTypeBuildingManagementSystems interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForBuildingManagementSystems
@@ -179,6 +180,22 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) SerializeWi
 }
 
 func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) IsErrorReportingSystemCategoryTypeBuildingManagementSystems() {
+}
+
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) deepCopy() *_ErrorReportingSystemCategoryTypeBuildingManagementSystems {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeBuildingManagementSystemsCopy := &_ErrorReportingSystemCategoryTypeBuildingManagementSystems{
+		m.ErrorReportingSystemCategoryTypeContract.DeepCopy().(ErrorReportingSystemCategoryTypeContract),
+		m.CategoryForType,
+	}
+	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	return _ErrorReportingSystemCategoryTypeBuildingManagementSystemsCopy
 }
 
 func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) String() string {

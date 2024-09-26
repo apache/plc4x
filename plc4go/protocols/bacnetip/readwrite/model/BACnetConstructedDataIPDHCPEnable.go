@@ -38,6 +38,7 @@ type BACnetConstructedDataIPDHCPEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpDhcpEnable returns IpDhcpEnable (property field)
 	GetIpDhcpEnable() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPDHCPEnable) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataIPDHCPEnable) IsBACnetConstructedDataIPDHCPEnable() {}
+
+func (m *_BACnetConstructedDataIPDHCPEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPDHCPEnable) deepCopy() *_BACnetConstructedDataIPDHCPEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPDHCPEnableCopy := &_BACnetConstructedDataIPDHCPEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IpDhcpEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPDHCPEnableCopy
+}
 
 func (m *_BACnetConstructedDataIPDHCPEnable) String() string {
 	if m == nil {

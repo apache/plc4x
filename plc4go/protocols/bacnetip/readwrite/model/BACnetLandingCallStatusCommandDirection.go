@@ -38,6 +38,7 @@ type BACnetLandingCallStatusCommandDirection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLandingCallStatusCommand
 	// GetDirection returns Direction (property field)
 	GetDirection() BACnetLiftCarDirectionTagged
@@ -178,6 +179,22 @@ func (m *_BACnetLandingCallStatusCommandDirection) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetLandingCallStatusCommandDirection) IsBACnetLandingCallStatusCommandDirection() {}
+
+func (m *_BACnetLandingCallStatusCommandDirection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingCallStatusCommandDirection) deepCopy() *_BACnetLandingCallStatusCommandDirection {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingCallStatusCommandDirectionCopy := &_BACnetLandingCallStatusCommandDirection{
+		m.BACnetLandingCallStatusCommandContract.DeepCopy().(BACnetLandingCallStatusCommandContract),
+		m.Direction.DeepCopy().(BACnetLiftCarDirectionTagged),
+	}
+	m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = m
+	return _BACnetLandingCallStatusCommandDirectionCopy
+}
 
 func (m *_BACnetLandingCallStatusCommandDirection) String() string {
 	if m == nil {

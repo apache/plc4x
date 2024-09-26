@@ -38,6 +38,7 @@ type HistoryData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfDataValues returns NoOfDataValues (property field)
 	GetNoOfDataValues() int32
@@ -207,6 +208,23 @@ func (m *_HistoryData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_HistoryData) IsHistoryData() {}
+
+func (m *_HistoryData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryData) deepCopy() *_HistoryData {
+	if m == nil {
+		return nil
+	}
+	_HistoryDataCopy := &_HistoryData{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NoOfDataValues,
+		utils.DeepCopySlice[DataValue, DataValue](m.DataValues),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryDataCopy
+}
 
 func (m *_HistoryData) String() string {
 	if m == nil {

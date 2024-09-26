@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier interface 
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) Seri
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) IsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierCopy := &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) String() string {

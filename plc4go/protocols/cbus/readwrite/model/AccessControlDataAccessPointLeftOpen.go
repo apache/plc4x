@@ -36,6 +36,7 @@ type AccessControlDataAccessPointLeftOpen interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AccessControlData
 	// IsAccessControlDataAccessPointLeftOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataAccessPointLeftOpen()
@@ -142,6 +143,21 @@ func (m *_AccessControlDataAccessPointLeftOpen) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_AccessControlDataAccessPointLeftOpen) IsAccessControlDataAccessPointLeftOpen() {}
+
+func (m *_AccessControlDataAccessPointLeftOpen) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlDataAccessPointLeftOpen) deepCopy() *_AccessControlDataAccessPointLeftOpen {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataAccessPointLeftOpenCopy := &_AccessControlDataAccessPointLeftOpen{
+		m.AccessControlDataContract.DeepCopy().(AccessControlDataContract),
+	}
+	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	return _AccessControlDataAccessPointLeftOpenCopy
+}
 
 func (m *_AccessControlDataAccessPointLeftOpen) String() string {
 	if m == nil {

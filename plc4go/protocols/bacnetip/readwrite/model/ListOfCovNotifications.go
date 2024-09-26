@@ -38,6 +38,7 @@ type ListOfCovNotifications interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
 	GetMonitoredObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetOpeningTag returns OpeningTag (property field)
@@ -239,6 +240,23 @@ func (m *_ListOfCovNotifications) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ListOfCovNotifications) IsListOfCovNotifications() {}
+
+func (m *_ListOfCovNotifications) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListOfCovNotifications) deepCopy() *_ListOfCovNotifications {
+	if m == nil {
+		return nil
+	}
+	_ListOfCovNotificationsCopy := &_ListOfCovNotifications{
+		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[ListOfCovNotificationsValue, ListOfCovNotificationsValue](m.ListOfValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _ListOfCovNotificationsCopy
+}
 
 func (m *_ListOfCovNotifications) String() string {
 	if m == nil {

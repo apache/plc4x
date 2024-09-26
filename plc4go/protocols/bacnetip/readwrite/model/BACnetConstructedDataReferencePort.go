@@ -38,6 +38,7 @@ type BACnetConstructedDataReferencePort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReferencePort returns ReferencePort (property field)
 	GetReferencePort() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataReferencePort) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataReferencePort) IsBACnetConstructedDataReferencePort() {}
+
+func (m *_BACnetConstructedDataReferencePort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReferencePort) deepCopy() *_BACnetConstructedDataReferencePort {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReferencePortCopy := &_BACnetConstructedDataReferencePort{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ReferencePort.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReferencePortCopy
+}
 
 func (m *_BACnetConstructedDataReferencePort) String() string {
 	if m == nil {

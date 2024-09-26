@@ -38,6 +38,7 @@ type BACnetValueSourceNone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetValueSource
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetValueSourceNone) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetValueSourceNone) IsBACnetValueSourceNone() {}
+
+func (m *_BACnetValueSourceNone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSourceNone) deepCopy() *_BACnetValueSourceNone {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceNoneCopy := &_BACnetValueSourceNone{
+		m.BACnetValueSourceContract.DeepCopy().(BACnetValueSourceContract),
+		m.None.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	return _BACnetValueSourceNoneCopy
+}
 
 func (m *_BACnetValueSourceNone) String() string {
 	if m == nil {

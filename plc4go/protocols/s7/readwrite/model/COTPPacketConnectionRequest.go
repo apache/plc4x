@@ -38,6 +38,7 @@ type COTPPacketConnectionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
@@ -221,6 +222,24 @@ func (m *_COTPPacketConnectionRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_COTPPacketConnectionRequest) IsCOTPPacketConnectionRequest() {}
+
+func (m *_COTPPacketConnectionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPPacketConnectionRequest) deepCopy() *_COTPPacketConnectionRequest {
+	if m == nil {
+		return nil
+	}
+	_COTPPacketConnectionRequestCopy := &_COTPPacketConnectionRequest{
+		m.COTPPacketContract.DeepCopy().(COTPPacketContract),
+		m.DestinationReference,
+		m.SourceReference,
+		m.ProtocolClass,
+	}
+	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	return _COTPPacketConnectionRequestCopy
+}
 
 func (m *_COTPPacketConnectionRequest) String() string {
 	if m == nil {

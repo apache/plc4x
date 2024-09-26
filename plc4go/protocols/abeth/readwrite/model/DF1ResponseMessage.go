@@ -40,12 +40,14 @@ type DF1ResponseMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1ResponseMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1ResponseMessage()
 }
 
 // DF1ResponseMessageContract provides a set of functions which can be overwritten by a sub struct
 type DF1ResponseMessageContract interface {
+	utils.Copyable
 	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() uint8
 	// GetSourceAddress returns SourceAddress (property field)
@@ -320,3 +322,24 @@ func (m *_DF1ResponseMessage) GetPayloadLength() uint16 {
 ////
 
 func (m *_DF1ResponseMessage) IsDF1ResponseMessage() {}
+
+func (m *_DF1ResponseMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1ResponseMessage) deepCopy() *_DF1ResponseMessage {
+	if m == nil {
+		return nil
+	}
+	_DF1ResponseMessageCopy := &_DF1ResponseMessage{
+		nil, // will be set by child
+		m.DestinationAddress,
+		m.SourceAddress,
+		m.Status,
+		m.TransactionCounter,
+		m.PayloadLength,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _DF1ResponseMessageCopy
+}

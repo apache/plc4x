@@ -38,6 +38,7 @@ type MonitoredSALLongFormSmartMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MonitoredSAL
 	// GetTerminatingByte returns TerminatingByte (property field)
 	GetTerminatingByte() uint32
@@ -382,6 +383,29 @@ func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_MonitoredSALLongFormSmartMode) IsMonitoredSALLongFormSmartMode() {}
+
+func (m *_MonitoredSALLongFormSmartMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSALLongFormSmartMode) deepCopy() *_MonitoredSALLongFormSmartMode {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALLongFormSmartModeCopy := &_MonitoredSALLongFormSmartMode{
+		m.MonitoredSALContract.DeepCopy().(MonitoredSALContract),
+		m.TerminatingByte,
+		m.UnitAddress.DeepCopy().(UnitAddress),
+		m.BridgeAddress.DeepCopy().(BridgeAddress),
+		m.Application,
+		utils.CopyPtr[byte](m.ReservedByte),
+		m.ReplyNetwork.DeepCopy().(ReplyNetwork),
+		m.SalData.DeepCopy().(SALData),
+		m.reservedField0,
+	}
+	m.MonitoredSALContract.(*_MonitoredSAL)._SubType = m
+	return _MonitoredSALLongFormSmartModeCopy
+}
 
 func (m *_MonitoredSALLongFormSmartMode) String() string {
 	if m == nil {

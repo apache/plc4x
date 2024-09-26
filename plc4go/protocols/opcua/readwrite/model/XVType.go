@@ -38,6 +38,7 @@ type XVType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetX returns X (property field)
 	GetX() float64
@@ -200,6 +201,23 @@ func (m *_XVType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 }
 
 func (m *_XVType) IsXVType() {}
+
+func (m *_XVType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_XVType) deepCopy() *_XVType {
+	if m == nil {
+		return nil
+	}
+	_XVTypeCopy := &_XVType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.X,
+		m.Value,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _XVTypeCopy
+}
 
 func (m *_XVType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesLightningInProgress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLightningInProgress returns LightningInProgress (property field)
 	GetLightningInProgress() BACnetLightingInProgressTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLightningInProgress) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetPropertyStatesLightningInProgress) IsBACnetPropertyStatesLightningInProgress() {}
+
+func (m *_BACnetPropertyStatesLightningInProgress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLightningInProgress) deepCopy() *_BACnetPropertyStatesLightningInProgress {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLightningInProgressCopy := &_BACnetPropertyStatesLightningInProgress{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.LightningInProgress.DeepCopy().(BACnetLightingInProgressTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLightningInProgressCopy
+}
 
 func (m *_BACnetPropertyStatesLightningInProgress) String() string {
 	if m == nil {

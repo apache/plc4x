@@ -40,12 +40,14 @@ type FirmataCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsFirmataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommand()
 }
 
 // FirmataCommandContract provides a set of functions which can be overwritten by a sub struct
 type FirmataCommandContract interface {
+	utils.Copyable
 	// GetResponse() returns a parser argument
 	GetResponse() bool
 	// IsFirmataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -217,3 +219,18 @@ func (m *_FirmataCommand) GetResponse() bool {
 ////
 
 func (m *_FirmataCommand) IsFirmataCommand() {}
+
+func (m *_FirmataCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommand) deepCopy() *_FirmataCommand {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandCopy := &_FirmataCommand{
+		nil, // will be set by child
+		m.Response,
+	}
+	return _FirmataCommandCopy
+}

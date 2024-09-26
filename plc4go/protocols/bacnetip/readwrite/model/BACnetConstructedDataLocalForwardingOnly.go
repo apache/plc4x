@@ -38,6 +38,7 @@ type BACnetConstructedDataLocalForwardingOnly interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLocalForwardingOnly returns LocalForwardingOnly (property field)
 	GetLocalForwardingOnly() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataLocalForwardingOnly) IsBACnetConstructedDataLocalForwardingOnly() {}
+
+func (m *_BACnetConstructedDataLocalForwardingOnly) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLocalForwardingOnly) deepCopy() *_BACnetConstructedDataLocalForwardingOnly {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLocalForwardingOnlyCopy := &_BACnetConstructedDataLocalForwardingOnly{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LocalForwardingOnly.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLocalForwardingOnlyCopy
+}
 
 func (m *_BACnetConstructedDataLocalForwardingOnly) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type PublishedDataSetSourceDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsPublishedDataSetSourceDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishedDataSetSourceDataType()
@@ -146,6 +147,21 @@ func (m *_PublishedDataSetSourceDataType) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_PublishedDataSetSourceDataType) IsPublishedDataSetSourceDataType() {}
+
+func (m *_PublishedDataSetSourceDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishedDataSetSourceDataType) deepCopy() *_PublishedDataSetSourceDataType {
+	if m == nil {
+		return nil
+	}
+	_PublishedDataSetSourceDataTypeCopy := &_PublishedDataSetSourceDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishedDataSetSourceDataTypeCopy
+}
 
 func (m *_PublishedDataSetSourceDataType) String() string {
 	if m == nil {

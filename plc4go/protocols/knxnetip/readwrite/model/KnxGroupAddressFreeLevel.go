@@ -38,6 +38,7 @@ type KnxGroupAddressFreeLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxGroupAddress
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint16
@@ -179,6 +180,22 @@ func (m *_KnxGroupAddressFreeLevel) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_KnxGroupAddressFreeLevel) IsKnxGroupAddressFreeLevel() {}
+
+func (m *_KnxGroupAddressFreeLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxGroupAddressFreeLevel) deepCopy() *_KnxGroupAddressFreeLevel {
+	if m == nil {
+		return nil
+	}
+	_KnxGroupAddressFreeLevelCopy := &_KnxGroupAddressFreeLevel{
+		m.KnxGroupAddressContract.DeepCopy().(KnxGroupAddressContract),
+		m.SubGroup,
+	}
+	m.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = m
+	return _KnxGroupAddressFreeLevelCopy
+}
 
 func (m *_KnxGroupAddressFreeLevel) String() string {
 	if m == nil {

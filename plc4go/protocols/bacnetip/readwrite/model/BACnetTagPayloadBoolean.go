@@ -37,6 +37,7 @@ type BACnetTagPayloadBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (virtual field)
 	GetValue() bool
 	// GetIsTrue returns IsTrue (virtual field)
@@ -224,6 +225,20 @@ func (m *_BACnetTagPayloadBoolean) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadBoolean) IsBACnetTagPayloadBoolean() {}
+
+func (m *_BACnetTagPayloadBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadBoolean) deepCopy() *_BACnetTagPayloadBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadBooleanCopy := &_BACnetTagPayloadBoolean{
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadBooleanCopy
+}
 
 func (m *_BACnetTagPayloadBoolean) String() string {
 	if m == nil {

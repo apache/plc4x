@@ -38,6 +38,7 @@ type BACnetConstructedDataTimerAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetTimerStateTagged
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataTimerAlarmValues) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataTimerAlarmValues) IsBACnetConstructedDataTimerAlarmValues() {}
+
+func (m *_BACnetConstructedDataTimerAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimerAlarmValues) deepCopy() *_BACnetConstructedDataTimerAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimerAlarmValuesCopy := &_BACnetConstructedDataTimerAlarmValues{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetTimerStateTagged, BACnetTimerStateTagged](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimerAlarmValuesCopy
+}
 
 func (m *_BACnetConstructedDataTimerAlarmValues) String() string {
 	if m == nil {

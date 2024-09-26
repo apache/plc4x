@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfTimerAlarmValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetAlarmValues returns AlarmValues (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) IsBACnetEventParameterChangeOfTimerAlarmValue() {
+}
+
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) deepCopy() *_BACnetEventParameterChangeOfTimerAlarmValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfTimerAlarmValueCopy := &_BACnetEventParameterChangeOfTimerAlarmValue{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimerStateTagged, BACnetTimerStateTagged](m.AlarmValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterChangeOfTimerAlarmValueCopy
 }
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) String() string {

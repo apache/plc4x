@@ -38,6 +38,7 @@ type BACnetOptionalCharacterStringValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalCharacterString
 	// GetCharacterstring returns Characterstring (property field)
 	GetCharacterstring() BACnetApplicationTagCharacterString
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalCharacterStringValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetOptionalCharacterStringValue) IsBACnetOptionalCharacterStringValue() {}
+
+func (m *_BACnetOptionalCharacterStringValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalCharacterStringValue) deepCopy() *_BACnetOptionalCharacterStringValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalCharacterStringValueCopy := &_BACnetOptionalCharacterStringValue{
+		m.BACnetOptionalCharacterStringContract.DeepCopy().(BACnetOptionalCharacterStringContract),
+		m.Characterstring.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = m
+	return _BACnetOptionalCharacterStringValueCopy
+}
 
 func (m *_BACnetOptionalCharacterStringValue) String() string {
 	if m == nil {

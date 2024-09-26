@@ -41,6 +41,7 @@ type CEMIAdditionalInformationRelativeTimestamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMIAdditionalInformation
 	// GetRelativeTimestamp returns RelativeTimestamp (property field)
 	GetRelativeTimestamp() RelativeTimestamp
@@ -211,6 +212,22 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(c
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) IsCEMIAdditionalInformationRelativeTimestamp() {
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestamp) deepCopy() *_CEMIAdditionalInformationRelativeTimestamp {
+	if m == nil {
+		return nil
+	}
+	_CEMIAdditionalInformationRelativeTimestampCopy := &_CEMIAdditionalInformationRelativeTimestamp{
+		m.CEMIAdditionalInformationContract.DeepCopy().(CEMIAdditionalInformationContract),
+		m.RelativeTimestamp.DeepCopy().(RelativeTimestamp),
+	}
+	m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m
+	return _CEMIAdditionalInformationRelativeTimestampCopy
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) String() string {

@@ -38,6 +38,7 @@ type BACnetConstructedDataProfileName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProfileName returns ProfileName (property field)
 	GetProfileName() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProfileName) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataProfileName) IsBACnetConstructedDataProfileName() {}
+
+func (m *_BACnetConstructedDataProfileName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProfileName) deepCopy() *_BACnetConstructedDataProfileName {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProfileNameCopy := &_BACnetConstructedDataProfileName{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProfileName.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProfileNameCopy
+}
 
 func (m *_BACnetConstructedDataProfileName) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataStateChangeValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -252,6 +253,23 @@ func (m *_BACnetConstructedDataStateChangeValues) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataStateChangeValues) IsBACnetConstructedDataStateChangeValues() {}
+
+func (m *_BACnetConstructedDataStateChangeValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStateChangeValues) deepCopy() *_BACnetConstructedDataStateChangeValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStateChangeValuesCopy := &_BACnetConstructedDataStateChangeValues{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetTimerStateChangeValue, BACnetTimerStateChangeValue](m.StateChangeValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStateChangeValuesCopy
+}
 
 func (m *_BACnetConstructedDataStateChangeValues) String() string {
 	if m == nil {

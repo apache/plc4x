@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeSynchronizationInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeSynchronization returns TimeSynchronization (property field)
 	GetTimeSynchronization() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationInterval) IsBACnetConstructedDataTimeSynchronizationInterval() {
+}
+
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) deepCopy() *_BACnetConstructedDataTimeSynchronizationInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeSynchronizationIntervalCopy := &_BACnetConstructedDataTimeSynchronizationInterval{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TimeSynchronization.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeSynchronizationIntervalCopy
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationInterval) String() string {

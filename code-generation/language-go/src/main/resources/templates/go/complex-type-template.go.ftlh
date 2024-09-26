@@ -91,10 +91,12 @@ type ${type.name} interface {
 	fmt.Stringer<@emitImport import="fmt" />
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 <#else>
 	fmt.Stringer<@emitImport import="fmt" />
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	<#if type.isDiscriminatedChildTypeDefinition()>
 		${type.parentType.orElseThrow().name?cap_first}
 	</#if>
@@ -126,6 +128,7 @@ type ${type.name} interface {
 <#if type.isDiscriminatedParentTypeDefinition()>
 // ${type.name}Contract provides a set of functions which can be overwritten by a sub struct
 type ${type.name}Contract interface {
+	utils.Copyable
 	<#if type.isDiscriminatedChildTypeDefinition()>
 	${type.parentType.orElseThrow().name?cap_first}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if>
 	</#if>
@@ -1616,7 +1619,54 @@ func (m *_${type.name}) Get${parserArgument.name?cap_first}() ${helper.getLangua
 ////
 </#if>
 
-func (m *_${type.name}) Is${type.name}()  {}
+func (m *_${type.name}) Is${type.name}() {}
+
+func (m *_${type.name}) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_${type.name}) deepCopy() *_${type.name} {
+	if m==nil{
+		return nil
+	}
+	_${type.name}Copy := &_${type.name} {
+<#if type.parentType.isPresent()>
+	m.${type.parentType.orElseThrow().name}Contract.DeepCopy().(${type.parentType.orElseThrow().name}Contract),
+</#if>
+<#if type.isDiscriminatedParentTypeDefinition()>
+	nil, // will be set by child
+</#if>
+<#-- Property fields are fields that require a property in the pojo -->
+<#if type.propertyFields?has_content>
+	<#list type.propertyFields as field>
+		<#if field.type.isComplexTypeReference()>
+		m.${field.name?cap_first}.DeepCopy().(<#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(field.type)}),
+		<#elseif field.type.isArrayTypeReference()>
+			<#assign arrayElementTypeRef=field.type.asArrayTypeReference().orElseThrow().elementTypeReference/>
+		utils.DeepCopySlice[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeRef)}, ${helper.getLanguageTypeNameForTypeReference(arrayElementTypeRef)}](m.${field.name?cap_first}),
+		<#else>
+		<#if helper.needsPointerAccess(field)>utils.CopyPtr[${helper.getLanguageTypeNameForField(field)}](</#if>m.${field.name?cap_first}<#if helper.needsPointerAccess(field)>)</#if>,
+		</#if>
+	</#list>
+</#if>
+<#if filteredParserArgumentsLocalToType?has_content>
+	<#list filteredParserArgumentsLocalToType as parserArgument>
+		m.${parserArgument.name?cap_first},
+	</#list>
+</#if>
+<#assign reservedFields=type.getFields()?filter(f->f.isReservedField())>
+<#if reservedFields?has_content>
+	<#list reservedFields as reservedField>
+		m.reservedField${reservedField?index},
+	</#list>
+</#if>
+	}
+<#if type.isDiscriminatedChildTypeDefinition()>
+	m.${type.parentType.orElseThrow().name}Contract.(*_${type.parentType.orElseThrow().name})._SubType = m
+</#if>
+	return _${type.name}Copy
+}
+
 
 <#if !type.isDiscriminatedParentTypeDefinition()>
 func (m *_${type.name}) String() string {

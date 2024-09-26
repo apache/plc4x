@@ -38,6 +38,7 @@ type BACnetShedLevelPercent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetShedLevel
 	// GetPercent returns Percent (property field)
 	GetPercent() BACnetContextTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetShedLevelPercent) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetShedLevelPercent) IsBACnetShedLevelPercent() {}
+
+func (m *_BACnetShedLevelPercent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetShedLevelPercent) deepCopy() *_BACnetShedLevelPercent {
+	if m == nil {
+		return nil
+	}
+	_BACnetShedLevelPercentCopy := &_BACnetShedLevelPercent{
+		m.BACnetShedLevelContract.DeepCopy().(BACnetShedLevelContract),
+		m.Percent.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m
+	return _BACnetShedLevelPercentCopy
+}
 
 func (m *_BACnetShedLevelPercent) String() string {
 	if m == nil {

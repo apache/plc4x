@@ -38,6 +38,7 @@ type ParameterValueCustomTypes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() CustomTypes
@@ -182,6 +183,22 @@ func (m *_ParameterValueCustomTypes) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_ParameterValueCustomTypes) IsParameterValueCustomTypes() {}
+
+func (m *_ParameterValueCustomTypes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueCustomTypes) deepCopy() *_ParameterValueCustomTypes {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueCustomTypesCopy := &_ParameterValueCustomTypes{
+		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.Value.DeepCopy().(CustomTypes),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueCustomTypesCopy
+}
 
 func (m *_ParameterValueCustomTypes) String() string {
 	if m == nil {

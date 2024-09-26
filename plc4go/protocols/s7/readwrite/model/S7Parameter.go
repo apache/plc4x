@@ -40,12 +40,14 @@ type S7Parameter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7Parameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Parameter()
 }
 
 // S7ParameterContract provides a set of functions which can be overwritten by a sub struct
 type S7ParameterContract interface {
+	utils.Copyable
 	// IsS7Parameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Parameter()
 }
@@ -212,3 +214,17 @@ func (pm *_S7Parameter) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_S7Parameter) IsS7Parameter() {}
+
+func (m *_S7Parameter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7Parameter) deepCopy() *_S7Parameter {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterCopy := &_S7Parameter{
+		nil, // will be set by child
+	}
+	return _S7ParameterCopy
+}

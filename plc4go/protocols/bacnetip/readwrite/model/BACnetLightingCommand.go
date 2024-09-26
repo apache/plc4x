@@ -38,6 +38,7 @@ type BACnetLightingCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLightningOperation returns LightningOperation (property field)
 	GetLightningOperation() BACnetLightingOperationTagged
 	// GetTargetLevel returns TargetLevel (property field)
@@ -299,6 +300,25 @@ func (m *_BACnetLightingCommand) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetLightingCommand) IsBACnetLightingCommand() {}
+
+func (m *_BACnetLightingCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingCommand) deepCopy() *_BACnetLightingCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingCommandCopy := &_BACnetLightingCommand{
+		m.LightningOperation.DeepCopy().(BACnetLightingOperationTagged),
+		m.TargetLevel.DeepCopy().(BACnetContextTagReal),
+		m.RampRate.DeepCopy().(BACnetContextTagReal),
+		m.StepIncrement.DeepCopy().(BACnetContextTagReal),
+		m.FadeTime.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetLightingCommandCopy
+}
 
 func (m *_BACnetLightingCommand) String() string {
 	if m == nil {

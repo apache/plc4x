@@ -38,6 +38,7 @@ type AddReferencesItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSourceNodeId returns SourceNodeId (property field)
 	GetSourceNodeId() NodeId
@@ -311,6 +312,28 @@ func (m *_AddReferencesItem) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_AddReferencesItem) IsAddReferencesItem() {}
+
+func (m *_AddReferencesItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddReferencesItem) deepCopy() *_AddReferencesItem {
+	if m == nil {
+		return nil
+	}
+	_AddReferencesItemCopy := &_AddReferencesItem{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SourceNodeId.DeepCopy().(NodeId),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IsForward,
+		m.TargetServerUri.DeepCopy().(PascalString),
+		m.TargetNodeId.DeepCopy().(ExpandedNodeId),
+		m.TargetNodeClass,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddReferencesItemCopy
+}
 
 func (m *_AddReferencesItem) String() string {
 	if m == nil {

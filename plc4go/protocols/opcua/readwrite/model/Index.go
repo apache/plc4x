@@ -36,6 +36,7 @@ type Index interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsIndex is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIndex()
 }
@@ -134,6 +135,18 @@ func (m *_Index) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Index) IsIndex() {}
+
+func (m *_Index) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Index) deepCopy() *_Index {
+	if m == nil {
+		return nil
+	}
+	_IndexCopy := &_Index{}
+	return _IndexCopy
+}
 
 func (m *_Index) String() string {
 	if m == nil {

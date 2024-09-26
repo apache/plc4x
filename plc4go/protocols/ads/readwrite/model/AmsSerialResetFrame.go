@@ -38,6 +38,7 @@ type AmsSerialResetFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMagicCookie returns MagicCookie (property field)
 	GetMagicCookie() uint16
 	// GetTransmitterAddress returns TransmitterAddress (property field)
@@ -266,6 +267,25 @@ func (m *_AmsSerialResetFrame) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_AmsSerialResetFrame) IsAmsSerialResetFrame() {}
+
+func (m *_AmsSerialResetFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsSerialResetFrame) deepCopy() *_AmsSerialResetFrame {
+	if m == nil {
+		return nil
+	}
+	_AmsSerialResetFrameCopy := &_AmsSerialResetFrame{
+		m.MagicCookie,
+		m.TransmitterAddress,
+		m.ReceiverAddress,
+		m.FragmentNumber,
+		m.Length,
+		m.Crc,
+	}
+	return _AmsSerialResetFrameCopy
+}
 
 func (m *_AmsSerialResetFrame) String() string {
 	if m == nil {

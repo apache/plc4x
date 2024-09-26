@@ -38,6 +38,7 @@ type BACnetPropertyStatesNotifyType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() BACnetNotifyTypeTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesNotifyType) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetPropertyStatesNotifyType) IsBACnetPropertyStatesNotifyType() {}
+
+func (m *_BACnetPropertyStatesNotifyType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesNotifyType) deepCopy() *_BACnetPropertyStatesNotifyType {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesNotifyTypeCopy := &_BACnetPropertyStatesNotifyType{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesNotifyTypeCopy
+}
 
 func (m *_BACnetPropertyStatesNotifyType) String() string {
 	if m == nil {

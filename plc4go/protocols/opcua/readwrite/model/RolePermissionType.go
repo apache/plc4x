@@ -38,6 +38,7 @@ type RolePermissionType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRoleId returns RoleId (property field)
 	GetRoleId() NodeId
@@ -203,6 +204,23 @@ func (m *_RolePermissionType) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_RolePermissionType) IsRolePermissionType() {}
+
+func (m *_RolePermissionType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RolePermissionType) deepCopy() *_RolePermissionType {
+	if m == nil {
+		return nil
+	}
+	_RolePermissionTypeCopy := &_RolePermissionType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RoleId.DeepCopy().(NodeId),
+		m.Permissions,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RolePermissionTypeCopy
+}
 
 func (m *_RolePermissionType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CallRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_CallRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_CallRequest) IsCallRequest() {}
+
+func (m *_CallRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CallRequest) deepCopy() *_CallRequest {
+	if m == nil {
+		return nil
+	}
+	_CallRequestCopy := &_CallRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfMethodsToCall,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MethodsToCall),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CallRequestCopy
+}
 
 func (m *_CallRequest) String() string {
 	if m == nil {

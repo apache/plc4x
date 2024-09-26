@@ -40,6 +40,7 @@ type AmsTCPPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetUserdata returns Userdata (property field)
 	GetUserdata() AmsPacket
 	// IsAmsTCPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -199,6 +200,21 @@ func (m *_AmsTCPPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_AmsTCPPacket) IsAmsTCPPacket() {}
+
+func (m *_AmsTCPPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsTCPPacket) deepCopy() *_AmsTCPPacket {
+	if m == nil {
+		return nil
+	}
+	_AmsTCPPacketCopy := &_AmsTCPPacket{
+		m.Userdata.DeepCopy().(AmsPacket),
+		m.reservedField0,
+	}
+	return _AmsTCPPacketCopy
+}
 
 func (m *_AmsTCPPacket) String() string {
 	if m == nil {

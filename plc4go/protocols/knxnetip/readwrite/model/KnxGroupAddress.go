@@ -38,12 +38,14 @@ type KnxGroupAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsKnxGroupAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxGroupAddress()
 }
 
 // KnxGroupAddressContract provides a set of functions which can be overwritten by a sub struct
 type KnxGroupAddressContract interface {
+	utils.Copyable
 	// IsKnxGroupAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxGroupAddress()
 }
@@ -181,3 +183,17 @@ func (pm *_KnxGroupAddress) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_KnxGroupAddress) IsKnxGroupAddress() {}
+
+func (m *_KnxGroupAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxGroupAddress) deepCopy() *_KnxGroupAddress {
+	if m == nil {
+		return nil
+	}
+	_KnxGroupAddressCopy := &_KnxGroupAddress{
+		nil, // will be set by child
+	}
+	return _KnxGroupAddressCopy
+}

@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultOutOfRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -250,6 +251,25 @@ func (m *_BACnetFaultParameterFaultOutOfRange) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRange) IsBACnetFaultParameterFaultOutOfRange() {}
+
+func (m *_BACnetFaultParameterFaultOutOfRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRange) deepCopy() *_BACnetFaultParameterFaultOutOfRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultOutOfRangeCopy := &_BACnetFaultParameterFaultOutOfRange{
+		m.BACnetFaultParameterContract.DeepCopy().(BACnetFaultParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.MinNormalValue.DeepCopy().(BACnetFaultParameterFaultOutOfRangeMinNormalValue),
+		m.MaxNormalValue.DeepCopy().(BACnetFaultParameterFaultOutOfRangeMaxNormalValue),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
+	return _BACnetFaultParameterFaultOutOfRangeCopy
+}
 
 func (m *_BACnetFaultParameterFaultOutOfRange) String() string {
 	if m == nil {

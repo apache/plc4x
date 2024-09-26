@@ -38,6 +38,7 @@ type EndpointConfiguration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetOperationTimeout returns OperationTimeout (property field)
 	GetOperationTimeout() int32
@@ -362,6 +363,31 @@ func (m *_EndpointConfiguration) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_EndpointConfiguration) IsEndpointConfiguration() {}
+
+func (m *_EndpointConfiguration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EndpointConfiguration) deepCopy() *_EndpointConfiguration {
+	if m == nil {
+		return nil
+	}
+	_EndpointConfigurationCopy := &_EndpointConfiguration{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.OperationTimeout,
+		m.UseBinaryEncoding,
+		m.MaxStringLength,
+		m.MaxByteStringLength,
+		m.MaxArrayLength,
+		m.MaxMessageSize,
+		m.MaxBufferSize,
+		m.ChannelLifetime,
+		m.SecurityTokenLifetime,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EndpointConfigurationCopy
+}
 
 func (m *_EndpointConfiguration) String() string {
 	if m == nil {

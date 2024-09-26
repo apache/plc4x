@@ -38,6 +38,7 @@ type BACnetConstructedDataLightingCommandDefaultPriority interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLightingCommandDefaultPriority returns LightingCommandDefaultPriority (property field)
 	GetLightingCommandDefaultPriority() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) IsBACnetConstructedDataLightingCommandDefaultPriority() {
+}
+
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLightingCommandDefaultPriority) deepCopy() *_BACnetConstructedDataLightingCommandDefaultPriority {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLightingCommandDefaultPriorityCopy := &_BACnetConstructedDataLightingCommandDefaultPriority{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LightingCommandDefaultPriority.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLightingCommandDefaultPriorityCopy
 }
 
 func (m *_BACnetConstructedDataLightingCommandDefaultPriority) String() string {

@@ -38,6 +38,7 @@ type BACnetConstructedDataPacketReorderTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPacketReorderTime returns PacketReorderTime (property field)
 	GetPacketReorderTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPacketReorderTime) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataPacketReorderTime) IsBACnetConstructedDataPacketReorderTime() {}
+
+func (m *_BACnetConstructedDataPacketReorderTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPacketReorderTime) deepCopy() *_BACnetConstructedDataPacketReorderTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPacketReorderTimeCopy := &_BACnetConstructedDataPacketReorderTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PacketReorderTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPacketReorderTimeCopy
+}
 
 func (m *_BACnetConstructedDataPacketReorderTime) String() string {
 	if m == nil {

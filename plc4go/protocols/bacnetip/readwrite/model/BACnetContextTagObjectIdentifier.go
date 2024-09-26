@@ -38,6 +38,7 @@ type BACnetContextTagObjectIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadObjectIdentifier
@@ -235,6 +236,22 @@ func (m *_BACnetContextTagObjectIdentifier) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetContextTagObjectIdentifier) IsBACnetContextTagObjectIdentifier() {}
+
+func (m *_BACnetContextTagObjectIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagObjectIdentifier) deepCopy() *_BACnetContextTagObjectIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagObjectIdentifierCopy := &_BACnetContextTagObjectIdentifier{
+		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadObjectIdentifier),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagObjectIdentifierCopy
+}
 
 func (m *_BACnetContextTagObjectIdentifier) String() string {
 	if m == nil {

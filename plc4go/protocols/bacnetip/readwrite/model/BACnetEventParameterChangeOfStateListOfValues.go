@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfStateListOfValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfValues returns ListOfValues (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventParameterChangeOfStateListOfValues) IsBACnetEventParameterChangeOfStateListOfValues() {
+}
+
+func (m *_BACnetEventParameterChangeOfStateListOfValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfStateListOfValues) deepCopy() *_BACnetEventParameterChangeOfStateListOfValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfStateListOfValuesCopy := &_BACnetEventParameterChangeOfStateListOfValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetPropertyStates, BACnetPropertyStates](m.ListOfValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterChangeOfStateListOfValuesCopy
 }
 
 func (m *_BACnetEventParameterChangeOfStateListOfValues) String() string {

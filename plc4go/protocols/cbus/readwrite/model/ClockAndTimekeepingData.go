@@ -40,12 +40,14 @@ type ClockAndTimekeepingData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsClockAndTimekeepingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsClockAndTimekeepingData()
 }
 
 // ClockAndTimekeepingDataContract provides a set of functions which can be overwritten by a sub struct
 type ClockAndTimekeepingDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() ClockAndTimekeepingCommandTypeContainer
 	// GetArgument returns Argument (property field)
@@ -272,3 +274,19 @@ func (pm *_ClockAndTimekeepingData) serializeParent(ctx context.Context, writeBu
 }
 
 func (m *_ClockAndTimekeepingData) IsClockAndTimekeepingData() {}
+
+func (m *_ClockAndTimekeepingData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ClockAndTimekeepingData) deepCopy() *_ClockAndTimekeepingData {
+	if m == nil {
+		return nil
+	}
+	_ClockAndTimekeepingDataCopy := &_ClockAndTimekeepingData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.Argument,
+	}
+	return _ClockAndTimekeepingDataCopy
+}

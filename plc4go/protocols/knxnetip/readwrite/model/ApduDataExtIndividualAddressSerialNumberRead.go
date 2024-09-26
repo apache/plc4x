@@ -36,6 +36,7 @@ type ApduDataExtIndividualAddressSerialNumberRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtIndividualAddressSerialNumberRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtIndividualAddressSerialNumberRead()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtIndividualAddressSerialNumberRead) SerializeWithWriteBuffer
 }
 
 func (m *_ApduDataExtIndividualAddressSerialNumberRead) IsApduDataExtIndividualAddressSerialNumberRead() {
+}
+
+func (m *_ApduDataExtIndividualAddressSerialNumberRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtIndividualAddressSerialNumberRead) deepCopy() *_ApduDataExtIndividualAddressSerialNumberRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtIndividualAddressSerialNumberReadCopy := &_ApduDataExtIndividualAddressSerialNumberRead{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtIndividualAddressSerialNumberReadCopy
 }
 
 func (m *_ApduDataExtIndividualAddressSerialNumberRead) String() string {

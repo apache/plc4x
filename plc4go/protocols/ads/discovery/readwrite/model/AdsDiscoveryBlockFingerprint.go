@@ -38,6 +38,7 @@ type AdsDiscoveryBlockFingerprint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -194,6 +195,22 @@ func (m *_AdsDiscoveryBlockFingerprint) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_AdsDiscoveryBlockFingerprint) IsAdsDiscoveryBlockFingerprint() {}
+
+func (m *_AdsDiscoveryBlockFingerprint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockFingerprint) deepCopy() *_AdsDiscoveryBlockFingerprint {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockFingerprintCopy := &_AdsDiscoveryBlockFingerprint{
+		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockFingerprintCopy
+}
 
 func (m *_AdsDiscoveryBlockFingerprint) String() string {
 	if m == nil {

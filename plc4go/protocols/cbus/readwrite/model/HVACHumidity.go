@@ -38,6 +38,7 @@ type HVACHumidity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHumidityValue returns HumidityValue (property field)
 	GetHumidityValue() uint16
 	// GetHumidityInPercent returns HumidityInPercent (virtual field)
@@ -197,6 +198,20 @@ func (m *_HVACHumidity) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_HVACHumidity) IsHVACHumidity() {}
+
+func (m *_HVACHumidity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACHumidity) deepCopy() *_HVACHumidity {
+	if m == nil {
+		return nil
+	}
+	_HVACHumidityCopy := &_HVACHumidity{
+		m.HumidityValue,
+	}
+	return _HVACHumidityCopy
+}
 
 func (m *_HVACHumidity) String() string {
 	if m == nil {

@@ -39,6 +39,7 @@ type DateAndTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetYear returns Year (property field)
 	GetYear() uint8
 	// GetMonth returns Month (property field)
@@ -307,6 +308,27 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_DateAndTime) IsDateAndTime() {}
+
+func (m *_DateAndTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DateAndTime) deepCopy() *_DateAndTime {
+	if m == nil {
+		return nil
+	}
+	_DateAndTimeCopy := &_DateAndTime{
+		m.Year,
+		m.Month,
+		m.Day,
+		m.Hour,
+		m.Minutes,
+		m.Seconds,
+		m.Msec,
+		m.Dow,
+	}
+	return _DateAndTimeCopy
+}
 
 func (m *_DateAndTime) String() string {
 	if m == nil {

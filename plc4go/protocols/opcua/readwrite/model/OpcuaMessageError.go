@@ -38,6 +38,7 @@ type OpcuaMessageError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetError returns Error (property field)
 	GetError() OpcuaStatusCode
@@ -207,6 +208,23 @@ func (m *_OpcuaMessageError) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_OpcuaMessageError) IsOpcuaMessageError() {}
+
+func (m *_OpcuaMessageError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaMessageError) deepCopy() *_OpcuaMessageError {
+	if m == nil {
+		return nil
+	}
+	_OpcuaMessageErrorCopy := &_OpcuaMessageError{
+		m.MessagePDUContract.DeepCopy().(MessagePDUContract),
+		m.Error,
+		m.Reason.DeepCopy().(PascalString),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaMessageErrorCopy
+}
 
 func (m *_OpcuaMessageError) String() string {
 	if m == nil {

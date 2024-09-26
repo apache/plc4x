@@ -40,12 +40,14 @@ type MeteringData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMeteringData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringData()
 }
 
 // MeteringDataContract provides a set of functions which can be overwritten by a sub struct
 type MeteringDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MeteringCommandTypeContainer
 	// GetArgument returns Argument (property field)
@@ -300,3 +302,19 @@ func (pm *_MeteringData) serializeParent(ctx context.Context, writeBuffer utils.
 }
 
 func (m *_MeteringData) IsMeteringData() {}
+
+func (m *_MeteringData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringData) deepCopy() *_MeteringData {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataCopy := &_MeteringData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.Argument,
+	}
+	return _MeteringDataCopy
+}

@@ -38,6 +38,7 @@ type FieldTargetDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataSetFieldId returns DataSetFieldId (property field)
 	GetDataSetFieldId() GuidValue
@@ -320,6 +321,28 @@ func (m *_FieldTargetDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_FieldTargetDataType) IsFieldTargetDataType() {}
+
+func (m *_FieldTargetDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FieldTargetDataType) deepCopy() *_FieldTargetDataType {
+	if m == nil {
+		return nil
+	}
+	_FieldTargetDataTypeCopy := &_FieldTargetDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.DataSetFieldId.DeepCopy().(GuidValue),
+		m.ReceiverIndexRange.DeepCopy().(PascalString),
+		m.TargetNodeId.DeepCopy().(NodeId),
+		m.AttributeId,
+		m.WriteIndexRange.DeepCopy().(PascalString),
+		m.OverrideValueHandling,
+		m.OverrideValue.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FieldTargetDataTypeCopy
+}
 
 func (m *_FieldTargetDataType) String() string {
 	if m == nil {

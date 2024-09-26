@@ -38,6 +38,7 @@ type BACnetConstructedDataWriteStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetWriteStatus returns WriteStatus (property field)
 	GetWriteStatus() BACnetWriteStatusTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataWriteStatus) IsBACnetConstructedDataWriteStatus() {}
+
+func (m *_BACnetConstructedDataWriteStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataWriteStatus) deepCopy() *_BACnetConstructedDataWriteStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataWriteStatusCopy := &_BACnetConstructedDataWriteStatus{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.WriteStatus.DeepCopy().(BACnetWriteStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataWriteStatusCopy
+}
 
 func (m *_BACnetConstructedDataWriteStatus) String() string {
 	if m == nil {

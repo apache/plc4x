@@ -38,6 +38,7 @@ type BACnetConstructedDataAccumulatorMaxPresValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccumulatorMaxPresValue) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataAccumulatorMaxPresValue) IsBACnetConstructedDataAccumulatorMaxPresValue() {
+}
+
+func (m *_BACnetConstructedDataAccumulatorMaxPresValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccumulatorMaxPresValue) deepCopy() *_BACnetConstructedDataAccumulatorMaxPresValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccumulatorMaxPresValueCopy := &_BACnetConstructedDataAccumulatorMaxPresValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaxPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccumulatorMaxPresValueCopy
 }
 
 func (m *_BACnetConstructedDataAccumulatorMaxPresValue) String() string {

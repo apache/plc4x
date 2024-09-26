@@ -38,6 +38,7 @@ type EphemeralKeyType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetPublicKey returns PublicKey (property field)
 	GetPublicKey() PascalByteString
@@ -206,6 +207,23 @@ func (m *_EphemeralKeyType) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_EphemeralKeyType) IsEphemeralKeyType() {}
+
+func (m *_EphemeralKeyType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EphemeralKeyType) deepCopy() *_EphemeralKeyType {
+	if m == nil {
+		return nil
+	}
+	_EphemeralKeyTypeCopy := &_EphemeralKeyType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.PublicKey.DeepCopy().(PascalByteString),
+		m.Signature.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EphemeralKeyTypeCopy
+}
 
 func (m *_EphemeralKeyType) String() string {
 	if m == nil {

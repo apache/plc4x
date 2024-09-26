@@ -38,6 +38,7 @@ type BACnetDeviceObjectPropertyReferenceEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetValue returns Value (property field)
@@ -228,6 +229,23 @@ func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) IsBACnetDeviceObjectPropertyReferenceEnclosed() {
+}
+
+func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) deepCopy() *_BACnetDeviceObjectPropertyReferenceEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetDeviceObjectPropertyReferenceEnclosedCopy := &_BACnetDeviceObjectPropertyReferenceEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.Value.DeepCopy().(BACnetDeviceObjectPropertyReference),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetDeviceObjectPropertyReferenceEnclosedCopy
 }
 
 func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) String() string {

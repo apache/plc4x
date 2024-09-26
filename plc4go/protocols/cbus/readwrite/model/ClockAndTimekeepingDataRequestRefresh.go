@@ -36,6 +36,7 @@ type ClockAndTimekeepingDataRequestRefresh interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ClockAndTimekeepingData
 	// IsClockAndTimekeepingDataRequestRefresh is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsClockAndTimekeepingDataRequestRefresh()
@@ -142,6 +143,21 @@ func (m *_ClockAndTimekeepingDataRequestRefresh) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_ClockAndTimekeepingDataRequestRefresh) IsClockAndTimekeepingDataRequestRefresh() {}
+
+func (m *_ClockAndTimekeepingDataRequestRefresh) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ClockAndTimekeepingDataRequestRefresh) deepCopy() *_ClockAndTimekeepingDataRequestRefresh {
+	if m == nil {
+		return nil
+	}
+	_ClockAndTimekeepingDataRequestRefreshCopy := &_ClockAndTimekeepingDataRequestRefresh{
+		m.ClockAndTimekeepingDataContract.DeepCopy().(ClockAndTimekeepingDataContract),
+	}
+	m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
+	return _ClockAndTimekeepingDataRequestRefreshCopy
+}
 
 func (m *_ClockAndTimekeepingDataRequestRefresh) String() string {
 	if m == nil {

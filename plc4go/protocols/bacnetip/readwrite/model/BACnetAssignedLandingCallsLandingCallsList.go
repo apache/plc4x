@@ -38,6 +38,7 @@ type BACnetAssignedLandingCallsLandingCallsList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetLandingCalls returns LandingCalls (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetAssignedLandingCallsLandingCallsList) IsBACnetAssignedLandingCallsLandingCallsList() {
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsList) deepCopy() *_BACnetAssignedLandingCallsLandingCallsList {
+	if m == nil {
+		return nil
+	}
+	_BACnetAssignedLandingCallsLandingCallsListCopy := &_BACnetAssignedLandingCallsLandingCallsList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetAssignedLandingCallsLandingCallsListEntry, BACnetAssignedLandingCallsLandingCallsListEntry](m.LandingCalls),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetAssignedLandingCallsLandingCallsListCopy
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsList) String() string {

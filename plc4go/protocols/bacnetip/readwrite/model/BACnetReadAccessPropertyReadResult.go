@@ -38,6 +38,7 @@ type BACnetReadAccessPropertyReadResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPropertyValue returns PropertyValue (property field)
@@ -285,6 +286,25 @@ func (m *_BACnetReadAccessPropertyReadResult) GetArrayIndexArgument() BACnetTagP
 ////
 
 func (m *_BACnetReadAccessPropertyReadResult) IsBACnetReadAccessPropertyReadResult() {}
+
+func (m *_BACnetReadAccessPropertyReadResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessPropertyReadResult) deepCopy() *_BACnetReadAccessPropertyReadResult {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessPropertyReadResultCopy := &_BACnetReadAccessPropertyReadResult{
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+		m.PropertyAccessError.DeepCopy().(ErrorEnclosed),
+		m.ObjectTypeArgument,
+		m.PropertyIdentifierArgument,
+		m.ArrayIndexArgument,
+	}
+	return _BACnetReadAccessPropertyReadResultCopy
+}
 
 func (m *_BACnetReadAccessPropertyReadResult) String() string {
 	if m == nil {

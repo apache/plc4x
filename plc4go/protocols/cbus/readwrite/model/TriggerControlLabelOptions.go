@@ -38,6 +38,7 @@ type TriggerControlLabelOptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLabelFlavour returns LabelFlavour (property field)
 	GetLabelFlavour() TriggerControlLabelFlavour
 	// GetLabelType returns LabelType (property field)
@@ -243,6 +244,25 @@ func (m *_TriggerControlLabelOptions) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_TriggerControlLabelOptions) IsTriggerControlLabelOptions() {}
+
+func (m *_TriggerControlLabelOptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlLabelOptions) deepCopy() *_TriggerControlLabelOptions {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlLabelOptionsCopy := &_TriggerControlLabelOptions{
+		m.LabelFlavour,
+		m.LabelType,
+		m.reservedField0,
+		m.reservedField1,
+		m.reservedField2,
+		m.reservedField3,
+	}
+	return _TriggerControlLabelOptionsCopy
+}
 
 func (m *_TriggerControlLabelOptions) String() string {
 	if m == nil {

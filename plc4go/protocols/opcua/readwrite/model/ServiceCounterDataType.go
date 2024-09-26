@@ -38,6 +38,7 @@ type ServiceCounterDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTotalCount returns TotalCount (property field)
 	GetTotalCount() uint32
@@ -200,6 +201,23 @@ func (m *_ServiceCounterDataType) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ServiceCounterDataType) IsServiceCounterDataType() {}
+
+func (m *_ServiceCounterDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServiceCounterDataType) deepCopy() *_ServiceCounterDataType {
+	if m == nil {
+		return nil
+	}
+	_ServiceCounterDataTypeCopy := &_ServiceCounterDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.TotalCount,
+		m.ErrorCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServiceCounterDataTypeCopy
+}
 
 func (m *_ServiceCounterDataType) String() string {
 	if m == nil {

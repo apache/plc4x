@@ -38,6 +38,7 @@ type BACnetConstructedDataCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCommand returns Command (property field)
 	GetCommand() BACnetNetworkPortCommandTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCommand) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataCommand) IsBACnetConstructedDataCommand() {}
+
+func (m *_BACnetConstructedDataCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCommand) deepCopy() *_BACnetConstructedDataCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCommandCopy := &_BACnetConstructedDataCommand{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Command.DeepCopy().(BACnetNetworkPortCommandTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCommandCopy
+}
 
 func (m *_BACnetConstructedDataCommand) String() string {
 	if m == nil {

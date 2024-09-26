@@ -38,6 +38,7 @@ type MediaTransportControlDataTotalTracks interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetTotalTracksMSB returns TotalTracksMSB (property field)
 	GetTotalTracksMSB() byte
@@ -238,6 +239,25 @@ func (m *_MediaTransportControlDataTotalTracks) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataTotalTracks) IsMediaTransportControlDataTotalTracks() {}
+
+func (m *_MediaTransportControlDataTotalTracks) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataTotalTracks) deepCopy() *_MediaTransportControlDataTotalTracks {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataTotalTracksCopy := &_MediaTransportControlDataTotalTracks{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.TotalTracksMSB,
+		m.TotalTracksMMSB,
+		m.TotalTracksMLSB,
+		m.TotalTracksLSB,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataTotalTracksCopy
+}
 
 func (m *_MediaTransportControlDataTotalTracks) String() string {
 	if m == nil {

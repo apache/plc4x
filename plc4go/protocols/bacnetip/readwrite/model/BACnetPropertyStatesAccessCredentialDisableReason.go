@@ -38,6 +38,7 @@ type BACnetPropertyStatesAccessCredentialDisableReason interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetAccessCredentialDisableReason returns AccessCredentialDisableReason (property field)
 	GetAccessCredentialDisableReason() BACnetAccessCredentialDisableReasonTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesAccessCredentialDisableReason) SerializeWithWriteB
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisableReason) IsBACnetPropertyStatesAccessCredentialDisableReason() {
+}
+
+func (m *_BACnetPropertyStatesAccessCredentialDisableReason) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesAccessCredentialDisableReason) deepCopy() *_BACnetPropertyStatesAccessCredentialDisableReason {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesAccessCredentialDisableReasonCopy := &_BACnetPropertyStatesAccessCredentialDisableReason{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.AccessCredentialDisableReason.DeepCopy().(BACnetAccessCredentialDisableReasonTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesAccessCredentialDisableReasonCopy
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisableReason) String() string {

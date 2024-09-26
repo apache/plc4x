@@ -41,6 +41,7 @@ type CipUnconnectedRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
@@ -350,6 +351,27 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_CipUnconnectedRequest) IsCipUnconnectedRequest() {}
+
+func (m *_CipUnconnectedRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipUnconnectedRequest) deepCopy() *_CipUnconnectedRequest {
+	if m == nil {
+		return nil
+	}
+	_CipUnconnectedRequestCopy := &_CipUnconnectedRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.ClassSegment.DeepCopy().(PathSegment),
+		m.InstanceSegment.DeepCopy().(PathSegment),
+		m.UnconnectedService.DeepCopy().(CipService),
+		m.BackPlane,
+		m.Slot,
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipUnconnectedRequestCopy
+}
 
 func (m *_CipUnconnectedRequest) String() string {
 	if m == nil {

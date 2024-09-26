@@ -38,6 +38,7 @@ type LightingDataOff interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
@@ -175,6 +176,22 @@ func (m *_LightingDataOff) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_LightingDataOff) IsLightingDataOff() {}
+
+func (m *_LightingDataOff) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataOff) deepCopy() *_LightingDataOff {
+	if m == nil {
+		return nil
+	}
+	_LightingDataOffCopy := &_LightingDataOff{
+		m.LightingDataContract.DeepCopy().(LightingDataContract),
+		m.Group,
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataOffCopy
+}
 
 func (m *_LightingDataOff) String() string {
 	if m == nil {

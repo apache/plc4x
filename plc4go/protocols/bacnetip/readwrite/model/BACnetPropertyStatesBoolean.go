@@ -38,6 +38,7 @@ type BACnetPropertyStatesBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBoolean) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetPropertyStatesBoolean) IsBACnetPropertyStatesBoolean() {}
+
+func (m *_BACnetPropertyStatesBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBoolean) deepCopy() *_BACnetPropertyStatesBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBooleanCopy := &_BACnetPropertyStatesBoolean{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BooleanValue.DeepCopy().(BACnetContextTagBoolean),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBooleanCopy
+}
 
 func (m *_BACnetPropertyStatesBoolean) String() string {
 	if m == nil {

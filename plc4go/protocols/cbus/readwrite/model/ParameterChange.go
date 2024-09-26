@@ -42,6 +42,7 @@ type ParameterChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsParameterChange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterChange()
 }
@@ -184,6 +185,18 @@ func (m *_ParameterChange) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ParameterChange) IsParameterChange() {}
+
+func (m *_ParameterChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterChange) deepCopy() *_ParameterChange {
+	if m == nil {
+		return nil
+	}
+	_ParameterChangeCopy := &_ParameterChange{}
+	return _ParameterChangeCopy
+}
 
 func (m *_ParameterChange) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type NodeIdByteString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NodeIdTypeDefinition
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
@@ -234,6 +235,23 @@ func (m *_NodeIdByteString) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_NodeIdByteString) IsNodeIdByteString() {}
+
+func (m *_NodeIdByteString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdByteString) deepCopy() *_NodeIdByteString {
+	if m == nil {
+		return nil
+	}
+	_NodeIdByteStringCopy := &_NodeIdByteString{
+		m.NodeIdTypeDefinitionContract.DeepCopy().(NodeIdTypeDefinitionContract),
+		m.NamespaceIndex,
+		m.Id.DeepCopy().(PascalByteString),
+	}
+	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	return _NodeIdByteStringCopy
+}
 
 func (m *_NodeIdByteString) String() string {
 	if m == nil {

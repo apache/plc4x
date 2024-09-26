@@ -40,12 +40,14 @@ type EipPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsEipPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipPacket()
 }
 
 // EipPacketContract provides a set of functions which can be overwritten by a sub struct
 type EipPacketContract interface {
+	utils.Copyable
 	// GetSessionHandle returns SessionHandle (property field)
 	GetSessionHandle() uint32
 	// GetStatus returns Status (property field)
@@ -343,3 +345,21 @@ func (pm *_EipPacket) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_EipPacket) IsEipPacket() {}
+
+func (m *_EipPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipPacket) deepCopy() *_EipPacket {
+	if m == nil {
+		return nil
+	}
+	_EipPacketCopy := &_EipPacket{
+		nil, // will be set by child
+		m.SessionHandle,
+		m.Status,
+		utils.DeepCopySlice[byte, byte](m.SenderContext),
+		m.Options,
+	}
+	return _EipPacketCopy
+}

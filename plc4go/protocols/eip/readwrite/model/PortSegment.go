@@ -38,6 +38,7 @@ type PortSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() PortSegmentType
@@ -182,6 +183,22 @@ func (m *_PortSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_PortSegment) IsPortSegment() {}
+
+func (m *_PortSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegment) deepCopy() *_PortSegment {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentCopy := &_PortSegment{
+		m.PathSegmentContract.DeepCopy().(PathSegmentContract),
+		m.SegmentType.DeepCopy().(PortSegmentType),
+	}
+	m.PathSegmentContract.(*_PathSegment)._SubType = m
+	return _PortSegmentCopy
+}
 
 func (m *_PortSegment) String() string {
 	if m == nil {

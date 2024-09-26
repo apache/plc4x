@@ -38,6 +38,7 @@ type BACnetConstructedDataAlignIntervals interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlignIntervals returns AlignIntervals (property field)
 	GetAlignIntervals() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAlignIntervals) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataAlignIntervals) IsBACnetConstructedDataAlignIntervals() {}
+
+func (m *_BACnetConstructedDataAlignIntervals) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAlignIntervals) deepCopy() *_BACnetConstructedDataAlignIntervals {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAlignIntervalsCopy := &_BACnetConstructedDataAlignIntervals{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AlignIntervals.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAlignIntervalsCopy
+}
 
 func (m *_BACnetConstructedDataAlignIntervals) String() string {
 	if m == nil {

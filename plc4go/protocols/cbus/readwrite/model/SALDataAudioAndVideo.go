@@ -38,6 +38,7 @@ type SALDataAudioAndVideo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetAudioVideoData returns AudioVideoData (property field)
 	GetAudioVideoData() LightingData
@@ -182,6 +183,22 @@ func (m *_SALDataAudioAndVideo) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SALDataAudioAndVideo) IsSALDataAudioAndVideo() {}
+
+func (m *_SALDataAudioAndVideo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataAudioAndVideo) deepCopy() *_SALDataAudioAndVideo {
+	if m == nil {
+		return nil
+	}
+	_SALDataAudioAndVideoCopy := &_SALDataAudioAndVideo{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.AudioVideoData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataAudioAndVideoCopy
+}
 
 func (m *_SALDataAudioAndVideo) String() string {
 	if m == nil {

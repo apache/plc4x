@@ -38,6 +38,7 @@ type BACnetConstructedDataChannelNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetChannelNumber returns ChannelNumber (property field)
 	GetChannelNumber() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataChannelNumber) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataChannelNumber) IsBACnetConstructedDataChannelNumber() {}
+
+func (m *_BACnetConstructedDataChannelNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataChannelNumber) deepCopy() *_BACnetConstructedDataChannelNumber {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataChannelNumberCopy := &_BACnetConstructedDataChannelNumber{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ChannelNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataChannelNumberCopy
+}
 
 func (m *_BACnetConstructedDataChannelNumber) String() string {
 	if m == nil {

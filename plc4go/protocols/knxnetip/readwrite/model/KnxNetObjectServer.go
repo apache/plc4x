@@ -38,6 +38,7 @@ type KnxNetObjectServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -179,6 +180,22 @@ func (m *_KnxNetObjectServer) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_KnxNetObjectServer) IsKnxNetObjectServer() {}
+
+func (m *_KnxNetObjectServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetObjectServer) deepCopy() *_KnxNetObjectServer {
+	if m == nil {
+		return nil
+	}
+	_KnxNetObjectServerCopy := &_KnxNetObjectServer{
+		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetObjectServerCopy
+}
 
 func (m *_KnxNetObjectServer) String() string {
 	if m == nil {

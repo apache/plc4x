@@ -41,6 +41,7 @@ type AlarmMessageObjectQueryType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLengthDataset returns LengthDataset (property field)
 	GetLengthDataset() uint8
 	// GetEventState returns EventState (property field)
@@ -371,6 +372,28 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_AlarmMessageObjectQueryType) IsAlarmMessageObjectQueryType() {}
+
+func (m *_AlarmMessageObjectQueryType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageObjectQueryType) deepCopy() *_AlarmMessageObjectQueryType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageObjectQueryTypeCopy := &_AlarmMessageObjectQueryType{
+		m.LengthDataset,
+		m.EventState.DeepCopy().(State),
+		m.AckStateGoing.DeepCopy().(State),
+		m.AckStateComing.DeepCopy().(State),
+		m.TimeComing.DeepCopy().(DateAndTime),
+		m.ValueComing.DeepCopy().(AssociatedValueType),
+		m.TimeGoing.DeepCopy().(DateAndTime),
+		m.ValueGoing.DeepCopy().(AssociatedValueType),
+		m.reservedField0,
+	}
+	return _AlarmMessageObjectQueryTypeCopy
+}
 
 func (m *_AlarmMessageObjectQueryType) String() string {
 	if m == nil {

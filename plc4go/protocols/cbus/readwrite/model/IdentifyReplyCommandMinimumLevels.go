@@ -38,6 +38,7 @@ type IdentifyReplyCommandMinimumLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetMinimumLevels returns MinimumLevels (property field)
 	GetMinimumLevels() []byte
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandMinimumLevels) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_IdentifyReplyCommandMinimumLevels) IsIdentifyReplyCommandMinimumLevels() {}
+
+func (m *_IdentifyReplyCommandMinimumLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandMinimumLevels) deepCopy() *_IdentifyReplyCommandMinimumLevels {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandMinimumLevelsCopy := &_IdentifyReplyCommandMinimumLevels{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		utils.DeepCopySlice[byte, byte](m.MinimumLevels),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandMinimumLevelsCopy
+}
 
 func (m *_IdentifyReplyCommandMinimumLevels) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetRequestingProcessIdentifier returns RequestingProcessIdentifier (property field)
 	GetRequestingProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -257,6 +258,25 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) SerializeWithWriteBu
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) IsBACnetConfirmedServiceRequestLifeSafetyOperation() {
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) deepCopy() *_BACnetConfirmedServiceRequestLifeSafetyOperation {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestLifeSafetyOperationCopy := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.RequestingProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.RequestingSource.DeepCopy().(BACnetContextTagCharacterString),
+		m.Request.DeepCopy().(BACnetLifeSafetyOperationTagged),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestLifeSafetyOperationCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) String() string {

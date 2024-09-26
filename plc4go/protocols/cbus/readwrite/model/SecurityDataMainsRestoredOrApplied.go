@@ -36,6 +36,7 @@ type SecurityDataMainsRestoredOrApplied interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataMainsRestoredOrApplied is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataMainsRestoredOrApplied()
@@ -142,6 +143,21 @@ func (m *_SecurityDataMainsRestoredOrApplied) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_SecurityDataMainsRestoredOrApplied) IsSecurityDataMainsRestoredOrApplied() {}
+
+func (m *_SecurityDataMainsRestoredOrApplied) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataMainsRestoredOrApplied) deepCopy() *_SecurityDataMainsRestoredOrApplied {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataMainsRestoredOrAppliedCopy := &_SecurityDataMainsRestoredOrApplied{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataMainsRestoredOrAppliedCopy
+}
 
 func (m *_SecurityDataMainsRestoredOrApplied) String() string {
 	if m == nil {

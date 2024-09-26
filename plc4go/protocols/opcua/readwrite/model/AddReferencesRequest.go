@@ -38,6 +38,7 @@ type AddReferencesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_AddReferencesRequest) IsAddReferencesRequest() {}
+
+func (m *_AddReferencesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddReferencesRequest) deepCopy() *_AddReferencesRequest {
+	if m == nil {
+		return nil
+	}
+	_AddReferencesRequestCopy := &_AddReferencesRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfReferencesToAdd,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ReferencesToAdd),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddReferencesRequestCopy
+}
 
 func (m *_AddReferencesRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type OpenChannelMessageResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	OpenChannelMessage
 	// GetSecureChannelId returns SecureChannelId (property field)
 	GetSecureChannelId() int32
@@ -251,6 +252,25 @@ func (m *_OpenChannelMessageResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_OpenChannelMessageResponse) IsOpenChannelMessageResponse() {}
+
+func (m *_OpenChannelMessageResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpenChannelMessageResponse) deepCopy() *_OpenChannelMessageResponse {
+	if m == nil {
+		return nil
+	}
+	_OpenChannelMessageResponseCopy := &_OpenChannelMessageResponse{
+		m.OpenChannelMessageContract.DeepCopy().(OpenChannelMessageContract),
+		m.SecureChannelId,
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.SenderCertificate.DeepCopy().(PascalByteString),
+		m.ReceiverCertificateThumbprint.DeepCopy().(PascalByteString),
+	}
+	m.OpenChannelMessageContract.(*_OpenChannelMessage)._SubType = m
+	return _OpenChannelMessageResponseCopy
+}
 
 func (m *_OpenChannelMessageResponse) String() string {
 	if m == nil {

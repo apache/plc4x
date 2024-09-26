@@ -41,6 +41,7 @@ type BacnetConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBacnetConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBacnetConstants()
 }
@@ -166,6 +167,18 @@ func (m *_BacnetConstants) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BacnetConstants) IsBacnetConstants() {}
+
+func (m *_BacnetConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BacnetConstants) deepCopy() *_BacnetConstants {
+	if m == nil {
+		return nil
+	}
+	_BacnetConstantsCopy := &_BacnetConstants{}
+	return _BacnetConstantsCopy
+}
 
 func (m *_BacnetConstants) String() string {
 	if m == nil {

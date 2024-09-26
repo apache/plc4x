@@ -38,6 +38,7 @@ type ErrorEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetError returns Error (property field)
@@ -228,6 +229,23 @@ func (m *_ErrorEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_ErrorEnclosed) IsErrorEnclosed() {}
+
+func (m *_ErrorEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorEnclosed) deepCopy() *_ErrorEnclosed {
+	if m == nil {
+		return nil
+	}
+	_ErrorEnclosedCopy := &_ErrorEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.Error.DeepCopy().(Error),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _ErrorEnclosedCopy
+}
 
 func (m *_ErrorEnclosed) String() string {
 	if m == nil {

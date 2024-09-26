@@ -38,6 +38,7 @@ type OpcuaOpenRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetOpenRequest returns OpenRequest (property field)
 	GetOpenRequest() OpenChannelMessage
@@ -223,6 +224,24 @@ func (m *_OpcuaOpenRequest) GetTotalLength() uint32 {
 ////
 
 func (m *_OpcuaOpenRequest) IsOpcuaOpenRequest() {}
+
+func (m *_OpcuaOpenRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaOpenRequest) deepCopy() *_OpcuaOpenRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaOpenRequestCopy := &_OpcuaOpenRequest{
+		m.MessagePDUContract.DeepCopy().(MessagePDUContract),
+		m.OpenRequest.DeepCopy().(OpenChannelMessage),
+		m.Message.DeepCopy().(Payload),
+		m.TotalLength,
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaOpenRequestCopy
+}
 
 func (m *_OpcuaOpenRequest) String() string {
 	if m == nil {

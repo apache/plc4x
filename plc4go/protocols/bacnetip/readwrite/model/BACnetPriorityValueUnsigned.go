@@ -38,6 +38,7 @@ type BACnetPriorityValueUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueUnsigned) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetPriorityValueUnsigned) IsBACnetPriorityValueUnsigned() {}
+
+func (m *_BACnetPriorityValueUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueUnsigned) deepCopy() *_BACnetPriorityValueUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueUnsignedCopy := &_BACnetPriorityValueUnsigned{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueUnsignedCopy
+}
 
 func (m *_BACnetPriorityValueUnsigned) String() string {
 	if m == nil {

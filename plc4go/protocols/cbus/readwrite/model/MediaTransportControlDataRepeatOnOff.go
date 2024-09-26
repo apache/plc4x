@@ -38,6 +38,7 @@ type MediaTransportControlDataRepeatOnOff interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetRepeatType returns RepeatType (property field)
 	GetRepeatType() byte
@@ -250,6 +251,22 @@ func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataRepeatOnOff) IsMediaTransportControlDataRepeatOnOff() {}
+
+func (m *_MediaTransportControlDataRepeatOnOff) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataRepeatOnOff) deepCopy() *_MediaTransportControlDataRepeatOnOff {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataRepeatOnOffCopy := &_MediaTransportControlDataRepeatOnOff{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.RepeatType,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataRepeatOnOffCopy
+}
 
 func (m *_MediaTransportControlDataRepeatOnOff) String() string {
 	if m == nil {

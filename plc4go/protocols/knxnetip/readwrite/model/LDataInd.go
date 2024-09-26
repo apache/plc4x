@@ -38,6 +38,7 @@ type LDataInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
@@ -228,6 +229,24 @@ func (m *_LDataInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_LDataInd) IsLDataInd() {}
+
+func (m *_LDataInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataInd) deepCopy() *_LDataInd {
+	if m == nil {
+		return nil
+	}
+	_LDataIndCopy := &_LDataInd{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.AdditionalInformationLength,
+		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
+		m.DataFrame.DeepCopy().(LDataFrame),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LDataIndCopy
+}
 
 func (m *_LDataInd) String() string {
 	if m == nil {

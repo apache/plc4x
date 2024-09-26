@@ -36,6 +36,7 @@ type BACnetConstructedDataElevatorGroupAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataElevatorGroupAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataElevatorGroupAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataElevatorGroupAll) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataElevatorGroupAll) IsBACnetConstructedDataElevatorGroupAll() {}
+
+func (m *_BACnetConstructedDataElevatorGroupAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataElevatorGroupAll) deepCopy() *_BACnetConstructedDataElevatorGroupAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataElevatorGroupAllCopy := &_BACnetConstructedDataElevatorGroupAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataElevatorGroupAllCopy
+}
 
 func (m *_BACnetConstructedDataElevatorGroupAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetKeyIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAlgorithm returns Algorithm (property field)
 	GetAlgorithm() BACnetContextTagUnsignedInteger
 	// GetKeyId returns KeyId (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetKeyIdentifier) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetKeyIdentifier) IsBACnetKeyIdentifier() {}
+
+func (m *_BACnetKeyIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetKeyIdentifier) deepCopy() *_BACnetKeyIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetKeyIdentifierCopy := &_BACnetKeyIdentifier{
+		m.Algorithm.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.KeyId.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetKeyIdentifierCopy
+}
 
 func (m *_BACnetKeyIdentifier) String() string {
 	if m == nil {

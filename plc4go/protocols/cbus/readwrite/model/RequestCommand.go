@@ -41,6 +41,7 @@ type RequestCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// GetCbusCommand returns CbusCommand (property field)
 	GetCbusCommand() CBusCommand
@@ -311,6 +312,24 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_RequestCommand) IsRequestCommand() {}
+
+func (m *_RequestCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestCommand) deepCopy() *_RequestCommand {
+	if m == nil {
+		return nil
+	}
+	_RequestCommandCopy := &_RequestCommand{
+		m.RequestContract.DeepCopy().(RequestContract),
+		m.CbusCommand.DeepCopy().(CBusCommand),
+		m.Chksum.DeepCopy().(Checksum),
+		m.Alpha.DeepCopy().(Alpha),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestCommandCopy
+}
 
 func (m *_RequestCommand) String() string {
 	if m == nil {

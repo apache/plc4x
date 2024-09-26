@@ -38,6 +38,7 @@ type ApduDataOther interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetExtendedApdu returns ExtendedApdu (property field)
 	GetExtendedApdu() ApduDataExt
@@ -182,6 +183,22 @@ func (m *_ApduDataOther) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_ApduDataOther) IsApduDataOther() {}
+
+func (m *_ApduDataOther) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataOther) deepCopy() *_ApduDataOther {
+	if m == nil {
+		return nil
+	}
+	_ApduDataOtherCopy := &_ApduDataOther{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ExtendedApdu.DeepCopy().(ApduDataExt),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataOtherCopy
+}
 
 func (m *_ApduDataOther) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesExtendedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetExtendedValue returns ExtendedValue (property field)
 	GetExtendedValue() BACnetContextTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesExtendedValue) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesExtendedValue) IsBACnetPropertyStatesExtendedValue() {}
+
+func (m *_BACnetPropertyStatesExtendedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesExtendedValue) deepCopy() *_BACnetPropertyStatesExtendedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesExtendedValueCopy := &_BACnetPropertyStatesExtendedValue{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.ExtendedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesExtendedValueCopy
+}
 
 func (m *_BACnetPropertyStatesExtendedValue) String() string {
 	if m == nil {

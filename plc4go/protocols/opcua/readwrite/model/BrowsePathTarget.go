@@ -38,6 +38,7 @@ type BrowsePathTarget interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTargetId returns TargetId (property field)
 	GetTargetId() ExpandedNodeId
@@ -203,6 +204,23 @@ func (m *_BrowsePathTarget) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_BrowsePathTarget) IsBrowsePathTarget() {}
+
+func (m *_BrowsePathTarget) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowsePathTarget) deepCopy() *_BrowsePathTarget {
+	if m == nil {
+		return nil
+	}
+	_BrowsePathTargetCopy := &_BrowsePathTarget{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.TargetId.DeepCopy().(ExpandedNodeId),
+		m.RemainingPathIndex,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowsePathTargetCopy
+}
 
 func (m *_BrowsePathTarget) String() string {
 	if m == nil {

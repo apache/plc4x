@@ -38,6 +38,7 @@ type NLMRejectMessageToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetRejectReason returns RejectReason (property field)
 	GetRejectReason() NLMRejectMessageToNetworkRejectReason
@@ -200,6 +201,23 @@ func (m *_NLMRejectMessageToNetwork) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_NLMRejectMessageToNetwork) IsNLMRejectMessageToNetwork() {}
+
+func (m *_NLMRejectMessageToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRejectMessageToNetwork) deepCopy() *_NLMRejectMessageToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMRejectMessageToNetworkCopy := &_NLMRejectMessageToNetwork{
+		m.NLMContract.DeepCopy().(NLMContract),
+		m.RejectReason,
+		m.DestinationNetworkAddress,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRejectMessageToNetworkCopy
+}
 
 func (m *_NLMRejectMessageToNetwork) String() string {
 	if m == nil {

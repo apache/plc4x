@@ -38,6 +38,7 @@ type MPropReadReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetInterfaceObjectType returns InterfaceObjectType (property field)
 	GetInterfaceObjectType() uint16
@@ -263,6 +264,26 @@ func (m *_MPropReadReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_MPropReadReq) IsMPropReadReq() {}
+
+func (m *_MPropReadReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropReadReq) deepCopy() *_MPropReadReq {
+	if m == nil {
+		return nil
+	}
+	_MPropReadReqCopy := &_MPropReadReq{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.InterfaceObjectType,
+		m.ObjectInstance,
+		m.PropertyId,
+		m.NumberOfElements,
+		m.StartIndex,
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropReadReqCopy
+}
 
 func (m *_MPropReadReq) String() string {
 	if m == nil {

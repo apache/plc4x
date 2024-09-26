@@ -36,6 +36,7 @@ type BACnetConstructedDataAlertEnrollmentAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataAlertEnrollmentAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAlertEnrollmentAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataAlertEnrollmentAll) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataAlertEnrollmentAll) IsBACnetConstructedDataAlertEnrollmentAll() {}
+
+func (m *_BACnetConstructedDataAlertEnrollmentAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentAll) deepCopy() *_BACnetConstructedDataAlertEnrollmentAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAlertEnrollmentAllCopy := &_BACnetConstructedDataAlertEnrollmentAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAlertEnrollmentAllCopy
+}
 
 func (m *_BACnetConstructedDataAlertEnrollmentAll) String() string {
 	if m == nil {

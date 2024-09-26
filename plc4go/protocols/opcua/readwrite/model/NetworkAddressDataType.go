@@ -38,6 +38,7 @@ type NetworkAddressDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNetworkInterface returns NetworkInterface (property field)
 	GetNetworkInterface() PascalString
@@ -182,6 +183,22 @@ func (m *_NetworkAddressDataType) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_NetworkAddressDataType) IsNetworkAddressDataType() {}
+
+func (m *_NetworkAddressDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkAddressDataType) deepCopy() *_NetworkAddressDataType {
+	if m == nil {
+		return nil
+	}
+	_NetworkAddressDataTypeCopy := &_NetworkAddressDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NetworkInterface.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NetworkAddressDataTypeCopy
+}
 
 func (m *_NetworkAddressDataType) String() string {
 	if m == nil {

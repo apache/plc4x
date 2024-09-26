@@ -38,6 +38,7 @@ type BACnetConstructedDataAuthorizationMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAuthorizationMode returns AuthorizationMode (property field)
 	GetAuthorizationMode() BACnetAuthorizationModeTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataAuthorizationMode) IsBACnetConstructedDataAuthorizationMode() {}
+
+func (m *_BACnetConstructedDataAuthorizationMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAuthorizationMode) deepCopy() *_BACnetConstructedDataAuthorizationMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAuthorizationModeCopy := &_BACnetConstructedDataAuthorizationMode{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AuthorizationMode.DeepCopy().(BACnetAuthorizationModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAuthorizationModeCopy
+}
 
 func (m *_BACnetConstructedDataAuthorizationMode) String() string {
 	if m == nil {

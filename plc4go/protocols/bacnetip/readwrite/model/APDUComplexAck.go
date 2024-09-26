@@ -38,6 +38,7 @@ type APDUComplexAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
@@ -434,6 +435,30 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_APDUComplexAck) IsAPDUComplexAck() {}
+
+func (m *_APDUComplexAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUComplexAck) deepCopy() *_APDUComplexAck {
+	if m == nil {
+		return nil
+	}
+	_APDUComplexAckCopy := &_APDUComplexAck{
+		m.APDUContract.DeepCopy().(APDUContract),
+		m.SegmentedMessage,
+		m.MoreFollows,
+		m.OriginalInvokeId,
+		utils.CopyPtr[uint8](m.SequenceNumber),
+		utils.CopyPtr[uint8](m.ProposedWindowSize),
+		m.ServiceAck.DeepCopy().(BACnetServiceAck),
+		utils.CopyPtr[BACnetConfirmedServiceChoice](m.SegmentServiceChoice),
+		utils.DeepCopySlice[byte, byte](m.Segment),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUComplexAckCopy
+}
 
 func (m *_APDUComplexAck) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type ApduDataExtMemoryBitWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtMemoryBitWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtMemoryBitWrite()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtMemoryBitWrite) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_ApduDataExtMemoryBitWrite) IsApduDataExtMemoryBitWrite() {}
+
+func (m *_ApduDataExtMemoryBitWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtMemoryBitWrite) deepCopy() *_ApduDataExtMemoryBitWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtMemoryBitWriteCopy := &_ApduDataExtMemoryBitWrite{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtMemoryBitWriteCopy
+}
 
 func (m *_ApduDataExtMemoryBitWrite) String() string {
 	if m == nil {

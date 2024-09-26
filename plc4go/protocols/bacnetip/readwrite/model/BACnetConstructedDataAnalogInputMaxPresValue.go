@@ -38,6 +38,7 @@ type BACnetConstructedDataAnalogInputMaxPresValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAnalogInputMaxPresValue) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataAnalogInputMaxPresValue) IsBACnetConstructedDataAnalogInputMaxPresValue() {
+}
+
+func (m *_BACnetConstructedDataAnalogInputMaxPresValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAnalogInputMaxPresValue) deepCopy() *_BACnetConstructedDataAnalogInputMaxPresValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAnalogInputMaxPresValueCopy := &_BACnetConstructedDataAnalogInputMaxPresValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaxPresValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAnalogInputMaxPresValueCopy
 }
 
 func (m *_BACnetConstructedDataAnalogInputMaxPresValue) String() string {

@@ -38,6 +38,7 @@ type ErrorReportingSystemCategory interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSystemCategoryClass returns SystemCategoryClass (property field)
 	GetSystemCategoryClass() ErrorReportingSystemCategoryClass
 	// GetSystemCategoryType returns SystemCategoryType (property field)
@@ -209,6 +210,22 @@ func (m *_ErrorReportingSystemCategory) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ErrorReportingSystemCategory) IsErrorReportingSystemCategory() {}
+
+func (m *_ErrorReportingSystemCategory) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategory) deepCopy() *_ErrorReportingSystemCategory {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryCopy := &_ErrorReportingSystemCategory{
+		m.SystemCategoryClass,
+		m.SystemCategoryType.DeepCopy().(ErrorReportingSystemCategoryType),
+		m.SystemCategoryVariant,
+	}
+	return _ErrorReportingSystemCategoryCopy
+}
 
 func (m *_ErrorReportingSystemCategory) String() string {
 	if m == nil {

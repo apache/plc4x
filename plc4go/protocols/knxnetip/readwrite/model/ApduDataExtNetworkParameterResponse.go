@@ -36,6 +36,7 @@ type ApduDataExtNetworkParameterResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtNetworkParameterResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtNetworkParameterResponse()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtNetworkParameterResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ApduDataExtNetworkParameterResponse) IsApduDataExtNetworkParameterResponse() {}
+
+func (m *_ApduDataExtNetworkParameterResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtNetworkParameterResponse) deepCopy() *_ApduDataExtNetworkParameterResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtNetworkParameterResponseCopy := &_ApduDataExtNetworkParameterResponse{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtNetworkParameterResponseCopy
+}
 
 func (m *_ApduDataExtNetworkParameterResponse) String() string {
 	if m == nil {

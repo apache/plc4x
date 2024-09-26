@@ -38,6 +38,7 @@ type MonitoredItemModifyRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMonitoredItemId returns MonitoredItemId (property field)
 	GetMonitoredItemId() uint32
@@ -203,6 +204,23 @@ func (m *_MonitoredItemModifyRequest) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_MonitoredItemModifyRequest) IsMonitoredItemModifyRequest() {}
+
+func (m *_MonitoredItemModifyRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredItemModifyRequest) deepCopy() *_MonitoredItemModifyRequest {
+	if m == nil {
+		return nil
+	}
+	_MonitoredItemModifyRequestCopy := &_MonitoredItemModifyRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.MonitoredItemId,
+		m.RequestedParameters.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoredItemModifyRequestCopy
+}
 
 func (m *_MonitoredItemModifyRequest) String() string {
 	if m == nil {

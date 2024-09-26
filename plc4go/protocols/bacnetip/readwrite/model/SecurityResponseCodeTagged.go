@@ -38,6 +38,7 @@ type SecurityResponseCodeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_SecurityResponseCodeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_SecurityResponseCodeTagged) IsSecurityResponseCodeTagged() {}
+
+func (m *_SecurityResponseCodeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityResponseCodeTagged) deepCopy() *_SecurityResponseCodeTagged {
+	if m == nil {
+		return nil
+	}
+	_SecurityResponseCodeTaggedCopy := &_SecurityResponseCodeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _SecurityResponseCodeTaggedCopy
+}
 
 func (m *_SecurityResponseCodeTagged) String() string {
 	if m == nil {

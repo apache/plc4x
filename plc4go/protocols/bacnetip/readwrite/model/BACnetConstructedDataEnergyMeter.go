@@ -38,6 +38,7 @@ type BACnetConstructedDataEnergyMeter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEnergyMeter returns EnergyMeter (property field)
 	GetEnergyMeter() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataEnergyMeter) IsBACnetConstructedDataEnergyMeter() {}
+
+func (m *_BACnetConstructedDataEnergyMeter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEnergyMeter) deepCopy() *_BACnetConstructedDataEnergyMeter {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEnergyMeterCopy := &_BACnetConstructedDataEnergyMeter{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.EnergyMeter.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEnergyMeterCopy
+}
 
 func (m *_BACnetConstructedDataEnergyMeter) String() string {
 	if m == nil {

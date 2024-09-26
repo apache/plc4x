@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveCOVSubscriptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveCOVSubscriptions returns ActiveCOVSubscriptions (property field)
 	GetActiveCOVSubscriptions() []BACnetCOVSubscription
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataActiveCOVSubscriptions) IsBACnetConstructedDataActiveCOVSubscriptions() {
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) deepCopy() *_BACnetConstructedDataActiveCOVSubscriptions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveCOVSubscriptionsCopy := &_BACnetConstructedDataActiveCOVSubscriptions{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetCOVSubscription, BACnetCOVSubscription](m.ActiveCOVSubscriptions),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveCOVSubscriptionsCopy
 }
 
 func (m *_BACnetConstructedDataActiveCOVSubscriptions) String() string {

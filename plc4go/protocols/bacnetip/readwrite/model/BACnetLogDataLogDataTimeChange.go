@@ -38,6 +38,7 @@ type BACnetLogDataLogDataTimeChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogData
 	// GetTimeChange returns TimeChange (property field)
 	GetTimeChange() BACnetContextTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataTimeChange) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetLogDataLogDataTimeChange) IsBACnetLogDataLogDataTimeChange() {}
+
+func (m *_BACnetLogDataLogDataTimeChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataTimeChange) deepCopy() *_BACnetLogDataLogDataTimeChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataTimeChangeCopy := &_BACnetLogDataLogDataTimeChange{
+		m.BACnetLogDataContract.DeepCopy().(BACnetLogDataContract),
+		m.TimeChange.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
+	return _BACnetLogDataLogDataTimeChangeCopy
+}
 
 func (m *_BACnetLogDataLogDataTimeChange) String() string {
 	if m == nil {

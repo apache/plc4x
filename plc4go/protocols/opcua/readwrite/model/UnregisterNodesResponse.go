@@ -38,6 +38,7 @@ type UnregisterNodesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -182,6 +183,22 @@ func (m *_UnregisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_UnregisterNodesResponse) IsUnregisterNodesResponse() {}
+
+func (m *_UnregisterNodesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnregisterNodesResponse) deepCopy() *_UnregisterNodesResponse {
+	if m == nil {
+		return nil
+	}
+	_UnregisterNodesResponseCopy := &_UnregisterNodesResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UnregisterNodesResponseCopy
+}
 
 func (m *_UnregisterNodesResponse) String() string {
 	if m == nil {

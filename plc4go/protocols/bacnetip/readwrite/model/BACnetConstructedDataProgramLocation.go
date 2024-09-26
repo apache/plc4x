@@ -38,6 +38,7 @@ type BACnetConstructedDataProgramLocation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProgramLocation returns ProgramLocation (property field)
 	GetProgramLocation() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProgramLocation) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataProgramLocation) IsBACnetConstructedDataProgramLocation() {}
+
+func (m *_BACnetConstructedDataProgramLocation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProgramLocation) deepCopy() *_BACnetConstructedDataProgramLocation {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProgramLocationCopy := &_BACnetConstructedDataProgramLocation{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProgramLocation.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProgramLocationCopy
+}
 
 func (m *_BACnetConstructedDataProgramLocation) String() string {
 	if m == nil {

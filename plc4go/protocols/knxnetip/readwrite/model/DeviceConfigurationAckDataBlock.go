@@ -38,6 +38,7 @@ type DeviceConfigurationAckDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
@@ -219,6 +220,22 @@ func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_DeviceConfigurationAckDataBlock) IsDeviceConfigurationAckDataBlock() {}
+
+func (m *_DeviceConfigurationAckDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationAckDataBlock) deepCopy() *_DeviceConfigurationAckDataBlock {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationAckDataBlockCopy := &_DeviceConfigurationAckDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.Status,
+	}
+	return _DeviceConfigurationAckDataBlockCopy
+}
 
 func (m *_DeviceConfigurationAckDataBlock) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetMaintenanceTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetMaintenanceTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetMaintenanceTagged) IsBACnetMaintenanceTagged() {}
+
+func (m *_BACnetMaintenanceTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetMaintenanceTagged) deepCopy() *_BACnetMaintenanceTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetMaintenanceTaggedCopy := &_BACnetMaintenanceTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetMaintenanceTaggedCopy
+}
 
 func (m *_BACnetMaintenanceTagged) String() string {
 	if m == nil {

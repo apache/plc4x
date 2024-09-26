@@ -38,6 +38,7 @@ type BACnetConstructedDataIntegerValueFaultHighLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultHighLimit returns FaultHighLimit (property field)
 	GetFaultHighLimit() BACnetApplicationTagSignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) IsBACnetConstructedDataIntegerValueFaultHighLimit() {
+}
+
+func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) deepCopy() *_BACnetConstructedDataIntegerValueFaultHighLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntegerValueFaultHighLimitCopy := &_BACnetConstructedDataIntegerValueFaultHighLimit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FaultHighLimit.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntegerValueFaultHighLimitCopy
 }
 
 func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) String() string {

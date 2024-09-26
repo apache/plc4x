@@ -36,6 +36,7 @@ type ApduDataExtDomainAddressResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtDomainAddressResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressResponse()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtDomainAddressResponse) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_ApduDataExtDomainAddressResponse) IsApduDataExtDomainAddressResponse() {}
+
+func (m *_ApduDataExtDomainAddressResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtDomainAddressResponse) deepCopy() *_ApduDataExtDomainAddressResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtDomainAddressResponseCopy := &_ApduDataExtDomainAddressResponse{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtDomainAddressResponseCopy
+}
 
 func (m *_ApduDataExtDomainAddressResponse) String() string {
 	if m == nil {

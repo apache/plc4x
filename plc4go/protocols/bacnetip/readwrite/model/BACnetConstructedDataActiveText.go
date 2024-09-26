@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveText returns ActiveText (property field)
 	GetActiveText() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataActiveText) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataActiveText) IsBACnetConstructedDataActiveText() {}
+
+func (m *_BACnetConstructedDataActiveText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveText) deepCopy() *_BACnetConstructedDataActiveText {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveTextCopy := &_BACnetConstructedDataActiveText{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ActiveText.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveTextCopy
+}
 
 func (m *_BACnetConstructedDataActiveText) String() string {
 	if m == nil {

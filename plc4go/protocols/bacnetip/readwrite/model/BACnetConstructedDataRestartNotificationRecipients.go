@@ -38,6 +38,7 @@ type BACnetConstructedDataRestartNotificationRecipients interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRestartNotificationRecipients returns RestartNotificationRecipients (property field)
 	GetRestartNotificationRecipients() []BACnetRecipient
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) SerializeWithWrite
 }
 
 func (m *_BACnetConstructedDataRestartNotificationRecipients) IsBACnetConstructedDataRestartNotificationRecipients() {
+}
+
+func (m *_BACnetConstructedDataRestartNotificationRecipients) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRestartNotificationRecipients) deepCopy() *_BACnetConstructedDataRestartNotificationRecipients {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRestartNotificationRecipientsCopy := &_BACnetConstructedDataRestartNotificationRecipients{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetRecipient, BACnetRecipient](m.RestartNotificationRecipients),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRestartNotificationRecipientsCopy
 }
 
 func (m *_BACnetConstructedDataRestartNotificationRecipients) String() string {

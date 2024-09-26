@@ -38,6 +38,7 @@ type BACnetConstructedDataLockout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLockout returns Lockout (property field)
 	GetLockout() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLockout) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataLockout) IsBACnetConstructedDataLockout() {}
+
+func (m *_BACnetConstructedDataLockout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLockout) deepCopy() *_BACnetConstructedDataLockout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLockoutCopy := &_BACnetConstructedDataLockout{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Lockout.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLockoutCopy
+}
 
 func (m *_BACnetConstructedDataLockout) String() string {
 	if m == nil {

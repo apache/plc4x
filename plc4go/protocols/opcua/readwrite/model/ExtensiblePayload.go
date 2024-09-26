@@ -38,6 +38,7 @@ type ExtensiblePayload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Payload
 	// GetPayload returns Payload (property field)
 	GetPayload() ExtensionObject
@@ -182,6 +183,22 @@ func (m *_ExtensiblePayload) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ExtensiblePayload) IsExtensiblePayload() {}
+
+func (m *_ExtensiblePayload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExtensiblePayload) deepCopy() *_ExtensiblePayload {
+	if m == nil {
+		return nil
+	}
+	_ExtensiblePayloadCopy := &_ExtensiblePayload{
+		m.PayloadContract.DeepCopy().(PayloadContract),
+		m.Payload.DeepCopy().(ExtensionObject),
+	}
+	m.PayloadContract.(*_Payload)._SubType = m
+	return _ExtensiblePayloadCopy
+}
 
 func (m *_ExtensiblePayload) String() string {
 	if m == nil {

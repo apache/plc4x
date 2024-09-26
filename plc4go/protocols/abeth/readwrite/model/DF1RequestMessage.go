@@ -40,12 +40,14 @@ type DF1RequestMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestMessage()
 }
 
 // DF1RequestMessageContract provides a set of functions which can be overwritten by a sub struct
 type DF1RequestMessageContract interface {
+	utils.Copyable
 	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() uint8
 	// GetSourceAddress returns SourceAddress (property field)
@@ -291,3 +293,22 @@ func (pm *_DF1RequestMessage) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_DF1RequestMessage) IsDF1RequestMessage() {}
+
+func (m *_DF1RequestMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1RequestMessage) deepCopy() *_DF1RequestMessage {
+	if m == nil {
+		return nil
+	}
+	_DF1RequestMessageCopy := &_DF1RequestMessage{
+		nil, // will be set by child
+		m.DestinationAddress,
+		m.SourceAddress,
+		m.Status,
+		m.TransactionCounter,
+		m.reservedField0,
+	}
+	return _DF1RequestMessageCopy
+}

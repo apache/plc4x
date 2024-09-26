@@ -38,6 +38,7 @@ type S7VarRequestParameterItemAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7VarRequestParameterItem
 	// GetAddress returns Address (property field)
 	GetAddress() S7Address
@@ -195,6 +196,22 @@ func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_S7VarRequestParameterItemAddress) IsS7VarRequestParameterItemAddress() {}
+
+func (m *_S7VarRequestParameterItemAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7VarRequestParameterItemAddress) deepCopy() *_S7VarRequestParameterItemAddress {
+	if m == nil {
+		return nil
+	}
+	_S7VarRequestParameterItemAddressCopy := &_S7VarRequestParameterItemAddress{
+		m.S7VarRequestParameterItemContract.DeepCopy().(S7VarRequestParameterItemContract),
+		m.Address.DeepCopy().(S7Address),
+	}
+	m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = m
+	return _S7VarRequestParameterItemAddressCopy
+}
 
 func (m *_S7VarRequestParameterItemAddress) String() string {
 	if m == nil {

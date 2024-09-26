@@ -38,6 +38,7 @@ type BACnetConstructedDataAnalogValuePresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAnalogValuePresentValue) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataAnalogValuePresentValue) IsBACnetConstructedDataAnalogValuePresentValue() {
+}
+
+func (m *_BACnetConstructedDataAnalogValuePresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAnalogValuePresentValue) deepCopy() *_BACnetConstructedDataAnalogValuePresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAnalogValuePresentValueCopy := &_BACnetConstructedDataAnalogValuePresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAnalogValuePresentValueCopy
 }
 
 func (m *_BACnetConstructedDataAnalogValuePresentValue) String() string {

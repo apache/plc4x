@@ -38,6 +38,7 @@ type BACnetDaysOfWeekTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -382,6 +383,23 @@ func (m *_BACnetDaysOfWeekTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetDaysOfWeekTagged) IsBACnetDaysOfWeekTagged() {}
+
+func (m *_BACnetDaysOfWeekTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDaysOfWeekTagged) deepCopy() *_BACnetDaysOfWeekTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDaysOfWeekTaggedCopy := &_BACnetDaysOfWeekTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDaysOfWeekTaggedCopy
+}
 
 func (m *_BACnetDaysOfWeekTagged) String() string {
 	if m == nil {

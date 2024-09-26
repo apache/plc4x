@@ -38,6 +38,7 @@ type BACnetConstructedDataInitialTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInitialTimeout returns InitialTimeout (property field)
 	GetInitialTimeout() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataInitialTimeout) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataInitialTimeout) IsBACnetConstructedDataInitialTimeout() {}
+
+func (m *_BACnetConstructedDataInitialTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInitialTimeout) deepCopy() *_BACnetConstructedDataInitialTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInitialTimeoutCopy := &_BACnetConstructedDataInitialTimeout{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.InitialTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInitialTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataInitialTimeout) String() string {
 	if m == nil {

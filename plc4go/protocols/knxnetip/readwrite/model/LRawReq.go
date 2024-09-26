@@ -36,6 +36,7 @@ type LRawReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsLRawReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLRawReq()
@@ -146,6 +147,21 @@ func (m *_LRawReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_LRawReq) IsLRawReq() {}
+
+func (m *_LRawReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LRawReq) deepCopy() *_LRawReq {
+	if m == nil {
+		return nil
+	}
+	_LRawReqCopy := &_LRawReq{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LRawReqCopy
+}
 
 func (m *_LRawReq) String() string {
 	if m == nil {

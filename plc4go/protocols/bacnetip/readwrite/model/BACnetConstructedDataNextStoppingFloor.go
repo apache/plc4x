@@ -38,6 +38,7 @@ type BACnetConstructedDataNextStoppingFloor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNextStoppingFloor returns NextStoppingFloor (property field)
 	GetNextStoppingFloor() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataNextStoppingFloor) IsBACnetConstructedDataNextStoppingFloor() {}
+
+func (m *_BACnetConstructedDataNextStoppingFloor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNextStoppingFloor) deepCopy() *_BACnetConstructedDataNextStoppingFloor {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNextStoppingFloorCopy := &_BACnetConstructedDataNextStoppingFloor{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NextStoppingFloor.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNextStoppingFloorCopy
+}
 
 func (m *_BACnetConstructedDataNextStoppingFloor) String() string {
 	if m == nil {

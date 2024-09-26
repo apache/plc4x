@@ -38,6 +38,7 @@ type MediaTransportControlDataNextPreviousCategory interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetOperation returns Operation (property field)
 	GetOperation() byte
@@ -228,6 +229,22 @@ func (m *_MediaTransportControlDataNextPreviousCategory) SerializeWithWriteBuffe
 }
 
 func (m *_MediaTransportControlDataNextPreviousCategory) IsMediaTransportControlDataNextPreviousCategory() {
+}
+
+func (m *_MediaTransportControlDataNextPreviousCategory) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataNextPreviousCategory) deepCopy() *_MediaTransportControlDataNextPreviousCategory {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataNextPreviousCategoryCopy := &_MediaTransportControlDataNextPreviousCategory{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.Operation,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataNextPreviousCategoryCopy
 }
 
 func (m *_MediaTransportControlDataNextPreviousCategory) String() string {

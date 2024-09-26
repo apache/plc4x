@@ -38,6 +38,7 @@ type SALDataEnableControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetEnableControlData returns EnableControlData (property field)
 	GetEnableControlData() EnableControlData
@@ -182,6 +183,22 @@ func (m *_SALDataEnableControl) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SALDataEnableControl) IsSALDataEnableControl() {}
+
+func (m *_SALDataEnableControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataEnableControl) deepCopy() *_SALDataEnableControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataEnableControlCopy := &_SALDataEnableControl{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.EnableControlData.DeepCopy().(EnableControlData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataEnableControlCopy
+}
 
 func (m *_SALDataEnableControl) String() string {
 	if m == nil {

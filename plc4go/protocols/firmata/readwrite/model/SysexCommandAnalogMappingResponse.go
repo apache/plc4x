@@ -36,6 +36,7 @@ type SysexCommandAnalogMappingResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandAnalogMappingResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandAnalogMappingResponse()
@@ -150,6 +151,21 @@ func (m *_SysexCommandAnalogMappingResponse) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_SysexCommandAnalogMappingResponse) IsSysexCommandAnalogMappingResponse() {}
+
+func (m *_SysexCommandAnalogMappingResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandAnalogMappingResponse) deepCopy() *_SysexCommandAnalogMappingResponse {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandAnalogMappingResponseCopy := &_SysexCommandAnalogMappingResponse{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandAnalogMappingResponseCopy
+}
 
 func (m *_SysexCommandAnalogMappingResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type SALDataHvacActuator interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetHvacActuatorData returns HvacActuatorData (property field)
 	GetHvacActuatorData() LightingData
@@ -182,6 +183,22 @@ func (m *_SALDataHvacActuator) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_SALDataHvacActuator) IsSALDataHvacActuator() {}
+
+func (m *_SALDataHvacActuator) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataHvacActuator) deepCopy() *_SALDataHvacActuator {
+	if m == nil {
+		return nil
+	}
+	_SALDataHvacActuatorCopy := &_SALDataHvacActuator{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.HvacActuatorData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataHvacActuatorCopy
+}
 
 func (m *_SALDataHvacActuator) String() string {
 	if m == nil {

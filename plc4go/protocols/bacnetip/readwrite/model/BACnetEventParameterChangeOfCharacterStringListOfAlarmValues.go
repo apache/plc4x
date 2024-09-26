@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfCharacterStringListOfAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfAlarmValues returns ListOfAlarmValues (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) GetTagNu
 ////
 
 func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) IsBACnetEventParameterChangeOfCharacterStringListOfAlarmValues() {
+}
+
+func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) deepCopy() *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesCopy := &_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.ListOfAlarmValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesCopy
 }
 
 func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) String() string {

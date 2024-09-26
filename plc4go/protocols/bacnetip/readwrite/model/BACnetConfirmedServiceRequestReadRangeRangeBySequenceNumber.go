@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequestReadRangeRange
 	// GetReferenceSequenceNumber returns ReferenceSequenceNumber (property field)
 	GetReferenceSequenceNumber() BACnetApplicationTagUnsignedInteger
@@ -202,6 +203,23 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) IsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) deepCopy() *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberCopy := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
+		m.BACnetConfirmedServiceRequestReadRangeRangeContract.DeepCopy().(BACnetConfirmedServiceRequestReadRangeRangeContract),
+		m.ReferenceSequenceNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.Count.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = m
+	return _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) String() string {

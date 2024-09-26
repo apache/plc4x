@@ -38,6 +38,7 @@ type AmsNetId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOctet1 returns Octet1 (property field)
 	GetOctet1() uint8
 	// GetOctet2 returns Octet2 (property field)
@@ -266,6 +267,25 @@ func (m *_AmsNetId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_AmsNetId) IsAmsNetId() {}
+
+func (m *_AmsNetId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsNetId) deepCopy() *_AmsNetId {
+	if m == nil {
+		return nil
+	}
+	_AmsNetIdCopy := &_AmsNetId{
+		m.Octet1,
+		m.Octet2,
+		m.Octet3,
+		m.Octet4,
+		m.Octet5,
+		m.Octet6,
+	}
+	return _AmsNetIdCopy
+}
 
 func (m *_AmsNetId) String() string {
 	if m == nil {

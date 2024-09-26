@@ -36,6 +36,7 @@ type IntegerId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsIntegerId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIntegerId()
 }
@@ -134,6 +135,18 @@ func (m *_IntegerId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_IntegerId) IsIntegerId() {}
+
+func (m *_IntegerId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IntegerId) deepCopy() *_IntegerId {
+	if m == nil {
+		return nil
+	}
+	_IntegerIdCopy := &_IntegerId{}
+	return _IntegerIdCopy
+}
 
 func (m *_IntegerId) String() string {
 	if m == nil {

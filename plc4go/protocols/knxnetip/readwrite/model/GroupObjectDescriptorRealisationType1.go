@@ -38,6 +38,7 @@ type GroupObjectDescriptorRealisationType1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDataPointer returns DataPointer (property field)
 	GetDataPointer() uint8
 	// GetTransmitEnable returns TransmitEnable (property field)
@@ -321,6 +322,28 @@ func (m *_GroupObjectDescriptorRealisationType1) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_GroupObjectDescriptorRealisationType1) IsGroupObjectDescriptorRealisationType1() {}
+
+func (m *_GroupObjectDescriptorRealisationType1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GroupObjectDescriptorRealisationType1) deepCopy() *_GroupObjectDescriptorRealisationType1 {
+	if m == nil {
+		return nil
+	}
+	_GroupObjectDescriptorRealisationType1Copy := &_GroupObjectDescriptorRealisationType1{
+		m.DataPointer,
+		m.TransmitEnable,
+		m.SegmentSelectorEnable,
+		m.WriteEnable,
+		m.ReadEnable,
+		m.CommunicationEnable,
+		m.Priority,
+		m.ValueType,
+		m.reservedField0,
+	}
+	return _GroupObjectDescriptorRealisationType1Copy
+}
 
 func (m *_GroupObjectDescriptorRealisationType1) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type OpcuaCloseRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetSecurityHeader returns SecurityHeader (property field)
 	GetSecurityHeader() SecurityHeader
@@ -210,6 +211,23 @@ func (m *_OpcuaCloseRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_OpcuaCloseRequest) IsOpcuaCloseRequest() {}
+
+func (m *_OpcuaCloseRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaCloseRequest) deepCopy() *_OpcuaCloseRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaCloseRequestCopy := &_OpcuaCloseRequest{
+		m.MessagePDUContract.DeepCopy().(MessagePDUContract),
+		m.SecurityHeader.DeepCopy().(SecurityHeader),
+		m.Message.DeepCopy().(Payload),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaCloseRequestCopy
+}
 
 func (m *_OpcuaCloseRequest) String() string {
 	if m == nil {

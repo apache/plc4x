@@ -38,6 +38,7 @@ type BACnetConstructedDataStatusFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStatusFlags returns StatusFlags (property field)
 	GetStatusFlags() BACnetStatusFlagsTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataStatusFlags) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataStatusFlags) IsBACnetConstructedDataStatusFlags() {}
+
+func (m *_BACnetConstructedDataStatusFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStatusFlags) deepCopy() *_BACnetConstructedDataStatusFlags {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStatusFlagsCopy := &_BACnetConstructedDataStatusFlags{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStatusFlagsCopy
+}
 
 func (m *_BACnetConstructedDataStatusFlags) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type MFuncPropCommandReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMFuncPropCommandReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropCommandReq()
@@ -146,6 +147,21 @@ func (m *_MFuncPropCommandReq) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_MFuncPropCommandReq) IsMFuncPropCommandReq() {}
+
+func (m *_MFuncPropCommandReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MFuncPropCommandReq) deepCopy() *_MFuncPropCommandReq {
+	if m == nil {
+		return nil
+	}
+	_MFuncPropCommandReqCopy := &_MFuncPropCommandReq{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MFuncPropCommandReqCopy
+}
 
 func (m *_MFuncPropCommandReq) String() string {
 	if m == nil {

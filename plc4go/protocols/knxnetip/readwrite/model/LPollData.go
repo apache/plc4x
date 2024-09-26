@@ -38,6 +38,7 @@ type LPollData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LDataFrame
 	// GetSourceAddress returns SourceAddress (property field)
 	GetSourceAddress() KnxAddress
@@ -245,6 +246,25 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_LPollData) IsLPollData() {}
+
+func (m *_LPollData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LPollData) deepCopy() *_LPollData {
+	if m == nil {
+		return nil
+	}
+	_LPollDataCopy := &_LPollData{
+		m.LDataFrameContract.DeepCopy().(LDataFrameContract),
+		m.SourceAddress.DeepCopy().(KnxAddress),
+		utils.DeepCopySlice[byte, byte](m.TargetAddress),
+		m.NumberExpectedPollData,
+		m.reservedField0,
+	}
+	m.LDataFrameContract.(*_LDataFrame)._SubType = m
+	return _LPollDataCopy
+}
 
 func (m *_LPollData) String() string {
 	if m == nil {

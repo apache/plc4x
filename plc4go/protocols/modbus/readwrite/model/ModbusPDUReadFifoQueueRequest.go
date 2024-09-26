@@ -38,6 +38,7 @@ type ModbusPDUReadFifoQueueRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetFifoPointerAddress returns FifoPointerAddress (property field)
 	GetFifoPointerAddress() uint16
@@ -187,6 +188,22 @@ func (m *_ModbusPDUReadFifoQueueRequest) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_ModbusPDUReadFifoQueueRequest) IsModbusPDUReadFifoQueueRequest() {}
+
+func (m *_ModbusPDUReadFifoQueueRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFifoQueueRequest) deepCopy() *_ModbusPDUReadFifoQueueRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFifoQueueRequestCopy := &_ModbusPDUReadFifoQueueRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.FifoPointerAddress,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadFifoQueueRequestCopy
+}
 
 func (m *_ModbusPDUReadFifoQueueRequest) String() string {
 	if m == nil {

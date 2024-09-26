@@ -38,6 +38,7 @@ type MemberID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LogicalSegmentType
 	// GetFormat returns Format (property field)
 	GetFormat() uint8
@@ -200,6 +201,23 @@ func (m *_MemberID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_MemberID) IsMemberID() {}
+
+func (m *_MemberID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MemberID) deepCopy() *_MemberID {
+	if m == nil {
+		return nil
+	}
+	_MemberIDCopy := &_MemberID{
+		m.LogicalSegmentTypeContract.DeepCopy().(LogicalSegmentTypeContract),
+		m.Format,
+		m.Instance,
+	}
+	m.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
+	return _MemberIDCopy
+}
 
 func (m *_MemberID) String() string {
 	if m == nil {

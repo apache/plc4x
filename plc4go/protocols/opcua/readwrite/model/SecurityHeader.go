@@ -38,6 +38,7 @@ type SecurityHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSecureChannelId returns SecureChannelId (property field)
 	GetSecureChannelId() uint32
 	// GetSecureTokenId returns SecureTokenId (property field)
@@ -186,6 +187,21 @@ func (m *_SecurityHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SecurityHeader) IsSecurityHeader() {}
+
+func (m *_SecurityHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityHeader) deepCopy() *_SecurityHeader {
+	if m == nil {
+		return nil
+	}
+	_SecurityHeaderCopy := &_SecurityHeader{
+		m.SecureChannelId,
+		m.SecureTokenId,
+	}
+	return _SecurityHeaderCopy
+}
 
 func (m *_SecurityHeader) String() string {
 	if m == nil {

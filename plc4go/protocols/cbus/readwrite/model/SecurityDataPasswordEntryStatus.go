@@ -38,6 +38,7 @@ type SecurityDataPasswordEntryStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetCode returns Code (property field)
 	GetCode() byte
@@ -294,6 +295,22 @@ func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_SecurityDataPasswordEntryStatus) IsSecurityDataPasswordEntryStatus() {}
+
+func (m *_SecurityDataPasswordEntryStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataPasswordEntryStatus) deepCopy() *_SecurityDataPasswordEntryStatus {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataPasswordEntryStatusCopy := &_SecurityDataPasswordEntryStatus{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.Code,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataPasswordEntryStatusCopy
+}
 
 func (m *_SecurityDataPasswordEntryStatus) String() string {
 	if m == nil {

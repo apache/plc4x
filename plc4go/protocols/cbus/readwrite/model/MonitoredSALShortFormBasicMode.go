@@ -38,6 +38,7 @@ type MonitoredSALShortFormBasicMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MonitoredSAL
 	// GetCounts returns Counts (property field)
 	GetCounts() byte
@@ -288,6 +289,27 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_MonitoredSALShortFormBasicMode) IsMonitoredSALShortFormBasicMode() {}
+
+func (m *_MonitoredSALShortFormBasicMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSALShortFormBasicMode) deepCopy() *_MonitoredSALShortFormBasicMode {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALShortFormBasicModeCopy := &_MonitoredSALShortFormBasicMode{
+		m.MonitoredSALContract.DeepCopy().(MonitoredSALContract),
+		m.Counts,
+		utils.CopyPtr[uint8](m.BridgeCount),
+		utils.CopyPtr[uint8](m.NetworkNumber),
+		utils.CopyPtr[byte](m.NoCounts),
+		m.Application,
+		m.SalData.DeepCopy().(SALData),
+	}
+	m.MonitoredSALContract.(*_MonitoredSAL)._SubType = m
+	return _MonitoredSALShortFormBasicModeCopy
+}
 
 func (m *_MonitoredSALShortFormBasicMode) String() string {
 	if m == nil {

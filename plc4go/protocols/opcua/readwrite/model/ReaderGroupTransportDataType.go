@@ -36,6 +36,7 @@ type ReaderGroupTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsReaderGroupTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReaderGroupTransportDataType()
@@ -146,6 +147,21 @@ func (m *_ReaderGroupTransportDataType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ReaderGroupTransportDataType) IsReaderGroupTransportDataType() {}
+
+func (m *_ReaderGroupTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReaderGroupTransportDataType) deepCopy() *_ReaderGroupTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_ReaderGroupTransportDataTypeCopy := &_ReaderGroupTransportDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReaderGroupTransportDataTypeCopy
+}
 
 func (m *_ReaderGroupTransportDataType) String() string {
 	if m == nil {

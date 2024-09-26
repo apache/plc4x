@@ -36,6 +36,7 @@ type SetAttributeListRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeListRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeListRequest()
@@ -154,6 +155,21 @@ func (m *_SetAttributeListRequest) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_SetAttributeListRequest) IsSetAttributeListRequest() {}
+
+func (m *_SetAttributeListRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeListRequest) deepCopy() *_SetAttributeListRequest {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeListRequestCopy := &_SetAttributeListRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeListRequestCopy
+}
 
 func (m *_SetAttributeListRequest) String() string {
 	if m == nil {

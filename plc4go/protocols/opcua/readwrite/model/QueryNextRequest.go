@@ -38,6 +38,7 @@ type QueryNextRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -242,6 +243,25 @@ func (m *_QueryNextRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_QueryNextRequest) IsQueryNextRequest() {}
+
+func (m *_QueryNextRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryNextRequest) deepCopy() *_QueryNextRequest {
+	if m == nil {
+		return nil
+	}
+	_QueryNextRequestCopy := &_QueryNextRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ReleaseContinuationPoint,
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryNextRequestCopy
+}
 
 func (m *_QueryNextRequest) String() string {
 	if m == nil {

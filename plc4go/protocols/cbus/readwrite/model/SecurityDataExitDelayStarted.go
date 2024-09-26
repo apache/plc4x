@@ -36,6 +36,7 @@ type SecurityDataExitDelayStarted interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataExitDelayStarted is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataExitDelayStarted()
@@ -142,6 +143,21 @@ func (m *_SecurityDataExitDelayStarted) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SecurityDataExitDelayStarted) IsSecurityDataExitDelayStarted() {}
+
+func (m *_SecurityDataExitDelayStarted) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataExitDelayStarted) deepCopy() *_SecurityDataExitDelayStarted {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataExitDelayStartedCopy := &_SecurityDataExitDelayStarted{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataExitDelayStartedCopy
+}
 
 func (m *_SecurityDataExitDelayStarted) String() string {
 	if m == nil {

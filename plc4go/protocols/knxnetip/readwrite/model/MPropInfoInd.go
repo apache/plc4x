@@ -36,6 +36,7 @@ type MPropInfoInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMPropInfoInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropInfoInd()
@@ -146,6 +147,21 @@ func (m *_MPropInfoInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_MPropInfoInd) IsMPropInfoInd() {}
+
+func (m *_MPropInfoInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropInfoInd) deepCopy() *_MPropInfoInd {
+	if m == nil {
+		return nil
+	}
+	_MPropInfoIndCopy := &_MPropInfoInd{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropInfoIndCopy
+}
 
 func (m *_MPropInfoInd) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type SysexCommandAnalogMappingQueryResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -183,6 +184,22 @@ func (m *_SysexCommandAnalogMappingQueryResponse) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_SysexCommandAnalogMappingQueryResponse) IsSysexCommandAnalogMappingQueryResponse() {}
+
+func (m *_SysexCommandAnalogMappingQueryResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandAnalogMappingQueryResponse) deepCopy() *_SysexCommandAnalogMappingQueryResponse {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandAnalogMappingQueryResponseCopy := &_SysexCommandAnalogMappingQueryResponse{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.Pin,
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandAnalogMappingQueryResponseCopy
+}
 
 func (m *_SysexCommandAnalogMappingQueryResponse) String() string {
 	if m == nil {

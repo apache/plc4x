@@ -40,12 +40,14 @@ type BACnetFaultParameterFaultExtendedParametersEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetFaultParameterFaultExtendedParametersEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntry()
 }
 
 // BACnetFaultParameterFaultExtendedParametersEntryContract provides a set of functions which can be overwritten by a sub struct
 type BACnetFaultParameterFaultExtendedParametersEntryContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -315,4 +317,19 @@ func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) serializeParent(ctx
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntry) IsBACnetFaultParameterFaultExtendedParametersEntry() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryCopy := &_BACnetFaultParameterFaultExtendedParametersEntry{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetFaultParameterFaultExtendedParametersEntryCopy
 }

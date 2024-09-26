@@ -38,6 +38,7 @@ type BACnetConstructedDataNumberOfAPDURetries interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfApduRetries returns NumberOfApduRetries (property field)
 	GetNumberOfApduRetries() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataNumberOfAPDURetries) IsBACnetConstructedDataNumberOfAPDURetries() {}
+
+func (m *_BACnetConstructedDataNumberOfAPDURetries) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNumberOfAPDURetries) deepCopy() *_BACnetConstructedDataNumberOfAPDURetries {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNumberOfAPDURetriesCopy := &_BACnetConstructedDataNumberOfAPDURetries{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfApduRetries.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNumberOfAPDURetriesCopy
+}
 
 func (m *_BACnetConstructedDataNumberOfAPDURetries) String() string {
 	if m == nil {

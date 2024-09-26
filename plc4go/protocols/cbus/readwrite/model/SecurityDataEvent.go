@@ -38,6 +38,7 @@ type SecurityDataEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -177,6 +178,22 @@ func (m *_SecurityDataEvent) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_SecurityDataEvent) IsSecurityDataEvent() {}
+
+func (m *_SecurityDataEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataEvent) deepCopy() *_SecurityDataEvent {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataEventCopy := &_SecurityDataEvent{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataEventCopy
+}
 
 func (m *_SecurityDataEvent) String() string {
 	if m == nil {

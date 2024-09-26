@@ -36,6 +36,7 @@ type BACnetConstructedDataLifeSafetyPointAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataLifeSafetyPointAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLifeSafetyPointAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataLifeSafetyPointAll) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointAll) IsBACnetConstructedDataLifeSafetyPointAll() {}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAll) deepCopy() *_BACnetConstructedDataLifeSafetyPointAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLifeSafetyPointAllCopy := &_BACnetConstructedDataLifeSafetyPointAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLifeSafetyPointAllCopy
+}
 
 func (m *_BACnetConstructedDataLifeSafetyPointAll) String() string {
 	if m == nil {

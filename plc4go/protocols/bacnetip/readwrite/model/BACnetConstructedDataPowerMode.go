@@ -38,6 +38,7 @@ type BACnetConstructedDataPowerMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPowerMode returns PowerMode (property field)
 	GetPowerMode() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPowerMode) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataPowerMode) IsBACnetConstructedDataPowerMode() {}
+
+func (m *_BACnetConstructedDataPowerMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPowerMode) deepCopy() *_BACnetConstructedDataPowerMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPowerModeCopy := &_BACnetConstructedDataPowerMode{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PowerMode.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPowerModeCopy
+}
 
 func (m *_BACnetConstructedDataPowerMode) String() string {
 	if m == nil {

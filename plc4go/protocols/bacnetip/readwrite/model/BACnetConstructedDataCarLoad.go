@@ -38,6 +38,7 @@ type BACnetConstructedDataCarLoad interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarLoad returns CarLoad (property field)
 	GetCarLoad() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCarLoad) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataCarLoad) IsBACnetConstructedDataCarLoad() {}
+
+func (m *_BACnetConstructedDataCarLoad) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarLoad) deepCopy() *_BACnetConstructedDataCarLoad {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarLoadCopy := &_BACnetConstructedDataCarLoad{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CarLoad.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarLoadCopy
+}
 
 func (m *_BACnetConstructedDataCarLoad) String() string {
 	if m == nil {

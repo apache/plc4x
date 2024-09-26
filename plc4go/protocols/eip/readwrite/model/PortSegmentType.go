@@ -40,12 +40,14 @@ type PortSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPortSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegmentType()
 }
 
 // PortSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
 type PortSegmentTypeContract interface {
+	utils.Copyable
 	// IsPortSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegmentType()
 }
@@ -190,3 +192,17 @@ func (pm *_PortSegmentType) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_PortSegmentType) IsPortSegmentType() {}
+
+func (m *_PortSegmentType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegmentType) deepCopy() *_PortSegmentType {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentTypeCopy := &_PortSegmentType{
+		nil, // will be set by child
+	}
+	return _PortSegmentTypeCopy
+}

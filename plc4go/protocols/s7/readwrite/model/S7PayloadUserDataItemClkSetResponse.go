@@ -36,6 +36,7 @@ type S7PayloadUserDataItemClkSetResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemClkSetResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemClkSetResponse()
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemClkSetResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_S7PayloadUserDataItemClkSetResponse) IsS7PayloadUserDataItemClkSetResponse() {}
+
+func (m *_S7PayloadUserDataItemClkSetResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemClkSetResponse) deepCopy() *_S7PayloadUserDataItemClkSetResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemClkSetResponseCopy := &_S7PayloadUserDataItemClkSetResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemClkSetResponseCopy
+}
 
 func (m *_S7PayloadUserDataItemClkSetResponse) String() string {
 	if m == nil {

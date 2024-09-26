@@ -41,6 +41,7 @@ type OpcuaConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsOpcuaConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaConstants()
 }
@@ -166,6 +167,18 @@ func (m *_OpcuaConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_OpcuaConstants) IsOpcuaConstants() {}
+
+func (m *_OpcuaConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaConstants) deepCopy() *_OpcuaConstants {
+	if m == nil {
+		return nil
+	}
+	_OpcuaConstantsCopy := &_OpcuaConstants{}
+	return _OpcuaConstantsCopy
+}
 
 func (m *_OpcuaConstants) String() string {
 	if m == nil {

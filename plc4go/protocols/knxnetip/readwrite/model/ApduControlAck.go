@@ -36,6 +36,7 @@ type ApduControlAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduControl
 	// IsApduControlAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControlAck()
@@ -146,6 +147,21 @@ func (m *_ApduControlAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ApduControlAck) IsApduControlAck() {}
+
+func (m *_ApduControlAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlAck) deepCopy() *_ApduControlAck {
+	if m == nil {
+		return nil
+	}
+	_ApduControlAckCopy := &_ApduControlAck{
+		m.ApduControlContract.DeepCopy().(ApduControlContract),
+	}
+	m.ApduControlContract.(*_ApduControl)._SubType = m
+	return _ApduControlAckCopy
+}
 
 func (m *_ApduControlAck) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type IdentifyReplyCommandFirmwareVersion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetFirmwareVersion returns FirmwareVersion (property field)
 	GetFirmwareVersion() string
@@ -179,6 +180,22 @@ func (m *_IdentifyReplyCommandFirmwareVersion) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_IdentifyReplyCommandFirmwareVersion) IsIdentifyReplyCommandFirmwareVersion() {}
+
+func (m *_IdentifyReplyCommandFirmwareVersion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandFirmwareVersion) deepCopy() *_IdentifyReplyCommandFirmwareVersion {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandFirmwareVersionCopy := &_IdentifyReplyCommandFirmwareVersion{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.FirmwareVersion,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandFirmwareVersionCopy
+}
 
 func (m *_IdentifyReplyCommandFirmwareVersion) String() string {
 	if m == nil {

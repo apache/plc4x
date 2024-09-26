@@ -38,6 +38,7 @@ type BACnetConstructedDataDerivativeConstantUnits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDerivativeConstantUnits) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataDerivativeConstantUnits) IsBACnetConstructedDataDerivativeConstantUnits() {
+}
+
+func (m *_BACnetConstructedDataDerivativeConstantUnits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDerivativeConstantUnits) deepCopy() *_BACnetConstructedDataDerivativeConstantUnits {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDerivativeConstantUnitsCopy := &_BACnetConstructedDataDerivativeConstantUnits{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Units.DeepCopy().(BACnetEngineeringUnitsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDerivativeConstantUnitsCopy
 }
 
 func (m *_BACnetConstructedDataDerivativeConstantUnits) String() string {

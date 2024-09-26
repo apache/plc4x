@@ -38,6 +38,7 @@ type BACnetLogRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetLogDatum returns LogDatum (property field)
@@ -218,6 +219,22 @@ func (m *_BACnetLogRecord) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetLogRecord) IsBACnetLogRecord() {}
+
+func (m *_BACnetLogRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecord) deepCopy() *_BACnetLogRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordCopy := &_BACnetLogRecord{
+		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
+		m.LogDatum.DeepCopy().(BACnetLogRecordLogDatum),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+	}
+	return _BACnetLogRecordCopy
+}
 
 func (m *_BACnetLogRecord) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataMaintenanceRequired interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaintenanceRequired returns MaintenanceRequired (property field)
 	GetMaintenanceRequired() BACnetMaintenanceTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMaintenanceRequired) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataMaintenanceRequired) IsBACnetConstructedDataMaintenanceRequired() {}
+
+func (m *_BACnetConstructedDataMaintenanceRequired) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaintenanceRequired) deepCopy() *_BACnetConstructedDataMaintenanceRequired {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaintenanceRequiredCopy := &_BACnetConstructedDataMaintenanceRequired{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaintenanceRequired.DeepCopy().(BACnetMaintenanceTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaintenanceRequiredCopy
+}
 
 func (m *_BACnetConstructedDataMaintenanceRequired) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataRecordsSinceNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRecordsSinceNotifications returns RecordsSinceNotifications (property field)
 	GetRecordsSinceNotifications() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataRecordsSinceNotification) IsBACnetConstructedDataRecordsSinceNotification() {
+}
+
+func (m *_BACnetConstructedDataRecordsSinceNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRecordsSinceNotification) deepCopy() *_BACnetConstructedDataRecordsSinceNotification {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRecordsSinceNotificationCopy := &_BACnetConstructedDataRecordsSinceNotification{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.RecordsSinceNotifications.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRecordsSinceNotificationCopy
 }
 
 func (m *_BACnetConstructedDataRecordsSinceNotification) String() string {

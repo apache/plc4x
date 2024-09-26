@@ -38,6 +38,7 @@ type S7ParameterReadVarRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7VarRequestParameterItem
@@ -203,6 +204,22 @@ func (m *_S7ParameterReadVarRequest) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_S7ParameterReadVarRequest) IsS7ParameterReadVarRequest() {}
+
+func (m *_S7ParameterReadVarRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterReadVarRequest) deepCopy() *_S7ParameterReadVarRequest {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterReadVarRequestCopy := &_S7ParameterReadVarRequest{
+		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		utils.DeepCopySlice[S7VarRequestParameterItem, S7VarRequestParameterItem](m.Items),
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterReadVarRequestCopy
+}
 
 func (m *_S7ParameterReadVarRequest) String() string {
 	if m == nil {

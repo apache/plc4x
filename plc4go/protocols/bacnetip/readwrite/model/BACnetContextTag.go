@@ -40,12 +40,14 @@ type BACnetContextTag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetContextTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTag()
 }
 
 // BACnetContextTagContract provides a set of functions which can be overwritten by a sub struct
 type BACnetContextTagContract interface {
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetTagNumber returns TagNumber (virtual field)
@@ -345,3 +347,19 @@ func (m *_BACnetContextTag) GetTagNumberArgument() uint8 {
 ////
 
 func (m *_BACnetContextTag) IsBACnetContextTag() {}
+
+func (m *_BACnetContextTag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTag) deepCopy() *_BACnetContextTag {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagCopy := &_BACnetContextTag{
+		nil, // will be set by child
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.TagNumberArgument,
+	}
+	return _BACnetContextTagCopy
+}

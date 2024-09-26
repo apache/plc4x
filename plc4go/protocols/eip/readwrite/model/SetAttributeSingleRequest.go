@@ -36,6 +36,7 @@ type SetAttributeSingleRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeSingleRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeSingleRequest()
@@ -154,6 +155,21 @@ func (m *_SetAttributeSingleRequest) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SetAttributeSingleRequest) IsSetAttributeSingleRequest() {}
+
+func (m *_SetAttributeSingleRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeSingleRequest) deepCopy() *_SetAttributeSingleRequest {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeSingleRequestCopy := &_SetAttributeSingleRequest{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeSingleRequestCopy
+}
 
 func (m *_SetAttributeSingleRequest) String() string {
 	if m == nil {

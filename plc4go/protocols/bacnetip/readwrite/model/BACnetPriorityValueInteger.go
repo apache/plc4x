@@ -38,6 +38,7 @@ type BACnetPriorityValueInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueInteger) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetPriorityValueInteger) IsBACnetPriorityValueInteger() {}
+
+func (m *_BACnetPriorityValueInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueInteger) deepCopy() *_BACnetPriorityValueInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueIntegerCopy := &_BACnetPriorityValueInteger{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueIntegerCopy
+}
 
 func (m *_BACnetPriorityValueInteger) String() string {
 	if m == nil {

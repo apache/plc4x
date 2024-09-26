@@ -38,6 +38,7 @@ type BACnetConstructedDataCharacterStringValuePresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCharacterStringValuePresentValue) SerializeWithWr
 }
 
 func (m *_BACnetConstructedDataCharacterStringValuePresentValue) IsBACnetConstructedDataCharacterStringValuePresentValue() {
+}
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValue) deepCopy() *_BACnetConstructedDataCharacterStringValuePresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCharacterStringValuePresentValueCopy := &_BACnetConstructedDataCharacterStringValuePresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCharacterStringValuePresentValueCopy
 }
 
 func (m *_BACnetConstructedDataCharacterStringValuePresentValue) String() string {

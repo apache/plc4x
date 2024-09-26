@@ -38,6 +38,7 @@ type ZoneStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() ZoneStatusTemp
 	// IsZoneStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -166,6 +167,20 @@ func (m *_ZoneStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_ZoneStatus) IsZoneStatus() {}
+
+func (m *_ZoneStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ZoneStatus) deepCopy() *_ZoneStatus {
+	if m == nil {
+		return nil
+	}
+	_ZoneStatusCopy := &_ZoneStatus{
+		m.Value,
+	}
+	return _ZoneStatusCopy
+}
 
 func (m *_ZoneStatus) String() string {
 	if m == nil {

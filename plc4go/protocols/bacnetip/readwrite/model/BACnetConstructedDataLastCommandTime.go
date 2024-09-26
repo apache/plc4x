@@ -38,6 +38,7 @@ type BACnetConstructedDataLastCommandTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastCommandTime returns LastCommandTime (property field)
 	GetLastCommandTime() BACnetTimeStamp
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastCommandTime) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataLastCommandTime) IsBACnetConstructedDataLastCommandTime() {}
+
+func (m *_BACnetConstructedDataLastCommandTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastCommandTime) deepCopy() *_BACnetConstructedDataLastCommandTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastCommandTimeCopy := &_BACnetConstructedDataLastCommandTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastCommandTime.DeepCopy().(BACnetTimeStamp),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastCommandTimeCopy
+}
 
 func (m *_BACnetConstructedDataLastCommandTime) String() string {
 	if m == nil {

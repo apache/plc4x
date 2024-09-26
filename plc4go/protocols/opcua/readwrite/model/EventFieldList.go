@@ -38,6 +38,7 @@ type EventFieldList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetClientHandle returns ClientHandle (property field)
 	GetClientHandle() uint32
@@ -228,6 +229,24 @@ func (m *_EventFieldList) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_EventFieldList) IsEventFieldList() {}
+
+func (m *_EventFieldList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EventFieldList) deepCopy() *_EventFieldList {
+	if m == nil {
+		return nil
+	}
+	_EventFieldListCopy := &_EventFieldList{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ClientHandle,
+		m.NoOfEventFields,
+		utils.DeepCopySlice[Variant, Variant](m.EventFields),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EventFieldListCopy
+}
 
 func (m *_EventFieldList) String() string {
 	if m == nil {

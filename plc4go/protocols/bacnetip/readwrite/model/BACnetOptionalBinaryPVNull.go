@@ -38,6 +38,7 @@ type BACnetOptionalBinaryPVNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalBinaryPV
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalBinaryPVNull) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetOptionalBinaryPVNull) IsBACnetOptionalBinaryPVNull() {}
+
+func (m *_BACnetOptionalBinaryPVNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalBinaryPVNull) deepCopy() *_BACnetOptionalBinaryPVNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalBinaryPVNullCopy := &_BACnetOptionalBinaryPVNull{
+		m.BACnetOptionalBinaryPVContract.DeepCopy().(BACnetOptionalBinaryPVContract),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = m
+	return _BACnetOptionalBinaryPVNullCopy
+}
 
 func (m *_BACnetOptionalBinaryPVNull) String() string {
 	if m == nil {

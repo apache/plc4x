@@ -38,6 +38,7 @@ type BACnetChannelValueEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueEnumerated) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetChannelValueEnumerated) IsBACnetChannelValueEnumerated() {}
+
+func (m *_BACnetChannelValueEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueEnumerated) deepCopy() *_BACnetChannelValueEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueEnumeratedCopy := &_BACnetChannelValueEnumerated{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueEnumeratedCopy
+}
 
 func (m *_BACnetChannelValueEnumerated) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReadPropertyConditional interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
@@ -194,6 +195,23 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) GetServiceReques
 ////
 
 func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) IsBACnetConfirmedServiceRequestReadPropertyConditional() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) deepCopy() *_BACnetConfirmedServiceRequestReadPropertyConditional {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadPropertyConditionalCopy := &_BACnetConfirmedServiceRequestReadPropertyConditional{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
+		m.ServiceRequestPayloadLength,
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestReadPropertyConditionalCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) String() string {

@@ -38,6 +38,7 @@ type LightingDataTerminateRamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
@@ -175,6 +176,22 @@ func (m *_LightingDataTerminateRamp) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_LightingDataTerminateRamp) IsLightingDataTerminateRamp() {}
+
+func (m *_LightingDataTerminateRamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataTerminateRamp) deepCopy() *_LightingDataTerminateRamp {
+	if m == nil {
+		return nil
+	}
+	_LightingDataTerminateRampCopy := &_LightingDataTerminateRamp{
+		m.LightingDataContract.DeepCopy().(LightingDataContract),
+		m.Group,
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataTerminateRampCopy
+}
 
 func (m *_LightingDataTerminateRamp) String() string {
 	if m == nil {

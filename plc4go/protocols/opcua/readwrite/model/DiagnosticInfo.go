@@ -38,6 +38,7 @@ type DiagnosticInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetInnerDiagnosticInfoSpecified returns InnerDiagnosticInfoSpecified (property field)
 	GetInnerDiagnosticInfoSpecified() bool
 	// GetInnerStatusCodeSpecified returns InnerStatusCodeSpecified (property field)
@@ -471,6 +472,34 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_DiagnosticInfo) IsDiagnosticInfo() {}
+
+func (m *_DiagnosticInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DiagnosticInfo) deepCopy() *_DiagnosticInfo {
+	if m == nil {
+		return nil
+	}
+	_DiagnosticInfoCopy := &_DiagnosticInfo{
+		m.InnerDiagnosticInfoSpecified,
+		m.InnerStatusCodeSpecified,
+		m.AdditionalInfoSpecified,
+		m.LocaleSpecified,
+		m.LocalizedTextSpecified,
+		m.NamespaceURISpecified,
+		m.SymbolicIdSpecified,
+		utils.CopyPtr[int32](m.SymbolicId),
+		utils.CopyPtr[int32](m.NamespaceURI),
+		utils.CopyPtr[int32](m.Locale),
+		utils.CopyPtr[int32](m.LocalizedText),
+		m.AdditionalInfo.DeepCopy().(PascalString),
+		m.InnerStatusCode.DeepCopy().(StatusCode),
+		m.InnerDiagnosticInfo.DeepCopy().(DiagnosticInfo),
+		m.reservedField0,
+	}
+	return _DiagnosticInfoCopy
+}
 
 func (m *_DiagnosticInfo) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type LogicalSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() LogicalSegmentType
@@ -182,6 +183,22 @@ func (m *_LogicalSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_LogicalSegment) IsLogicalSegment() {}
+
+func (m *_LogicalSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LogicalSegment) deepCopy() *_LogicalSegment {
+	if m == nil {
+		return nil
+	}
+	_LogicalSegmentCopy := &_LogicalSegment{
+		m.PathSegmentContract.DeepCopy().(PathSegmentContract),
+		m.SegmentType.DeepCopy().(LogicalSegmentType),
+	}
+	m.PathSegmentContract.(*_PathSegment)._SubType = m
+	return _LogicalSegmentCopy
+}
 
 func (m *_LogicalSegment) String() string {
 	if m == nil {

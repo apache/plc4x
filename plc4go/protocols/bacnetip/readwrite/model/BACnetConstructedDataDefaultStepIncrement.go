@@ -38,6 +38,7 @@ type BACnetConstructedDataDefaultStepIncrement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDefaultStepIncrement returns DefaultStepIncrement (property field)
 	GetDefaultStepIncrement() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataDefaultStepIncrement) IsBACnetConstructedDataDefaultStepIncrement() {}
+
+func (m *_BACnetConstructedDataDefaultStepIncrement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDefaultStepIncrement) deepCopy() *_BACnetConstructedDataDefaultStepIncrement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDefaultStepIncrementCopy := &_BACnetConstructedDataDefaultStepIncrement{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DefaultStepIncrement.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDefaultStepIncrementCopy
+}
 
 func (m *_BACnetConstructedDataDefaultStepIncrement) String() string {
 	if m == nil {

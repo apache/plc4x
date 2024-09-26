@@ -38,6 +38,7 @@ type BACnetConstructedDataMaxAPDULengthAccepted interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxApduLengthAccepted returns MaxApduLengthAccepted (property field)
 	GetMaxApduLengthAccepted() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataMaxAPDULengthAccepted) IsBACnetConstructedDataMaxAPDULengthAccepted() {
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) deepCopy() *_BACnetConstructedDataMaxAPDULengthAccepted {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaxAPDULengthAcceptedCopy := &_BACnetConstructedDataMaxAPDULengthAccepted{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaxApduLengthAccepted.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaxAPDULengthAcceptedCopy
 }
 
 func (m *_BACnetConstructedDataMaxAPDULengthAccepted) String() string {

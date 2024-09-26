@@ -39,12 +39,14 @@ type ModbusADU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsModbusADU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusADU()
 }
 
 // ModbusADUContract provides a set of functions which can be overwritten by a sub struct
 type ModbusADUContract interface {
+	utils.Copyable
 	// GetResponse() returns a parser argument
 	GetResponse() bool
 	// IsModbusADU is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -197,3 +199,18 @@ func (m *_ModbusADU) GetResponse() bool {
 ////
 
 func (m *_ModbusADU) IsModbusADU() {}
+
+func (m *_ModbusADU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusADU) deepCopy() *_ModbusADU {
+	if m == nil {
+		return nil
+	}
+	_ModbusADUCopy := &_ModbusADU{
+		nil, // will be set by child
+		m.Response,
+	}
+	return _ModbusADUCopy
+}

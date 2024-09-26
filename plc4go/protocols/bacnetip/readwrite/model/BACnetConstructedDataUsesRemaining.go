@@ -38,6 +38,7 @@ type BACnetConstructedDataUsesRemaining interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUsesRemaining returns UsesRemaining (property field)
 	GetUsesRemaining() BACnetApplicationTagSignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUsesRemaining) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataUsesRemaining) IsBACnetConstructedDataUsesRemaining() {}
+
+func (m *_BACnetConstructedDataUsesRemaining) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUsesRemaining) deepCopy() *_BACnetConstructedDataUsesRemaining {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUsesRemainingCopy := &_BACnetConstructedDataUsesRemaining{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.UsesRemaining.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUsesRemainingCopy
+}
 
 func (m *_BACnetConstructedDataUsesRemaining) String() string {
 	if m == nil {

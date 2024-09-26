@@ -38,6 +38,7 @@ type BACnetAccessRuleLocationSpecifierTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAccessRuleLocationSpecifierTagged) IsBACnetAccessRuleLocationSpecifierTagged() {}
+
+func (m *_BACnetAccessRuleLocationSpecifierTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessRuleLocationSpecifierTagged) deepCopy() *_BACnetAccessRuleLocationSpecifierTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessRuleLocationSpecifierTaggedCopy := &_BACnetAccessRuleLocationSpecifierTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessRuleLocationSpecifierTaggedCopy
+}
 
 func (m *_BACnetAccessRuleLocationSpecifierTagged) String() string {
 	if m == nil {

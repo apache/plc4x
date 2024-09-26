@@ -38,6 +38,7 @@ type ModbusPDUMaskWriteHoldingRegisterResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetReferenceAddress returns ReferenceAddress (property field)
 	GetReferenceAddress() uint16
@@ -229,6 +230,24 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) SerializeWithWriteBuffer(ct
 }
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) IsModbusPDUMaskWriteHoldingRegisterResponse() {}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) deepCopy() *_ModbusPDUMaskWriteHoldingRegisterResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUMaskWriteHoldingRegisterResponseCopy := &_ModbusPDUMaskWriteHoldingRegisterResponse{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ReferenceAddress,
+		m.AndMask,
+		m.OrMask,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUMaskWriteHoldingRegisterResponseCopy
+}
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) String() string {
 	if m == nil {

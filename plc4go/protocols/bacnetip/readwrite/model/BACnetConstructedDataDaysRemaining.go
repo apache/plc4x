@@ -38,6 +38,7 @@ type BACnetConstructedDataDaysRemaining interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDaysRemaining returns DaysRemaining (property field)
 	GetDaysRemaining() BACnetApplicationTagSignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataDaysRemaining) IsBACnetConstructedDataDaysRemaining() {}
+
+func (m *_BACnetConstructedDataDaysRemaining) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDaysRemaining) deepCopy() *_BACnetConstructedDataDaysRemaining {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDaysRemainingCopy := &_BACnetConstructedDataDaysRemaining{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DaysRemaining.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDaysRemainingCopy
+}
 
 func (m *_BACnetConstructedDataDaysRemaining) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataRequestedUpdateInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRequestedUpdateInterval returns RequestedUpdateInterval (property field)
 	GetRequestedUpdateInterval() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRequestedUpdateInterval) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataRequestedUpdateInterval) IsBACnetConstructedDataRequestedUpdateInterval() {
+}
+
+func (m *_BACnetConstructedDataRequestedUpdateInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRequestedUpdateInterval) deepCopy() *_BACnetConstructedDataRequestedUpdateInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRequestedUpdateIntervalCopy := &_BACnetConstructedDataRequestedUpdateInterval{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.RequestedUpdateInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRequestedUpdateIntervalCopy
 }
 
 func (m *_BACnetConstructedDataRequestedUpdateInterval) String() string {

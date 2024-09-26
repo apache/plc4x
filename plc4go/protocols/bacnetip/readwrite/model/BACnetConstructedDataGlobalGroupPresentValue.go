@@ -38,6 +38,7 @@ type BACnetConstructedDataGlobalGroupPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataGlobalGroupPresentValue) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataGlobalGroupPresentValue) IsBACnetConstructedDataGlobalGroupPresentValue() {
+}
+
+func (m *_BACnetConstructedDataGlobalGroupPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGlobalGroupPresentValue) deepCopy() *_BACnetConstructedDataGlobalGroupPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGlobalGroupPresentValueCopy := &_BACnetConstructedDataGlobalGroupPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetPropertyAccessResult, BACnetPropertyAccessResult](m.PresentValue),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGlobalGroupPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataGlobalGroupPresentValue) String() string {

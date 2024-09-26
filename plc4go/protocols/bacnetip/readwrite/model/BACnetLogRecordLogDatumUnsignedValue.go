@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumUnsignedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) IsBACnetLogRecordLogDatumUnsignedValue() {}
+
+func (m *_BACnetLogRecordLogDatumUnsignedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumUnsignedValue) deepCopy() *_BACnetLogRecordLogDatumUnsignedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumUnsignedValueCopy := &_BACnetLogRecordLogDatumUnsignedValue{
+		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.UnsignedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumUnsignedValueCopy
+}
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) String() string {
 	if m == nil {

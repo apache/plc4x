@@ -38,6 +38,7 @@ type BACnetConstructedDataAlertEnrollmentPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagObjectIdentifier
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) IsBACnetConstructedDataAlertEnrollmentPresentValue() {
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) deepCopy() *_BACnetConstructedDataAlertEnrollmentPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAlertEnrollmentPresentValueCopy := &_BACnetConstructedDataAlertEnrollmentPresentValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PresentValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAlertEnrollmentPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) String() string {

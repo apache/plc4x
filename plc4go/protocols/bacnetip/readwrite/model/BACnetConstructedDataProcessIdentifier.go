@@ -38,6 +38,7 @@ type BACnetConstructedDataProcessIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProcessIdentifier) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataProcessIdentifier) IsBACnetConstructedDataProcessIdentifier() {}
+
+func (m *_BACnetConstructedDataProcessIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProcessIdentifier) deepCopy() *_BACnetConstructedDataProcessIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProcessIdentifierCopy := &_BACnetConstructedDataProcessIdentifier{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProcessIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProcessIdentifierCopy
+}
 
 func (m *_BACnetConstructedDataProcessIdentifier) String() string {
 	if m == nil {

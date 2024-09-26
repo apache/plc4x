@@ -38,6 +38,7 @@ type BACnetLightingTransitionTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetLightingTransitionTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLightingTransitionTagged) IsBACnetLightingTransitionTagged() {}
+
+func (m *_BACnetLightingTransitionTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingTransitionTagged) deepCopy() *_BACnetLightingTransitionTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingTransitionTaggedCopy := &_BACnetLightingTransitionTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLightingTransitionTaggedCopy
+}
 
 func (m *_BACnetLightingTransitionTagged) String() string {
 	if m == nil {

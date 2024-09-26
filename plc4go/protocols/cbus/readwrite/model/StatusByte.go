@@ -38,6 +38,7 @@ type StatusByte interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetGav3 returns Gav3 (property field)
 	GetGav3() GAVState
 	// GetGav2 returns Gav2 (property field)
@@ -226,6 +227,23 @@ func (m *_StatusByte) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_StatusByte) IsStatusByte() {}
+
+func (m *_StatusByte) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusByte) deepCopy() *_StatusByte {
+	if m == nil {
+		return nil
+	}
+	_StatusByteCopy := &_StatusByte{
+		m.Gav3,
+		m.Gav2,
+		m.Gav1,
+		m.Gav0,
+	}
+	return _StatusByteCopy
+}
 
 func (m *_StatusByte) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesDoorAlarmState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetDoorAlarmState returns DoorAlarmState (property field)
 	GetDoorAlarmState() BACnetDoorAlarmStateTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesDoorAlarmState) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetPropertyStatesDoorAlarmState) IsBACnetPropertyStatesDoorAlarmState() {}
+
+func (m *_BACnetPropertyStatesDoorAlarmState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesDoorAlarmState) deepCopy() *_BACnetPropertyStatesDoorAlarmState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesDoorAlarmStateCopy := &_BACnetPropertyStatesDoorAlarmState{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.DoorAlarmState.DeepCopy().(BACnetDoorAlarmStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesDoorAlarmStateCopy
+}
 
 func (m *_BACnetPropertyStatesDoorAlarmState) String() string {
 	if m == nil {

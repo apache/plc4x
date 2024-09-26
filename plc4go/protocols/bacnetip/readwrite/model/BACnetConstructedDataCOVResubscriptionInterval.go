@@ -38,6 +38,7 @@ type BACnetConstructedDataCOVResubscriptionInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovResubscriptionInterval returns CovResubscriptionInterval (property field)
 	GetCovResubscriptionInterval() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataCOVResubscriptionInterval) IsBACnetConstructedDataCOVResubscriptionInterval() {
+}
+
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) deepCopy() *_BACnetConstructedDataCOVResubscriptionInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCOVResubscriptionIntervalCopy := &_BACnetConstructedDataCOVResubscriptionInterval{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CovResubscriptionInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCOVResubscriptionIntervalCopy
 }
 
 func (m *_BACnetConstructedDataCOVResubscriptionInterval) String() string {

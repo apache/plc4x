@@ -38,6 +38,7 @@ type BACnetRecipientProcessEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetRecipientProcess returns RecipientProcess (property field)
@@ -228,6 +229,23 @@ func (m *_BACnetRecipientProcessEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetRecipientProcessEnclosed) IsBACnetRecipientProcessEnclosed() {}
+
+func (m *_BACnetRecipientProcessEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipientProcessEnclosed) deepCopy() *_BACnetRecipientProcessEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientProcessEnclosedCopy := &_BACnetRecipientProcessEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.RecipientProcess.DeepCopy().(BACnetRecipientProcess),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetRecipientProcessEnclosedCopy
+}
 
 func (m *_BACnetRecipientProcessEnclosed) String() string {
 	if m == nil {

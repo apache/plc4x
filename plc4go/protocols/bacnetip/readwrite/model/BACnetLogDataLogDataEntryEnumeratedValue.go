@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryEnumeratedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetContextTagEnumerated
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) IsBACnetLogDataLogDataEntryEnumeratedValue() {}
+
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) deepCopy() *_BACnetLogDataLogDataEntryEnumeratedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryEnumeratedValueCopy := &_BACnetLogDataLogDataEntryEnumeratedValue{
+		m.BACnetLogDataLogDataEntryContract.DeepCopy().(BACnetLogDataLogDataEntryContract),
+		m.EnumeratedValue.DeepCopy().(BACnetContextTagEnumerated),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryEnumeratedValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) String() string {
 	if m == nil {

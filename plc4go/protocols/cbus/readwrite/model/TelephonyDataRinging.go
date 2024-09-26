@@ -38,6 +38,7 @@ type TelephonyDataRinging interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetNumber returns Number (property field)
 	GetNumber() string
@@ -190,6 +191,23 @@ func (m *_TelephonyDataRinging) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_TelephonyDataRinging) IsTelephonyDataRinging() {}
+
+func (m *_TelephonyDataRinging) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataRinging) deepCopy() *_TelephonyDataRinging {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataRingingCopy := &_TelephonyDataRinging{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.Number,
+		m.reservedField0,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataRingingCopy
+}
 
 func (m *_TelephonyDataRinging) String() string {
 	if m == nil {

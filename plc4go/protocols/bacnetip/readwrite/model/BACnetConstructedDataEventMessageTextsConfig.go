@@ -38,6 +38,7 @@ type BACnetConstructedDataEventMessageTextsConfig interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -324,6 +325,23 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataEventMessageTextsConfig) IsBACnetConstructedDataEventMessageTextsConfig() {
+}
+
+func (m *_BACnetConstructedDataEventMessageTextsConfig) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventMessageTextsConfig) deepCopy() *_BACnetConstructedDataEventMessageTextsConfig {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventMessageTextsConfigCopy := &_BACnetConstructedDataEventMessageTextsConfig{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetOptionalCharacterString, BACnetOptionalCharacterString](m.EventMessageTextsConfig),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventMessageTextsConfigCopy
 }
 
 func (m *_BACnetConstructedDataEventMessageTextsConfig) String() string {

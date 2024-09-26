@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) SerializeWithWri
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) IsBACnetFaultParameterFaultExtendedParametersEntryDate() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryDateCopy := &_BACnetFaultParameterFaultExtendedParametersEntryDate{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryDateCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) String() string {

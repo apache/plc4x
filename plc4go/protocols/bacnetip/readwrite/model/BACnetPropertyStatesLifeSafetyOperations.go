@@ -38,6 +38,7 @@ type BACnetPropertyStatesLifeSafetyOperations interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLifeSafetyOperations returns LifeSafetyOperations (property field)
 	GetLifeSafetyOperations() BACnetLifeSafetyOperationTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetPropertyStatesLifeSafetyOperations) IsBACnetPropertyStatesLifeSafetyOperations() {}
+
+func (m *_BACnetPropertyStatesLifeSafetyOperations) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyOperations) deepCopy() *_BACnetPropertyStatesLifeSafetyOperations {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLifeSafetyOperationsCopy := &_BACnetPropertyStatesLifeSafetyOperations{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.LifeSafetyOperations.DeepCopy().(BACnetLifeSafetyOperationTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLifeSafetyOperationsCopy
+}
 
 func (m *_BACnetPropertyStatesLifeSafetyOperations) String() string {
 	if m == nil {

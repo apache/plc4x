@@ -38,6 +38,7 @@ type BACnetConstructedDataIPDHCPLeaseTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpDhcpLeaseTime returns IpDhcpLeaseTime (property field)
 	GetIpDhcpLeaseTime() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTime) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataIPDHCPLeaseTime) IsBACnetConstructedDataIPDHCPLeaseTime() {}
+
+func (m *_BACnetConstructedDataIPDHCPLeaseTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPDHCPLeaseTime) deepCopy() *_BACnetConstructedDataIPDHCPLeaseTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPDHCPLeaseTimeCopy := &_BACnetConstructedDataIPDHCPLeaseTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.IpDhcpLeaseTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPDHCPLeaseTimeCopy
+}
 
 func (m *_BACnetConstructedDataIPDHCPLeaseTime) String() string {
 	if m == nil {

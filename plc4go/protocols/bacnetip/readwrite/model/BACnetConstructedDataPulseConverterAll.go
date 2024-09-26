@@ -36,6 +36,7 @@ type BACnetConstructedDataPulseConverterAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataPulseConverterAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPulseConverterAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataPulseConverterAll) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataPulseConverterAll) IsBACnetConstructedDataPulseConverterAll() {}
+
+func (m *_BACnetConstructedDataPulseConverterAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPulseConverterAll) deepCopy() *_BACnetConstructedDataPulseConverterAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPulseConverterAllCopy := &_BACnetConstructedDataPulseConverterAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPulseConverterAllCopy
+}
 
 func (m *_BACnetConstructedDataPulseConverterAll) String() string {
 	if m == nil {

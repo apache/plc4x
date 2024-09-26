@@ -40,12 +40,14 @@ type CEMIAdditionalInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCEMIAdditionalInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMIAdditionalInformation()
 }
 
 // CEMIAdditionalInformationContract provides a set of functions which can be overwritten by a sub struct
 type CEMIAdditionalInformationContract interface {
+	utils.Copyable
 	// IsCEMIAdditionalInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMIAdditionalInformation()
 }
@@ -190,3 +192,17 @@ func (pm *_CEMIAdditionalInformation) serializeParent(ctx context.Context, write
 }
 
 func (m *_CEMIAdditionalInformation) IsCEMIAdditionalInformation() {}
+
+func (m *_CEMIAdditionalInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CEMIAdditionalInformation) deepCopy() *_CEMIAdditionalInformation {
+	if m == nil {
+		return nil
+	}
+	_CEMIAdditionalInformationCopy := &_CEMIAdditionalInformation{
+		nil, // will be set by child
+	}
+	return _CEMIAdditionalInformationCopy
+}

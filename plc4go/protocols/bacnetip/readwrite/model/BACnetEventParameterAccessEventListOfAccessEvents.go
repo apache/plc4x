@@ -38,6 +38,7 @@ type BACnetEventParameterAccessEventListOfAccessEvents interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfAccessEvents returns ListOfAccessEvents (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetEventParameterAccessEventListOfAccessEvents) GetTagNumber() uint
 ////
 
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) IsBACnetEventParameterAccessEventListOfAccessEvents() {
+}
+
+func (m *_BACnetEventParameterAccessEventListOfAccessEvents) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterAccessEventListOfAccessEvents) deepCopy() *_BACnetEventParameterAccessEventListOfAccessEvents {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterAccessEventListOfAccessEventsCopy := &_BACnetEventParameterAccessEventListOfAccessEvents{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.ListOfAccessEvents),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterAccessEventListOfAccessEventsCopy
 }
 
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) String() string {

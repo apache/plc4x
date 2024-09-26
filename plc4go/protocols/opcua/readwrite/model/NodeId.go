@@ -38,6 +38,7 @@ type NodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeIdTypeDefinition
 	// GetId returns Id (virtual field)
@@ -215,6 +216,21 @@ func (m *_NodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 }
 
 func (m *_NodeId) IsNodeId() {}
+
+func (m *_NodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeId) deepCopy() *_NodeId {
+	if m == nil {
+		return nil
+	}
+	_NodeIdCopy := &_NodeId{
+		m.NodeId.DeepCopy().(NodeIdTypeDefinition),
+		m.reservedField0,
+	}
+	return _NodeIdCopy
+}
 
 func (m *_NodeId) String() string {
 	if m == nil {

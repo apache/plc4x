@@ -38,6 +38,7 @@ type BACnetConstructedDataEventAlgorithmInhibit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEventAlgorithmInhibit returns EventAlgorithmInhibit (property field)
 	GetEventAlgorithmInhibit() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibit) IsBACnetConstructedDataEventAlgorithmInhibit() {
+}
+
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) deepCopy() *_BACnetConstructedDataEventAlgorithmInhibit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventAlgorithmInhibitCopy := &_BACnetConstructedDataEventAlgorithmInhibit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.EventAlgorithmInhibit.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventAlgorithmInhibitCopy
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibit) String() string {

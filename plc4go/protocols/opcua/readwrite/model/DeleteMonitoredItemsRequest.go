@@ -38,6 +38,7 @@ type DeleteMonitoredItemsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -247,6 +248,25 @@ func (m *_DeleteMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_DeleteMonitoredItemsRequest) IsDeleteMonitoredItemsRequest() {}
+
+func (m *_DeleteMonitoredItemsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteMonitoredItemsRequest) deepCopy() *_DeleteMonitoredItemsRequest {
+	if m == nil {
+		return nil
+	}
+	_DeleteMonitoredItemsRequestCopy := &_DeleteMonitoredItemsRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.NoOfMonitoredItemIds,
+		utils.DeepCopySlice[uint32, uint32](m.MonitoredItemIds),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteMonitoredItemsRequestCopy
+}
 
 func (m *_DeleteMonitoredItemsRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type APDUSimpleAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
@@ -215,6 +216,24 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_APDUSimpleAck) IsAPDUSimpleAck() {}
+
+func (m *_APDUSimpleAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUSimpleAck) deepCopy() *_APDUSimpleAck {
+	if m == nil {
+		return nil
+	}
+	_APDUSimpleAckCopy := &_APDUSimpleAck{
+		m.APDUContract.DeepCopy().(APDUContract),
+		m.OriginalInvokeId,
+		m.ServiceChoice,
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUSimpleAckCopy
+}
 
 func (m *_APDUSimpleAck) String() string {
 	if m == nil {

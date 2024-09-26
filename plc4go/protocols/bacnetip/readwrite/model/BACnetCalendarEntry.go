@@ -40,12 +40,14 @@ type BACnetCalendarEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCalendarEntry()
 }
 
 // BACnetCalendarEntryContract provides a set of functions which can be overwritten by a sub struct
 type BACnetCalendarEntryContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -246,3 +248,18 @@ func (pm *_BACnetCalendarEntry) serializeParent(ctx context.Context, writeBuffer
 }
 
 func (m *_BACnetCalendarEntry) IsBACnetCalendarEntry() {}
+
+func (m *_BACnetCalendarEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCalendarEntry) deepCopy() *_BACnetCalendarEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetCalendarEntryCopy := &_BACnetCalendarEntry{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetCalendarEntryCopy
+}

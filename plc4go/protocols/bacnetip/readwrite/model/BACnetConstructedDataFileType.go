@@ -38,6 +38,7 @@ type BACnetConstructedDataFileType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFileType returns FileType (property field)
 	GetFileType() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFileType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataFileType) IsBACnetConstructedDataFileType() {}
+
+func (m *_BACnetConstructedDataFileType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFileType) deepCopy() *_BACnetConstructedDataFileType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFileTypeCopy := &_BACnetConstructedDataFileType{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FileType.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFileTypeCopy
+}
 
 func (m *_BACnetConstructedDataFileType) String() string {
 	if m == nil {

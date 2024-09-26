@@ -38,6 +38,7 @@ type BACnetPropertyStatesBinaryValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBinaryValue returns BinaryValue (property field)
 	GetBinaryValue() BACnetBinaryPVTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBinaryValue) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesBinaryValue) IsBACnetPropertyStatesBinaryValue() {}
+
+func (m *_BACnetPropertyStatesBinaryValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBinaryValue) deepCopy() *_BACnetPropertyStatesBinaryValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBinaryValueCopy := &_BACnetPropertyStatesBinaryValue{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BinaryValue.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBinaryValueCopy
+}
 
 func (m *_BACnetPropertyStatesBinaryValue) String() string {
 	if m == nil {

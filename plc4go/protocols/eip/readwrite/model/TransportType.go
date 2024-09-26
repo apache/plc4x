@@ -38,6 +38,7 @@ type TransportType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDirection returns Direction (property field)
 	GetDirection() bool
 	// GetTrigger returns Trigger (property field)
@@ -206,6 +207,22 @@ func (m *_TransportType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_TransportType) IsTransportType() {}
+
+func (m *_TransportType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransportType) deepCopy() *_TransportType {
+	if m == nil {
+		return nil
+	}
+	_TransportTypeCopy := &_TransportType{
+		m.Direction,
+		m.Trigger,
+		m.ClassTransport,
+	}
+	return _TransportTypeCopy
+}
 
 func (m *_TransportType) String() string {
 	if m == nil {

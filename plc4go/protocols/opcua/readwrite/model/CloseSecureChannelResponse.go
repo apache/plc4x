@@ -38,6 +38,7 @@ type CloseSecureChannelResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -182,6 +183,22 @@ func (m *_CloseSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_CloseSecureChannelResponse) IsCloseSecureChannelResponse() {}
+
+func (m *_CloseSecureChannelResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CloseSecureChannelResponse) deepCopy() *_CloseSecureChannelResponse {
+	if m == nil {
+		return nil
+	}
+	_CloseSecureChannelResponseCopy := &_CloseSecureChannelResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CloseSecureChannelResponseCopy
+}
 
 func (m *_CloseSecureChannelResponse) String() string {
 	if m == nil {

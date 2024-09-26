@@ -38,6 +38,7 @@ type BACnetConstructedDataBlinkWarnEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBlinkWarnEnable returns BlinkWarnEnable (property field)
 	GetBlinkWarnEnable() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataBlinkWarnEnable) IsBACnetConstructedDataBlinkWarnEnable() {}
+
+func (m *_BACnetConstructedDataBlinkWarnEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBlinkWarnEnable) deepCopy() *_BACnetConstructedDataBlinkWarnEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBlinkWarnEnableCopy := &_BACnetConstructedDataBlinkWarnEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BlinkWarnEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBlinkWarnEnableCopy
+}
 
 func (m *_BACnetConstructedDataBlinkWarnEnable) String() string {
 	if m == nil {

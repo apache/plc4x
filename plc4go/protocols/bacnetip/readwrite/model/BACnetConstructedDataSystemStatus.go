@@ -38,6 +38,7 @@ type BACnetConstructedDataSystemStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSystemStatus returns SystemStatus (property field)
 	GetSystemStatus() BACnetDeviceStatusTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSystemStatus) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataSystemStatus) IsBACnetConstructedDataSystemStatus() {}
+
+func (m *_BACnetConstructedDataSystemStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSystemStatus) deepCopy() *_BACnetConstructedDataSystemStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSystemStatusCopy := &_BACnetConstructedDataSystemStatus{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.SystemStatus.DeepCopy().(BACnetDeviceStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSystemStatusCopy
+}
 
 func (m *_BACnetConstructedDataSystemStatus) String() string {
 	if m == nil {

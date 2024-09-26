@@ -38,6 +38,7 @@ type BACnetConstructedDataBitMask interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBitString returns BitString (property field)
 	GetBitString() BACnetApplicationTagBitString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBitMask) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataBitMask) IsBACnetConstructedDataBitMask() {}
+
+func (m *_BACnetConstructedDataBitMask) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBitMask) deepCopy() *_BACnetConstructedDataBitMask {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBitMaskCopy := &_BACnetConstructedDataBitMask{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BitString.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBitMaskCopy
+}
 
 func (m *_BACnetConstructedDataBitMask) String() string {
 	if m == nil {

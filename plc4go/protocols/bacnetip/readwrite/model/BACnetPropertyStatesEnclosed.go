@@ -38,6 +38,7 @@ type BACnetPropertyStatesEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPropertyState returns PropertyState (property field)
@@ -228,6 +229,23 @@ func (m *_BACnetPropertyStatesEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetPropertyStatesEnclosed) IsBACnetPropertyStatesEnclosed() {}
+
+func (m *_BACnetPropertyStatesEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEnclosed) deepCopy() *_BACnetPropertyStatesEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEnclosedCopy := &_BACnetPropertyStatesEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PropertyState.DeepCopy().(BACnetPropertyStates),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetPropertyStatesEnclosedCopy
+}
 
 func (m *_BACnetPropertyStatesEnclosed) String() string {
 	if m == nil {

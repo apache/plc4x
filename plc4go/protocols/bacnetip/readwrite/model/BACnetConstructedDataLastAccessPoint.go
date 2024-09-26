@@ -38,6 +38,7 @@ type BACnetConstructedDataLastAccessPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastAccessPoint returns LastAccessPoint (property field)
 	GetLastAccessPoint() BACnetDeviceObjectReference
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastAccessPoint) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataLastAccessPoint) IsBACnetConstructedDataLastAccessPoint() {}
+
+func (m *_BACnetConstructedDataLastAccessPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastAccessPoint) deepCopy() *_BACnetConstructedDataLastAccessPoint {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastAccessPointCopy := &_BACnetConstructedDataLastAccessPoint{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LastAccessPoint.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastAccessPointCopy
+}
 
 func (m *_BACnetConstructedDataLastAccessPoint) String() string {
 	if m == nil {

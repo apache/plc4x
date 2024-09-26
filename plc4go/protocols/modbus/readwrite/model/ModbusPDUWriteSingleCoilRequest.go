@@ -38,6 +38,7 @@ type ModbusPDUWriteSingleCoilRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -208,6 +209,23 @@ func (m *_ModbusPDUWriteSingleCoilRequest) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ModbusPDUWriteSingleCoilRequest) IsModbusPDUWriteSingleCoilRequest() {}
+
+func (m *_ModbusPDUWriteSingleCoilRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteSingleCoilRequest) deepCopy() *_ModbusPDUWriteSingleCoilRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteSingleCoilRequestCopy := &_ModbusPDUWriteSingleCoilRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.Address,
+		m.Value,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteSingleCoilRequestCopy
+}
 
 func (m *_ModbusPDUWriteSingleCoilRequest) String() string {
 	if m == nil {

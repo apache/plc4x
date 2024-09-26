@@ -38,6 +38,7 @@ type BACnetReadAccessProperty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -234,6 +235,23 @@ func (m *_BACnetReadAccessProperty) GetObjectTypeArgument() BACnetObjectType {
 ////
 
 func (m *_BACnetReadAccessProperty) IsBACnetReadAccessProperty() {}
+
+func (m *_BACnetReadAccessProperty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessProperty) deepCopy() *_BACnetReadAccessProperty {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessPropertyCopy := &_BACnetReadAccessProperty{
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ReadResult.DeepCopy().(BACnetReadAccessPropertyReadResult),
+		m.ObjectTypeArgument,
+	}
+	return _BACnetReadAccessPropertyCopy
+}
 
 func (m *_BACnetReadAccessProperty) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetContextTagEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadEnumerated
@@ -213,6 +214,22 @@ func (m *_BACnetContextTagEnumerated) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetContextTagEnumerated) IsBACnetContextTagEnumerated() {}
+
+func (m *_BACnetContextTagEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagEnumerated) deepCopy() *_BACnetContextTagEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagEnumeratedCopy := &_BACnetContextTagEnumerated{
+		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadEnumerated),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagEnumeratedCopy
+}
 
 func (m *_BACnetContextTagEnumerated) String() string {
 	if m == nil {

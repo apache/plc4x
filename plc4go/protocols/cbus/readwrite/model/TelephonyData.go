@@ -40,12 +40,14 @@ type TelephonyData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTelephonyData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyData()
 }
 
 // TelephonyDataContract provides a set of functions which can be overwritten by a sub struct
 type TelephonyDataContract interface {
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() TelephonyCommandTypeContainer
 	// GetArgument returns Argument (property field)
@@ -308,3 +310,19 @@ func (pm *_TelephonyData) serializeParent(ctx context.Context, writeBuffer utils
 }
 
 func (m *_TelephonyData) IsTelephonyData() {}
+
+func (m *_TelephonyData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyData) deepCopy() *_TelephonyData {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataCopy := &_TelephonyData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.Argument,
+	}
+	return _TelephonyDataCopy
+}

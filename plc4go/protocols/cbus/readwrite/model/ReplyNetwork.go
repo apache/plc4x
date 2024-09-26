@@ -38,6 +38,7 @@ type ReplyNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNetworkRoute returns NetworkRoute (property field)
 	GetNetworkRoute() NetworkRoute
 	// GetUnitAddress returns UnitAddress (property field)
@@ -192,6 +193,21 @@ func (m *_ReplyNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_ReplyNetwork) IsReplyNetwork() {}
+
+func (m *_ReplyNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReplyNetwork) deepCopy() *_ReplyNetwork {
+	if m == nil {
+		return nil
+	}
+	_ReplyNetworkCopy := &_ReplyNetwork{
+		m.NetworkRoute.DeepCopy().(NetworkRoute),
+		m.UnitAddress.DeepCopy().(UnitAddress),
+	}
+	return _ReplyNetworkCopy
+}
 
 func (m *_ReplyNetwork) String() string {
 	if m == nil {

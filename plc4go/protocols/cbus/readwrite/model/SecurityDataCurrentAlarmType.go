@@ -36,6 +36,7 @@ type SecurityDataCurrentAlarmType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataCurrentAlarmType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataCurrentAlarmType()
@@ -142,6 +143,21 @@ func (m *_SecurityDataCurrentAlarmType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SecurityDataCurrentAlarmType) IsSecurityDataCurrentAlarmType() {}
+
+func (m *_SecurityDataCurrentAlarmType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataCurrentAlarmType) deepCopy() *_SecurityDataCurrentAlarmType {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataCurrentAlarmTypeCopy := &_SecurityDataCurrentAlarmType{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataCurrentAlarmTypeCopy
+}
 
 func (m *_SecurityDataCurrentAlarmType) String() string {
 	if m == nil {

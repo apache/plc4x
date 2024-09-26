@@ -38,6 +38,7 @@ type BACnetAuthenticationPolicy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPolicy returns Policy (property field)
 	GetPolicy() BACnetAuthenticationPolicyList
 	// GetOrderEnforced returns OrderEnforced (property field)
@@ -215,6 +216,22 @@ func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetAuthenticationPolicy) IsBACnetAuthenticationPolicy() {}
+
+func (m *_BACnetAuthenticationPolicy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationPolicy) deepCopy() *_BACnetAuthenticationPolicy {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationPolicyCopy := &_BACnetAuthenticationPolicy{
+		m.Policy.DeepCopy().(BACnetAuthenticationPolicyList),
+		m.OrderEnforced.DeepCopy().(BACnetContextTagBoolean),
+		m.Timeout.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetAuthenticationPolicyCopy
+}
 
 func (m *_BACnetAuthenticationPolicy) String() string {
 	if m == nil {

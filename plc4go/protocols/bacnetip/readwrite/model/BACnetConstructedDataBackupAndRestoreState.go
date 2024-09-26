@@ -38,6 +38,7 @@ type BACnetConstructedDataBackupAndRestoreState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBackupAndRestoreState returns BackupAndRestoreState (property field)
 	GetBackupAndRestoreState() BACnetBackupStateTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataBackupAndRestoreState) IsBACnetConstructedDataBackupAndRestoreState() {
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreState) deepCopy() *_BACnetConstructedDataBackupAndRestoreState {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBackupAndRestoreStateCopy := &_BACnetConstructedDataBackupAndRestoreState{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BackupAndRestoreState.DeepCopy().(BACnetBackupStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBackupAndRestoreStateCopy
 }
 
 func (m *_BACnetConstructedDataBackupAndRestoreState) String() string {

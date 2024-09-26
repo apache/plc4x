@@ -36,6 +36,7 @@ type BACnetConstructedDataMultiStateValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataMultiStateValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateValueAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataMultiStateValueAll) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataMultiStateValueAll) IsBACnetConstructedDataMultiStateValueAll() {}
+
+func (m *_BACnetConstructedDataMultiStateValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMultiStateValueAll) deepCopy() *_BACnetConstructedDataMultiStateValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMultiStateValueAllCopy := &_BACnetConstructedDataMultiStateValueAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMultiStateValueAllCopy
+}
 
 func (m *_BACnetConstructedDataMultiStateValueAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type TransactionErrorType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTargetId returns TargetId (property field)
 	GetTargetId() NodeId
@@ -230,6 +231,24 @@ func (m *_TransactionErrorType) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_TransactionErrorType) IsTransactionErrorType() {}
+
+func (m *_TransactionErrorType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransactionErrorType) deepCopy() *_TransactionErrorType {
+	if m == nil {
+		return nil
+	}
+	_TransactionErrorTypeCopy := &_TransactionErrorType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.TargetId.DeepCopy().(NodeId),
+		m.Error.DeepCopy().(StatusCode),
+		m.Message.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TransactionErrorTypeCopy
+}
 
 func (m *_TransactionErrorType) String() string {
 	if m == nil {

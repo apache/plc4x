@@ -38,6 +38,7 @@ type BACnetConstructedDataExecutionDelay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataExecutionDelay) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataExecutionDelay) IsBACnetConstructedDataExecutionDelay() {}
+
+func (m *_BACnetConstructedDataExecutionDelay) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExecutionDelay) deepCopy() *_BACnetConstructedDataExecutionDelay {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExecutionDelayCopy := &_BACnetConstructedDataExecutionDelay{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ExecutionDelay),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExecutionDelayCopy
+}
 
 func (m *_BACnetConstructedDataExecutionDelay) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type BACnetConstructedDataTrendLogMultipleAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataTrendLogMultipleAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTrendLogMultipleAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataTrendLogMultipleAll) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataTrendLogMultipleAll) IsBACnetConstructedDataTrendLogMultipleAll() {}
+
+func (m *_BACnetConstructedDataTrendLogMultipleAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleAll) deepCopy() *_BACnetConstructedDataTrendLogMultipleAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTrendLogMultipleAllCopy := &_BACnetConstructedDataTrendLogMultipleAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTrendLogMultipleAllCopy
+}
 
 func (m *_BACnetConstructedDataTrendLogMultipleAll) String() string {
 	if m == nil {

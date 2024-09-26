@@ -40,6 +40,7 @@ type DeviceConfigurationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetDeviceConfigurationRequestDataBlock returns DeviceConfigurationRequestDataBlock (property field)
 	GetDeviceConfigurationRequestDataBlock() DeviceConfigurationRequestDataBlock
@@ -221,6 +222,24 @@ func (m *_DeviceConfigurationRequest) GetTotalLength() uint16 {
 ////
 
 func (m *_DeviceConfigurationRequest) IsDeviceConfigurationRequest() {}
+
+func (m *_DeviceConfigurationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationRequest) deepCopy() *_DeviceConfigurationRequest {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationRequestCopy := &_DeviceConfigurationRequest{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.DeviceConfigurationRequestDataBlock.DeepCopy().(DeviceConfigurationRequestDataBlock),
+		m.Cemi.DeepCopy().(CEMI),
+		m.TotalLength,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DeviceConfigurationRequestCopy
+}
 
 func (m *_DeviceConfigurationRequest) String() string {
 	if m == nil {

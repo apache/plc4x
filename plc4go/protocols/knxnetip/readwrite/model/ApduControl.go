@@ -40,12 +40,14 @@ type ApduControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApduControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControl()
 }
 
 // ApduControlContract provides a set of functions which can be overwritten by a sub struct
 type ApduControlContract interface {
+	utils.Copyable
 	// IsApduControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControl()
 }
@@ -198,3 +200,17 @@ func (pm *_ApduControl) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_ApduControl) IsApduControl() {}
+
+func (m *_ApduControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControl) deepCopy() *_ApduControl {
+	if m == nil {
+		return nil
+	}
+	_ApduControlCopy := &_ApduControl{
+		nil, // will be set by child
+	}
+	return _ApduControlCopy
+}

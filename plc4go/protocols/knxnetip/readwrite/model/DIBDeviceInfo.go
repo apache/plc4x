@@ -38,6 +38,7 @@ type DIBDeviceInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
 	// GetKnxMedium returns KnxMedium (property field)
@@ -358,6 +359,28 @@ func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_DIBDeviceInfo) IsDIBDeviceInfo() {}
+
+func (m *_DIBDeviceInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DIBDeviceInfo) deepCopy() *_DIBDeviceInfo {
+	if m == nil {
+		return nil
+	}
+	_DIBDeviceInfoCopy := &_DIBDeviceInfo{
+		m.DescriptionType,
+		m.KnxMedium,
+		m.DeviceStatus.DeepCopy().(DeviceStatus),
+		m.KnxAddress.DeepCopy().(KnxAddress),
+		m.ProjectInstallationIdentifier.DeepCopy().(ProjectInstallationIdentifier),
+		utils.DeepCopySlice[byte, byte](m.KnxNetIpDeviceSerialNumber),
+		m.KnxNetIpDeviceMulticastAddress.DeepCopy().(IPAddress),
+		m.KnxNetIpDeviceMacAddress.DeepCopy().(MACAddress),
+		utils.DeepCopySlice[byte, byte](m.DeviceFriendlyName),
+	}
+	return _DIBDeviceInfoCopy
+}
 
 func (m *_DIBDeviceInfo) String() string {
 	if m == nil {

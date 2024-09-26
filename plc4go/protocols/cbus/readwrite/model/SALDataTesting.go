@@ -36,6 +36,7 @@ type SALDataTesting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataTesting is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataTesting()
@@ -151,6 +152,21 @@ func (m *_SALDataTesting) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SALDataTesting) IsSALDataTesting() {}
+
+func (m *_SALDataTesting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataTesting) deepCopy() *_SALDataTesting {
+	if m == nil {
+		return nil
+	}
+	_SALDataTestingCopy := &_SALDataTesting{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataTestingCopy
+}
 
 func (m *_SALDataTesting) String() string {
 	if m == nil {

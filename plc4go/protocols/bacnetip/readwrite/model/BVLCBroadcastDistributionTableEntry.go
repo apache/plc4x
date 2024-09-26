@@ -38,6 +38,7 @@ type BVLCBroadcastDistributionTableEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
 	// GetPort returns Port (property field)
@@ -210,6 +211,22 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BVLCBroadcastDistributionTableEntry) IsBVLCBroadcastDistributionTableEntry() {}
+
+func (m *_BVLCBroadcastDistributionTableEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCBroadcastDistributionTableEntry) deepCopy() *_BVLCBroadcastDistributionTableEntry {
+	if m == nil {
+		return nil
+	}
+	_BVLCBroadcastDistributionTableEntryCopy := &_BVLCBroadcastDistributionTableEntry{
+		utils.DeepCopySlice[uint8, uint8](m.Ip),
+		m.Port,
+		utils.DeepCopySlice[uint8, uint8](m.BroadcastDistributionMap),
+	}
+	return _BVLCBroadcastDistributionTableEntryCopy
+}
 
 func (m *_BVLCBroadcastDistributionTableEntry) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type HistoryReadRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -312,6 +313,28 @@ func (m *_HistoryReadRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_HistoryReadRequest) IsHistoryReadRequest() {}
+
+func (m *_HistoryReadRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadRequest) deepCopy() *_HistoryReadRequest {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadRequestCopy := &_HistoryReadRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.HistoryReadDetails.DeepCopy().(ExtensionObject),
+		m.TimestampsToReturn,
+		m.ReleaseContinuationPoints,
+		m.NoOfNodesToRead,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToRead),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadRequestCopy
+}
 
 func (m *_HistoryReadRequest) String() string {
 	if m == nil {

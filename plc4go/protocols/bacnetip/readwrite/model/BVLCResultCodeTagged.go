@@ -38,6 +38,7 @@ type BVLCResultCodeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BVLCResultCodeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BVLCResultCodeTagged) IsBVLCResultCodeTagged() {}
+
+func (m *_BVLCResultCodeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCResultCodeTagged) deepCopy() *_BVLCResultCodeTagged {
+	if m == nil {
+		return nil
+	}
+	_BVLCResultCodeTaggedCopy := &_BVLCResultCodeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BVLCResultCodeTaggedCopy
+}
 
 func (m *_BVLCResultCodeTagged) String() string {
 	if m == nil {

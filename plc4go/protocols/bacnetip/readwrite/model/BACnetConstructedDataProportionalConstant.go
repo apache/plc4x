@@ -38,6 +38,7 @@ type BACnetConstructedDataProportionalConstant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProportionalConstant returns ProportionalConstant (property field)
 	GetProportionalConstant() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProportionalConstant) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataProportionalConstant) IsBACnetConstructedDataProportionalConstant() {}
+
+func (m *_BACnetConstructedDataProportionalConstant) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProportionalConstant) deepCopy() *_BACnetConstructedDataProportionalConstant {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProportionalConstantCopy := &_BACnetConstructedDataProportionalConstant{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProportionalConstant.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProportionalConstantCopy
+}
 
 func (m *_BACnetConstructedDataProportionalConstant) String() string {
 	if m == nil {

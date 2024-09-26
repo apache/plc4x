@@ -38,6 +38,7 @@ type BACnetApplicationTagDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadDouble
@@ -209,6 +210,22 @@ func (m *_BACnetApplicationTagDouble) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetApplicationTagDouble) IsBACnetApplicationTagDouble() {}
+
+func (m *_BACnetApplicationTagDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagDouble) deepCopy() *_BACnetApplicationTagDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagDoubleCopy := &_BACnetApplicationTagDouble{
+		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadDouble),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagDoubleCopy
+}
 
 func (m *_BACnetApplicationTagDouble) String() string {
 	if m == nil {

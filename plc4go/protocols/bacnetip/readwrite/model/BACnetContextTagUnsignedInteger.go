@@ -38,6 +38,7 @@ type BACnetContextTagUnsignedInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadUnsignedInteger
@@ -213,6 +214,22 @@ func (m *_BACnetContextTagUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetContextTagUnsignedInteger) IsBACnetContextTagUnsignedInteger() {}
+
+func (m *_BACnetContextTagUnsignedInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagUnsignedInteger) deepCopy() *_BACnetContextTagUnsignedInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagUnsignedIntegerCopy := &_BACnetContextTagUnsignedInteger{
+		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadUnsignedInteger),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagUnsignedIntegerCopy
+}
 
 func (m *_BACnetContextTagUnsignedInteger) String() string {
 	if m == nil {

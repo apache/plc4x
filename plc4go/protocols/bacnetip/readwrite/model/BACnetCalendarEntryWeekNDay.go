@@ -38,6 +38,7 @@ type BACnetCalendarEntryWeekNDay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetCalendarEntry
 	// GetWeekNDay returns WeekNDay (property field)
 	GetWeekNDay() BACnetWeekNDayTagged
@@ -178,6 +179,22 @@ func (m *_BACnetCalendarEntryWeekNDay) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetCalendarEntryWeekNDay) IsBACnetCalendarEntryWeekNDay() {}
+
+func (m *_BACnetCalendarEntryWeekNDay) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCalendarEntryWeekNDay) deepCopy() *_BACnetCalendarEntryWeekNDay {
+	if m == nil {
+		return nil
+	}
+	_BACnetCalendarEntryWeekNDayCopy := &_BACnetCalendarEntryWeekNDay{
+		m.BACnetCalendarEntryContract.DeepCopy().(BACnetCalendarEntryContract),
+		m.WeekNDay.DeepCopy().(BACnetWeekNDayTagged),
+	}
+	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
+	return _BACnetCalendarEntryWeekNDayCopy
+}
 
 func (m *_BACnetCalendarEntryWeekNDay) String() string {
 	if m == nil {

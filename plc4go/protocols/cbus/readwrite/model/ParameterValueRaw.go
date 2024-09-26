@@ -38,6 +38,7 @@ type ParameterValueRaw interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -181,6 +182,22 @@ func (m *_ParameterValueRaw) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ParameterValueRaw) IsParameterValueRaw() {}
+
+func (m *_ParameterValueRaw) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueRaw) deepCopy() *_ParameterValueRaw {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueRawCopy := &_ParameterValueRaw{
+		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueRawCopy
+}
 
 func (m *_ParameterValueRaw) String() string {
 	if m == nil {

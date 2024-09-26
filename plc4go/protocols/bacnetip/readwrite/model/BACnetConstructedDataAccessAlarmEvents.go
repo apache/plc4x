@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessAlarmEvents interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccessAlarmEvents returns AccessAlarmEvents (property field)
 	GetAccessAlarmEvents() []BACnetAccessEventTagged
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAccessAlarmEvents) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataAccessAlarmEvents) IsBACnetConstructedDataAccessAlarmEvents() {}
+
+func (m *_BACnetConstructedDataAccessAlarmEvents) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessAlarmEvents) deepCopy() *_BACnetConstructedDataAccessAlarmEvents {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessAlarmEventsCopy := &_BACnetConstructedDataAccessAlarmEvents{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetAccessEventTagged, BACnetAccessEventTagged](m.AccessAlarmEvents),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessAlarmEventsCopy
+}
 
 func (m *_BACnetConstructedDataAccessAlarmEvents) String() string {
 	if m == nil {

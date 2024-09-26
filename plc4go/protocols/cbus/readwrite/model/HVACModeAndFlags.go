@@ -38,6 +38,7 @@ type HVACModeAndFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAuxiliaryLevel returns AuxiliaryLevel (property field)
 	GetAuxiliaryLevel() bool
 	// GetGuard returns Guard (property field)
@@ -446,6 +447,25 @@ func (m *_HVACModeAndFlags) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_HVACModeAndFlags) IsHVACModeAndFlags() {}
+
+func (m *_HVACModeAndFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACModeAndFlags) deepCopy() *_HVACModeAndFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACModeAndFlagsCopy := &_HVACModeAndFlags{
+		m.AuxiliaryLevel,
+		m.Guard,
+		m.Setback,
+		m.Level,
+		m.Mode,
+		m.reservedField0,
+	}
+	return _HVACModeAndFlagsCopy
+}
 
 func (m *_HVACModeAndFlags) String() string {
 	if m == nil {

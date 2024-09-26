@@ -38,6 +38,7 @@ type ReferenceListEntryDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() NodeId
@@ -242,6 +243,25 @@ func (m *_ReferenceListEntryDataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ReferenceListEntryDataType) IsReferenceListEntryDataType() {}
+
+func (m *_ReferenceListEntryDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReferenceListEntryDataType) deepCopy() *_ReferenceListEntryDataType {
+	if m == nil {
+		return nil
+	}
+	_ReferenceListEntryDataTypeCopy := &_ReferenceListEntryDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ReferenceType.DeepCopy().(NodeId),
+		m.IsForward,
+		m.TargetNode.DeepCopy().(ExpandedNodeId),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReferenceListEntryDataTypeCopy
+}
 
 func (m *_ReferenceListEntryDataType) String() string {
 	if m == nil {

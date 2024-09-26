@@ -38,6 +38,7 @@ type BACnetConstructedDataPassbackTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPassbackTimeout returns PassbackTimeout (property field)
 	GetPassbackTimeout() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPassbackTimeout) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataPassbackTimeout) IsBACnetConstructedDataPassbackTimeout() {}
+
+func (m *_BACnetConstructedDataPassbackTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPassbackTimeout) deepCopy() *_BACnetConstructedDataPassbackTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPassbackTimeoutCopy := &_BACnetConstructedDataPassbackTimeout{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.PassbackTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPassbackTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataPassbackTimeout) String() string {
 	if m == nil {

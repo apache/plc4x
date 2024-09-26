@@ -41,6 +41,7 @@ type ModbusPDUReadDeviceIdentificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetLevel returns Level (property field)
 	GetLevel() ModbusDeviceInformationLevel
@@ -237,6 +238,23 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) IsModbusPDUReadDeviceIdentificationRequest() {}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequest) deepCopy() *_ModbusPDUReadDeviceIdentificationRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadDeviceIdentificationRequestCopy := &_ModbusPDUReadDeviceIdentificationRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.Level,
+		m.ObjectId,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadDeviceIdentificationRequestCopy
+}
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) String() string {
 	if m == nil {

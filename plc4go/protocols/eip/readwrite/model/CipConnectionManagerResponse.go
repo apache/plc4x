@@ -38,6 +38,7 @@ type CipConnectionManagerResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetOtConnectionId returns OtConnectionId (property field)
 	GetOtConnectionId() uint32
@@ -355,6 +356,30 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_CipConnectionManagerResponse) IsCipConnectionManagerResponse() {}
+
+func (m *_CipConnectionManagerResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectionManagerResponse) deepCopy() *_CipConnectionManagerResponse {
+	if m == nil {
+		return nil
+	}
+	_CipConnectionManagerResponseCopy := &_CipConnectionManagerResponse{
+		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.OtConnectionId,
+		m.ToConnectionId,
+		m.ConnectionSerialNumber,
+		m.OriginatorVendorId,
+		m.OriginatorSerialNumber,
+		m.OtApi,
+		m.ToApi,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectionManagerResponseCopy
+}
 
 func (m *_CipConnectionManagerResponse) String() string {
 	if m == nil {

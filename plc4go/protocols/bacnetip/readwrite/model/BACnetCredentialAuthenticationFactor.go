@@ -38,6 +38,7 @@ type BACnetCredentialAuthenticationFactor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDisable returns Disable (property field)
 	GetDisable() BACnetAccessAuthenticationFactorDisableTagged
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetCredentialAuthenticationFactor) IsBACnetCredentialAuthenticationFactor() {}
+
+func (m *_BACnetCredentialAuthenticationFactor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCredentialAuthenticationFactor) deepCopy() *_BACnetCredentialAuthenticationFactor {
+	if m == nil {
+		return nil
+	}
+	_BACnetCredentialAuthenticationFactorCopy := &_BACnetCredentialAuthenticationFactor{
+		m.Disable.DeepCopy().(BACnetAccessAuthenticationFactorDisableTagged),
+		m.AuthenticationFactor.DeepCopy().(BACnetAuthenticationFactorEnclosed),
+	}
+	return _BACnetCredentialAuthenticationFactorCopy
+}
 
 func (m *_BACnetCredentialAuthenticationFactor) String() string {
 	if m == nil {

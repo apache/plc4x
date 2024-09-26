@@ -38,6 +38,7 @@ type MeasurementDataChannelMeasurementData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeasurementData
 	// GetDeviceId returns DeviceId (property field)
 	GetDeviceId() uint8
@@ -333,6 +334,27 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_MeasurementDataChannelMeasurementData) IsMeasurementDataChannelMeasurementData() {}
+
+func (m *_MeasurementDataChannelMeasurementData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeasurementDataChannelMeasurementData) deepCopy() *_MeasurementDataChannelMeasurementData {
+	if m == nil {
+		return nil
+	}
+	_MeasurementDataChannelMeasurementDataCopy := &_MeasurementDataChannelMeasurementData{
+		m.MeasurementDataContract.DeepCopy().(MeasurementDataContract),
+		m.DeviceId,
+		m.Channel,
+		m.Units,
+		m.Multiplier,
+		m.Msb,
+		m.Lsb,
+	}
+	m.MeasurementDataContract.(*_MeasurementData)._SubType = m
+	return _MeasurementDataChannelMeasurementDataCopy
+}
 
 func (m *_MeasurementDataChannelMeasurementData) String() string {
 	if m == nil {

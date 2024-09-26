@@ -36,6 +36,7 @@ type MResetInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMResetInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMResetInd()
@@ -146,6 +147,21 @@ func (m *_MResetInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_MResetInd) IsMResetInd() {}
+
+func (m *_MResetInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MResetInd) deepCopy() *_MResetInd {
+	if m == nil {
+		return nil
+	}
+	_MResetIndCopy := &_MResetInd{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MResetIndCopy
+}
 
 func (m *_MResetInd) String() string {
 	if m == nil {

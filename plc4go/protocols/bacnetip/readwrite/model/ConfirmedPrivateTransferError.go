@@ -38,6 +38,7 @@ type ConfirmedPrivateTransferError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -257,6 +258,25 @@ func (m *_ConfirmedPrivateTransferError) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_ConfirmedPrivateTransferError) IsConfirmedPrivateTransferError() {}
+
+func (m *_ConfirmedPrivateTransferError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConfirmedPrivateTransferError) deepCopy() *_ConfirmedPrivateTransferError {
+	if m == nil {
+		return nil
+	}
+	_ConfirmedPrivateTransferErrorCopy := &_ConfirmedPrivateTransferError{
+		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+		m.ServiceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ErrorParameters.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _ConfirmedPrivateTransferErrorCopy
+}
 
 func (m *_ConfirmedPrivateTransferError) String() string {
 	if m == nil {

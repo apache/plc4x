@@ -38,6 +38,7 @@ type BACnetConstructedDataIntegerValueDeadband interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeadband returns Deadband (property field)
 	GetDeadband() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIntegerValueDeadband) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataIntegerValueDeadband) IsBACnetConstructedDataIntegerValueDeadband() {}
+
+func (m *_BACnetConstructedDataIntegerValueDeadband) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntegerValueDeadband) deepCopy() *_BACnetConstructedDataIntegerValueDeadband {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntegerValueDeadbandCopy := &_BACnetConstructedDataIntegerValueDeadband{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Deadband.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntegerValueDeadbandCopy
+}
 
 func (m *_BACnetConstructedDataIntegerValueDeadband) String() string {
 	if m == nil {

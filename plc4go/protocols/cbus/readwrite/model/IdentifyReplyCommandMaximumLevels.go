@@ -38,6 +38,7 @@ type IdentifyReplyCommandMaximumLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetMaximumLevels returns MaximumLevels (property field)
 	GetMaximumLevels() []byte
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandMaximumLevels) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_IdentifyReplyCommandMaximumLevels) IsIdentifyReplyCommandMaximumLevels() {}
+
+func (m *_IdentifyReplyCommandMaximumLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandMaximumLevels) deepCopy() *_IdentifyReplyCommandMaximumLevels {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandMaximumLevelsCopy := &_IdentifyReplyCommandMaximumLevels{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		utils.DeepCopySlice[byte, byte](m.MaximumLevels),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandMaximumLevelsCopy
+}
 
 func (m *_IdentifyReplyCommandMaximumLevels) String() string {
 	if m == nil {

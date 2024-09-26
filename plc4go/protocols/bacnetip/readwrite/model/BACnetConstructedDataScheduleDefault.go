@@ -38,6 +38,7 @@ type BACnetConstructedDataScheduleDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetScheduleDefault returns ScheduleDefault (property field)
 	GetScheduleDefault() BACnetConstructedDataElement
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataScheduleDefault) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataScheduleDefault) IsBACnetConstructedDataScheduleDefault() {}
+
+func (m *_BACnetConstructedDataScheduleDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataScheduleDefault) deepCopy() *_BACnetConstructedDataScheduleDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataScheduleDefaultCopy := &_BACnetConstructedDataScheduleDefault{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ScheduleDefault.DeepCopy().(BACnetConstructedDataElement),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataScheduleDefaultCopy
+}
 
 func (m *_BACnetConstructedDataScheduleDefault) String() string {
 	if m == nil {

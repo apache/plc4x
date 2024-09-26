@@ -38,6 +38,7 @@ type OptionSet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetValue returns Value (property field)
 	GetValue() PascalByteString
@@ -206,6 +207,23 @@ func (m *_OptionSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_OptionSet) IsOptionSet() {}
+
+func (m *_OptionSet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OptionSet) deepCopy() *_OptionSet {
+	if m == nil {
+		return nil
+	}
+	_OptionSetCopy := &_OptionSet{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Value.DeepCopy().(PascalByteString),
+		m.ValidBits.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _OptionSetCopy
+}
 
 func (m *_OptionSet) String() string {
 	if m == nil {

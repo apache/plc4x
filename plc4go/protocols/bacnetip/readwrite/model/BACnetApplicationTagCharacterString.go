@@ -38,6 +38,7 @@ type BACnetApplicationTagCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadCharacterString
@@ -209,6 +210,22 @@ func (m *_BACnetApplicationTagCharacterString) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetApplicationTagCharacterString) IsBACnetApplicationTagCharacterString() {}
+
+func (m *_BACnetApplicationTagCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagCharacterString) deepCopy() *_BACnetApplicationTagCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagCharacterStringCopy := &_BACnetApplicationTagCharacterString{
+		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.Payload.DeepCopy().(BACnetTagPayloadCharacterString),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagCharacterStringCopy
+}
 
 func (m *_BACnetApplicationTagCharacterString) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type RegisterNodesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_RegisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_RegisterNodesResponse) IsRegisterNodesResponse() {}
+
+func (m *_RegisterNodesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterNodesResponse) deepCopy() *_RegisterNodesResponse {
+	if m == nil {
+		return nil
+	}
+	_RegisterNodesResponseCopy := &_RegisterNodesResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfRegisteredNodeIds,
+		utils.DeepCopySlice[NodeId, NodeId](m.RegisteredNodeIds),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterNodesResponseCopy
+}
 
 func (m *_RegisterNodesResponse) String() string {
 	if m == nil {

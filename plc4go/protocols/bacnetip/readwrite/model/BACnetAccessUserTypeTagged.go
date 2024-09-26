@@ -38,6 +38,7 @@ type BACnetAccessUserTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetAccessUserTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAccessUserTypeTagged) IsBACnetAccessUserTypeTagged() {}
+
+func (m *_BACnetAccessUserTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessUserTypeTagged) deepCopy() *_BACnetAccessUserTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessUserTypeTaggedCopy := &_BACnetAccessUserTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessUserTypeTaggedCopy
+}
 
 func (m *_BACnetAccessUserTypeTagged) String() string {
 	if m == nil {

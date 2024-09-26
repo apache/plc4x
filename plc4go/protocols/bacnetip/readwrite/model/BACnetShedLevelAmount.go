@@ -38,6 +38,7 @@ type BACnetShedLevelAmount interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetShedLevel
 	// GetAmount returns Amount (property field)
 	GetAmount() BACnetContextTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetShedLevelAmount) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetShedLevelAmount) IsBACnetShedLevelAmount() {}
+
+func (m *_BACnetShedLevelAmount) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetShedLevelAmount) deepCopy() *_BACnetShedLevelAmount {
+	if m == nil {
+		return nil
+	}
+	_BACnetShedLevelAmountCopy := &_BACnetShedLevelAmount{
+		m.BACnetShedLevelContract.DeepCopy().(BACnetShedLevelContract),
+		m.Amount.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m
+	return _BACnetShedLevelAmountCopy
+}
 
 func (m *_BACnetShedLevelAmount) String() string {
 	if m == nil {

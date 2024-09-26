@@ -38,6 +38,7 @@ type BACnetConstructedDataSegmentationSupported interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSegmentationSupported returns SegmentationSupported (property field)
 	GetSegmentationSupported() BACnetSegmentationTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSegmentationSupported) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataSegmentationSupported) IsBACnetConstructedDataSegmentationSupported() {
+}
+
+func (m *_BACnetConstructedDataSegmentationSupported) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSegmentationSupported) deepCopy() *_BACnetConstructedDataSegmentationSupported {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSegmentationSupportedCopy := &_BACnetConstructedDataSegmentationSupported{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.SegmentationSupported.DeepCopy().(BACnetSegmentationTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSegmentationSupportedCopy
 }
 
 func (m *_BACnetConstructedDataSegmentationSupported) String() string {

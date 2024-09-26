@@ -36,6 +36,7 @@ type SysexCommandReportFirmwareRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandReportFirmwareRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandReportFirmwareRequest()
@@ -150,6 +151,21 @@ func (m *_SysexCommandReportFirmwareRequest) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_SysexCommandReportFirmwareRequest) IsSysexCommandReportFirmwareRequest() {}
+
+func (m *_SysexCommandReportFirmwareRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandReportFirmwareRequest) deepCopy() *_SysexCommandReportFirmwareRequest {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandReportFirmwareRequestCopy := &_SysexCommandReportFirmwareRequest{
+		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandReportFirmwareRequestCopy
+}
 
 func (m *_SysexCommandReportFirmwareRequest) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type BACnetUnconfirmedServiceRequestWhoHasObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetUnconfirmedServiceRequestWhoHasObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestWhoHasObject()
 }
 
 // BACnetUnconfirmedServiceRequestWhoHasObjectContract provides a set of functions which can be overwritten by a sub struct
 type BACnetUnconfirmedServiceRequestWhoHasObjectContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -237,4 +239,19 @@ func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) serializeParent(ctx cont
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) IsBACnetUnconfirmedServiceRequestWhoHasObject() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) deepCopy() *_BACnetUnconfirmedServiceRequestWhoHasObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestWhoHasObjectCopy := &_BACnetUnconfirmedServiceRequestWhoHasObject{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetUnconfirmedServiceRequestWhoHasObjectCopy
 }

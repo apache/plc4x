@@ -38,6 +38,7 @@ type BACnetConstructedDataLoggingObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLoggingObject returns LoggingObject (property field)
 	GetLoggingObject() BACnetApplicationTagObjectIdentifier
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoggingObject) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataLoggingObject) IsBACnetConstructedDataLoggingObject() {}
+
+func (m *_BACnetConstructedDataLoggingObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoggingObject) deepCopy() *_BACnetConstructedDataLoggingObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoggingObjectCopy := &_BACnetConstructedDataLoggingObject{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LoggingObject.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoggingObjectCopy
+}
 
 func (m *_BACnetConstructedDataLoggingObject) String() string {
 	if m == nil {

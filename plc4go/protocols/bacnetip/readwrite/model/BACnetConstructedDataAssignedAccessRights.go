@@ -38,6 +38,7 @@ type BACnetConstructedDataAssignedAccessRights interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataAssignedAccessRights) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataAssignedAccessRights) IsBACnetConstructedDataAssignedAccessRights() {}
+
+func (m *_BACnetConstructedDataAssignedAccessRights) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAssignedAccessRights) deepCopy() *_BACnetConstructedDataAssignedAccessRights {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAssignedAccessRightsCopy := &_BACnetConstructedDataAssignedAccessRights{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetAssignedAccessRights, BACnetAssignedAccessRights](m.AssignedAccessRights),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAssignedAccessRightsCopy
+}
 
 func (m *_BACnetConstructedDataAssignedAccessRights) String() string {
 	if m == nil {

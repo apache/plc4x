@@ -38,6 +38,7 @@ type BACnetConstructedDataNodeSubtype interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNodeSubType returns NodeSubType (property field)
 	GetNodeSubType() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataNodeSubtype) IsBACnetConstructedDataNodeSubtype() {}
+
+func (m *_BACnetConstructedDataNodeSubtype) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNodeSubtype) deepCopy() *_BACnetConstructedDataNodeSubtype {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNodeSubtypeCopy := &_BACnetConstructedDataNodeSubtype{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NodeSubType.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNodeSubtypeCopy
+}
 
 func (m *_BACnetConstructedDataNodeSubtype) String() string {
 	if m == nil {

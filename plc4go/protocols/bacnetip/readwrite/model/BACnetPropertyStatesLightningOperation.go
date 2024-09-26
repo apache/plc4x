@@ -38,6 +38,7 @@ type BACnetPropertyStatesLightningOperation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLightningOperation returns LightningOperation (property field)
 	GetLightningOperation() BACnetLightingOperationTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLightningOperation) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetPropertyStatesLightningOperation) IsBACnetPropertyStatesLightningOperation() {}
+
+func (m *_BACnetPropertyStatesLightningOperation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLightningOperation) deepCopy() *_BACnetPropertyStatesLightningOperation {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLightningOperationCopy := &_BACnetPropertyStatesLightningOperation{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.LightningOperation.DeepCopy().(BACnetLightingOperationTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLightningOperationCopy
+}
 
 func (m *_BACnetPropertyStatesLightningOperation) String() string {
 	if m == nil {

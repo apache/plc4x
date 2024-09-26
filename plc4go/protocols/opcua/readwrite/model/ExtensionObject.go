@@ -38,6 +38,7 @@ type ExtensionObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTypeId returns TypeId (property field)
 	GetTypeId() ExpandedNodeId
 	// GetEncodingMask returns EncodingMask (property field)
@@ -264,6 +265,23 @@ func (m *_ExtensionObject) GetIncludeEncodingMask() bool {
 ////
 
 func (m *_ExtensionObject) IsExtensionObject() {}
+
+func (m *_ExtensionObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExtensionObject) deepCopy() *_ExtensionObject {
+	if m == nil {
+		return nil
+	}
+	_ExtensionObjectCopy := &_ExtensionObject{
+		m.TypeId.DeepCopy().(ExpandedNodeId),
+		m.EncodingMask.DeepCopy().(ExtensionObjectEncodingMask),
+		m.Body.DeepCopy().(ExtensionObjectDefinition),
+		m.IncludeEncodingMask,
+	}
+	return _ExtensionObjectCopy
+}
 
 func (m *_ExtensionObject) String() string {
 	if m == nil {

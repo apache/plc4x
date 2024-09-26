@@ -38,6 +38,7 @@ type BACnetProgramRequestTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetProgramRequestTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetProgramRequestTagged) IsBACnetProgramRequestTagged() {}
+
+func (m *_BACnetProgramRequestTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProgramRequestTagged) deepCopy() *_BACnetProgramRequestTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetProgramRequestTaggedCopy := &_BACnetProgramRequestTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetProgramRequestTaggedCopy
+}
 
 func (m *_BACnetProgramRequestTagged) String() string {
 	if m == nil {

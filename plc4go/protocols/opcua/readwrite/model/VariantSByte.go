@@ -38,6 +38,7 @@ type VariantSByte interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -205,6 +206,23 @@ func (m *_VariantSByte) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_VariantSByte) IsVariantSByte() {}
+
+func (m *_VariantSByte) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantSByte) deepCopy() *_VariantSByte {
+	if m == nil {
+		return nil
+	}
+	_VariantSByteCopy := &_VariantSByte{
+		m.VariantContract.DeepCopy().(VariantContract),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantSByteCopy
+}
 
 func (m *_VariantSByte) String() string {
 	if m == nil {

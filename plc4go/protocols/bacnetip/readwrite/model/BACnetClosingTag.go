@@ -38,6 +38,7 @@ type BACnetClosingTag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// IsBACnetClosingTag is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -197,6 +198,21 @@ func (m *_BACnetClosingTag) GetTagNumberArgument() uint8 {
 ////
 
 func (m *_BACnetClosingTag) IsBACnetClosingTag() {}
+
+func (m *_BACnetClosingTag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetClosingTag) deepCopy() *_BACnetClosingTag {
+	if m == nil {
+		return nil
+	}
+	_BACnetClosingTagCopy := &_BACnetClosingTag{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.TagNumberArgument,
+	}
+	return _BACnetClosingTagCopy
+}
 
 func (m *_BACnetClosingTag) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetRelationshipTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetRelationshipTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetRelationshipTagged) IsBACnetRelationshipTagged() {}
+
+func (m *_BACnetRelationshipTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRelationshipTagged) deepCopy() *_BACnetRelationshipTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetRelationshipTaggedCopy := &_BACnetRelationshipTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetRelationshipTaggedCopy
+}
 
 func (m *_BACnetRelationshipTagged) String() string {
 	if m == nil {

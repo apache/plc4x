@@ -38,6 +38,7 @@ type BACnetConstructedDataLargeAnalogValueDeadband interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeadband returns Deadband (property field)
 	GetDeadband() BACnetApplicationTagDouble
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLargeAnalogValueDeadband) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueDeadband) IsBACnetConstructedDataLargeAnalogValueDeadband() {
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueDeadband) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueDeadband) deepCopy() *_BACnetConstructedDataLargeAnalogValueDeadband {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLargeAnalogValueDeadbandCopy := &_BACnetConstructedDataLargeAnalogValueDeadband{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Deadband.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLargeAnalogValueDeadbandCopy
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueDeadband) String() string {

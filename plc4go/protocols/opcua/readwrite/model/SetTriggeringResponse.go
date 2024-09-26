@@ -38,6 +38,7 @@ type SetTriggeringResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -378,6 +379,30 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SetTriggeringResponse) IsSetTriggeringResponse() {}
+
+func (m *_SetTriggeringResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetTriggeringResponse) deepCopy() *_SetTriggeringResponse {
+	if m == nil {
+		return nil
+	}
+	_SetTriggeringResponseCopy := &_SetTriggeringResponse{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfAddResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.AddResults),
+		m.NoOfAddDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.AddDiagnosticInfos),
+		m.NoOfRemoveResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.RemoveResults),
+		m.NoOfRemoveDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.RemoveDiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetTriggeringResponseCopy
+}
 
 func (m *_SetTriggeringResponse) String() string {
 	if m == nil {

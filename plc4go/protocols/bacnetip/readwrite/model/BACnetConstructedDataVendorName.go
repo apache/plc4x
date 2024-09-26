@@ -38,6 +38,7 @@ type BACnetConstructedDataVendorName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVendorName returns VendorName (property field)
 	GetVendorName() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataVendorName) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataVendorName) IsBACnetConstructedDataVendorName() {}
+
+func (m *_BACnetConstructedDataVendorName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVendorName) deepCopy() *_BACnetConstructedDataVendorName {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVendorNameCopy := &_BACnetConstructedDataVendorName{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.VendorName.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVendorNameCopy
+}
 
 func (m *_BACnetConstructedDataVendorName) String() string {
 	if m == nil {

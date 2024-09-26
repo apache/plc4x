@@ -38,6 +38,7 @@ type InterfaceOptions1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetIdmon returns Idmon (property field)
 	GetIdmon() bool
 	// GetMonitor returns Monitor (property field)
@@ -295,6 +296,27 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_InterfaceOptions1) IsInterfaceOptions1() {}
+
+func (m *_InterfaceOptions1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InterfaceOptions1) deepCopy() *_InterfaceOptions1 {
+	if m == nil {
+		return nil
+	}
+	_InterfaceOptions1Copy := &_InterfaceOptions1{
+		m.Idmon,
+		m.Monitor,
+		m.Smart,
+		m.Srchk,
+		m.XonXoff,
+		m.Connect,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _InterfaceOptions1Copy
+}
 
 func (m *_InterfaceOptions1) String() string {
 	if m == nil {

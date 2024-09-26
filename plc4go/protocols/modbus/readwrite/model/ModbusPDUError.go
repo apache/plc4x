@@ -38,6 +38,7 @@ type ModbusPDUError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetExceptionCode returns ExceptionCode (property field)
 	GetExceptionCode() ModbusErrorCode
@@ -187,6 +188,22 @@ func (m *_ModbusPDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ModbusPDUError) IsModbusPDUError() {}
+
+func (m *_ModbusPDUError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUError) deepCopy() *_ModbusPDUError {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUErrorCopy := &_ModbusPDUError{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ExceptionCode,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUErrorCopy
+}
 
 func (m *_ModbusPDUError) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type BACnetEventParameter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetEventParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameter()
 }
 
 // BACnetEventParameterContract provides a set of functions which can be overwritten by a sub struct
 type BACnetEventParameterContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -305,3 +307,18 @@ func (pm *_BACnetEventParameter) serializeParent(ctx context.Context, writeBuffe
 }
 
 func (m *_BACnetEventParameter) IsBACnetEventParameter() {}
+
+func (m *_BACnetEventParameter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameter) deepCopy() *_BACnetEventParameter {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterCopy := &_BACnetEventParameter{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetEventParameterCopy
+}

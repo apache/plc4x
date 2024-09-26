@@ -38,12 +38,14 @@ type ErrorReportingSystemCategoryType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsErrorReportingSystemCategoryType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingSystemCategoryType()
 }
 
 // ErrorReportingSystemCategoryTypeContract provides a set of functions which can be overwritten by a sub struct
 type ErrorReportingSystemCategoryTypeContract interface {
+	utils.Copyable
 	// IsErrorReportingSystemCategoryType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingSystemCategoryType()
 }
@@ -193,3 +195,17 @@ func (pm *_ErrorReportingSystemCategoryType) serializeParent(ctx context.Context
 }
 
 func (m *_ErrorReportingSystemCategoryType) IsErrorReportingSystemCategoryType() {}
+
+func (m *_ErrorReportingSystemCategoryType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryType) deepCopy() *_ErrorReportingSystemCategoryType {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeCopy := &_ErrorReportingSystemCategoryType{
+		nil, // will be set by child
+	}
+	return _ErrorReportingSystemCategoryTypeCopy
+}

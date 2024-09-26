@@ -38,6 +38,7 @@ type RelativePathElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReferenceTypeId returns ReferenceTypeId (property field)
 	GetReferenceTypeId() NodeId
@@ -263,6 +264,26 @@ func (m *_RelativePathElement) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_RelativePathElement) IsRelativePathElement() {}
+
+func (m *_RelativePathElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RelativePathElement) deepCopy() *_RelativePathElement {
+	if m == nil {
+		return nil
+	}
+	_RelativePathElementCopy := &_RelativePathElement{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IncludeSubtypes,
+		m.IsInverse,
+		m.TargetName.DeepCopy().(QualifiedName),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RelativePathElementCopy
+}
 
 func (m *_RelativePathElement) String() string {
 	if m == nil {

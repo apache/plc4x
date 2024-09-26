@@ -38,6 +38,7 @@ type AdsDiscoveryBlockOsData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetOsData returns OsData (property field)
 	GetOsData() []byte
@@ -194,6 +195,22 @@ func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_AdsDiscoveryBlockOsData) IsAdsDiscoveryBlockOsData() {}
+
+func (m *_AdsDiscoveryBlockOsData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockOsData) deepCopy() *_AdsDiscoveryBlockOsData {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockOsDataCopy := &_AdsDiscoveryBlockOsData{
+		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		utils.DeepCopySlice[byte, byte](m.OsData),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockOsDataCopy
+}
 
 func (m *_AdsDiscoveryBlockOsData) String() string {
 	if m == nil {

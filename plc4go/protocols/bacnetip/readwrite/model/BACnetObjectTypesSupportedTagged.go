@@ -38,6 +38,7 @@ type BACnetObjectTypesSupportedTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -448,6 +449,23 @@ func (m *_BACnetObjectTypesSupportedTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetObjectTypesSupportedTagged) IsBACnetObjectTypesSupportedTagged() {}
+
+func (m *_BACnetObjectTypesSupportedTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetObjectTypesSupportedTagged) deepCopy() *_BACnetObjectTypesSupportedTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetObjectTypesSupportedTaggedCopy := &_BACnetObjectTypesSupportedTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetObjectTypesSupportedTaggedCopy
+}
 
 func (m *_BACnetObjectTypesSupportedTagged) String() string {
 	if m == nil {

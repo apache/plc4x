@@ -38,6 +38,7 @@ type BACnetConstructedDataDoorStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoorStatus returns DoorStatus (property field)
 	GetDoorStatus() BACnetDoorStatusTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDoorStatus) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataDoorStatus) IsBACnetConstructedDataDoorStatus() {}
+
+func (m *_BACnetConstructedDataDoorStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoorStatus) deepCopy() *_BACnetConstructedDataDoorStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoorStatusCopy := &_BACnetConstructedDataDoorStatus{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DoorStatus.DeepCopy().(BACnetDoorStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoorStatusCopy
+}
 
 func (m *_BACnetConstructedDataDoorStatus) String() string {
 	if m == nil {

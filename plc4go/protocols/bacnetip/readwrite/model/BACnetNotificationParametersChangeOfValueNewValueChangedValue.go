@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfValueNewValue
 	// GetChangedValue returns ChangedValue (property field)
 	GetChangedValue() BACnetContextTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) Seriali
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) IsBACnetNotificationParametersChangeOfValueNewValueChangedValue() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) deepCopy() *_BACnetNotificationParametersChangeOfValueNewValueChangedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfValueNewValueChangedValueCopy := &_BACnetNotificationParametersChangeOfValueNewValueChangedValue{
+		m.BACnetNotificationParametersChangeOfValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfValueNewValueContract),
+		m.ChangedValue.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfValueNewValueChangedValueCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) String() string {

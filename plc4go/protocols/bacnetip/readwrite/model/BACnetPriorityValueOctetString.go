@@ -38,6 +38,7 @@ type BACnetPriorityValueOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueOctetString) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetPriorityValueOctetString) IsBACnetPriorityValueOctetString() {}
+
+func (m *_BACnetPriorityValueOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueOctetString) deepCopy() *_BACnetPriorityValueOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueOctetStringCopy := &_BACnetPriorityValueOctetString{
+		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueOctetStringCopy
+}
 
 func (m *_BACnetPriorityValueOctetString) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type AdsMultiRequestItemReadWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsMultiRequestItem
 	// GetItemIndexGroup returns ItemIndexGroup (property field)
 	GetItemIndexGroup() uint32
@@ -242,6 +243,25 @@ func (m *_AdsMultiRequestItemReadWrite) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_AdsMultiRequestItemReadWrite) IsAdsMultiRequestItemReadWrite() {}
+
+func (m *_AdsMultiRequestItemReadWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsMultiRequestItemReadWrite) deepCopy() *_AdsMultiRequestItemReadWrite {
+	if m == nil {
+		return nil
+	}
+	_AdsMultiRequestItemReadWriteCopy := &_AdsMultiRequestItemReadWrite{
+		m.AdsMultiRequestItemContract.DeepCopy().(AdsMultiRequestItemContract),
+		m.ItemIndexGroup,
+		m.ItemIndexOffset,
+		m.ItemReadLength,
+		m.ItemWriteLength,
+	}
+	m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = m
+	return _AdsMultiRequestItemReadWriteCopy
+}
 
 func (m *_AdsMultiRequestItemReadWrite) String() string {
 	if m == nil {

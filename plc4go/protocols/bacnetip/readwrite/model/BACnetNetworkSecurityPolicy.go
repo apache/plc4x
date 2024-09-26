@@ -38,6 +38,7 @@ type BACnetNetworkSecurityPolicy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPortId returns PortId (property field)
 	GetPortId() BACnetContextTagUnsignedInteger
 	// GetSecurityLevel returns SecurityLevel (property field)
@@ -192,6 +193,21 @@ func (m *_BACnetNetworkSecurityPolicy) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetNetworkSecurityPolicy) IsBACnetNetworkSecurityPolicy() {}
+
+func (m *_BACnetNetworkSecurityPolicy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNetworkSecurityPolicy) deepCopy() *_BACnetNetworkSecurityPolicy {
+	if m == nil {
+		return nil
+	}
+	_BACnetNetworkSecurityPolicyCopy := &_BACnetNetworkSecurityPolicy{
+		m.PortId.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.SecurityLevel.DeepCopy().(BACnetSecurityPolicyTagged),
+	}
+	return _BACnetNetworkSecurityPolicyCopy
+}
 
 func (m *_BACnetNetworkSecurityPolicy) String() string {
 	if m == nil {

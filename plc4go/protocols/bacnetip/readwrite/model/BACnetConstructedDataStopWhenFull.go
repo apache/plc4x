@@ -38,6 +38,7 @@ type BACnetConstructedDataStopWhenFull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStopWhenFull returns StopWhenFull (property field)
 	GetStopWhenFull() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataStopWhenFull) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataStopWhenFull) IsBACnetConstructedDataStopWhenFull() {}
+
+func (m *_BACnetConstructedDataStopWhenFull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStopWhenFull) deepCopy() *_BACnetConstructedDataStopWhenFull {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStopWhenFullCopy := &_BACnetConstructedDataStopWhenFull{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.StopWhenFull.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStopWhenFullCopy
+}
 
 func (m *_BACnetConstructedDataStopWhenFull) String() string {
 	if m == nil {

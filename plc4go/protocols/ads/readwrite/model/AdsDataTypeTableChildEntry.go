@@ -45,6 +45,7 @@ type AdsDataTypeTableChildEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetEntryLength returns EntryLength (property field)
 	GetEntryLength() uint32
 	// GetVersion returns Version (property field)
@@ -590,6 +591,35 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_AdsDataTypeTableChildEntry) IsAdsDataTypeTableChildEntry() {}
+
+func (m *_AdsDataTypeTableChildEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDataTypeTableChildEntry) deepCopy() *_AdsDataTypeTableChildEntry {
+	if m == nil {
+		return nil
+	}
+	_AdsDataTypeTableChildEntryCopy := &_AdsDataTypeTableChildEntry{
+		m.EntryLength,
+		m.Version,
+		m.HashValue,
+		m.TypeHashValue,
+		m.Size,
+		m.Offset,
+		m.DataType,
+		m.Flags,
+		m.ArrayDimensions,
+		m.NumChildren,
+		m.PropertyName,
+		m.DataTypeName,
+		m.Comment,
+		utils.DeepCopySlice[AdsDataTypeArrayInfo, AdsDataTypeArrayInfo](m.ArrayInfo),
+		utils.DeepCopySlice[AdsDataTypeTableEntry, AdsDataTypeTableEntry](m.Children),
+		utils.DeepCopySlice[byte, byte](m.Rest),
+	}
+	return _AdsDataTypeTableChildEntryCopy
+}
 
 func (m *_AdsDataTypeTableChildEntry) String() string {
 	if m == nil {

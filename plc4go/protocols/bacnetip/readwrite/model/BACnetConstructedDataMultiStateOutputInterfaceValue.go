@@ -38,6 +38,7 @@ type BACnetConstructedDataMultiStateOutputInterfaceValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInterfaceValue returns InterfaceValue (property field)
 	GetInterfaceValue() BACnetOptionalBinaryPV
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) IsBACnetConstructedDataMultiStateOutputInterfaceValue() {
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) deepCopy() *_BACnetConstructedDataMultiStateOutputInterfaceValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMultiStateOutputInterfaceValueCopy := &_BACnetConstructedDataMultiStateOutputInterfaceValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.InterfaceValue.DeepCopy().(BACnetOptionalBinaryPV),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMultiStateOutputInterfaceValueCopy
 }
 
 func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) String() string {

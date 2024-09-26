@@ -36,6 +36,7 @@ type NormalizedString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsNormalizedString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNormalizedString()
 }
@@ -134,6 +135,18 @@ func (m *_NormalizedString) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_NormalizedString) IsNormalizedString() {}
+
+func (m *_NormalizedString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NormalizedString) deepCopy() *_NormalizedString {
+	if m == nil {
+		return nil
+	}
+	_NormalizedStringCopy := &_NormalizedString{}
+	return _NormalizedStringCopy
+}
 
 func (m *_NormalizedString) String() string {
 	if m == nil {

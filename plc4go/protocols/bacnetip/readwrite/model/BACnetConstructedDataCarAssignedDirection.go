@@ -38,6 +38,7 @@ type BACnetConstructedDataCarAssignedDirection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAssignedDirection returns AssignedDirection (property field)
 	GetAssignedDirection() BACnetLiftCarDirectionTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataCarAssignedDirection) IsBACnetConstructedDataCarAssignedDirection() {}
+
+func (m *_BACnetConstructedDataCarAssignedDirection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarAssignedDirection) deepCopy() *_BACnetConstructedDataCarAssignedDirection {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarAssignedDirectionCopy := &_BACnetConstructedDataCarAssignedDirection{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AssignedDirection.DeepCopy().(BACnetLiftCarDirectionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarAssignedDirectionCopy
+}
 
 func (m *_BACnetConstructedDataCarAssignedDirection) String() string {
 	if m == nil {

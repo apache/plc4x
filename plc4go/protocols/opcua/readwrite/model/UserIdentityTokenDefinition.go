@@ -38,12 +38,14 @@ type UserIdentityTokenDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsUserIdentityTokenDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserIdentityTokenDefinition()
 }
 
 // UserIdentityTokenDefinitionContract provides a set of functions which can be overwritten by a sub struct
 type UserIdentityTokenDefinitionContract interface {
+	utils.Copyable
 	// IsUserIdentityTokenDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserIdentityTokenDefinition()
 }
@@ -185,3 +187,17 @@ func (pm *_UserIdentityTokenDefinition) serializeParent(ctx context.Context, wri
 }
 
 func (m *_UserIdentityTokenDefinition) IsUserIdentityTokenDefinition() {}
+
+func (m *_UserIdentityTokenDefinition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UserIdentityTokenDefinition) deepCopy() *_UserIdentityTokenDefinition {
+	if m == nil {
+		return nil
+	}
+	_UserIdentityTokenDefinitionCopy := &_UserIdentityTokenDefinition{
+		nil, // will be set by child
+	}
+	return _UserIdentityTokenDefinitionCopy
+}

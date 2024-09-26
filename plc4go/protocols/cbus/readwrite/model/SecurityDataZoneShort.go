@@ -38,6 +38,7 @@ type SecurityDataZoneShort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
@@ -175,6 +176,22 @@ func (m *_SecurityDataZoneShort) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SecurityDataZoneShort) IsSecurityDataZoneShort() {}
+
+func (m *_SecurityDataZoneShort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataZoneShort) deepCopy() *_SecurityDataZoneShort {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataZoneShortCopy := &_SecurityDataZoneShort{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.ZoneNumber,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataZoneShortCopy
+}
 
 func (m *_SecurityDataZoneShort) String() string {
 	if m == nil {

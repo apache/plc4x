@@ -38,6 +38,7 @@ type BACnetPropertyStatesNetworkPortCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetNetworkPortCommand returns NetworkPortCommand (property field)
 	GetNetworkPortCommand() BACnetNetworkPortCommandTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetPropertyStatesNetworkPortCommand) IsBACnetPropertyStatesNetworkPortCommand() {}
+
+func (m *_BACnetPropertyStatesNetworkPortCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesNetworkPortCommand) deepCopy() *_BACnetPropertyStatesNetworkPortCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesNetworkPortCommandCopy := &_BACnetPropertyStatesNetworkPortCommand{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.NetworkPortCommand.DeepCopy().(BACnetNetworkPortCommandTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesNetworkPortCommandCopy
+}
 
 func (m *_BACnetPropertyStatesNetworkPortCommand) String() string {
 	if m == nil {

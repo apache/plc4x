@@ -36,6 +36,7 @@ type ApplicationInstanceCertificate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApplicationInstanceCertificate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApplicationInstanceCertificate()
 }
@@ -134,6 +135,18 @@ func (m *_ApplicationInstanceCertificate) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ApplicationInstanceCertificate) IsApplicationInstanceCertificate() {}
+
+func (m *_ApplicationInstanceCertificate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApplicationInstanceCertificate) deepCopy() *_ApplicationInstanceCertificate {
+	if m == nil {
+		return nil
+	}
+	_ApplicationInstanceCertificateCopy := &_ApplicationInstanceCertificate{}
+	return _ApplicationInstanceCertificateCopy
+}
 
 func (m *_ApplicationInstanceCertificate) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type BACnetConstructedData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetConstructedData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedData()
 }
 
 // BACnetConstructedDataContract provides a set of functions which can be overwritten by a sub struct
 type BACnetConstructedDataContract interface {
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -2932,3 +2934,22 @@ func (m *_BACnetConstructedData) GetArrayIndexArgument() BACnetTagPayloadUnsigne
 ////
 
 func (m *_BACnetConstructedData) IsBACnetConstructedData() {}
+
+func (m *_BACnetConstructedData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedData) deepCopy() *_BACnetConstructedData {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCopy := &_BACnetConstructedData{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+		m.ArrayIndexArgument,
+	}
+	return _BACnetConstructedDataCopy
+}

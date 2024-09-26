@@ -40,6 +40,7 @@ type DisconnectResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
@@ -202,6 +203,23 @@ func (m *_DisconnectResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_DisconnectResponse) IsDisconnectResponse() {}
+
+func (m *_DisconnectResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DisconnectResponse) deepCopy() *_DisconnectResponse {
+	if m == nil {
+		return nil
+	}
+	_DisconnectResponseCopy := &_DisconnectResponse{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.CommunicationChannelId,
+		m.Status,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DisconnectResponseCopy
+}
 
 func (m *_DisconnectResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataPulseConverterAdjustValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataPulseConverterAdjustValue) IsBACnetConstructedDataPulseConverterAdjustValue() {
+}
+
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) deepCopy() *_BACnetConstructedDataPulseConverterAdjustValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPulseConverterAdjustValueCopy := &_BACnetConstructedDataPulseConverterAdjustValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AdjustValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPulseConverterAdjustValueCopy
 }
 
 func (m *_BACnetConstructedDataPulseConverterAdjustValue) String() string {

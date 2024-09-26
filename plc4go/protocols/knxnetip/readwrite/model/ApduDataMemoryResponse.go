@@ -38,6 +38,7 @@ type ApduDataMemoryResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -215,6 +216,23 @@ func (m *_ApduDataMemoryResponse) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ApduDataMemoryResponse) IsApduDataMemoryResponse() {}
+
+func (m *_ApduDataMemoryResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataMemoryResponse) deepCopy() *_ApduDataMemoryResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataMemoryResponseCopy := &_ApduDataMemoryResponse{
+		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.Address,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataMemoryResponseCopy
+}
 
 func (m *_ApduDataMemoryResponse) String() string {
 	if m == nil {

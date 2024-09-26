@@ -38,6 +38,7 @@ type BACnetEventNotificationSubscription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientEnclosed
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
@@ -241,6 +242,23 @@ func (m *_BACnetEventNotificationSubscription) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetEventNotificationSubscription) IsBACnetEventNotificationSubscription() {}
+
+func (m *_BACnetEventNotificationSubscription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventNotificationSubscription) deepCopy() *_BACnetEventNotificationSubscription {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventNotificationSubscriptionCopy := &_BACnetEventNotificationSubscription{
+		m.Recipient.DeepCopy().(BACnetRecipientEnclosed),
+		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
+		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetEventNotificationSubscriptionCopy
+}
 
 func (m *_BACnetEventNotificationSubscription) String() string {
 	if m == nil {

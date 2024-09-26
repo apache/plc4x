@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestVTData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetVtSessionIdentifier returns VtSessionIdentifier (property field)
 	GetVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
@@ -230,6 +231,24 @@ func (m *_BACnetConfirmedServiceRequestVTData) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConfirmedServiceRequestVTData) IsBACnetConfirmedServiceRequestVTData() {}
+
+func (m *_BACnetConfirmedServiceRequestVTData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestVTData) deepCopy() *_BACnetConfirmedServiceRequestVTData {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestVTDataCopy := &_BACnetConfirmedServiceRequestVTData{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.VtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.VtNewData.DeepCopy().(BACnetApplicationTagOctetString),
+		m.VtDataFlag.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestVTDataCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestVTData) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ApduDataExtPropertyDescriptionRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -221,6 +222,24 @@ func (m *_ApduDataExtPropertyDescriptionRead) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ApduDataExtPropertyDescriptionRead) IsApduDataExtPropertyDescriptionRead() {}
+
+func (m *_ApduDataExtPropertyDescriptionRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtPropertyDescriptionRead) deepCopy() *_ApduDataExtPropertyDescriptionRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtPropertyDescriptionReadCopy := &_ApduDataExtPropertyDescriptionRead{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.ObjectIndex,
+		m.PropertyId,
+		m.Index,
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtPropertyDescriptionReadCopy
+}
 
 func (m *_ApduDataExtPropertyDescriptionRead) String() string {
 	if m == nil {

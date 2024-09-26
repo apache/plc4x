@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestDeleteObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -182,6 +183,22 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConfirmedServiceRequestDeleteObject) IsBACnetConfirmedServiceRequestDeleteObject() {}
+
+func (m *_BACnetConfirmedServiceRequestDeleteObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestDeleteObject) deepCopy() *_BACnetConfirmedServiceRequestDeleteObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestDeleteObjectCopy := &_BACnetConfirmedServiceRequestDeleteObject{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestDeleteObjectCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestDeleteObject) String() string {
 	if m == nil {

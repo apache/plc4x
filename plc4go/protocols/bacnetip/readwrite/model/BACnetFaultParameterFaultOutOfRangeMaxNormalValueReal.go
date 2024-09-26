@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) SerializeWithWr
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal() {
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) deepCopy() *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealCopy := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal{
+		m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.DeepCopy().(BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = m
+	return _BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealCopy
 }
 
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) String() string {

@@ -38,6 +38,7 @@ type CBusMessageToClient interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusMessage
 	// GetReply returns Reply (property field)
 	GetReply() ReplyOrConfirmation
@@ -182,6 +183,22 @@ func (m *_CBusMessageToClient) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_CBusMessageToClient) IsCBusMessageToClient() {}
+
+func (m *_CBusMessageToClient) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusMessageToClient) deepCopy() *_CBusMessageToClient {
+	if m == nil {
+		return nil
+	}
+	_CBusMessageToClientCopy := &_CBusMessageToClient{
+		m.CBusMessageContract.DeepCopy().(CBusMessageContract),
+		m.Reply.DeepCopy().(ReplyOrConfirmation),
+	}
+	m.CBusMessageContract.(*_CBusMessage)._SubType = m
+	return _CBusMessageToClientCopy
+}
 
 func (m *_CBusMessageToClient) String() string {
 	if m == nil {

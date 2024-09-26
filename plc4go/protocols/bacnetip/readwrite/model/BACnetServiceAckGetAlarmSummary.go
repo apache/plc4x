@@ -38,6 +38,7 @@ type BACnetServiceAckGetAlarmSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -230,6 +231,24 @@ func (m *_BACnetServiceAckGetAlarmSummary) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetServiceAckGetAlarmSummary) IsBACnetServiceAckGetAlarmSummary() {}
+
+func (m *_BACnetServiceAckGetAlarmSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckGetAlarmSummary) deepCopy() *_BACnetServiceAckGetAlarmSummary {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckGetAlarmSummaryCopy := &_BACnetServiceAckGetAlarmSummary{
+		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.EventState.DeepCopy().(BACnetEventStateTagged),
+		m.AcknowledgedTransitions.DeepCopy().(BACnetEventTransitionBitsTagged),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckGetAlarmSummaryCopy
+}
 
 func (m *_BACnetServiceAckGetAlarmSummary) String() string {
 	if m == nil {

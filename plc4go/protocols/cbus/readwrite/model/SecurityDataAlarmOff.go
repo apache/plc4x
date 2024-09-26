@@ -36,6 +36,7 @@ type SecurityDataAlarmOff interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataAlarmOff is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataAlarmOff()
@@ -142,6 +143,21 @@ func (m *_SecurityDataAlarmOff) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SecurityDataAlarmOff) IsSecurityDataAlarmOff() {}
+
+func (m *_SecurityDataAlarmOff) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataAlarmOff) deepCopy() *_SecurityDataAlarmOff {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataAlarmOffCopy := &_SecurityDataAlarmOff{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataAlarmOffCopy
+}
 
 func (m *_SecurityDataAlarmOff) String() string {
 	if m == nil {

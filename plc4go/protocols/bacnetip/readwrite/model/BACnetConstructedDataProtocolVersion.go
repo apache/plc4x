@@ -38,6 +38,7 @@ type BACnetConstructedDataProtocolVersion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProtocolVersion returns ProtocolVersion (property field)
 	GetProtocolVersion() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProtocolVersion) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataProtocolVersion) IsBACnetConstructedDataProtocolVersion() {}
+
+func (m *_BACnetConstructedDataProtocolVersion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProtocolVersion) deepCopy() *_BACnetConstructedDataProtocolVersion {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProtocolVersionCopy := &_BACnetConstructedDataProtocolVersion{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ProtocolVersion.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProtocolVersionCopy
+}
 
 func (m *_BACnetConstructedDataProtocolVersion) String() string {
 	if m == nil {

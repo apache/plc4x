@@ -38,6 +38,7 @@ type BACnetValueSourceObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetValueSource
 	// GetObject returns Object (property field)
 	GetObject() BACnetDeviceObjectReferenceEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetValueSourceObject) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetValueSourceObject) IsBACnetValueSourceObject() {}
+
+func (m *_BACnetValueSourceObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSourceObject) deepCopy() *_BACnetValueSourceObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceObjectCopy := &_BACnetValueSourceObject{
+		m.BACnetValueSourceContract.DeepCopy().(BACnetValueSourceContract),
+		m.Object.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+	}
+	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	return _BACnetValueSourceObjectCopy
+}
 
 func (m *_BACnetValueSourceObject) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type UtcTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsUtcTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUtcTime()
 }
@@ -134,6 +135,18 @@ func (m *_UtcTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_UtcTime) IsUtcTime() {}
+
+func (m *_UtcTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UtcTime) deepCopy() *_UtcTime {
+	if m == nil {
+		return nil
+	}
+	_UtcTimeCopy := &_UtcTime{}
+	return _UtcTimeCopy
+}
 
 func (m *_UtcTime) String() string {
 	if m == nil {

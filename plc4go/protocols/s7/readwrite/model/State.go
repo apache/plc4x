@@ -38,6 +38,7 @@ type State interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSIG_8 returns SIG_8 (property field)
 	GetSIG_8() bool
 	// GetSIG_7 returns SIG_7 (property field)
@@ -306,6 +307,27 @@ func (m *_State) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_State) IsState() {}
+
+func (m *_State) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_State) deepCopy() *_State {
+	if m == nil {
+		return nil
+	}
+	_StateCopy := &_State{
+		m.SIG_8,
+		m.SIG_7,
+		m.SIG_6,
+		m.SIG_5,
+		m.SIG_4,
+		m.SIG_3,
+		m.SIG_2,
+		m.SIG_1,
+	}
+	return _StateCopy
+}
 
 func (m *_State) String() string {
 	if m == nil {

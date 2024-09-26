@@ -38,6 +38,7 @@ type KnxGroupAddress3Level interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxGroupAddress
 	// GetMainGroup returns MainGroup (property field)
 	GetMainGroup() uint8
@@ -221,6 +222,24 @@ func (m *_KnxGroupAddress3Level) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_KnxGroupAddress3Level) IsKnxGroupAddress3Level() {}
+
+func (m *_KnxGroupAddress3Level) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxGroupAddress3Level) deepCopy() *_KnxGroupAddress3Level {
+	if m == nil {
+		return nil
+	}
+	_KnxGroupAddress3LevelCopy := &_KnxGroupAddress3Level{
+		m.KnxGroupAddressContract.DeepCopy().(KnxGroupAddressContract),
+		m.MainGroup,
+		m.MiddleGroup,
+		m.SubGroup,
+	}
+	m.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = m
+	return _KnxGroupAddress3LevelCopy
+}
 
 func (m *_KnxGroupAddress3Level) String() string {
 	if m == nil {

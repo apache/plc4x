@@ -36,6 +36,7 @@ type ModbusPDUGetComEventCounterRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// IsModbusPDUGetComEventCounterRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUGetComEventCounterRequest()
@@ -154,6 +155,21 @@ func (m *_ModbusPDUGetComEventCounterRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ModbusPDUGetComEventCounterRequest) IsModbusPDUGetComEventCounterRequest() {}
+
+func (m *_ModbusPDUGetComEventCounterRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUGetComEventCounterRequest) deepCopy() *_ModbusPDUGetComEventCounterRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUGetComEventCounterRequestCopy := &_ModbusPDUGetComEventCounterRequest{
+		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUGetComEventCounterRequestCopy
+}
 
 func (m *_ModbusPDUGetComEventCounterRequest) String() string {
 	if m == nil {

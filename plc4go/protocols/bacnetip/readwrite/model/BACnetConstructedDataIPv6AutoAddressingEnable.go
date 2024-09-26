@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6AutoAddressingEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAutoAddressingEnable returns AutoAddressingEnable (property field)
 	GetAutoAddressingEnable() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) IsBACnetConstructedDataIPv6AutoAddressingEnable() {
+}
+
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) deepCopy() *_BACnetConstructedDataIPv6AutoAddressingEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6AutoAddressingEnableCopy := &_BACnetConstructedDataIPv6AutoAddressingEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.AutoAddressingEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6AutoAddressingEnableCopy
 }
 
 func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) String() string {

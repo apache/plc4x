@@ -38,6 +38,7 @@ type BACnetConstructedDataWeeklySchedule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -252,6 +253,23 @@ func (m *_BACnetConstructedDataWeeklySchedule) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataWeeklySchedule) IsBACnetConstructedDataWeeklySchedule() {}
+
+func (m *_BACnetConstructedDataWeeklySchedule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataWeeklySchedule) deepCopy() *_BACnetConstructedDataWeeklySchedule {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataWeeklyScheduleCopy := &_BACnetConstructedDataWeeklySchedule{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetDailySchedule, BACnetDailySchedule](m.WeeklySchedule),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataWeeklyScheduleCopy
+}
 
 func (m *_BACnetConstructedDataWeeklySchedule) String() string {
 	if m == nil {

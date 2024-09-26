@@ -36,6 +36,7 @@ type S7PayloadUserDataItemCyclicServicesErrorResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCyclicServicesErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesErrorResponse()
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) SerializeWithWriteBu
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) IsS7PayloadUserDataItemCyclicServicesErrorResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) deepCopy() *_S7PayloadUserDataItemCyclicServicesErrorResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCyclicServicesErrorResponseCopy := &_S7PayloadUserDataItemCyclicServicesErrorResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCyclicServicesErrorResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) String() string {

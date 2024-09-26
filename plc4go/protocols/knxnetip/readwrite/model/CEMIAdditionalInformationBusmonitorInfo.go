@@ -41,6 +41,7 @@ type CEMIAdditionalInformationBusmonitorInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMIAdditionalInformation
 	// GetFrameErrorFlag returns FrameErrorFlag (property field)
 	GetFrameErrorFlag() bool
@@ -313,6 +314,27 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) IsCEMIAdditionalInformationBusmonitorInfo() {}
+
+func (m *_CEMIAdditionalInformationBusmonitorInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CEMIAdditionalInformationBusmonitorInfo) deepCopy() *_CEMIAdditionalInformationBusmonitorInfo {
+	if m == nil {
+		return nil
+	}
+	_CEMIAdditionalInformationBusmonitorInfoCopy := &_CEMIAdditionalInformationBusmonitorInfo{
+		m.CEMIAdditionalInformationContract.DeepCopy().(CEMIAdditionalInformationContract),
+		m.FrameErrorFlag,
+		m.BitErrorFlag,
+		m.ParityErrorFlag,
+		m.UnknownFlag,
+		m.LostFlag,
+		m.SequenceNumber,
+	}
+	m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m
+	return _CEMIAdditionalInformationBusmonitorInfoCopy
+}
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) String() string {
 	if m == nil {

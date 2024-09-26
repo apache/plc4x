@@ -38,6 +38,7 @@ type APDUUnconfirmedRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetServiceRequest returns ServiceRequest (property field)
 	GetServiceRequest() BACnetUnconfirmedServiceRequest
@@ -197,6 +198,23 @@ func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_APDUUnconfirmedRequest) IsAPDUUnconfirmedRequest() {}
+
+func (m *_APDUUnconfirmedRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUUnconfirmedRequest) deepCopy() *_APDUUnconfirmedRequest {
+	if m == nil {
+		return nil
+	}
+	_APDUUnconfirmedRequestCopy := &_APDUUnconfirmedRequest{
+		m.APDUContract.DeepCopy().(APDUContract),
+		m.ServiceRequest.DeepCopy().(BACnetUnconfirmedServiceRequest),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUUnconfirmedRequestCopy
+}
 
 func (m *_APDUUnconfirmedRequest) String() string {
 	if m == nil {

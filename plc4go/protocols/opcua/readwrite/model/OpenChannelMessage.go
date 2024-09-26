@@ -38,12 +38,14 @@ type OpenChannelMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpenChannelMessage()
 }
 
 // OpenChannelMessageContract provides a set of functions which can be overwritten by a sub struct
 type OpenChannelMessageContract interface {
+	utils.Copyable
 	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpenChannelMessage()
 }
@@ -177,3 +179,17 @@ func (pm *_OpenChannelMessage) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_OpenChannelMessage) IsOpenChannelMessage() {}
+
+func (m *_OpenChannelMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpenChannelMessage) deepCopy() *_OpenChannelMessage {
+	if m == nil {
+		return nil
+	}
+	_OpenChannelMessageCopy := &_OpenChannelMessage{
+		nil, // will be set by child
+	}
+	return _OpenChannelMessageCopy
+}

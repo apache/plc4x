@@ -38,6 +38,7 @@ type BACnetConstructedDataIPDNSServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataIPDNSServer) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataIPDNSServer) IsBACnetConstructedDataIPDNSServer() {}
+
+func (m *_BACnetConstructedDataIPDNSServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPDNSServer) deepCopy() *_BACnetConstructedDataIPDNSServer {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPDNSServerCopy := &_BACnetConstructedDataIPDNSServer{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagOctetString, BACnetApplicationTagOctetString](m.IpDnsServer),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPDNSServerCopy
+}
 
 func (m *_BACnetConstructedDataIPDNSServer) String() string {
 	if m == nil {

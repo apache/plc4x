@@ -38,6 +38,7 @@ type BACnetSpecialEventListOfTimeValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfTimeValues returns ListOfTimeValues (property field)
@@ -229,6 +230,23 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetSpecialEventListOfTimeValues) IsBACnetSpecialEventListOfTimeValues() {}
+
+func (m *_BACnetSpecialEventListOfTimeValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSpecialEventListOfTimeValues) deepCopy() *_BACnetSpecialEventListOfTimeValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetSpecialEventListOfTimeValuesCopy := &_BACnetSpecialEventListOfTimeValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimeValue, BACnetTimeValue](m.ListOfTimeValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetSpecialEventListOfTimeValuesCopy
+}
 
 func (m *_BACnetSpecialEventListOfTimeValues) String() string {
 	if m == nil {

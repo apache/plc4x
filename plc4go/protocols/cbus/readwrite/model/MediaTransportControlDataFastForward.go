@@ -38,6 +38,7 @@ type MediaTransportControlDataFastForward interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetOperation returns Operation (property field)
 	GetOperation() byte
@@ -360,6 +361,22 @@ func (m *_MediaTransportControlDataFastForward) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataFastForward) IsMediaTransportControlDataFastForward() {}
+
+func (m *_MediaTransportControlDataFastForward) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataFastForward) deepCopy() *_MediaTransportControlDataFastForward {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataFastForwardCopy := &_MediaTransportControlDataFastForward{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.Operation,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataFastForwardCopy
+}
 
 func (m *_MediaTransportControlDataFastForward) String() string {
 	if m == nil {

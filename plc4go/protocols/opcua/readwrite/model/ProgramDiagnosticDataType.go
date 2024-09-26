@@ -38,6 +38,7 @@ type ProgramDiagnosticDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetCreateSessionId returns CreateSessionId (property field)
 	GetCreateSessionId() NodeId
@@ -439,6 +440,33 @@ func (m *_ProgramDiagnosticDataType) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_ProgramDiagnosticDataType) IsProgramDiagnosticDataType() {}
+
+func (m *_ProgramDiagnosticDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ProgramDiagnosticDataType) deepCopy() *_ProgramDiagnosticDataType {
+	if m == nil {
+		return nil
+	}
+	_ProgramDiagnosticDataTypeCopy := &_ProgramDiagnosticDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.CreateSessionId.DeepCopy().(NodeId),
+		m.CreateClientName.DeepCopy().(PascalString),
+		m.InvocationCreationTime,
+		m.LastTransitionTime,
+		m.LastMethodCall.DeepCopy().(PascalString),
+		m.LastMethodSessionId.DeepCopy().(NodeId),
+		m.NoOfLastMethodInputArguments,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodInputArguments),
+		m.NoOfLastMethodOutputArguments,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodOutputArguments),
+		m.LastMethodCallTime,
+		m.LastMethodReturnStatus.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ProgramDiagnosticDataTypeCopy
+}
 
 func (m *_ProgramDiagnosticDataType) String() string {
 	if m == nil {

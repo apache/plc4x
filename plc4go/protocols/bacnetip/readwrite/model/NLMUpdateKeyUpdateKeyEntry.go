@@ -38,6 +38,7 @@ type NLMUpdateKeyUpdateKeyEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetKeyIdentifier returns KeyIdentifier (property field)
 	GetKeyIdentifier() uint16
 	// GetKeySize returns KeySize (property field)
@@ -208,6 +209,22 @@ func (m *_NLMUpdateKeyUpdateKeyEntry) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_NLMUpdateKeyUpdateKeyEntry) IsNLMUpdateKeyUpdateKeyEntry() {}
+
+func (m *_NLMUpdateKeyUpdateKeyEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMUpdateKeyUpdateKeyEntry) deepCopy() *_NLMUpdateKeyUpdateKeyEntry {
+	if m == nil {
+		return nil
+	}
+	_NLMUpdateKeyUpdateKeyEntryCopy := &_NLMUpdateKeyUpdateKeyEntry{
+		m.KeyIdentifier,
+		m.KeySize,
+		utils.DeepCopySlice[byte, byte](m.Key),
+	}
+	return _NLMUpdateKeyUpdateKeyEntryCopy
+}
 
 func (m *_NLMUpdateKeyUpdateKeyEntry) String() string {
 	if m == nil {

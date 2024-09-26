@@ -40,12 +40,14 @@ type BACnetTimeStamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetTimeStamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeStamp()
 }
 
 // BACnetTimeStampContract provides a set of functions which can be overwritten by a sub struct
 type BACnetTimeStampContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -241,3 +243,18 @@ func (pm *_BACnetTimeStamp) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetTimeStamp) IsBACnetTimeStamp() {}
+
+func (m *_BACnetTimeStamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStamp) deepCopy() *_BACnetTimeStamp {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampCopy := &_BACnetTimeStamp{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetTimeStampCopy
+}

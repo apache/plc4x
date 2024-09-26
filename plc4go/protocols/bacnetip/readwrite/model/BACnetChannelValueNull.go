@@ -38,6 +38,7 @@ type BACnetChannelValueNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueNull) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetChannelValueNull) IsBACnetChannelValueNull() {}
+
+func (m *_BACnetChannelValueNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueNull) deepCopy() *_BACnetChannelValueNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueNullCopy := &_BACnetChannelValueNull{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueNullCopy
+}
 
 func (m *_BACnetChannelValueNull) String() string {
 	if m == nil {

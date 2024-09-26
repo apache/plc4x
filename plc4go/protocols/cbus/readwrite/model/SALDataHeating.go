@@ -38,6 +38,7 @@ type SALDataHeating interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetHeatingData returns HeatingData (property field)
 	GetHeatingData() LightingData
@@ -182,6 +183,22 @@ func (m *_SALDataHeating) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SALDataHeating) IsSALDataHeating() {}
+
+func (m *_SALDataHeating) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataHeating) deepCopy() *_SALDataHeating {
+	if m == nil {
+		return nil
+	}
+	_SALDataHeatingCopy := &_SALDataHeating{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.HeatingData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataHeatingCopy
+}
 
 func (m *_SALDataHeating) String() string {
 	if m == nil {

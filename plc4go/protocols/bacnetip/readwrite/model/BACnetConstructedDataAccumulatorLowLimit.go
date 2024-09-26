@@ -38,6 +38,7 @@ type BACnetConstructedDataAccumulatorLowLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLowLimit returns LowLimit (property field)
 	GetLowLimit() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccumulatorLowLimit) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataAccumulatorLowLimit) IsBACnetConstructedDataAccumulatorLowLimit() {}
+
+func (m *_BACnetConstructedDataAccumulatorLowLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccumulatorLowLimit) deepCopy() *_BACnetConstructedDataAccumulatorLowLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccumulatorLowLimitCopy := &_BACnetConstructedDataAccumulatorLowLimit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.LowLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccumulatorLowLimitCopy
+}
 
 func (m *_BACnetConstructedDataAccumulatorLowLimit) String() string {
 	if m == nil {

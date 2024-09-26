@@ -38,6 +38,7 @@ type BACnetConstructedDataLightingOutputTrackingValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTrackingValue returns TrackingValue (property field)
 	GetTrackingValue() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) IsBACnetConstructedDataLightingOutputTrackingValue() {
+}
+
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) deepCopy() *_BACnetConstructedDataLightingOutputTrackingValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLightingOutputTrackingValueCopy := &_BACnetConstructedDataLightingOutputTrackingValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.TrackingValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLightingOutputTrackingValueCopy
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) String() string {

@@ -38,6 +38,7 @@ type BACnetConstructedDataBBMDBroadcastDistributionTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBbmdBroadcastDistributionTable returns BbmdBroadcastDistributionTable (property field)
 	GetBbmdBroadcastDistributionTable() []BACnetBDTEntry
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) IsBACnetConstructedDataBBMDBroadcastDistributionTable() {
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) deepCopy() *_BACnetConstructedDataBBMDBroadcastDistributionTable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBBMDBroadcastDistributionTableCopy := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetBDTEntry, BACnetBDTEntry](m.BbmdBroadcastDistributionTable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBBMDBroadcastDistributionTableCopy
 }
 
 func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) String() string {

@@ -38,6 +38,7 @@ type MACAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddr returns Addr (property field)
 	GetAddr() []byte
 	// IsMACAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -168,6 +169,20 @@ func (m *_MACAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_MACAddress) IsMACAddress() {}
+
+func (m *_MACAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MACAddress) deepCopy() *_MACAddress {
+	if m == nil {
+		return nil
+	}
+	_MACAddressCopy := &_MACAddress{
+		utils.DeepCopySlice[byte, byte](m.Addr),
+	}
+	return _MACAddressCopy
+}
 
 func (m *_MACAddress) String() string {
 	if m == nil {

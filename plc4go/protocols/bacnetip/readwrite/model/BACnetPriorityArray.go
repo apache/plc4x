@@ -38,6 +38,7 @@ type BACnetPriorityArray interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
 	// GetData returns Data (property field)
@@ -687,6 +688,24 @@ func (m *_BACnetPriorityArray) GetArrayIndexArgument() BACnetTagPayloadUnsignedI
 ////
 
 func (m *_BACnetPriorityArray) IsBACnetPriorityArray() {}
+
+func (m *_BACnetPriorityArray) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityArray) deepCopy() *_BACnetPriorityArray {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityArrayCopy := &_BACnetPriorityArray{
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetPriorityValue, BACnetPriorityValue](m.Data),
+		m.ObjectTypeArgument,
+		m.TagNumber,
+		m.ArrayIndexArgument,
+	}
+	return _BACnetPriorityArrayCopy
+}
 
 func (m *_BACnetPriorityArray) String() string {
 	if m == nil {

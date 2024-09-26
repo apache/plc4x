@@ -38,6 +38,7 @@ type SALDataMetering interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetMeteringData returns MeteringData (property field)
 	GetMeteringData() MeteringData
@@ -182,6 +183,22 @@ func (m *_SALDataMetering) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SALDataMetering) IsSALDataMetering() {}
+
+func (m *_SALDataMetering) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataMetering) deepCopy() *_SALDataMetering {
+	if m == nil {
+		return nil
+	}
+	_SALDataMeteringCopy := &_SALDataMetering{
+		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.MeteringData.DeepCopy().(MeteringData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataMeteringCopy
+}
 
 func (m *_SALDataMetering) String() string {
 	if m == nil {

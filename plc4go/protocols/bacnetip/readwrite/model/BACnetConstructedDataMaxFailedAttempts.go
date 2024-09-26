@@ -38,6 +38,7 @@ type BACnetConstructedDataMaxFailedAttempts interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxFailedAttempts returns MaxFailedAttempts (property field)
 	GetMaxFailedAttempts() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataMaxFailedAttempts) IsBACnetConstructedDataMaxFailedAttempts() {}
+
+func (m *_BACnetConstructedDataMaxFailedAttempts) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaxFailedAttempts) deepCopy() *_BACnetConstructedDataMaxFailedAttempts {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaxFailedAttemptsCopy := &_BACnetConstructedDataMaxFailedAttempts{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaxFailedAttempts.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaxFailedAttemptsCopy
+}
 
 func (m *_BACnetConstructedDataMaxFailedAttempts) String() string {
 	if m == nil {

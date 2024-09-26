@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfStatusFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -250,6 +251,25 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetEventParameterChangeOfStatusFlags) IsBACnetEventParameterChangeOfStatusFlags() {}
+
+func (m *_BACnetEventParameterChangeOfStatusFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfStatusFlags) deepCopy() *_BACnetEventParameterChangeOfStatusFlags {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfStatusFlagsCopy := &_BACnetEventParameterChangeOfStatusFlags{
+		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.SelectedFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterChangeOfStatusFlagsCopy
+}
 
 func (m *_BACnetEventParameterChangeOfStatusFlags) String() string {
 	if m == nil {

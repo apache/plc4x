@@ -38,6 +38,7 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataAssignedLandingCalls) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataAssignedLandingCalls) IsBACnetConstructedDataAssignedLandingCalls() {}
+
+func (m *_BACnetConstructedDataAssignedLandingCalls) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAssignedLandingCalls) deepCopy() *_BACnetConstructedDataAssignedLandingCalls {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAssignedLandingCallsCopy := &_BACnetConstructedDataAssignedLandingCalls{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetAssignedLandingCalls, BACnetAssignedLandingCalls](m.AssignedLandingCalls),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAssignedLandingCallsCopy
+}
 
 func (m *_BACnetConstructedDataAssignedLandingCalls) String() string {
 	if m == nil {

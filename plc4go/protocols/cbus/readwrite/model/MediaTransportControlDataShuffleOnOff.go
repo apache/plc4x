@@ -38,6 +38,7 @@ type MediaTransportControlDataShuffleOnOff interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetState returns State (property field)
 	GetState() byte
@@ -228,6 +229,22 @@ func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_MediaTransportControlDataShuffleOnOff) IsMediaTransportControlDataShuffleOnOff() {}
+
+func (m *_MediaTransportControlDataShuffleOnOff) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataShuffleOnOff) deepCopy() *_MediaTransportControlDataShuffleOnOff {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataShuffleOnOffCopy := &_MediaTransportControlDataShuffleOnOff{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.State,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataShuffleOnOffCopy
+}
 
 func (m *_MediaTransportControlDataShuffleOnOff) String() string {
 	if m == nil {

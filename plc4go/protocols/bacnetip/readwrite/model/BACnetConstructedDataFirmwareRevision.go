@@ -38,6 +38,7 @@ type BACnetConstructedDataFirmwareRevision interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFirmwareRevision returns FirmwareRevision (property field)
 	GetFirmwareRevision() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFirmwareRevision) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataFirmwareRevision) IsBACnetConstructedDataFirmwareRevision() {}
+
+func (m *_BACnetConstructedDataFirmwareRevision) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFirmwareRevision) deepCopy() *_BACnetConstructedDataFirmwareRevision {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFirmwareRevisionCopy := &_BACnetConstructedDataFirmwareRevision{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.FirmwareRevision.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFirmwareRevisionCopy
+}
 
 func (m *_BACnetConstructedDataFirmwareRevision) String() string {
 	if m == nil {

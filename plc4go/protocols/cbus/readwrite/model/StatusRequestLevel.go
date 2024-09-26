@@ -38,6 +38,7 @@ type StatusRequestLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -230,6 +231,25 @@ func (m *_StatusRequestLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_StatusRequestLevel) IsStatusRequestLevel() {}
+
+func (m *_StatusRequestLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusRequestLevel) deepCopy() *_StatusRequestLevel {
+	if m == nil {
+		return nil
+	}
+	_StatusRequestLevelCopy := &_StatusRequestLevel{
+		m.StatusRequestContract.DeepCopy().(StatusRequestContract),
+		m.Application,
+		m.StartingGroupAddressLabel,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.StatusRequestContract.(*_StatusRequest)._SubType = m
+	return _StatusRequestLevelCopy
+}
 
 func (m *_StatusRequestLevel) String() string {
 	if m == nil {

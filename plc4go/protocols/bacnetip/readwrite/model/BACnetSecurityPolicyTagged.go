@@ -38,6 +38,7 @@ type BACnetSecurityPolicyTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetSecurityPolicyTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetSecurityPolicyTagged) IsBACnetSecurityPolicyTagged() {}
+
+func (m *_BACnetSecurityPolicyTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSecurityPolicyTagged) deepCopy() *_BACnetSecurityPolicyTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetSecurityPolicyTaggedCopy := &_BACnetSecurityPolicyTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetSecurityPolicyTaggedCopy
+}
 
 func (m *_BACnetSecurityPolicyTagged) String() string {
 	if m == nil {

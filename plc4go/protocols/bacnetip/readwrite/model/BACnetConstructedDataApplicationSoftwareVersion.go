@@ -38,6 +38,7 @@ type BACnetConstructedDataApplicationSoftwareVersion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetApplicationSoftwareVersion returns ApplicationSoftwareVersion (property field)
 	GetApplicationSoftwareVersion() BACnetApplicationTagCharacterString
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataApplicationSoftwareVersion) IsBACnetConstructedDataApplicationSoftwareVersion() {
+}
+
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) deepCopy() *_BACnetConstructedDataApplicationSoftwareVersion {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataApplicationSoftwareVersionCopy := &_BACnetConstructedDataApplicationSoftwareVersion{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ApplicationSoftwareVersion.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataApplicationSoftwareVersionCopy
 }
 
 func (m *_BACnetConstructedDataApplicationSoftwareVersion) String() string {

@@ -38,6 +38,7 @@ type ErrorReportingSystemCategoryTypeSupportUnits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForSupportUnits
@@ -179,6 +180,22 @@ func (m *_ErrorReportingSystemCategoryTypeSupportUnits) SerializeWithWriteBuffer
 }
 
 func (m *_ErrorReportingSystemCategoryTypeSupportUnits) IsErrorReportingSystemCategoryTypeSupportUnits() {
+}
+
+func (m *_ErrorReportingSystemCategoryTypeSupportUnits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryTypeSupportUnits) deepCopy() *_ErrorReportingSystemCategoryTypeSupportUnits {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeSupportUnitsCopy := &_ErrorReportingSystemCategoryTypeSupportUnits{
+		m.ErrorReportingSystemCategoryTypeContract.DeepCopy().(ErrorReportingSystemCategoryTypeContract),
+		m.CategoryForType,
+	}
+	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	return _ErrorReportingSystemCategoryTypeSupportUnitsCopy
 }
 
 func (m *_ErrorReportingSystemCategoryTypeSupportUnits) String() string {

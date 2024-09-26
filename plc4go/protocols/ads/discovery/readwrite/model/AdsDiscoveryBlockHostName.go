@@ -38,6 +38,7 @@ type AdsDiscoveryBlockHostName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetHostName returns HostName (property field)
 	GetHostName() AmsString
@@ -182,6 +183,22 @@ func (m *_AdsDiscoveryBlockHostName) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AdsDiscoveryBlockHostName) IsAdsDiscoveryBlockHostName() {}
+
+func (m *_AdsDiscoveryBlockHostName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockHostName) deepCopy() *_AdsDiscoveryBlockHostName {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockHostNameCopy := &_AdsDiscoveryBlockHostName{
+		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.HostName.DeepCopy().(AmsString),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockHostNameCopy
+}
 
 func (m *_AdsDiscoveryBlockHostName) String() string {
 	if m == nil {

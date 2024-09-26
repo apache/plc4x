@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueBitString) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetTimerStateChangeValueBitString) IsBACnetTimerStateChangeValueBitString() {}
+
+func (m *_BACnetTimerStateChangeValueBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueBitString) deepCopy() *_BACnetTimerStateChangeValueBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueBitStringCopy := &_BACnetTimerStateChangeValueBitString{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueBitStringCopy
+}
 
 func (m *_BACnetTimerStateChangeValueBitString) String() string {
 	if m == nil {

@@ -41,6 +41,7 @@ type RequestSmartConnectShortcut interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// GetPipePeek returns PipePeek (property field)
 	GetPipePeek() RequestType
@@ -221,6 +222,23 @@ func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_RequestSmartConnectShortcut) IsRequestSmartConnectShortcut() {}
+
+func (m *_RequestSmartConnectShortcut) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestSmartConnectShortcut) deepCopy() *_RequestSmartConnectShortcut {
+	if m == nil {
+		return nil
+	}
+	_RequestSmartConnectShortcutCopy := &_RequestSmartConnectShortcut{
+		m.RequestContract.DeepCopy().(RequestContract),
+		m.PipePeek,
+		utils.CopyPtr[byte](m.SecondPipe),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestSmartConnectShortcutCopy
+}
 
 func (m *_RequestSmartConnectShortcut) String() string {
 	if m == nil {

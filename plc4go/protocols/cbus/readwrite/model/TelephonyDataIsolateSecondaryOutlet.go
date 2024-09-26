@@ -38,6 +38,7 @@ type TelephonyDataIsolateSecondaryOutlet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetIsolateStatus returns IsolateStatus (property field)
 	GetIsolateStatus() byte
@@ -228,6 +229,22 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) IsTelephonyDataIsolateSecondaryOutlet() {}
+
+func (m *_TelephonyDataIsolateSecondaryOutlet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataIsolateSecondaryOutlet) deepCopy() *_TelephonyDataIsolateSecondaryOutlet {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataIsolateSecondaryOutletCopy := &_TelephonyDataIsolateSecondaryOutlet{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.IsolateStatus,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataIsolateSecondaryOutletCopy
+}
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) String() string {
 	if m == nil {

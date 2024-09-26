@@ -38,6 +38,7 @@ type BACnetDoorAlarmStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetDoorAlarmStateTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetDoorAlarmStateTagged) IsBACnetDoorAlarmStateTagged() {}
+
+func (m *_BACnetDoorAlarmStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDoorAlarmStateTagged) deepCopy() *_BACnetDoorAlarmStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDoorAlarmStateTaggedCopy := &_BACnetDoorAlarmStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDoorAlarmStateTaggedCopy
+}
 
 func (m *_BACnetDoorAlarmStateTagged) String() string {
 	if m == nil {

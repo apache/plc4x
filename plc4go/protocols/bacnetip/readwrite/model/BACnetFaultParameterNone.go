@@ -38,6 +38,7 @@ type BACnetFaultParameterNone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameter
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterNone) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetFaultParameterNone) IsBACnetFaultParameterNone() {}
+
+func (m *_BACnetFaultParameterNone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterNone) deepCopy() *_BACnetFaultParameterNone {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterNoneCopy := &_BACnetFaultParameterNone{
+		m.BACnetFaultParameterContract.DeepCopy().(BACnetFaultParameterContract),
+		m.None.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
+	return _BACnetFaultParameterNoneCopy
+}
 
 func (m *_BACnetFaultParameterNone) String() string {
 	if m == nil {

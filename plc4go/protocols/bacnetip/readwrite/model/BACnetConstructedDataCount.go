@@ -38,6 +38,7 @@ type BACnetConstructedDataCount interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCount returns Count (property field)
 	GetCount() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCount) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetConstructedDataCount) IsBACnetConstructedDataCount() {}
+
+func (m *_BACnetConstructedDataCount) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCount) deepCopy() *_BACnetConstructedDataCount {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCountCopy := &_BACnetConstructedDataCount{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.Count.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCountCopy
+}
 
 func (m *_BACnetConstructedDataCount) String() string {
 	if m == nil {

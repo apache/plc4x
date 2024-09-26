@@ -41,6 +41,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetMessageObjects returns MessageObjects (property field)
 	GetMessageObjects() []AlarmMessageObjectAckType
@@ -236,6 +237,22 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) SerializeWithWriteBuf
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) IsS7PayloadUserDataItemCpuFunctionAlarmAckRequest() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmAckRequestCopy := &_S7PayloadUserDataItemCpuFunctionAlarmAckRequest{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		utils.DeepCopySlice[AlarmMessageObjectAckType, AlarmMessageObjectAckType](m.MessageObjects),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmAckRequestCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) String() string {

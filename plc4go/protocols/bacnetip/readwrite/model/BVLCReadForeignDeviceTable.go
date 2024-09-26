@@ -37,6 +37,7 @@ type BVLCReadForeignDeviceTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// IsBVLCReadForeignDeviceTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCReadForeignDeviceTable()
@@ -147,6 +148,21 @@ func (m *_BVLCReadForeignDeviceTable) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BVLCReadForeignDeviceTable) IsBVLCReadForeignDeviceTable() {}
+
+func (m *_BVLCReadForeignDeviceTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCReadForeignDeviceTable) deepCopy() *_BVLCReadForeignDeviceTable {
+	if m == nil {
+		return nil
+	}
+	_BVLCReadForeignDeviceTableCopy := &_BVLCReadForeignDeviceTable{
+		m.BVLCContract.DeepCopy().(BVLCContract),
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCReadForeignDeviceTableCopy
+}
 
 func (m *_BVLCReadForeignDeviceTable) String() string {
 	if m == nil {

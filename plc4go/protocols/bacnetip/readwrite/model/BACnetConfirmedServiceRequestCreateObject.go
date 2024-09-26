@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestCreateObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetObjectSpecifier returns ObjectSpecifier (property field)
 	GetObjectSpecifier() BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
@@ -209,6 +210,23 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObject) IsBACnetConfirmedServiceRequestCreateObject() {}
+
+func (m *_BACnetConfirmedServiceRequestCreateObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestCreateObject) deepCopy() *_BACnetConfirmedServiceRequestCreateObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestCreateObjectCopy := &_BACnetConfirmedServiceRequestCreateObject{
+		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.ObjectSpecifier.DeepCopy().(BACnetConfirmedServiceRequestCreateObjectObjectSpecifier),
+		m.ListOfValues.DeepCopy().(BACnetPropertyValues),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestCreateObjectCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestCreateObject) String() string {
 	if m == nil {

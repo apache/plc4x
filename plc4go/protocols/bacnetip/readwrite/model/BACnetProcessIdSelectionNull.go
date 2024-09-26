@@ -38,6 +38,7 @@ type BACnetProcessIdSelectionNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetProcessIdSelection
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetProcessIdSelectionNull) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetProcessIdSelectionNull) IsBACnetProcessIdSelectionNull() {}
+
+func (m *_BACnetProcessIdSelectionNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProcessIdSelectionNull) deepCopy() *_BACnetProcessIdSelectionNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetProcessIdSelectionNullCopy := &_BACnetProcessIdSelectionNull{
+		m.BACnetProcessIdSelectionContract.DeepCopy().(BACnetProcessIdSelectionContract),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = m
+	return _BACnetProcessIdSelectionNullCopy
+}
 
 func (m *_BACnetProcessIdSelectionNull) String() string {
 	if m == nil {

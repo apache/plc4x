@@ -41,6 +41,7 @@ type ServerErrorReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ReplyOrConfirmation
 	// IsServerErrorReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServerErrorReply()
@@ -174,6 +175,21 @@ func (m *_ServerErrorReply) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_ServerErrorReply) IsServerErrorReply() {}
+
+func (m *_ServerErrorReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServerErrorReply) deepCopy() *_ServerErrorReply {
+	if m == nil {
+		return nil
+	}
+	_ServerErrorReplyCopy := &_ServerErrorReply{
+		m.ReplyOrConfirmationContract.DeepCopy().(ReplyOrConfirmationContract),
+	}
+	m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = m
+	return _ServerErrorReplyCopy
+}
 
 func (m *_ServerErrorReply) String() string {
 	if m == nil {

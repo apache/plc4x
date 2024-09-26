@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueInteger) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetTimerStateChangeValueInteger) IsBACnetTimerStateChangeValueInteger() {}
+
+func (m *_BACnetTimerStateChangeValueInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueInteger) deepCopy() *_BACnetTimerStateChangeValueInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueIntegerCopy := &_BACnetTimerStateChangeValueInteger{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueIntegerCopy
+}
 
 func (m *_BACnetTimerStateChangeValueInteger) String() string {
 	if m == nil {

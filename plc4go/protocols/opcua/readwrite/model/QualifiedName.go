@@ -38,6 +38,7 @@ type QualifiedName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetName returns Name (property field)
@@ -189,6 +190,21 @@ func (m *_QualifiedName) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_QualifiedName) IsQualifiedName() {}
+
+func (m *_QualifiedName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QualifiedName) deepCopy() *_QualifiedName {
+	if m == nil {
+		return nil
+	}
+	_QualifiedNameCopy := &_QualifiedName{
+		m.NamespaceIndex,
+		m.Name.DeepCopy().(PascalString),
+	}
+	return _QualifiedNameCopy
+}
 
 func (m *_QualifiedName) String() string {
 	if m == nil {

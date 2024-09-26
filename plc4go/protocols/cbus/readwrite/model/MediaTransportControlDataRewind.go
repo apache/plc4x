@@ -38,6 +38,7 @@ type MediaTransportControlDataRewind interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetOperation returns Operation (property field)
 	GetOperation() byte
@@ -360,6 +361,22 @@ func (m *_MediaTransportControlDataRewind) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_MediaTransportControlDataRewind) IsMediaTransportControlDataRewind() {}
+
+func (m *_MediaTransportControlDataRewind) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataRewind) deepCopy() *_MediaTransportControlDataRewind {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataRewindCopy := &_MediaTransportControlDataRewind{
+		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.Operation,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataRewindCopy
+}
 
 func (m *_MediaTransportControlDataRewind) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataSupportedFormatClasses interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataSupportedFormatClasses) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataSupportedFormatClasses) IsBACnetConstructedDataSupportedFormatClasses() {
+}
+
+func (m *_BACnetConstructedDataSupportedFormatClasses) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSupportedFormatClasses) deepCopy() *_BACnetConstructedDataSupportedFormatClasses {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSupportedFormatClassesCopy := &_BACnetConstructedDataSupportedFormatClasses{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.SupportedFormats),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSupportedFormatClassesCopy
 }
 
 func (m *_BACnetConstructedDataSupportedFormatClasses) String() string {

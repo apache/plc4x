@@ -38,6 +38,7 @@ type FieldMetaData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -431,6 +432,33 @@ func (m *_FieldMetaData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_FieldMetaData) IsFieldMetaData() {}
+
+func (m *_FieldMetaData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FieldMetaData) deepCopy() *_FieldMetaData {
+	if m == nil {
+		return nil
+	}
+	_FieldMetaDataCopy := &_FieldMetaData{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Name.DeepCopy().(PascalString),
+		m.Description.DeepCopy().(LocalizedText),
+		m.FieldFlags,
+		m.BuiltInType,
+		m.DataType.DeepCopy().(NodeId),
+		m.ValueRank,
+		m.NoOfArrayDimensions,
+		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
+		m.MaxStringLength,
+		m.DataSetFieldId.DeepCopy().(GuidValue),
+		m.NoOfProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Properties),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FieldMetaDataCopy
+}
 
 func (m *_FieldMetaData) String() string {
 	if m == nil {

@@ -40,12 +40,14 @@ type ConnectionResponseDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsConnectionResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlock()
 }
 
 // ConnectionResponseDataBlockContract provides a set of functions which can be overwritten by a sub struct
 type ConnectionResponseDataBlockContract interface {
+	utils.Copyable
 	// IsConnectionResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlock()
 }
@@ -203,3 +205,17 @@ func (pm *_ConnectionResponseDataBlock) serializeParent(ctx context.Context, wri
 }
 
 func (m *_ConnectionResponseDataBlock) IsConnectionResponseDataBlock() {}
+
+func (m *_ConnectionResponseDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionResponseDataBlock) deepCopy() *_ConnectionResponseDataBlock {
+	if m == nil {
+		return nil
+	}
+	_ConnectionResponseDataBlockCopy := &_ConnectionResponseDataBlock{
+		nil, // will be set by child
+	}
+	return _ConnectionResponseDataBlockCopy
+}

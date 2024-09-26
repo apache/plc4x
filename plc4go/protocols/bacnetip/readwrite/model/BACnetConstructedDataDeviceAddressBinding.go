@@ -38,6 +38,7 @@ type BACnetConstructedDataDeviceAddressBinding interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeviceAddressBinding returns DeviceAddressBinding (property field)
 	GetDeviceAddressBinding() []BACnetAddressBinding
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataDeviceAddressBinding) IsBACnetConstructedDataDeviceAddressBinding() {}
+
+func (m *_BACnetConstructedDataDeviceAddressBinding) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDeviceAddressBinding) deepCopy() *_BACnetConstructedDataDeviceAddressBinding {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDeviceAddressBindingCopy := &_BACnetConstructedDataDeviceAddressBinding{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		utils.DeepCopySlice[BACnetAddressBinding, BACnetAddressBinding](m.DeviceAddressBinding),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDeviceAddressBindingCopy
+}
 
 func (m *_BACnetConstructedDataDeviceAddressBinding) String() string {
 	if m == nil {

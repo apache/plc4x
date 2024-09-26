@@ -38,6 +38,7 @@ type GroupObjectDescriptorRealisationType2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDataPointer returns DataPointer (property field)
 	GetDataPointer() uint8
 	// GetUpdateEnable returns UpdateEnable (property field)
@@ -326,6 +327,28 @@ func (m *_GroupObjectDescriptorRealisationType2) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_GroupObjectDescriptorRealisationType2) IsGroupObjectDescriptorRealisationType2() {}
+
+func (m *_GroupObjectDescriptorRealisationType2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GroupObjectDescriptorRealisationType2) deepCopy() *_GroupObjectDescriptorRealisationType2 {
+	if m == nil {
+		return nil
+	}
+	_GroupObjectDescriptorRealisationType2Copy := &_GroupObjectDescriptorRealisationType2{
+		m.DataPointer,
+		m.UpdateEnable,
+		m.TransmitEnable,
+		m.SegmentSelectorEnable,
+		m.WriteEnable,
+		m.ReadEnable,
+		m.CommunicationEnable,
+		m.Priority,
+		m.ValueType,
+	}
+	return _GroupObjectDescriptorRealisationType2Copy
+}
 
 func (m *_GroupObjectDescriptorRealisationType2) String() string {
 	if m == nil {

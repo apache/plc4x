@@ -38,6 +38,7 @@ type BACnetValueSourceAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetValueSource
 	// GetAddress returns Address (property field)
 	GetAddress() BACnetAddressEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetValueSourceAddress) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetValueSourceAddress) IsBACnetValueSourceAddress() {}
+
+func (m *_BACnetValueSourceAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSourceAddress) deepCopy() *_BACnetValueSourceAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceAddressCopy := &_BACnetValueSourceAddress{
+		m.BACnetValueSourceContract.DeepCopy().(BACnetValueSourceContract),
+		m.Address.DeepCopy().(BACnetAddressEnclosed),
+	}
+	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	return _BACnetValueSourceAddressCopy
+}
 
 func (m *_BACnetValueSourceAddress) String() string {
 	if m == nil {

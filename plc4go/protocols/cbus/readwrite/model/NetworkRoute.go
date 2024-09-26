@@ -38,6 +38,7 @@ type NetworkRoute interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNetworkPCI returns NetworkPCI (property field)
 	GetNetworkPCI() NetworkProtocolControlInformation
 	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
@@ -196,6 +197,21 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_NetworkRoute) IsNetworkRoute() {}
+
+func (m *_NetworkRoute) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkRoute) deepCopy() *_NetworkRoute {
+	if m == nil {
+		return nil
+	}
+	_NetworkRouteCopy := &_NetworkRoute{
+		m.NetworkPCI.DeepCopy().(NetworkProtocolControlInformation),
+		utils.DeepCopySlice[BridgeAddress, BridgeAddress](m.AdditionalBridgeAddresses),
+	}
+	return _NetworkRouteCopy
+}
 
 func (m *_NetworkRoute) String() string {
 	if m == nil {

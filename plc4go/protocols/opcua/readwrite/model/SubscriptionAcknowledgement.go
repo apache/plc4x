@@ -38,6 +38,7 @@ type SubscriptionAcknowledgement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSubscriptionId returns SubscriptionId (property field)
 	GetSubscriptionId() uint32
@@ -200,6 +201,23 @@ func (m *_SubscriptionAcknowledgement) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_SubscriptionAcknowledgement) IsSubscriptionAcknowledgement() {}
+
+func (m *_SubscriptionAcknowledgement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscriptionAcknowledgement) deepCopy() *_SubscriptionAcknowledgement {
+	if m == nil {
+		return nil
+	}
+	_SubscriptionAcknowledgementCopy := &_SubscriptionAcknowledgement{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.SubscriptionId,
+		m.SequenceNumber,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SubscriptionAcknowledgementCopy
+}
 
 func (m *_SubscriptionAcknowledgement) String() string {
 	if m == nil {

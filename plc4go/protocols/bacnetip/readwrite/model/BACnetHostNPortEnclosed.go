@@ -38,6 +38,7 @@ type BACnetHostNPortEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetBacnetHostNPort returns BacnetHostNPort (property field)
@@ -228,6 +229,23 @@ func (m *_BACnetHostNPortEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetHostNPortEnclosed) IsBACnetHostNPortEnclosed() {}
+
+func (m *_BACnetHostNPortEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostNPortEnclosed) deepCopy() *_BACnetHostNPortEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostNPortEnclosedCopy := &_BACnetHostNPortEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.BacnetHostNPort.DeepCopy().(BACnetHostNPort),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetHostNPortEnclosedCopy
+}
 
 func (m *_BACnetHostNPortEnclosed) String() string {
 	if m == nil {

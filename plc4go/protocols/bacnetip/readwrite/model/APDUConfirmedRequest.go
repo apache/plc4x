@@ -38,6 +38,7 @@ type APDUConfirmedRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
@@ -497,6 +498,33 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_APDUConfirmedRequest) IsAPDUConfirmedRequest() {}
+
+func (m *_APDUConfirmedRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUConfirmedRequest) deepCopy() *_APDUConfirmedRequest {
+	if m == nil {
+		return nil
+	}
+	_APDUConfirmedRequestCopy := &_APDUConfirmedRequest{
+		m.APDUContract.DeepCopy().(APDUContract),
+		m.SegmentedMessage,
+		m.MoreFollows,
+		m.SegmentedResponseAccepted,
+		m.MaxSegmentsAccepted,
+		m.MaxApduLengthAccepted,
+		m.InvokeId,
+		utils.CopyPtr[uint8](m.SequenceNumber),
+		utils.CopyPtr[uint8](m.ProposedWindowSize),
+		m.ServiceRequest.DeepCopy().(BACnetConfirmedServiceRequest),
+		utils.CopyPtr[BACnetConfirmedServiceChoice](m.SegmentServiceChoice),
+		utils.DeepCopySlice[byte, byte](m.Segment),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUConfirmedRequestCopy
+}
 
 func (m *_APDUConfirmedRequest) String() string {
 	if m == nil {

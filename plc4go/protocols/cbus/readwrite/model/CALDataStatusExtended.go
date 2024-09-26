@@ -38,6 +38,7 @@ type CALDataStatusExtended interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetCoding returns Coding (property field)
 	GetCoding() StatusCoding
@@ -330,6 +331,26 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_CALDataStatusExtended) IsCALDataStatusExtended() {}
+
+func (m *_CALDataStatusExtended) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataStatusExtended) deepCopy() *_CALDataStatusExtended {
+	if m == nil {
+		return nil
+	}
+	_CALDataStatusExtendedCopy := &_CALDataStatusExtended{
+		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.Coding,
+		m.Application,
+		m.BlockStart,
+		utils.DeepCopySlice[StatusByte, StatusByte](m.StatusBytes),
+		utils.DeepCopySlice[LevelInformation, LevelInformation](m.LevelInformation),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataStatusExtendedCopy
+}
 
 func (m *_CALDataStatusExtended) String() string {
 	if m == nil {

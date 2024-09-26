@@ -38,6 +38,7 @@ type BACnetPropertyStatesSystemStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetSystemStatus returns SystemStatus (property field)
 	GetSystemStatus() BACnetDeviceStatusTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesSystemStatus) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetPropertyStatesSystemStatus) IsBACnetPropertyStatesSystemStatus() {}
+
+func (m *_BACnetPropertyStatesSystemStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesSystemStatus) deepCopy() *_BACnetPropertyStatesSystemStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesSystemStatusCopy := &_BACnetPropertyStatesSystemStatus{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.SystemStatus.DeepCopy().(BACnetDeviceStatusTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesSystemStatusCopy
+}
 
 func (m *_BACnetPropertyStatesSystemStatus) String() string {
 	if m == nil {

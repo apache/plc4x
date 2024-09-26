@@ -40,12 +40,14 @@ type BACnetRecipient interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetRecipient is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipient()
 }
 
 // BACnetRecipientContract provides a set of functions which can be overwritten by a sub struct
 type BACnetRecipientContract interface {
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)
@@ -237,3 +239,18 @@ func (pm *_BACnetRecipient) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetRecipient) IsBACnetRecipient() {}
+
+func (m *_BACnetRecipient) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipient) deepCopy() *_BACnetRecipient {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientCopy := &_BACnetRecipient{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetRecipientCopy
+}

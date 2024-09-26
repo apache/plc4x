@@ -38,6 +38,7 @@ type BACnetConstructedDataSecurityTimeWindow interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSecurityTimeWindow returns SecurityTimeWindow (property field)
 	GetSecurityTimeWindow() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) IsBACnetConstructedDataSecurityTimeWindow() {}
+
+func (m *_BACnetConstructedDataSecurityTimeWindow) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSecurityTimeWindow) deepCopy() *_BACnetConstructedDataSecurityTimeWindow {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSecurityTimeWindowCopy := &_BACnetConstructedDataSecurityTimeWindow{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.SecurityTimeWindow.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSecurityTimeWindowCopy
+}
 
 func (m *_BACnetConstructedDataSecurityTimeWindow) String() string {
 	if m == nil {

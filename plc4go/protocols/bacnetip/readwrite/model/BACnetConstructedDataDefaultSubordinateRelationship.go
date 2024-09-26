@@ -38,6 +38,7 @@ type BACnetConstructedDataDefaultSubordinateRelationship interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDefaultSubordinateRelationship returns DefaultSubordinateRelationship (property field)
 	GetDefaultSubordinateRelationship() BACnetRelationshipTagged
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataDefaultSubordinateRelationship) IsBACnetConstructedDataDefaultSubordinateRelationship() {
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) deepCopy() *_BACnetConstructedDataDefaultSubordinateRelationship {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDefaultSubordinateRelationshipCopy := &_BACnetConstructedDataDefaultSubordinateRelationship{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.DefaultSubordinateRelationship.DeepCopy().(BACnetRelationshipTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDefaultSubordinateRelationshipCopy
 }
 
 func (m *_BACnetConstructedDataDefaultSubordinateRelationship) String() string {

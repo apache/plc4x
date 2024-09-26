@@ -38,6 +38,7 @@ type BACnetConstructedDataReliabilityEvaluationInhibit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReliabilityEvaluationInhibit returns ReliabilityEvaluationInhibit (property field)
 	GetReliabilityEvaluationInhibit() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) SerializeWithWriteB
 }
 
 func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) IsBACnetConstructedDataReliabilityEvaluationInhibit() {
+}
+
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) deepCopy() *_BACnetConstructedDataReliabilityEvaluationInhibit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReliabilityEvaluationInhibitCopy := &_BACnetConstructedDataReliabilityEvaluationInhibit{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.ReliabilityEvaluationInhibit.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReliabilityEvaluationInhibitCopy
 }
 
 func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) String() string {

@@ -38,6 +38,7 @@ type TwoByteNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() uint8
 	// IsTwoByteNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -166,6 +167,20 @@ func (m *_TwoByteNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_TwoByteNodeId) IsTwoByteNodeId() {}
+
+func (m *_TwoByteNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TwoByteNodeId) deepCopy() *_TwoByteNodeId {
+	if m == nil {
+		return nil
+	}
+	_TwoByteNodeIdCopy := &_TwoByteNodeId{
+		m.Identifier,
+	}
+	return _TwoByteNodeIdCopy
+}
 
 func (m *_TwoByteNodeId) String() string {
 	if m == nil {

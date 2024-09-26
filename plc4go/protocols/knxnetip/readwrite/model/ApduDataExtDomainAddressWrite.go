@@ -36,6 +36,7 @@ type ApduDataExtDomainAddressWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtDomainAddressWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressWrite()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtDomainAddressWrite) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_ApduDataExtDomainAddressWrite) IsApduDataExtDomainAddressWrite() {}
+
+func (m *_ApduDataExtDomainAddressWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtDomainAddressWrite) deepCopy() *_ApduDataExtDomainAddressWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtDomainAddressWriteCopy := &_ApduDataExtDomainAddressWrite{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtDomainAddressWriteCopy
+}
 
 func (m *_ApduDataExtDomainAddressWrite) String() string {
 	if m == nil {

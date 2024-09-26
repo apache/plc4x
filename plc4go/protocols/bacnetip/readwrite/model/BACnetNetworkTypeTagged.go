@@ -38,6 +38,7 @@ type BACnetNetworkTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetNetworkTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetNetworkTypeTagged) IsBACnetNetworkTypeTagged() {}
+
+func (m *_BACnetNetworkTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNetworkTypeTagged) deepCopy() *_BACnetNetworkTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetNetworkTypeTaggedCopy := &_BACnetNetworkTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetNetworkTypeTaggedCopy
+}
 
 func (m *_BACnetNetworkTypeTagged) String() string {
 	if m == nil {

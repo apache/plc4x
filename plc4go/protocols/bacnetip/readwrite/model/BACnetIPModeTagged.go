@@ -38,6 +38,7 @@ type BACnetIPModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetIPModeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetIPModeTagged) IsBACnetIPModeTagged() {}
+
+func (m *_BACnetIPModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetIPModeTagged) deepCopy() *_BACnetIPModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetIPModeTaggedCopy := &_BACnetIPModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetIPModeTaggedCopy
+}
 
 func (m *_BACnetIPModeTagged) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataBackupFailureTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBackupFailureTimeout returns BackupFailureTimeout (property field)
 	GetBackupFailureTimeout() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBackupFailureTimeout) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataBackupFailureTimeout) IsBACnetConstructedDataBackupFailureTimeout() {}
+
+func (m *_BACnetConstructedDataBackupFailureTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBackupFailureTimeout) deepCopy() *_BACnetConstructedDataBackupFailureTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBackupFailureTimeoutCopy := &_BACnetConstructedDataBackupFailureTimeout{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BackupFailureTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBackupFailureTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataBackupFailureTimeout) String() string {
 	if m == nil {

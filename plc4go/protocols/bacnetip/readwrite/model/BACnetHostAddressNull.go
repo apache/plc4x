@@ -38,6 +38,7 @@ type BACnetHostAddressNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetHostAddress
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
@@ -178,6 +179,22 @@ func (m *_BACnetHostAddressNull) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetHostAddressNull) IsBACnetHostAddressNull() {}
+
+func (m *_BACnetHostAddressNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddressNull) deepCopy() *_BACnetHostAddressNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressNullCopy := &_BACnetHostAddressNull{
+		m.BACnetHostAddressContract.DeepCopy().(BACnetHostAddressContract),
+		m.None.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
+	return _BACnetHostAddressNullCopy
+}
 
 func (m *_BACnetHostAddressNull) String() string {
 	if m == nil {

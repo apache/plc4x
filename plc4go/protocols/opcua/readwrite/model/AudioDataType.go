@@ -36,6 +36,7 @@ type AudioDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAudioDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAudioDataType()
 }
@@ -134,6 +135,18 @@ func (m *_AudioDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_AudioDataType) IsAudioDataType() {}
+
+func (m *_AudioDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AudioDataType) deepCopy() *_AudioDataType {
+	if m == nil {
+		return nil
+	}
+	_AudioDataTypeCopy := &_AudioDataType{}
+	return _AudioDataTypeCopy
+}
 
 func (m *_AudioDataType) String() string {
 	if m == nil {

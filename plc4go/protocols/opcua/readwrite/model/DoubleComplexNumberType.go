@@ -38,6 +38,7 @@ type DoubleComplexNumberType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReal returns Real (property field)
 	GetReal() float64
@@ -200,6 +201,23 @@ func (m *_DoubleComplexNumberType) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_DoubleComplexNumberType) IsDoubleComplexNumberType() {}
+
+func (m *_DoubleComplexNumberType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DoubleComplexNumberType) deepCopy() *_DoubleComplexNumberType {
+	if m == nil {
+		return nil
+	}
+	_DoubleComplexNumberTypeCopy := &_DoubleComplexNumberType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Real,
+		m.Imaginary,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DoubleComplexNumberTypeCopy
+}
 
 func (m *_DoubleComplexNumberType) String() string {
 	if m == nil {

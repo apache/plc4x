@@ -39,6 +39,7 @@ type S7VarPayloadDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
@@ -238,6 +239,22 @@ func (m *_S7VarPayloadDataItem) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_S7VarPayloadDataItem) IsS7VarPayloadDataItem() {}
+
+func (m *_S7VarPayloadDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7VarPayloadDataItem) deepCopy() *_S7VarPayloadDataItem {
+	if m == nil {
+		return nil
+	}
+	_S7VarPayloadDataItemCopy := &_S7VarPayloadDataItem{
+		m.ReturnCode,
+		m.TransportSize,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	return _S7VarPayloadDataItemCopy
+}
 
 func (m *_S7VarPayloadDataItem) String() string {
 	if m == nil {

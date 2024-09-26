@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetReference returns Reference (property field)
 	GetReference() BACnetDeviceObjectPropertyReferenceEnclosed
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) SerializeWi
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) IsBACnetFaultParameterFaultExtendedParametersEntryReference() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryReferenceCopy := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.Reference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryReferenceCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) String() string {

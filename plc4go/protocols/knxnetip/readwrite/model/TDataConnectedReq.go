@@ -36,6 +36,7 @@ type TDataConnectedReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsTDataConnectedReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataConnectedReq()
@@ -146,6 +147,21 @@ func (m *_TDataConnectedReq) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_TDataConnectedReq) IsTDataConnectedReq() {}
+
+func (m *_TDataConnectedReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TDataConnectedReq) deepCopy() *_TDataConnectedReq {
+	if m == nil {
+		return nil
+	}
+	_TDataConnectedReqCopy := &_TDataConnectedReq{
+		m.CEMIContract.DeepCopy().(CEMIContract),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _TDataConnectedReqCopy
+}
 
 func (m *_TDataConnectedReq) String() string {
 	if m == nil {

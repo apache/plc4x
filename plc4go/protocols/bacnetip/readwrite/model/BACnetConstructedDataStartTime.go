@@ -38,6 +38,7 @@ type BACnetConstructedDataStartTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStartTime returns StartTime (property field)
 	GetStartTime() BACnetDateTime
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataStartTime) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataStartTime) IsBACnetConstructedDataStartTime() {}
+
+func (m *_BACnetConstructedDataStartTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStartTime) deepCopy() *_BACnetConstructedDataStartTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStartTimeCopy := &_BACnetConstructedDataStartTime{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.StartTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStartTimeCopy
+}
 
 func (m *_BACnetConstructedDataStartTime) String() string {
 	if m == nil {

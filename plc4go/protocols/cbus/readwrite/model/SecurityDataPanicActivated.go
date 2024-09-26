@@ -36,6 +36,7 @@ type SecurityDataPanicActivated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataPanicActivated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataPanicActivated()
@@ -142,6 +143,21 @@ func (m *_SecurityDataPanicActivated) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataPanicActivated) IsSecurityDataPanicActivated() {}
+
+func (m *_SecurityDataPanicActivated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataPanicActivated) deepCopy() *_SecurityDataPanicActivated {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataPanicActivatedCopy := &_SecurityDataPanicActivated{
+		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataPanicActivatedCopy
+}
 
 func (m *_SecurityDataPanicActivated) String() string {
 	if m == nil {

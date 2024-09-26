@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) SerializeWit
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) IsBACnetFaultParameterFaultExtendedParametersEntryUnsigned() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryUnsignedCopy := &_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryUnsignedCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) String() string {

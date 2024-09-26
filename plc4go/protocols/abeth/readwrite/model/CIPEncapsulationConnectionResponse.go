@@ -37,6 +37,7 @@ type CIPEncapsulationConnectionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CIPEncapsulationPacket
 	// IsCIPEncapsulationConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationConnectionResponse()
@@ -147,6 +148,21 @@ func (m *_CIPEncapsulationConnectionResponse) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_CIPEncapsulationConnectionResponse) IsCIPEncapsulationConnectionResponse() {}
+
+func (m *_CIPEncapsulationConnectionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationConnectionResponse) deepCopy() *_CIPEncapsulationConnectionResponse {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationConnectionResponseCopy := &_CIPEncapsulationConnectionResponse{
+		m.CIPEncapsulationPacketContract.DeepCopy().(CIPEncapsulationPacketContract),
+	}
+	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	return _CIPEncapsulationConnectionResponseCopy
+}
 
 func (m *_CIPEncapsulationConnectionResponse) String() string {
 	if m == nil {

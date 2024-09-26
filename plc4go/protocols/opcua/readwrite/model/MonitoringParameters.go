@@ -38,6 +38,7 @@ type MonitoringParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetClientHandle returns ClientHandle (property field)
 	GetClientHandle() uint32
@@ -281,6 +282,27 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_MonitoringParameters) IsMonitoringParameters() {}
+
+func (m *_MonitoringParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoringParameters) deepCopy() *_MonitoringParameters {
+	if m == nil {
+		return nil
+	}
+	_MonitoringParametersCopy := &_MonitoringParameters{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ClientHandle,
+		m.SamplingInterval,
+		m.Filter.DeepCopy().(ExtensionObject),
+		m.QueueSize,
+		m.DiscardOldest,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoringParametersCopy
+}
 
 func (m *_MonitoringParameters) String() string {
 	if m == nil {

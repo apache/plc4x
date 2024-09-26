@@ -38,6 +38,7 @@ type BACnetPortPermission interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPort returns Port (property field)
 	GetPort() BACnetContextTagUnsignedInteger
 	// GetEnable returns Enable (property field)
@@ -195,6 +196,21 @@ func (m *_BACnetPortPermission) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetPortPermission) IsBACnetPortPermission() {}
+
+func (m *_BACnetPortPermission) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPortPermission) deepCopy() *_BACnetPortPermission {
+	if m == nil {
+		return nil
+	}
+	_BACnetPortPermissionCopy := &_BACnetPortPermission{
+		m.Port.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetPortPermissionCopy
+}
 
 func (m *_BACnetPortPermission) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type AdsAddDeviceNotificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
@@ -317,6 +318,29 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_AdsAddDeviceNotificationRequest) IsAdsAddDeviceNotificationRequest() {}
+
+func (m *_AdsAddDeviceNotificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsAddDeviceNotificationRequest) deepCopy() *_AdsAddDeviceNotificationRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsAddDeviceNotificationRequestCopy := &_AdsAddDeviceNotificationRequest{
+		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.IndexGroup,
+		m.IndexOffset,
+		m.Length,
+		m.TransmissionMode,
+		m.MaxDelayInMs,
+		m.CycleTimeInMs,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsAddDeviceNotificationRequestCopy
+}
 
 func (m *_AdsAddDeviceNotificationRequest) String() string {
 	if m == nil {

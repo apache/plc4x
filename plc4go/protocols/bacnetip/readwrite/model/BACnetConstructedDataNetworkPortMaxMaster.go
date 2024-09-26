@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkPortMaxMaster interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxMaster returns MaxMaster (property field)
 	GetMaxMaster() BACnetApplicationTagUnsignedInteger
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) IsBACnetConstructedDataNetworkPortMaxMaster() {}
+
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) deepCopy() *_BACnetConstructedDataNetworkPortMaxMaster {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkPortMaxMasterCopy := &_BACnetConstructedDataNetworkPortMaxMaster{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.MaxMaster.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkPortMaxMasterCopy
+}
 
 func (m *_BACnetConstructedDataNetworkPortMaxMaster) String() string {
 	if m == nil {

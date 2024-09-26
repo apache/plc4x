@@ -38,6 +38,7 @@ type ErrorReportingSystemCategoryTypeClimateControllers interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForClimateControllers
@@ -179,6 +180,22 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) SerializeWithWrite
 }
 
 func (m *_ErrorReportingSystemCategoryTypeClimateControllers) IsErrorReportingSystemCategoryTypeClimateControllers() {
+}
+
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) deepCopy() *_ErrorReportingSystemCategoryTypeClimateControllers {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeClimateControllersCopy := &_ErrorReportingSystemCategoryTypeClimateControllers{
+		m.ErrorReportingSystemCategoryTypeContract.DeepCopy().(ErrorReportingSystemCategoryTypeContract),
+		m.CategoryForType,
+	}
+	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	return _ErrorReportingSystemCategoryTypeClimateControllersCopy
 }
 
 func (m *_ErrorReportingSystemCategoryTypeClimateControllers) String() string {

@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueTime) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetTimerStateChangeValueTime) IsBACnetTimerStateChangeValueTime() {}
+
+func (m *_BACnetTimerStateChangeValueTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueTime) deepCopy() *_BACnetTimerStateChangeValueTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueTimeCopy := &_BACnetTimerStateChangeValueTime{
+		m.BACnetTimerStateChangeValueContract.DeepCopy().(BACnetTimerStateChangeValueContract),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueTimeCopy
+}
 
 func (m *_BACnetTimerStateChangeValueTime) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataSlaveProxyEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSlaveProxyEnable returns SlaveProxyEnable (property field)
 	GetSlaveProxyEnable() BACnetApplicationTagBoolean
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataSlaveProxyEnable) IsBACnetConstructedDataSlaveProxyEnable() {}
+
+func (m *_BACnetConstructedDataSlaveProxyEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSlaveProxyEnable) deepCopy() *_BACnetConstructedDataSlaveProxyEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSlaveProxyEnableCopy := &_BACnetConstructedDataSlaveProxyEnable{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.SlaveProxyEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSlaveProxyEnableCopy
+}
 
 func (m *_BACnetConstructedDataSlaveProxyEnable) String() string {
 	if m == nil {

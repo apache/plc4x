@@ -36,6 +36,7 @@ type BACnetWeekNDay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetWeekNDay is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetWeekNDay()
 }
@@ -139,6 +140,18 @@ func (m *_BACnetWeekNDay) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetWeekNDay) IsBACnetWeekNDay() {}
+
+func (m *_BACnetWeekNDay) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetWeekNDay) deepCopy() *_BACnetWeekNDay {
+	if m == nil {
+		return nil
+	}
+	_BACnetWeekNDayCopy := &_BACnetWeekNDay{}
+	return _BACnetWeekNDayCopy
+}
 
 func (m *_BACnetWeekNDay) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type BACnetConstructedDataCalendarAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataCalendarAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCalendarAll()
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataCalendarAll) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataCalendarAll) IsBACnetConstructedDataCalendarAll() {}
+
+func (m *_BACnetConstructedDataCalendarAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCalendarAll) deepCopy() *_BACnetConstructedDataCalendarAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCalendarAllCopy := &_BACnetConstructedDataCalendarAll{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCalendarAllCopy
+}
 
 func (m *_BACnetConstructedDataCalendarAll) String() string {
 	if m == nil {

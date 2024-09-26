@@ -38,6 +38,7 @@ type BACnetLiftCarModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -269,6 +270,24 @@ func (m *_BACnetLiftCarModeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLiftCarModeTagged) IsBACnetLiftCarModeTagged() {}
+
+func (m *_BACnetLiftCarModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftCarModeTagged) deepCopy() *_BACnetLiftCarModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftCarModeTaggedCopy := &_BACnetLiftCarModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLiftCarModeTaggedCopy
+}
 
 func (m *_BACnetLiftCarModeTagged) String() string {
 	if m == nil {

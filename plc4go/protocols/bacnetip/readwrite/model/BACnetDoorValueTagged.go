@@ -38,6 +38,7 @@ type BACnetDoorValueTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -216,6 +217,23 @@ func (m *_BACnetDoorValueTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetDoorValueTagged) IsBACnetDoorValueTagged() {}
+
+func (m *_BACnetDoorValueTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDoorValueTagged) deepCopy() *_BACnetDoorValueTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDoorValueTaggedCopy := &_BACnetDoorValueTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDoorValueTaggedCopy
+}
 
 func (m *_BACnetDoorValueTagged) String() string {
 	if m == nil {

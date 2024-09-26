@@ -38,6 +38,7 @@ type BACnetConstructedDataAnalogInputInterfaceValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInterfaceValue returns InterfaceValue (property field)
 	GetInterfaceValue() BACnetOptionalREAL
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataAnalogInputInterfaceValue) IsBACnetConstructedDataAnalogInputInterfaceValue() {
+}
+
+func (m *_BACnetConstructedDataAnalogInputInterfaceValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAnalogInputInterfaceValue) deepCopy() *_BACnetConstructedDataAnalogInputInterfaceValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAnalogInputInterfaceValueCopy := &_BACnetConstructedDataAnalogInputInterfaceValue{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.InterfaceValue.DeepCopy().(BACnetOptionalREAL),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAnalogInputInterfaceValueCopy
 }
 
 func (m *_BACnetConstructedDataAnalogInputInterfaceValue) String() string {

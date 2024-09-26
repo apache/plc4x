@@ -36,6 +36,7 @@ type ApduDataExtLinkRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtLinkRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtLinkRead()
@@ -146,6 +147,21 @@ func (m *_ApduDataExtLinkRead) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ApduDataExtLinkRead) IsApduDataExtLinkRead() {}
+
+func (m *_ApduDataExtLinkRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtLinkRead) deepCopy() *_ApduDataExtLinkRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtLinkReadCopy := &_ApduDataExtLinkRead{
+		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtLinkReadCopy
+}
 
 func (m *_ApduDataExtLinkRead) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type LDataExtended interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LDataFrame
 	// GetGroupAddress returns GroupAddress (property field)
 	GetGroupAddress() bool
@@ -309,6 +310,27 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_LDataExtended) IsLDataExtended() {}
+
+func (m *_LDataExtended) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataExtended) deepCopy() *_LDataExtended {
+	if m == nil {
+		return nil
+	}
+	_LDataExtendedCopy := &_LDataExtended{
+		m.LDataFrameContract.DeepCopy().(LDataFrameContract),
+		m.GroupAddress,
+		m.HopCount,
+		m.ExtendedFrameFormat,
+		m.SourceAddress.DeepCopy().(KnxAddress),
+		utils.DeepCopySlice[byte, byte](m.DestinationAddress),
+		m.Apdu.DeepCopy().(Apdu),
+	}
+	m.LDataFrameContract.(*_LDataFrame)._SubType = m
+	return _LDataExtendedCopy
+}
 
 func (m *_LDataExtended) String() string {
 	if m == nil {

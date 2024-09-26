@@ -40,6 +40,7 @@ type DescriptionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetDibDeviceInfo returns DibDeviceInfo (property field)
 	GetDibDeviceInfo() DIBDeviceInfo
@@ -208,6 +209,23 @@ func (m *_DescriptionResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_DescriptionResponse) IsDescriptionResponse() {}
+
+func (m *_DescriptionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DescriptionResponse) deepCopy() *_DescriptionResponse {
+	if m == nil {
+		return nil
+	}
+	_DescriptionResponseCopy := &_DescriptionResponse{
+		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.DibDeviceInfo.DeepCopy().(DIBDeviceInfo),
+		m.DibSuppSvcFamilies.DeepCopy().(DIBSuppSvcFamilies),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DescriptionResponseCopy
+}
 
 func (m *_DescriptionResponse) String() string {
 	if m == nil {

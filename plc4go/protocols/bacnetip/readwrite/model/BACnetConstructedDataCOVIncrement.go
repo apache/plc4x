@@ -38,6 +38,7 @@ type BACnetConstructedDataCOVIncrement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetApplicationTagReal
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCOVIncrement) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataCOVIncrement) IsBACnetConstructedDataCOVIncrement() {}
+
+func (m *_BACnetConstructedDataCOVIncrement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCOVIncrement) deepCopy() *_BACnetConstructedDataCOVIncrement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCOVIncrementCopy := &_BACnetConstructedDataCOVIncrement{
+		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.CovIncrement.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCOVIncrementCopy
+}
 
 func (m *_BACnetConstructedDataCOVIncrement) String() string {
 	if m == nil {

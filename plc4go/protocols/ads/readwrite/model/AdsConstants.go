@@ -41,6 +41,7 @@ type AdsConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAdsConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsConstants()
 }
@@ -166,6 +167,18 @@ func (m *_AdsConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_AdsConstants) IsAdsConstants() {}
+
+func (m *_AdsConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsConstants) deepCopy() *_AdsConstants {
+	if m == nil {
+		return nil
+	}
+	_AdsConstantsCopy := &_AdsConstants{}
+	return _AdsConstantsCopy
+}
 
 func (m *_AdsConstants) String() string {
 	if m == nil {

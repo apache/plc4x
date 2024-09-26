@@ -38,6 +38,7 @@ type IdentifyReplyCommandExtendedDiagnosticSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetLowApplication returns LowApplication (property field)
 	GetLowApplication() ApplicationIdContainer
@@ -631,6 +632,43 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) IsIdentifyReplyCommandExtendedDiagnosticSummary() {
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) deepCopy() *_IdentifyReplyCommandExtendedDiagnosticSummary {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandExtendedDiagnosticSummaryCopy := &_IdentifyReplyCommandExtendedDiagnosticSummary{
+		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.LowApplication,
+		m.HighApplication,
+		m.Area,
+		m.Crc,
+		m.SerialNumber,
+		m.NetworkVoltage,
+		m.UnitInLearnMode,
+		m.NetworkVoltageLow,
+		m.NetworkVoltageMarginal,
+		m.EnableChecksumAlarm,
+		m.OutputUnit,
+		m.InstallationMMIError,
+		m.EEWriteError,
+		m.EEChecksumError,
+		m.EEDataError,
+		m.MicroReset,
+		m.CommsTxError,
+		m.InternalStackOverflow,
+		m.MicroPowerReset,
+		m.reservedField0,
+		m.reservedField1,
+		m.reservedField2,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandExtendedDiagnosticSummaryCopy
 }
 
 func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) String() string {

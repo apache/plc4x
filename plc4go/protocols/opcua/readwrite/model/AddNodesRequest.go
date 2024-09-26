@@ -38,6 +38,7 @@ type AddNodesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -231,6 +232,24 @@ func (m *_AddNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_AddNodesRequest) IsAddNodesRequest() {}
+
+func (m *_AddNodesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddNodesRequest) deepCopy() *_AddNodesRequest {
+	if m == nil {
+		return nil
+	}
+	_AddNodesRequestCopy := &_AddNodesRequest{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodesToAdd,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToAdd),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddNodesRequestCopy
+}
 
 func (m *_AddNodesRequest) String() string {
 	if m == nil {

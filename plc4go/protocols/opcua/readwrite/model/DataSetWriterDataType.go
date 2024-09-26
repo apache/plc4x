@@ -38,6 +38,7 @@ type DataSetWriterDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -402,6 +403,32 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_DataSetWriterDataType) IsDataSetWriterDataType() {}
+
+func (m *_DataSetWriterDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSetWriterDataType) deepCopy() *_DataSetWriterDataType {
+	if m == nil {
+		return nil
+	}
+	_DataSetWriterDataTypeCopy := &_DataSetWriterDataType{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Name.DeepCopy().(PascalString),
+		m.Enabled,
+		m.DataSetWriterId,
+		m.DataSetFieldContentMask,
+		m.KeyFrameCount,
+		m.DataSetName.DeepCopy().(PascalString),
+		m.NoOfDataSetWriterProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.DataSetWriterProperties),
+		m.TransportSettings.DeepCopy().(ExtensionObject),
+		m.MessageSettings.DeepCopy().(ExtensionObject),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataSetWriterDataTypeCopy
+}
 
 func (m *_DataSetWriterDataType) String() string {
 	if m == nil {

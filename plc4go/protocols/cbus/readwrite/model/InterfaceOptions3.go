@@ -38,6 +38,7 @@ type InterfaceOptions3 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetExstat returns Exstat (property field)
 	GetExstat() bool
 	// GetPun returns Pun (property field)
@@ -283,6 +284,27 @@ func (m *_InterfaceOptions3) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_InterfaceOptions3) IsInterfaceOptions3() {}
+
+func (m *_InterfaceOptions3) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InterfaceOptions3) deepCopy() *_InterfaceOptions3 {
+	if m == nil {
+		return nil
+	}
+	_InterfaceOptions3Copy := &_InterfaceOptions3{
+		m.Exstat,
+		m.Pun,
+		m.LocalSal,
+		m.Pcn,
+		m.reservedField0,
+		m.reservedField1,
+		m.reservedField2,
+		m.reservedField3,
+	}
+	return _InterfaceOptions3Copy
+}
 
 func (m *_InterfaceOptions3) String() string {
 	if m == nil {

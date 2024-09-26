@@ -38,6 +38,7 @@ type InterfaceOptions1PowerUpSettings interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetInterfaceOptions1 returns InterfaceOptions1 (property field)
 	GetInterfaceOptions1() InterfaceOptions1
 	// IsInterfaceOptions1PowerUpSettings is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -169,6 +170,20 @@ func (m *_InterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_InterfaceOptions1PowerUpSettings) IsInterfaceOptions1PowerUpSettings() {}
+
+func (m *_InterfaceOptions1PowerUpSettings) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InterfaceOptions1PowerUpSettings) deepCopy() *_InterfaceOptions1PowerUpSettings {
+	if m == nil {
+		return nil
+	}
+	_InterfaceOptions1PowerUpSettingsCopy := &_InterfaceOptions1PowerUpSettings{
+		m.InterfaceOptions1.DeepCopy().(InterfaceOptions1),
+	}
+	return _InterfaceOptions1PowerUpSettingsCopy
+}
 
 func (m *_InterfaceOptions1PowerUpSettings) String() string {
 	if m == nil {

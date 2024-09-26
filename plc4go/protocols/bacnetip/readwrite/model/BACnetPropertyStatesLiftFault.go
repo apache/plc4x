@@ -38,6 +38,7 @@ type BACnetPropertyStatesLiftFault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLiftFault returns LiftFault (property field)
 	GetLiftFault() BACnetLiftFaultTagged
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLiftFault) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetPropertyStatesLiftFault) IsBACnetPropertyStatesLiftFault() {}
+
+func (m *_BACnetPropertyStatesLiftFault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLiftFault) deepCopy() *_BACnetPropertyStatesLiftFault {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLiftFaultCopy := &_BACnetPropertyStatesLiftFault{
+		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.LiftFault.DeepCopy().(BACnetLiftFaultTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLiftFaultCopy
+}
 
 func (m *_BACnetPropertyStatesLiftFault) String() string {
 	if m == nil {

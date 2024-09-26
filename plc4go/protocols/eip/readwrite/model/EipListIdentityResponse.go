@@ -38,6 +38,7 @@ type EipListIdentityResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// GetItems returns Items (property field)
 	GetItems() []CommandSpecificDataItem
@@ -207,6 +208,22 @@ func (m *_EipListIdentityResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_EipListIdentityResponse) IsEipListIdentityResponse() {}
+
+func (m *_EipListIdentityResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipListIdentityResponse) deepCopy() *_EipListIdentityResponse {
+	if m == nil {
+		return nil
+	}
+	_EipListIdentityResponseCopy := &_EipListIdentityResponse{
+		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		utils.DeepCopySlice[CommandSpecificDataItem, CommandSpecificDataItem](m.Items),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _EipListIdentityResponseCopy
+}
 
 func (m *_EipListIdentityResponse) String() string {
 	if m == nil {

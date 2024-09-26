@@ -38,6 +38,7 @@ type BACnetNotificationParametersFloatingLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -298,6 +299,27 @@ func (m *_BACnetNotificationParametersFloatingLimit) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetNotificationParametersFloatingLimit) IsBACnetNotificationParametersFloatingLimit() {}
+
+func (m *_BACnetNotificationParametersFloatingLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersFloatingLimit) deepCopy() *_BACnetNotificationParametersFloatingLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersFloatingLimitCopy := &_BACnetNotificationParametersFloatingLimit{
+		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ReferenceValue.DeepCopy().(BACnetContextTagReal),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.SetPointValue.DeepCopy().(BACnetContextTagReal),
+		m.ErrorLimit.DeepCopy().(BACnetContextTagReal),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersFloatingLimitCopy
+}
 
 func (m *_BACnetNotificationParametersFloatingLimit) String() string {
 	if m == nil {

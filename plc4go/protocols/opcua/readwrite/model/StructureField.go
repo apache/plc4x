@@ -38,6 +38,7 @@ type StructureField interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -352,6 +353,30 @@ func (m *_StructureField) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_StructureField) IsStructureField() {}
+
+func (m *_StructureField) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StructureField) deepCopy() *_StructureField {
+	if m == nil {
+		return nil
+	}
+	_StructureFieldCopy := &_StructureField{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.Name.DeepCopy().(PascalString),
+		m.Description.DeepCopy().(LocalizedText),
+		m.DataType.DeepCopy().(NodeId),
+		m.ValueRank,
+		m.NoOfArrayDimensions,
+		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
+		m.MaxStringLength,
+		m.IsOptional,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _StructureFieldCopy
+}
 
 func (m *_StructureField) String() string {
 	if m == nil {

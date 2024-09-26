@@ -38,6 +38,7 @@ type ParsingResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -280,6 +281,26 @@ func (m *_ParsingResult) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_ParsingResult) IsParsingResult() {}
+
+func (m *_ParsingResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParsingResult) deepCopy() *_ParsingResult {
+	if m == nil {
+		return nil
+	}
+	_ParsingResultCopy := &_ParsingResult{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfDataStatusCodes,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.DataStatusCodes),
+		m.NoOfDataDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DataDiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ParsingResultCopy
+}
 
 func (m *_ParsingResult) String() string {
 	if m == nil {

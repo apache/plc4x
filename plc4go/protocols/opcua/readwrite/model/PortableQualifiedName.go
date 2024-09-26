@@ -38,6 +38,7 @@ type PortableQualifiedName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNamespaceUri returns NamespaceUri (property field)
 	GetNamespaceUri() PascalString
@@ -206,6 +207,23 @@ func (m *_PortableQualifiedName) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_PortableQualifiedName) IsPortableQualifiedName() {}
+
+func (m *_PortableQualifiedName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortableQualifiedName) deepCopy() *_PortableQualifiedName {
+	if m == nil {
+		return nil
+	}
+	_PortableQualifiedNameCopy := &_PortableQualifiedName{
+		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.NamespaceUri.DeepCopy().(PascalString),
+		m.Name.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PortableQualifiedNameCopy
+}
 
 func (m *_PortableQualifiedName) String() string {
 	if m == nil {

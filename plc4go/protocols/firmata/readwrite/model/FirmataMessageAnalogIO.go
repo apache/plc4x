@@ -40,6 +40,7 @@ type FirmataMessageAnalogIO interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -204,6 +205,23 @@ func (m *_FirmataMessageAnalogIO) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_FirmataMessageAnalogIO) IsFirmataMessageAnalogIO() {}
+
+func (m *_FirmataMessageAnalogIO) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessageAnalogIO) deepCopy() *_FirmataMessageAnalogIO {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageAnalogIOCopy := &_FirmataMessageAnalogIO{
+		m.FirmataMessageContract.DeepCopy().(FirmataMessageContract),
+		m.Pin,
+		utils.DeepCopySlice[int8, int8](m.Data),
+	}
+	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	return _FirmataMessageAnalogIOCopy
+}
 
 func (m *_FirmataMessageAnalogIO) String() string {
 	if m == nil {

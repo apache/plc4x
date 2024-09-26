@@ -38,6 +38,7 @@ type AirConditioningDataSetHumidityUpperGuardLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -247,6 +248,25 @@ func (m *_AirConditioningDataSetHumidityUpperGuardLimit) SerializeWithWriteBuffe
 }
 
 func (m *_AirConditioningDataSetHumidityUpperGuardLimit) IsAirConditioningDataSetHumidityUpperGuardLimit() {
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimit) deepCopy() *_AirConditioningDataSetHumidityUpperGuardLimit {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataSetHumidityUpperGuardLimitCopy := &_AirConditioningDataSetHumidityUpperGuardLimit{
+		m.AirConditioningDataContract.DeepCopy().(AirConditioningDataContract),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Limit.DeepCopy().(HVACHumidity),
+		m.HvacModeAndFlags.DeepCopy().(HVACHumidityModeAndFlags),
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataSetHumidityUpperGuardLimitCopy
 }
 
 func (m *_AirConditioningDataSetHumidityUpperGuardLimit) String() string {

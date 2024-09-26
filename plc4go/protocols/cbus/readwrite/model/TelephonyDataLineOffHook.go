@@ -38,6 +38,7 @@ type TelephonyDataLineOffHook interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetReason returns Reason (property field)
 	GetReason() LineOffHookReason
@@ -196,6 +197,23 @@ func (m *_TelephonyDataLineOffHook) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_TelephonyDataLineOffHook) IsTelephonyDataLineOffHook() {}
+
+func (m *_TelephonyDataLineOffHook) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataLineOffHook) deepCopy() *_TelephonyDataLineOffHook {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataLineOffHookCopy := &_TelephonyDataLineOffHook{
+		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.Reason,
+		m.Number,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataLineOffHookCopy
+}
 
 func (m *_TelephonyDataLineOffHook) String() string {
 	if m == nil {

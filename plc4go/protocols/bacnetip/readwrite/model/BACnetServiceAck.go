@@ -40,12 +40,14 @@ type BACnetServiceAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetServiceAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAck()
 }
 
 // BACnetServiceAckContract provides a set of functions which can be overwritten by a sub struct
 type BACnetServiceAckContract interface {
+	utils.Copyable
 	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
 	GetServiceAckPayloadLength() uint32
 	// GetServiceAckLength() returns a parser argument
@@ -290,3 +292,18 @@ func (m *_BACnetServiceAck) GetServiceAckLength() uint32 {
 ////
 
 func (m *_BACnetServiceAck) IsBACnetServiceAck() {}
+
+func (m *_BACnetServiceAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAck) deepCopy() *_BACnetServiceAck {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckCopy := &_BACnetServiceAck{
+		nil, // will be set by child
+		m.ServiceAckLength,
+	}
+	return _BACnetServiceAckCopy
+}

@@ -38,6 +38,7 @@ type BACnetChannelValueObjectidentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueObjectidentifier) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetChannelValueObjectidentifier) IsBACnetChannelValueObjectidentifier() {}
+
+func (m *_BACnetChannelValueObjectidentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueObjectidentifier) deepCopy() *_BACnetChannelValueObjectidentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueObjectidentifierCopy := &_BACnetChannelValueObjectidentifier{
+		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueObjectidentifierCopy
+}
 
 func (m *_BACnetChannelValueObjectidentifier) String() string {
 	if m == nil {

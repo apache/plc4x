@@ -36,6 +36,7 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse()
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) SerializeWithW
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) IsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) deepCopy() *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseCopy := &_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse{
+		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCyclicServicesUnsubscribeResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) String() string {

@@ -38,6 +38,7 @@ type CIPData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDataType returns DataType (property field)
 	GetDataType() CIPDataTypeCode
 	// GetData returns Data (property field)
@@ -201,6 +202,22 @@ func (m *_CIPData) GetPacketLength() uint16 {
 ////
 
 func (m *_CIPData) IsCIPData() {}
+
+func (m *_CIPData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPData) deepCopy() *_CIPData {
+	if m == nil {
+		return nil
+	}
+	_CIPDataCopy := &_CIPData{
+		m.DataType,
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.PacketLength,
+	}
+	return _CIPDataCopy
+}
 
 func (m *_CIPData) String() string {
 	if m == nil {
