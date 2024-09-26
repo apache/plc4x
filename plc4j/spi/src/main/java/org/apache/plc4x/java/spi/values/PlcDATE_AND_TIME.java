@@ -25,9 +25,13 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 
-public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
+public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     public static PlcDATE_AND_TIME of(Object value) {
         if (value instanceof LocalDateTime) {
@@ -49,16 +53,19 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     }
 
     public PlcDATE_AND_TIME(LocalDateTime value) {
-        super(value, true);
+        this.value = value;
+        this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(long secondsSinceEpoch) {
-        super(LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
-            ZoneOffset.UTC), true);
+        this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
+            ZoneOffset.UTC);
+        this.isNullable = false;
     }
 
     public PlcDATE_AND_TIME(int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds) {
-        super(LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds), true);
+        this.value = LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds);
+        this.isNullable = false;
     }
 
     @Override

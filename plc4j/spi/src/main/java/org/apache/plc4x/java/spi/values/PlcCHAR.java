@@ -56,13 +56,13 @@ public class PlcCHAR extends PlcIECValue<Short> {
         } else if(value instanceof Character){
             return new PlcCHAR((Character) value);
         }else {
-            return new PlcCHAR((String) value);
+            return new PlcCHAR(value.toString());
         }
     }
 
     public PlcCHAR(Boolean value) {
         super();
-        this.value = value ? Short.valueOf((short) 1) : Short.valueOf((short) 0);
+        this.value = value ? (short) 'T' : (short) 'F';
         this.isNullable = false;
     }
 
@@ -119,7 +119,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
 
     public PlcCHAR(Float value) {
         super();
-        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
+        if ((value >= minValue) && (value <= maxValue)) {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {
@@ -129,7 +129,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
 
     public PlcCHAR(Double value) {
         super();
-        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
+        if ((value >= minValue) && (value <= maxValue)) {
             this.value = value.shortValue();
             this.isNullable = false;
         } else {

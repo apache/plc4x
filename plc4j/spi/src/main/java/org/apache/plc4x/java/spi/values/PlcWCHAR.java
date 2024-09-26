@@ -54,12 +54,12 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
         } else if (value instanceof BigDecimal) {
             return new PlcWCHAR((BigDecimal) value);
         } else {
-            return new PlcWCHAR((String) value);
+            return new PlcWCHAR(value.toString());
         }
     }
 
     public PlcWCHAR(Boolean value) {
-        this.value = value ? (Integer) 1 : (Integer) 0;
+        this.value = value ? (int) 'T' : (int) 'F';
         this.isNullable = false;
     }
 
@@ -103,7 +103,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     }
 
     public PlcWCHAR(Float value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+        if ((value < minValue) || (value > maxValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
@@ -111,7 +111,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     }
 
     public PlcWCHAR(Double value) {
-        if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
+        if ((value < minValue) || (value > maxValue)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.intValue();
@@ -138,7 +138,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
         try {
             //If there is a extra space around the character trim it, unless you are actually sending a space
             String s = value.trim();
-            if (s.length() == 0) {
+            if (s.isEmpty()) {
                 s = " ";
             }
             int val = (int) s.charAt(0);

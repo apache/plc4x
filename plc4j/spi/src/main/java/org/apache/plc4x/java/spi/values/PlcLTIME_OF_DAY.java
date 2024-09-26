@@ -28,7 +28,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 
-public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
+public class PlcLTIME_OF_DAY extends PlcIECValue<LocalTime> {
 
     public static PlcLTIME_OF_DAY of(Object value) {
         if (value instanceof LocalTime) {
@@ -48,16 +48,19 @@ public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     }
 
     public PlcLTIME_OF_DAY(LocalTime value) {
-        super(value, true);
+        this.value = value;
+        this.isNullable = false;
     }
 
     public PlcLTIME_OF_DAY(Long nanosecondsSinceMidnight) {
-        super(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight), true);
+        this.value = LocalTime.ofNanoOfDay(nanosecondsSinceMidnight);
+        this.isNullable = false;
     }
 
     public PlcLTIME_OF_DAY(BigInteger nanosecondsSinceMidnight) {
         // TODO: Not 100% correct, we're loosing precision here
-        super(LocalTime.ofNanoOfDay(nanosecondsSinceMidnight.longValue()), true);
+        this.value = LocalTime.ofNanoOfDay(nanosecondsSinceMidnight.longValue());
+        this.isNullable = false;
     }
 
     @Override

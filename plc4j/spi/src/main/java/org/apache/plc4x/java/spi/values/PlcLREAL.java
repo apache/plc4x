@@ -52,7 +52,7 @@ public class PlcLREAL extends PlcIECValue<Double> {
         } else if (value instanceof BigDecimal) {
             return new PlcLREAL((BigDecimal) value);
         } else {
-            return new PlcLREAL((String) value);
+            return new PlcLREAL(value.toString());
         }
     }
 
@@ -96,7 +96,7 @@ public class PlcLREAL extends PlcIECValue<Double> {
     }
 
     public PlcLREAL(BigDecimal value) {
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.doubleValue();

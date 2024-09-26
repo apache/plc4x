@@ -26,9 +26,13 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 
-public class PlcLDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
+public class PlcLDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     public static PlcLDATE_AND_TIME of(Object value) {
         if (value instanceof LocalDateTime) {
@@ -48,13 +52,15 @@ public class PlcLDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     }
 
     public PlcLDATE_AND_TIME(LocalDateTime value) {
-        super(value, true);
+        this.value = value;
+        this.isNullable = false;
     }
 
     public PlcLDATE_AND_TIME(BigInteger nanosecondsSinceEpoch) {
-        super(LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000)).longValue(),
+        this.value = LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000)).longValue(),
             nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000)).intValue(),
-            ZoneOffset.of(ZoneOffset.systemDefault().getId())), true);
+            ZoneOffset.of(ZoneOffset.systemDefault().getId()));
+        this.isNullable = false;
     }
 
     @Override

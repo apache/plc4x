@@ -20,8 +20,6 @@ package org.apache.plc4x.java.spi.values;
 
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.generation.WriteBufferJsonBased;
 import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
@@ -31,7 +29,12 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public abstract class PlcValueAdapter implements PlcValue, Serializable {
 

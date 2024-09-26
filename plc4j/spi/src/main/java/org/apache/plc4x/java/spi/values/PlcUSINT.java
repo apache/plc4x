@@ -52,7 +52,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
         } else if (value instanceof BigDecimal) {
             return new PlcUSINT((BigDecimal) value);
         } else {
-            return new PlcUSINT((String) value);
+            return new PlcUSINT(value.toString());
         }
     }
 
@@ -118,7 +118,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     }
 
     public PlcUSINT(BigDecimal value) {
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.shortValue();

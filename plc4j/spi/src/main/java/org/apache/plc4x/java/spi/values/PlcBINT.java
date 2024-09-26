@@ -47,7 +47,7 @@ public class PlcBINT extends PlcIECValue<BigInteger> {
         } else if (value instanceof BigDecimal) {
             return new PlcBINT((BigDecimal) value);
         } else {
-            return new PlcBINT((String) value);
+            return new PlcBINT(value.toString());
         }
     }
 

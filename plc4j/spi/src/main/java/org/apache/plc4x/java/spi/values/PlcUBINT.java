@@ -51,7 +51,7 @@ public class PlcUBINT extends PlcIECValue<BigInteger> {
         } else if (value instanceof BigDecimal) {
             return new PlcUBINT((BigDecimal) value);
         } else {
-            return new PlcUBINT((String) value);
+            return new PlcUBINT(value.toString());
         }
     }
 

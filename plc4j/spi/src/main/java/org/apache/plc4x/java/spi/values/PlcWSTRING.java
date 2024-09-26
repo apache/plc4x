@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
-public class PlcWSTRING extends PlcSimpleValue<String> {
+public class PlcWSTRING extends PlcIECValue<String> {
 
     public static PlcWSTRING of(Object value) {
         if (value instanceof String) {
@@ -37,7 +37,8 @@ public class PlcWSTRING extends PlcSimpleValue<String> {
     }
 
     public PlcWSTRING(String value) {
-        super(value, true);
+        this.value = value;
+        this.isNullable = false;
     }
 
     @Override

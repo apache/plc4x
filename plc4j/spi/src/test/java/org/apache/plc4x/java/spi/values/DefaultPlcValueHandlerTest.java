@@ -30,6 +30,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -75,8 +76,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.BYTE), (long) 42, new PlcBYTE(42)),
             Arguments.of(new MockTag("mock", PlcValueType.BYTE), (float) 42.34, new PlcBYTE(42)),
             Arguments.of(new MockTag("mock", PlcValueType.BYTE), (double) 42.34, new PlcBYTE(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.BYTE), BigInteger.TEN, new PlcBYTE(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.BYTE), BigDecimal.TEN, new PlcBYTE(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.BYTE), BigInteger.valueOf(42), new PlcBYTE(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.BYTE), BigDecimal.valueOf(42.34), new PlcBYTE(42)),
             Arguments.of(new MockTag("mock", PlcValueType.BYTE), "42", new PlcBYTE(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -89,8 +90,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.WORD), (long) 42, new PlcWORD(42)),
             Arguments.of(new MockTag("mock", PlcValueType.WORD), (float) 42.34, new PlcWORD(42)),
             Arguments.of(new MockTag("mock", PlcValueType.WORD), (double) 42.34, new PlcWORD(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.WORD), BigInteger.TEN, new PlcWORD(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.WORD), BigDecimal.TEN, new PlcWORD(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.WORD), BigInteger.valueOf(42), new PlcWORD(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.WORD), BigDecimal.valueOf(42.34), new PlcWORD(42)),
             Arguments.of(new MockTag("mock", PlcValueType.WORD), "42", new PlcWORD(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -103,8 +104,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.DWORD), (long) 42, new PlcDWORD(42)),
             Arguments.of(new MockTag("mock", PlcValueType.DWORD), (float) 42.34, new PlcDWORD(42)),
             Arguments.of(new MockTag("mock", PlcValueType.DWORD), (double) 42.34, new PlcDWORD(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.DWORD), BigInteger.TEN, new PlcDWORD(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.DWORD), BigDecimal.TEN, new PlcDWORD(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.DWORD), BigInteger.valueOf(42), new PlcDWORD(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.DWORD), BigDecimal.valueOf(42.34), new PlcDWORD(42)),
             Arguments.of(new MockTag("mock", PlcValueType.DWORD), "42", new PlcDWORD(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -117,8 +118,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.LWORD), (long) 42, new PlcLWORD(42)),
             Arguments.of(new MockTag("mock", PlcValueType.LWORD), (float) 42.34, new PlcLWORD(42)),
             Arguments.of(new MockTag("mock", PlcValueType.LWORD), (double) 42.34, new PlcLWORD(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.LWORD), BigInteger.TEN, new PlcLWORD(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.LWORD), BigDecimal.TEN, new PlcLWORD(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.LWORD), BigInteger.valueOf(42), new PlcLWORD(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.LWORD), BigDecimal.valueOf(42.34), new PlcLWORD(42)),
             Arguments.of(new MockTag("mock", PlcValueType.LWORD), "42", new PlcLWORD(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -131,8 +132,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.USINT), (long) 42, new PlcUSINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.USINT), (float) 42.34, new PlcUSINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.USINT), (double) 42.34, new PlcUSINT(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.USINT), BigInteger.TEN, new PlcUSINT(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.USINT), BigDecimal.TEN, new PlcUSINT(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.USINT), BigInteger.valueOf(42), new PlcUSINT(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.USINT), BigDecimal.valueOf(42.34), new PlcUSINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.USINT), "42", new PlcUSINT(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -145,8 +146,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.UINT), (long) 42, new PlcUINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.UINT), (float) 42.34, new PlcUINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.UINT), (double) 42.34, new PlcUINT(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.UINT), BigInteger.TEN, new PlcUINT(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.UINT), BigDecimal.TEN, new PlcUINT(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.UINT), BigInteger.valueOf(42), new PlcUINT(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.UINT), BigDecimal.valueOf(42.34), new PlcUINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.UINT), "42", new PlcUINT(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -159,8 +160,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.UDINT), (long) 42, new PlcUDINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.UDINT), (float) 42.34, new PlcUDINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.UDINT), (double) 42.34, new PlcUDINT(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.UDINT), BigInteger.TEN, new PlcUDINT(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.UDINT), BigDecimal.TEN, new PlcUDINT(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.UDINT), BigInteger.valueOf(42), new PlcUDINT(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.UDINT), BigDecimal.valueOf(42.34), new PlcUDINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.UDINT), "42", new PlcUDINT(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -173,8 +174,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.ULINT), (long) 42, new PlcULINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.ULINT), (float) 42.34, new PlcULINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.ULINT), (double) 42.34, new PlcULINT(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.ULINT), BigInteger.TEN, new PlcULINT(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.ULINT), BigDecimal.TEN, new PlcULINT(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.ULINT), BigInteger.valueOf(42), new PlcULINT(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.ULINT), BigDecimal.valueOf(42.34), new PlcULINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.ULINT), "42", new PlcULINT(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -187,8 +188,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.SINT), (long) 42, new PlcSINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.SINT), (float) 42.34, new PlcSINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.SINT), (double) 42.34, new PlcSINT(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.SINT), BigInteger.TEN, new PlcSINT(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.SINT), BigDecimal.TEN, new PlcSINT(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.SINT), BigInteger.valueOf(42), new PlcSINT(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.SINT), BigDecimal.valueOf(42.34), new PlcSINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.SINT), "42", new PlcSINT(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -201,8 +202,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.INT), (long) 42, new PlcINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.INT), (float) 42.34, new PlcINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.INT), (double) 42.34, new PlcINT(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.INT), BigInteger.TEN, new PlcINT(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.INT), BigDecimal.TEN, new PlcINT(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.INT), BigInteger.valueOf(42), new PlcINT(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.INT), BigDecimal.valueOf(42.34), new PlcINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.INT), "42", new PlcINT(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -215,8 +216,8 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.DINT), (long) 42, new PlcDINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.DINT), (float) 42.34, new PlcDINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.DINT), (double) 42.34, new PlcDINT(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.DINT), BigInteger.TEN, new PlcDINT(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.DINT), BigDecimal.TEN, new PlcDINT(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.DINT), BigInteger.valueOf(42), new PlcDINT(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.DINT), BigDecimal.valueOf(42.34), new PlcDINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.DINT), "42", new PlcDINT(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
@@ -229,36 +230,116 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.LINT), (long) 42, new PlcLINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.LINT), (float) 42.34, new PlcLINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.LINT), (double) 42.34, new PlcLINT(42)),
-            Arguments.of(new MockTag("mock", PlcValueType.LINT), BigInteger.TEN, new PlcLINT(10)),
-            Arguments.of(new MockTag("mock", PlcValueType.LINT), BigDecimal.TEN, new PlcLINT(10)),
+            Arguments.of(new MockTag("mock", PlcValueType.LINT), BigInteger.valueOf(42), new PlcLINT(42)),
+            Arguments.of(new MockTag("mock", PlcValueType.LINT), BigDecimal.valueOf(42.34), new PlcLINT(42)),
             Arguments.of(new MockTag("mock", PlcValueType.LINT), "42", new PlcLINT(42)),
             // TODO: Add some range tests (values above the max and below the min value)
 
             // REAL values
-            Arguments.of(new MockTag("mock", PlcValueType.REAL), 1.3, new PlcREAL(1.3)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), true, new PlcREAL(1.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), false, new PlcREAL(0.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), (byte) 42, new PlcREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), (short) 42, new PlcREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), 42, new PlcREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), (long) 42, new PlcREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), (float) 42.34, new PlcREAL(42.34)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), (double) 42.35, new PlcREAL(42.35)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), BigInteger.valueOf(42), new PlcREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), BigDecimal.valueOf(42.34), new PlcREAL(42.34)),
+            Arguments.of(new MockTag("mock", PlcValueType.REAL), "42.1", new PlcREAL(42.1)),
             // TODO: Add some range tests (values above the max and below the min value)
 
             // LREAL values
-            Arguments.of(new MockTag("mock", PlcValueType.LREAL), 1.4, new PlcLREAL(1.4)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), true, new PlcLREAL(1.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), false, new PlcLREAL(0.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), (byte) 42, new PlcLREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), (short) 42, new PlcLREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), 42, new PlcLREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), (long) 42, new PlcLREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), (float) 42.34, new PlcLREAL(42.34000015258789)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), (double) 42.35, new PlcLREAL(42.35)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), BigInteger.valueOf(42), new PlcLREAL(42.0)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), BigDecimal.valueOf(42.34), new PlcLREAL(42.34)),
+            Arguments.of(new MockTag("mock", PlcValueType.LREAL), "42.1", new PlcLREAL(42.1)),
             // TODO: Add some range tests (values above the max and below the min value)
 
             // CHAR values
-            Arguments.of(new MockTag("mock", PlcValueType.CHAR), "A", new PlcCHAR("A")),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), true, new PlcCHAR('T')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), false, new PlcCHAR('F')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), (byte) 65, new PlcCHAR('A')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), (short) 66, new PlcCHAR('B')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), 67, new PlcCHAR('C')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), (long) 68, new PlcCHAR('D')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), (float) 69.34, new PlcCHAR('E')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), (double) 70.35, new PlcCHAR('F')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), BigInteger.valueOf(71), new PlcCHAR('G')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), BigDecimal.valueOf(72), new PlcCHAR('H')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), 'I', new PlcCHAR('I')),
+            Arguments.of(new MockTag("mock", PlcValueType.CHAR), "J", new PlcCHAR('J')),
 
             // WCHAR values
-            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), "B", new PlcWCHAR("B")),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), true, new PlcWCHAR('T')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), false, new PlcWCHAR('F')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), (byte) 65, new PlcWCHAR('A')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), (short) 66, new PlcWCHAR('B')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), 67, new PlcWCHAR('C')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), (long) 68, new PlcWCHAR('D')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), (float) 69.34, new PlcWCHAR('E')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), (double) 70.35, new PlcWCHAR('F')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), BigInteger.valueOf(71), new PlcWCHAR('G')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), BigDecimal.valueOf(72), new PlcWCHAR('H')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), 'I', new PlcWCHAR('I')),
+            Arguments.of(new MockTag("mock", PlcValueType.WCHAR), "J", new PlcWCHAR('J')),
 
             // STRING values
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), true, new PlcSTRING("true")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), false, new PlcSTRING("false")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), (byte) 42, new PlcSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), (short) 42, new PlcSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), 42, new PlcSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), (long) 42, new PlcSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), (float) 42.34, new PlcSTRING("42.34")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), (double) 42.35, new PlcSTRING("42.35")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), BigInteger.valueOf(42), new PlcSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.STRING), BigDecimal.valueOf(42.34), new PlcSTRING("42.34")),
             Arguments.of(new MockTag("mock", PlcValueType.STRING), "Wolf", new PlcSTRING("Wolf")),
 
             // WSTRING values
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), true, new PlcWSTRING("true")),
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), false, new PlcWSTRING("false")),
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), (byte) 42, new PlcWSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), (short) 42, new PlcWSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), 42, new PlcWSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), (long) 42, new PlcWSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), (float) 42.34, new PlcWSTRING("42.34")),
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), (double) 42.35, new PlcWSTRING("42.35")),
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), BigInteger.valueOf(42), new PlcWSTRING("42")),
+            Arguments.of(new MockTag("mock", PlcValueType.WSTRING), BigDecimal.valueOf(42.34), new PlcWSTRING("42.34")),
             Arguments.of(new MockTag("mock", PlcValueType.WSTRING), "Lamm", new PlcWSTRING("Lamm")),
 
             // TIME values
-            Arguments.of(new MockTag("mock", PlcValueType.TIME), 1, new PlcTIME(1)),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), Duration.ofMillis(1234), new PlcTIME(Duration.parse("PT1.234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), (byte) 123, new PlcTIME(Duration.parse("PT0.123S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), (short) 1234, new PlcTIME(Duration.parse("PT1.234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), 1234, new PlcTIME(Duration.parse("PT1.234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), 12345678901L, new PlcTIME(Duration.parse("PT3429H21M18.901S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), (float) 1234.56, new PlcTIME(Duration.parse("PT1.234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), (double) 1234.56, new PlcTIME(Duration.parse("PT1.234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), BigInteger.valueOf(12345678901L), new PlcTIME(Duration.parse("PT3429H21M18.901S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), BigDecimal.valueOf(12345678901L), new PlcTIME(Duration.parse("PT3429H21M18.901S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.TIME), "PT3429H21M18.901S", new PlcTIME(Duration.parse("PT3429H21M18.901S"))),
 
             // LTIME values
-            Arguments.of(new MockTag("mock", PlcValueType.LTIME), 1, new PlcLTIME(1)),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), Duration.ofMillis(1234), new PlcLTIME(Duration.parse("PT1.234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), (byte) 123, new PlcLTIME(Duration.parse("PT0.000000123S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), (short) 1234, new PlcLTIME(Duration.parse("PT0.000001234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), 1234, new PlcLTIME(Duration.parse("PT0.000001234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), 12345678901L, new PlcLTIME(Duration.parse("PT12.345678901S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), (float) 1234.56, new PlcLTIME(Duration.parse("PT0.000001234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), (double) 1234.56, new PlcLTIME(Duration.parse("PT0.000001234S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), BigInteger.valueOf(12345678901L), new PlcLTIME(Duration.parse("PT12.345678901S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), BigDecimal.valueOf(12345678901L), new PlcLTIME(Duration.parse("PT12.345678901S"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LTIME), "PT12.345678901S", new PlcLTIME(Duration.parse("PT12.345678901S"))),
 
             // DATE values
             Arguments.of(new MockTag("mock", PlcValueType.DATE), 1, new PlcDATE(1)),
@@ -282,7 +363,7 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), 1, new PlcLDATE_AND_TIME(LocalDateTime.of(2015, 10,21, 7, 28))),
 
             // RAW_BYTE_ARRAY values
-            Arguments.of(new MockTag("mock", PlcValueType.RAW_BYTE_ARRAY), 1, new PlcRawByteArray(new byte[]{(byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6}))
+            Arguments.of(new MockTag("mock", PlcValueType.RAW_BYTE_ARRAY), new byte[]{(byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6}, new PlcRawByteArray(new byte[]{(byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6}))
         );
     }
 

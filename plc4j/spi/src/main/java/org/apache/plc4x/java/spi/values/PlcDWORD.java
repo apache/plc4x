@@ -53,7 +53,7 @@ public class PlcDWORD extends PlcIECValue<Long> {
         } else if (value instanceof BigDecimal) {
             return new PlcDWORD((BigDecimal) value);
         } else {
-            return new PlcDWORD((String) value);
+            return new PlcDWORD(value.toString());
         }
     }
 
@@ -120,7 +120,7 @@ public class PlcDWORD extends PlcIECValue<Long> {
     }
 
     public PlcDWORD(BigDecimal value) {
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();

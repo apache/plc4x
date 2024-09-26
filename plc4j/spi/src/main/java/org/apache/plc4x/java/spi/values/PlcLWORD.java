@@ -53,7 +53,7 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
         } else if (value instanceof BigDecimal) {
             return new PlcLWORD((BigDecimal) value);
         } else {
-            return new PlcLWORD((String) value);
+            return new PlcLWORD(value.toString());
         }
     }
 

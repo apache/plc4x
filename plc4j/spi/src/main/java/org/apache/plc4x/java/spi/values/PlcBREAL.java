@@ -47,7 +47,7 @@ public class PlcBREAL extends PlcIECValue<BigDecimal> {
         } else if (value instanceof BigDecimal) {
             return new PlcBREAL((BigDecimal) value);
         } else {
-            return new PlcBREAL((String) value);
+            return new PlcBREAL(value.toString());
         }
     }
 

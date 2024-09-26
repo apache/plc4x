@@ -53,7 +53,7 @@ public class PlcBYTE extends PlcIECValue<Short> {
         } else if (value instanceof BigDecimal) {
             return new PlcBYTE((BigDecimal) value);
         } else {
-            return new PlcBYTE((String) value);
+            return new PlcBYTE(value.toString());
         }
     }
 
@@ -120,7 +120,7 @@ public class PlcBYTE extends PlcIECValue<Short> {
     }
 
     public PlcBYTE(BigDecimal value) {
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.shortValue();

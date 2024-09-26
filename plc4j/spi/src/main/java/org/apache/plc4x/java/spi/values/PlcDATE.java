@@ -25,9 +25,12 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
-public class PlcDATE extends PlcSimpleValue<LocalDate> {
+public class PlcDATE extends PlcIECValue<LocalDate> {
 
     public static PlcDATE of(Object value) {
         if (value instanceof LocalDate) {
@@ -54,19 +57,22 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     }
 
     public PlcDATE(LocalDate value) {
-        super(value, true);
+        this.value = value;
+        this.isNullable = false;
     }
 
     public PlcDATE(int daysSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
-        super(LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(((long) daysSinceEpoch) * 86400), ZoneOffset.UTC).toLocalDate(), true);
+        this.value = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(((long) daysSinceEpoch) * 86400), ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
     }
 
     public PlcDATE(long secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
-        super(LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(secondsSinceEpoch), ZoneOffset.UTC).toLocalDate(), true);
+        this.value = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(secondsSinceEpoch), ZoneOffset.UTC).toLocalDate();
+        this.isNullable = false;
     }
 
     @Override

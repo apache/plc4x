@@ -27,7 +27,7 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 
-public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
+public class PlcTIME_OF_DAY extends PlcIECValue<LocalTime> {
 
     public static PlcTIME_OF_DAY of(Object value) {
         if (value instanceof LocalTime) {
@@ -43,11 +43,13 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     }
 
     public PlcTIME_OF_DAY(LocalTime value) {
-        super(value, true);
+        this.value = value;
+        this.isNullable = false;
     }
 
     public PlcTIME_OF_DAY(long millisecondsSinceMidnight) {
-        super(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000), true);
+        this.value = LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000);
+        this.isNullable = false;
     }
 
     @Override

@@ -52,7 +52,7 @@ public class PlcSINT extends PlcIECValue<Byte> {
         } else if (value instanceof BigDecimal) {
             return new PlcSINT((BigDecimal) value);
         } else {
-            return new PlcSINT((String) value);
+            return new PlcSINT(value.toString());
         }
     }
 
@@ -115,7 +115,7 @@ public class PlcSINT extends PlcIECValue<Byte> {
     }
 
     public PlcSINT(BigDecimal value) {
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0)) {
             throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.byteValue();

@@ -52,7 +52,7 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
         } else if (value instanceof BigDecimal) {
             return new PlcULINT((BigDecimal) value);
         } else {
-            return new PlcULINT((String) value);
+            return new PlcULINT(value.toString());
         }
     }
 
