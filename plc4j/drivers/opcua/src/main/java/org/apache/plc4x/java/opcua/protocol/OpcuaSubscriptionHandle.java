@@ -91,59 +91,32 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         for (String tagName : this.tagNames) {
             final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
 
-            NodeId idNode = OpcuaProtocolLogic.generateNodeId((OpcuaTag) tagDefaultPlcSubscription.getTag());
+            OpcuaTag opcTag = (OpcuaTag) tagDefaultPlcSubscription.getTag();
+            NodeId idNode = OpcuaProtocolLogic.generateNodeId(opcTag);
 
             ReadValueId readValueId = new ReadValueId(
                 idNode,
-                AttributeId.Value.getValue(),
+                opcTag.getAttributeId().getValue(),
                 OpcuaProtocolLogic.NULL_STRING,
                 new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
 
-            MonitoringMode monitoringMode;
-            switch (tagDefaultPlcSubscription.getPlcSubscriptionType()) {
-                case CYCLIC:
-                    monitoringMode = MonitoringMode.monitoringModeSampling;
-                    break;
-                case CHANGE_OF_STATE:
-                    monitoringMode = MonitoringMode.monitoringModeReporting;
-                    break;
-                case EVENT:
-                    monitoringMode = MonitoringMode.monitoringModeReporting;
-                    break;
-                default:
-                    monitoringMode = MonitoringMode.monitoringModeReporting;
+            MonitoringMode monitoringMode = MonitoringMode.monitoringModeReporting;
+            if (PlcSubscriptionType.CYCLIC == tagDefaultPlcSubscription.getPlcSubscriptionType()) {
+                monitoringMode = MonitoringMode.monitoringModeSampling;
             }
 
             ExtensionObject eventFilter = OpcuaProtocolLogic.NULL_EXTENSION_OBJECT;
             if (tagDefaultPlcSubscription.getPlcSubscriptionType() == PlcSubscriptionType.EVENT) {
                 NodeId nodeId = new NodeId(new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObjectType.BaseEventType.getValue()));
-                List<SimpleAttributeOperand> filterOperand = Arrays.asList(
-                    new SimpleAttributeOperand(nodeId,
-                        Arrays.asList(new QualifiedName(0, new PascalString("EventId"))),
+                List<SimpleAttributeOperand> filterOperand = new ArrayList<>();
+                Map<String, String> config = opcTag.getConfig();
+                for (Map.Entry<String, String> entry : config.entrySet()) {
+                    filterOperand.add(new SimpleAttributeOperand(nodeId,
+                        List.of(new QualifiedName(0, new PascalString(entry.getKey()))),
                         AttributeId.Value.getValue(),
                         OpcuaProtocolLogic.NULL_STRING
-                    ),
-                    new SimpleAttributeOperand(nodeId,
-                        Arrays.asList(new QualifiedName(0, new PascalString("EventType"))),
-                        AttributeId.Value.getValue(),
-                        OpcuaProtocolLogic.NULL_STRING
-                    ),
-                    new SimpleAttributeOperand(nodeId,
-                        Arrays.asList(new QualifiedName(0, new PascalString("Severity"))),
-                        AttributeId.Value.getValue(),
-                        OpcuaProtocolLogic.NULL_STRING
-                    ),
-                    new SimpleAttributeOperand(nodeId,
-                        Arrays.asList(new QualifiedName(0, new PascalString("Time"))),
-                        AttributeId.Value.getValue(),
-                        OpcuaProtocolLogic.NULL_STRING
-                    ),
-                    new SimpleAttributeOperand(nodeId,
-                        Arrays.asList(new QualifiedName(0, new PascalString("Message"))),
-                        AttributeId.Value.getValue(),
-                        OpcuaProtocolLogic.NULL_STRING
-                    )
-                );
+                    ));
+                }
 
                 EventFilter filterPayload = new EventFilter(filterOperand, new ContentFilter(null));
                 ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
