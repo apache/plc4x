@@ -153,7 +153,7 @@ type ${type.name}Contract interface {
 	<#if type.isDiscriminatedChildTypeDefinition()>
 		<#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
 		<#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorType>
-		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
+			<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 			<#if !type.isNonDiscriminatorField(discriminatorName)>
 				<#assign typeRef=helper.getDiscriminatorTypes(discriminatedChildType.parentType.orElseThrow())[discriminatorName]>
 	// Get${discriminatorName?cap_first} returns ${discriminatorName?cap_first} (discriminator field)
