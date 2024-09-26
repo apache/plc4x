@@ -575,9 +575,11 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 	if m.${optionalField.name?cap_first} != nil {
 					<#if optionalField.type.isSimpleTypeReference()>
 						<#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
-		lengthInBits += ${simpleTypeReference.sizeInBits}
+						<#assign bs=simpleTypeReference.sizeInBits>
+		lengthInBits += ${(bs<0)?then(0,bs)}
 					<#elseif helper.isEnumField(optionalField)>
-		lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
+						<#assign bs=helper.getEnumBaseTypeReference(optionalField.type).sizeInBits>
+		lengthInBits += ${(bs<0)?then(0,bs)}
                     <#elseif optionalField.type.isComplexTypeReference()>
 		lengthInBits += m.${optionalField.name?cap_first}.GetLengthInBits(ctx)
 					<#else>
