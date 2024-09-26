@@ -58,7 +58,7 @@ var _ ExtensiblePayload = (*_ExtensiblePayload)(nil)
 var _ PayloadRequirements = (*_ExtensiblePayload)(nil)
 
 // NewExtensiblePayload factory function for _ExtensiblePayload
-func NewExtensiblePayload(sequenceHeader SequenceHeader, payload ExtensionObject, byteCount uint32) *_ExtensiblePayload {
+func NewExtensiblePayload(sequenceHeader SequenceHeader, payload RootExtensionObject, byteCount uint32) *_ExtensiblePayload {
 	if payload == nil {
 		panic("payload of type ExtensionObject for ExtensiblePayload must not be nil")
 	}
