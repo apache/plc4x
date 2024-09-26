@@ -40,7 +40,11 @@ type MultiError struct {
 	Errors []error
 }
 
-func (m MultiError) Error() string {
+func (m *MultiError) Append(err error) {
+	m.Errors = append(m.Errors, err)
+}
+
+func (m *MultiError) Error() string {
 	if m.MainError == nil && len(m.Errors) == 0 {
 		return ""
 	}
@@ -61,8 +65,9 @@ func (m MultiError) Error() string {
 	return mainErrorText + childErrorText
 }
 
-func (m MultiError) Is(target error) bool {
-	if _, ok := target.(MultiError); ok {
+func (m *MultiError) Is(target error) bool {
+	var multiError *MultiError
+	if errors.As(target, &multiError) {
 		return true
 	}
 	for _, childError := range m.Errors {

@@ -105,6 +105,15 @@ func (b *_BVLPDU) Decode(pdu Arg) error {
 	return nil
 }
 
+func (b *_BVLPDU) CreateBVLCBuilder() readWriteModel.BVLCBuilder {
+	switch rm := b.GetRootMessage().(type) {
+	case readWriteModel.BVLC:
+		return rm.CreateBVLCBuilder()
+	default:
+		return readWriteModel.NewBVLCBuilder()
+	}
+}
+
 func (b *_BVLPDU) GetBvlcFunction() uint8 {
 	switch rm := b.GetRootMessage().(type) {
 	case readWriteModel.BVLC:

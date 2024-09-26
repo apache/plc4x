@@ -107,6 +107,15 @@ func (a *__APDU) Decode(pdu Arg) error {
 	return nil
 }
 
+func (a *__APDU) CreateAPDUBuilder() readWriteModel.APDUBuilder {
+	switch rm := a.GetRootMessage().(type) {
+	case readWriteModel.APDU:
+		return rm.CreateAPDUBuilder()
+	default:
+		return readWriteModel.NewAPDUBuilder()
+	}
+}
+
 func (a *__APDU) GetApduType() readWriteModel.ApduType {
 	switch rm := a.GetRootMessage().(type) {
 	case readWriteModel.APDU:

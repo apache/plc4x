@@ -118,6 +118,8 @@ type ${type.name} interface {
 </#if>
 	// Is${type.name} is a marker method to prevent unintentional type checks (interfaces of same signature)
 	Is${type.name}()
+	// CreateBuilder creates a ${type.name}Builder
+	Create${type.name}Builder() ${type.name}Builder
 }
 
 <#if parserArguments?has_content>
@@ -165,6 +167,8 @@ type ${type.name}Contract interface {
 	</#if>
 	// Is${type.name} is a marker method to prevent unintentional type checks (interfaces of same signature)
 	Is${type.name}()
+	// CreateBuilder creates a ${type.name}Builder
+	Create${type.name}Builder() ${type.name}Builder
 }
 
 // ${type.name}Requirements provides a set of functions which need to be implemented by a sub struct
@@ -317,6 +321,138 @@ var _ ${type.getParentType().orElseThrow().name}Requirements = (*_${type.name})(
 
 </#if>
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ${type.name}Builder is a builder for ${type.name}
+type ${type.name}Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+<@compress single_line=true>
+	WithMandatoryFields(
+	<#list type.propertyFields?filter(field->!field.isOptionalField()) as field>
+		<#assign typeRef=field.asTypedField().orElseThrow().type>
+		${field.name} ${helper.getLanguageTypeNameForTypeReference(typeRef)}
+		<#sep>,</#sep>
+	</#list>
+	) ${type.name}Builder
+</@compress>
+
+<#list type.propertyFields as field>
+	<#assign typeRef=field.asTypedField().orElseThrow().type>
+	// With${field.name?cap_first} adds ${field.name?cap_first} (property field)
+	With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}(${helper.getLanguageTypeNameForTypeReference(typeRef, true)}) ${type.name}Builder
+	<#if typeRef.isComplexTypeReference()>
+	// With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder adds ${field.name?cap_first} (property field) which is build by the builder
+	With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder(func(${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder)${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder) ${type.name}Builder
+	</#if>
+</#list>
+	// Build builds the ${type.name} or returns an error if something is wrong
+	Build() (${type.name}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if>,error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ${type.name}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if>
+}
+
+// New${type.name}Builder() creates a ${type.name}Builder
+func New${type.name}Builder() ${type.name}Builder {
+	return &_${type.name}Builder{_${type.name}: new(_${type.name})}
+}
+
+type _${type.name}Builder struct {
+	*_${type.name}
+
+	err *utils.MultiError
+}
+
+var _ (${type.name}Builder) = (*_${type.name}Builder)(nil)
+
+<@compress single_line=true>
+func (m *_${type.name}Builder) WithMandatoryFields(
+	<#list type.propertyFields?filter(field->!field.isOptionalField()) as field>
+		<#assign typeRef=field.asTypedField().orElseThrow().type>
+		${field.name} ${helper.getLanguageTypeNameForTypeReference(typeRef)}
+		<#sep>,</#sep>
+	</#list>
+	) ${type.name}Builder {
+</@compress>
+
+<@compress single_line=true>
+return m
+<#list type.propertyFields?filter(field->!field.isOptionalField()) as field>
+	.With${field.name?cap_first}(${field.name}<#if field.type.isArrayTypeReference()>...</#if>)
+</#list>
+</@compress>
+
+}
+
+<#list type.propertyFields as field>
+	<#assign typeRef=field.asTypedField().orElseThrow().type>
+func (m *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}(${field.name} ${helper.getLanguageTypeNameForTypeReference(typeRef, true)}) ${type.name}Builder {
+	m.${field.name?cap_first}=<#if helper.needsPointerAccess(field)>&</#if>${field.name}
+	return m
+}
+
+	<#if typeRef.isComplexTypeReference()>
+func (m *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder(builderSupplier func(${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder)${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder) ${type.name}Builder {
+	builder:=builderSupplier(m.${field.name?cap_first}.Create${helper.getLanguageTypeNameForField(field)}Builder())
+	var err error
+	m.${field.name?cap_first}, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}<@emitImport import="github.com/pkg/errors" />
+		}
+		m.err.Append(errors.Wrap(err, "${helper.getLanguageTypeNameForField(field)}Builder failed"))
+	}
+	return m
+}
+
+	</#if>
+</#list>
+
+func (m *_${type.name}Builder) Build() (${type.name}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if>,error) {
+<#list type.propertyFields?filter(field->!field.isOptionalField()) as field>
+	<#if field.type.isComplexTypeReference() || helper.needsPointerAccess(field)>
+	if m.${field.name?cap_first} == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field '${field.name}' not set"))
+	}
+	</#if>
+</#list>
+	if m.err != nil{
+		return nil, errors.Wrap(m.err, "error occurred during build")<@emitImport import="github.com/pkg/errors" />
+	}
+	return m._${type.name}.deepCopy(), nil
+}
+
+func (m *_${type.name}Builder) MustBuild() ${type.name}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if> {
+	build, err := m.Build()
+	if err != nil{
+		panic(err)
+	}
+	return build
+}
+
+func (m *_${type.name}Builder) DeepCopy() any {
+	return m.Create${type.name}Builder()
+}
+
+// Create${type.name}Builder creates a ${type.name}Builder
+func (m *_${type.name}) Create${type.name}Builder() ${type.name}Builder  {
+	if m == nil {
+		return New${type.name}Builder()
+	}
+	return &_${type.name}Builder{_${type.name}: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 <#if type.isDiscriminatedChildTypeDefinition()>
 	<#assign discriminatedChildType = type.asDiscriminatedComplexTypeDefinition().orElseThrow()>
