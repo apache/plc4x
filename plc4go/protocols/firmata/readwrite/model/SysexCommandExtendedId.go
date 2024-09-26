@@ -210,7 +210,7 @@ func (m *_SysexCommandExtendedId) GetTypeName() string {
 }
 
 func (m *_SysexCommandExtendedId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SysexCommandContract.(*_SysexCommand).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.Id) > 0 {

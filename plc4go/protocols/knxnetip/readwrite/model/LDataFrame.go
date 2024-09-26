@@ -338,7 +338,7 @@ func (m *_LDataFrame) GetTypeName() string {
 	return "LDataFrame"
 }
 
-func (m *_LDataFrame) getLengthInBits(ctx context.Context) uint16 {
+func (m *_LDataFrame) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (frameType)

@@ -225,7 +225,7 @@ func (m *_AdsReadResponse) GetTypeName() string {
 }
 
 func (m *_AdsReadResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).GetLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32

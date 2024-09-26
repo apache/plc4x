@@ -266,7 +266,7 @@ func (m *_DF1RequestProtectedTypedLogicalRead) GetTypeName() string {
 }
 
 func (m *_DF1RequestProtectedTypedLogicalRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1RequestCommandContract.(*_DF1RequestCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.DF1RequestCommandContract.(*_DF1RequestCommand).GetLengthInBits(ctx))
 
 	// Simple field (byteSize)
 	lengthInBits += 8

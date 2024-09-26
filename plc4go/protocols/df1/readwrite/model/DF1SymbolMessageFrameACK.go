@@ -180,7 +180,7 @@ func (m *_DF1SymbolMessageFrameACK) GetTypeName() string {
 }
 
 func (m *_DF1SymbolMessageFrameACK) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1SymbolContract.(*_DF1Symbol).getLengthInBits(ctx))
+	lengthInBits := uint16(m.DF1SymbolContract.(*_DF1Symbol).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

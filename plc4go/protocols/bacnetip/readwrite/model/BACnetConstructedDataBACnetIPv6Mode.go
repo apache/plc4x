@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6Mode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (bacnetIpv6Mode)
 	lengthInBits += m.BacnetIpv6Mode.GetLengthInBits(ctx)

@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPServer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (dhcpServer)
 	lengthInBits += m.DhcpServer.GetLengthInBits(ctx)

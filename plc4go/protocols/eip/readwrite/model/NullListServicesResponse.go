@@ -187,7 +187,7 @@ func (m *_NullListServicesResponse) GetTypeName() string {
 }
 
 func (m *_NullListServicesResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.EipPacketContract.(*_EipPacket).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

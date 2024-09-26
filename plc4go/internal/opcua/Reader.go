@@ -102,7 +102,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensiblePayload(readWriteModel.NewRootExtensionObject(opcuaReadRequest, expandedNodeId, identifier), nil, 0)
+	extObject := readWriteModel.NewExtensiblePayload(nil, readWriteModel.NewRootExtensionObject(expandedNodeId, opcuaReadRequest, identifier), 0)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {

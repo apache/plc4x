@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataPolarity) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataPolarity) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (polarity)
 	lengthInBits += m.Polarity.GetLengthInBits(ctx)

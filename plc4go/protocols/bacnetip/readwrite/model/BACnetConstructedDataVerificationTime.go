@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataVerificationTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataVerificationTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (verificationTime)
 	lengthInBits += m.VerificationTime.GetLengthInBits(ctx)

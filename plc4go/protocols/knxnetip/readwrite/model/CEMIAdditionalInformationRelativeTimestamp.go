@@ -246,7 +246,7 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetTypeName() string {
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).GetLengthInBits(ctx))
 
 	// Const Field (len)
 	lengthInBits += 8

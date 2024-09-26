@@ -206,7 +206,7 @@ func (m *_IdentifyReplyCommandManufacturer) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandManufacturer) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).GetLengthInBits(ctx))
 
 	// Simple field (manufacturerName)
 	lengthInBits += 64

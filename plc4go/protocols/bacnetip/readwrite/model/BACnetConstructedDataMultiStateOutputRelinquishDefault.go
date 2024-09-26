@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataMultiStateOutputRelinquishDefault) GetTypeName() 
 }
 
 func (m *_BACnetConstructedDataMultiStateOutputRelinquishDefault) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (relinquishDefault)
 	lengthInBits += m.RelinquishDefault.GetLengthInBits(ctx)

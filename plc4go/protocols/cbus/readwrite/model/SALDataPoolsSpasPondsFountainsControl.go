@@ -230,7 +230,7 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetTypeName() string {
 }
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (poolsSpaPondsFountainsData)
 	lengthInBits += m.PoolsSpaPondsFountainsData.GetLengthInBits(ctx)

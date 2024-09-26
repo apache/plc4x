@@ -280,7 +280,7 @@ func (m *_BACnetLogDataLogData) GetTypeName() string {
 }
 
 func (m *_BACnetLogDataLogData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLogDataContract.(*_BACnetLogData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLogDataContract.(*_BACnetLogData).GetLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
 	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)

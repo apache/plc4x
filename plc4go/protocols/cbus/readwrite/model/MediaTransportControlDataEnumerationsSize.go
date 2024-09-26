@@ -273,7 +273,7 @@ func (m *_MediaTransportControlDataEnumerationsSize) GetTypeName() string {
 }
 
 func (m *_MediaTransportControlDataEnumerationsSize) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MediaTransportControlDataContract.(*_MediaTransportControlData).GetLengthInBits(ctx))
 
 	// Simple field (sizeType)
 	lengthInBits += 8

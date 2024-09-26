@@ -209,7 +209,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestVTClose) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.ListOfRemoteVtSessionIdentifiers) > 0 {

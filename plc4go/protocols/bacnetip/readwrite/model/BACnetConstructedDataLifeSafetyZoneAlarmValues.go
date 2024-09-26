@@ -210,7 +210,7 @@ func (m *_BACnetConstructedDataLifeSafetyZoneAlarmValues) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataLifeSafetyZoneAlarmValues) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.AlarmValues) > 0 {

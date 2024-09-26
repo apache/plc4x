@@ -150,8 +150,8 @@ func (b *_OpcuaVector) CreateOpcuaVectorBuilder() OpcuaVectorBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_OpcuaVector) GetIdentifier() string {
-	return "18809"
+func (m *_OpcuaVector) GetExtensionId() int32 {
+	return int32(18809)
 }
 
 ///////////////////////
@@ -179,7 +179,7 @@ func (m *_OpcuaVector) GetTypeName() string {
 }
 
 func (m *_OpcuaVector) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -188,7 +188,7 @@ func (m *_OpcuaVector) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OpcuaVector) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__opcuaVector OpcuaVector, err error) {
+func (m *_OpcuaVector) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__opcuaVector OpcuaVector, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

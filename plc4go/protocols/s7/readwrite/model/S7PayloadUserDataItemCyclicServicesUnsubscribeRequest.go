@@ -229,7 +229,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetTypeName() s
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).GetLengthInBits(ctx))
 
 	// Simple field (function)
 	lengthInBits += 8

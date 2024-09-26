@@ -266,7 +266,7 @@ func (m *_LPollData) GetTypeName() string {
 }
 
 func (m *_LPollData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LDataFrameContract.(*_LDataFrame).getLengthInBits(ctx))
+	lengthInBits := uint16(m.LDataFrameContract.(*_LDataFrame).GetLengthInBits(ctx))
 
 	// Simple field (sourceAddress)
 	lengthInBits += m.SourceAddress.GetLengthInBits(ctx)

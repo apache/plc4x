@@ -503,7 +503,7 @@ func (m *_BVLC) GetTypeName() string {
 	return "BVLC"
 }
 
-func (m *_BVLC) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BVLC) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (bacnetType)

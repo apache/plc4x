@@ -223,7 +223,7 @@ func (m *_FirmataMessageDigitalIO) GetTypeName() string {
 }
 
 func (m *_FirmataMessageDigitalIO) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.FirmataMessageContract.(*_FirmataMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.FirmataMessageContract.(*_FirmataMessage).GetLengthInBits(ctx))
 
 	// Simple field (pinBlock)
 	lengthInBits += 4

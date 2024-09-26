@@ -283,7 +283,7 @@ func (m *_S7AddressAny) GetTypeName() string {
 }
 
 func (m *_S7AddressAny) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.S7AddressContract.(*_S7Address).getLengthInBits(ctx))
+	lengthInBits := uint16(m.S7AddressContract.(*_S7Address).GetLengthInBits(ctx))
 
 	// Enum Field (transportSize)
 	lengthInBits += 8

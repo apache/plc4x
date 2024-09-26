@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataChannelNumber) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataChannelNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (channelNumber)
 	lengthInBits += m.ChannelNumber.GetLengthInBits(ctx)

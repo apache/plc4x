@@ -427,7 +427,7 @@ func (m *_BACnetFaultParameter) GetTypeName() string {
 	return "BACnetFaultParameter"
 }
 
-func (m *_BACnetFaultParameter) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetFaultParameter) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

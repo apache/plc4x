@@ -175,7 +175,7 @@ func (m *_CALReplyShort) GetTypeName() string {
 }
 
 func (m *_CALReplyShort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALReplyContract.(*_CALReply).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CALReplyContract.(*_CALReply).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

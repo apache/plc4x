@@ -200,8 +200,8 @@ func (b *_DeleteNodesItem) CreateDeleteNodesItemBuilder() DeleteNodesItemBuilder
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DeleteNodesItem) GetIdentifier() string {
-	return "384"
+func (m *_DeleteNodesItem) GetExtensionId() int32 {
+	return int32(384)
 }
 
 ///////////////////////
@@ -247,7 +247,7 @@ func (m *_DeleteNodesItem) GetTypeName() string {
 }
 
 func (m *_DeleteNodesItem) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
@@ -265,7 +265,7 @@ func (m *_DeleteNodesItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DeleteNodesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteNodesItem DeleteNodesItem, err error) {
+func (m *_DeleteNodesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__deleteNodesItem DeleteNodesItem, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

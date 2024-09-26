@@ -235,7 +235,7 @@ func (m *_PortSegmentType) GetTypeName() string {
 	return "PortSegmentType"
 }
 
-func (m *_PortSegmentType) getLengthInBits(ctx context.Context) uint16 {
+func (m *_PortSegmentType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (extendedLinkAddress)
 	lengthInBits += 1

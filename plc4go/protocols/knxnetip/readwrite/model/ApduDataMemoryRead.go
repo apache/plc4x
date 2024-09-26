@@ -221,7 +221,7 @@ func (m *_ApduDataMemoryRead) GetTypeName() string {
 }
 
 func (m *_ApduDataMemoryRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataContract.(*_ApduData).GetLengthInBits(ctx))
 
 	// Simple field (numBytes)
 	lengthInBits += 6

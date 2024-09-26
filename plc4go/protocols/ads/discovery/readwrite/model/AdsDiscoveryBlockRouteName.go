@@ -230,7 +230,7 @@ func (m *_AdsDiscoveryBlockRouteName) GetTypeName() string {
 }
 
 func (m *_AdsDiscoveryBlockRouteName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).GetLengthInBits(ctx))
 
 	// Simple field (routeName)
 	lengthInBits += m.RouteName.GetLengthInBits(ctx)

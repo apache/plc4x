@@ -247,7 +247,7 @@ func (m *_ModbusAsciiADU) GetTypeName() string {
 }
 
 func (m *_ModbusAsciiADU) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusADUContract.(*_ModbusADU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusADUContract.(*_ModbusADU).GetLengthInBits(ctx))
 
 	// Simple field (address)
 	lengthInBits += 8

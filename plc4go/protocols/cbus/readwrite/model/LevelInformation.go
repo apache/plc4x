@@ -363,7 +363,7 @@ func (m *_LevelInformation) GetTypeName() string {
 	return "LevelInformation"
 }
 
-func (m *_LevelInformation) getLengthInBits(ctx context.Context) uint16 {
+func (m *_LevelInformation) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

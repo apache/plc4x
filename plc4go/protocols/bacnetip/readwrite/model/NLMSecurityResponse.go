@@ -251,7 +251,7 @@ func (m *_NLMSecurityResponse) GetTypeName() string {
 }
 
 func (m *_NLMSecurityResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).GetLengthInBits(ctx))
 
 	// Simple field (responseCode)
 	lengthInBits += 8

@@ -236,7 +236,7 @@ func (m *_AdsMultiRequestItemRead) GetTypeName() string {
 }
 
 func (m *_AdsMultiRequestItemRead) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).GetLengthInBits(ctx))
 
 	// Simple field (itemIndexGroup)
 	lengthInBits += 32

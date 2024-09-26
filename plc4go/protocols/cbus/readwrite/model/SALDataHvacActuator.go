@@ -230,7 +230,7 @@ func (m *_SALDataHvacActuator) GetTypeName() string {
 }
 
 func (m *_SALDataHvacActuator) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (hvacActuatorData)
 	lengthInBits += m.HvacActuatorData.GetLengthInBits(ctx)

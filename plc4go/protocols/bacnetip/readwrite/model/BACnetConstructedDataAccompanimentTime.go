@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAccompanimentTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (accompanimentTime)
 	lengthInBits += m.AccompanimentTime.GetLengthInBits(ctx)

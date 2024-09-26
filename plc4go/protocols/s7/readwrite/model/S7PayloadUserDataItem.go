@@ -965,7 +965,7 @@ func (m *_S7PayloadUserDataItem) GetTypeName() string {
 	return "S7PayloadUserDataItem"
 }
 
-func (m *_S7PayloadUserDataItem) getLengthInBits(ctx context.Context) uint16 {
+func (m *_S7PayloadUserDataItem) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)

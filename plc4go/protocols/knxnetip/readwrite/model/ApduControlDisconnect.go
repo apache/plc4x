@@ -179,7 +179,7 @@ func (m *_ApduControlDisconnect) GetTypeName() string {
 }
 
 func (m *_ApduControlDisconnect) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduControlContract.(*_ApduControl).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduControlContract.(*_ApduControl).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

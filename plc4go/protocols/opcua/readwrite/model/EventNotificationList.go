@@ -40,10 +40,8 @@ type EventNotificationList interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfEvents returns NoOfEvents (property field)
-	GetNoOfEvents() int32
 	// GetEvents returns Events (property field)
-	GetEvents() []ExtensionObjectDefinition
+	GetEvents() []EventFieldList
 	// IsEventNotificationList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEventNotificationList()
 	// CreateBuilder creates a EventNotificationListBuilder
@@ -53,18 +51,16 @@ type EventNotificationList interface {
 // _EventNotificationList is the data-structure of this message
 type _EventNotificationList struct {
 	ExtensionObjectDefinitionContract
-	NoOfEvents int32
-	Events     []ExtensionObjectDefinition
+	Events []EventFieldList
 }
 
 var _ EventNotificationList = (*_EventNotificationList)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EventNotificationList)(nil)
 
 // NewEventNotificationList factory function for _EventNotificationList
-func NewEventNotificationList(noOfEvents int32, events []ExtensionObjectDefinition) *_EventNotificationList {
+func NewEventNotificationList(events []EventFieldList) *_EventNotificationList {
 	_result := &_EventNotificationList{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEvents:                        noOfEvents,
 		Events:                            events,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -80,11 +76,9 @@ func NewEventNotificationList(noOfEvents int32, events []ExtensionObjectDefiniti
 type EventNotificationListBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) EventNotificationListBuilder
-	// WithNoOfEvents adds NoOfEvents (property field)
-	WithNoOfEvents(int32) EventNotificationListBuilder
+	WithMandatoryFields(events []EventFieldList) EventNotificationListBuilder
 	// WithEvents adds Events (property field)
-	WithEvents(...ExtensionObjectDefinition) EventNotificationListBuilder
+	WithEvents(...EventFieldList) EventNotificationListBuilder
 	// Build builds the EventNotificationList or returns an error if something is wrong
 	Build() (EventNotificationList, error)
 	// MustBuild does the same as Build but panics on error
@@ -110,16 +104,11 @@ func (b *_EventNotificationListBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_EventNotificationListBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) EventNotificationListBuilder {
-	return b.WithNoOfEvents(noOfEvents).WithEvents(events...)
+func (b *_EventNotificationListBuilder) WithMandatoryFields(events []EventFieldList) EventNotificationListBuilder {
+	return b.WithEvents(events...)
 }
 
-func (b *_EventNotificationListBuilder) WithNoOfEvents(noOfEvents int32) EventNotificationListBuilder {
-	b.NoOfEvents = noOfEvents
-	return b
-}
-
-func (b *_EventNotificationListBuilder) WithEvents(events ...ExtensionObjectDefinition) EventNotificationListBuilder {
+func (b *_EventNotificationListBuilder) WithEvents(events ...EventFieldList) EventNotificationListBuilder {
 	b.Events = events
 	return b
 }
@@ -174,8 +163,8 @@ func (b *_EventNotificationList) CreateEventNotificationListBuilder() EventNotif
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_EventNotificationList) GetIdentifier() string {
-	return "916"
+func (m *_EventNotificationList) GetExtensionId() int32 {
+	return int32(916)
 }
 
 ///////////////////////
@@ -192,11 +181,7 @@ func (m *_EventNotificationList) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_EventNotificationList) GetNoOfEvents() int32 {
-	return m.NoOfEvents
-}
-
-func (m *_EventNotificationList) GetEvents() []ExtensionObjectDefinition {
+func (m *_EventNotificationList) GetEvents() []EventFieldList {
 	return m.Events
 }
 
@@ -221,12 +206,9 @@ func (m *_EventNotificationList) GetTypeName() string {
 }
 
 func (m *_EventNotificationList) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
-	// Implicit Field (notificationLength)
-	lengthInBits += 32
-
-	// Simple field (noOfEvents)
+	// Implicit Field (noOfEvents)
 	lengthInBits += 32
 
 	// Array field
@@ -246,7 +228,7 @@ func (m *_EventNotificationList) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_EventNotificationList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__eventNotificationList EventNotificationList, err error) {
+func (m *_EventNotificationList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__eventNotificationList EventNotificationList, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -257,19 +239,13 @@ func (m *_EventNotificationList) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	notificationLength, err := ReadImplicitField[int32](ctx, "notificationLength", ReadSignedInt(readBuffer, uint8(32)))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationLength' field"))
-	}
-	_ = notificationLength
-
-	noOfEvents, err := ReadSimpleField(ctx, "noOfEvents", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEvents, err := ReadImplicitField[int32](ctx, "noOfEvents", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEvents' field"))
 	}
-	m.NoOfEvents = noOfEvents
+	_ = noOfEvents
 
-	events, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "events", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("919")), readBuffer), uint64(noOfEvents))
+	events, err := ReadCountArrayField[EventFieldList](ctx, "events", ReadComplex[EventFieldList](ExtensionObjectDefinitionParseWithBufferProducer[EventFieldList]((int32)(int32(919))), readBuffer), uint64(noOfEvents))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'events' field"))
 	}
@@ -299,12 +275,8 @@ func (m *_EventNotificationList) SerializeWithWriteBuffer(ctx context.Context, w
 		if pushErr := writeBuffer.PushContext("EventNotificationList"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for EventNotificationList")
 		}
-		notificationLength := int32(int32(m.GetLengthInBytes(ctx)))
-		if err := WriteImplicitField(ctx, "notificationLength", notificationLength, WriteSignedInt(writeBuffer, 32)); err != nil {
-			return errors.Wrap(err, "Error serializing 'notificationLength' field")
-		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfEvents", m.GetNoOfEvents(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfEvents := int32(utils.InlineIf(bool((m.GetEvents()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEvents()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfEvents", noOfEvents, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEvents' field")
 		}
 
@@ -332,8 +304,7 @@ func (m *_EventNotificationList) deepCopy() *_EventNotificationList {
 	}
 	_EventNotificationListCopy := &_EventNotificationList{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfEvents,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Events),
+		utils.DeepCopySlice[EventFieldList, EventFieldList](m.Events),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EventNotificationListCopy

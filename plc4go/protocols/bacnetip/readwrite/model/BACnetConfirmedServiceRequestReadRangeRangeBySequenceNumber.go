@@ -265,7 +265,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetTypeNa
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).GetLengthInBits(ctx))
 
 	// Simple field (referenceSequenceNumber)
 	lengthInBits += m.ReferenceSequenceNumber.GetLengthInBits(ctx)

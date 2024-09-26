@@ -382,7 +382,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetType
 	return "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass"
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)

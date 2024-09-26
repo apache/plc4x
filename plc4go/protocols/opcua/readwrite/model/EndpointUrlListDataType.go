@@ -40,8 +40,6 @@ type EndpointUrlListDataType interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfEndpointUrlList returns NoOfEndpointUrlList (property field)
-	GetNoOfEndpointUrlList() int32
 	// GetEndpointUrlList returns EndpointUrlList (property field)
 	GetEndpointUrlList() []PascalString
 	// IsEndpointUrlListDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -53,18 +51,16 @@ type EndpointUrlListDataType interface {
 // _EndpointUrlListDataType is the data-structure of this message
 type _EndpointUrlListDataType struct {
 	ExtensionObjectDefinitionContract
-	NoOfEndpointUrlList int32
-	EndpointUrlList     []PascalString
+	EndpointUrlList []PascalString
 }
 
 var _ EndpointUrlListDataType = (*_EndpointUrlListDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointUrlListDataType)(nil)
 
 // NewEndpointUrlListDataType factory function for _EndpointUrlListDataType
-func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []PascalString) *_EndpointUrlListDataType {
+func NewEndpointUrlListDataType(endpointUrlList []PascalString) *_EndpointUrlListDataType {
 	_result := &_EndpointUrlListDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEndpointUrlList:               noOfEndpointUrlList,
 		EndpointUrlList:                   endpointUrlList,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -80,9 +76,7 @@ func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []Pas
 type EndpointUrlListDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfEndpointUrlList int32, endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder
-	// WithNoOfEndpointUrlList adds NoOfEndpointUrlList (property field)
-	WithNoOfEndpointUrlList(int32) EndpointUrlListDataTypeBuilder
+	WithMandatoryFields(endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder
 	// WithEndpointUrlList adds EndpointUrlList (property field)
 	WithEndpointUrlList(...PascalString) EndpointUrlListDataTypeBuilder
 	// Build builds the EndpointUrlListDataType or returns an error if something is wrong
@@ -110,13 +104,8 @@ func (b *_EndpointUrlListDataTypeBuilder) setParent(contract ExtensionObjectDefi
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_EndpointUrlListDataTypeBuilder) WithMandatoryFields(noOfEndpointUrlList int32, endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder {
-	return b.WithNoOfEndpointUrlList(noOfEndpointUrlList).WithEndpointUrlList(endpointUrlList...)
-}
-
-func (b *_EndpointUrlListDataTypeBuilder) WithNoOfEndpointUrlList(noOfEndpointUrlList int32) EndpointUrlListDataTypeBuilder {
-	b.NoOfEndpointUrlList = noOfEndpointUrlList
-	return b
+func (b *_EndpointUrlListDataTypeBuilder) WithMandatoryFields(endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder {
+	return b.WithEndpointUrlList(endpointUrlList...)
 }
 
 func (b *_EndpointUrlListDataTypeBuilder) WithEndpointUrlList(endpointUrlList ...PascalString) EndpointUrlListDataTypeBuilder {
@@ -174,8 +163,8 @@ func (b *_EndpointUrlListDataType) CreateEndpointUrlListDataTypeBuilder() Endpoi
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_EndpointUrlListDataType) GetIdentifier() string {
-	return "11945"
+func (m *_EndpointUrlListDataType) GetExtensionId() int32 {
+	return int32(11945)
 }
 
 ///////////////////////
@@ -191,10 +180,6 @@ func (m *_EndpointUrlListDataType) GetParent() ExtensionObjectDefinitionContract
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *_EndpointUrlListDataType) GetNoOfEndpointUrlList() int32 {
-	return m.NoOfEndpointUrlList
-}
 
 func (m *_EndpointUrlListDataType) GetEndpointUrlList() []PascalString {
 	return m.EndpointUrlList
@@ -221,9 +206,9 @@ func (m *_EndpointUrlListDataType) GetTypeName() string {
 }
 
 func (m *_EndpointUrlListDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
-	// Simple field (noOfEndpointUrlList)
+	// Implicit Field (noOfEndpointUrlList)
 	lengthInBits += 32
 
 	// Array field
@@ -243,7 +228,7 @@ func (m *_EndpointUrlListDataType) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_EndpointUrlListDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__endpointUrlListDataType EndpointUrlListDataType, err error) {
+func (m *_EndpointUrlListDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__endpointUrlListDataType EndpointUrlListDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -254,11 +239,11 @@ func (m *_EndpointUrlListDataType) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfEndpointUrlList, err := ReadSimpleField(ctx, "noOfEndpointUrlList", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEndpointUrlList, err := ReadImplicitField[int32](ctx, "noOfEndpointUrlList", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEndpointUrlList' field"))
 	}
-	m.NoOfEndpointUrlList = noOfEndpointUrlList
+	_ = noOfEndpointUrlList
 
 	endpointUrlList, err := ReadCountArrayField[PascalString](ctx, "endpointUrlList", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfEndpointUrlList))
 	if err != nil {
@@ -290,8 +275,8 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 		if pushErr := writeBuffer.PushContext("EndpointUrlListDataType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for EndpointUrlListDataType")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfEndpointUrlList", m.GetNoOfEndpointUrlList(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfEndpointUrlList := int32(utils.InlineIf(bool((m.GetEndpointUrlList()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEndpointUrlList()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfEndpointUrlList", noOfEndpointUrlList, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEndpointUrlList' field")
 		}
 
@@ -319,7 +304,6 @@ func (m *_EndpointUrlListDataType) deepCopy() *_EndpointUrlListDataType {
 	}
 	_EndpointUrlListDataTypeCopy := &_EndpointUrlListDataType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfEndpointUrlList,
 		utils.DeepCopySlice[PascalString, PascalString](m.EndpointUrlList),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -301,7 +301,7 @@ func (m *_BACnetSpecialEventPeriod) GetTypeName() string {
 	return "BACnetSpecialEventPeriod"
 }
 
-func (m *_BACnetSpecialEventPeriod) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetSpecialEventPeriod) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

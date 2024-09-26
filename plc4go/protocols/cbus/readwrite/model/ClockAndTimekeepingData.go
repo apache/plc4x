@@ -314,7 +314,7 @@ func (m *_ClockAndTimekeepingData) GetTypeName() string {
 	return "ClockAndTimekeepingData"
 }
 
-func (m *_ClockAndTimekeepingData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_ClockAndTimekeepingData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

@@ -301,7 +301,7 @@ func (m *_BACnetRecipient) GetTypeName() string {
 	return "BACnetRecipient"
 }
 
-func (m *_BACnetRecipient) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetRecipient) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

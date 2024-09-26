@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (eventAlgorithmInhibit)
 	lengthInBits += m.EventAlgorithmInhibit.GetLengthInBits(ctx)

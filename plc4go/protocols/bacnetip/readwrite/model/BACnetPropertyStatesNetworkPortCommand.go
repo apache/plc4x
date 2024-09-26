@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesNetworkPortCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (networkPortCommand)
 	lengthInBits += m.NetworkPortCommand.GetLengthInBits(ctx)

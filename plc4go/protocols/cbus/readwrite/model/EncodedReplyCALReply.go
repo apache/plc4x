@@ -226,7 +226,7 @@ func (m *_EncodedReplyCALReply) GetTypeName() string {
 }
 
 func (m *_EncodedReplyCALReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.EncodedReplyContract.(*_EncodedReply).getLengthInBits(ctx))
+	lengthInBits := uint16(m.EncodedReplyContract.(*_EncodedReply).GetLengthInBits(ctx))
 
 	// Simple field (calReply)
 	lengthInBits += m.CalReply.GetLengthInBits(ctx)

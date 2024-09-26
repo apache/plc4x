@@ -143,8 +143,8 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		nil)
 
 	extObject := readWriteModel.NewRootExtensionObject(
-		createMonitoredItemsRequest,
 		expandedNodeId,
+		createMonitoredItemsRequest,
 		identifier,
 	)
 
@@ -273,8 +273,8 @@ func (h *SubscriptionHandle) startSubscriber() {
 					nil)
 
 				extObject := readWriteModel.NewRootExtensionObject(
-					publishRequest,
 					extExpandedNodeId,
+					publishRequest,
 					identifier,
 				)
 
@@ -384,8 +384,8 @@ func (h *SubscriptionHandle) stopSubscriber() {
 	)
 
 	extObject := readWriteModel.NewRootExtensionObject(
-		deleteSubscriptionrequest,
 		extExpandedNodeId,
+		deleteSubscriptionrequest,
 		identifier,
 	)
 

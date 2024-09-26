@@ -149,9 +149,13 @@ func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTim
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensiblePayload(readWriteModel.NewRootExtensionObject(
-		createSubscriptionRequest, expandedNodeId, createSubscriptionRequest.GetExtensionId(),
-	), nil, 0)
+	extObject := readWriteModel.NewExtensiblePayload(
+		nil,
+		readWriteModel.NewRootExtensionObject(
+			expandedNodeId, createSubscriptionRequest, createSubscriptionRequest.GetExtensionId(),
+		),
+		0,
+	)
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {

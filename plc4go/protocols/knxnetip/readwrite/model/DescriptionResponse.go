@@ -271,7 +271,7 @@ func (m *_DescriptionResponse) GetTypeName() string {
 }
 
 func (m *_DescriptionResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.KnxNetIpMessageContract.(*_KnxNetIpMessage).GetLengthInBits(ctx))
 
 	// Simple field (dibDeviceInfo)
 	lengthInBits += m.DibDeviceInfo.GetLengthInBits(ctx)

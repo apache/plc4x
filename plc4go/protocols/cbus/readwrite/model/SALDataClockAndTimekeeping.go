@@ -230,7 +230,7 @@ func (m *_SALDataClockAndTimekeeping) GetTypeName() string {
 }
 
 func (m *_SALDataClockAndTimekeeping) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (clockAndTimekeepingData)
 	lengthInBits += m.ClockAndTimekeepingData.GetLengthInBits(ctx)

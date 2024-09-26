@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataBACnetIPUDPPort) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataBACnetIPUDPPort) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (ipUdpPort)
 	lengthInBits += m.IpUdpPort.GetLengthInBits(ctx)

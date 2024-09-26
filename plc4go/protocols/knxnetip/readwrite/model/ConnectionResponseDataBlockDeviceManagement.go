@@ -179,7 +179,7 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) GetTypeName() string {
 }
 
 func (m *_ConnectionResponseDataBlockDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

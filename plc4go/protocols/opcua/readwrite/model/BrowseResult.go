@@ -44,10 +44,8 @@ type BrowseResult interface {
 	GetStatusCode() StatusCode
 	// GetContinuationPoint returns ContinuationPoint (property field)
 	GetContinuationPoint() PascalByteString
-	// GetNoOfReferences returns NoOfReferences (property field)
-	GetNoOfReferences() int32
 	// GetReferences returns References (property field)
-	GetReferences() []ExtensionObjectDefinition
+	GetReferences() []ReferenceDescription
 	// IsBrowseResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowseResult()
 	// CreateBuilder creates a BrowseResultBuilder
@@ -59,15 +57,14 @@ type _BrowseResult struct {
 	ExtensionObjectDefinitionContract
 	StatusCode        StatusCode
 	ContinuationPoint PascalByteString
-	NoOfReferences    int32
-	References        []ExtensionObjectDefinition
+	References        []ReferenceDescription
 }
 
 var _ BrowseResult = (*_BrowseResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseResult)(nil)
 
 // NewBrowseResult factory function for _BrowseResult
-func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) *_BrowseResult {
+func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, references []ReferenceDescription) *_BrowseResult {
 	if statusCode == nil {
 		panic("statusCode of type StatusCode for BrowseResult must not be nil")
 	}
@@ -78,7 +75,6 @@ func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, 
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,
 		ContinuationPoint:                 continuationPoint,
-		NoOfReferences:                    noOfReferences,
 		References:                        references,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -94,7 +90,7 @@ func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, 
 type BrowseResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) BrowseResultBuilder
+	WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, references []ReferenceDescription) BrowseResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) BrowseResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
@@ -103,10 +99,8 @@ type BrowseResultBuilder interface {
 	WithContinuationPoint(PascalByteString) BrowseResultBuilder
 	// WithContinuationPointBuilder adds ContinuationPoint (property field) which is build by the builder
 	WithContinuationPointBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) BrowseResultBuilder
-	// WithNoOfReferences adds NoOfReferences (property field)
-	WithNoOfReferences(int32) BrowseResultBuilder
 	// WithReferences adds References (property field)
-	WithReferences(...ExtensionObjectDefinition) BrowseResultBuilder
+	WithReferences(...ReferenceDescription) BrowseResultBuilder
 	// Build builds the BrowseResult or returns an error if something is wrong
 	Build() (BrowseResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -132,8 +126,8 @@ func (b *_BrowseResultBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_BrowseResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) BrowseResultBuilder {
-	return b.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithNoOfReferences(noOfReferences).WithReferences(references...)
+func (b *_BrowseResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, references []ReferenceDescription) BrowseResultBuilder {
+	return b.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithReferences(references...)
 }
 
 func (b *_BrowseResultBuilder) WithStatusCode(statusCode StatusCode) BrowseResultBuilder {
@@ -172,12 +166,7 @@ func (b *_BrowseResultBuilder) WithContinuationPointBuilder(builderSupplier func
 	return b
 }
 
-func (b *_BrowseResultBuilder) WithNoOfReferences(noOfReferences int32) BrowseResultBuilder {
-	b.NoOfReferences = noOfReferences
-	return b
-}
-
-func (b *_BrowseResultBuilder) WithReferences(references ...ExtensionObjectDefinition) BrowseResultBuilder {
+func (b *_BrowseResultBuilder) WithReferences(references ...ReferenceDescription) BrowseResultBuilder {
 	b.References = references
 	return b
 }
@@ -244,8 +233,8 @@ func (b *_BrowseResult) CreateBrowseResultBuilder() BrowseResultBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BrowseResult) GetIdentifier() string {
-	return "524"
+func (m *_BrowseResult) GetExtensionId() int32 {
+	return int32(524)
 }
 
 ///////////////////////
@@ -270,11 +259,7 @@ func (m *_BrowseResult) GetContinuationPoint() PascalByteString {
 	return m.ContinuationPoint
 }
 
-func (m *_BrowseResult) GetNoOfReferences() int32 {
-	return m.NoOfReferences
-}
-
-func (m *_BrowseResult) GetReferences() []ExtensionObjectDefinition {
+func (m *_BrowseResult) GetReferences() []ReferenceDescription {
 	return m.References
 }
 
@@ -299,7 +284,7 @@ func (m *_BrowseResult) GetTypeName() string {
 }
 
 func (m *_BrowseResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
@@ -307,7 +292,7 @@ func (m *_BrowseResult) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (continuationPoint)
 	lengthInBits += m.ContinuationPoint.GetLengthInBits(ctx)
 
-	// Simple field (noOfReferences)
+	// Implicit Field (noOfReferences)
 	lengthInBits += 32
 
 	// Array field
@@ -327,7 +312,7 @@ func (m *_BrowseResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BrowseResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browseResult BrowseResult, err error) {
+func (m *_BrowseResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__browseResult BrowseResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -350,13 +335,13 @@ func (m *_BrowseResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 	m.ContinuationPoint = continuationPoint
 
-	noOfReferences, err := ReadSimpleField(ctx, "noOfReferences", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReferences, err := ReadImplicitField[int32](ctx, "noOfReferences", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferences' field"))
 	}
-	m.NoOfReferences = noOfReferences
+	_ = noOfReferences
 
-	references, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "references", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("520")), readBuffer), uint64(noOfReferences))
+	references, err := ReadCountArrayField[ReferenceDescription](ctx, "references", ReadComplex[ReferenceDescription](ExtensionObjectDefinitionParseWithBufferProducer[ReferenceDescription]((int32)(int32(520))), readBuffer), uint64(noOfReferences))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'references' field"))
 	}
@@ -394,8 +379,8 @@ func (m *_BrowseResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		if err := WriteSimpleField[PascalByteString](ctx, "continuationPoint", m.GetContinuationPoint(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'continuationPoint' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfReferences", m.GetNoOfReferences(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfReferences := int32(utils.InlineIf(bool((m.GetReferences()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReferences()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfReferences", noOfReferences, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReferences' field")
 		}
 
@@ -425,8 +410,7 @@ func (m *_BrowseResult) deepCopy() *_BrowseResult {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
 		m.ContinuationPoint.DeepCopy().(PascalByteString),
-		m.NoOfReferences,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.References),
+		utils.DeepCopySlice[ReferenceDescription, ReferenceDescription](m.References),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowseResultCopy

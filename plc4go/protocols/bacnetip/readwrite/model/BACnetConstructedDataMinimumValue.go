@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataMinimumValue) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataMinimumValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (minimumValue)
 	lengthInBits += m.MinimumValue.GetLengthInBits(ctx)

@@ -381,7 +381,7 @@ func (m *_MonitoredSALLongFormSmartMode) GetTypeName() string {
 }
 
 func (m *_MonitoredSALLongFormSmartMode) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.MonitoredSALContract.(*_MonitoredSAL).getLengthInBits(ctx))
+	lengthInBits := uint16(m.MonitoredSALContract.(*_MonitoredSAL).GetLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8

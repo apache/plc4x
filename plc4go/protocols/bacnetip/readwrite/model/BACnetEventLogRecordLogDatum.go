@@ -403,7 +403,7 @@ func (m *_BACnetEventLogRecordLogDatum) GetTypeName() string {
 	return "BACnetEventLogRecordLogDatum"
 }
 
-func (m *_BACnetEventLogRecordLogDatum) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetEventLogRecordLogDatum) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)

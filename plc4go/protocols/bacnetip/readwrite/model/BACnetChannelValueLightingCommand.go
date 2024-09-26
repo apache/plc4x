@@ -226,7 +226,7 @@ func (m *_BACnetChannelValueLightingCommand) GetTypeName() string {
 }
 
 func (m *_BACnetChannelValueLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetChannelValueContract.(*_BACnetChannelValue).GetLengthInBits(ctx))
 
 	// Simple field (ligthingCommandValue)
 	lengthInBits += m.LigthingCommandValue.GetLengthInBits(ctx)

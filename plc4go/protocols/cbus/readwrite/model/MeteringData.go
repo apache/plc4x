@@ -461,7 +461,7 @@ func (m *_MeteringData) GetTypeName() string {
 	return "MeteringData"
 }
 
-func (m *_MeteringData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_MeteringData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

@@ -301,7 +301,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequestWhoHasObject"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

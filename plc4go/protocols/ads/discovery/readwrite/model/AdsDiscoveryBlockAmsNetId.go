@@ -246,7 +246,7 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetTypeName() string {
 }
 
 func (m *_AdsDiscoveryBlockAmsNetId) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).GetLengthInBits(ctx))
 
 	// Const Field (amsNetIdLength)
 	lengthInBits += 16

@@ -226,7 +226,7 @@ func (m *_PowerUpReply) GetTypeName() string {
 }
 
 func (m *_PowerUpReply) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ReplyContract.(*_Reply).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ReplyContract.(*_Reply).GetLengthInBits(ctx))
 
 	// Simple field (powerUpIndicator)
 	lengthInBits += m.PowerUpIndicator.GetLengthInBits(ctx)

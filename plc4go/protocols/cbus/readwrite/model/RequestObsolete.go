@@ -272,7 +272,7 @@ func (m *_RequestObsolete) GetTypeName() string {
 }
 
 func (m *_RequestObsolete) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.RequestContract.(*_Request).getLengthInBits(ctx))
+	lengthInBits := uint16(m.RequestContract.(*_Request).GetLengthInBits(ctx))
 
 	// Manual Field (calData)
 	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))

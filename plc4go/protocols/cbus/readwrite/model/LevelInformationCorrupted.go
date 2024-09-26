@@ -247,7 +247,7 @@ func (m *_LevelInformationCorrupted) GetTypeName() string {
 }
 
 func (m *_LevelInformationCorrupted) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).getLengthInBits(ctx))
+	lengthInBits := uint16(m.LevelInformationContract.(*_LevelInformation).GetLengthInBits(ctx))
 
 	// Simple field (corruptedNibble1)
 	lengthInBits += 4

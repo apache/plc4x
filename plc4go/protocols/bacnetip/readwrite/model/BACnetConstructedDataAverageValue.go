@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataAverageValue) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataAverageValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (averageValue)
 	lengthInBits += m.AverageValue.GetLengthInBits(ctx)

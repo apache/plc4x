@@ -240,7 +240,7 @@ func (m *_AdsReadRequest) GetTypeName() string {
 }
 
 func (m *_AdsReadRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AmsPacketContract.(*_AmsPacket).GetLengthInBits(ctx))
 
 	// Simple field (indexGroup)
 	lengthInBits += 32

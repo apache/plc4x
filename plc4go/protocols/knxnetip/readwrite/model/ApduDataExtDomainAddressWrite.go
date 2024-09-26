@@ -179,7 +179,7 @@ func (m *_ApduDataExtDomainAddressWrite) GetTypeName() string {
 }
 
 func (m *_ApduDataExtDomainAddressWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

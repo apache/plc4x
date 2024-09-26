@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetTypeName() stri
 }
 
 func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (updateTime)
 	lengthInBits += m.UpdateTime.GetLengthInBits(ctx)

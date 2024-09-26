@@ -202,7 +202,7 @@ func (m *_CALDataIdentify) GetTypeName() string {
 }
 
 func (m *_CALDataIdentify) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.CALDataContract.(*_CALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.CALDataContract.(*_CALData).GetLengthInBits(ctx))
 
 	// Simple field (attribute)
 	lengthInBits += 8

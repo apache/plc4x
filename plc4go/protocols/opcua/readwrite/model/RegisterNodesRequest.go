@@ -41,9 +41,7 @@ type RegisterNodesRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
-	// GetNoOfNodesToRegister returns NoOfNodesToRegister (property field)
-	GetNoOfNodesToRegister() int32
+	GetRequestHeader() RequestHeader
 	// GetNodesToRegister returns NodesToRegister (property field)
 	GetNodesToRegister() []NodeId
 	// IsRegisterNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -55,23 +53,21 @@ type RegisterNodesRequest interface {
 // _RegisterNodesRequest is the data-structure of this message
 type _RegisterNodesRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader       ExtensionObjectDefinition
-	NoOfNodesToRegister int32
-	NodesToRegister     []NodeId
+	RequestHeader   RequestHeader
+	NodesToRegister []NodeId
 }
 
 var _ RegisterNodesRequest = (*_RegisterNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterNodesRequest)(nil)
 
 // NewRegisterNodesRequest factory function for _RegisterNodesRequest
-func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) *_RegisterNodesRequest {
+func NewRegisterNodesRequest(requestHeader RequestHeader, nodesToRegister []NodeId) *_RegisterNodesRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterNodesRequest must not be nil")
+		panic("requestHeader of type RequestHeader for RegisterNodesRequest must not be nil")
 	}
 	_result := &_RegisterNodesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
-		NoOfNodesToRegister:               noOfNodesToRegister,
 		NodesToRegister:                   nodesToRegister,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -87,13 +83,11 @@ func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesT
 type RegisterNodesRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) RegisterNodesRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, nodesToRegister []NodeId) RegisterNodesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) RegisterNodesRequestBuilder
+	WithRequestHeader(RequestHeader) RegisterNodesRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesRequestBuilder
-	// WithNoOfNodesToRegister adds NoOfNodesToRegister (property field)
-	WithNoOfNodesToRegister(int32) RegisterNodesRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterNodesRequestBuilder
 	// WithNodesToRegister adds NodesToRegister (property field)
 	WithNodesToRegister(...NodeId) RegisterNodesRequestBuilder
 	// Build builds the RegisterNodesRequest or returns an error if something is wrong
@@ -121,30 +115,25 @@ func (b *_RegisterNodesRequestBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) RegisterNodesRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfNodesToRegister(noOfNodesToRegister).WithNodesToRegister(nodesToRegister...)
+func (b *_RegisterNodesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, nodesToRegister []NodeId) RegisterNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNodesToRegister(nodesToRegister...)
 }
 
-func (b *_RegisterNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RegisterNodesRequestBuilder {
+func (b *_RegisterNodesRequestBuilder) WithRequestHeader(requestHeader RequestHeader) RegisterNodesRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_RegisterNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisterNodesRequestBuilder) WithNoOfNodesToRegister(noOfNodesToRegister int32) RegisterNodesRequestBuilder {
-	b.NoOfNodesToRegister = noOfNodesToRegister
 	return b
 }
 
@@ -209,8 +198,8 @@ func (b *_RegisterNodesRequest) CreateRegisterNodesRequestBuilder() RegisterNode
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RegisterNodesRequest) GetIdentifier() string {
-	return "560"
+func (m *_RegisterNodesRequest) GetExtensionId() int32 {
+	return int32(560)
 }
 
 ///////////////////////
@@ -227,12 +216,8 @@ func (m *_RegisterNodesRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RegisterNodesRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_RegisterNodesRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
-}
-
-func (m *_RegisterNodesRequest) GetNoOfNodesToRegister() int32 {
-	return m.NoOfNodesToRegister
 }
 
 func (m *_RegisterNodesRequest) GetNodesToRegister() []NodeId {
@@ -260,12 +245,12 @@ func (m *_RegisterNodesRequest) GetTypeName() string {
 }
 
 func (m *_RegisterNodesRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfNodesToRegister)
+	// Implicit Field (noOfNodesToRegister)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +270,7 @@ func (m *_RegisterNodesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RegisterNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerNodesRequest RegisterNodesRequest, err error) {
+func (m *_RegisterNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__registerNodesRequest RegisterNodesRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,17 +281,17 @@ func (m *_RegisterNodesRequest) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfNodesToRegister, err := ReadSimpleField(ctx, "noOfNodesToRegister", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToRegister, err := ReadImplicitField[int32](ctx, "noOfNodesToRegister", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToRegister' field"))
 	}
-	m.NoOfNodesToRegister = noOfNodesToRegister
+	_ = noOfNodesToRegister
 
 	nodesToRegister, err := ReadCountArrayField[NodeId](ctx, "nodesToRegister", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfNodesToRegister))
 	if err != nil {
@@ -339,11 +324,11 @@ func (m *_RegisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for RegisterNodesRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfNodesToRegister", m.GetNoOfNodesToRegister(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfNodesToRegister := int32(utils.InlineIf(bool((m.GetNodesToRegister()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToRegister()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfNodesToRegister", noOfNodesToRegister, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToRegister' field")
 		}
 
@@ -371,8 +356,7 @@ func (m *_RegisterNodesRequest) deepCopy() *_RegisterNodesRequest {
 	}
 	_RegisterNodesRequestCopy := &_RegisterNodesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfNodesToRegister,
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		utils.DeepCopySlice[NodeId, NodeId](m.NodesToRegister),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

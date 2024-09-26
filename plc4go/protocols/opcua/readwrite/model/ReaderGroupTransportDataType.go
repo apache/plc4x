@@ -150,8 +150,8 @@ func (b *_ReaderGroupTransportDataType) CreateReaderGroupTransportDataTypeBuilde
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ReaderGroupTransportDataType) GetIdentifier() string {
-	return "15623"
+func (m *_ReaderGroupTransportDataType) GetExtensionId() int32 {
+	return int32(15623)
 }
 
 ///////////////////////
@@ -179,7 +179,7 @@ func (m *_ReaderGroupTransportDataType) GetTypeName() string {
 }
 
 func (m *_ReaderGroupTransportDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -188,7 +188,7 @@ func (m *_ReaderGroupTransportDataType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ReaderGroupTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__readerGroupTransportDataType ReaderGroupTransportDataType, err error) {
+func (m *_ReaderGroupTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__readerGroupTransportDataType ReaderGroupTransportDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

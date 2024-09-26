@@ -206,7 +206,7 @@ func (m *_NLMReserved) GetTypeName() string {
 }
 
 func (m *_NLMReserved) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.UnknownBytes) > 0 {

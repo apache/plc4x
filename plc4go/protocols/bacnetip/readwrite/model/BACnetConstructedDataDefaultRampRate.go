@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataDefaultRampRate) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDefaultRampRate) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (defaultRampRate)
 	lengthInBits += m.DefaultRampRate.GetLengthInBits(ctx)

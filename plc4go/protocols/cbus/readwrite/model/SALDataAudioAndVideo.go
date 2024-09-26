@@ -230,7 +230,7 @@ func (m *_SALDataAudioAndVideo) GetTypeName() string {
 }
 
 func (m *_SALDataAudioAndVideo) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SALDataContract.(*_SALData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SALDataContract.(*_SALData).GetLengthInBits(ctx))
 
 	// Simple field (audioVideoData)
 	lengthInBits += m.AudioVideoData.GetLengthInBits(ctx)

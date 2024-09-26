@@ -269,7 +269,7 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Simple field (vtClass)
 	lengthInBits += m.VtClass.GetLengthInBits(ctx)

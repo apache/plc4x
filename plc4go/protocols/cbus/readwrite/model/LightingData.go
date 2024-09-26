@@ -340,7 +340,7 @@ func (m *_LightingData) GetTypeName() string {
 	return "LightingData"
 }
 
-func (m *_LightingData) getLengthInBits(ctx context.Context) uint16 {
+func (m *_LightingData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)

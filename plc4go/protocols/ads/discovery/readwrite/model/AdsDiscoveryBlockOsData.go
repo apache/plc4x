@@ -206,7 +206,7 @@ func (m *_AdsDiscoveryBlockOsData) GetTypeName() string {
 }
 
 func (m *_AdsDiscoveryBlockOsData) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).GetLengthInBits(ctx))
 
 	// Implicit Field (osDataLen)
 	lengthInBits += 16

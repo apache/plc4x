@@ -807,7 +807,7 @@ func (m *_Variant) GetTypeName() string {
 	return "Variant"
 }
 
-func (m *_Variant) getLengthInBits(ctx context.Context) uint16 {
+func (m *_Variant) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (arrayLengthSpecified)

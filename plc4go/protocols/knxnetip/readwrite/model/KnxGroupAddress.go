@@ -254,7 +254,7 @@ func (m *_KnxGroupAddress) GetTypeName() string {
 	return "KnxGroupAddress"
 }
 
-func (m *_KnxGroupAddress) getLengthInBits(ctx context.Context) uint16 {
+func (m *_KnxGroupAddress) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

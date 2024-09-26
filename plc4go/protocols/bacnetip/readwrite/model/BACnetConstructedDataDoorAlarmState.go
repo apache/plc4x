@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataDoorAlarmState) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDoorAlarmState) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (doorAlarmState)
 	lengthInBits += m.DoorAlarmState.GetLengthInBits(ctx)

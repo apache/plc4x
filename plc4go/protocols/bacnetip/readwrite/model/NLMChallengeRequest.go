@@ -236,7 +236,7 @@ func (m *_NLMChallengeRequest) GetTypeName() string {
 }
 
 func (m *_NLMChallengeRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.NLMContract.(*_NLM).getLengthInBits(ctx))
+	lengthInBits := uint16(m.NLMContract.(*_NLM).GetLengthInBits(ctx))
 
 	// Simple field (messageChallenge)
 	lengthInBits += 8

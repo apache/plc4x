@@ -226,7 +226,7 @@ func (m *_SecurityDataSystemArmedDisarmed) GetTypeName() string {
 }
 
 func (m *_SecurityDataSystemArmedDisarmed) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.SecurityDataContract.(*_SecurityData).GetLengthInBits(ctx))
 
 	// Simple field (armCodeType)
 	lengthInBits += m.ArmCodeType.GetLengthInBits(ctx)

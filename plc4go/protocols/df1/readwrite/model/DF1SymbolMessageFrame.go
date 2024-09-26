@@ -283,7 +283,7 @@ func (m *_DF1SymbolMessageFrame) GetTypeName() string {
 }
 
 func (m *_DF1SymbolMessageFrame) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1SymbolContract.(*_DF1Symbol).getLengthInBits(ctx))
+	lengthInBits := uint16(m.DF1SymbolContract.(*_DF1Symbol).GetLengthInBits(ctx))
 
 	// Simple field (destinationAddress)
 	lengthInBits += 8

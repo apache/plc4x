@@ -179,7 +179,7 @@ func (m *_ApduDataExtLinkWrite) GetTypeName() string {
 }
 
 func (m *_ApduDataExtLinkWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

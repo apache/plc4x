@@ -285,7 +285,7 @@ func (m *_EncodedReply) GetTypeName() string {
 	return "EncodedReply"
 }
 
-func (m *_EncodedReply) getLengthInBits(ctx context.Context) uint16 {
+func (m *_EncodedReply) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.

@@ -245,7 +245,7 @@ func (m *_ParameterValueSerialNumber) GetTypeName() string {
 }
 
 func (m *_ParameterValueSerialNumber) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ParameterValueContract.(*_ParameterValue).GetLengthInBits(ctx))
 
 	// Simple field (value)
 	lengthInBits += m.Value.GetLengthInBits(ctx)

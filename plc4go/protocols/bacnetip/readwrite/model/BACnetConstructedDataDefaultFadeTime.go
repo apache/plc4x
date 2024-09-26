@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataDefaultFadeTime) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataDefaultFadeTime) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (defaultFadeTime)
 	lengthInBits += m.DefaultFadeTime.GetLengthInBits(ctx)

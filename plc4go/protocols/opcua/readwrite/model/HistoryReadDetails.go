@@ -150,8 +150,8 @@ func (b *_HistoryReadDetails) CreateHistoryReadDetailsBuilder() HistoryReadDetai
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_HistoryReadDetails) GetIdentifier() string {
-	return "643"
+func (m *_HistoryReadDetails) GetExtensionId() int32 {
+	return int32(643)
 }
 
 ///////////////////////
@@ -179,7 +179,7 @@ func (m *_HistoryReadDetails) GetTypeName() string {
 }
 
 func (m *_HistoryReadDetails) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	return lengthInBits
 }
@@ -188,7 +188,7 @@ func (m *_HistoryReadDetails) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_HistoryReadDetails) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyReadDetails HistoryReadDetails, err error) {
+func (m *_HistoryReadDetails) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__historyReadDetails HistoryReadDetails, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -251,7 +251,7 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetTypeName() string {
 }
 
 func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConstructedDataContract.(*_BACnetConstructedData).GetLengthInBits(ctx))
 
 	// Simple field (ipMulticastAddress)
 	lengthInBits += m.IpMulticastAddress.GetLengthInBits(ctx)

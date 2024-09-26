@@ -49,8 +49,6 @@ type ExpandedNodeId interface {
 	GetNamespaceURI() PascalString
 	// GetServerIndex returns ServerIndex (property field)
 	GetServerIndex() *uint32
-	// GetIdentifier returns Identifier (virtual field)
-	GetIdentifier() string
 	// IsExpandedNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExpandedNodeId()
 	// CreateBuilder creates a ExpandedNodeIdBuilder
@@ -245,25 +243,6 @@ func (m *_ExpandedNodeId) GetServerIndex() *uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *_ExpandedNodeId) GetIdentifier() string {
-	ctx := context.Background()
-	_ = ctx
-	namespaceURI := m.GetNamespaceURI()
-	_ = namespaceURI
-	serverIndex := m.GetServerIndex()
-	_ = serverIndex
-	return fmt.Sprintf("%v", m.GetNodeId().GetIdentifier())
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastExpandedNodeId(structType any) ExpandedNodeId {
@@ -291,8 +270,6 @@ func (m *_ExpandedNodeId) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
-
-	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (namespaceURI)
 	if m.NamespaceURI != nil {
@@ -356,12 +333,6 @@ func (m *_ExpandedNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	m.NodeId = nodeId
 
-	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), nodeId.GetIdentifier())
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
-	}
-	_ = identifier
-
 	var namespaceURI PascalString
 	_namespaceURI, err := ReadOptionalField[PascalString](ctx, "namespaceURI", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), namespaceURISpecified)
 	if err != nil {
@@ -413,12 +384,6 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	if err := WriteSimpleField[NodeIdTypeDefinition](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeIdTypeDefinition](writeBuffer)); err != nil {
 		return errors.Wrap(err, "Error serializing 'nodeId' field")
-	}
-	// Virtual field
-	identifier := m.GetIdentifier()
-	_ = identifier
-	if _identifierErr := writeBuffer.WriteVirtual(ctx, "identifier", m.GetIdentifier()); _identifierErr != nil {
-		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
 	}
 
 	if err := WriteOptionalField[PascalString](ctx, "namespaceURI", GetRef(m.GetNamespaceURI()), WriteComplex[PascalString](writeBuffer), true); err != nil {

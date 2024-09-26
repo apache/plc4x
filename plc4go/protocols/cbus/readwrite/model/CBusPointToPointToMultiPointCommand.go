@@ -340,7 +340,7 @@ func (m *_CBusPointToPointToMultiPointCommand) GetTypeName() string {
 	return "CBusPointToPointToMultiPointCommand"
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) getLengthInBits(ctx context.Context) uint16 {
+func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (bridgeAddress)

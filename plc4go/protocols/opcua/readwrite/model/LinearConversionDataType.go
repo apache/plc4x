@@ -196,8 +196,8 @@ func (b *_LinearConversionDataType) CreateLinearConversionDataTypeBuilder() Line
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_LinearConversionDataType) GetIdentifier() string {
-	return "32437"
+func (m *_LinearConversionDataType) GetExtensionId() int32 {
+	return int32(32437)
 }
 
 ///////////////////////
@@ -251,7 +251,7 @@ func (m *_LinearConversionDataType) GetTypeName() string {
 }
 
 func (m *_LinearConversionDataType) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (initialAddend)
 	lengthInBits += 32
@@ -272,7 +272,7 @@ func (m *_LinearConversionDataType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_LinearConversionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__linearConversionDataType LinearConversionDataType, err error) {
+func (m *_LinearConversionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__linearConversionDataType LinearConversionDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

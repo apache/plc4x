@@ -121,7 +121,15 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensiblePayload(readWriteModel.NewRootExtensionObject(opcuaWriteRequest, expandedNodeId, identifier), nil, 0)
+	extObject := readWriteModel.NewExtensiblePayload(
+		nil,
+		readWriteModel.NewRootExtensionObject(
+			expandedNodeId,
+			opcuaWriteRequest,
+			identifier,
+		),
+		0,
+	)
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "Unable to serialise the ReadRequest"))
@@ -398,7 +406,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 	case apiValues.WSTRING:
 		tmpString := make([]readWriteModel.PascalString, length)
 		for i := uint32(0); i < length; i++ {
-			tmpString[i] = readWriteModel.NewPascalString(utils.MakePtr(valueObject.GetIndex(i).GetString()))
+			tmpString[i] = readWriteModel.NewPascalString(utils.ToPtr(valueObject.GetIndex(i).GetString()))
 		}
 		var arrayLength *int32
 		if length != 1 {

@@ -288,7 +288,7 @@ func (m *_Payload) GetTypeName() string {
 	return "Payload"
 }
 
-func (m *_Payload) getLengthInBits(ctx context.Context) uint16 {
+func (m *_Payload) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (sequenceHeader)

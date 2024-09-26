@@ -532,7 +532,7 @@ func (m *_BACnetServiceAck) GetTypeName() string {
 	return "BACnetServiceAck"
 }
 
-func (m *_BACnetServiceAck) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetServiceAck) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8

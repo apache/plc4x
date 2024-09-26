@@ -41,7 +41,7 @@ type ExtensiblePayload interface {
 	utils.Copyable
 	Payload
 	// GetPayload returns Payload (property field)
-	GetPayload() ExtensionObject
+	GetPayload() RootExtensionObject
 	// IsExtensiblePayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExtensiblePayload()
 	// CreateBuilder creates a ExtensiblePayloadBuilder
@@ -51,16 +51,16 @@ type ExtensiblePayload interface {
 // _ExtensiblePayload is the data-structure of this message
 type _ExtensiblePayload struct {
 	PayloadContract
-	Payload ExtensionObject
+	Payload RootExtensionObject
 }
 
 var _ ExtensiblePayload = (*_ExtensiblePayload)(nil)
 var _ PayloadRequirements = (*_ExtensiblePayload)(nil)
 
 // NewExtensiblePayload factory function for _ExtensiblePayload
-func NewExtensiblePayload(sequenceHeader SequenceHeader, payload ExtensionObject, byteCount uint32) *_ExtensiblePayload {
+func NewExtensiblePayload(sequenceHeader SequenceHeader, payload RootExtensionObject, byteCount uint32) *_ExtensiblePayload {
 	if payload == nil {
-		panic("payload of type ExtensionObject for ExtensiblePayload must not be nil")
+		panic("payload of type RootExtensionObject for ExtensiblePayload must not be nil")
 	}
 	_result := &_ExtensiblePayload{
 		PayloadContract: NewPayload(sequenceHeader, byteCount),
@@ -79,11 +79,11 @@ func NewExtensiblePayload(sequenceHeader SequenceHeader, payload ExtensionObject
 type ExtensiblePayloadBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(payload ExtensionObject) ExtensiblePayloadBuilder
+	WithMandatoryFields(payload RootExtensionObject) ExtensiblePayloadBuilder
 	// WithPayload adds Payload (property field)
-	WithPayload(ExtensionObject) ExtensiblePayloadBuilder
+	WithPayload(RootExtensionObject) ExtensiblePayloadBuilder
 	// WithPayloadBuilder adds Payload (property field) which is build by the builder
-	WithPayloadBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) ExtensiblePayloadBuilder
+	WithPayloadBuilder(func(RootExtensionObjectBuilder) RootExtensionObjectBuilder) ExtensiblePayloadBuilder
 	// Build builds the ExtensiblePayload or returns an error if something is wrong
 	Build() (ExtensiblePayload, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_ExtensiblePayloadBuilder) setParent(contract PayloadContract) {
 	b.PayloadContract = contract
 }
 
-func (b *_ExtensiblePayloadBuilder) WithMandatoryFields(payload ExtensionObject) ExtensiblePayloadBuilder {
+func (b *_ExtensiblePayloadBuilder) WithMandatoryFields(payload RootExtensionObject) ExtensiblePayloadBuilder {
 	return b.WithPayload(payload)
 }
 
-func (b *_ExtensiblePayloadBuilder) WithPayload(payload ExtensionObject) ExtensiblePayloadBuilder {
+func (b *_ExtensiblePayloadBuilder) WithPayload(payload RootExtensionObject) ExtensiblePayloadBuilder {
 	b.Payload = payload
 	return b
 }
 
-func (b *_ExtensiblePayloadBuilder) WithPayloadBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) ExtensiblePayloadBuilder {
-	builder := builderSupplier(b.Payload.CreateExtensionObjectBuilder())
+func (b *_ExtensiblePayloadBuilder) WithPayloadBuilder(builderSupplier func(RootExtensionObjectBuilder) RootExtensionObjectBuilder) ExtensiblePayloadBuilder {
+	builder := builderSupplier(b.Payload.CreateRootExtensionObjectBuilder())
 	var err error
 	b.Payload, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RootExtensionObjectBuilder failed"))
 	}
 	return b
 }
@@ -205,7 +205,7 @@ func (m *_ExtensiblePayload) GetParent() PayloadContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ExtensiblePayload) GetPayload() ExtensionObject {
+func (m *_ExtensiblePayload) GetPayload() RootExtensionObject {
 	return m.Payload
 }
 
@@ -230,7 +230,7 @@ func (m *_ExtensiblePayload) GetTypeName() string {
 }
 
 func (m *_ExtensiblePayload) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PayloadContract.(*_Payload).getLengthInBits(ctx))
+	lengthInBits := uint16(m.PayloadContract.(*_Payload).GetLengthInBits(ctx))
 
 	// Simple field (payload)
 	lengthInBits += m.Payload.GetLengthInBits(ctx)
@@ -253,7 +253,7 @@ func (m *_ExtensiblePayload) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	payload, err := ReadSimpleField[ExtensionObject](ctx, "payload", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(false))), readBuffer))
+	payload, err := ReadSimpleField[RootExtensionObject](ctx, "payload", ReadComplex[RootExtensionObject](ExtensionObjectParseWithBufferProducer[RootExtensionObject]((bool)(bool(false))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_ExtensiblePayload) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ExtensiblePayload")
 		}
 
-		if err := WriteSimpleField[ExtensionObject](ctx, "payload", m.GetPayload(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RootExtensionObject](ctx, "payload", m.GetPayload(), WriteComplex[RootExtensionObject](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 
@@ -308,7 +308,7 @@ func (m *_ExtensiblePayload) deepCopy() *_ExtensiblePayload {
 	}
 	_ExtensiblePayloadCopy := &_ExtensiblePayload{
 		m.PayloadContract.(*_Payload).deepCopy(),
-		m.Payload.DeepCopy().(ExtensionObject),
+		m.Payload.DeepCopy().(RootExtensionObject),
 	}
 	m.PayloadContract.(*_Payload)._SubType = m
 	return _ExtensiblePayloadCopy

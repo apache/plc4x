@@ -230,7 +230,7 @@ func (m *_PortSegment) GetTypeName() string {
 }
 
 func (m *_PortSegment) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.PathSegmentContract.(*_PathSegment).getLengthInBits(ctx))
+	lengthInBits := uint16(m.PathSegmentContract.(*_PathSegment).GetLengthInBits(ctx))
 
 	// Simple field (segmentType)
 	lengthInBits += m.SegmentType.GetLengthInBits(ctx)

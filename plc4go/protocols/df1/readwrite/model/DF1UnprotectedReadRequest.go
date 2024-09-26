@@ -221,7 +221,7 @@ func (m *_DF1UnprotectedReadRequest) GetTypeName() string {
 }
 
 func (m *_DF1UnprotectedReadRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.DF1CommandContract.(*_DF1Command).getLengthInBits(ctx))
+	lengthInBits := uint16(m.DF1CommandContract.(*_DF1Command).GetLengthInBits(ctx))
 
 	// Simple field (address)
 	lengthInBits += 16

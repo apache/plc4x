@@ -338,7 +338,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetTypeName() strin
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Simple field (textMessageSourceDevice)
 	lengthInBits += m.TextMessageSourceDevice.GetLengthInBits(ctx)

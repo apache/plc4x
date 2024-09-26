@@ -229,7 +229,7 @@ func (m *_ModbusPDUDiagnosticResponse) GetTypeName() string {
 }
 
 func (m *_ModbusPDUDiagnosticResponse) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ModbusPDUContract.(*_ModbusPDU).GetLengthInBits(ctx))
 
 	// Simple field (subFunction)
 	lengthInBits += 16

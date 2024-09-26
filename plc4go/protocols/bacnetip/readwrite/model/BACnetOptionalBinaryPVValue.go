@@ -226,7 +226,7 @@ func (m *_BACnetOptionalBinaryPVValue) GetTypeName() string {
 }
 
 func (m *_BACnetOptionalBinaryPVValue) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).GetLengthInBits(ctx))
 
 	// Simple field (binaryPv)
 	lengthInBits += m.BinaryPv.GetLengthInBits(ctx)

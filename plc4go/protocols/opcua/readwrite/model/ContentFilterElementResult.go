@@ -42,12 +42,8 @@ type ContentFilterElementResult interface {
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
-	// GetNoOfOperandStatusCodes returns NoOfOperandStatusCodes (property field)
-	GetNoOfOperandStatusCodes() int32
 	// GetOperandStatusCodes returns OperandStatusCodes (property field)
 	GetOperandStatusCodes() []StatusCode
-	// GetNoOfOperandDiagnosticInfos returns NoOfOperandDiagnosticInfos (property field)
-	GetNoOfOperandDiagnosticInfos() int32
 	// GetOperandDiagnosticInfos returns OperandDiagnosticInfos (property field)
 	GetOperandDiagnosticInfos() []DiagnosticInfo
 	// IsContentFilterElementResult is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type ContentFilterElementResult interface {
 // _ContentFilterElementResult is the data-structure of this message
 type _ContentFilterElementResult struct {
 	ExtensionObjectDefinitionContract
-	StatusCode                 StatusCode
-	NoOfOperandStatusCodes     int32
-	OperandStatusCodes         []StatusCode
-	NoOfOperandDiagnosticInfos int32
-	OperandDiagnosticInfos     []DiagnosticInfo
+	StatusCode             StatusCode
+	OperandStatusCodes     []StatusCode
+	OperandDiagnosticInfos []DiagnosticInfo
 }
 
 var _ ContentFilterElementResult = (*_ContentFilterElementResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterElementResult)(nil)
 
 // NewContentFilterElementResult factory function for _ContentFilterElementResult
-func NewContentFilterElementResult(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) *_ContentFilterElementResult {
+func NewContentFilterElementResult(statusCode StatusCode, operandStatusCodes []StatusCode, operandDiagnosticInfos []DiagnosticInfo) *_ContentFilterElementResult {
 	if statusCode == nil {
 		panic("statusCode of type StatusCode for ContentFilterElementResult must not be nil")
 	}
 	_result := &_ContentFilterElementResult{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		StatusCode:                        statusCode,
-		NoOfOperandStatusCodes:            noOfOperandStatusCodes,
 		OperandStatusCodes:                operandStatusCodes,
-		NoOfOperandDiagnosticInfos:        noOfOperandDiagnosticInfos,
 		OperandDiagnosticInfos:            operandDiagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -95,17 +87,13 @@ func NewContentFilterElementResult(statusCode StatusCode, noOfOperandStatusCodes
 type ContentFilterElementResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) ContentFilterElementResultBuilder
+	WithMandatoryFields(statusCode StatusCode, operandStatusCodes []StatusCode, operandDiagnosticInfos []DiagnosticInfo) ContentFilterElementResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) ContentFilterElementResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) ContentFilterElementResultBuilder
-	// WithNoOfOperandStatusCodes adds NoOfOperandStatusCodes (property field)
-	WithNoOfOperandStatusCodes(int32) ContentFilterElementResultBuilder
 	// WithOperandStatusCodes adds OperandStatusCodes (property field)
 	WithOperandStatusCodes(...StatusCode) ContentFilterElementResultBuilder
-	// WithNoOfOperandDiagnosticInfos adds NoOfOperandDiagnosticInfos (property field)
-	WithNoOfOperandDiagnosticInfos(int32) ContentFilterElementResultBuilder
 	// WithOperandDiagnosticInfos adds OperandDiagnosticInfos (property field)
 	WithOperandDiagnosticInfos(...DiagnosticInfo) ContentFilterElementResultBuilder
 	// Build builds the ContentFilterElementResult or returns an error if something is wrong
@@ -133,8 +121,8 @@ func (b *_ContentFilterElementResultBuilder) setParent(contract ExtensionObjectD
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ContentFilterElementResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) ContentFilterElementResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfOperandStatusCodes(noOfOperandStatusCodes).WithOperandStatusCodes(operandStatusCodes...).WithNoOfOperandDiagnosticInfos(noOfOperandDiagnosticInfos).WithOperandDiagnosticInfos(operandDiagnosticInfos...)
+func (b *_ContentFilterElementResultBuilder) WithMandatoryFields(statusCode StatusCode, operandStatusCodes []StatusCode, operandDiagnosticInfos []DiagnosticInfo) ContentFilterElementResultBuilder {
+	return b.WithStatusCode(statusCode).WithOperandStatusCodes(operandStatusCodes...).WithOperandDiagnosticInfos(operandDiagnosticInfos...)
 }
 
 func (b *_ContentFilterElementResultBuilder) WithStatusCode(statusCode StatusCode) ContentFilterElementResultBuilder {
@@ -155,18 +143,8 @@ func (b *_ContentFilterElementResultBuilder) WithStatusCodeBuilder(builderSuppli
 	return b
 }
 
-func (b *_ContentFilterElementResultBuilder) WithNoOfOperandStatusCodes(noOfOperandStatusCodes int32) ContentFilterElementResultBuilder {
-	b.NoOfOperandStatusCodes = noOfOperandStatusCodes
-	return b
-}
-
 func (b *_ContentFilterElementResultBuilder) WithOperandStatusCodes(operandStatusCodes ...StatusCode) ContentFilterElementResultBuilder {
 	b.OperandStatusCodes = operandStatusCodes
-	return b
-}
-
-func (b *_ContentFilterElementResultBuilder) WithNoOfOperandDiagnosticInfos(noOfOperandDiagnosticInfos int32) ContentFilterElementResultBuilder {
-	b.NoOfOperandDiagnosticInfos = noOfOperandDiagnosticInfos
 	return b
 }
 
@@ -231,8 +209,8 @@ func (b *_ContentFilterElementResult) CreateContentFilterElementResultBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ContentFilterElementResult) GetIdentifier() string {
-	return "606"
+func (m *_ContentFilterElementResult) GetExtensionId() int32 {
+	return int32(606)
 }
 
 ///////////////////////
@@ -253,16 +231,8 @@ func (m *_ContentFilterElementResult) GetStatusCode() StatusCode {
 	return m.StatusCode
 }
 
-func (m *_ContentFilterElementResult) GetNoOfOperandStatusCodes() int32 {
-	return m.NoOfOperandStatusCodes
-}
-
 func (m *_ContentFilterElementResult) GetOperandStatusCodes() []StatusCode {
 	return m.OperandStatusCodes
-}
-
-func (m *_ContentFilterElementResult) GetNoOfOperandDiagnosticInfos() int32 {
-	return m.NoOfOperandDiagnosticInfos
 }
 
 func (m *_ContentFilterElementResult) GetOperandDiagnosticInfos() []DiagnosticInfo {
@@ -290,12 +260,12 @@ func (m *_ContentFilterElementResult) GetTypeName() string {
 }
 
 func (m *_ContentFilterElementResult) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).GetLengthInBits(ctx))
 
 	// Simple field (statusCode)
 	lengthInBits += m.StatusCode.GetLengthInBits(ctx)
 
-	// Simple field (noOfOperandStatusCodes)
+	// Implicit Field (noOfOperandStatusCodes)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +278,7 @@ func (m *_ContentFilterElementResult) GetLengthInBits(ctx context.Context) uint1
 		}
 	}
 
-	// Simple field (noOfOperandDiagnosticInfos)
+	// Implicit Field (noOfOperandDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +298,7 @@ func (m *_ContentFilterElementResult) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ContentFilterElementResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__contentFilterElementResult ContentFilterElementResult, err error) {
+func (m *_ContentFilterElementResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__contentFilterElementResult ContentFilterElementResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -345,11 +315,11 @@ func (m *_ContentFilterElementResult) parse(ctx context.Context, readBuffer util
 	}
 	m.StatusCode = statusCode
 
-	noOfOperandStatusCodes, err := ReadSimpleField(ctx, "noOfOperandStatusCodes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfOperandStatusCodes, err := ReadImplicitField[int32](ctx, "noOfOperandStatusCodes", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOperandStatusCodes' field"))
 	}
-	m.NoOfOperandStatusCodes = noOfOperandStatusCodes
+	_ = noOfOperandStatusCodes
 
 	operandStatusCodes, err := ReadCountArrayField[StatusCode](ctx, "operandStatusCodes", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfOperandStatusCodes))
 	if err != nil {
@@ -357,11 +327,11 @@ func (m *_ContentFilterElementResult) parse(ctx context.Context, readBuffer util
 	}
 	m.OperandStatusCodes = operandStatusCodes
 
-	noOfOperandDiagnosticInfos, err := ReadSimpleField(ctx, "noOfOperandDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfOperandDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfOperandDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOperandDiagnosticInfos' field"))
 	}
-	m.NoOfOperandDiagnosticInfos = noOfOperandDiagnosticInfos
+	_ = noOfOperandDiagnosticInfos
 
 	operandDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "operandDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfOperandDiagnosticInfos))
 	if err != nil {
@@ -397,16 +367,16 @@ func (m *_ContentFilterElementResult) SerializeWithWriteBuffer(ctx context.Conte
 		if err := WriteSimpleField[StatusCode](ctx, "statusCode", m.GetStatusCode(), WriteComplex[StatusCode](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'statusCode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfOperandStatusCodes", m.GetNoOfOperandStatusCodes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfOperandStatusCodes := int32(utils.InlineIf(bool((m.GetOperandStatusCodes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetOperandStatusCodes()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfOperandStatusCodes", noOfOperandStatusCodes, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfOperandStatusCodes' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "operandStatusCodes", m.GetOperandStatusCodes(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'operandStatusCodes' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfOperandDiagnosticInfos", m.GetNoOfOperandDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfOperandDiagnosticInfos := int32(utils.InlineIf(bool((m.GetOperandDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetOperandDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfOperandDiagnosticInfos", noOfOperandDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfOperandDiagnosticInfos' field")
 		}
 
@@ -435,9 +405,7 @@ func (m *_ContentFilterElementResult) deepCopy() *_ContentFilterElementResult {
 	_ContentFilterElementResultCopy := &_ContentFilterElementResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfOperandStatusCodes,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.OperandStatusCodes),
-		m.NoOfOperandDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.OperandDiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

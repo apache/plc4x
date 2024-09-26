@@ -211,7 +211,7 @@ func (m *_BVLCReadBroadcastDistributionTableAck) GetTypeName() string {
 }
 
 func (m *_BVLCReadBroadcastDistributionTableAck) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BVLCContract.(*_BVLC).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BVLCContract.(*_BVLC).GetLengthInBits(ctx))
 
 	// Array field
 	if len(m.Table) > 0 {

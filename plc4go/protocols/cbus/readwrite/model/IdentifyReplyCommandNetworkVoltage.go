@@ -242,7 +242,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetTypeName() string {
 }
 
 func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).GetLengthInBits(ctx))
 
 	// Simple field (volts)
 	lengthInBits += 16

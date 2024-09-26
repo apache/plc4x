@@ -230,7 +230,7 @@ func (m *_AdsDiscoveryBlockHostName) GetTypeName() string {
 }
 
 func (m *_AdsDiscoveryBlockHostName) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).getLengthInBits(ctx))
+	lengthInBits := uint16(m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).GetLengthInBits(ctx))
 
 	// Simple field (hostName)
 	lengthInBits += m.HostName.GetLengthInBits(ctx)

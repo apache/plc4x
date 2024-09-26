@@ -377,7 +377,7 @@ func (m *_COTPPacket) GetTypeName() string {
 	return "COTPPacket"
 }
 
-func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint16 {
+func (m *_COTPPacket) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Implicit Field (headerLength)

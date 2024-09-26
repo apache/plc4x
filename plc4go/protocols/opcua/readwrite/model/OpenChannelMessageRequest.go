@@ -323,7 +323,7 @@ func (m *_OpenChannelMessageRequest) GetTypeName() string {
 }
 
 func (m *_OpenChannelMessageRequest) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.OpenChannelMessageContract.(*_OpenChannelMessage).getLengthInBits(ctx))
+	lengthInBits := uint16(m.OpenChannelMessageContract.(*_OpenChannelMessage).GetLengthInBits(ctx))
 
 	// Simple field (secureChannelId)
 	lengthInBits += 32

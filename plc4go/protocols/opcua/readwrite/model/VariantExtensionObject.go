@@ -221,7 +221,7 @@ func (m *_VariantExtensionObject) GetTypeName() string {
 }
 
 func (m *_VariantExtensionObject) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.VariantContract.(*_Variant).getLengthInBits(ctx))
+	lengthInBits := uint16(m.VariantContract.(*_Variant).GetLengthInBits(ctx))
 
 	// Optional Field (arrayLength)
 	if m.ArrayLength != nil {
@@ -263,7 +263,7 @@ func (m *_VariantExtensionObject) parse(ctx context.Context, readBuffer utils.Re
 	}
 	m.ArrayLength = arrayLength
 
-	value, err := ReadCountArrayField[ExtensionObject](ctx, "value", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return int32(int32(1)) }, func() any { return int32((*arrayLength)) }).(int32)))
+	value, err := ReadCountArrayField[ExtensionObject](ctx, "value", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer), uint64(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return int32(int32(1)) }, func() any { return int32((*arrayLength)) }).(int32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

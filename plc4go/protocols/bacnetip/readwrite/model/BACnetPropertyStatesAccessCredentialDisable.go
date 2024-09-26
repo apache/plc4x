@@ -226,7 +226,7 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) GetTypeName() string {
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisable) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).GetLengthInBits(ctx))
 
 	// Simple field (accessCredentialDisable)
 	lengthInBits += m.AccessCredentialDisable.GetLengthInBits(ctx)

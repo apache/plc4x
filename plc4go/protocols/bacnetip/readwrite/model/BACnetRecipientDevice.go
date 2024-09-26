@@ -226,7 +226,7 @@ func (m *_BACnetRecipientDevice) GetTypeName() string {
 }
 
 func (m *_BACnetRecipientDevice) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetRecipientContract.(*_BACnetRecipient).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetRecipientContract.(*_BACnetRecipient).GetLengthInBits(ctx))
 
 	// Simple field (deviceValue)
 	lengthInBits += m.DeviceValue.GetLengthInBits(ctx)

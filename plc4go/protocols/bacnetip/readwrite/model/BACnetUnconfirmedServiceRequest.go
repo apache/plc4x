@@ -471,7 +471,7 @@ func (m *_BACnetUnconfirmedServiceRequest) GetTypeName() string {
 	return "BACnetUnconfirmedServiceRequest"
 }
 
-func (m *_BACnetUnconfirmedServiceRequest) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetUnconfirmedServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (serviceChoice)
 	lengthInBits += 8

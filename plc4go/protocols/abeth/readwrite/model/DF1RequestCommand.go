@@ -214,7 +214,7 @@ func (m *_DF1RequestCommand) GetTypeName() string {
 	return "DF1RequestCommand"
 }
 
-func (m *_DF1RequestCommand) getLengthInBits(ctx context.Context) uint16 {
+func (m *_DF1RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (functionCode)
 	lengthInBits += 8

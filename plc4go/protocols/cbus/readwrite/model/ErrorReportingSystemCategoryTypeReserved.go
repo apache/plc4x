@@ -206,7 +206,7 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetTypeName() string {
 }
 
 func (m *_ErrorReportingSystemCategoryTypeReserved) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).GetLengthInBits(ctx))
 
 	// Simple field (reservedValue)
 	lengthInBits += 4

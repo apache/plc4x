@@ -359,7 +359,7 @@ func (m *_BACnetError) GetTypeName() string {
 	return "BACnetError"
 }
 
-func (m *_BACnetError) getLengthInBits(ctx context.Context) uint16 {
+func (m *_BACnetError) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits

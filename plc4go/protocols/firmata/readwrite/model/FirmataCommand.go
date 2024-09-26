@@ -303,7 +303,7 @@ func (m *_FirmataCommand) GetTypeName() string {
 	return "FirmataCommand"
 }
 
-func (m *_FirmataCommand) getLengthInBits(ctx context.Context) uint16 {
+func (m *_FirmataCommand) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (commandCode)
 	lengthInBits += 4

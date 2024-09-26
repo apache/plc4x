@@ -179,7 +179,7 @@ func (m *_ApduDataExtIndividualAddressSerialNumberWrite) GetTypeName() string {
 }
 
 func (m *_ApduDataExtIndividualAddressSerialNumberWrite) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ApduDataExtContract.(*_ApduDataExt).GetLengthInBits(ctx))
 
 	return lengthInBits
 }

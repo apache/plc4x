@@ -269,7 +269,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetTypeName() string {
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).GetLengthInBits(ctx))
 
 	// Simple field (fileIdentifier)
 	lengthInBits += m.FileIdentifier.GetLengthInBits(ctx)

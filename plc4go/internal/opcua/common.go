@@ -60,7 +60,7 @@ func generateNodeId(tag Tag) (readWriteModel.NodeId, error) {
 		}
 		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdGuid( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), guidBytes))
 	} else if tag.GetIdentifierType() == readWriteModel.OpcuaIdentifierType_STRING_IDENTIFIER {
-		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdString( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), readWriteModel.NewPascalString(utils.MakePtr(tag.GetIdentifier()))))
+		nodeId = readWriteModel.NewNodeId(readWriteModel.NewNodeIdString( /*TODO: do we want to check for overflow?*/ uint16(tag.GetNamespace()), readWriteModel.NewPascalString(utils.ToPtr(tag.GetIdentifier()))))
 	}
 	return nodeId, nil
 }
@@ -207,7 +207,7 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 				array := variant.GetValue()
 				qualifiedNameValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
-					qualifiedNameValues[i] = spiValues.NewPlcSTRING(fmt.Sprintf("ns=%d;s=%s", t.GetNamespaceIndex(), t.GetName().GetStringValue()))
+					qualifiedNameValues[i] = spiValues.NewPlcSTRING(fmt.Sprintf("ns=%d;s=%s", t.GetNamespaceIndex(), *t.GetName().GetStringValue()))
 				}
 				value = spiValues.NewPlcList(qualifiedNameValues)
 			case readWriteModel.VariantExtensionObject:

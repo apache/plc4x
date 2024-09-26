@@ -226,7 +226,7 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetTypeName() string {
 }
 
 func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).getLengthInBits(ctx))
+	lengthInBits := uint16(m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).GetLengthInBits(ctx))
 
 	// Simple field (destination)
 	lengthInBits += m.Destination.GetLengthInBits(ctx)
