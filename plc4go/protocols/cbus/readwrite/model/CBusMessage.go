@@ -153,11 +153,11 @@ func (m *_CBusMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, i
 	var _child CBusMessage
 	switch {
 	case isResponse == bool(false): // CBusMessageToServer
-		if _child, err = (&_CBusMessageToServer{}).parse(ctx, readBuffer, m, isResponse, requestContext, cBusOptions); err != nil {
+		if _child, err = new(_CBusMessageToServer).parse(ctx, readBuffer, m, isResponse, requestContext, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusMessageToServer for type-switch of CBusMessage")
 		}
 	case isResponse == bool(true): // CBusMessageToClient
-		if _child, err = (&_CBusMessageToClient{}).parse(ctx, readBuffer, m, isResponse, requestContext, cBusOptions); err != nil {
+		if _child, err = new(_CBusMessageToClient).parse(ctx, readBuffer, m, isResponse, requestContext, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusMessageToClient for type-switch of CBusMessage")
 		}
 	default:

@@ -189,11 +189,11 @@ func (m *_BACnetOptionalBinaryPV) parse(ctx context.Context, readBuffer utils.Re
 	var _child BACnetOptionalBinaryPV
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalBinaryPVNull
-		if _child, err = (&_BACnetOptionalBinaryPVNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalBinaryPVNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalBinaryPVNull for type-switch of BACnetOptionalBinaryPV")
 		}
 	case 0 == 0: // BACnetOptionalBinaryPVValue
-		if _child, err = (&_BACnetOptionalBinaryPVValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalBinaryPVValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalBinaryPVValue for type-switch of BACnetOptionalBinaryPV")
 		}
 	default:

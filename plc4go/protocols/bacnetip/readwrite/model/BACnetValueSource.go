@@ -189,15 +189,15 @@ func (m *_BACnetValueSource) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child BACnetValueSource
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetValueSourceNone
-		if _child, err = (&_BACnetValueSourceNone{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetValueSourceNone).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetValueSourceNone for type-switch of BACnetValueSource")
 		}
 	case peekedTagNumber == uint8(1): // BACnetValueSourceObject
-		if _child, err = (&_BACnetValueSourceObject{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetValueSourceObject).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetValueSourceObject for type-switch of BACnetValueSource")
 		}
 	case peekedTagNumber == uint8(2): // BACnetValueSourceAddress
-		if _child, err = (&_BACnetValueSourceAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetValueSourceAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetValueSourceAddress for type-switch of BACnetValueSource")
 		}
 	default:

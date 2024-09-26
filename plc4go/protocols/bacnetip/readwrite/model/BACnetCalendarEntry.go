@@ -194,15 +194,15 @@ func (m *_BACnetCalendarEntry) parse(ctx context.Context, readBuffer utils.ReadB
 	var _child BACnetCalendarEntry
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetCalendarEntryDate
-		if _child, err = (&_BACnetCalendarEntryDate{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetCalendarEntryDate).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetCalendarEntryDate for type-switch of BACnetCalendarEntry")
 		}
 	case peekedTagNumber == uint8(1): // BACnetCalendarEntryDateRange
-		if _child, err = (&_BACnetCalendarEntryDateRange{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetCalendarEntryDateRange).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetCalendarEntryDateRange for type-switch of BACnetCalendarEntry")
 		}
 	case peekedTagNumber == uint8(2): // BACnetCalendarEntryWeekNDay
-		if _child, err = (&_BACnetCalendarEntryWeekNDay{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetCalendarEntryWeekNDay).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetCalendarEntryWeekNDay for type-switch of BACnetCalendarEntry")
 		}
 	default:

@@ -214,55 +214,55 @@ func (m *_BACnetApplicationTag) parse(ctx context.Context, readBuffer utils.Read
 	var _child BACnetApplicationTag
 	switch {
 	case actualTagNumber == 0x0: // BACnetApplicationTagNull
-		if _child, err = (&_BACnetApplicationTagNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetApplicationTagNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagNull for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0x1: // BACnetApplicationTagBoolean
-		if _child, err = (&_BACnetApplicationTagBoolean{}).parse(ctx, readBuffer, m, header); err != nil {
+		if _child, err = new(_BACnetApplicationTagBoolean).parse(ctx, readBuffer, m, header); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagBoolean for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
-		if _child, err = (&_BACnetApplicationTagUnsignedInteger{}).parse(ctx, readBuffer, m, header); err != nil {
+		if _child, err = new(_BACnetApplicationTagUnsignedInteger).parse(ctx, readBuffer, m, header); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagUnsignedInteger for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0x3: // BACnetApplicationTagSignedInteger
-		if _child, err = (&_BACnetApplicationTagSignedInteger{}).parse(ctx, readBuffer, m, header); err != nil {
+		if _child, err = new(_BACnetApplicationTagSignedInteger).parse(ctx, readBuffer, m, header); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagSignedInteger for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0x4: // BACnetApplicationTagReal
-		if _child, err = (&_BACnetApplicationTagReal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetApplicationTagReal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagReal for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0x5: // BACnetApplicationTagDouble
-		if _child, err = (&_BACnetApplicationTagDouble{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetApplicationTagDouble).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagDouble for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0x6: // BACnetApplicationTagOctetString
-		if _child, err = (&_BACnetApplicationTagOctetString{}).parse(ctx, readBuffer, m, header); err != nil {
+		if _child, err = new(_BACnetApplicationTagOctetString).parse(ctx, readBuffer, m, header); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagOctetString for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0x7: // BACnetApplicationTagCharacterString
-		if _child, err = (&_BACnetApplicationTagCharacterString{}).parse(ctx, readBuffer, m, header); err != nil {
+		if _child, err = new(_BACnetApplicationTagCharacterString).parse(ctx, readBuffer, m, header); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagCharacterString for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0x8: // BACnetApplicationTagBitString
-		if _child, err = (&_BACnetApplicationTagBitString{}).parse(ctx, readBuffer, m, header); err != nil {
+		if _child, err = new(_BACnetApplicationTagBitString).parse(ctx, readBuffer, m, header); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagBitString for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0x9: // BACnetApplicationTagEnumerated
-		if _child, err = (&_BACnetApplicationTagEnumerated{}).parse(ctx, readBuffer, m, header); err != nil {
+		if _child, err = new(_BACnetApplicationTagEnumerated).parse(ctx, readBuffer, m, header); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagEnumerated for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0xA: // BACnetApplicationTagDate
-		if _child, err = (&_BACnetApplicationTagDate{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetApplicationTagDate).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagDate for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0xB: // BACnetApplicationTagTime
-		if _child, err = (&_BACnetApplicationTagTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetApplicationTagTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagTime for type-switch of BACnetApplicationTag")
 		}
 	case actualTagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
-		if _child, err = (&_BACnetApplicationTagObjectIdentifier{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetApplicationTagObjectIdentifier).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetApplicationTagObjectIdentifier for type-switch of BACnetApplicationTag")
 		}
 	default:

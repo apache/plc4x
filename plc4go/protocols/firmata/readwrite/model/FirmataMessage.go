@@ -151,23 +151,23 @@ func (m *_FirmataMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	var _child FirmataMessage
 	switch {
 	case messageType == 0xE: // FirmataMessageAnalogIO
-		if _child, err = (&_FirmataMessageAnalogIO{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataMessageAnalogIO).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataMessageAnalogIO for type-switch of FirmataMessage")
 		}
 	case messageType == 0x9: // FirmataMessageDigitalIO
-		if _child, err = (&_FirmataMessageDigitalIO{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataMessageDigitalIO).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataMessageDigitalIO for type-switch of FirmataMessage")
 		}
 	case messageType == 0xC: // FirmataMessageSubscribeAnalogPinValue
-		if _child, err = (&_FirmataMessageSubscribeAnalogPinValue{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataMessageSubscribeAnalogPinValue).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataMessageSubscribeAnalogPinValue for type-switch of FirmataMessage")
 		}
 	case messageType == 0xD: // FirmataMessageSubscribeDigitalPinValue
-		if _child, err = (&_FirmataMessageSubscribeDigitalPinValue{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataMessageSubscribeDigitalPinValue).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataMessageSubscribeDigitalPinValue for type-switch of FirmataMessage")
 		}
 	case messageType == 0xF: // FirmataMessageCommand
-		if _child, err = (&_FirmataMessageCommand{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataMessageCommand).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataMessageCommand for type-switch of FirmataMessage")
 		}
 	default:

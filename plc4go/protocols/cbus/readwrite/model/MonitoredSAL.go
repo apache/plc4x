@@ -165,11 +165,11 @@ func (m *_MonitoredSAL) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	var _child MonitoredSAL
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
-		if _child, err = (&_MonitoredSALLongFormSmartMode{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_MonitoredSALLongFormSmartMode).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALLongFormSmartMode for type-switch of MonitoredSAL")
 		}
 	case 0 == 0: // MonitoredSALShortFormBasicMode
-		if _child, err = (&_MonitoredSALShortFormBasicMode{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_MonitoredSALShortFormBasicMode).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALShortFormBasicMode for type-switch of MonitoredSAL")
 		}
 	default:

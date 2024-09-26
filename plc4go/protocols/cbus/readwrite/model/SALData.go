@@ -159,95 +159,95 @@ func (m *_SALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, appli
 	var _child SALData
 	switch {
 	case applicationId == ApplicationId_RESERVED: // SALDataReserved
-		if _child, err = (&_SALDataReserved{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataReserved).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataReserved for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_FREE_USAGE: // SALDataFreeUsage
-		if _child, err = (&_SALDataFreeUsage{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataFreeUsage).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataFreeUsage for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_TEMPERATURE_BROADCAST: // SALDataTemperatureBroadcast
-		if _child, err = (&_SALDataTemperatureBroadcast{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataTemperatureBroadcast).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataTemperatureBroadcast for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_ROOM_CONTROL_SYSTEM: // SALDataRoomControlSystem
-		if _child, err = (&_SALDataRoomControlSystem{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataRoomControlSystem).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataRoomControlSystem for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_LIGHTING: // SALDataLighting
-		if _child, err = (&_SALDataLighting{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataLighting).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataLighting for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_VENTILATION: // SALDataVentilation
-		if _child, err = (&_SALDataVentilation{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataVentilation).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataVentilation for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_IRRIGATION_CONTROL: // SALDataIrrigationControl
-		if _child, err = (&_SALDataIrrigationControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataIrrigationControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataIrrigationControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL: // SALDataPoolsSpasPondsFountainsControl
-		if _child, err = (&_SALDataPoolsSpasPondsFountainsControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataPoolsSpasPondsFountainsControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataPoolsSpasPondsFountainsControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_HEATING: // SALDataHeating
-		if _child, err = (&_SALDataHeating{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataHeating).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataHeating for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_AIR_CONDITIONING: // SALDataAirConditioning
-		if _child, err = (&_SALDataAirConditioning{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataAirConditioning).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataAirConditioning for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_TRIGGER_CONTROL: // SALDataTriggerControl
-		if _child, err = (&_SALDataTriggerControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataTriggerControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataTriggerControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_ENABLE_CONTROL: // SALDataEnableControl
-		if _child, err = (&_SALDataEnableControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataEnableControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataEnableControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_AUDIO_AND_VIDEO: // SALDataAudioAndVideo
-		if _child, err = (&_SALDataAudioAndVideo{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataAudioAndVideo).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataAudioAndVideo for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_SECURITY: // SALDataSecurity
-		if _child, err = (&_SALDataSecurity{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataSecurity).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataSecurity for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_METERING: // SALDataMetering
-		if _child, err = (&_SALDataMetering{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataMetering).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataMetering for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_ACCESS_CONTROL: // SALDataAccessControl
-		if _child, err = (&_SALDataAccessControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataAccessControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataAccessControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_CLOCK_AND_TIMEKEEPING: // SALDataClockAndTimekeeping
-		if _child, err = (&_SALDataClockAndTimekeeping{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataClockAndTimekeeping).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataClockAndTimekeeping for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_TELEPHONY_STATUS_AND_CONTROL: // SALDataTelephonyStatusAndControl
-		if _child, err = (&_SALDataTelephonyStatusAndControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataTelephonyStatusAndControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataTelephonyStatusAndControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_MEASUREMENT: // SALDataMeasurement
-		if _child, err = (&_SALDataMeasurement{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataMeasurement).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataMeasurement for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_TESTING: // SALDataTesting
-		if _child, err = (&_SALDataTesting{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataTesting).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataTesting for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_MEDIA_TRANSPORT_CONTROL: // SALDataMediaTransport
-		if _child, err = (&_SALDataMediaTransport{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataMediaTransport).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataMediaTransport for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_ERROR_REPORTING: // SALDataErrorReporting
-		if _child, err = (&_SALDataErrorReporting{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataErrorReporting).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataErrorReporting for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_HVAC_ACTUATOR: // SALDataHvacActuator
-		if _child, err = (&_SALDataHvacActuator{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataHvacActuator).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataHvacActuator for type-switch of SALData")
 		}
 	default:

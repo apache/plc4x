@@ -181,11 +181,11 @@ func (m *_CALReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBus
 	var _child CALReply
 	switch {
 	case calType == 0x86: // CALReplyLong
-		if _child, err = (&_CALReplyLong{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_CALReplyLong).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALReplyLong for type-switch of CALReply")
 		}
 	case true: // CALReplyShort
-		if _child, err = (&_CALReplyShort{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_CALReplyShort).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALReplyShort for type-switch of CALReply")
 		}
 	default:

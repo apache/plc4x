@@ -307,15 +307,15 @@ func (m *_LevelInformation) parse(ctx context.Context, readBuffer utils.ReadBuff
 	var _child LevelInformation
 	switch {
 	case isAbsent == bool(true): // LevelInformationAbsent
-		if _child, err = (&_LevelInformationAbsent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LevelInformationAbsent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationAbsent for type-switch of LevelInformation")
 		}
 	case 0 == 0 && isCorrupted == bool(true): // LevelInformationCorrupted
-		if _child, err = (&_LevelInformationCorrupted{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LevelInformationCorrupted).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationCorrupted for type-switch of LevelInformation")
 		}
 	case 0 == 0: // LevelInformationNormal
-		if _child, err = (&_LevelInformationNormal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LevelInformationNormal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationNormal for type-switch of LevelInformation")
 		}
 	default:

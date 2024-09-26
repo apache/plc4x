@@ -243,15 +243,15 @@ func (m *_LDataFrame) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 	var _child LDataFrame
 	switch {
 	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
-		if _child, err = (&_LDataExtended{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LDataExtended).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataExtended for type-switch of LDataFrame")
 		}
 	case notAckFrame == bool(true) && polling == bool(true): // LPollData
-		if _child, err = (&_LPollData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LPollData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LPollData for type-switch of LDataFrame")
 		}
 	case notAckFrame == bool(false): // LDataFrameACK
-		if _child, err = (&_LDataFrameACK{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LDataFrameACK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataFrameACK for type-switch of LDataFrame")
 		}
 	default:

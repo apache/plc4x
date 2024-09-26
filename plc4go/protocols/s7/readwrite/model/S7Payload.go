@@ -142,19 +142,19 @@ func (m *_S7Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, mes
 	var _child S7Payload
 	switch {
 	case CastS7Parameter(parameter).GetParameterType() == 0x04 && messageType == 0x03: // S7PayloadReadVarResponse
-		if _child, err = (&_S7PayloadReadVarResponse{}).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadReadVarResponse).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadReadVarResponse for type-switch of S7Payload")
 		}
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x01: // S7PayloadWriteVarRequest
-		if _child, err = (&_S7PayloadWriteVarRequest{}).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadWriteVarRequest).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadWriteVarRequest for type-switch of S7Payload")
 		}
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x03: // S7PayloadWriteVarResponse
-		if _child, err = (&_S7PayloadWriteVarResponse{}).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadWriteVarResponse).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadWriteVarResponse for type-switch of S7Payload")
 		}
 	case CastS7Parameter(parameter).GetParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
-		if _child, err = (&_S7PayloadUserData{}).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadUserData).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserData for type-switch of S7Payload")
 		}
 	default:

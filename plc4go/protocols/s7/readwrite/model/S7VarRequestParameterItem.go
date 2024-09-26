@@ -144,7 +144,7 @@ func (m *_S7VarRequestParameterItem) parse(ctx context.Context, readBuffer utils
 	var _child S7VarRequestParameterItem
 	switch {
 	case itemType == 0x12: // S7VarRequestParameterItemAddress
-		if _child, err = (&_S7VarRequestParameterItemAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7VarRequestParameterItemAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7VarRequestParameterItemAddress for type-switch of S7VarRequestParameterItem")
 		}
 	default:

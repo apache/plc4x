@@ -135,15 +135,15 @@ func (m *_ComObjectTable) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	var _child ComObjectTable
 	switch {
 	case firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
-		if _child, err = (&_ComObjectTableRealisationType1{}).parse(ctx, readBuffer, m, firmwareType); err != nil {
+		if _child, err = new(_ComObjectTableRealisationType1).parse(ctx, readBuffer, m, firmwareType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ComObjectTableRealisationType1 for type-switch of ComObjectTable")
 		}
 	case firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
-		if _child, err = (&_ComObjectTableRealisationType2{}).parse(ctx, readBuffer, m, firmwareType); err != nil {
+		if _child, err = new(_ComObjectTableRealisationType2).parse(ctx, readBuffer, m, firmwareType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ComObjectTableRealisationType2 for type-switch of ComObjectTable")
 		}
 	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
-		if _child, err = (&_ComObjectTableRealisationType6{}).parse(ctx, readBuffer, m, firmwareType); err != nil {
+		if _child, err = new(_ComObjectTableRealisationType6).parse(ctx, readBuffer, m, firmwareType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ComObjectTableRealisationType6 for type-switch of ComObjectTable")
 		}
 	default:

@@ -242,19 +242,19 @@ func (m *_CIPEncapsulationPacket) parse(ctx context.Context, readBuffer utils.Re
 	var _child CIPEncapsulationPacket
 	switch {
 	case commandType == 0x0101: // CIPEncapsulationConnectionRequest
-		if _child, err = (&_CIPEncapsulationConnectionRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CIPEncapsulationConnectionRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationConnectionRequest for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0201: // CIPEncapsulationConnectionResponse
-		if _child, err = (&_CIPEncapsulationConnectionResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CIPEncapsulationConnectionResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationConnectionResponse for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
-		if _child, err = (&_CIPEncapsulationReadRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CIPEncapsulationReadRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadRequest for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		if _child, err = (&_CIPEncapsulationReadResponse{}).parse(ctx, readBuffer, m, packetLen); err != nil {
+		if _child, err = new(_CIPEncapsulationReadResponse).parse(ctx, readBuffer, m, packetLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadResponse for type-switch of CIPEncapsulationPacket")
 		}
 	default:

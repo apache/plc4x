@@ -196,27 +196,27 @@ func (m *_COTPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, co
 	var _child COTPPacket
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		if _child, err = (&_COTPPacketData{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketData).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketData for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		if _child, err = (&_COTPPacketConnectionRequest{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketConnectionRequest).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionRequest for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		if _child, err = (&_COTPPacketConnectionResponse{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketConnectionResponse).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionResponse for type-switch of COTPPacket")
 		}
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		if _child, err = (&_COTPPacketDisconnectRequest{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketDisconnectRequest).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectRequest for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		if _child, err = (&_COTPPacketDisconnectResponse{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketDisconnectResponse).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectResponse for type-switch of COTPPacket")
 		}
 	case tpduCode == 0x70: // COTPPacketTpduError
-		if _child, err = (&_COTPPacketTpduError{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketTpduError).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketTpduError for type-switch of COTPPacket")
 		}
 	default:

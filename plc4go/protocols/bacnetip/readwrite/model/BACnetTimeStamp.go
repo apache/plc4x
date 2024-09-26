@@ -189,15 +189,15 @@ func (m *_BACnetTimeStamp) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetTimeStamp
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetTimeStampTime
-		if _child, err = (&_BACnetTimeStampTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetTimeStampTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimeStampTime for type-switch of BACnetTimeStamp")
 		}
 	case peekedTagNumber == uint8(1): // BACnetTimeStampSequence
-		if _child, err = (&_BACnetTimeStampSequence{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetTimeStampSequence).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimeStampSequence for type-switch of BACnetTimeStamp")
 		}
 	case peekedTagNumber == uint8(2): // BACnetTimeStampDateTime
-		if _child, err = (&_BACnetTimeStampDateTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetTimeStampDateTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimeStampDateTime for type-switch of BACnetTimeStamp")
 		}
 	default:

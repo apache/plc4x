@@ -189,239 +189,239 @@ func (m *_BACnetPropertyStates) parse(ctx context.Context, readBuffer utils.Read
 	var _child BACnetPropertyStates
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetPropertyStatesBoolean
-		if _child, err = (&_BACnetPropertyStatesBoolean{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesBoolean).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesBoolean for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(1): // BACnetPropertyStatesBinaryValue
-		if _child, err = (&_BACnetPropertyStatesBinaryValue{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesBinaryValue).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesBinaryValue for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(2): // BACnetPropertyStatesEventType
-		if _child, err = (&_BACnetPropertyStatesEventType{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesEventType).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesEventType for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(3): // BACnetPropertyStatesPolarity
-		if _child, err = (&_BACnetPropertyStatesPolarity{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesPolarity).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesPolarity for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(4): // BACnetPropertyStatesProgramChange
-		if _child, err = (&_BACnetPropertyStatesProgramChange{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesProgramChange).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesProgramChange for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(5): // BACnetPropertyStatesProgramChange
-		if _child, err = (&_BACnetPropertyStatesProgramChange{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesProgramChange).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesProgramChange for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(6): // BACnetPropertyStatesReasonForHalt
-		if _child, err = (&_BACnetPropertyStatesReasonForHalt{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesReasonForHalt).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesReasonForHalt for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(7): // BACnetPropertyStatesReliability
-		if _child, err = (&_BACnetPropertyStatesReliability{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesReliability).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesReliability for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(8): // BACnetPropertyStatesState
-		if _child, err = (&_BACnetPropertyStatesState{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesState).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesState for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(9): // BACnetPropertyStatesSystemStatus
-		if _child, err = (&_BACnetPropertyStatesSystemStatus{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesSystemStatus).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesSystemStatus for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(10): // BACnetPropertyStatesUnits
-		if _child, err = (&_BACnetPropertyStatesUnits{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesUnits).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesUnits for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(11): // BACnetPropertyStatesExtendedValue
-		if _child, err = (&_BACnetPropertyStatesExtendedValue{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesExtendedValue).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesExtendedValue for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(12): // BACnetPropertyStatesLifeSafetyMode
-		if _child, err = (&_BACnetPropertyStatesLifeSafetyMode{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLifeSafetyMode).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLifeSafetyMode for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(13): // BACnetPropertyStatesLifeSafetyState
-		if _child, err = (&_BACnetPropertyStatesLifeSafetyState{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLifeSafetyState).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLifeSafetyState for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(14): // BACnetPropertyStatesRestartReason
-		if _child, err = (&_BACnetPropertyStatesRestartReason{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesRestartReason).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesRestartReason for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(15): // BACnetPropertyStatesDoorAlarmState
-		if _child, err = (&_BACnetPropertyStatesDoorAlarmState{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesDoorAlarmState).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesDoorAlarmState for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(16): // BACnetPropertyStatesAction
-		if _child, err = (&_BACnetPropertyStatesAction{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesAction).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesAction for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(17): // BACnetPropertyStatesDoorSecuredStatus
-		if _child, err = (&_BACnetPropertyStatesDoorSecuredStatus{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesDoorSecuredStatus).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesDoorSecuredStatus for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(18): // BACnetPropertyStatesDoorStatus
-		if _child, err = (&_BACnetPropertyStatesDoorStatus{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesDoorStatus).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesDoorStatus for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(19): // BACnetPropertyStatesDoorValue
-		if _child, err = (&_BACnetPropertyStatesDoorValue{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesDoorValue).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesDoorValue for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(20): // BACnetPropertyStatesFileAccessMethod
-		if _child, err = (&_BACnetPropertyStatesFileAccessMethod{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesFileAccessMethod).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesFileAccessMethod for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(21): // BACnetPropertyStatesLockStatus
-		if _child, err = (&_BACnetPropertyStatesLockStatus{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLockStatus).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLockStatus for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(22): // BACnetPropertyStatesLifeSafetyOperations
-		if _child, err = (&_BACnetPropertyStatesLifeSafetyOperations{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLifeSafetyOperations).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLifeSafetyOperations for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(23): // BACnetPropertyStatesMaintenance
-		if _child, err = (&_BACnetPropertyStatesMaintenance{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesMaintenance).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesMaintenance for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(24): // BACnetPropertyStatesNodeType
-		if _child, err = (&_BACnetPropertyStatesNodeType{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesNodeType).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesNodeType for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(25): // BACnetPropertyStatesNotifyType
-		if _child, err = (&_BACnetPropertyStatesNotifyType{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesNotifyType).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesNotifyType for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(26): // BACnetPropertyStatesSecurityLevel
-		if _child, err = (&_BACnetPropertyStatesSecurityLevel{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesSecurityLevel).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesSecurityLevel for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(27): // BACnetPropertyStatesShedState
-		if _child, err = (&_BACnetPropertyStatesShedState{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesShedState).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesShedState for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(28): // BACnetPropertyStatesSilencedState
-		if _child, err = (&_BACnetPropertyStatesSilencedState{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesSilencedState).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesSilencedState for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(30): // BACnetPropertyStatesAccessEvent
-		if _child, err = (&_BACnetPropertyStatesAccessEvent{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesAccessEvent).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesAccessEvent for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(31): // BACnetPropertyStatesZoneOccupanyState
-		if _child, err = (&_BACnetPropertyStatesZoneOccupanyState{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesZoneOccupanyState).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesZoneOccupanyState for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(32): // BACnetPropertyStatesAccessCredentialDisableReason
-		if _child, err = (&_BACnetPropertyStatesAccessCredentialDisableReason{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesAccessCredentialDisableReason).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesAccessCredentialDisableReason for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(33): // BACnetPropertyStatesAccessCredentialDisable
-		if _child, err = (&_BACnetPropertyStatesAccessCredentialDisable{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesAccessCredentialDisable).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesAccessCredentialDisable for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(34): // BACnetPropertyStatesAuthenticationStatus
-		if _child, err = (&_BACnetPropertyStatesAuthenticationStatus{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesAuthenticationStatus).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesAuthenticationStatus for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(36): // BACnetPropertyStatesBackupState
-		if _child, err = (&_BACnetPropertyStatesBackupState{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesBackupState).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesBackupState for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(37): // BACnetPropertyStatesWriteStatus
-		if _child, err = (&_BACnetPropertyStatesWriteStatus{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesWriteStatus).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesWriteStatus for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(38): // BACnetPropertyStatesLightningInProgress
-		if _child, err = (&_BACnetPropertyStatesLightningInProgress{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLightningInProgress).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLightningInProgress for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(39): // BACnetPropertyStatesLightningOperation
-		if _child, err = (&_BACnetPropertyStatesLightningOperation{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLightningOperation).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLightningOperation for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(40): // BACnetPropertyStatesLightningTransition
-		if _child, err = (&_BACnetPropertyStatesLightningTransition{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLightningTransition).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLightningTransition for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(41): // BACnetPropertyStatesIntegerValue
-		if _child, err = (&_BACnetPropertyStatesIntegerValue{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesIntegerValue).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesIntegerValue for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(42): // BACnetPropertyStatesBinaryLightningValue
-		if _child, err = (&_BACnetPropertyStatesBinaryLightningValue{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesBinaryLightningValue).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesBinaryLightningValue for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(43): // BACnetPropertyStatesTimerState
-		if _child, err = (&_BACnetPropertyStatesTimerState{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesTimerState).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesTimerState for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(44): // BACnetPropertyStatesTimerTransition
-		if _child, err = (&_BACnetPropertyStatesTimerTransition{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesTimerTransition).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesTimerTransition for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(45): // BACnetPropertyStatesBacnetIpMode
-		if _child, err = (&_BACnetPropertyStatesBacnetIpMode{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesBacnetIpMode).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesBacnetIpMode for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(46): // BACnetPropertyStatesNetworkPortCommand
-		if _child, err = (&_BACnetPropertyStatesNetworkPortCommand{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesNetworkPortCommand).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesNetworkPortCommand for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(47): // BACnetPropertyStatesNetworkType
-		if _child, err = (&_BACnetPropertyStatesNetworkType{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesNetworkType).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesNetworkType for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(48): // BACnetPropertyStatesNetworkNumberQuality
-		if _child, err = (&_BACnetPropertyStatesNetworkNumberQuality{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesNetworkNumberQuality).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesNetworkNumberQuality for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(49): // BACnetPropertyStatesEscalatorOperationDirection
-		if _child, err = (&_BACnetPropertyStatesEscalatorOperationDirection{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesEscalatorOperationDirection).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesEscalatorOperationDirection for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(50): // BACnetPropertyStatesEscalatorFault
-		if _child, err = (&_BACnetPropertyStatesEscalatorFault{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesEscalatorFault).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesEscalatorFault for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(51): // BACnetPropertyStatesEscalatorMode
-		if _child, err = (&_BACnetPropertyStatesEscalatorMode{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesEscalatorMode).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesEscalatorMode for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(52): // BACnetPropertyStatesLiftCarDirection
-		if _child, err = (&_BACnetPropertyStatesLiftCarDirection{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLiftCarDirection).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLiftCarDirection for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(53): // BACnetPropertyStatesLiftCarDoorCommand
-		if _child, err = (&_BACnetPropertyStatesLiftCarDoorCommand{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLiftCarDoorCommand).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLiftCarDoorCommand for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(54): // BACnetPropertyStatesLiftCarDriveStatus
-		if _child, err = (&_BACnetPropertyStatesLiftCarDriveStatus{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLiftCarDriveStatus).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLiftCarDriveStatus for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(55): // BACnetPropertyStatesLiftCarMode
-		if _child, err = (&_BACnetPropertyStatesLiftCarMode{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLiftCarMode).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLiftCarMode for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(56): // BACnetPropertyStatesLiftGroupMode
-		if _child, err = (&_BACnetPropertyStatesLiftGroupMode{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLiftGroupMode).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLiftGroupMode for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(57): // BACnetPropertyStatesLiftFault
-		if _child, err = (&_BACnetPropertyStatesLiftFault{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesLiftFault).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesLiftFault for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(58): // BACnetPropertyStatesProtocolLevel
-		if _child, err = (&_BACnetPropertyStatesProtocolLevel{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesProtocolLevel).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesProtocolLevel for type-switch of BACnetPropertyStates")
 		}
 	case peekedTagNumber == uint8(63): // BACnetPropertyStatesExtendedValue
-		if _child, err = (&_BACnetPropertyStatesExtendedValue{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStatesExtendedValue).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStatesExtendedValue for type-switch of BACnetPropertyStates")
 		}
 	case true: // BACnetPropertyStateActionUnknown
-		if _child, err = (&_BACnetPropertyStateActionUnknown{}).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
+		if _child, err = new(_BACnetPropertyStateActionUnknown).parse(ctx, readBuffer, m, peekedTagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyStateActionUnknown for type-switch of BACnetPropertyStates")
 		}
 	default:

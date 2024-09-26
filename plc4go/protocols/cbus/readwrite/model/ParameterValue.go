@@ -140,47 +140,47 @@ func (m *_ParameterValue) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	var _child ParameterValue
 	switch {
 	case parameterType == ParameterType_APPLICATION_ADDRESS_1: // ParameterValueApplicationAddress1
-		if _child, err = (&_ParameterValueApplicationAddress1{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueApplicationAddress1).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueApplicationAddress1 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_APPLICATION_ADDRESS_2: // ParameterValueApplicationAddress2
-		if _child, err = (&_ParameterValueApplicationAddress2{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueApplicationAddress2).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueApplicationAddress2 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1: // ParameterValueInterfaceOptions1
-		if _child, err = (&_ParameterValueInterfaceOptions1{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueInterfaceOptions1).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions1 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_BAUD_RATE_SELECTOR: // ParameterValueBaudRateSelector
-		if _child, err = (&_ParameterValueBaudRateSelector{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueBaudRateSelector).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueBaudRateSelector for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_2: // ParameterValueInterfaceOptions2
-		if _child, err = (&_ParameterValueInterfaceOptions2{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueInterfaceOptions2).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions2 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS: // ParameterValueInterfaceOptions1PowerUpSettings
-		if _child, err = (&_ParameterValueInterfaceOptions1PowerUpSettings{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueInterfaceOptions1PowerUpSettings).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions1PowerUpSettings for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_INTERFACE_OPTIONS_3: // ParameterValueInterfaceOptions3
-		if _child, err = (&_ParameterValueInterfaceOptions3{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueInterfaceOptions3).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueInterfaceOptions3 for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_CUSTOM_MANUFACTURER: // ParameterValueCustomManufacturer
-		if _child, err = (&_ParameterValueCustomManufacturer{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueCustomManufacturer).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueCustomManufacturer for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_SERIAL_NUMBER: // ParameterValueSerialNumber
-		if _child, err = (&_ParameterValueSerialNumber{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueSerialNumber).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueSerialNumber for type-switch of ParameterValue")
 		}
 	case parameterType == ParameterType_CUSTOM_TYPE: // ParameterValueCustomTypes
-		if _child, err = (&_ParameterValueCustomTypes{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueCustomTypes).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueCustomTypes for type-switch of ParameterValue")
 		}
 	case 0 == 0: // ParameterValueRaw
-		if _child, err = (&_ParameterValueRaw{}).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
+		if _child, err = new(_ParameterValueRaw).parse(ctx, readBuffer, m, parameterType, numBytes); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterValueRaw for type-switch of ParameterValue")
 		}
 	default:

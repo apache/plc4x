@@ -135,15 +135,15 @@ func (m *_AdsMultiRequestItem) parse(ctx context.Context, readBuffer utils.ReadB
 	var _child AdsMultiRequestItem
 	switch {
 	case indexGroup == uint32(61568): // AdsMultiRequestItemRead
-		if _child, err = (&_AdsMultiRequestItemRead{}).parse(ctx, readBuffer, m, indexGroup); err != nil {
+		if _child, err = new(_AdsMultiRequestItemRead).parse(ctx, readBuffer, m, indexGroup); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsMultiRequestItemRead for type-switch of AdsMultiRequestItem")
 		}
 	case indexGroup == uint32(61569): // AdsMultiRequestItemWrite
-		if _child, err = (&_AdsMultiRequestItemWrite{}).parse(ctx, readBuffer, m, indexGroup); err != nil {
+		if _child, err = new(_AdsMultiRequestItemWrite).parse(ctx, readBuffer, m, indexGroup); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsMultiRequestItemWrite for type-switch of AdsMultiRequestItem")
 		}
 	case indexGroup == uint32(61570): // AdsMultiRequestItemReadWrite
-		if _child, err = (&_AdsMultiRequestItemReadWrite{}).parse(ctx, readBuffer, m, indexGroup); err != nil {
+		if _child, err = new(_AdsMultiRequestItemReadWrite).parse(ctx, readBuffer, m, indexGroup); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsMultiRequestItemReadWrite for type-switch of AdsMultiRequestItem")
 		}
 	default:

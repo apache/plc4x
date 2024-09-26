@@ -200,11 +200,11 @@ func (m *_BACnetPropertyAccessResultAccessResult) parse(ctx context.Context, rea
 	var _child BACnetPropertyAccessResultAccessResult
 	switch {
 	case peekedTagNumber == uint8(4): // BACnetPropertyAccessResultAccessResultPropertyValue
-		if _child, err = (&_BACnetPropertyAccessResultAccessResultPropertyValue{}).parse(ctx, readBuffer, m, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetPropertyAccessResultAccessResultPropertyValue).parse(ctx, readBuffer, m, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyAccessResultAccessResultPropertyValue for type-switch of BACnetPropertyAccessResultAccessResult")
 		}
 	case peekedTagNumber == uint8(5): // BACnetPropertyAccessResultAccessResultPropertyAccessError
-		if _child, err = (&_BACnetPropertyAccessResultAccessResultPropertyAccessError{}).parse(ctx, readBuffer, m, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetPropertyAccessResultAccessResultPropertyAccessError).parse(ctx, readBuffer, m, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyAccessResultAccessResultPropertyAccessError for type-switch of BACnetPropertyAccessResultAccessResult")
 		}
 	default:

@@ -144,15 +144,15 @@ func (m *_PathSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer) (
 	var _child PathSegment
 	switch {
 	case pathSegment == 0x00: // PortSegment
-		if _child, err = (&_PortSegment{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_PortSegment).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PortSegment for type-switch of PathSegment")
 		}
 	case pathSegment == 0x01: // LogicalSegment
-		if _child, err = (&_LogicalSegment{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LogicalSegment).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LogicalSegment for type-switch of PathSegment")
 		}
 	case pathSegment == 0x04: // DataSegment
-		if _child, err = (&_DataSegment{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DataSegment).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataSegment for type-switch of PathSegment")
 		}
 	default:

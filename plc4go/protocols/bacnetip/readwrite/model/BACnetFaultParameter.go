@@ -189,35 +189,35 @@ func (m *_BACnetFaultParameter) parse(ctx context.Context, readBuffer utils.Read
 	var _child BACnetFaultParameter
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetFaultParameterNone
-		if _child, err = (&_BACnetFaultParameterNone{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterNone).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterNone for type-switch of BACnetFaultParameter")
 		}
 	case peekedTagNumber == uint8(1): // BACnetFaultParameterFaultCharacterString
-		if _child, err = (&_BACnetFaultParameterFaultCharacterString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultCharacterString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultCharacterString for type-switch of BACnetFaultParameter")
 		}
 	case peekedTagNumber == uint8(2): // BACnetFaultParameterFaultExtended
-		if _child, err = (&_BACnetFaultParameterFaultExtended{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtended).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtended for type-switch of BACnetFaultParameter")
 		}
 	case peekedTagNumber == uint8(3): // BACnetFaultParameterFaultLifeSafety
-		if _child, err = (&_BACnetFaultParameterFaultLifeSafety{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultLifeSafety).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultLifeSafety for type-switch of BACnetFaultParameter")
 		}
 	case peekedTagNumber == uint8(4): // BACnetFaultParameterFaultState
-		if _child, err = (&_BACnetFaultParameterFaultState{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultState).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultState for type-switch of BACnetFaultParameter")
 		}
 	case peekedTagNumber == uint8(5): // BACnetFaultParameterFaultStatusFlags
-		if _child, err = (&_BACnetFaultParameterFaultStatusFlags{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultStatusFlags).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultStatusFlags for type-switch of BACnetFaultParameter")
 		}
 	case peekedTagNumber == uint8(6): // BACnetFaultParameterFaultOutOfRange
-		if _child, err = (&_BACnetFaultParameterFaultOutOfRange{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRange).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRange for type-switch of BACnetFaultParameter")
 		}
 	case peekedTagNumber == uint8(7): // BACnetFaultParameterFaultListed
-		if _child, err = (&_BACnetFaultParameterFaultListed{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultListed).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultListed for type-switch of BACnetFaultParameter")
 		}
 	default:

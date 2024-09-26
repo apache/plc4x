@@ -203,11 +203,11 @@ func (m *_CBusPointToPointToMultiPointCommand) parse(ctx context.Context, readBu
 	var _child CBusPointToPointToMultiPointCommand
 	switch {
 	case peekedApplication == 0xFF: // CBusPointToPointToMultiPointCommandStatus
-		if _child, err = (&_CBusPointToPointToMultiPointCommandStatus{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToPointToMultiPointCommandStatus).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToPointToMultiPointCommandStatus for type-switch of CBusPointToPointToMultiPointCommand")
 		}
 	case 0 == 0: // CBusPointToPointToMultiPointCommandNormal
-		if _child, err = (&_CBusPointToPointToMultiPointCommandNormal{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToPointToMultiPointCommandNormal).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToPointToMultiPointCommandNormal for type-switch of CBusPointToPointToMultiPointCommand")
 		}
 	default:

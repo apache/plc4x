@@ -233,2635 +233,2635 @@ func (m *_BACnetConstructedData) parse(ctx context.Context, readBuffer utils.Rea
 	var _child BACnetConstructedData
 	switch {
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ABSENTEE_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataAbsenteeLimit
-		if _child, err = (&_BACnetConstructedDataAbsenteeLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAbsenteeLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAbsenteeLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCEPTED_MODES: // BACnetConstructedDataAcceptedModes
-		if _child, err = (&_BACnetConstructedDataAcceptedModes{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAcceptedModes).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAcceptedModes for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCESS_ALARM_EVENTS && peekedTagNumber == uint8(9): // BACnetConstructedDataAccessAlarmEvents
-		if _child, err = (&_BACnetConstructedDataAccessAlarmEvents{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessAlarmEvents).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessAlarmEvents for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCESS_DOORS: // BACnetConstructedDataAccessDoors
-		if _child, err = (&_BACnetConstructedDataAccessDoors{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessDoors).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessDoors for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCESS_EVENT && peekedTagNumber == uint8(9): // BACnetConstructedDataAccessEvent
-		if _child, err = (&_BACnetConstructedDataAccessEvent{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessEvent).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessEvent for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCESS_EVENT_AUTHENTICATION_FACTOR: // BACnetConstructedDataAccessEventAuthenticationFactor
-		if _child, err = (&_BACnetConstructedDataAccessEventAuthenticationFactor{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessEventAuthenticationFactor).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessEventAuthenticationFactor for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCESS_EVENT_CREDENTIAL: // BACnetConstructedDataAccessEventCredential
-		if _child, err = (&_BACnetConstructedDataAccessEventCredential{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessEventCredential).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessEventCredential for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCESS_EVENT_TAG && peekedTagNumber == uint8(2): // BACnetConstructedDataAccessEventTag
-		if _child, err = (&_BACnetConstructedDataAccessEventTag{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessEventTag).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessEventTag for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCESS_EVENT_TIME: // BACnetConstructedDataAccessEventTime
-		if _child, err = (&_BACnetConstructedDataAccessEventTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessEventTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessEventTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCESS_TRANSACTION_EVENTS && peekedTagNumber == uint8(9): // BACnetConstructedDataAccessTransactionEvents
-		if _child, err = (&_BACnetConstructedDataAccessTransactionEvents{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessTransactionEvents).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessTransactionEvents for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCOMPANIMENT: // BACnetConstructedDataAccompaniment
-		if _child, err = (&_BACnetConstructedDataAccompaniment{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccompaniment).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccompaniment for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACCOMPANIMENT_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataAccompanimentTime
-		if _child, err = (&_BACnetConstructedDataAccompanimentTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccompanimentTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccompanimentTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACK_REQUIRED && peekedTagNumber == uint8(9): // BACnetConstructedDataAckRequired
-		if _child, err = (&_BACnetConstructedDataAckRequired{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAckRequired).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAckRequired for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACKED_TRANSITIONS && peekedTagNumber == uint8(9): // BACnetConstructedDataAckedTransitions
-		if _child, err = (&_BACnetConstructedDataAckedTransitions{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAckedTransitions).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAckedTransitions for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LOOP && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION && peekedTagNumber == uint8(9): // BACnetConstructedDataLoopAction
-		if _child, err = (&_BACnetConstructedDataLoopAction{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLoopAction).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLoopAction for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_COMMAND && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataCommandAction
-		if _child, err = (&_BACnetConstructedDataCommandAction{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCommandAction).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCommandAction for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION: // BACnetConstructedDataAction
-		if _child, err = (&_BACnetConstructedDataAction{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAction).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAction for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTION_TEXT && peekedTagNumber == uint8(7): // BACnetConstructedDataActionText
-		if _child, err = (&_BACnetConstructedDataActionText{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataActionText).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataActionText for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTIVATION_TIME: // BACnetConstructedDataActivationTime
-		if _child, err = (&_BACnetConstructedDataActivationTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataActivationTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataActivationTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTIVE_AUTHENTICATION_POLICY && peekedTagNumber == uint8(2): // BACnetConstructedDataActiveAuthenticationPolicy
-		if _child, err = (&_BACnetConstructedDataActiveAuthenticationPolicy{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataActiveAuthenticationPolicy).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataActiveAuthenticationPolicy for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTIVE_COV_MULTIPLE_SUBSCRIPTIONS: // BACnetConstructedDataActiveCOVMultipleSubscriptions
-		if _child, err = (&_BACnetConstructedDataActiveCOVMultipleSubscriptions{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataActiveCOVMultipleSubscriptions).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataActiveCOVMultipleSubscriptions for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTIVE_COV_SUBSCRIPTIONS: // BACnetConstructedDataActiveCOVSubscriptions
-		if _child, err = (&_BACnetConstructedDataActiveCOVSubscriptions{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataActiveCOVSubscriptions).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataActiveCOVSubscriptions for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTIVE_TEXT && peekedTagNumber == uint8(7): // BACnetConstructedDataActiveText
-		if _child, err = (&_BACnetConstructedDataActiveText{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataActiveText).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataActiveText for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTIVE_VT_SESSIONS: // BACnetConstructedDataActiveVTSessions
-		if _child, err = (&_BACnetConstructedDataActiveVTSessions{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataActiveVTSessions).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataActiveVTSessions for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ACTUAL_SHED_LEVEL: // BACnetConstructedDataActualShedLevel
-		if _child, err = (&_BACnetConstructedDataActualShedLevel{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataActualShedLevel).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataActualShedLevel for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_ZONE && propertyIdentifierArgument == BACnetPropertyIdentifier_ADJUST_VALUE && peekedTagNumber == uint8(3): // BACnetConstructedDataAccessZoneAdjustValue
-		if _child, err = (&_BACnetConstructedDataAccessZoneAdjustValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessZoneAdjustValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessZoneAdjustValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_PULSE_CONVERTER && propertyIdentifierArgument == BACnetPropertyIdentifier_ADJUST_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataPulseConverterAdjustValue
-		if _child, err = (&_BACnetConstructedDataPulseConverterAdjustValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPulseConverterAdjustValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPulseConverterAdjustValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ADJUST_VALUE && peekedTagNumber == uint8(3): // BACnetConstructedDataAdjustValue
-		if _child, err = (&_BACnetConstructedDataAdjustValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAdjustValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAdjustValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataAlarmValue
-		if _child, err = (&_BACnetConstructedDataAlarmValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAlarmValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAlarmValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_DOOR && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataAccessDoorAlarmValues
-		if _child, err = (&_BACnetConstructedDataAccessDoorAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessDoorAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessDoorAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_ZONE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataAccessZoneAlarmValues
-		if _child, err = (&_BACnetConstructedDataAccessZoneAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessZoneAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessZoneAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BITSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES && peekedTagNumber == uint8(8): // BACnetConstructedDataBitStringValueAlarmValues
-		if _child, err = (&_BACnetConstructedDataBitStringValueAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBitStringValueAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBitStringValueAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CHARACTERSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataCharacterStringValueAlarmValues
-		if _child, err = (&_BACnetConstructedDataCharacterStringValueAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCharacterStringValueAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCharacterStringValueAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataLifeSafetyPointAlarmValues
-		if _child, err = (&_BACnetConstructedDataLifeSafetyPointAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyPointAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyPointAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_ZONE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataLifeSafetyZoneAlarmValues
-		if _child, err = (&_BACnetConstructedDataLifeSafetyZoneAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyZoneAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyZoneAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES && peekedTagNumber == uint8(2): // BACnetConstructedDataMultiStateInputAlarmValues
-		if _child, err = (&_BACnetConstructedDataMultiStateInputAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateInputAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateInputAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES && peekedTagNumber == uint8(2): // BACnetConstructedDataMultiStateValueAlarmValues
-		if _child, err = (&_BACnetConstructedDataMultiStateValueAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateValueAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateValueAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIMER && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataTimerAlarmValues
-		if _child, err = (&_BACnetConstructedDataTimerAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimerAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimerAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ALARM_VALUES: // BACnetConstructedDataAlarmValues
-		if _child, err = (&_BACnetConstructedDataAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ALIGN_INTERVALS && peekedTagNumber == uint8(1): // BACnetConstructedDataAlignIntervals
-		if _child, err = (&_BACnetConstructedDataAlignIntervals{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAlignIntervals).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAlignIntervals for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_CREDENTIAL && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessCredentialAll
-		if _child, err = (&_BACnetConstructedDataAccessCredentialAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessCredentialAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessCredentialAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_DOOR && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessDoorAll
-		if _child, err = (&_BACnetConstructedDataAccessDoorAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessDoorAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessDoorAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessPointAll
-		if _child, err = (&_BACnetConstructedDataAccessPointAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessPointAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessPointAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_RIGHTS && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessRightsAll
-		if _child, err = (&_BACnetConstructedDataAccessRightsAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessRightsAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessRightsAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_USER && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessUserAll
-		if _child, err = (&_BACnetConstructedDataAccessUserAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessUserAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessUserAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_ZONE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccessZoneAll
-		if _child, err = (&_BACnetConstructedDataAccessZoneAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessZoneAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessZoneAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAccumulatorAll
-		if _child, err = (&_BACnetConstructedDataAccumulatorAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccumulatorAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccumulatorAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ALERT_ENROLLMENT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAlertEnrollmentAll
-		if _child, err = (&_BACnetConstructedDataAlertEnrollmentAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAlertEnrollmentAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAlertEnrollmentAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAnalogInputAll
-		if _child, err = (&_BACnetConstructedDataAnalogInputAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogInputAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogInputAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAnalogOutputAll
-		if _child, err = (&_BACnetConstructedDataAnalogOutputAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogOutputAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogOutputAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAnalogValueAll
-		if _child, err = (&_BACnetConstructedDataAnalogValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_AVERAGING && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataAveragingAll
-		if _child, err = (&_BACnetConstructedDataAveragingAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAveragingAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAveragingAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataBinaryInputAll
-		if _child, err = (&_BACnetConstructedDataBinaryInputAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryInputAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryInputAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataBinaryLightingOutputAll
-		if _child, err = (&_BACnetConstructedDataBinaryLightingOutputAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryLightingOutputAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryLightingOutputAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataBinaryOutputAll
-		if _child, err = (&_BACnetConstructedDataBinaryOutputAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryOutputAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryOutputAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataBinaryValueAll
-		if _child, err = (&_BACnetConstructedDataBinaryValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BITSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataBitstringValueAll
-		if _child, err = (&_BACnetConstructedDataBitstringValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBitstringValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBitstringValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CALENDAR && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataCalendarAll
-		if _child, err = (&_BACnetConstructedDataCalendarAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCalendarAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCalendarAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CHANNEL && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataChannelAll
-		if _child, err = (&_BACnetConstructedDataChannelAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataChannelAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataChannelAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CHARACTERSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataCharacterstringValueAll
-		if _child, err = (&_BACnetConstructedDataCharacterstringValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCharacterstringValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCharacterstringValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_COMMAND && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataCommandAll
-		if _child, err = (&_BACnetConstructedDataCommandAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCommandAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCommandAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CREDENTIAL_DATA_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataCredentialDataInputAll
-		if _child, err = (&_BACnetConstructedDataCredentialDataInputAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCredentialDataInputAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCredentialDataInputAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataDatepatternValueAll
-		if _child, err = (&_BACnetConstructedDataDatepatternValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDatepatternValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDatepatternValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATE_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataDateValueAll
-		if _child, err = (&_BACnetConstructedDataDateValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDateValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDateValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATETIMEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataDatetimepatternValueAll
-		if _child, err = (&_BACnetConstructedDataDatetimepatternValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDatetimepatternValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDatetimepatternValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATETIME_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataDatetimeValueAll
-		if _child, err = (&_BACnetConstructedDataDatetimeValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDatetimeValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDatetimeValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DEVICE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataDeviceAll
-		if _child, err = (&_BACnetConstructedDataDeviceAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDeviceAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDeviceAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ELEVATOR_GROUP && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataElevatorGroupAll
-		if _child, err = (&_BACnetConstructedDataElevatorGroupAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataElevatorGroupAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataElevatorGroupAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ESCALATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataEscalatorAll
-		if _child, err = (&_BACnetConstructedDataEscalatorAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEscalatorAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEscalatorAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_EVENT_ENROLLMENT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataEventEnrollmentAll
-		if _child, err = (&_BACnetConstructedDataEventEnrollmentAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventEnrollmentAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventEnrollmentAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_EVENT_LOG && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataEventLogAll
-		if _child, err = (&_BACnetConstructedDataEventLogAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventLogAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventLogAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_FILE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataFileAll
-		if _child, err = (&_BACnetConstructedDataFileAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFileAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFileAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_GLOBAL_GROUP && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataGlobalGroupAll
-		if _child, err = (&_BACnetConstructedDataGlobalGroupAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGlobalGroupAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGlobalGroupAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_GROUP && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataGroupAll
-		if _child, err = (&_BACnetConstructedDataGroupAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGroupAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGroupAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataIntegerValueAll
-		if _child, err = (&_BACnetConstructedDataIntegerValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataLargeAnalogValueAll
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataLifeSafetyPointAll
-		if _child, err = (&_BACnetConstructedDataLifeSafetyPointAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyPointAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyPointAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_ZONE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataLifeSafetyZoneAll
-		if _child, err = (&_BACnetConstructedDataLifeSafetyZoneAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyZoneAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyZoneAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataLiftAll
-		if _child, err = (&_BACnetConstructedDataLiftAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLiftAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLiftAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataLightingOutputAll
-		if _child, err = (&_BACnetConstructedDataLightingOutputAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLightingOutputAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLightingOutputAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LOAD_CONTROL && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataLoadControlAll
-		if _child, err = (&_BACnetConstructedDataLoadControlAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLoadControlAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLoadControlAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LOOP && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataLoopAll
-		if _child, err = (&_BACnetConstructedDataLoopAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLoopAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLoopAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataMultiStateInputAll
-		if _child, err = (&_BACnetConstructedDataMultiStateInputAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateInputAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateInputAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataMultiStateOutputAll
-		if _child, err = (&_BACnetConstructedDataMultiStateOutputAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateOutputAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateOutputAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataMultiStateValueAll
-		if _child, err = (&_BACnetConstructedDataMultiStateValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_NETWORK_PORT && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataNetworkPortAll
-		if _child, err = (&_BACnetConstructedDataNetworkPortAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNetworkPortAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNetworkPortAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_NETWORK_SECURITY && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataNetworkSecurityAll
-		if _child, err = (&_BACnetConstructedDataNetworkSecurityAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNetworkSecurityAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNetworkSecurityAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_NOTIFICATION_CLASS && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataNotificationClassAll
-		if _child, err = (&_BACnetConstructedDataNotificationClassAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNotificationClassAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNotificationClassAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_NOTIFICATION_FORWARDER && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataNotificationForwarderAll
-		if _child, err = (&_BACnetConstructedDataNotificationForwarderAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNotificationForwarderAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNotificationForwarderAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_OCTETSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataOctetstringValueAll
-		if _child, err = (&_BACnetConstructedDataOctetstringValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOctetstringValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOctetstringValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataPositiveIntegerValueAll
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_PROGRAM && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataProgramAll
-		if _child, err = (&_BACnetConstructedDataProgramAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProgramAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProgramAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_PULSE_CONVERTER && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataPulseConverterAll
-		if _child, err = (&_BACnetConstructedDataPulseConverterAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPulseConverterAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPulseConverterAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_SCHEDULE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataScheduleAll
-		if _child, err = (&_BACnetConstructedDataScheduleAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataScheduleAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataScheduleAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_STRUCTURED_VIEW && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataStructuredViewAll
-		if _child, err = (&_BACnetConstructedDataStructuredViewAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStructuredViewAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStructuredViewAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIMEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataTimepatternValueAll
-		if _child, err = (&_BACnetConstructedDataTimepatternValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimepatternValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimepatternValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIME_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataTimeValueAll
-		if _child, err = (&_BACnetConstructedDataTimeValueAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeValueAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeValueAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIMER && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataTimerAll
-		if _child, err = (&_BACnetConstructedDataTimerAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimerAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimerAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TREND_LOG && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataTrendLogAll
-		if _child, err = (&_BACnetConstructedDataTrendLogAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTrendLogAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTrendLogAll for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TREND_LOG_MULTIPLE && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL: // BACnetConstructedDataTrendLogMultipleAll
-		if _child, err = (&_BACnetConstructedDataTrendLogMultipleAll{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTrendLogMultipleAll).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTrendLogMultipleAll for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ALL_WRITES_SUCCESSFUL && peekedTagNumber == uint8(1): // BACnetConstructedDataAllWritesSuccessful
-		if _child, err = (&_BACnetConstructedDataAllWritesSuccessful{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAllWritesSuccessful).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAllWritesSuccessful for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ALLOW_GROUP_DELAY_INHIBIT && peekedTagNumber == uint8(1): // BACnetConstructedDataAllowGroupDelayInhibit
-		if _child, err = (&_BACnetConstructedDataAllowGroupDelayInhibit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAllowGroupDelayInhibit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAllowGroupDelayInhibit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_APDU_LENGTH && peekedTagNumber == uint8(2): // BACnetConstructedDataAPDULength
-		if _child, err = (&_BACnetConstructedDataAPDULength{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAPDULength).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAPDULength for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_APDU_SEGMENT_TIMEOUT && peekedTagNumber == uint8(2): // BACnetConstructedDataAPDUSegmentTimeout
-		if _child, err = (&_BACnetConstructedDataAPDUSegmentTimeout{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAPDUSegmentTimeout).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAPDUSegmentTimeout for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_APDU_TIMEOUT && peekedTagNumber == uint8(2): // BACnetConstructedDataAPDUTimeout
-		if _child, err = (&_BACnetConstructedDataAPDUTimeout{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAPDUTimeout).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAPDUTimeout for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_APPLICATION_SOFTWARE_VERSION && peekedTagNumber == uint8(7): // BACnetConstructedDataApplicationSoftwareVersion
-		if _child, err = (&_BACnetConstructedDataApplicationSoftwareVersion{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataApplicationSoftwareVersion).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataApplicationSoftwareVersion for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ARCHIVE && peekedTagNumber == uint8(1): // BACnetConstructedDataArchive
-		if _child, err = (&_BACnetConstructedDataArchive{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataArchive).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataArchive for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ASSIGNED_ACCESS_RIGHTS: // BACnetConstructedDataAssignedAccessRights
-		if _child, err = (&_BACnetConstructedDataAssignedAccessRights{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAssignedAccessRights).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAssignedAccessRights for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ASSIGNED_LANDING_CALLS: // BACnetConstructedDataAssignedLandingCalls
-		if _child, err = (&_BACnetConstructedDataAssignedLandingCalls{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAssignedLandingCalls).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAssignedLandingCalls for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ATTEMPTED_SAMPLES && peekedTagNumber == uint8(2): // BACnetConstructedDataAttemptedSamples
-		if _child, err = (&_BACnetConstructedDataAttemptedSamples{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAttemptedSamples).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAttemptedSamples for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTHENTICATION_FACTORS: // BACnetConstructedDataAuthenticationFactors
-		if _child, err = (&_BACnetConstructedDataAuthenticationFactors{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAuthenticationFactors).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAuthenticationFactors for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTHENTICATION_POLICY_LIST: // BACnetConstructedDataAuthenticationPolicyList
-		if _child, err = (&_BACnetConstructedDataAuthenticationPolicyList{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAuthenticationPolicyList).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAuthenticationPolicyList for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTHENTICATION_POLICY_NAMES && peekedTagNumber == uint8(7): // BACnetConstructedDataAuthenticationPolicyNames
-		if _child, err = (&_BACnetConstructedDataAuthenticationPolicyNames{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAuthenticationPolicyNames).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAuthenticationPolicyNames for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTHENTICATION_STATUS && peekedTagNumber == uint8(9): // BACnetConstructedDataAuthenticationStatus
-		if _child, err = (&_BACnetConstructedDataAuthenticationStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAuthenticationStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAuthenticationStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTHORIZATION_EXEMPTIONS && peekedTagNumber == uint8(9): // BACnetConstructedDataAuthorizationExemptions
-		if _child, err = (&_BACnetConstructedDataAuthorizationExemptions{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAuthorizationExemptions).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAuthorizationExemptions for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTHORIZATION_MODE && peekedTagNumber == uint8(9): // BACnetConstructedDataAuthorizationMode
-		if _child, err = (&_BACnetConstructedDataAuthorizationMode{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAuthorizationMode).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAuthorizationMode for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_AUTO_SLAVE_DISCOVERY && peekedTagNumber == uint8(1): // BACnetConstructedDataAutoSlaveDiscovery
-		if _child, err = (&_BACnetConstructedDataAutoSlaveDiscovery{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAutoSlaveDiscovery).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAutoSlaveDiscovery for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_AVERAGE_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataAverageValue
-		if _child, err = (&_BACnetConstructedDataAverageValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAverageValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAverageValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACKUP_AND_RESTORE_STATE && peekedTagNumber == uint8(9): // BACnetConstructedDataBackupAndRestoreState
-		if _child, err = (&_BACnetConstructedDataBackupAndRestoreState{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBackupAndRestoreState).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBackupAndRestoreState for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACKUP_FAILURE_TIMEOUT && peekedTagNumber == uint8(2): // BACnetConstructedDataBackupFailureTimeout
-		if _child, err = (&_BACnetConstructedDataBackupFailureTimeout{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBackupFailureTimeout).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBackupFailureTimeout for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACKUP_PREPARATION_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataBackupPreparationTime
-		if _child, err = (&_BACnetConstructedDataBackupPreparationTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBackupPreparationTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBackupPreparationTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_GLOBAL_ADDRESS: // BACnetConstructedDataBACnetIPGlobalAddress
-		if _child, err = (&_BACnetConstructedDataBACnetIPGlobalAddress{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBACnetIPGlobalAddress).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBACnetIPGlobalAddress for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_MODE && peekedTagNumber == uint8(9): // BACnetConstructedDataBACnetIPMode
-		if _child, err = (&_BACnetConstructedDataBACnetIPMode{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBACnetIPMode).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBACnetIPMode for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_MULTICAST_ADDRESS && peekedTagNumber == uint8(6): // BACnetConstructedDataBACnetIPMulticastAddress
-		if _child, err = (&_BACnetConstructedDataBACnetIPMulticastAddress{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBACnetIPMulticastAddress).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBACnetIPMulticastAddress for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_NAT_TRAVERSAL && peekedTagNumber == uint8(1): // BACnetConstructedDataBACnetIPNATTraversal
-		if _child, err = (&_BACnetConstructedDataBACnetIPNATTraversal{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBACnetIPNATTraversal).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBACnetIPNATTraversal for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IP_UDP_PORT && peekedTagNumber == uint8(2): // BACnetConstructedDataBACnetIPUDPPort
-		if _child, err = (&_BACnetConstructedDataBACnetIPUDPPort{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBACnetIPUDPPort).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBACnetIPUDPPort for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IPV6_MODE && peekedTagNumber == uint8(9): // BACnetConstructedDataBACnetIPv6Mode
-		if _child, err = (&_BACnetConstructedDataBACnetIPv6Mode{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBACnetIPv6Mode).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBACnetIPv6Mode for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IPV6_UDP_PORT && peekedTagNumber == uint8(2): // BACnetConstructedDataBACnetIPv6UDPPort
-		if _child, err = (&_BACnetConstructedDataBACnetIPv6UDPPort{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBACnetIPv6UDPPort).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBACnetIPv6UDPPort for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BACNET_IPV6_MULTICAST_ADDRESS && peekedTagNumber == uint8(6): // BACnetConstructedDataBACnetIPv6MulticastAddress
-		if _child, err = (&_BACnetConstructedDataBACnetIPv6MulticastAddress{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBACnetIPv6MulticastAddress).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBACnetIPv6MulticastAddress for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BASE_DEVICE_SECURITY_POLICY && peekedTagNumber == uint8(9): // BACnetConstructedDataBaseDeviceSecurityPolicy
-		if _child, err = (&_BACnetConstructedDataBaseDeviceSecurityPolicy{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBaseDeviceSecurityPolicy).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBaseDeviceSecurityPolicy for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BBMD_ACCEPT_FD_REGISTRATIONS && peekedTagNumber == uint8(1): // BACnetConstructedDataBBMDAcceptFDRegistrations
-		if _child, err = (&_BACnetConstructedDataBBMDAcceptFDRegistrations{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBBMDAcceptFDRegistrations).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBBMDAcceptFDRegistrations for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BBMD_BROADCAST_DISTRIBUTION_TABLE: // BACnetConstructedDataBBMDBroadcastDistributionTable
-		if _child, err = (&_BACnetConstructedDataBBMDBroadcastDistributionTable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBBMDBroadcastDistributionTable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBBMDBroadcastDistributionTable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BBMD_FOREIGN_DEVICE_TABLE: // BACnetConstructedDataBBMDForeignDeviceTable
-		if _child, err = (&_BACnetConstructedDataBBMDForeignDeviceTable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBBMDForeignDeviceTable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBBMDForeignDeviceTable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BELONGS_TO: // BACnetConstructedDataBelongsTo
-		if _child, err = (&_BACnetConstructedDataBelongsTo{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBelongsTo).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBelongsTo for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BIAS && peekedTagNumber == uint8(4): // BACnetConstructedDataBias
-		if _child, err = (&_BACnetConstructedDataBias{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBias).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBias for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BIT_MASK && peekedTagNumber == uint8(8): // BACnetConstructedDataBitMask
-		if _child, err = (&_BACnetConstructedDataBitMask{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBitMask).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBitMask for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BIT_TEXT && peekedTagNumber == uint8(7): // BACnetConstructedDataBitText
-		if _child, err = (&_BACnetConstructedDataBitText{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBitText).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBitText for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BLINK_WARN_ENABLE && peekedTagNumber == uint8(1): // BACnetConstructedDataBlinkWarnEnable
-		if _child, err = (&_BACnetConstructedDataBlinkWarnEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBlinkWarnEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBlinkWarnEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_BUFFER_SIZE && peekedTagNumber == uint8(2): // BACnetConstructedDataBufferSize
-		if _child, err = (&_BACnetConstructedDataBufferSize{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBufferSize).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBufferSize for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_ASSIGNED_DIRECTION && peekedTagNumber == uint8(9): // BACnetConstructedDataCarAssignedDirection
-		if _child, err = (&_BACnetConstructedDataCarAssignedDirection{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarAssignedDirection).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarAssignedDirection for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_DOOR_COMMAND && peekedTagNumber == uint8(9): // BACnetConstructedDataCarDoorCommand
-		if _child, err = (&_BACnetConstructedDataCarDoorCommand{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarDoorCommand).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarDoorCommand for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_DOOR_STATUS && peekedTagNumber == uint8(9): // BACnetConstructedDataCarDoorStatus
-		if _child, err = (&_BACnetConstructedDataCarDoorStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarDoorStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarDoorStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_DOOR_TEXT && peekedTagNumber == uint8(7): // BACnetConstructedDataCarDoorText
-		if _child, err = (&_BACnetConstructedDataCarDoorText{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarDoorText).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarDoorText for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_DOOR_ZONE && peekedTagNumber == uint8(1): // BACnetConstructedDataCarDoorZone
-		if _child, err = (&_BACnetConstructedDataCarDoorZone{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarDoorZone).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarDoorZone for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_DRIVE_STATUS && peekedTagNumber == uint8(9): // BACnetConstructedDataCarDriveStatus
-		if _child, err = (&_BACnetConstructedDataCarDriveStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarDriveStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarDriveStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_LOAD && peekedTagNumber == uint8(4): // BACnetConstructedDataCarLoad
-		if _child, err = (&_BACnetConstructedDataCarLoad{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarLoad).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarLoad for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_LOAD_UNITS && peekedTagNumber == uint8(9): // BACnetConstructedDataCarLoadUnits
-		if _child, err = (&_BACnetConstructedDataCarLoadUnits{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarLoadUnits).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarLoadUnits for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_MODE && peekedTagNumber == uint8(9): // BACnetConstructedDataCarMode
-		if _child, err = (&_BACnetConstructedDataCarMode{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarMode).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarMode for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_MOVING_DIRECTION && peekedTagNumber == uint8(9): // BACnetConstructedDataCarMovingDirection
-		if _child, err = (&_BACnetConstructedDataCarMovingDirection{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarMovingDirection).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarMovingDirection for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CAR_POSITION && peekedTagNumber == uint8(2): // BACnetConstructedDataCarPosition
-		if _child, err = (&_BACnetConstructedDataCarPosition{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCarPosition).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCarPosition for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CHANGE_OF_STATE_COUNT && peekedTagNumber == uint8(2): // BACnetConstructedDataChangeOfStateCount
-		if _child, err = (&_BACnetConstructedDataChangeOfStateCount{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataChangeOfStateCount).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataChangeOfStateCount for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CHANGE_OF_STATE_TIME: // BACnetConstructedDataChangeOfStateTime
-		if _child, err = (&_BACnetConstructedDataChangeOfStateTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataChangeOfStateTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataChangeOfStateTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CHANGES_PENDING && peekedTagNumber == uint8(1): // BACnetConstructedDataChangesPending
-		if _child, err = (&_BACnetConstructedDataChangesPending{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataChangesPending).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataChangesPending for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CHANNEL_NUMBER && peekedTagNumber == uint8(2): // BACnetConstructedDataChannelNumber
-		if _child, err = (&_BACnetConstructedDataChannelNumber{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataChannelNumber).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataChannelNumber for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CLIENT_COV_INCREMENT: // BACnetConstructedDataClientCOVIncrement
-		if _child, err = (&_BACnetConstructedDataClientCOVIncrement{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataClientCOVIncrement).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataClientCOVIncrement for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COMMAND && peekedTagNumber == uint8(9): // BACnetConstructedDataCommand
-		if _child, err = (&_BACnetConstructedDataCommand{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCommand).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCommand for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COMMAND_TIME_ARRAY: // BACnetConstructedDataCommandTimeArray
-		if _child, err = (&_BACnetConstructedDataCommandTimeArray{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCommandTimeArray).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCommandTimeArray for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CONFIGURATION_FILES && peekedTagNumber == uint8(12): // BACnetConstructedDataConfigurationFiles
-		if _child, err = (&_BACnetConstructedDataConfigurationFiles{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataConfigurationFiles).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataConfigurationFiles for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CONTROL_GROUPS && peekedTagNumber == uint8(2): // BACnetConstructedDataControlGroups
-		if _child, err = (&_BACnetConstructedDataControlGroups{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataControlGroups).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataControlGroups for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CONTROLLED_VARIABLE_REFERENCE: // BACnetConstructedDataControlledVariableReference
-		if _child, err = (&_BACnetConstructedDataControlledVariableReference{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataControlledVariableReference).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataControlledVariableReference for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CONTROLLED_VARIABLE_UNITS && peekedTagNumber == uint8(9): // BACnetConstructedDataControlledVariableUnits
-		if _child, err = (&_BACnetConstructedDataControlledVariableUnits{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataControlledVariableUnits).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataControlledVariableUnits for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CONTROLLED_VARIABLE_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataControlledVariableValue
-		if _child, err = (&_BACnetConstructedDataControlledVariableValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataControlledVariableValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataControlledVariableValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COUNT && peekedTagNumber == uint8(2): // BACnetConstructedDataCount
-		if _child, err = (&_BACnetConstructedDataCount{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCount).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCount for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COUNT_BEFORE_CHANGE && peekedTagNumber == uint8(2): // BACnetConstructedDataCountBeforeChange
-		if _child, err = (&_BACnetConstructedDataCountBeforeChange{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCountBeforeChange).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCountBeforeChange for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COUNT_CHANGE_TIME: // BACnetConstructedDataCountChangeTime
-		if _child, err = (&_BACnetConstructedDataCountChangeTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCountChangeTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCountChangeTime for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_COV_INCREMENT && peekedTagNumber == uint8(2): // BACnetConstructedDataIntegerValueCOVIncrement
-		if _child, err = (&_BACnetConstructedDataIntegerValueCOVIncrement{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueCOVIncrement).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueCOVIncrement for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_COV_INCREMENT && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueCOVIncrement
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueCOVIncrement{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueCOVIncrement).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueCOVIncrement for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_COV_INCREMENT && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueCOVIncrement
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueCOVIncrement{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueCOVIncrement).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueCOVIncrement for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COV_INCREMENT && peekedTagNumber == uint8(4): // BACnetConstructedDataCOVIncrement
-		if _child, err = (&_BACnetConstructedDataCOVIncrement{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCOVIncrement).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCOVIncrement for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COV_PERIOD && peekedTagNumber == uint8(2): // BACnetConstructedDataCOVPeriod
-		if _child, err = (&_BACnetConstructedDataCOVPeriod{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCOVPeriod).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCOVPeriod for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COV_RESUBSCRIPTION_INTERVAL && peekedTagNumber == uint8(2): // BACnetConstructedDataCOVResubscriptionInterval
-		if _child, err = (&_BACnetConstructedDataCOVResubscriptionInterval{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCOVResubscriptionInterval).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCOVResubscriptionInterval for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COVU_PERIOD && peekedTagNumber == uint8(2): // BACnetConstructedDataCOVUPeriod
-		if _child, err = (&_BACnetConstructedDataCOVUPeriod{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCOVUPeriod).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCOVUPeriod for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_COVU_RECIPIENTS: // BACnetConstructedDataCOVURecipients
-		if _child, err = (&_BACnetConstructedDataCOVURecipients{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCOVURecipients).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCOVURecipients for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CREDENTIAL_DISABLE && peekedTagNumber == uint8(9): // BACnetConstructedDataCredentialDisable
-		if _child, err = (&_BACnetConstructedDataCredentialDisable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCredentialDisable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCredentialDisable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CREDENTIAL_STATUS && peekedTagNumber == uint8(9): // BACnetConstructedDataCredentialStatus
-		if _child, err = (&_BACnetConstructedDataCredentialStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCredentialStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCredentialStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CREDENTIALS: // BACnetConstructedDataCredentials
-		if _child, err = (&_BACnetConstructedDataCredentials{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCredentials).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCredentials for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CREDENTIALS_IN_ZONE: // BACnetConstructedDataCredentialsInZone
-		if _child, err = (&_BACnetConstructedDataCredentialsInZone{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCredentialsInZone).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCredentialsInZone for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_CURRENT_COMMAND_PRIORITY: // BACnetConstructedDataCurrentCommandPriority
-		if _child, err = (&_BACnetConstructedDataCurrentCommandPriority{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCurrentCommandPriority).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCurrentCommandPriority for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DATABASE_REVISION && peekedTagNumber == uint8(2): // BACnetConstructedDataDatabaseRevision
-		if _child, err = (&_BACnetConstructedDataDatabaseRevision{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDatabaseRevision).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDatabaseRevision for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DATE_LIST: // BACnetConstructedDataDateList
-		if _child, err = (&_BACnetConstructedDataDateList{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDateList).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDateList for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DAYLIGHT_SAVINGS_STATUS && peekedTagNumber == uint8(1): // BACnetConstructedDataDaylightSavingsStatus
-		if _child, err = (&_BACnetConstructedDataDaylightSavingsStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDaylightSavingsStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDaylightSavingsStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DAYS_REMAINING && peekedTagNumber == uint8(3): // BACnetConstructedDataDaysRemaining
-		if _child, err = (&_BACnetConstructedDataDaysRemaining{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDaysRemaining).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDaysRemaining for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_DEADBAND && peekedTagNumber == uint8(2): // BACnetConstructedDataIntegerValueDeadband
-		if _child, err = (&_BACnetConstructedDataIntegerValueDeadband{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueDeadband).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueDeadband for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_DEADBAND && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueDeadband
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueDeadband{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueDeadband).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueDeadband for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_DEADBAND && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueDeadband
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueDeadband{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueDeadband).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueDeadband for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DEADBAND && peekedTagNumber == uint8(4): // BACnetConstructedDataDeadband
-		if _child, err = (&_BACnetConstructedDataDeadband{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDeadband).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDeadband for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_FADE_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataDefaultFadeTime
-		if _child, err = (&_BACnetConstructedDataDefaultFadeTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDefaultFadeTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDefaultFadeTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_RAMP_RATE && peekedTagNumber == uint8(4): // BACnetConstructedDataDefaultRampRate
-		if _child, err = (&_BACnetConstructedDataDefaultRampRate{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDefaultRampRate).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDefaultRampRate for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_STEP_INCREMENT && peekedTagNumber == uint8(4): // BACnetConstructedDataDefaultStepIncrement
-		if _child, err = (&_BACnetConstructedDataDefaultStepIncrement{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDefaultStepIncrement).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDefaultStepIncrement for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_SUBORDINATE_RELATIONSHIP && peekedTagNumber == uint8(9): // BACnetConstructedDataDefaultSubordinateRelationship
-		if _child, err = (&_BACnetConstructedDataDefaultSubordinateRelationship{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDefaultSubordinateRelationship).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDefaultSubordinateRelationship for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DEFAULT_TIMEOUT && peekedTagNumber == uint8(2): // BACnetConstructedDataDefaultTimeout
-		if _child, err = (&_BACnetConstructedDataDefaultTimeout{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDefaultTimeout).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDefaultTimeout for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DEPLOYED_PROFILE_LOCATION && peekedTagNumber == uint8(7): // BACnetConstructedDataDeployedProfileLocation
-		if _child, err = (&_BACnetConstructedDataDeployedProfileLocation{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDeployedProfileLocation).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDeployedProfileLocation for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DERIVATIVE_CONSTANT && peekedTagNumber == uint8(4): // BACnetConstructedDataDerivativeConstant
-		if _child, err = (&_BACnetConstructedDataDerivativeConstant{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDerivativeConstant).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDerivativeConstant for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DERIVATIVE_CONSTANT_UNITS && peekedTagNumber == uint8(9): // BACnetConstructedDataDerivativeConstantUnits
-		if _child, err = (&_BACnetConstructedDataDerivativeConstantUnits{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDerivativeConstantUnits).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDerivativeConstantUnits for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DESCRIPTION && peekedTagNumber == uint8(7): // BACnetConstructedDataDescription
-		if _child, err = (&_BACnetConstructedDataDescription{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDescription).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDescription for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DESCRIPTION_OF_HALT && peekedTagNumber == uint8(7): // BACnetConstructedDataDescriptionOfHalt
-		if _child, err = (&_BACnetConstructedDataDescriptionOfHalt{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDescriptionOfHalt).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDescriptionOfHalt for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DEVICE_ADDRESS_BINDING: // BACnetConstructedDataDeviceAddressBinding
-		if _child, err = (&_BACnetConstructedDataDeviceAddressBinding{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDeviceAddressBinding).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDeviceAddressBinding for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DEVICE_TYPE && peekedTagNumber == uint8(7): // BACnetConstructedDataDeviceType
-		if _child, err = (&_BACnetConstructedDataDeviceType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDeviceType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDeviceType for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DIRECT_READING && peekedTagNumber == uint8(4): // BACnetConstructedDataDirectReading
-		if _child, err = (&_BACnetConstructedDataDirectReading{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDirectReading).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDirectReading for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DISTRIBUTION_KEY_REVISION && peekedTagNumber == uint8(2): // BACnetConstructedDataDistributionKeyRevision
-		if _child, err = (&_BACnetConstructedDataDistributionKeyRevision{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDistributionKeyRevision).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDistributionKeyRevision for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DO_NOT_HIDE && peekedTagNumber == uint8(1): // BACnetConstructedDataDoNotHide
-		if _child, err = (&_BACnetConstructedDataDoNotHide{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDoNotHide).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDoNotHide for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_ALARM_STATE && peekedTagNumber == uint8(9): // BACnetConstructedDataDoorAlarmState
-		if _child, err = (&_BACnetConstructedDataDoorAlarmState{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDoorAlarmState).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDoorAlarmState for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_EXTENDED_PULSE_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataDoorExtendedPulseTime
-		if _child, err = (&_BACnetConstructedDataDoorExtendedPulseTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDoorExtendedPulseTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDoorExtendedPulseTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_MEMBERS: // BACnetConstructedDataDoorMembers
-		if _child, err = (&_BACnetConstructedDataDoorMembers{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDoorMembers).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDoorMembers for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_OPEN_TOO_LONG_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataDoorOpenTooLongTime
-		if _child, err = (&_BACnetConstructedDataDoorOpenTooLongTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDoorOpenTooLongTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDoorOpenTooLongTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_PULSE_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataDoorPulseTime
-		if _child, err = (&_BACnetConstructedDataDoorPulseTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDoorPulseTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDoorPulseTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_STATUS && peekedTagNumber == uint8(9): // BACnetConstructedDataDoorStatus
-		if _child, err = (&_BACnetConstructedDataDoorStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDoorStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDoorStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DOOR_UNLOCK_DELAY_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataDoorUnlockDelayTime
-		if _child, err = (&_BACnetConstructedDataDoorUnlockDelayTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDoorUnlockDelayTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDoorUnlockDelayTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_DUTY_WINDOW && peekedTagNumber == uint8(2): // BACnetConstructedDataDutyWindow
-		if _child, err = (&_BACnetConstructedDataDutyWindow{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDutyWindow).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDutyWindow for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EFFECTIVE_PERIOD: // BACnetConstructedDataEffectivePeriod
-		if _child, err = (&_BACnetConstructedDataEffectivePeriod{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEffectivePeriod).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEffectivePeriod for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EGRESS_ACTIVE && peekedTagNumber == uint8(1): // BACnetConstructedDataEgressActive
-		if _child, err = (&_BACnetConstructedDataEgressActive{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEgressActive).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEgressActive for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EGRESS_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataEgressTime
-		if _child, err = (&_BACnetConstructedDataEgressTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEgressTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEgressTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ELAPSED_ACTIVE_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataElapsedActiveTime
-		if _child, err = (&_BACnetConstructedDataElapsedActiveTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataElapsedActiveTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataElapsedActiveTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ELEVATOR_GROUP && peekedTagNumber == uint8(12): // BACnetConstructedDataElevatorGroup
-		if _child, err = (&_BACnetConstructedDataElevatorGroup{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataElevatorGroup).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataElevatorGroup for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ENABLE && peekedTagNumber == uint8(1): // BACnetConstructedDataEnable
-		if _child, err = (&_BACnetConstructedDataEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ENERGY_METER && peekedTagNumber == uint8(4): // BACnetConstructedDataEnergyMeter
-		if _child, err = (&_BACnetConstructedDataEnergyMeter{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEnergyMeter).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEnergyMeter for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ENERGY_METER_REF: // BACnetConstructedDataEnergyMeterRef
-		if _child, err = (&_BACnetConstructedDataEnergyMeterRef{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEnergyMeterRef).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEnergyMeterRef for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ENTRY_POINTS: // BACnetConstructedDataEntryPoints
-		if _child, err = (&_BACnetConstructedDataEntryPoints{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEntryPoints).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEntryPoints for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ERROR_LIMIT && peekedTagNumber == uint8(4): // BACnetConstructedDataErrorLimit
-		if _child, err = (&_BACnetConstructedDataErrorLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataErrorLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataErrorLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ESCALATOR_MODE && peekedTagNumber == uint8(9): // BACnetConstructedDataEscalatorMode
-		if _child, err = (&_BACnetConstructedDataEscalatorMode{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEscalatorMode).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEscalatorMode for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT && peekedTagNumber == uint8(1): // BACnetConstructedDataEventAlgorithmInhibit
-		if _child, err = (&_BACnetConstructedDataEventAlgorithmInhibit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventAlgorithmInhibit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventAlgorithmInhibit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_ALGORITHM_INHIBIT_REF: // BACnetConstructedDataEventAlgorithmInhibitRef
-		if _child, err = (&_BACnetConstructedDataEventAlgorithmInhibitRef{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventAlgorithmInhibitRef).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventAlgorithmInhibitRef for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_DETECTION_ENABLE && peekedTagNumber == uint8(1): // BACnetConstructedDataEventDetectionEnable
-		if _child, err = (&_BACnetConstructedDataEventDetectionEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventDetectionEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventDetectionEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_ENABLE && peekedTagNumber == uint8(8): // BACnetConstructedDataEventEnable
-		if _child, err = (&_BACnetConstructedDataEventEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS: // BACnetConstructedDataEventMessageTexts
-		if _child, err = (&_BACnetConstructedDataEventMessageTexts{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventMessageTexts).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventMessageTexts for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_MESSAGE_TEXTS_CONFIG: // BACnetConstructedDataEventMessageTextsConfig
-		if _child, err = (&_BACnetConstructedDataEventMessageTextsConfig{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventMessageTextsConfig).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventMessageTextsConfig for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_PARAMETERS: // BACnetConstructedDataEventParameters
-		if _child, err = (&_BACnetConstructedDataEventParameters{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventParameters).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventParameters for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_STATE && peekedTagNumber == uint8(9): // BACnetConstructedDataEventState
-		if _child, err = (&_BACnetConstructedDataEventState{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventState).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventState for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_TIME_STAMPS: // BACnetConstructedDataEventTimeStamps
-		if _child, err = (&_BACnetConstructedDataEventTimeStamps{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventTimeStamps).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventTimeStamps for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EVENT_TYPE && peekedTagNumber == uint8(9): // BACnetConstructedDataEventType
-		if _child, err = (&_BACnetConstructedDataEventType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventType for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EXCEPTION_SCHEDULE: // BACnetConstructedDataExceptionSchedule
-		if _child, err = (&_BACnetConstructedDataExceptionSchedule{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataExceptionSchedule).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataExceptionSchedule for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EXECUTION_DELAY && peekedTagNumber == uint8(2): // BACnetConstructedDataExecutionDelay
-		if _child, err = (&_BACnetConstructedDataExecutionDelay{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataExecutionDelay).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataExecutionDelay for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EXIT_POINTS: // BACnetConstructedDataExitPoints
-		if _child, err = (&_BACnetConstructedDataExitPoints{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataExitPoints).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataExitPoints for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EXPECTED_SHED_LEVEL: // BACnetConstructedDataExpectedShedLevel
-		if _child, err = (&_BACnetConstructedDataExpectedShedLevel{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataExpectedShedLevel).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataExpectedShedLevel for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EXPIRATION_TIME: // BACnetConstructedDataExpirationTime
-		if _child, err = (&_BACnetConstructedDataExpirationTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataExpirationTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataExpirationTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_EXTENDED_TIME_ENABLE && peekedTagNumber == uint8(1): // BACnetConstructedDataExtendedTimeEnable
-		if _child, err = (&_BACnetConstructedDataExtendedTimeEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataExtendedTimeEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataExtendedTimeEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FAILED_ATTEMPT_EVENTS: // BACnetConstructedDataFailedAttemptEvents
-		if _child, err = (&_BACnetConstructedDataFailedAttemptEvents{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFailedAttemptEvents).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFailedAttemptEvents for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FAILED_ATTEMPTS && peekedTagNumber == uint8(2): // BACnetConstructedDataFailedAttempts
-		if _child, err = (&_BACnetConstructedDataFailedAttempts{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFailedAttempts).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFailedAttempts for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FAILED_ATTEMPTS_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataFailedAttemptsTime
-		if _child, err = (&_BACnetConstructedDataFailedAttemptsTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFailedAttemptsTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFailedAttemptsTime for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_HIGH_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataAccumulatorFaultHighLimit
-		if _child, err = (&_BACnetConstructedDataAccumulatorFaultHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccumulatorFaultHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccumulatorFaultHighLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_HIGH_LIMIT && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogInputFaultHighLimit
-		if _child, err = (&_BACnetConstructedDataAnalogInputFaultHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogInputFaultHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogInputFaultHighLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_HIGH_LIMIT && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogValueFaultHighLimit
-		if _child, err = (&_BACnetConstructedDataAnalogValueFaultHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogValueFaultHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogValueFaultHighLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_HIGH_LIMIT && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValueFaultHighLimit
-		if _child, err = (&_BACnetConstructedDataIntegerValueFaultHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueFaultHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueFaultHighLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_HIGH_LIMIT && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueFaultHighLimit
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueFaultHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueFaultHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueFaultHighLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_HIGH_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueFaultHighLimit
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueFaultHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueFaultHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueFaultHighLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_HIGH_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataFaultHighLimit
-		if _child, err = (&_BACnetConstructedDataFaultHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFaultHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFaultHighLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_LOW_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataAccumulatorFaultLowLimit
-		if _child, err = (&_BACnetConstructedDataAccumulatorFaultLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccumulatorFaultLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccumulatorFaultLowLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_LOW_LIMIT && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogInputFaultLowLimit
-		if _child, err = (&_BACnetConstructedDataAnalogInputFaultLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogInputFaultLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogInputFaultLowLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_LOW_LIMIT && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogValueFaultLowLimit
-		if _child, err = (&_BACnetConstructedDataAnalogValueFaultLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogValueFaultLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogValueFaultLowLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_LOW_LIMIT && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueFaultLowLimit
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueFaultLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueFaultLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueFaultLowLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_LOW_LIMIT && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValueFaultLowLimit
-		if _child, err = (&_BACnetConstructedDataIntegerValueFaultLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueFaultLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueFaultLowLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_LOW_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueFaultLowLimit
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueFaultLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueFaultLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueFaultLowLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_LOW_LIMIT && peekedTagNumber == uint8(4): // BACnetConstructedDataFaultLowLimit
-		if _child, err = (&_BACnetConstructedDataFaultLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFaultLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFaultLowLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_PARAMETERS: // BACnetConstructedDataFaultParameters
-		if _child, err = (&_BACnetConstructedDataFaultParameters{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFaultParameters).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFaultParameters for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ESCALATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_SIGNALS: // BACnetConstructedDataEscalatorFaultSignals
-		if _child, err = (&_BACnetConstructedDataEscalatorFaultSignals{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEscalatorFaultSignals).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEscalatorFaultSignals for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFT && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_SIGNALS: // BACnetConstructedDataLiftFaultSignals
-		if _child, err = (&_BACnetConstructedDataLiftFaultSignals{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLiftFaultSignals).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLiftFaultSignals for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_SIGNALS: // BACnetConstructedDataFaultSignals
-		if _child, err = (&_BACnetConstructedDataFaultSignals{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFaultSignals).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFaultSignals for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_TYPE && peekedTagNumber == uint8(9): // BACnetConstructedDataFaultType
-		if _child, err = (&_BACnetConstructedDataFaultType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFaultType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFaultType for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_DOOR && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_VALUES: // BACnetConstructedDataAccessDoorFaultValues
-		if _child, err = (&_BACnetConstructedDataAccessDoorFaultValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessDoorFaultValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessDoorFaultValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CHARACTERSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_VALUES: // BACnetConstructedDataCharacterStringValueFaultValues
-		if _child, err = (&_BACnetConstructedDataCharacterStringValueFaultValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCharacterStringValueFaultValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCharacterStringValueFaultValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_VALUES: // BACnetConstructedDataLifeSafetyPointFaultValues
-		if _child, err = (&_BACnetConstructedDataLifeSafetyPointFaultValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyPointFaultValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyPointFaultValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_ZONE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_VALUES: // BACnetConstructedDataLifeSafetyZoneFaultValues
-		if _child, err = (&_BACnetConstructedDataLifeSafetyZoneFaultValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyZoneFaultValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyZoneFaultValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_VALUES && peekedTagNumber == uint8(2): // BACnetConstructedDataMultiStateInputFaultValues
-		if _child, err = (&_BACnetConstructedDataMultiStateInputFaultValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateInputFaultValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateInputFaultValues for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_VALUES && peekedTagNumber == uint8(2): // BACnetConstructedDataMultiStateValueFaultValues
-		if _child, err = (&_BACnetConstructedDataMultiStateValueFaultValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateValueFaultValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateValueFaultValues for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FAULT_VALUES: // BACnetConstructedDataFaultValues
-		if _child, err = (&_BACnetConstructedDataFaultValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFaultValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFaultValues for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FD_BBMD_ADDRESS: // BACnetConstructedDataFDBBMDAddress
-		if _child, err = (&_BACnetConstructedDataFDBBMDAddress{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFDBBMDAddress).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFDBBMDAddress for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FD_SUBSCRIPTION_LIFETIME && peekedTagNumber == uint8(2): // BACnetConstructedDataFDSubscriptionLifetime
-		if _child, err = (&_BACnetConstructedDataFDSubscriptionLifetime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFDSubscriptionLifetime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFDSubscriptionLifetime for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_FEEDBACK_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryLightingOutputFeedbackValue
-		if _child, err = (&_BACnetConstructedDataBinaryLightingOutputFeedbackValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryLightingOutputFeedbackValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryLightingOutputFeedbackValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_FEEDBACK_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryOutputFeedbackValue
-		if _child, err = (&_BACnetConstructedDataBinaryOutputFeedbackValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryOutputFeedbackValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryOutputFeedbackValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_FEEDBACK_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataLightingOutputFeedbackValue
-		if _child, err = (&_BACnetConstructedDataLightingOutputFeedbackValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLightingOutputFeedbackValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLightingOutputFeedbackValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_FEEDBACK_VALUE && peekedTagNumber == uint8(2): // BACnetConstructedDataMultiStateOutputFeedbackValue
-		if _child, err = (&_BACnetConstructedDataMultiStateOutputFeedbackValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateOutputFeedbackValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateOutputFeedbackValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FILE_ACCESS_METHOD && peekedTagNumber == uint8(9): // BACnetConstructedDataFileAccessMethod
-		if _child, err = (&_BACnetConstructedDataFileAccessMethod{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFileAccessMethod).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFileAccessMethod for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FILE_SIZE && peekedTagNumber == uint8(2): // BACnetConstructedDataFileSize
-		if _child, err = (&_BACnetConstructedDataFileSize{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFileSize).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFileSize for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FILE_TYPE && peekedTagNumber == uint8(7): // BACnetConstructedDataFileType
-		if _child, err = (&_BACnetConstructedDataFileType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFileType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFileType for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FIRMWARE_REVISION && peekedTagNumber == uint8(7): // BACnetConstructedDataFirmwareRevision
-		if _child, err = (&_BACnetConstructedDataFirmwareRevision{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFirmwareRevision).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFirmwareRevision for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FLOOR_TEXT && peekedTagNumber == uint8(7): // BACnetConstructedDataFloorText
-		if _child, err = (&_BACnetConstructedDataFloorText{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFloorText).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFloorText for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_FULL_DUTY_BASELINE && peekedTagNumber == uint8(4): // BACnetConstructedDataFullDutyBaseline
-		if _child, err = (&_BACnetConstructedDataFullDutyBaseline{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFullDutyBaseline).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFullDutyBaseline for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_GLOBAL_IDENTIFIER && peekedTagNumber == uint8(2): // BACnetConstructedDataGlobalIdentifier
-		if _child, err = (&_BACnetConstructedDataGlobalIdentifier{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGlobalIdentifier).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGlobalIdentifier for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_GROUP_ID && peekedTagNumber == uint8(2): // BACnetConstructedDataGroupID
-		if _child, err = (&_BACnetConstructedDataGroupID{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGroupID).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGroupID for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_GROUP_MEMBER_NAMES && peekedTagNumber == uint8(7): // BACnetConstructedDataGroupMemberNames
-		if _child, err = (&_BACnetConstructedDataGroupMemberNames{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGroupMemberNames).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGroupMemberNames for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_GLOBAL_GROUP && propertyIdentifierArgument == BACnetPropertyIdentifier_GROUP_MEMBERS: // BACnetConstructedDataGlobalGroupGroupMembers
-		if _child, err = (&_BACnetConstructedDataGlobalGroupGroupMembers{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGlobalGroupGroupMembers).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGlobalGroupGroupMembers for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ELEVATOR_GROUP && propertyIdentifierArgument == BACnetPropertyIdentifier_GROUP_MEMBERS && peekedTagNumber == uint8(12): // BACnetConstructedDataElevatorGroupGroupMembers
-		if _child, err = (&_BACnetConstructedDataElevatorGroupGroupMembers{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataElevatorGroupGroupMembers).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataElevatorGroupGroupMembers for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_GROUP_MEMBERS && peekedTagNumber == uint8(12): // BACnetConstructedDataGroupMembers
-		if _child, err = (&_BACnetConstructedDataGroupMembers{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGroupMembers).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGroupMembers for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_GROUP_MODE && peekedTagNumber == uint8(9): // BACnetConstructedDataGroupMode
-		if _child, err = (&_BACnetConstructedDataGroupMode{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGroupMode).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGroupMode for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGH_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataAccumulatorHighLimit
-		if _child, err = (&_BACnetConstructedDataAccumulatorHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccumulatorHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccumulatorHighLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGH_LIMIT && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueHighLimit
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueHighLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGH_LIMIT && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValueHighLimit
-		if _child, err = (&_BACnetConstructedDataIntegerValueHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueHighLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGH_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueHighLimit
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueHighLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGH_LIMIT && peekedTagNumber == uint8(4): // BACnetConstructedDataHighLimit
-		if _child, err = (&_BACnetConstructedDataHighLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataHighLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataHighLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_HIGHER_DECK && peekedTagNumber == uint8(12): // BACnetConstructedDataHigherDeck
-		if _child, err = (&_BACnetConstructedDataHigherDeck{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataHigherDeck).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataHigherDeck for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IN_PROCESS && peekedTagNumber == uint8(1): // BACnetConstructedDataInProcess
-		if _child, err = (&_BACnetConstructedDataInProcess{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataInProcess).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataInProcess for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IN_PROGRESS && peekedTagNumber == uint8(9): // BACnetConstructedDataInProgress
-		if _child, err = (&_BACnetConstructedDataInProgress{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataInProgress).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataInProgress for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_INACTIVE_TEXT && peekedTagNumber == uint8(7): // BACnetConstructedDataInactiveText
-		if _child, err = (&_BACnetConstructedDataInactiveText{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataInactiveText).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataInactiveText for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_INITIAL_TIMEOUT && peekedTagNumber == uint8(2): // BACnetConstructedDataInitialTimeout
-		if _child, err = (&_BACnetConstructedDataInitialTimeout{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataInitialTimeout).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataInitialTimeout for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_INPUT_REFERENCE: // BACnetConstructedDataInputReference
-		if _child, err = (&_BACnetConstructedDataInputReference{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataInputReference).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataInputReference for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_INSTALLATION_ID && peekedTagNumber == uint8(2): // BACnetConstructedDataInstallationID
-		if _child, err = (&_BACnetConstructedDataInstallationID{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataInstallationID).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataInstallationID for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_INSTANCE_OF && peekedTagNumber == uint8(7): // BACnetConstructedDataInstanceOf
-		if _child, err = (&_BACnetConstructedDataInstanceOf{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataInstanceOf).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataInstanceOf for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_INSTANTANEOUS_POWER && peekedTagNumber == uint8(4): // BACnetConstructedDataInstantaneousPower
-		if _child, err = (&_BACnetConstructedDataInstantaneousPower{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataInstantaneousPower).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataInstantaneousPower for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_INTEGRAL_CONSTANT && peekedTagNumber == uint8(4): // BACnetConstructedDataIntegralConstant
-		if _child, err = (&_BACnetConstructedDataIntegralConstant{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegralConstant).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegralConstant for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_INTEGRAL_CONSTANT_UNITS && peekedTagNumber == uint8(9): // BACnetConstructedDataIntegralConstantUnits
-		if _child, err = (&_BACnetConstructedDataIntegralConstantUnits{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegralConstantUnits).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegralConstantUnits for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_INTERFACE_VALUE: // BACnetConstructedDataAnalogInputInterfaceValue
-		if _child, err = (&_BACnetConstructedDataAnalogInputInterfaceValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogInputInterfaceValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogInputInterfaceValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_INTERFACE_VALUE: // BACnetConstructedDataAnalogOutputInterfaceValue
-		if _child, err = (&_BACnetConstructedDataAnalogOutputInterfaceValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogOutputInterfaceValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogOutputInterfaceValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_INTERFACE_VALUE: // BACnetConstructedDataBinaryInputInterfaceValue
-		if _child, err = (&_BACnetConstructedDataBinaryInputInterfaceValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryInputInterfaceValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryInputInterfaceValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_INTERFACE_VALUE: // BACnetConstructedDataBinaryOutputInterfaceValue
-		if _child, err = (&_BACnetConstructedDataBinaryOutputInterfaceValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryOutputInterfaceValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryOutputInterfaceValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_INTERFACE_VALUE: // BACnetConstructedDataMultiStateInputInterfaceValue
-		if _child, err = (&_BACnetConstructedDataMultiStateInputInterfaceValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateInputInterfaceValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateInputInterfaceValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_INTERFACE_VALUE: // BACnetConstructedDataMultiStateOutputInterfaceValue
-		if _child, err = (&_BACnetConstructedDataMultiStateOutputInterfaceValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateOutputInterfaceValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateOutputInterfaceValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_INTERVAL_OFFSET && peekedTagNumber == uint8(2): // BACnetConstructedDataIntervalOffset
-		if _child, err = (&_BACnetConstructedDataIntervalOffset{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntervalOffset).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntervalOffset for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_ADDRESS && peekedTagNumber == uint8(6): // BACnetConstructedDataIPAddress
-		if _child, err = (&_BACnetConstructedDataIPAddress{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPAddress).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPAddress for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DEFAULT_GATEWAY && peekedTagNumber == uint8(6): // BACnetConstructedDataIPDefaultGateway
-		if _child, err = (&_BACnetConstructedDataIPDefaultGateway{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPDefaultGateway).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPDefaultGateway for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DHCP_ENABLE && peekedTagNumber == uint8(1): // BACnetConstructedDataIPDHCPEnable
-		if _child, err = (&_BACnetConstructedDataIPDHCPEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPDHCPEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPDHCPEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataIPDHCPLeaseTime
-		if _child, err = (&_BACnetConstructedDataIPDHCPLeaseTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPDHCPLeaseTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPDHCPLeaseTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DHCP_LEASE_TIME_REMAINING && peekedTagNumber == uint8(2): // BACnetConstructedDataIPDHCPLeaseTimeRemaining
-		if _child, err = (&_BACnetConstructedDataIPDHCPLeaseTimeRemaining{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPDHCPLeaseTimeRemaining).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPDHCPLeaseTimeRemaining for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DHCP_SERVER && peekedTagNumber == uint8(6): // BACnetConstructedDataIPDHCPServer
-		if _child, err = (&_BACnetConstructedDataIPDHCPServer{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPDHCPServer).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPDHCPServer for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_DNS_SERVER && peekedTagNumber == uint8(6): // BACnetConstructedDataIPDNSServer
-		if _child, err = (&_BACnetConstructedDataIPDNSServer{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPDNSServer).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPDNSServer for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IP_SUBNET_MASK && peekedTagNumber == uint8(6): // BACnetConstructedDataIPSubnetMask
-		if _child, err = (&_BACnetConstructedDataIPSubnetMask{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPSubnetMask).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPSubnetMask for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_ADDRESS && peekedTagNumber == uint8(6): // BACnetConstructedDataIPv6Address
-		if _child, err = (&_BACnetConstructedDataIPv6Address{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPv6Address).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPv6Address for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_AUTO_ADDRESSING_ENABLE && peekedTagNumber == uint8(1): // BACnetConstructedDataIPv6AutoAddressingEnable
-		if _child, err = (&_BACnetConstructedDataIPv6AutoAddressingEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPv6AutoAddressingEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPv6AutoAddressingEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DEFAULT_GATEWAY && peekedTagNumber == uint8(6): // BACnetConstructedDataIPv6DefaultGateway
-		if _child, err = (&_BACnetConstructedDataIPv6DefaultGateway{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPv6DefaultGateway).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPv6DefaultGateway for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataIPv6DHCPLeaseTime
-		if _child, err = (&_BACnetConstructedDataIPv6DHCPLeaseTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPv6DHCPLeaseTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPv6DHCPLeaseTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DHCP_LEASE_TIME_REMAINING && peekedTagNumber == uint8(2): // BACnetConstructedDataIPv6DHCPLeaseTimeRemaining
-		if _child, err = (&_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPv6DHCPLeaseTimeRemaining).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPv6DHCPLeaseTimeRemaining for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DHCP_SERVER && peekedTagNumber == uint8(6): // BACnetConstructedDataIPv6DHCPServer
-		if _child, err = (&_BACnetConstructedDataIPv6DHCPServer{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPv6DHCPServer).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPv6DHCPServer for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_DNS_SERVER && peekedTagNumber == uint8(6): // BACnetConstructedDataIPv6DNSServer
-		if _child, err = (&_BACnetConstructedDataIPv6DNSServer{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPv6DNSServer).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPv6DNSServer for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_PREFIX_LENGTH && peekedTagNumber == uint8(2): // BACnetConstructedDataIPv6PrefixLength
-		if _child, err = (&_BACnetConstructedDataIPv6PrefixLength{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPv6PrefixLength).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPv6PrefixLength for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IPV6_ZONE_INDEX && peekedTagNumber == uint8(7): // BACnetConstructedDataIPv6ZoneIndex
-		if _child, err = (&_BACnetConstructedDataIPv6ZoneIndex{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIPv6ZoneIndex).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIPv6ZoneIndex for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_IS_UTC && peekedTagNumber == uint8(1): // BACnetConstructedDataIsUTC
-		if _child, err = (&_BACnetConstructedDataIsUTC{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIsUTC).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIsUTC for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_KEY_SETS: // BACnetConstructedDataKeySets
-		if _child, err = (&_BACnetConstructedDataKeySets{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataKeySets).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataKeySets for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LANDING_CALL_CONTROL: // BACnetConstructedDataLandingCallControl
-		if _child, err = (&_BACnetConstructedDataLandingCallControl{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLandingCallControl).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLandingCallControl for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LANDING_CALLS: // BACnetConstructedDataLandingCalls
-		if _child, err = (&_BACnetConstructedDataLandingCalls{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLandingCalls).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLandingCalls for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LANDING_DOOR_STATUS: // BACnetConstructedDataLandingDoorStatus
-		if _child, err = (&_BACnetConstructedDataLandingDoorStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLandingDoorStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLandingDoorStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_ACCESS_EVENT && peekedTagNumber == uint8(9): // BACnetConstructedDataLastAccessEvent
-		if _child, err = (&_BACnetConstructedDataLastAccessEvent{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastAccessEvent).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastAccessEvent for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_ACCESS_POINT: // BACnetConstructedDataLastAccessPoint
-		if _child, err = (&_BACnetConstructedDataLastAccessPoint{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastAccessPoint).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastAccessPoint for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_COMMAND_TIME: // BACnetConstructedDataLastCommandTime
-		if _child, err = (&_BACnetConstructedDataLastCommandTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastCommandTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastCommandTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED: // BACnetConstructedDataLastCredentialAdded
-		if _child, err = (&_BACnetConstructedDataLastCredentialAdded{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastCredentialAdded).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastCredentialAdded for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_CREDENTIAL_ADDED_TIME: // BACnetConstructedDataLastCredentialAddedTime
-		if _child, err = (&_BACnetConstructedDataLastCredentialAddedTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastCredentialAddedTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastCredentialAddedTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED: // BACnetConstructedDataLastCredentialRemoved
-		if _child, err = (&_BACnetConstructedDataLastCredentialRemoved{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastCredentialRemoved).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastCredentialRemoved for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_CREDENTIAL_REMOVED_TIME: // BACnetConstructedDataLastCredentialRemovedTime
-		if _child, err = (&_BACnetConstructedDataLastCredentialRemovedTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastCredentialRemovedTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastCredentialRemovedTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_KEY_SERVER: // BACnetConstructedDataLastKeyServer
-		if _child, err = (&_BACnetConstructedDataLastKeyServer{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastKeyServer).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastKeyServer for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_NOTIFY_RECORD && peekedTagNumber == uint8(2): // BACnetConstructedDataLastNotifyRecord
-		if _child, err = (&_BACnetConstructedDataLastNotifyRecord{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastNotifyRecord).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastNotifyRecord for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_PRIORITY && peekedTagNumber == uint8(2): // BACnetConstructedDataLastPriority
-		if _child, err = (&_BACnetConstructedDataLastPriority{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastPriority).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastPriority for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_RESTART_REASON && peekedTagNumber == uint8(9): // BACnetConstructedDataLastRestartReason
-		if _child, err = (&_BACnetConstructedDataLastRestartReason{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastRestartReason).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastRestartReason for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_RESTORE_TIME: // BACnetConstructedDataLastRestoreTime
-		if _child, err = (&_BACnetConstructedDataLastRestoreTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastRestoreTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastRestoreTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_STATE_CHANGE && peekedTagNumber == uint8(9): // BACnetConstructedDataLastStateChange
-		if _child, err = (&_BACnetConstructedDataLastStateChange{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastStateChange).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastStateChange for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LAST_USE_TIME: // BACnetConstructedDataLastUseTime
-		if _child, err = (&_BACnetConstructedDataLastUseTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLastUseTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLastUseTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LIFE_SAFETY_ALARM_VALUES && peekedTagNumber == uint8(9): // BACnetConstructedDataLifeSafetyAlarmValues
-		if _child, err = (&_BACnetConstructedDataLifeSafetyAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LIGHTING_COMMAND: // BACnetConstructedDataLightingCommand
-		if _child, err = (&_BACnetConstructedDataLightingCommand{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLightingCommand).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLightingCommand for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LIGHTING_COMMAND_DEFAULT_PRIORITY && peekedTagNumber == uint8(2): // BACnetConstructedDataLightingCommandDefaultPriority
-		if _child, err = (&_BACnetConstructedDataLightingCommandDefaultPriority{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLightingCommandDefaultPriority).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLightingCommandDefaultPriority for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LIMIT_ENABLE && peekedTagNumber == uint8(8): // BACnetConstructedDataLimitEnable
-		if _child, err = (&_BACnetConstructedDataLimitEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLimitEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLimitEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LIMIT_MONITORING_INTERVAL && peekedTagNumber == uint8(2): // BACnetConstructedDataLimitMonitoringInterval
-		if _child, err = (&_BACnetConstructedDataLimitMonitoringInterval{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLimitMonitoringInterval).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLimitMonitoringInterval for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LINK_SPEED && peekedTagNumber == uint8(4): // BACnetConstructedDataLinkSpeed
-		if _child, err = (&_BACnetConstructedDataLinkSpeed{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLinkSpeed).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLinkSpeed for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LINK_SPEED_AUTONEGOTIATE && peekedTagNumber == uint8(1): // BACnetConstructedDataLinkSpeedAutonegotiate
-		if _child, err = (&_BACnetConstructedDataLinkSpeedAutonegotiate{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLinkSpeedAutonegotiate).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLinkSpeedAutonegotiate for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LINK_SPEEDS && peekedTagNumber == uint8(4): // BACnetConstructedDataLinkSpeeds
-		if _child, err = (&_BACnetConstructedDataLinkSpeeds{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLinkSpeeds).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLinkSpeeds for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LIST_OF_GROUP_MEMBERS: // BACnetConstructedDataListOfGroupMembers
-		if _child, err = (&_BACnetConstructedDataListOfGroupMembers{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataListOfGroupMembers).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataListOfGroupMembers for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CHANNEL && propertyIdentifierArgument == BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES: // BACnetConstructedDataChannelListOfObjectPropertyReferences
-		if _child, err = (&_BACnetConstructedDataChannelListOfObjectPropertyReferences{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataChannelListOfObjectPropertyReferences).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataChannelListOfObjectPropertyReferences for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LIST_OF_OBJECT_PROPERTY_REFERENCES: // BACnetConstructedDataListOfObjectPropertyReferences
-		if _child, err = (&_BACnetConstructedDataListOfObjectPropertyReferences{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataListOfObjectPropertyReferences).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataListOfObjectPropertyReferences for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCAL_DATE && peekedTagNumber == uint8(10): // BACnetConstructedDataLocalDate
-		if _child, err = (&_BACnetConstructedDataLocalDate{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLocalDate).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLocalDate for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCAL_FORWARDING_ONLY && peekedTagNumber == uint8(1): // BACnetConstructedDataLocalForwardingOnly
-		if _child, err = (&_BACnetConstructedDataLocalForwardingOnly{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLocalForwardingOnly).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLocalForwardingOnly for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCAL_TIME && peekedTagNumber == uint8(11): // BACnetConstructedDataLocalTime
-		if _child, err = (&_BACnetConstructedDataLocalTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLocalTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLocalTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCATION && peekedTagNumber == uint8(7): // BACnetConstructedDataLocation
-		if _child, err = (&_BACnetConstructedDataLocation{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLocation).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLocation for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCK_STATUS && peekedTagNumber == uint8(9): // BACnetConstructedDataLockStatus
-		if _child, err = (&_BACnetConstructedDataLockStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLockStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLockStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCKOUT && peekedTagNumber == uint8(1): // BACnetConstructedDataLockout
-		if _child, err = (&_BACnetConstructedDataLockout{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLockout).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLockout for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOCKOUT_RELINQUISH_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataLockoutRelinquishTime
-		if _child, err = (&_BACnetConstructedDataLockoutRelinquishTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLockoutRelinquishTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLockoutRelinquishTime for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_EVENT_LOG && propertyIdentifierArgument == BACnetPropertyIdentifier_LOG_BUFFER: // BACnetConstructedDataEventLogLogBuffer
-		if _child, err = (&_BACnetConstructedDataEventLogLogBuffer{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataEventLogLogBuffer).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataEventLogLogBuffer for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TREND_LOG && propertyIdentifierArgument == BACnetPropertyIdentifier_LOG_BUFFER: // BACnetConstructedDataTrendLogLogBuffer
-		if _child, err = (&_BACnetConstructedDataTrendLogLogBuffer{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTrendLogLogBuffer).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTrendLogLogBuffer for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TREND_LOG_MULTIPLE && propertyIdentifierArgument == BACnetPropertyIdentifier_LOG_BUFFER: // BACnetConstructedDataTrendLogMultipleLogBuffer
-		if _child, err = (&_BACnetConstructedDataTrendLogMultipleLogBuffer{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTrendLogMultipleLogBuffer).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTrendLogMultipleLogBuffer for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOG_BUFFER: // BACnetConstructedDataLogBuffer
-		if _child, err = (&_BACnetConstructedDataLogBuffer{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLogBuffer).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLogBuffer for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TREND_LOG && propertyIdentifierArgument == BACnetPropertyIdentifier_LOG_DEVICE_OBJECT_PROPERTY: // BACnetConstructedDataTrendLogLogDeviceObjectProperty
-		if _child, err = (&_BACnetConstructedDataTrendLogLogDeviceObjectProperty{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTrendLogLogDeviceObjectProperty).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTrendLogLogDeviceObjectProperty for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TREND_LOG_MULTIPLE && propertyIdentifierArgument == BACnetPropertyIdentifier_LOG_DEVICE_OBJECT_PROPERTY: // BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
-		if _child, err = (&_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOG_DEVICE_OBJECT_PROPERTY: // BACnetConstructedDataLogDeviceObjectProperty
-		if _child, err = (&_BACnetConstructedDataLogDeviceObjectProperty{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLogDeviceObjectProperty).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLogDeviceObjectProperty for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOG_INTERVAL && peekedTagNumber == uint8(2): // BACnetConstructedDataLogInterval
-		if _child, err = (&_BACnetConstructedDataLogInterval{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLogInterval).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLogInterval for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOGGING_OBJECT && peekedTagNumber == uint8(12): // BACnetConstructedDataLoggingObject
-		if _child, err = (&_BACnetConstructedDataLoggingObject{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLoggingObject).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLoggingObject for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOGGING_RECORD: // BACnetConstructedDataLoggingRecord
-		if _child, err = (&_BACnetConstructedDataLoggingRecord{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLoggingRecord).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLoggingRecord for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOGGING_TYPE && peekedTagNumber == uint8(9): // BACnetConstructedDataLoggingType
-		if _child, err = (&_BACnetConstructedDataLoggingType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLoggingType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLoggingType for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOW_DIFF_LIMIT: // BACnetConstructedDataLowDiffLimit
-		if _child, err = (&_BACnetConstructedDataLowDiffLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLowDiffLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLowDiffLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_LOW_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataAccumulatorLowLimit
-		if _child, err = (&_BACnetConstructedDataAccumulatorLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccumulatorLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccumulatorLowLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_LOW_LIMIT && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueLowLimit
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueLowLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_LOW_LIMIT && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValueLowLimit
-		if _child, err = (&_BACnetConstructedDataIntegerValueLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueLowLimit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_LOW_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueLowLimit
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueLowLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOW_LIMIT && peekedTagNumber == uint8(4): // BACnetConstructedDataLowLimit
-		if _child, err = (&_BACnetConstructedDataLowLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLowLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLowLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_LOWER_DECK && peekedTagNumber == uint8(12): // BACnetConstructedDataLowerDeck
-		if _child, err = (&_BACnetConstructedDataLowerDeck{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLowerDeck).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLowerDeck for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAC_ADDRESS && peekedTagNumber == uint8(6): // BACnetConstructedDataMACAddress
-		if _child, err = (&_BACnetConstructedDataMACAddress{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMACAddress).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMACAddress for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MACHINE_ROOM_ID && peekedTagNumber == uint8(12): // BACnetConstructedDataMachineRoomID
-		if _child, err = (&_BACnetConstructedDataMachineRoomID{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMachineRoomID).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMachineRoomID for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_ZONE && propertyIdentifierArgument == BACnetPropertyIdentifier_MAINTENANCE_REQUIRED && peekedTagNumber == uint8(1): // BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
-		if _child, err = (&_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyZoneMaintenanceRequired for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAINTENANCE_REQUIRED && peekedTagNumber == uint8(9): // BACnetConstructedDataMaintenanceRequired
-		if _child, err = (&_BACnetConstructedDataMaintenanceRequired{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaintenanceRequired).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaintenanceRequired for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAKING_CAR_CALL: // BACnetConstructedDataMakingCarCall
-		if _child, err = (&_BACnetConstructedDataMakingCarCall{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMakingCarCall).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMakingCarCall for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MANIPULATED_VARIABLE_REFERENCE: // BACnetConstructedDataManipulatedVariableReference
-		if _child, err = (&_BACnetConstructedDataManipulatedVariableReference{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataManipulatedVariableReference).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataManipulatedVariableReference for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MANUAL_SLAVE_ADDRESS_BINDING: // BACnetConstructedDataManualSlaveAddressBinding
-		if _child, err = (&_BACnetConstructedDataManualSlaveAddressBinding{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataManualSlaveAddressBinding).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataManualSlaveAddressBinding for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MASKED_ALARM_VALUES && peekedTagNumber == uint8(9): // BACnetConstructedDataMaskedAlarmValues
-		if _child, err = (&_BACnetConstructedDataMaskedAlarmValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaskedAlarmValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaskedAlarmValues for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_ACTUAL_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataMaxActualValue
-		if _child, err = (&_BACnetConstructedDataMaxActualValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaxActualValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaxActualValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_APDU_LENGTH_ACCEPTED && peekedTagNumber == uint8(2): // BACnetConstructedDataMaxAPDULengthAccepted
-		if _child, err = (&_BACnetConstructedDataMaxAPDULengthAccepted{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaxAPDULengthAccepted).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaxAPDULengthAccepted for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_FAILED_ATTEMPTS && peekedTagNumber == uint8(2): // BACnetConstructedDataMaxFailedAttempts
-		if _child, err = (&_BACnetConstructedDataMaxFailedAttempts{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaxFailedAttempts).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaxFailedAttempts for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DEVICE && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_INFO_FRAMES && peekedTagNumber == uint8(2): // BACnetConstructedDataDeviceMaxInfoFrames
-		if _child, err = (&_BACnetConstructedDataDeviceMaxInfoFrames{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDeviceMaxInfoFrames).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDeviceMaxInfoFrames for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_NETWORK_PORT && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_INFO_FRAMES && peekedTagNumber == uint8(2): // BACnetConstructedDataNetworkPortMaxInfoFrames
-		if _child, err = (&_BACnetConstructedDataNetworkPortMaxInfoFrames{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNetworkPortMaxInfoFrames).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNetworkPortMaxInfoFrames for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_INFO_FRAMES && peekedTagNumber == uint8(2): // BACnetConstructedDataMaxInfoFrames
-		if _child, err = (&_BACnetConstructedDataMaxInfoFrames{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaxInfoFrames).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaxInfoFrames for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DEVICE && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_MASTER && peekedTagNumber == uint8(2): // BACnetConstructedDataDeviceMaxMaster
-		if _child, err = (&_BACnetConstructedDataDeviceMaxMaster{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDeviceMaxMaster).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDeviceMaxMaster for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_NETWORK_PORT && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_MASTER && peekedTagNumber == uint8(2): // BACnetConstructedDataNetworkPortMaxMaster
-		if _child, err = (&_BACnetConstructedDataNetworkPortMaxMaster{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNetworkPortMaxMaster).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNetworkPortMaxMaster for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_MASTER && peekedTagNumber == uint8(2): // BACnetConstructedDataMaxMaster
-		if _child, err = (&_BACnetConstructedDataMaxMaster{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaxMaster).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaxMaster for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE && peekedTagNumber == uint8(2): // BACnetConstructedDataAccumulatorMaxPresValue
-		if _child, err = (&_BACnetConstructedDataAccumulatorMaxPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccumulatorMaxPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccumulatorMaxPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogInputMaxPresValue
-		if _child, err = (&_BACnetConstructedDataAnalogInputMaxPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogInputMaxPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogInputMaxPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogOutputMaxPresValue
-		if _child, err = (&_BACnetConstructedDataAnalogOutputMaxPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogOutputMaxPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogOutputMaxPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogValueMaxPresValue
-		if _child, err = (&_BACnetConstructedDataAnalogValueMaxPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogValueMaxPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogValueMaxPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueMaxPresValue
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueMaxPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueMaxPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueMaxPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValueMaxPresValue
-		if _child, err = (&_BACnetConstructedDataIntegerValueMaxPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueMaxPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueMaxPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueMaxPresValue
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueMaxPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueMaxPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueMaxPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIMER && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE && peekedTagNumber == uint8(2): // BACnetConstructedDataTimerMaxPresValue
-		if _child, err = (&_BACnetConstructedDataTimerMaxPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimerMaxPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimerMaxPresValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_PRES_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataMaxPresValue
-		if _child, err = (&_BACnetConstructedDataMaxPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaxPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaxPresValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAX_SEGMENTS_ACCEPTED && peekedTagNumber == uint8(2): // BACnetConstructedDataMaxSegmentsAccepted
-		if _child, err = (&_BACnetConstructedDataMaxSegmentsAccepted{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaxSegmentsAccepted).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaxSegmentsAccepted for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAXIMUM_OUTPUT && peekedTagNumber == uint8(4): // BACnetConstructedDataMaximumOutput
-		if _child, err = (&_BACnetConstructedDataMaximumOutput{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaximumOutput).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaximumOutput for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAXIMUM_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataMaximumValue
-		if _child, err = (&_BACnetConstructedDataMaximumValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaximumValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaximumValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MAXIMUM_VALUE_TIMESTAMP: // BACnetConstructedDataMaximumValueTimestamp
-		if _child, err = (&_BACnetConstructedDataMaximumValueTimestamp{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMaximumValueTimestamp).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMaximumValueTimestamp for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MEMBER_OF: // BACnetConstructedDataMemberOf
-		if _child, err = (&_BACnetConstructedDataMemberOf{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMemberOf).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMemberOf for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MEMBER_STATUS_FLAGS && peekedTagNumber == uint8(8): // BACnetConstructedDataMemberStatusFlags
-		if _child, err = (&_BACnetConstructedDataMemberStatusFlags{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMemberStatusFlags).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMemberStatusFlags for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MEMBERS: // BACnetConstructedDataMembers
-		if _child, err = (&_BACnetConstructedDataMembers{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMembers).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMembers for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_ACTUAL_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataMinActualValue
-		if _child, err = (&_BACnetConstructedDataMinActualValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMinActualValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMinActualValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCUMULATOR && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_PRES_VALUE && peekedTagNumber == uint8(2): // BACnetConstructedDataAccumulatorMinPresValue
-		if _child, err = (&_BACnetConstructedDataAccumulatorMinPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccumulatorMinPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccumulatorMinPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_PRES_VALUE && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValueMinPresValue
-		if _child, err = (&_BACnetConstructedDataIntegerValueMinPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueMinPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueMinPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_PRES_VALUE && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueMinPresValue
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueMinPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueMinPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueMinPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_PRES_VALUE && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueMinPresValue
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueMinPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueMinPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueMinPresValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIMER && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_PRES_VALUE && peekedTagNumber == uint8(2): // BACnetConstructedDataTimerMinPresValue
-		if _child, err = (&_BACnetConstructedDataTimerMinPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimerMinPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimerMinPresValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MIN_PRES_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataMinPresValue
-		if _child, err = (&_BACnetConstructedDataMinPresValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMinPresValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMinPresValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MINIMUM_OFF_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataMinimumOffTime
-		if _child, err = (&_BACnetConstructedDataMinimumOffTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMinimumOffTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMinimumOffTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MINIMUM_ON_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataMinimumOnTime
-		if _child, err = (&_BACnetConstructedDataMinimumOnTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMinimumOnTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMinimumOnTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MINIMUM_OUTPUT && peekedTagNumber == uint8(4): // BACnetConstructedDataMinimumOutput
-		if _child, err = (&_BACnetConstructedDataMinimumOutput{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMinimumOutput).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMinimumOutput for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MINIMUM_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataMinimumValue
-		if _child, err = (&_BACnetConstructedDataMinimumValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMinimumValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMinimumValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MINIMUM_VALUE_TIMESTAMP: // BACnetConstructedDataMinimumValueTimestamp
-		if _child, err = (&_BACnetConstructedDataMinimumValueTimestamp{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMinimumValueTimestamp).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMinimumValueTimestamp for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MODE && peekedTagNumber == uint8(9): // BACnetConstructedDataMode
-		if _child, err = (&_BACnetConstructedDataMode{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMode).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMode for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MODEL_NAME && peekedTagNumber == uint8(7): // BACnetConstructedDataModelName
-		if _child, err = (&_BACnetConstructedDataModelName{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataModelName).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataModelName for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MODIFICATION_DATE: // BACnetConstructedDataModificationDate
-		if _child, err = (&_BACnetConstructedDataModificationDate{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataModificationDate).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataModificationDate for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_MUSTER_POINT && peekedTagNumber == uint8(1): // BACnetConstructedDataMusterPoint
-		if _child, err = (&_BACnetConstructedDataMusterPoint{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMusterPoint).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMusterPoint for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NEGATIVE_ACCESS_RULES: // BACnetConstructedDataNegativeAccessRules
-		if _child, err = (&_BACnetConstructedDataNegativeAccessRules{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNegativeAccessRules).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNegativeAccessRules for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_ACCESS_SECURITY_POLICIES: // BACnetConstructedDataNetworkAccessSecurityPolicies
-		if _child, err = (&_BACnetConstructedDataNetworkAccessSecurityPolicies{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNetworkAccessSecurityPolicies).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNetworkAccessSecurityPolicies for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_INTERFACE_NAME && peekedTagNumber == uint8(7): // BACnetConstructedDataNetworkInterfaceName
-		if _child, err = (&_BACnetConstructedDataNetworkInterfaceName{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNetworkInterfaceName).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNetworkInterfaceName for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_NUMBER && peekedTagNumber == uint8(2): // BACnetConstructedDataNetworkNumber
-		if _child, err = (&_BACnetConstructedDataNetworkNumber{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNetworkNumber).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNetworkNumber for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_NUMBER_QUALITY && peekedTagNumber == uint8(9): // BACnetConstructedDataNetworkNumberQuality
-		if _child, err = (&_BACnetConstructedDataNetworkNumberQuality{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNetworkNumberQuality).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNetworkNumberQuality for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NETWORK_TYPE && peekedTagNumber == uint8(9): // BACnetConstructedDataNetworkType
-		if _child, err = (&_BACnetConstructedDataNetworkType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNetworkType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNetworkType for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NEXT_STOPPING_FLOOR && peekedTagNumber == uint8(2): // BACnetConstructedDataNextStoppingFloor
-		if _child, err = (&_BACnetConstructedDataNextStoppingFloor{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNextStoppingFloor).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNextStoppingFloor for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NODE_SUBTYPE && peekedTagNumber == uint8(7): // BACnetConstructedDataNodeSubtype
-		if _child, err = (&_BACnetConstructedDataNodeSubtype{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNodeSubtype).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNodeSubtype for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NODE_TYPE && peekedTagNumber == uint8(9): // BACnetConstructedDataNodeType
-		if _child, err = (&_BACnetConstructedDataNodeType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNodeType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNodeType for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NOTIFICATION_CLASS && peekedTagNumber == uint8(2): // BACnetConstructedDataNotificationClass
-		if _child, err = (&_BACnetConstructedDataNotificationClass{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNotificationClass).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNotificationClass for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NOTIFICATION_THRESHOLD && peekedTagNumber == uint8(2): // BACnetConstructedDataNotificationThreshold
-		if _child, err = (&_BACnetConstructedDataNotificationThreshold{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNotificationThreshold).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNotificationThreshold for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NOTIFY_TYPE && peekedTagNumber == uint8(9): // BACnetConstructedDataNotifyType
-		if _child, err = (&_BACnetConstructedDataNotifyType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNotifyType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNotifyType for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NUMBER_OF_APDU_RETRIES && peekedTagNumber == uint8(2): // BACnetConstructedDataNumberOfAPDURetries
-		if _child, err = (&_BACnetConstructedDataNumberOfAPDURetries{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNumberOfAPDURetries).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNumberOfAPDURetries for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NUMBER_OF_AUTHENTICATION_POLICIES && peekedTagNumber == uint8(2): // BACnetConstructedDataNumberOfAuthenticationPolicies
-		if _child, err = (&_BACnetConstructedDataNumberOfAuthenticationPolicies{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNumberOfAuthenticationPolicies).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNumberOfAuthenticationPolicies for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_NUMBER_OF_STATES && peekedTagNumber == uint8(2): // BACnetConstructedDataNumberOfStates
-		if _child, err = (&_BACnetConstructedDataNumberOfStates{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataNumberOfStates).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataNumberOfStates for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OBJECT_IDENTIFIER && peekedTagNumber == uint8(12): // BACnetConstructedDataObjectIdentifier
-		if _child, err = (&_BACnetConstructedDataObjectIdentifier{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataObjectIdentifier).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataObjectIdentifier for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OBJECT_LIST: // BACnetConstructedDataObjectList
-		if _child, err = (&_BACnetConstructedDataObjectList{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataObjectList).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataObjectList for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OBJECT_NAME && peekedTagNumber == uint8(7): // BACnetConstructedDataObjectName
-		if _child, err = (&_BACnetConstructedDataObjectName{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataObjectName).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataObjectName for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OBJECT_PROPERTY_REFERENCE: // BACnetConstructedDataObjectPropertyReference
-		if _child, err = (&_BACnetConstructedDataObjectPropertyReference{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataObjectPropertyReference).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataObjectPropertyReference for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OBJECT_TYPE && peekedTagNumber == uint8(9): // BACnetConstructedDataObjectType
-		if _child, err = (&_BACnetConstructedDataObjectType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataObjectType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataObjectType for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_COUNT && peekedTagNumber == uint8(2): // BACnetConstructedDataOccupancyCount
-		if _child, err = (&_BACnetConstructedDataOccupancyCount{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOccupancyCount).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOccupancyCount for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_COUNT_ADJUST && peekedTagNumber == uint8(1): // BACnetConstructedDataOccupancyCountAdjust
-		if _child, err = (&_BACnetConstructedDataOccupancyCountAdjust{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOccupancyCountAdjust).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOccupancyCountAdjust for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_COUNT_ENABLE && peekedTagNumber == uint8(1): // BACnetConstructedDataOccupancyCountEnable
-		if _child, err = (&_BACnetConstructedDataOccupancyCountEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOccupancyCountEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOccupancyCountEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataOccupancyLowerLimit
-		if _child, err = (&_BACnetConstructedDataOccupancyLowerLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOccupancyLowerLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOccupancyLowerLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_LOWER_LIMIT_ENFORCED && peekedTagNumber == uint8(1): // BACnetConstructedDataOccupancyLowerLimitEnforced
-		if _child, err = (&_BACnetConstructedDataOccupancyLowerLimitEnforced{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOccupancyLowerLimitEnforced).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOccupancyLowerLimitEnforced for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_STATE && peekedTagNumber == uint8(9): // BACnetConstructedDataOccupancyState
-		if _child, err = (&_BACnetConstructedDataOccupancyState{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOccupancyState).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOccupancyState for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT && peekedTagNumber == uint8(2): // BACnetConstructedDataOccupancyUpperLimit
-		if _child, err = (&_BACnetConstructedDataOccupancyUpperLimit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOccupancyUpperLimit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOccupancyUpperLimit for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OCCUPANCY_UPPER_LIMIT_ENFORCED && peekedTagNumber == uint8(1): // BACnetConstructedDataOccupancyUpperLimitEnforced
-		if _child, err = (&_BACnetConstructedDataOccupancyUpperLimitEnforced{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOccupancyUpperLimitEnforced).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOccupancyUpperLimitEnforced for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OPERATION_DIRECTION && peekedTagNumber == uint8(9): // BACnetConstructedDataOperationDirection
-		if _child, err = (&_BACnetConstructedDataOperationDirection{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOperationDirection).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOperationDirection for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OPERATION_EXPECTED && peekedTagNumber == uint8(9): // BACnetConstructedDataOperationExpected
-		if _child, err = (&_BACnetConstructedDataOperationExpected{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOperationExpected).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOperationExpected for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OPTIONAL: // BACnetConstructedDataOptional
-		if _child, err = (&_BACnetConstructedDataOptional{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOptional).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOptional for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OUT_OF_SERVICE && peekedTagNumber == uint8(1): // BACnetConstructedDataOutOfService
-		if _child, err = (&_BACnetConstructedDataOutOfService{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOutOfService).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOutOfService for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_OUTPUT_UNITS && peekedTagNumber == uint8(9): // BACnetConstructedDataOutputUnits
-		if _child, err = (&_BACnetConstructedDataOutputUnits{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOutputUnits).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOutputUnits for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PACKET_REORDER_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataPacketReorderTime
-		if _child, err = (&_BACnetConstructedDataPacketReorderTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPacketReorderTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPacketReorderTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PASSBACK_MODE: // BACnetConstructedDataPassbackMode
-		if _child, err = (&_BACnetConstructedDataPassbackMode{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPassbackMode).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPassbackMode for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PASSBACK_TIMEOUT && peekedTagNumber == uint8(2): // BACnetConstructedDataPassbackTimeout
-		if _child, err = (&_BACnetConstructedDataPassbackTimeout{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPassbackTimeout).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPassbackTimeout for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PASSENGER_ALARM && peekedTagNumber == uint8(1): // BACnetConstructedDataPassengerAlarm
-		if _child, err = (&_BACnetConstructedDataPassengerAlarm{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPassengerAlarm).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPassengerAlarm for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_POLARITY && peekedTagNumber == uint8(9): // BACnetConstructedDataPolarity
-		if _child, err = (&_BACnetConstructedDataPolarity{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPolarity).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPolarity for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PORT_FILTER: // BACnetConstructedDataPortFilter
-		if _child, err = (&_BACnetConstructedDataPortFilter{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPortFilter).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPortFilter for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_POSITIVE_ACCESS_RULES: // BACnetConstructedDataPositiveAccessRules
-		if _child, err = (&_BACnetConstructedDataPositiveAccessRules{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveAccessRules).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveAccessRules for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_POWER && peekedTagNumber == uint8(4): // BACnetConstructedDataPower
-		if _child, err = (&_BACnetConstructedDataPower{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPower).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPower for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_POWER_MODE && peekedTagNumber == uint8(1): // BACnetConstructedDataPowerMode
-		if _child, err = (&_BACnetConstructedDataPowerMode{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPowerMode).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPowerMode for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESCALE: // BACnetConstructedDataPrescale
-		if _child, err = (&_BACnetConstructedDataPrescale{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPrescale).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPrescale for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_DOOR && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataAccessDoorPresentValue
-		if _child, err = (&_BACnetConstructedDataAccessDoorPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessDoorPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessDoorPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ALERT_ENROLLMENT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(12): // BACnetConstructedDataAlertEnrollmentPresentValue
-		if _child, err = (&_BACnetConstructedDataAlertEnrollmentPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAlertEnrollmentPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAlertEnrollmentPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogInputPresentValue
-		if _child, err = (&_BACnetConstructedDataAnalogInputPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogInputPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogInputPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogOutputPresentValue
-		if _child, err = (&_BACnetConstructedDataAnalogOutputPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogOutputPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogOutputPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogValuePresentValue
-		if _child, err = (&_BACnetConstructedDataAnalogValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryInputPresentValue
-		if _child, err = (&_BACnetConstructedDataBinaryInputPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryInputPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryInputPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryOutputPresentValue
-		if _child, err = (&_BACnetConstructedDataBinaryOutputPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryOutputPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryOutputPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryValuePresentValue
-		if _child, err = (&_BACnetConstructedDataBinaryValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryLightingOutputPresentValue
-		if _child, err = (&_BACnetConstructedDataBinaryLightingOutputPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryLightingOutputPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryLightingOutputPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BITSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(8): // BACnetConstructedDataBitStringValuePresentValue
-		if _child, err = (&_BACnetConstructedDataBitStringValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBitStringValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBitStringValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CALENDAR && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(1): // BACnetConstructedDataCalendarPresentValue
-		if _child, err = (&_BACnetConstructedDataCalendarPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCalendarPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCalendarPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CHANNEL && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE: // BACnetConstructedDataChannelPresentValue
-		if _child, err = (&_BACnetConstructedDataChannelPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataChannelPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataChannelPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CHARACTERSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(7): // BACnetConstructedDataCharacterStringValuePresentValue
-		if _child, err = (&_BACnetConstructedDataCharacterStringValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCharacterStringValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCharacterStringValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CREDENTIAL_DATA_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE: // BACnetConstructedDataCredentialDataInputPresentValue
-		if _child, err = (&_BACnetConstructedDataCredentialDataInputPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCredentialDataInputPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCredentialDataInputPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATE_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(10): // BACnetConstructedDataDateValuePresentValue
-		if _child, err = (&_BACnetConstructedDataDateValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDateValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDateValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(10): // BACnetConstructedDataDatePatternValuePresentValue
-		if _child, err = (&_BACnetConstructedDataDatePatternValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDatePatternValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDatePatternValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATETIME_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(11): // BACnetConstructedDataDateTimeValuePresentValue
-		if _child, err = (&_BACnetConstructedDataDateTimeValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDateTimeValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDateTimeValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATETIMEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(11): // BACnetConstructedDataDateTimePatternValuePresentValue
-		if _child, err = (&_BACnetConstructedDataDateTimePatternValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDateTimePatternValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDateTimePatternValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValuePresentValue
-		if _child, err = (&_BACnetConstructedDataIntegerValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValuePresentValue
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataLightingOutputPresentValue
-		if _child, err = (&_BACnetConstructedDataLightingOutputPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLightingOutputPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLightingOutputPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_POINT && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataLifeSafetyPointPresentValue
-		if _child, err = (&_BACnetConstructedDataLifeSafetyPointPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyPointPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyPointPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIFE_SAFETY_ZONE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataLifeSafetyZonePresentValue
-		if _child, err = (&_BACnetConstructedDataLifeSafetyZonePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLifeSafetyZonePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLifeSafetyZonePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LOAD_CONTROL && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataLoadControlPresentValue
-		if _child, err = (&_BACnetConstructedDataLoadControlPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLoadControlPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLoadControlPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LOOP && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataLoopPresentValue
-		if _child, err = (&_BACnetConstructedDataLoopPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLoopPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLoopPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_PULSE_CONVERTER && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataPulseConverterPresentValue
-		if _child, err = (&_BACnetConstructedDataPulseConverterPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPulseConverterPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPulseConverterPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_GROUP && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE: // BACnetConstructedDataGroupPresentValue
-		if _child, err = (&_BACnetConstructedDataGroupPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGroupPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGroupPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_GLOBAL_GROUP && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE: // BACnetConstructedDataGlobalGroupPresentValue
-		if _child, err = (&_BACnetConstructedDataGlobalGroupPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataGlobalGroupPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataGlobalGroupPresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_OCTETSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(6): // BACnetConstructedDataOctetStringValuePresentValue
-		if _child, err = (&_BACnetConstructedDataOctetStringValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOctetStringValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOctetStringValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_SCHEDULE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE: // BACnetConstructedDataSchedulePresentValue
-		if _child, err = (&_BACnetConstructedDataSchedulePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSchedulePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSchedulePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIME_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(11): // BACnetConstructedDataTimeValuePresentValue
-		if _child, err = (&_BACnetConstructedDataTimeValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIMEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(11): // BACnetConstructedDataTimePatternValuePresentValue
-		if _child, err = (&_BACnetConstructedDataTimePatternValuePresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimePatternValuePresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimePatternValuePresentValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PRESENT_VALUE && peekedTagNumber == uint8(2): // BACnetConstructedDataPresentValue
-		if _child, err = (&_BACnetConstructedDataPresentValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPresentValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPresentValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PRIORITY: // BACnetConstructedDataPriority
-		if _child, err = (&_BACnetConstructedDataPriority{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPriority).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPriority for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PRIORITY_ARRAY: // BACnetConstructedDataPriorityArray
-		if _child, err = (&_BACnetConstructedDataPriorityArray{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPriorityArray).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPriorityArray for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PRIORITY_FOR_WRITING && peekedTagNumber == uint8(2): // BACnetConstructedDataPriorityForWriting
-		if _child, err = (&_BACnetConstructedDataPriorityForWriting{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPriorityForWriting).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPriorityForWriting for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROCESS_IDENTIFIER && peekedTagNumber == uint8(2): // BACnetConstructedDataProcessIdentifier
-		if _child, err = (&_BACnetConstructedDataProcessIdentifier{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProcessIdentifier).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProcessIdentifier for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROCESS_IDENTIFIER_FILTER: // BACnetConstructedDataProcessIdentifierFilter
-		if _child, err = (&_BACnetConstructedDataProcessIdentifierFilter{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProcessIdentifierFilter).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProcessIdentifierFilter for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROFILE_LOCATION && peekedTagNumber == uint8(7): // BACnetConstructedDataProfileLocation
-		if _child, err = (&_BACnetConstructedDataProfileLocation{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProfileLocation).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProfileLocation for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROFILE_NAME && peekedTagNumber == uint8(7): // BACnetConstructedDataProfileName
-		if _child, err = (&_BACnetConstructedDataProfileName{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProfileName).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProfileName for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROGRAM_CHANGE && peekedTagNumber == uint8(9): // BACnetConstructedDataProgramChange
-		if _child, err = (&_BACnetConstructedDataProgramChange{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProgramChange).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProgramChange for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROGRAM_LOCATION && peekedTagNumber == uint8(7): // BACnetConstructedDataProgramLocation
-		if _child, err = (&_BACnetConstructedDataProgramLocation{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProgramLocation).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProgramLocation for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROGRAM_STATE && peekedTagNumber == uint8(9): // BACnetConstructedDataProgramState
-		if _child, err = (&_BACnetConstructedDataProgramState{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProgramState).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProgramState for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROPERTY_LIST && peekedTagNumber == uint8(9): // BACnetConstructedDataPropertyList
-		if _child, err = (&_BACnetConstructedDataPropertyList{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPropertyList).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPropertyList for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT && peekedTagNumber == uint8(4): // BACnetConstructedDataProportionalConstant
-		if _child, err = (&_BACnetConstructedDataProportionalConstant{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProportionalConstant).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProportionalConstant for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROPORTIONAL_CONSTANT_UNITS && peekedTagNumber == uint8(9): // BACnetConstructedDataProportionalConstantUnits
-		if _child, err = (&_BACnetConstructedDataProportionalConstantUnits{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProportionalConstantUnits).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProportionalConstantUnits for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROTOCOL_LEVEL && peekedTagNumber == uint8(9): // BACnetConstructedDataProtocolLevel
-		if _child, err = (&_BACnetConstructedDataProtocolLevel{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProtocolLevel).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProtocolLevel for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROTOCOL_OBJECT_TYPES_SUPPORTED && peekedTagNumber == uint8(8): // BACnetConstructedDataProtocolObjectTypesSupported
-		if _child, err = (&_BACnetConstructedDataProtocolObjectTypesSupported{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProtocolObjectTypesSupported).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProtocolObjectTypesSupported for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROTOCOL_REVISION && peekedTagNumber == uint8(2): // BACnetConstructedDataProtocolRevision
-		if _child, err = (&_BACnetConstructedDataProtocolRevision{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProtocolRevision).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProtocolRevision for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROTOCOL_SERVICES_SUPPORTED && peekedTagNumber == uint8(8): // BACnetConstructedDataProtocolServicesSupported
-		if _child, err = (&_BACnetConstructedDataProtocolServicesSupported{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProtocolServicesSupported).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProtocolServicesSupported for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PROTOCOL_VERSION && peekedTagNumber == uint8(2): // BACnetConstructedDataProtocolVersion
-		if _child, err = (&_BACnetConstructedDataProtocolVersion{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataProtocolVersion).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataProtocolVersion for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_PULSE_RATE && peekedTagNumber == uint8(2): // BACnetConstructedDataPulseRate
-		if _child, err = (&_BACnetConstructedDataPulseRate{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPulseRate).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPulseRate for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_READ_ONLY && peekedTagNumber == uint8(1): // BACnetConstructedDataReadOnly
-		if _child, err = (&_BACnetConstructedDataReadOnly{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataReadOnly).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataReadOnly for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_REASON_FOR_DISABLE && peekedTagNumber == uint8(9): // BACnetConstructedDataReasonForDisable
-		if _child, err = (&_BACnetConstructedDataReasonForDisable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataReasonForDisable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataReasonForDisable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_REASON_FOR_HALT && peekedTagNumber == uint8(9): // BACnetConstructedDataReasonForHalt
-		if _child, err = (&_BACnetConstructedDataReasonForHalt{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataReasonForHalt).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataReasonForHalt for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RECIPIENT_LIST: // BACnetConstructedDataRecipientList
-		if _child, err = (&_BACnetConstructedDataRecipientList{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRecipientList).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRecipientList for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_FILE && propertyIdentifierArgument == BACnetPropertyIdentifier_RECORD_COUNT && peekedTagNumber == uint8(2): // BACnetConstructedDataFileRecordCount
-		if _child, err = (&_BACnetConstructedDataFileRecordCount{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataFileRecordCount).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataFileRecordCount for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RECORD_COUNT && peekedTagNumber == uint8(2): // BACnetConstructedDataRecordCount
-		if _child, err = (&_BACnetConstructedDataRecordCount{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRecordCount).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRecordCount for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RECORDS_SINCE_NOTIFICATION && peekedTagNumber == uint8(2): // BACnetConstructedDataRecordsSinceNotification
-		if _child, err = (&_BACnetConstructedDataRecordsSinceNotification{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRecordsSinceNotification).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRecordsSinceNotification for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_REFERENCE_PORT && peekedTagNumber == uint8(2): // BACnetConstructedDataReferencePort
-		if _child, err = (&_BACnetConstructedDataReferencePort{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataReferencePort).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataReferencePort for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_REGISTERED_CAR_CALL: // BACnetConstructedDataRegisteredCarCall
-		if _child, err = (&_BACnetConstructedDataRegisteredCarCall{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRegisteredCarCall).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRegisteredCarCall for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RELIABILITY && peekedTagNumber == uint8(9): // BACnetConstructedDataReliability
-		if _child, err = (&_BACnetConstructedDataReliability{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataReliability).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataReliability for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RELIABILITY_EVALUATION_INHIBIT && peekedTagNumber == uint8(1): // BACnetConstructedDataReliabilityEvaluationInhibit
-		if _child, err = (&_BACnetConstructedDataReliabilityEvaluationInhibit{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataReliabilityEvaluationInhibit).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataReliabilityEvaluationInhibit for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ACCESS_DOOR && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(9): // BACnetConstructedDataAccessDoorRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataAccessDoorRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAccessDoorRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAccessDoorRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogOutputRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataAnalogOutputRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogOutputRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogOutputRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(4): // BACnetConstructedDataAnalogValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataAnalogValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataAnalogValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataAnalogValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryOutputRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataBinaryOutputRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryOutputRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryOutputRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataBinaryValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BINARY_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(9): // BACnetConstructedDataBinaryLightingOutputRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataBinaryLightingOutputRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBinaryLightingOutputRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBinaryLightingOutputRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_BITSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(8): // BACnetConstructedDataBitStringValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataBitStringValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataBitStringValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataBitStringValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CHARACTERSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(7): // BACnetConstructedDataCharacterStringValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataCharacterStringValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCharacterStringValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCharacterStringValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATE_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(10): // BACnetConstructedDataDateValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataDateValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDateValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDateValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(10): // BACnetConstructedDataDatePatternValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataDatePatternValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDatePatternValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDatePatternValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATETIME_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT: // BACnetConstructedDataDateTimeValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataDateTimeValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDateTimeValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDateTimeValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_DATETIMEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT: // BACnetConstructedDataDateTimePatternValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataDateTimePatternValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataDateTimePatternValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataDateTimePatternValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(4): // BACnetConstructedDataLightingOutputRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataLightingOutputRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLightingOutputRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLightingOutputRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIMEPATTERN_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(11): // BACnetConstructedDataTimePatternValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataTimePatternValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimePatternValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimePatternValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIME_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(11): // BACnetConstructedDataTimeValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataTimeValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataIntegerValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_OCTETSTRING_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(6): // BACnetConstructedDataOctetStringValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataOctetStringValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataOctetStringValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataOctetStringValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(2): // BACnetConstructedDataMultiStateOutputRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataMultiStateOutputRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateOutputRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateOutputRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_MULTI_STATE_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(2): // BACnetConstructedDataMultiStateValueRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataMultiStateValueRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataMultiStateValueRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataMultiStateValueRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RELINQUISH_DEFAULT && peekedTagNumber == uint8(2): // BACnetConstructedDataRelinquishDefault
-		if _child, err = (&_BACnetConstructedDataRelinquishDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRelinquishDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRelinquishDefault for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_REPRESENTS: // BACnetConstructedDataRepresents
-		if _child, err = (&_BACnetConstructedDataRepresents{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRepresents).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRepresents for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_REQUESTED_SHED_LEVEL: // BACnetConstructedDataRequestedShedLevel
-		if _child, err = (&_BACnetConstructedDataRequestedShedLevel{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRequestedShedLevel).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRequestedShedLevel for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_REQUESTED_UPDATE_INTERVAL && peekedTagNumber == uint8(2): // BACnetConstructedDataRequestedUpdateInterval
-		if _child, err = (&_BACnetConstructedDataRequestedUpdateInterval{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRequestedUpdateInterval).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRequestedUpdateInterval for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_REQUIRED: // BACnetConstructedDataRequired
-		if _child, err = (&_BACnetConstructedDataRequired{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRequired).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRequired for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LARGE_ANALOG_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RESOLUTION && peekedTagNumber == uint8(5): // BACnetConstructedDataLargeAnalogValueResolution
-		if _child, err = (&_BACnetConstructedDataLargeAnalogValueResolution{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLargeAnalogValueResolution).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLargeAnalogValueResolution for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RESOLUTION && peekedTagNumber == uint8(3): // BACnetConstructedDataIntegerValueResolution
-		if _child, err = (&_BACnetConstructedDataIntegerValueResolution{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataIntegerValueResolution).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataIntegerValueResolution for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_POSITIVE_INTEGER_VALUE && propertyIdentifierArgument == BACnetPropertyIdentifier_RESOLUTION && peekedTagNumber == uint8(2): // BACnetConstructedDataPositiveIntegerValueResolution
-		if _child, err = (&_BACnetConstructedDataPositiveIntegerValueResolution{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataPositiveIntegerValueResolution).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataPositiveIntegerValueResolution for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_TIMER && propertyIdentifierArgument == BACnetPropertyIdentifier_RESOLUTION && peekedTagNumber == uint8(2): // BACnetConstructedDataTimerResolution
-		if _child, err = (&_BACnetConstructedDataTimerResolution{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimerResolution).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimerResolution for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RESOLUTION && peekedTagNumber == uint8(4): // BACnetConstructedDataResolution
-		if _child, err = (&_BACnetConstructedDataResolution{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataResolution).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataResolution for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RESTART_NOTIFICATION_RECIPIENTS: // BACnetConstructedDataRestartNotificationRecipients
-		if _child, err = (&_BACnetConstructedDataRestartNotificationRecipients{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRestartNotificationRecipients).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRestartNotificationRecipients for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RESTORE_COMPLETION_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataRestoreCompletionTime
-		if _child, err = (&_BACnetConstructedDataRestoreCompletionTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRestoreCompletionTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRestoreCompletionTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_RESTORE_PREPARATION_TIME && peekedTagNumber == uint8(2): // BACnetConstructedDataRestorePreparationTime
-		if _child, err = (&_BACnetConstructedDataRestorePreparationTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRestorePreparationTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRestorePreparationTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ROUTING_TABLE: // BACnetConstructedDataRoutingTable
-		if _child, err = (&_BACnetConstructedDataRoutingTable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataRoutingTable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataRoutingTable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SCALE: // BACnetConstructedDataScale
-		if _child, err = (&_BACnetConstructedDataScale{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataScale).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataScale for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SCALE_FACTOR && peekedTagNumber == uint8(4): // BACnetConstructedDataScaleFactor
-		if _child, err = (&_BACnetConstructedDataScaleFactor{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataScaleFactor).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataScaleFactor for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SCHEDULE_DEFAULT: // BACnetConstructedDataScheduleDefault
-		if _child, err = (&_BACnetConstructedDataScheduleDefault{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataScheduleDefault).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataScheduleDefault for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURED_STATUS && peekedTagNumber == uint8(9): // BACnetConstructedDataSecuredStatus
-		if _child, err = (&_BACnetConstructedDataSecuredStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSecuredStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSecuredStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURITY_PDU_TIMEOUT && peekedTagNumber == uint8(2): // BACnetConstructedDataSecurityPDUTimeout
-		if _child, err = (&_BACnetConstructedDataSecurityPDUTimeout{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSecurityPDUTimeout).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSecurityPDUTimeout for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SECURITY_TIME_WINDOW && peekedTagNumber == uint8(2): // BACnetConstructedDataSecurityTimeWindow
-		if _child, err = (&_BACnetConstructedDataSecurityTimeWindow{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSecurityTimeWindow).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSecurityTimeWindow for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SEGMENTATION_SUPPORTED && peekedTagNumber == uint8(9): // BACnetConstructedDataSegmentationSupported
-		if _child, err = (&_BACnetConstructedDataSegmentationSupported{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSegmentationSupported).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSegmentationSupported for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SERIAL_NUMBER && peekedTagNumber == uint8(7): // BACnetConstructedDataSerialNumber
-		if _child, err = (&_BACnetConstructedDataSerialNumber{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSerialNumber).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSerialNumber for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SETPOINT && peekedTagNumber == uint8(4): // BACnetConstructedDataSetpoint
-		if _child, err = (&_BACnetConstructedDataSetpoint{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSetpoint).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSetpoint for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SETPOINT_REFERENCE: // BACnetConstructedDataSetpointReference
-		if _child, err = (&_BACnetConstructedDataSetpointReference{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSetpointReference).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSetpointReference for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SETTING && peekedTagNumber == uint8(2): // BACnetConstructedDataSetting
-		if _child, err = (&_BACnetConstructedDataSetting{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSetting).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSetting for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SHED_DURATION && peekedTagNumber == uint8(2): // BACnetConstructedDataShedDuration
-		if _child, err = (&_BACnetConstructedDataShedDuration{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataShedDuration).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataShedDuration for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SHED_LEVEL_DESCRIPTIONS && peekedTagNumber == uint8(7): // BACnetConstructedDataShedLevelDescriptions
-		if _child, err = (&_BACnetConstructedDataShedLevelDescriptions{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataShedLevelDescriptions).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataShedLevelDescriptions for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SHED_LEVELS && peekedTagNumber == uint8(2): // BACnetConstructedDataShedLevels
-		if _child, err = (&_BACnetConstructedDataShedLevels{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataShedLevels).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataShedLevels for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SILENCED && peekedTagNumber == uint8(9): // BACnetConstructedDataSilenced
-		if _child, err = (&_BACnetConstructedDataSilenced{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSilenced).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSilenced for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SLAVE_ADDRESS_BINDING: // BACnetConstructedDataSlaveAddressBinding
-		if _child, err = (&_BACnetConstructedDataSlaveAddressBinding{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSlaveAddressBinding).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSlaveAddressBinding for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SLAVE_PROXY_ENABLE && peekedTagNumber == uint8(1): // BACnetConstructedDataSlaveProxyEnable
-		if _child, err = (&_BACnetConstructedDataSlaveProxyEnable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSlaveProxyEnable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSlaveProxyEnable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_START_TIME: // BACnetConstructedDataStartTime
-		if _child, err = (&_BACnetConstructedDataStartTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStartTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStartTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_STATE_CHANGE_VALUES: // BACnetConstructedDataStateChangeValues
-		if _child, err = (&_BACnetConstructedDataStateChangeValues{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStateChangeValues).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStateChangeValues for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_STATE_DESCRIPTION && peekedTagNumber == uint8(7): // BACnetConstructedDataStateDescription
-		if _child, err = (&_BACnetConstructedDataStateDescription{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStateDescription).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStateDescription for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_STATE_TEXT && peekedTagNumber == uint8(7): // BACnetConstructedDataStateText
-		if _child, err = (&_BACnetConstructedDataStateText{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStateText).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStateText for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_STATUS_FLAGS && peekedTagNumber == uint8(8): // BACnetConstructedDataStatusFlags
-		if _child, err = (&_BACnetConstructedDataStatusFlags{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStatusFlags).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStatusFlags for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_STOP_TIME: // BACnetConstructedDataStopTime
-		if _child, err = (&_BACnetConstructedDataStopTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStopTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStopTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_STOP_WHEN_FULL && peekedTagNumber == uint8(1): // BACnetConstructedDataStopWhenFull
-		if _child, err = (&_BACnetConstructedDataStopWhenFull{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStopWhenFull).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStopWhenFull for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_STRIKE_COUNT && peekedTagNumber == uint8(2): // BACnetConstructedDataStrikeCount
-		if _child, err = (&_BACnetConstructedDataStrikeCount{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStrikeCount).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStrikeCount for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_STRUCTURED_OBJECT_LIST: // BACnetConstructedDataStructuredObjectList
-		if _child, err = (&_BACnetConstructedDataStructuredObjectList{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataStructuredObjectList).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataStructuredObjectList for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBORDINATE_ANNOTATIONS: // BACnetConstructedDataSubordinateAnnotations
-		if _child, err = (&_BACnetConstructedDataSubordinateAnnotations{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSubordinateAnnotations).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSubordinateAnnotations for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBORDINATE_LIST: // BACnetConstructedDataSubordinateList
-		if _child, err = (&_BACnetConstructedDataSubordinateList{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSubordinateList).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSubordinateList for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBORDINATE_NODE_TYPES && peekedTagNumber == uint8(9): // BACnetConstructedDataSubordinateNodeTypes
-		if _child, err = (&_BACnetConstructedDataSubordinateNodeTypes{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSubordinateNodeTypes).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSubordinateNodeTypes for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBORDINATE_RELATIONSHIPS && peekedTagNumber == uint8(9): // BACnetConstructedDataSubordinateRelationships
-		if _child, err = (&_BACnetConstructedDataSubordinateRelationships{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSubordinateRelationships).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSubordinateRelationships for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBORDINATE_TAGS: // BACnetConstructedDataSubordinateTags
-		if _child, err = (&_BACnetConstructedDataSubordinateTags{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSubordinateTags).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSubordinateTags for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SUBSCRIBED_RECIPIENTS: // BACnetConstructedDataSubscribedRecipients
-		if _child, err = (&_BACnetConstructedDataSubscribedRecipients{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSubscribedRecipients).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSubscribedRecipients for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SUPPORTED_FORMAT_CLASSES: // BACnetConstructedDataSupportedFormatClasses
-		if _child, err = (&_BACnetConstructedDataSupportedFormatClasses{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSupportedFormatClasses).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSupportedFormatClasses for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SUPPORTED_FORMATS: // BACnetConstructedDataSupportedFormats
-		if _child, err = (&_BACnetConstructedDataSupportedFormats{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSupportedFormats).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSupportedFormats for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SUPPORTED_SECURITY_ALGORITHMS: // BACnetConstructedDataSupportedSecurityAlgorithms
-		if _child, err = (&_BACnetConstructedDataSupportedSecurityAlgorithms{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSupportedSecurityAlgorithms).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSupportedSecurityAlgorithms for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_SYSTEM_STATUS && peekedTagNumber == uint8(9): // BACnetConstructedDataSystemStatus
-		if _child, err = (&_BACnetConstructedDataSystemStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataSystemStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataSystemStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TAGS: // BACnetConstructedDataTags
-		if _child, err = (&_BACnetConstructedDataTags{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTags).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTags for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_THREAT_AUTHORITY: // BACnetConstructedDataThreatAuthority
-		if _child, err = (&_BACnetConstructedDataThreatAuthority{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataThreatAuthority).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataThreatAuthority for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_THREAT_LEVEL: // BACnetConstructedDataThreatLevel
-		if _child, err = (&_BACnetConstructedDataThreatLevel{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataThreatLevel).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataThreatLevel for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIME_DELAY && peekedTagNumber == uint8(2): // BACnetConstructedDataTimeDelay
-		if _child, err = (&_BACnetConstructedDataTimeDelay{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeDelay).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeDelay for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIME_DELAY_NORMAL && peekedTagNumber == uint8(2): // BACnetConstructedDataTimeDelayNormal
-		if _child, err = (&_BACnetConstructedDataTimeDelayNormal{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeDelayNormal).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeDelayNormal for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIME_OF_ACTIVE_TIME_RESET: // BACnetConstructedDataTimeOfActiveTimeReset
-		if _child, err = (&_BACnetConstructedDataTimeOfActiveTimeReset{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeOfActiveTimeReset).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeOfActiveTimeReset for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIME_OF_DEVICE_RESTART: // BACnetConstructedDataTimeOfDeviceRestart
-		if _child, err = (&_BACnetConstructedDataTimeOfDeviceRestart{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeOfDeviceRestart).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeOfDeviceRestart for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIME_OF_STATE_COUNT_RESET: // BACnetConstructedDataTimeOfStateCountReset
-		if _child, err = (&_BACnetConstructedDataTimeOfStateCountReset{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeOfStateCountReset).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeOfStateCountReset for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIME_OF_STRIKE_COUNT_RESET: // BACnetConstructedDataTimeOfStrikeCountReset
-		if _child, err = (&_BACnetConstructedDataTimeOfStrikeCountReset{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeOfStrikeCountReset).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeOfStrikeCountReset for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_INTERVAL && peekedTagNumber == uint8(2): // BACnetConstructedDataTimeSynchronizationInterval
-		if _child, err = (&_BACnetConstructedDataTimeSynchronizationInterval{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeSynchronizationInterval).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeSynchronizationInterval for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIME_SYNCHRONIZATION_RECIPIENTS: // BACnetConstructedDataTimeSynchronizationRecipients
-		if _child, err = (&_BACnetConstructedDataTimeSynchronizationRecipients{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimeSynchronizationRecipients).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimeSynchronizationRecipients for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIMER_RUNNING && peekedTagNumber == uint8(1): // BACnetConstructedDataTimerRunning
-		if _child, err = (&_BACnetConstructedDataTimerRunning{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimerRunning).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimerRunning for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TIMER_STATE && peekedTagNumber == uint8(9): // BACnetConstructedDataTimerState
-		if _child, err = (&_BACnetConstructedDataTimerState{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTimerState).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTimerState for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TOTAL_RECORD_COUNT && peekedTagNumber == uint8(2): // BACnetConstructedDataTotalRecordCount
-		if _child, err = (&_BACnetConstructedDataTotalRecordCount{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTotalRecordCount).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTotalRecordCount for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TRACE_FLAG && peekedTagNumber == uint8(1): // BACnetConstructedDataTraceFlag
-		if _child, err = (&_BACnetConstructedDataTraceFlag{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTraceFlag).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTraceFlag for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_TRACKING_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataLightingOutputTrackingValue
-		if _child, err = (&_BACnetConstructedDataLightingOutputTrackingValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLightingOutputTrackingValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLightingOutputTrackingValue for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_LIGHTING_OUTPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_TRACKING_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataLightingOutputTrackingValue
-		if _child, err = (&_BACnetConstructedDataLightingOutputTrackingValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataLightingOutputTrackingValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataLightingOutputTrackingValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TRACKING_VALUE && peekedTagNumber == uint8(9): // BACnetConstructedDataTrackingValue
-		if _child, err = (&_BACnetConstructedDataTrackingValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTrackingValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTrackingValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TRANSACTION_NOTIFICATION_CLASS && peekedTagNumber == uint8(2): // BACnetConstructedDataTransactionNotificationClass
-		if _child, err = (&_BACnetConstructedDataTransactionNotificationClass{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTransactionNotificationClass).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTransactionNotificationClass for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TRANSITION && peekedTagNumber == uint8(9): // BACnetConstructedDataTransition
-		if _child, err = (&_BACnetConstructedDataTransition{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTransition).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTransition for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_TRIGGER && peekedTagNumber == uint8(1): // BACnetConstructedDataTrigger
-		if _child, err = (&_BACnetConstructedDataTrigger{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataTrigger).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataTrigger for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_UNITS && peekedTagNumber == uint8(9): // BACnetConstructedDataUnits
-		if _child, err = (&_BACnetConstructedDataUnits{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUnits).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUnits for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_UPDATE_INTERVAL && peekedTagNumber == uint8(2): // BACnetConstructedDataUpdateInterval
-		if _child, err = (&_BACnetConstructedDataUpdateInterval{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUpdateInterval).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUpdateInterval for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_UPDATE_KEY_SET_TIMEOUT && peekedTagNumber == uint8(2): // BACnetConstructedDataUpdateKeySetTimeout
-		if _child, err = (&_BACnetConstructedDataUpdateKeySetTimeout{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUpdateKeySetTimeout).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUpdateKeySetTimeout for type-switch of BACnetConstructedData")
 		}
 	case objectTypeArgument == BACnetObjectType_CREDENTIAL_DATA_INPUT && propertyIdentifierArgument == BACnetPropertyIdentifier_UPDATE_TIME: // BACnetConstructedDataCredentialDataInputUpdateTime
-		if _child, err = (&_BACnetConstructedDataCredentialDataInputUpdateTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataCredentialDataInputUpdateTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataCredentialDataInputUpdateTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_UPDATE_TIME: // BACnetConstructedDataUpdateTime
-		if _child, err = (&_BACnetConstructedDataUpdateTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUpdateTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUpdateTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_USER_EXTERNAL_IDENTIFIER && peekedTagNumber == uint8(7): // BACnetConstructedDataUserExternalIdentifier
-		if _child, err = (&_BACnetConstructedDataUserExternalIdentifier{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUserExternalIdentifier).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUserExternalIdentifier for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_USER_INFORMATION_REFERENCE && peekedTagNumber == uint8(7): // BACnetConstructedDataUserInformationReference
-		if _child, err = (&_BACnetConstructedDataUserInformationReference{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUserInformationReference).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUserInformationReference for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_USER_NAME && peekedTagNumber == uint8(7): // BACnetConstructedDataUserName
-		if _child, err = (&_BACnetConstructedDataUserName{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUserName).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUserName for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_USER_TYPE && peekedTagNumber == uint8(9): // BACnetConstructedDataUserType
-		if _child, err = (&_BACnetConstructedDataUserType{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUserType).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUserType for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_USES_REMAINING && peekedTagNumber == uint8(3): // BACnetConstructedDataUsesRemaining
-		if _child, err = (&_BACnetConstructedDataUsesRemaining{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUsesRemaining).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUsesRemaining for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_UTC_OFFSET && peekedTagNumber == uint8(3): // BACnetConstructedDataUTCOffset
-		if _child, err = (&_BACnetConstructedDataUTCOffset{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUTCOffset).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUTCOffset for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_UTC_TIME_SYNCHRONIZATION_RECIPIENTS: // BACnetConstructedDataUTCTimeSynchronizationRecipients
-		if _child, err = (&_BACnetConstructedDataUTCTimeSynchronizationRecipients{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUTCTimeSynchronizationRecipients).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUTCTimeSynchronizationRecipients for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VALID_SAMPLES && peekedTagNumber == uint8(2): // BACnetConstructedDataValidSamples
-		if _child, err = (&_BACnetConstructedDataValidSamples{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataValidSamples).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataValidSamples for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VALUE_BEFORE_CHANGE && peekedTagNumber == uint8(2): // BACnetConstructedDataValueBeforeChange
-		if _child, err = (&_BACnetConstructedDataValueBeforeChange{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataValueBeforeChange).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataValueBeforeChange for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VALUE_CHANGE_TIME: // BACnetConstructedDataValueChangeTime
-		if _child, err = (&_BACnetConstructedDataValueChangeTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataValueChangeTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataValueChangeTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VALUE_SET && peekedTagNumber == uint8(2): // BACnetConstructedDataValueSet
-		if _child, err = (&_BACnetConstructedDataValueSet{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataValueSet).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataValueSet for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VALUE_SOURCE: // BACnetConstructedDataValueSource
-		if _child, err = (&_BACnetConstructedDataValueSource{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataValueSource).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataValueSource for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VALUE_SOURCE_ARRAY: // BACnetConstructedDataValueSourceArray
-		if _child, err = (&_BACnetConstructedDataValueSourceArray{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataValueSourceArray).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataValueSourceArray for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VARIANCE_VALUE && peekedTagNumber == uint8(4): // BACnetConstructedDataVarianceValue
-		if _child, err = (&_BACnetConstructedDataVarianceValue{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataVarianceValue).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataVarianceValue for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VENDOR_IDENTIFIER && peekedTagNumber == uint8(2): // BACnetConstructedDataVendorIdentifier
-		if _child, err = (&_BACnetConstructedDataVendorIdentifier{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataVendorIdentifier).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataVendorIdentifier for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VENDOR_NAME && peekedTagNumber == uint8(7): // BACnetConstructedDataVendorName
-		if _child, err = (&_BACnetConstructedDataVendorName{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataVendorName).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataVendorName for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VERIFICATION_TIME && peekedTagNumber == uint8(3): // BACnetConstructedDataVerificationTime
-		if _child, err = (&_BACnetConstructedDataVerificationTime{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataVerificationTime).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataVerificationTime for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VIRTUAL_MAC_ADDRESS_TABLE: // BACnetConstructedDataVirtualMACAddressTable
-		if _child, err = (&_BACnetConstructedDataVirtualMACAddressTable{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataVirtualMACAddressTable).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataVirtualMACAddressTable for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_VT_CLASSES_SUPPORTED && peekedTagNumber == uint8(9): // BACnetConstructedDataVTClassesSupported
-		if _child, err = (&_BACnetConstructedDataVTClassesSupported{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataVTClassesSupported).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataVTClassesSupported for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_WEEKLY_SCHEDULE: // BACnetConstructedDataWeeklySchedule
-		if _child, err = (&_BACnetConstructedDataWeeklySchedule{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataWeeklySchedule).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataWeeklySchedule for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_WINDOW_INTERVAL && peekedTagNumber == uint8(2): // BACnetConstructedDataWindowInterval
-		if _child, err = (&_BACnetConstructedDataWindowInterval{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataWindowInterval).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataWindowInterval for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_WINDOW_SAMPLES && peekedTagNumber == uint8(2): // BACnetConstructedDataWindowSamples
-		if _child, err = (&_BACnetConstructedDataWindowSamples{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataWindowSamples).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataWindowSamples for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_WRITE_STATUS && peekedTagNumber == uint8(9): // BACnetConstructedDataWriteStatus
-		if _child, err = (&_BACnetConstructedDataWriteStatus{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataWriteStatus).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataWriteStatus for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ZONE_FROM: // BACnetConstructedDataZoneFrom
-		if _child, err = (&_BACnetConstructedDataZoneFrom{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataZoneFrom).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataZoneFrom for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ZONE_MEMBERS: // BACnetConstructedDataZoneMembers
-		if _child, err = (&_BACnetConstructedDataZoneMembers{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataZoneMembers).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataZoneMembers for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0 && propertyIdentifierArgument == BACnetPropertyIdentifier_ZONE_TO: // BACnetConstructedDataZoneTo
-		if _child, err = (&_BACnetConstructedDataZoneTo{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataZoneTo).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataZoneTo for type-switch of BACnetConstructedData")
 		}
 	case 0 == 0: // BACnetConstructedDataUnspecified
-		if _child, err = (&_BACnetConstructedDataUnspecified{}).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetConstructedDataUnspecified).parse(ctx, readBuffer, m, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConstructedDataUnspecified for type-switch of BACnetConstructedData")
 		}
 	default:

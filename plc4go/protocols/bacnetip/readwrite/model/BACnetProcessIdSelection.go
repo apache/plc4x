@@ -189,11 +189,11 @@ func (m *_BACnetProcessIdSelection) parse(ctx context.Context, readBuffer utils.
 	var _child BACnetProcessIdSelection
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetProcessIdSelectionNull
-		if _child, err = (&_BACnetProcessIdSelectionNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetProcessIdSelectionNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetProcessIdSelectionNull for type-switch of BACnetProcessIdSelection")
 		}
 	case 0 == 0: // BACnetProcessIdSelectionValue
-		if _child, err = (&_BACnetProcessIdSelectionValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetProcessIdSelectionValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetProcessIdSelectionValue for type-switch of BACnetProcessIdSelection")
 		}
 	default:

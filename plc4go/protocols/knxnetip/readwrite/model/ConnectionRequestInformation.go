@@ -153,11 +153,11 @@ func (m *_ConnectionRequestInformation) parse(ctx context.Context, readBuffer ut
 	var _child ConnectionRequestInformation
 	switch {
 	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
-		if _child, err = (&_ConnectionRequestInformationDeviceManagement{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionRequestInformationDeviceManagement).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionRequestInformationDeviceManagement for type-switch of ConnectionRequestInformation")
 		}
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
-		if _child, err = (&_ConnectionRequestInformationTunnelConnection{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionRequestInformationTunnelConnection).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionRequestInformationTunnelConnection for type-switch of ConnectionRequestInformation")
 		}
 	default:

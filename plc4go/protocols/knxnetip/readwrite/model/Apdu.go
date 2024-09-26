@@ -191,11 +191,11 @@ func (m *_Apdu) parse(ctx context.Context, readBuffer utils.ReadBuffer, dataLeng
 	var _child Apdu
 	switch {
 	case control == uint8(1): // ApduControlContainer
-		if _child, err = (&_ApduControlContainer{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduControlContainer).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlContainer for type-switch of Apdu")
 		}
 	case control == uint8(0): // ApduDataContainer
-		if _child, err = (&_ApduDataContainer{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataContainer).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataContainer for type-switch of Apdu")
 		}
 	default:

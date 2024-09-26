@@ -144,11 +144,11 @@ func (m *_PortSegmentType) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child PortSegmentType
 	switch {
 	case extendedLinkAddress == bool(false): // PortSegmentNormal
-		if _child, err = (&_PortSegmentNormal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_PortSegmentNormal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PortSegmentNormal for type-switch of PortSegmentType")
 		}
 	case extendedLinkAddress == bool(true): // PortSegmentExtended
-		if _child, err = (&_PortSegmentExtended{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_PortSegmentExtended).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PortSegmentExtended for type-switch of PortSegmentType")
 		}
 	default:

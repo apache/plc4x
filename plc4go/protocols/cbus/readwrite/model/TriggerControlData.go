@@ -227,23 +227,23 @@ func (m *_TriggerControlData) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child TriggerControlData
 	switch {
 	case commandType == TriggerControlCommandType_TRIGGER_EVENT: // TriggerControlDataTriggerEvent
-		if _child, err = (&_TriggerControlDataTriggerEvent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataTriggerEvent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataTriggerEvent for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_TRIGGER_MIN: // TriggerControlDataTriggerMin
-		if _child, err = (&_TriggerControlDataTriggerMin{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataTriggerMin).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataTriggerMin for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_TRIGGER_MAX: // TriggerControlDataTriggerMax
-		if _child, err = (&_TriggerControlDataTriggerMax{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataTriggerMax).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataTriggerMax for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_INDICATOR_KILL: // TriggerControlDataIndicatorKill
-		if _child, err = (&_TriggerControlDataIndicatorKill{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataIndicatorKill).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataIndicatorKill for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_LABEL: // TriggerControlDataLabel
-		if _child, err = (&_TriggerControlDataLabel{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_TriggerControlDataLabel).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataLabel for type-switch of TriggerControlData")
 		}
 	default:

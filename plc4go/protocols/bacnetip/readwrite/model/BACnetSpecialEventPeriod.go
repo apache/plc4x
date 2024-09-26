@@ -194,11 +194,11 @@ func (m *_BACnetSpecialEventPeriod) parse(ctx context.Context, readBuffer utils.
 	var _child BACnetSpecialEventPeriod
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetSpecialEventPeriodCalendarEntry
-		if _child, err = (&_BACnetSpecialEventPeriodCalendarEntry{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetSpecialEventPeriodCalendarEntry).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetSpecialEventPeriodCalendarEntry for type-switch of BACnetSpecialEventPeriod")
 		}
 	case peekedTagNumber == uint8(1): // BACnetSpecialEventPeriodCalendarReference
-		if _child, err = (&_BACnetSpecialEventPeriodCalendarReference{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetSpecialEventPeriodCalendarReference).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetSpecialEventPeriodCalendarReference for type-switch of BACnetSpecialEventPeriod")
 		}
 	default:

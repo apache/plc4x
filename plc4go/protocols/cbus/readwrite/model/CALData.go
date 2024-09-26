@@ -234,43 +234,43 @@ func (m *_CALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, reque
 	var _child CALData
 	switch {
 	case commandType == CALCommandType_RESET: // CALDataReset
-		if _child, err = (&_CALDataReset{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataReset).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataReset for type-switch of CALData")
 		}
 	case commandType == CALCommandType_RECALL: // CALDataRecall
-		if _child, err = (&_CALDataRecall{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataRecall).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataRecall for type-switch of CALData")
 		}
 	case commandType == CALCommandType_IDENTIFY: // CALDataIdentify
-		if _child, err = (&_CALDataIdentify{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataIdentify).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataIdentify for type-switch of CALData")
 		}
 	case commandType == CALCommandType_GET_STATUS: // CALDataGetStatus
-		if _child, err = (&_CALDataGetStatus{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataGetStatus).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataGetStatus for type-switch of CALData")
 		}
 	case commandType == CALCommandType_WRITE: // CALDataWrite
-		if _child, err = (&_CALDataWrite{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataWrite).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataWrite for type-switch of CALData")
 		}
 	case commandType == CALCommandType_REPLY && sendIdentifyRequestBefore == bool(true): // CALDataIdentifyReply
-		if _child, err = (&_CALDataIdentifyReply{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataIdentifyReply).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataIdentifyReply for type-switch of CALData")
 		}
 	case commandType == CALCommandType_REPLY: // CALDataReply
-		if _child, err = (&_CALDataReply{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataReply).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataReply for type-switch of CALData")
 		}
 	case commandType == CALCommandType_ACKNOWLEDGE: // CALDataAcknowledge
-		if _child, err = (&_CALDataAcknowledge{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataAcknowledge).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataAcknowledge for type-switch of CALData")
 		}
 	case commandType == CALCommandType_STATUS: // CALDataStatus
-		if _child, err = (&_CALDataStatus{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataStatus).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataStatus for type-switch of CALData")
 		}
 	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataStatusExtended
-		if _child, err = (&_CALDataStatusExtended{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataStatusExtended).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataStatusExtended for type-switch of CALData")
 		}
 	default:

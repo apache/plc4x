@@ -194,7 +194,7 @@ func (m *_ErrorReportingData) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child ErrorReportingData
 	switch {
 	case 0 == 0: // ErrorReportingDataGeneric
-		if _child, err = (&_ErrorReportingDataGeneric{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ErrorReportingDataGeneric).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingDataGeneric for type-switch of ErrorReportingData")
 		}
 	default:

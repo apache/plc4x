@@ -190,67 +190,67 @@ func (m *_KnxNetIpMessage) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child KnxNetIpMessage
 	switch {
 	case msgType == 0x0201: // SearchRequest
-		if _child, err = (&_SearchRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SearchRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SearchRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0202: // SearchResponse
-		if _child, err = (&_SearchResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SearchResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SearchResponse for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0203: // DescriptionRequest
-		if _child, err = (&_DescriptionRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DescriptionRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DescriptionRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0204: // DescriptionResponse
-		if _child, err = (&_DescriptionResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DescriptionResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DescriptionResponse for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0205: // ConnectionRequest
-		if _child, err = (&_ConnectionRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0206: // ConnectionResponse
-		if _child, err = (&_ConnectionResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionResponse for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0207: // ConnectionStateRequest
-		if _child, err = (&_ConnectionStateRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionStateRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionStateRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0208: // ConnectionStateResponse
-		if _child, err = (&_ConnectionStateResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionStateResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionStateResponse for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0209: // DisconnectRequest
-		if _child, err = (&_DisconnectRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DisconnectRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DisconnectRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x020A: // DisconnectResponse
-		if _child, err = (&_DisconnectResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DisconnectResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DisconnectResponse for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x020B: // UnknownMessage
-		if _child, err = (&_UnknownMessage{}).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_UnknownMessage).parse(ctx, readBuffer, m, totalLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UnknownMessage for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0310: // DeviceConfigurationRequest
-		if _child, err = (&_DeviceConfigurationRequest{}).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_DeviceConfigurationRequest).parse(ctx, readBuffer, m, totalLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DeviceConfigurationRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0311: // DeviceConfigurationAck
-		if _child, err = (&_DeviceConfigurationAck{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DeviceConfigurationAck).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DeviceConfigurationAck for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0420: // TunnelingRequest
-		if _child, err = (&_TunnelingRequest{}).parse(ctx, readBuffer, m, totalLength); err != nil {
+		if _child, err = new(_TunnelingRequest).parse(ctx, readBuffer, m, totalLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TunnelingRequest for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0421: // TunnelingResponse
-		if _child, err = (&_TunnelingResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TunnelingResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TunnelingResponse for type-switch of KnxNetIpMessage")
 		}
 	case msgType == 0x0530: // RoutingIndication
-		if _child, err = (&_RoutingIndication{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_RoutingIndication).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RoutingIndication for type-switch of KnxNetIpMessage")
 		}
 	default:

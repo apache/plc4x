@@ -244,7 +244,7 @@ func (m *_DF1ResponseMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child DF1ResponseMessage
 	switch {
 	case commandCode == 0x4F: // DF1CommandResponseMessageProtectedTypedLogicalRead
-		if _child, err = (&_DF1CommandResponseMessageProtectedTypedLogicalRead{}).parse(ctx, readBuffer, m, payloadLength); err != nil {
+		if _child, err = new(_DF1CommandResponseMessageProtectedTypedLogicalRead).parse(ctx, readBuffer, m, payloadLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1CommandResponseMessageProtectedTypedLogicalRead for type-switch of DF1ResponseMessage")
 		}
 	default:

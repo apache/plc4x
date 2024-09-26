@@ -177,11 +177,11 @@ func (m *_S7DataAlarmMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child S7DataAlarmMessage
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
-		if _child, err = (&_S7MessageObjectRequest{}).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
+		if _child, err = new(_S7MessageObjectRequest).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageObjectRequest for type-switch of S7DataAlarmMessage")
 		}
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
-		if _child, err = (&_S7MessageObjectResponse{}).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
+		if _child, err = new(_S7MessageObjectResponse).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageObjectResponse for type-switch of S7DataAlarmMessage")
 		}
 	default:

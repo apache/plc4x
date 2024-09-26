@@ -172,15 +172,15 @@ func (m *_DF1Symbol) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child DF1Symbol
 	switch {
 	case symbolType == 0x02: // DF1SymbolMessageFrame
-		if _child, err = (&_DF1SymbolMessageFrame{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1SymbolMessageFrame).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrame for type-switch of DF1Symbol")
 		}
 	case symbolType == 0x06: // DF1SymbolMessageFrameACK
-		if _child, err = (&_DF1SymbolMessageFrameACK{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1SymbolMessageFrameACK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrameACK for type-switch of DF1Symbol")
 		}
 	case symbolType == 0x15: // DF1SymbolMessageFrameNAK
-		if _child, err = (&_DF1SymbolMessageFrameNAK{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1SymbolMessageFrameNAK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrameNAK for type-switch of DF1Symbol")
 		}
 	default:

@@ -216,19 +216,19 @@ func (m *_CBusCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, c
 	var _child CBusCommand
 	switch {
 	case 0 == 0 && isDeviceManagement == bool(true): // CBusCommandDeviceManagement
-		if _child, err = (&_CBusCommandDeviceManagement{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusCommandDeviceManagement).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandDeviceManagement for type-switch of CBusCommand")
 		}
 	case destinationAddressType == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
-		if _child, err = (&_CBusCommandPointToPointToMultiPoint{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusCommandPointToPointToMultiPoint).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandPointToPointToMultiPoint for type-switch of CBusCommand")
 		}
 	case destinationAddressType == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
-		if _child, err = (&_CBusCommandPointToMultiPoint{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusCommandPointToMultiPoint).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandPointToMultiPoint for type-switch of CBusCommand")
 		}
 	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
-		if _child, err = (&_CBusCommandPointToPoint{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusCommandPointToPoint).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandPointToPoint for type-switch of CBusCommand")
 		}
 	default:

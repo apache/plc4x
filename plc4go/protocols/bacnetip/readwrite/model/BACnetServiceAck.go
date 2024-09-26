@@ -176,63 +176,63 @@ func (m *_BACnetServiceAck) parse(ctx context.Context, readBuffer utils.ReadBuff
 	var _child BACnetServiceAck
 	switch {
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY: // BACnetServiceAckGetAlarmSummary
-		if _child, err = (&_BACnetServiceAckGetAlarmSummary{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckGetAlarmSummary).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckGetAlarmSummary for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY: // BACnetServiceAckGetEnrollmentSummary
-		if _child, err = (&_BACnetServiceAckGetEnrollmentSummary{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckGetEnrollmentSummary).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckGetEnrollmentSummary for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION: // BACnetServiceAckGetEventInformation
-		if _child, err = (&_BACnetServiceAckGetEventInformation{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckGetEventInformation).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckGetEventInformation for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_READ_FILE: // BACnetServiceAckAtomicReadFile
-		if _child, err = (&_BACnetServiceAckAtomicReadFile{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckAtomicReadFile).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAtomicReadFile for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE: // BACnetServiceAckAtomicWriteFile
-		if _child, err = (&_BACnetServiceAckAtomicWriteFile{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckAtomicWriteFile).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAtomicWriteFile for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // BACnetServiceAckCreateObject
-		if _child, err = (&_BACnetServiceAckCreateObject{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckCreateObject).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckCreateObject for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY: // BACnetServiceAckReadProperty
-		if _child, err = (&_BACnetServiceAckReadProperty{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckReadProperty).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckReadProperty for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE: // BACnetServiceAckReadPropertyMultiple
-		if _child, err = (&_BACnetServiceAckReadPropertyMultiple{}).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckReadPropertyMultiple).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckReadPropertyMultiple for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_RANGE: // BACnetServiceAckReadRange
-		if _child, err = (&_BACnetServiceAckReadRange{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckReadRange).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckReadRange for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // BACnetServiceAckConfirmedPrivateTransfer
-		if _child, err = (&_BACnetServiceAckConfirmedPrivateTransfer{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckConfirmedPrivateTransfer).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckConfirmedPrivateTransfer for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_OPEN: // BACnetServiceAckVTOpen
-		if _child, err = (&_BACnetServiceAckVTOpen{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckVTOpen).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckVTOpen for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_VT_DATA: // BACnetServiceAckVTData
-		if _child, err = (&_BACnetServiceAckVTData{}).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckVTData).parse(ctx, readBuffer, m, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckVTData for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_AUTHENTICATE: // BACnetServiceAckAuthenticate
-		if _child, err = (&_BACnetServiceAckAuthenticate{}).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckAuthenticate).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAuthenticate for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_REQUEST_KEY: // BACnetServiceAckRequestKey
-		if _child, err = (&_BACnetServiceAckRequestKey{}).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckRequestKey).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckRequestKey for type-switch of BACnetServiceAck")
 		}
 	case serviceChoice == BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL: // BACnetServiceAckReadPropertyConditional
-		if _child, err = (&_BACnetServiceAckReadPropertyConditional{}).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
+		if _child, err = new(_BACnetServiceAckReadPropertyConditional).parse(ctx, readBuffer, m, serviceAckPayloadLength, serviceAckLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckReadPropertyConditional for type-switch of BACnetServiceAck")
 		}
 	default:

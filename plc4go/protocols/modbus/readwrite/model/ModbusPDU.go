@@ -155,159 +155,159 @@ func (m *_ModbusPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, res
 	var _child ModbusPDU
 	switch {
 	case errorFlag == bool(true): // ModbusPDUError
-		if _child, err = (&_ModbusPDUError{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUError).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUError for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x02 && response == bool(false): // ModbusPDUReadDiscreteInputsRequest
-		if _child, err = (&_ModbusPDUReadDiscreteInputsRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadDiscreteInputsRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadDiscreteInputsRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x02 && response == bool(true): // ModbusPDUReadDiscreteInputsResponse
-		if _child, err = (&_ModbusPDUReadDiscreteInputsResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadDiscreteInputsResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadDiscreteInputsResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x01 && response == bool(false): // ModbusPDUReadCoilsRequest
-		if _child, err = (&_ModbusPDUReadCoilsRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadCoilsRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadCoilsRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x01 && response == bool(true): // ModbusPDUReadCoilsResponse
-		if _child, err = (&_ModbusPDUReadCoilsResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadCoilsResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadCoilsResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x05 && response == bool(false): // ModbusPDUWriteSingleCoilRequest
-		if _child, err = (&_ModbusPDUWriteSingleCoilRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteSingleCoilRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteSingleCoilRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x05 && response == bool(true): // ModbusPDUWriteSingleCoilResponse
-		if _child, err = (&_ModbusPDUWriteSingleCoilResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteSingleCoilResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteSingleCoilResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x0F && response == bool(false): // ModbusPDUWriteMultipleCoilsRequest
-		if _child, err = (&_ModbusPDUWriteMultipleCoilsRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteMultipleCoilsRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteMultipleCoilsRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x0F && response == bool(true): // ModbusPDUWriteMultipleCoilsResponse
-		if _child, err = (&_ModbusPDUWriteMultipleCoilsResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteMultipleCoilsResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteMultipleCoilsResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x04 && response == bool(false): // ModbusPDUReadInputRegistersRequest
-		if _child, err = (&_ModbusPDUReadInputRegistersRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadInputRegistersRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadInputRegistersRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x04 && response == bool(true): // ModbusPDUReadInputRegistersResponse
-		if _child, err = (&_ModbusPDUReadInputRegistersResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadInputRegistersResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadInputRegistersResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x03 && response == bool(false): // ModbusPDUReadHoldingRegistersRequest
-		if _child, err = (&_ModbusPDUReadHoldingRegistersRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadHoldingRegistersRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadHoldingRegistersRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x03 && response == bool(true): // ModbusPDUReadHoldingRegistersResponse
-		if _child, err = (&_ModbusPDUReadHoldingRegistersResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadHoldingRegistersResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadHoldingRegistersResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x06 && response == bool(false): // ModbusPDUWriteSingleRegisterRequest
-		if _child, err = (&_ModbusPDUWriteSingleRegisterRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteSingleRegisterRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteSingleRegisterRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x06 && response == bool(true): // ModbusPDUWriteSingleRegisterResponse
-		if _child, err = (&_ModbusPDUWriteSingleRegisterResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteSingleRegisterResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteSingleRegisterResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x10 && response == bool(false): // ModbusPDUWriteMultipleHoldingRegistersRequest
-		if _child, err = (&_ModbusPDUWriteMultipleHoldingRegistersRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteMultipleHoldingRegistersRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteMultipleHoldingRegistersRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x10 && response == bool(true): // ModbusPDUWriteMultipleHoldingRegistersResponse
-		if _child, err = (&_ModbusPDUWriteMultipleHoldingRegistersResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteMultipleHoldingRegistersResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteMultipleHoldingRegistersResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x17 && response == bool(false): // ModbusPDUReadWriteMultipleHoldingRegistersRequest
-		if _child, err = (&_ModbusPDUReadWriteMultipleHoldingRegistersRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadWriteMultipleHoldingRegistersRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadWriteMultipleHoldingRegistersRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x17 && response == bool(true): // ModbusPDUReadWriteMultipleHoldingRegistersResponse
-		if _child, err = (&_ModbusPDUReadWriteMultipleHoldingRegistersResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadWriteMultipleHoldingRegistersResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadWriteMultipleHoldingRegistersResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x16 && response == bool(false): // ModbusPDUMaskWriteHoldingRegisterRequest
-		if _child, err = (&_ModbusPDUMaskWriteHoldingRegisterRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUMaskWriteHoldingRegisterRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUMaskWriteHoldingRegisterRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x16 && response == bool(true): // ModbusPDUMaskWriteHoldingRegisterResponse
-		if _child, err = (&_ModbusPDUMaskWriteHoldingRegisterResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUMaskWriteHoldingRegisterResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUMaskWriteHoldingRegisterResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x18 && response == bool(false): // ModbusPDUReadFifoQueueRequest
-		if _child, err = (&_ModbusPDUReadFifoQueueRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadFifoQueueRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadFifoQueueRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x18 && response == bool(true): // ModbusPDUReadFifoQueueResponse
-		if _child, err = (&_ModbusPDUReadFifoQueueResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadFifoQueueResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadFifoQueueResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x14 && response == bool(false): // ModbusPDUReadFileRecordRequest
-		if _child, err = (&_ModbusPDUReadFileRecordRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadFileRecordRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadFileRecordRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x14 && response == bool(true): // ModbusPDUReadFileRecordResponse
-		if _child, err = (&_ModbusPDUReadFileRecordResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadFileRecordResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadFileRecordResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x15 && response == bool(false): // ModbusPDUWriteFileRecordRequest
-		if _child, err = (&_ModbusPDUWriteFileRecordRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteFileRecordRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteFileRecordRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x15 && response == bool(true): // ModbusPDUWriteFileRecordResponse
-		if _child, err = (&_ModbusPDUWriteFileRecordResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUWriteFileRecordResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUWriteFileRecordResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x07 && response == bool(false): // ModbusPDUReadExceptionStatusRequest
-		if _child, err = (&_ModbusPDUReadExceptionStatusRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadExceptionStatusRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadExceptionStatusRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x07 && response == bool(true): // ModbusPDUReadExceptionStatusResponse
-		if _child, err = (&_ModbusPDUReadExceptionStatusResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadExceptionStatusResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadExceptionStatusResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x08 && response == bool(false): // ModbusPDUDiagnosticRequest
-		if _child, err = (&_ModbusPDUDiagnosticRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUDiagnosticRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUDiagnosticRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x08 && response == bool(true): // ModbusPDUDiagnosticResponse
-		if _child, err = (&_ModbusPDUDiagnosticResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUDiagnosticResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUDiagnosticResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x0B && response == bool(false): // ModbusPDUGetComEventCounterRequest
-		if _child, err = (&_ModbusPDUGetComEventCounterRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUGetComEventCounterRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUGetComEventCounterRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x0B && response == bool(true): // ModbusPDUGetComEventCounterResponse
-		if _child, err = (&_ModbusPDUGetComEventCounterResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUGetComEventCounterResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUGetComEventCounterResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x0C && response == bool(false): // ModbusPDUGetComEventLogRequest
-		if _child, err = (&_ModbusPDUGetComEventLogRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUGetComEventLogRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUGetComEventLogRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x0C && response == bool(true): // ModbusPDUGetComEventLogResponse
-		if _child, err = (&_ModbusPDUGetComEventLogResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUGetComEventLogResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUGetComEventLogResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x11 && response == bool(false): // ModbusPDUReportServerIdRequest
-		if _child, err = (&_ModbusPDUReportServerIdRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReportServerIdRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReportServerIdRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x11 && response == bool(true): // ModbusPDUReportServerIdResponse
-		if _child, err = (&_ModbusPDUReportServerIdResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReportServerIdResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReportServerIdResponse for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x2B && response == bool(false): // ModbusPDUReadDeviceIdentificationRequest
-		if _child, err = (&_ModbusPDUReadDeviceIdentificationRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadDeviceIdentificationRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadDeviceIdentificationRequest for type-switch of ModbusPDU")
 		}
 	case errorFlag == bool(false) && functionFlag == 0x2B && response == bool(true): // ModbusPDUReadDeviceIdentificationResponse
-		if _child, err = (&_ModbusPDUReadDeviceIdentificationResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ModbusPDUReadDeviceIdentificationResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusPDUReadDeviceIdentificationResponse for type-switch of ModbusPDU")
 		}
 	default:

@@ -204,11 +204,11 @@ func (m *_CBusPointToPointCommand) parse(ctx context.Context, readBuffer utils.R
 	var _child CBusPointToPointCommand
 	switch {
 	case isDirect == bool(true): // CBusPointToPointCommandDirect
-		if _child, err = (&_CBusPointToPointCommandDirect{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToPointCommandDirect).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToPointCommandDirect for type-switch of CBusPointToPointCommand")
 		}
 	case isDirect == bool(false): // CBusPointToPointCommandIndirect
-		if _child, err = (&_CBusPointToPointCommandIndirect{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToPointCommandIndirect).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToPointCommandIndirect for type-switch of CBusPointToPointCommand")
 		}
 	default:

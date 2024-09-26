@@ -226,11 +226,11 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValue) parse(ctx context.C
 	var _child BACnetNotificationParametersChangeOfValueNewValue
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetNotificationParametersChangeOfValueNewValueChangedBits
-		if _child, err = (&_BACnetNotificationParametersChangeOfValueNewValueChangedBits{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfValueNewValueChangedBits).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfValueNewValueChangedBits for type-switch of BACnetNotificationParametersChangeOfValueNewValue")
 		}
 	case peekedTagNumber == uint8(1): // BACnetNotificationParametersChangeOfValueNewValueChangedValue
-		if _child, err = (&_BACnetNotificationParametersChangeOfValueNewValueChangedValue{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfValueNewValueChangedValue).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfValueNewValueChangedValue for type-switch of BACnetNotificationParametersChangeOfValueNewValue")
 		}
 	default:

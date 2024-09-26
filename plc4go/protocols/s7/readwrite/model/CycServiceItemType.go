@@ -204,11 +204,11 @@ func (m *_CycServiceItemType) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child CycServiceItemType
 	switch {
 	case syntaxId == 0x10: // CycServiceItemAnyType
-		if _child, err = (&_CycServiceItemAnyType{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CycServiceItemAnyType).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CycServiceItemAnyType for type-switch of CycServiceItemType")
 		}
 	case syntaxId == 0xb0: // CycServiceItemDbReadType
-		if _child, err = (&_CycServiceItemDbReadType{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CycServiceItemDbReadType).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CycServiceItemDbReadType for type-switch of CycServiceItemType")
 		}
 	default:

@@ -135,27 +135,27 @@ func (m *_ErrorReportingSystemCategoryType) parse(ctx context.Context, readBuffe
 	var _child ErrorReportingSystemCategoryType
 	switch {
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_INPUT_UNITS: // ErrorReportingSystemCategoryTypeInputUnits
-		if _child, err = (&_ErrorReportingSystemCategoryTypeInputUnits{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeInputUnits).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeInputUnits for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_SUPPORT_UNITS: // ErrorReportingSystemCategoryTypeSupportUnits
-		if _child, err = (&_ErrorReportingSystemCategoryTypeSupportUnits{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeSupportUnits).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeSupportUnits for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_BUILDING_MANAGEMENT_SYSTEMS: // ErrorReportingSystemCategoryTypeBuildingManagementSystems
-		if _child, err = (&_ErrorReportingSystemCategoryTypeBuildingManagementSystems{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeBuildingManagementSystems).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeBuildingManagementSystems for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_OUTPUT_UNITS: // ErrorReportingSystemCategoryTypeOutputUnits
-		if _child, err = (&_ErrorReportingSystemCategoryTypeOutputUnits{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeOutputUnits).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeOutputUnits for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS: // ErrorReportingSystemCategoryTypeClimateControllers
-		if _child, err = (&_ErrorReportingSystemCategoryTypeClimateControllers{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeClimateControllers).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeClimateControllers for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case 0 == 0: // ErrorReportingSystemCategoryTypeReserved
-		if _child, err = (&_ErrorReportingSystemCategoryTypeReserved{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeReserved).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeReserved for type-switch of ErrorReportingSystemCategoryType")
 		}
 	default:

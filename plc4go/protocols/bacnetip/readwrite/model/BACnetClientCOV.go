@@ -189,11 +189,11 @@ func (m *_BACnetClientCOV) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetClientCOV
 	switch {
 	case peekedTagNumber == 0x4: // BACnetClientCOVObject
-		if _child, err = (&_BACnetClientCOVObject{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetClientCOVObject).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetClientCOVObject for type-switch of BACnetClientCOV")
 		}
 	case peekedTagNumber == 0x0: // BACnetClientCOVNone
-		if _child, err = (&_BACnetClientCOVNone{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetClientCOVNone).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetClientCOVNone for type-switch of BACnetClientCOV")
 		}
 	default:

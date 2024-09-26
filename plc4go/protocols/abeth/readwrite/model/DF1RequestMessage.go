@@ -229,7 +229,7 @@ func (m *_DF1RequestMessage) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child DF1RequestMessage
 	switch {
 	case commandCode == 0x0F: // DF1CommandRequestMessage
-		if _child, err = (&_DF1CommandRequestMessage{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1CommandRequestMessage).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1CommandRequestMessage for type-switch of DF1RequestMessage")
 		}
 	default:

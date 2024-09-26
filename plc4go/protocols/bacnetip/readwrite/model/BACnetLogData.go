@@ -226,15 +226,15 @@ func (m *_BACnetLogData) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	var _child BACnetLogData
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogStatus
-		if _child, err = (&_BACnetLogDataLogStatus{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogStatus).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogStatus for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogData
-		if _child, err = (&_BACnetLogDataLogData{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogData).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogData for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataTimeChange
-		if _child, err = (&_BACnetLogDataLogDataTimeChange{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogDataTimeChange).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogDataTimeChange for type-switch of BACnetLogData")
 		}
 	default:

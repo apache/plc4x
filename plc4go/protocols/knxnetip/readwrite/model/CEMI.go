@@ -149,95 +149,95 @@ func (m *_CEMI) parse(ctx context.Context, readBuffer utils.ReadBuffer, size uin
 	var _child CEMI
 	switch {
 	case messageCode == 0x2B: // LBusmonInd
-		if _child, err = (&_LBusmonInd{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_LBusmonInd).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LBusmonInd for type-switch of CEMI")
 		}
 	case messageCode == 0x11: // LDataReq
-		if _child, err = (&_LDataReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_LDataReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataReq for type-switch of CEMI")
 		}
 	case messageCode == 0x29: // LDataInd
-		if _child, err = (&_LDataInd{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_LDataInd).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataInd for type-switch of CEMI")
 		}
 	case messageCode == 0x2E: // LDataCon
-		if _child, err = (&_LDataCon{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_LDataCon).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataCon for type-switch of CEMI")
 		}
 	case messageCode == 0x10: // LRawReq
-		if _child, err = (&_LRawReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_LRawReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LRawReq for type-switch of CEMI")
 		}
 	case messageCode == 0x2D: // LRawInd
-		if _child, err = (&_LRawInd{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_LRawInd).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LRawInd for type-switch of CEMI")
 		}
 	case messageCode == 0x2F: // LRawCon
-		if _child, err = (&_LRawCon{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_LRawCon).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LRawCon for type-switch of CEMI")
 		}
 	case messageCode == 0x13: // LPollDataReq
-		if _child, err = (&_LPollDataReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_LPollDataReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LPollDataReq for type-switch of CEMI")
 		}
 	case messageCode == 0x25: // LPollDataCon
-		if _child, err = (&_LPollDataCon{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_LPollDataCon).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LPollDataCon for type-switch of CEMI")
 		}
 	case messageCode == 0x41: // TDataConnectedReq
-		if _child, err = (&_TDataConnectedReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_TDataConnectedReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TDataConnectedReq for type-switch of CEMI")
 		}
 	case messageCode == 0x89: // TDataConnectedInd
-		if _child, err = (&_TDataConnectedInd{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_TDataConnectedInd).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TDataConnectedInd for type-switch of CEMI")
 		}
 	case messageCode == 0x4A: // TDataIndividualReq
-		if _child, err = (&_TDataIndividualReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_TDataIndividualReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TDataIndividualReq for type-switch of CEMI")
 		}
 	case messageCode == 0x94: // TDataIndividualInd
-		if _child, err = (&_TDataIndividualInd{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_TDataIndividualInd).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TDataIndividualInd for type-switch of CEMI")
 		}
 	case messageCode == 0xFC: // MPropReadReq
-		if _child, err = (&_MPropReadReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MPropReadReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MPropReadReq for type-switch of CEMI")
 		}
 	case messageCode == 0xFB: // MPropReadCon
-		if _child, err = (&_MPropReadCon{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MPropReadCon).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MPropReadCon for type-switch of CEMI")
 		}
 	case messageCode == 0xF6: // MPropWriteReq
-		if _child, err = (&_MPropWriteReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MPropWriteReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MPropWriteReq for type-switch of CEMI")
 		}
 	case messageCode == 0xF5: // MPropWriteCon
-		if _child, err = (&_MPropWriteCon{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MPropWriteCon).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MPropWriteCon for type-switch of CEMI")
 		}
 	case messageCode == 0xF7: // MPropInfoInd
-		if _child, err = (&_MPropInfoInd{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MPropInfoInd).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MPropInfoInd for type-switch of CEMI")
 		}
 	case messageCode == 0xF8: // MFuncPropCommandReq
-		if _child, err = (&_MFuncPropCommandReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MFuncPropCommandReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MFuncPropCommandReq for type-switch of CEMI")
 		}
 	case messageCode == 0xF9: // MFuncPropStateReadReq
-		if _child, err = (&_MFuncPropStateReadReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MFuncPropStateReadReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MFuncPropStateReadReq for type-switch of CEMI")
 		}
 	case messageCode == 0xFA: // MFuncPropCon
-		if _child, err = (&_MFuncPropCon{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MFuncPropCon).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MFuncPropCon for type-switch of CEMI")
 		}
 	case messageCode == 0xF1: // MResetReq
-		if _child, err = (&_MResetReq{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MResetReq).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MResetReq for type-switch of CEMI")
 		}
 	case messageCode == 0xF0: // MResetInd
-		if _child, err = (&_MResetInd{}).parse(ctx, readBuffer, m, size); err != nil {
+		if _child, err = new(_MResetInd).parse(ctx, readBuffer, m, size); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MResetInd for type-switch of CEMI")
 		}
 	default:

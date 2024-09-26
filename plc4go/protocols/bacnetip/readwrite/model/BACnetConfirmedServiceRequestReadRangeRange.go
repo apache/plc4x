@@ -221,15 +221,15 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) parse(ctx context.Context
 	var _child BACnetConfirmedServiceRequestReadRangeRange
 	switch {
 	case peekedTagNumber == 0x3: // BACnetConfirmedServiceRequestReadRangeRangeByPosition
-		if _child, err = (&_BACnetConfirmedServiceRequestReadRangeRangeByPosition{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestReadRangeRangeByPosition).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRangeRangeByPosition for type-switch of BACnetConfirmedServiceRequestReadRangeRange")
 		}
 	case peekedTagNumber == 0x6: // BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
-		if _child, err = (&_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber for type-switch of BACnetConfirmedServiceRequestReadRangeRange")
 		}
 	case peekedTagNumber == 0x7: // BACnetConfirmedServiceRequestReadRangeRangeByTime
-		if _child, err = (&_BACnetConfirmedServiceRequestReadRangeRangeByTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestReadRangeRangeByTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRangeRangeByTime for type-switch of BACnetConfirmedServiceRequestReadRangeRange")
 		}
 	default:

@@ -189,15 +189,15 @@ func (m *_BACnetShedLevel) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetShedLevel
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetShedLevelPercent
-		if _child, err = (&_BACnetShedLevelPercent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetShedLevelPercent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelPercent for type-switch of BACnetShedLevel")
 		}
 	case peekedTagNumber == uint8(1): // BACnetShedLevelLevel
-		if _child, err = (&_BACnetShedLevelLevel{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetShedLevelLevel).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelLevel for type-switch of BACnetShedLevel")
 		}
 	case peekedTagNumber == uint8(2): // BACnetShedLevelAmount
-		if _child, err = (&_BACnetShedLevelAmount{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetShedLevelAmount).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelAmount for type-switch of BACnetShedLevel")
 		}
 	default:

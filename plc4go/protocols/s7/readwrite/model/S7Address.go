@@ -144,7 +144,7 @@ func (m *_S7Address) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child S7Address
 	switch {
 	case addressType == 0x10: // S7AddressAny
-		if _child, err = (&_S7AddressAny{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7AddressAny).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7AddressAny for type-switch of S7Address")
 		}
 	default:

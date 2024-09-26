@@ -226,47 +226,47 @@ func (m *_BACnetLogRecordLogDatum) parse(ctx context.Context, readBuffer utils.R
 	var _child BACnetLogRecordLogDatum
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogRecordLogDatumLogStatus
-		if _child, err = (&_BACnetLogRecordLogDatumLogStatus{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumLogStatus).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumLogStatus for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(1): // BACnetLogRecordLogDatumBooleanValue
-		if _child, err = (&_BACnetLogRecordLogDatumBooleanValue{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumBooleanValue).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumBooleanValue for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(2): // BACnetLogRecordLogDatumRealValue
-		if _child, err = (&_BACnetLogRecordLogDatumRealValue{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumRealValue).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumRealValue for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(3): // BACnetLogRecordLogDatumEnumeratedValue
-		if _child, err = (&_BACnetLogRecordLogDatumEnumeratedValue{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumEnumeratedValue).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumEnumeratedValue for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(4): // BACnetLogRecordLogDatumUnsignedValue
-		if _child, err = (&_BACnetLogRecordLogDatumUnsignedValue{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumUnsignedValue).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumUnsignedValue for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(5): // BACnetLogRecordLogDatumIntegerValue
-		if _child, err = (&_BACnetLogRecordLogDatumIntegerValue{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumIntegerValue).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumIntegerValue for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(6): // BACnetLogRecordLogDatumBitStringValue
-		if _child, err = (&_BACnetLogRecordLogDatumBitStringValue{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumBitStringValue).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumBitStringValue for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(7): // BACnetLogRecordLogDatumNullValue
-		if _child, err = (&_BACnetLogRecordLogDatumNullValue{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumNullValue).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumNullValue for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(8): // BACnetLogRecordLogDatumFailure
-		if _child, err = (&_BACnetLogRecordLogDatumFailure{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumFailure).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumFailure for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(9): // BACnetLogRecordLogDatumTimeChange
-		if _child, err = (&_BACnetLogRecordLogDatumTimeChange{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumTimeChange).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumTimeChange for type-switch of BACnetLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(10): // BACnetLogRecordLogDatumAnyValue
-		if _child, err = (&_BACnetLogRecordLogDatumAnyValue{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogRecordLogDatumAnyValue).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogRecordLogDatumAnyValue for type-switch of BACnetLogRecordLogDatum")
 		}
 	default:

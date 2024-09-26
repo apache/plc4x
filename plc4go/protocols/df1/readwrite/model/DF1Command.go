@@ -186,11 +186,11 @@ func (m *_DF1Command) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 	var _child DF1Command
 	switch {
 	case commandCode == 0x01: // DF1UnprotectedReadRequest
-		if _child, err = (&_DF1UnprotectedReadRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1UnprotectedReadRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1UnprotectedReadRequest for type-switch of DF1Command")
 		}
 	case commandCode == 0x41: // DF1UnprotectedReadResponse
-		if _child, err = (&_DF1UnprotectedReadResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1UnprotectedReadResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1UnprotectedReadResponse for type-switch of DF1Command")
 		}
 	default:

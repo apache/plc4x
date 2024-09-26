@@ -226,15 +226,15 @@ func (m *_BACnetEventLogRecordLogDatum) parse(ctx context.Context, readBuffer ut
 	var _child BACnetEventLogRecordLogDatum
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventLogRecordLogDatumLogStatus
-		if _child, err = (&_BACnetEventLogRecordLogDatumLogStatus{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventLogRecordLogDatumLogStatus).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventLogRecordLogDatumLogStatus for type-switch of BACnetEventLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(1): // BACnetEventLogRecordLogDatumNotification
-		if _child, err = (&_BACnetEventLogRecordLogDatumNotification{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventLogRecordLogDatumNotification).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventLogRecordLogDatumNotification for type-switch of BACnetEventLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(2): // BACnetEventLogRecordLogDatumTimeChange
-		if _child, err = (&_BACnetEventLogRecordLogDatumTimeChange{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventLogRecordLogDatumTimeChange).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventLogRecordLogDatumTimeChange for type-switch of BACnetEventLogRecordLogDatum")
 		}
 	default:

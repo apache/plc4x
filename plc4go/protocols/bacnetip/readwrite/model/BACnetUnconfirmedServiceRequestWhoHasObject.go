@@ -189,11 +189,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) parse(ctx context.Context
 	var _child BACnetUnconfirmedServiceRequestWhoHasObject
 	switch {
 	case peekedTagNumber == uint8(2): // BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
-		if _child, err = (&_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier for type-switch of BACnetUnconfirmedServiceRequestWhoHasObject")
 		}
 	case peekedTagNumber == uint8(3): // BACnetUnconfirmedServiceRequestWhoHasObjectName
-		if _child, err = (&_BACnetUnconfirmedServiceRequestWhoHasObjectName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoHasObjectName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoHasObjectName for type-switch of BACnetUnconfirmedServiceRequestWhoHasObject")
 		}
 	default:

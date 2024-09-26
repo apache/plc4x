@@ -144,7 +144,7 @@ func (m *_DF1RequestCommand) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child DF1RequestCommand
 	switch {
 	case functionCode == 0xA2: // DF1RequestProtectedTypedLogicalRead
-		if _child, err = (&_DF1RequestProtectedTypedLogicalRead{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1RequestProtectedTypedLogicalRead).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1RequestProtectedTypedLogicalRead for type-switch of DF1RequestCommand")
 		}
 	default:

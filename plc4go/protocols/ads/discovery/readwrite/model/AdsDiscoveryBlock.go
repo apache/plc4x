@@ -144,39 +144,39 @@ func (m *_AdsDiscoveryBlock) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child AdsDiscoveryBlock
 	switch {
 	case blockType == AdsDiscoveryBlockType_STATUS: // AdsDiscoveryBlockStatus
-		if _child, err = (&_AdsDiscoveryBlockStatus{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockStatus).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockStatus for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_PASSWORD: // AdsDiscoveryBlockPassword
-		if _child, err = (&_AdsDiscoveryBlockPassword{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockPassword).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockPassword for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_VERSION: // AdsDiscoveryBlockVersion
-		if _child, err = (&_AdsDiscoveryBlockVersion{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockVersion).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockVersion for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_OS_DATA: // AdsDiscoveryBlockOsData
-		if _child, err = (&_AdsDiscoveryBlockOsData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockOsData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockOsData for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_HOST_NAME: // AdsDiscoveryBlockHostName
-		if _child, err = (&_AdsDiscoveryBlockHostName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockHostName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockHostName for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_AMS_NET_ID: // AdsDiscoveryBlockAmsNetId
-		if _child, err = (&_AdsDiscoveryBlockAmsNetId{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockAmsNetId).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockAmsNetId for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_ROUTE_NAME: // AdsDiscoveryBlockRouteName
-		if _child, err = (&_AdsDiscoveryBlockRouteName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockRouteName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockRouteName for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_USER_NAME: // AdsDiscoveryBlockUserName
-		if _child, err = (&_AdsDiscoveryBlockUserName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockUserName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockUserName for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_FINGERPRINT: // AdsDiscoveryBlockFingerprint
-		if _child, err = (&_AdsDiscoveryBlockFingerprint{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockFingerprint).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockFingerprint for type-switch of AdsDiscoveryBlock")
 		}
 	default:

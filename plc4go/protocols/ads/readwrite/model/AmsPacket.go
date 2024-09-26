@@ -410,87 +410,87 @@ func (m *_AmsPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child AmsPacket
 	switch {
 	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
-		if _child, err = (&_AdsInvalidRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsInvalidRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsInvalidRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
-		if _child, err = (&_AdsInvalidResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsInvalidResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsInvalidResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
-		if _child, err = (&_AdsReadDeviceInfoRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadDeviceInfoRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadDeviceInfoRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
-		if _child, err = (&_AdsReadDeviceInfoResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadDeviceInfoResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadDeviceInfoResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
-		if _child, err = (&_AdsReadRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
-		if _child, err = (&_AdsReadResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
-		if _child, err = (&_AdsWriteRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsWriteRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
-		if _child, err = (&_AdsWriteResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsWriteResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
-		if _child, err = (&_AdsReadStateRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadStateRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadStateRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
-		if _child, err = (&_AdsReadStateResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadStateResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadStateResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
-		if _child, err = (&_AdsWriteControlRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsWriteControlRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteControlRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
-		if _child, err = (&_AdsWriteControlResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsWriteControlResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteControlResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
-		if _child, err = (&_AdsAddDeviceNotificationRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsAddDeviceNotificationRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsAddDeviceNotificationRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
-		if _child, err = (&_AdsAddDeviceNotificationResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsAddDeviceNotificationResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsAddDeviceNotificationResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
-		if _child, err = (&_AdsDeleteDeviceNotificationRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDeleteDeviceNotificationRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeleteDeviceNotificationRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
-		if _child, err = (&_AdsDeleteDeviceNotificationResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDeleteDeviceNotificationResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeleteDeviceNotificationResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
-		if _child, err = (&_AdsDeviceNotificationRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDeviceNotificationRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeviceNotificationRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
-		if _child, err = (&_AdsDeviceNotificationResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDeviceNotificationResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeviceNotificationResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
-		if _child, err = (&_AdsReadWriteRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadWriteRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadWriteRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
-		if _child, err = (&_AdsReadWriteResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadWriteResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadWriteResponse for type-switch of AmsPacket")
 		}
 	case true: // ErrorResponse
-		if _child, err = (&_ErrorResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ErrorResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorResponse for type-switch of AmsPacket")
 		}
 	default:

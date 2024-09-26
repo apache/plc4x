@@ -168,15 +168,15 @@ func (m *_Reply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOpt
 	var _child Reply
 	switch {
 	case peekedByte == 0x2B: // PowerUpReply
-		if _child, err = (&_PowerUpReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_PowerUpReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PowerUpReply for type-switch of Reply")
 		}
 	case peekedByte == 0x3D: // ParameterChangeReply
-		if _child, err = (&_ParameterChangeReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ParameterChangeReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterChangeReply for type-switch of Reply")
 		}
 	case 0 == 0: // ReplyEncodedReply
-		if _child, err = (&_ReplyEncodedReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ReplyEncodedReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReplyEncodedReply for type-switch of Reply")
 		}
 	default:

@@ -189,11 +189,11 @@ func (m *_BACnetOptionalCharacterString) parse(ctx context.Context, readBuffer u
 	var _child BACnetOptionalCharacterString
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalCharacterStringNull
-		if _child, err = (&_BACnetOptionalCharacterStringNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalCharacterStringNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalCharacterStringNull for type-switch of BACnetOptionalCharacterString")
 		}
 	case 0 == 0: // BACnetOptionalCharacterStringValue
-		if _child, err = (&_BACnetOptionalCharacterStringValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalCharacterStringValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalCharacterStringValue for type-switch of BACnetOptionalCharacterString")
 		}
 	default:

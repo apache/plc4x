@@ -162,27 +162,27 @@ func (m *_NodeIdTypeDefinition) parse(ctx context.Context, readBuffer utils.Read
 	var _child NodeIdTypeDefinition
 	switch {
 	case nodeType == NodeIdType_nodeIdTypeTwoByte: // NodeIdTwoByte
-		if _child, err = (&_NodeIdTwoByte{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_NodeIdTwoByte).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NodeIdTwoByte for type-switch of NodeIdTypeDefinition")
 		}
 	case nodeType == NodeIdType_nodeIdTypeFourByte: // NodeIdFourByte
-		if _child, err = (&_NodeIdFourByte{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_NodeIdFourByte).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NodeIdFourByte for type-switch of NodeIdTypeDefinition")
 		}
 	case nodeType == NodeIdType_nodeIdTypeNumeric: // NodeIdNumeric
-		if _child, err = (&_NodeIdNumeric{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_NodeIdNumeric).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NodeIdNumeric for type-switch of NodeIdTypeDefinition")
 		}
 	case nodeType == NodeIdType_nodeIdTypeString: // NodeIdString
-		if _child, err = (&_NodeIdString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_NodeIdString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NodeIdString for type-switch of NodeIdTypeDefinition")
 		}
 	case nodeType == NodeIdType_nodeIdTypeGuid: // NodeIdGuid
-		if _child, err = (&_NodeIdGuid{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_NodeIdGuid).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NodeIdGuid for type-switch of NodeIdTypeDefinition")
 		}
 	case nodeType == NodeIdType_nodeIdTypeByteString: // NodeIdByteString
-		if _child, err = (&_NodeIdByteString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_NodeIdByteString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NodeIdByteString for type-switch of NodeIdTypeDefinition")
 		}
 	default:

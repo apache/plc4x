@@ -144,11 +144,11 @@ func (m *_CommandSpecificDataItem) parse(ctx context.Context, readBuffer utils.R
 	var _child CommandSpecificDataItem
 	switch {
 	case itemType == 0x000C: // CipIdentity
-		if _child, err = (&_CipIdentity{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CipIdentity).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipIdentity for type-switch of CommandSpecificDataItem")
 		}
 	case itemType == 0x0086: // CipSecurityInformation
-		if _child, err = (&_CipSecurityInformation{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CipSecurityInformation).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipSecurityInformation for type-switch of CommandSpecificDataItem")
 		}
 	default:

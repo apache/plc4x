@@ -189,11 +189,11 @@ func (m *_BACnetOptionalUnsigned) parse(ctx context.Context, readBuffer utils.Re
 	var _child BACnetOptionalUnsigned
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalUnsignedNull
-		if _child, err = (&_BACnetOptionalUnsignedNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalUnsignedNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalUnsignedNull for type-switch of BACnetOptionalUnsigned")
 		}
 	case 0 == 0: // BACnetOptionalUnsignedValue
-		if _child, err = (&_BACnetOptionalUnsignedValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalUnsignedValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalUnsignedValue for type-switch of BACnetOptionalUnsigned")
 		}
 	default:

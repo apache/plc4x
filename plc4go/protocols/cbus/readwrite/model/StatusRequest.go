@@ -160,15 +160,15 @@ func (m *_StatusRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	var _child StatusRequest
 	switch {
 	case statusType == 0x7A: // StatusRequestBinaryState
-		if _child, err = (&_StatusRequestBinaryState{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_StatusRequestBinaryState).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type StatusRequestBinaryState for type-switch of StatusRequest")
 		}
 	case statusType == 0xFA: // StatusRequestBinaryStateDeprecated
-		if _child, err = (&_StatusRequestBinaryStateDeprecated{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_StatusRequestBinaryStateDeprecated).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type StatusRequestBinaryStateDeprecated for type-switch of StatusRequest")
 		}
 	case statusType == 0x73: // StatusRequestLevel
-		if _child, err = (&_StatusRequestLevel{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_StatusRequestLevel).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type StatusRequestLevel for type-switch of StatusRequest")
 		}
 	default:

@@ -189,11 +189,11 @@ func (m *_BACnetLandingCallStatusCommand) parse(ctx context.Context, readBuffer 
 	var _child BACnetLandingCallStatusCommand
 	switch {
 	case peekedTagNumber == uint8(1): // BACnetLandingCallStatusCommandDirection
-		if _child, err = (&_BACnetLandingCallStatusCommandDirection{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetLandingCallStatusCommandDirection).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLandingCallStatusCommandDirection for type-switch of BACnetLandingCallStatusCommand")
 		}
 	case peekedTagNumber == uint8(2): // BACnetLandingCallStatusCommandDestination
-		if _child, err = (&_BACnetLandingCallStatusCommandDestination{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetLandingCallStatusCommandDestination).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLandingCallStatusCommandDestination for type-switch of BACnetLandingCallStatusCommand")
 		}
 	default:

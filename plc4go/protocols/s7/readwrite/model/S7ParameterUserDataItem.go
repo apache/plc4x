@@ -144,7 +144,7 @@ func (m *_S7ParameterUserDataItem) parse(ctx context.Context, readBuffer utils.R
 	var _child S7ParameterUserDataItem
 	switch {
 	case itemType == 0x12: // S7ParameterUserDataItemCPUFunctions
-		if _child, err = (&_S7ParameterUserDataItemCPUFunctions{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7ParameterUserDataItemCPUFunctions).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterUserDataItemCPUFunctions for type-switch of S7ParameterUserDataItem")
 		}
 	default:

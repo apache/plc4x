@@ -248,19 +248,19 @@ func (m *_S7Message) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child S7Message
 	switch {
 	case messageType == 0x01: // S7MessageRequest
-		if _child, err = (&_S7MessageRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageRequest for type-switch of S7Message")
 		}
 	case messageType == 0x02: // S7MessageResponse
-		if _child, err = (&_S7MessageResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageResponse for type-switch of S7Message")
 		}
 	case messageType == 0x03: // S7MessageResponseData
-		if _child, err = (&_S7MessageResponseData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageResponseData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageResponseData for type-switch of S7Message")
 		}
 	case messageType == 0x07: // S7MessageUserData
-		if _child, err = (&_S7MessageUserData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageUserData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageUserData for type-switch of S7Message")
 		}
 	default:

@@ -226,11 +226,11 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) parse(ctx context.Contex
 	var _child BACnetEventParameterChangeOfValueCivCriteria
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfValueCivCriteriaBitmask
-		if _child, err = (&_BACnetEventParameterChangeOfValueCivCriteriaBitmask{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfValueCivCriteriaBitmask).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfValueCivCriteriaBitmask for type-switch of BACnetEventParameterChangeOfValueCivCriteria")
 		}
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
-		if _child, err = (&_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement for type-switch of BACnetEventParameterChangeOfValueCivCriteria")
 		}
 	default:

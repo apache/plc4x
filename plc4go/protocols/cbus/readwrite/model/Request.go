@@ -259,31 +259,31 @@ func (m *_Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusO
 	var _child Request
 	switch {
 	case actualPeek == RequestType_SMART_CONNECT_SHORTCUT: // RequestSmartConnectShortcut
-		if _child, err = (&_RequestSmartConnectShortcut{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestSmartConnectShortcut).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestSmartConnectShortcut for type-switch of Request")
 		}
 	case actualPeek == RequestType_RESET: // RequestReset
-		if _child, err = (&_RequestReset{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestReset).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestReset for type-switch of Request")
 		}
 	case actualPeek == RequestType_DIRECT_COMMAND: // RequestDirectCommandAccess
-		if _child, err = (&_RequestDirectCommandAccess{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestDirectCommandAccess).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestDirectCommandAccess for type-switch of Request")
 		}
 	case actualPeek == RequestType_REQUEST_COMMAND: // RequestCommand
-		if _child, err = (&_RequestCommand{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestCommand).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestCommand for type-switch of Request")
 		}
 	case actualPeek == RequestType_NULL: // RequestNull
-		if _child, err = (&_RequestNull{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestNull).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestNull for type-switch of Request")
 		}
 	case actualPeek == RequestType_EMPTY: // RequestEmpty
-		if _child, err = (&_RequestEmpty{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestEmpty).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestEmpty for type-switch of Request")
 		}
 	case 0 == 0: // RequestObsolete
-		if _child, err = (&_RequestObsolete{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestObsolete).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestObsolete for type-switch of Request")
 		}
 	default:

@@ -144,7 +144,7 @@ func (m *_DataSegmentType) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child DataSegmentType
 	switch {
 	case dataSegmentType == 0x11: // AnsiExtendedSymbolSegment
-		if _child, err = (&_AnsiExtendedSymbolSegment{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AnsiExtendedSymbolSegment).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AnsiExtendedSymbolSegment for type-switch of DataSegmentType")
 		}
 	default:

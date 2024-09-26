@@ -196,15 +196,15 @@ func (m *_ReplyOrConfirmation) parse(ctx context.Context, readBuffer utils.ReadB
 	var _child ReplyOrConfirmation
 	switch {
 	case isAlpha == bool(false) && peekedByte == 0x21: // ServerErrorReply
-		if _child, err = (&_ServerErrorReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ServerErrorReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ServerErrorReply for type-switch of ReplyOrConfirmation")
 		}
 	case isAlpha == bool(true): // ReplyOrConfirmationConfirmation
-		if _child, err = (&_ReplyOrConfirmationConfirmation{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ReplyOrConfirmationConfirmation).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReplyOrConfirmationConfirmation for type-switch of ReplyOrConfirmation")
 		}
 	case isAlpha == bool(false): // ReplyOrConfirmationReply
-		if _child, err = (&_ReplyOrConfirmationReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ReplyOrConfirmationReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReplyOrConfirmationReply for type-switch of ReplyOrConfirmation")
 		}
 	default:

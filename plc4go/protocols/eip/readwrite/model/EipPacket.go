@@ -233,55 +233,55 @@ func (m *_EipPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, res
 	var _child EipPacket
 	switch {
 	case command == 0x0001 && response == bool(false): // NullCommandRequest
-		if _child, err = (&_NullCommandRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_NullCommandRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullCommandRequest for type-switch of EipPacket")
 		}
 	case command == 0x0001 && response == bool(true): // NullCommandResponse
-		if _child, err = (&_NullCommandResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_NullCommandResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullCommandResponse for type-switch of EipPacket")
 		}
 	case command == 0x0004 && response == bool(false): // ListServicesRequest
-		if _child, err = (&_ListServicesRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ListServicesRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ListServicesRequest for type-switch of EipPacket")
 		}
 	case command == 0x0004 && response == bool(true) && packetLength == uint16(0): // NullListServicesResponse
-		if _child, err = (&_NullListServicesResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_NullListServicesResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullListServicesResponse for type-switch of EipPacket")
 		}
 	case command == 0x0004 && response == bool(true): // ListServicesResponse
-		if _child, err = (&_ListServicesResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_ListServicesResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ListServicesResponse for type-switch of EipPacket")
 		}
 	case command == 0x0063 && response == bool(false): // EipListIdentityRequest
-		if _child, err = (&_EipListIdentityRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_EipListIdentityRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EipListIdentityRequest for type-switch of EipPacket")
 		}
 	case command == 0x0063 && response == bool(true): // EipListIdentityResponse
-		if _child, err = (&_EipListIdentityResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_EipListIdentityResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EipListIdentityResponse for type-switch of EipPacket")
 		}
 	case command == 0x0065 && response == bool(false): // EipConnectionRequest
-		if _child, err = (&_EipConnectionRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_EipConnectionRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EipConnectionRequest for type-switch of EipPacket")
 		}
 	case command == 0x0065 && response == bool(true) && packetLength == uint16(0): // NullEipConnectionResponse
-		if _child, err = (&_NullEipConnectionResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_NullEipConnectionResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullEipConnectionResponse for type-switch of EipPacket")
 		}
 	case command == 0x0065 && response == bool(true): // EipConnectionResponse
-		if _child, err = (&_EipConnectionResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_EipConnectionResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EipConnectionResponse for type-switch of EipPacket")
 		}
 	case command == 0x0066: // EipDisconnectRequest
-		if _child, err = (&_EipDisconnectRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_EipDisconnectRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EipDisconnectRequest for type-switch of EipPacket")
 		}
 	case command == 0x006F: // CipRRData
-		if _child, err = (&_CipRRData{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_CipRRData).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CipRRData for type-switch of EipPacket")
 		}
 	case command == 0x0070: // SendUnitData
-		if _child, err = (&_SendUnitData{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SendUnitData).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SendUnitData for type-switch of EipPacket")
 		}
 	default:

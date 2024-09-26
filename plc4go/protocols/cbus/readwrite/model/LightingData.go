@@ -194,23 +194,23 @@ func (m *_LightingData) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var _child LightingData
 	switch {
 	case commandType == LightingCommandType_OFF: // LightingDataOff
-		if _child, err = (&_LightingDataOff{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LightingDataOff).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataOff for type-switch of LightingData")
 		}
 	case commandType == LightingCommandType_ON: // LightingDataOn
-		if _child, err = (&_LightingDataOn{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LightingDataOn).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataOn for type-switch of LightingData")
 		}
 	case commandType == LightingCommandType_RAMP_TO_LEVEL: // LightingDataRampToLevel
-		if _child, err = (&_LightingDataRampToLevel{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LightingDataRampToLevel).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataRampToLevel for type-switch of LightingData")
 		}
 	case commandType == LightingCommandType_TERMINATE_RAMP: // LightingDataTerminateRamp
-		if _child, err = (&_LightingDataTerminateRamp{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LightingDataTerminateRamp).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataTerminateRamp for type-switch of LightingData")
 		}
 	case commandType == LightingCommandType_LABEL: // LightingDataLabel
-		if _child, err = (&_LightingDataLabel{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_LightingDataLabel).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataLabel for type-switch of LightingData")
 		}
 	default:

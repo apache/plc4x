@@ -189,79 +189,79 @@ func (m *_BACnetEventParameter) parse(ctx context.Context, readBuffer utils.Read
 	var _child BACnetEventParameter
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfBitstring
-		if _child, err = (&_BACnetEventParameterChangeOfBitstring{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfBitstring).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfBitstring for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfState
-		if _child, err = (&_BACnetEventParameterChangeOfState{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfState).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfState for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(2): // BACnetEventParameterChangeOfValue
-		if _child, err = (&_BACnetEventParameterChangeOfValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfValue for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(3): // BACnetEventParameterCommandFailure
-		if _child, err = (&_BACnetEventParameterCommandFailure{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterCommandFailure).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterCommandFailure for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(4): // BACnetEventParameterFloatingLimit
-		if _child, err = (&_BACnetEventParameterFloatingLimit{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterFloatingLimit).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterFloatingLimit for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(5): // BACnetEventParameterOutOfRange
-		if _child, err = (&_BACnetEventParameterOutOfRange{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterOutOfRange).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterOutOfRange for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(8): // BACnetEventParameterChangeOfLifeSavety
-		if _child, err = (&_BACnetEventParameterChangeOfLifeSavety{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfLifeSavety).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfLifeSavety for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(9): // BACnetEventParameterExtended
-		if _child, err = (&_BACnetEventParameterExtended{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterExtended).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterExtended for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(10): // BACnetEventParameterBufferReady
-		if _child, err = (&_BACnetEventParameterBufferReady{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterBufferReady).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterBufferReady for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(11): // BACnetEventParameterUnsignedRange
-		if _child, err = (&_BACnetEventParameterUnsignedRange{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterUnsignedRange).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterUnsignedRange for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(13): // BACnetEventParameterAccessEvent
-		if _child, err = (&_BACnetEventParameterAccessEvent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterAccessEvent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterAccessEvent for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(14): // BACnetEventParameterDoubleOutOfRange
-		if _child, err = (&_BACnetEventParameterDoubleOutOfRange{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterDoubleOutOfRange).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterDoubleOutOfRange for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(15): // BACnetEventParameterSignedOutOfRange
-		if _child, err = (&_BACnetEventParameterSignedOutOfRange{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterSignedOutOfRange).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterSignedOutOfRange for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(16): // BACnetEventParameterUnsignedOutOfRange
-		if _child, err = (&_BACnetEventParameterUnsignedOutOfRange{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterUnsignedOutOfRange).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterUnsignedOutOfRange for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(17): // BACnetEventParameterChangeOfCharacterString
-		if _child, err = (&_BACnetEventParameterChangeOfCharacterString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfCharacterString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfCharacterString for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(18): // BACnetEventParameterChangeOfStatusFlags
-		if _child, err = (&_BACnetEventParameterChangeOfStatusFlags{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfStatusFlags).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfStatusFlags for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(20): // BACnetEventParameterNone
-		if _child, err = (&_BACnetEventParameterNone{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterNone).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterNone for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(21): // BACnetEventParameterChangeOfDiscreteValue
-		if _child, err = (&_BACnetEventParameterChangeOfDiscreteValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfDiscreteValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfDiscreteValue for type-switch of BACnetEventParameter")
 		}
 	case peekedTagNumber == uint8(22): // BACnetEventParameterChangeOfTimer
-		if _child, err = (&_BACnetEventParameterChangeOfTimer{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfTimer).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfTimer for type-switch of BACnetEventParameter")
 		}
 	default:

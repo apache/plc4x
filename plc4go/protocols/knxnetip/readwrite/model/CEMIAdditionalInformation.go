@@ -144,11 +144,11 @@ func (m *_CEMIAdditionalInformation) parse(ctx context.Context, readBuffer utils
 	var _child CEMIAdditionalInformation
 	switch {
 	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
-		if _child, err = (&_CEMIAdditionalInformationBusmonitorInfo{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CEMIAdditionalInformationBusmonitorInfo).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CEMIAdditionalInformationBusmonitorInfo for type-switch of CEMIAdditionalInformation")
 		}
 	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
-		if _child, err = (&_CEMIAdditionalInformationRelativeTimestamp{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CEMIAdditionalInformationRelativeTimestamp).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CEMIAdditionalInformationRelativeTimestamp for type-switch of CEMIAdditionalInformation")
 		}
 	default:

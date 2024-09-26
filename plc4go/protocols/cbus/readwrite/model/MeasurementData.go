@@ -194,7 +194,7 @@ func (m *_MeasurementData) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child MeasurementData
 	switch {
 	case commandType == MeasurementCommandType_MEASUREMENT_EVENT: // MeasurementDataChannelMeasurementData
-		if _child, err = (&_MeasurementDataChannelMeasurementData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeasurementDataChannelMeasurementData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeasurementDataChannelMeasurementData for type-switch of MeasurementData")
 		}
 	default:

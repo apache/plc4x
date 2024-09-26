@@ -189,11 +189,11 @@ func (m *_BACnetScale) parse(ctx context.Context, readBuffer utils.ReadBuffer) (
 	var _child BACnetScale
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetScaleFloatScale
-		if _child, err = (&_BACnetScaleFloatScale{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetScaleFloatScale).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetScaleFloatScale for type-switch of BACnetScale")
 		}
 	case peekedTagNumber == uint8(1): // BACnetScaleIntegerScale
-		if _child, err = (&_BACnetScaleIntegerScale{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetScaleIntegerScale).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetScaleIntegerScale for type-switch of BACnetScale")
 		}
 	default:

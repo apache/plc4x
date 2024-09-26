@@ -144,15 +144,15 @@ func (m *_LogicalSegmentType) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child LogicalSegmentType
 	switch {
 	case logicalSegmentType == 0x00: // ClassID
-		if _child, err = (&_ClassID{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ClassID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ClassID for type-switch of LogicalSegmentType")
 		}
 	case logicalSegmentType == 0x01: // InstanceID
-		if _child, err = (&_InstanceID{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_InstanceID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type InstanceID for type-switch of LogicalSegmentType")
 		}
 	case logicalSegmentType == 0x02: // MemberID
-		if _child, err = (&_MemberID{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MemberID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MemberID for type-switch of LogicalSegmentType")
 		}
 	default:

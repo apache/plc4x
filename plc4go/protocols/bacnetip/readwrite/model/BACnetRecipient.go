@@ -189,11 +189,11 @@ func (m *_BACnetRecipient) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetRecipient
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetRecipientDevice
-		if _child, err = (&_BACnetRecipientDevice{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetRecipientDevice).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetRecipientDevice for type-switch of BACnetRecipient")
 		}
 	case peekedTagNumber == uint8(1): // BACnetRecipientAddress
-		if _child, err = (&_BACnetRecipientAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetRecipientAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetRecipientAddress for type-switch of BACnetRecipient")
 		}
 	default:

@@ -212,15 +212,15 @@ func (m *_ClockAndTimekeepingData) parse(ctx context.Context, readBuffer utils.R
 	var _child ClockAndTimekeepingData
 	switch {
 	case commandType == ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE && argument == 0x01: // ClockAndTimekeepingDataUpdateTime
-		if _child, err = (&_ClockAndTimekeepingDataUpdateTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ClockAndTimekeepingDataUpdateTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ClockAndTimekeepingDataUpdateTime for type-switch of ClockAndTimekeepingData")
 		}
 	case commandType == ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE && argument == 0x02: // ClockAndTimekeepingDataUpdateDate
-		if _child, err = (&_ClockAndTimekeepingDataUpdateDate{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ClockAndTimekeepingDataUpdateDate).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ClockAndTimekeepingDataUpdateDate for type-switch of ClockAndTimekeepingData")
 		}
 	case commandType == ClockAndTimekeepingCommandType_REQUEST_REFRESH && argument == 0x03: // ClockAndTimekeepingDataRequestRefresh
-		if _child, err = (&_ClockAndTimekeepingDataRequestRefresh{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ClockAndTimekeepingDataRequestRefresh).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ClockAndTimekeepingDataRequestRefresh for type-switch of ClockAndTimekeepingData")
 		}
 	default:

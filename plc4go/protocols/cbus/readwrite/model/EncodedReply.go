@@ -194,11 +194,11 @@ func (m *_EncodedReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	var _child EncodedReply
 	switch {
 	case isMonitoredSAL == bool(true): // MonitoredSALReply
-		if _child, err = (&_MonitoredSALReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_MonitoredSALReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALReply for type-switch of EncodedReply")
 		}
 	case 0 == 0: // EncodedReplyCALReply
-		if _child, err = (&_EncodedReplyCALReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_EncodedReplyCALReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EncodedReplyCALReply for type-switch of EncodedReply")
 		}
 	default:

@@ -141,15 +141,15 @@ func (m *_ModbusADU) parse(ctx context.Context, readBuffer utils.ReadBuffer, dri
 	var _child ModbusADU
 	switch {
 	case driverType == DriverType_MODBUS_TCP: // ModbusTcpADU
-		if _child, err = (&_ModbusTcpADU{}).parse(ctx, readBuffer, m, driverType, response); err != nil {
+		if _child, err = new(_ModbusTcpADU).parse(ctx, readBuffer, m, driverType, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusTcpADU for type-switch of ModbusADU")
 		}
 	case driverType == DriverType_MODBUS_RTU: // ModbusRtuADU
-		if _child, err = (&_ModbusRtuADU{}).parse(ctx, readBuffer, m, driverType, response); err != nil {
+		if _child, err = new(_ModbusRtuADU).parse(ctx, readBuffer, m, driverType, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusRtuADU for type-switch of ModbusADU")
 		}
 	case driverType == DriverType_MODBUS_ASCII: // ModbusAsciiADU
-		if _child, err = (&_ModbusAsciiADU{}).parse(ctx, readBuffer, m, driverType, response); err != nil {
+		if _child, err = new(_ModbusAsciiADU).parse(ctx, readBuffer, m, driverType, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ModbusAsciiADU for type-switch of ModbusADU")
 		}
 	default:

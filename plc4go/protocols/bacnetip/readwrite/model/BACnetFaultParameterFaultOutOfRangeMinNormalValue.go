@@ -231,19 +231,19 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) parse(ctx context.C
 	var _child BACnetFaultParameterFaultOutOfRangeMinNormalValue
 	switch {
 	case peekedTagNumber == 0x4: // BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
-		if _child, err = (&_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMinNormalValueReal for type-switch of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 		}
 	case peekedTagNumber == 0x2: // BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
-		if _child, err = (&_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned for type-switch of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 		}
 	case peekedTagNumber == 0x5: // BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
-		if _child, err = (&_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble for type-switch of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 		}
 	case peekedTagNumber == 0x3: // BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger
-		if _child, err = (&_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultOutOfRangeMinNormalValueInteger for type-switch of BACnetFaultParameterFaultOutOfRangeMinNormalValue")
 		}
 	default:

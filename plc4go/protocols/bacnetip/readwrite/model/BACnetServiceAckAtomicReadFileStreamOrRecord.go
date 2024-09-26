@@ -221,11 +221,11 @@ func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) parse(ctx context.Contex
 	var _child BACnetServiceAckAtomicReadFileStreamOrRecord
 	switch {
 	case peekedTagNumber == 0x0: // BACnetServiceAckAtomicReadFileStream
-		if _child, err = (&_BACnetServiceAckAtomicReadFileStream{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetServiceAckAtomicReadFileStream).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAtomicReadFileStream for type-switch of BACnetServiceAckAtomicReadFileStreamOrRecord")
 		}
 	case peekedTagNumber == 0x1: // BACnetServiceAckAtomicReadFileRecord
-		if _child, err = (&_BACnetServiceAckAtomicReadFileRecord{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetServiceAckAtomicReadFileRecord).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAtomicReadFileRecord for type-switch of BACnetServiceAckAtomicReadFileStreamOrRecord")
 		}
 	default:

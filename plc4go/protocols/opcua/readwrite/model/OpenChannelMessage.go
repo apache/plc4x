@@ -135,11 +135,11 @@ func (m *_OpenChannelMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child OpenChannelMessage
 	switch {
 	case response == bool(false): // OpenChannelMessageRequest
-		if _child, err = (&_OpenChannelMessageRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpenChannelMessageRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpenChannelMessageRequest for type-switch of OpenChannelMessage")
 		}
 	case response == bool(true): // OpenChannelMessageResponse
-		if _child, err = (&_OpenChannelMessageResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpenChannelMessageResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpenChannelMessageResponse for type-switch of OpenChannelMessage")
 		}
 	default:

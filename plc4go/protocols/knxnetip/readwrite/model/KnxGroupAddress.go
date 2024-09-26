@@ -135,15 +135,15 @@ func (m *_KnxGroupAddress) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child KnxGroupAddress
 	switch {
 	case numLevels == uint8(1): // KnxGroupAddressFreeLevel
-		if _child, err = (&_KnxGroupAddressFreeLevel{}).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddressFreeLevel).parse(ctx, readBuffer, m, numLevels); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddressFreeLevel for type-switch of KnxGroupAddress")
 		}
 	case numLevels == uint8(2): // KnxGroupAddress2Level
-		if _child, err = (&_KnxGroupAddress2Level{}).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddress2Level).parse(ctx, readBuffer, m, numLevels); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddress2Level for type-switch of KnxGroupAddress")
 		}
 	case numLevels == uint8(3): // KnxGroupAddress3Level
-		if _child, err = (&_KnxGroupAddress3Level{}).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddress3Level).parse(ctx, readBuffer, m, numLevels); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddress3Level for type-switch of KnxGroupAddress")
 		}
 	default:

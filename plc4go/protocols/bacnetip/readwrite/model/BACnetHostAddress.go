@@ -189,15 +189,15 @@ func (m *_BACnetHostAddress) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child BACnetHostAddress
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetHostAddressNull
-		if _child, err = (&_BACnetHostAddressNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetHostAddressNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetHostAddressNull for type-switch of BACnetHostAddress")
 		}
 	case peekedTagNumber == uint8(1): // BACnetHostAddressIpAddress
-		if _child, err = (&_BACnetHostAddressIpAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetHostAddressIpAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetHostAddressIpAddress for type-switch of BACnetHostAddress")
 		}
 	case peekedTagNumber == uint8(2): // BACnetHostAddressName
-		if _child, err = (&_BACnetHostAddressName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetHostAddressName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetHostAddressName for type-switch of BACnetHostAddress")
 		}
 	default:

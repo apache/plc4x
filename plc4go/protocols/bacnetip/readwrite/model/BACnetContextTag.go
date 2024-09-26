@@ -229,59 +229,59 @@ func (m *_BACnetContextTag) parse(ctx context.Context, readBuffer utils.ReadBuff
 	var _child BACnetContextTag
 	switch {
 	case dataType == BACnetDataType_NULL: // BACnetContextTagNull
-		if _child, err = (&_BACnetContextTagNull{}).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagNull).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagNull for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_BOOLEAN: // BACnetContextTagBoolean
-		if _child, err = (&_BACnetContextTagBoolean{}).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagBoolean).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagBoolean for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_UNSIGNED_INTEGER: // BACnetContextTagUnsignedInteger
-		if _child, err = (&_BACnetContextTagUnsignedInteger{}).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagUnsignedInteger).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagUnsignedInteger for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_SIGNED_INTEGER: // BACnetContextTagSignedInteger
-		if _child, err = (&_BACnetContextTagSignedInteger{}).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagSignedInteger).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagSignedInteger for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_REAL: // BACnetContextTagReal
-		if _child, err = (&_BACnetContextTagReal{}).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagReal).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagReal for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_DOUBLE: // BACnetContextTagDouble
-		if _child, err = (&_BACnetContextTagDouble{}).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagDouble).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagDouble for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_OCTET_STRING: // BACnetContextTagOctetString
-		if _child, err = (&_BACnetContextTagOctetString{}).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagOctetString).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagOctetString for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_CHARACTER_STRING: // BACnetContextTagCharacterString
-		if _child, err = (&_BACnetContextTagCharacterString{}).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagCharacterString).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagCharacterString for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_BIT_STRING: // BACnetContextTagBitString
-		if _child, err = (&_BACnetContextTagBitString{}).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagBitString).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagBitString for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_ENUMERATED: // BACnetContextTagEnumerated
-		if _child, err = (&_BACnetContextTagEnumerated{}).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagEnumerated).parse(ctx, readBuffer, m, header, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagEnumerated for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_DATE: // BACnetContextTagDate
-		if _child, err = (&_BACnetContextTagDate{}).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagDate).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagDate for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_TIME: // BACnetContextTagTime
-		if _child, err = (&_BACnetContextTagTime{}).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagTime).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagTime for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_BACNET_OBJECT_IDENTIFIER: // BACnetContextTagObjectIdentifier
-		if _child, err = (&_BACnetContextTagObjectIdentifier{}).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagObjectIdentifier).parse(ctx, readBuffer, m, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagObjectIdentifier for type-switch of BACnetContextTag")
 		}
 	case dataType == BACnetDataType_UNKNOWN: // BACnetContextTagUnknown
-		if _child, err = (&_BACnetContextTagUnknown{}).parse(ctx, readBuffer, m, actualLength, tagNumberArgument, dataType); err != nil {
+		if _child, err = new(_BACnetContextTagUnknown).parse(ctx, readBuffer, m, actualLength, tagNumberArgument, dataType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetContextTagUnknown for type-switch of BACnetContextTag")
 		}
 	default:

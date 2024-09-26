@@ -250,43 +250,43 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) parse(ctx c
 	var _child BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	switch {
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime for type-switch of BACnetNotificationParametersChangeOfDiscreteValueNewValue")
 		}
 	default:

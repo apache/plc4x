@@ -189,11 +189,11 @@ func (m *_BACnetOptionalREAL) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child BACnetOptionalREAL
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalREALNull
-		if _child, err = (&_BACnetOptionalREALNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalREALNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalREALNull for type-switch of BACnetOptionalREAL")
 		}
 	case 0 == 0: // BACnetOptionalREALValue
-		if _child, err = (&_BACnetOptionalREALValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalREALValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalREALValue for type-switch of BACnetOptionalREAL")
 		}
 	default:
