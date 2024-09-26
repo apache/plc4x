@@ -41,17 +41,15 @@ type HistoryReadRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetHistoryReadDetails returns HistoryReadDetails (property field)
 	GetHistoryReadDetails() ExtensionObject
 	// GetTimestampsToReturn returns TimestampsToReturn (property field)
 	GetTimestampsToReturn() TimestampsToReturn
 	// GetReleaseContinuationPoints returns ReleaseContinuationPoints (property field)
 	GetReleaseContinuationPoints() bool
-	// GetNoOfNodesToRead returns NoOfNodesToRead (property field)
-	GetNoOfNodesToRead() int32
 	// GetNodesToRead returns NodesToRead (property field)
-	GetNodesToRead() []ExtensionObjectDefinition
+	GetNodesToRead() []HistoryReadValueId
 	// IsHistoryReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryReadRequest()
 	// CreateBuilder creates a HistoryReadRequestBuilder
@@ -61,12 +59,11 @@ type HistoryReadRequest interface {
 // _HistoryReadRequest is the data-structure of this message
 type _HistoryReadRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader             ExtensionObjectDefinition
+	RequestHeader             RequestHeader
 	HistoryReadDetails        ExtensionObject
 	TimestampsToReturn        TimestampsToReturn
 	ReleaseContinuationPoints bool
-	NoOfNodesToRead           int32
-	NodesToRead               []ExtensionObjectDefinition
+	NodesToRead               []HistoryReadValueId
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -75,9 +72,9 @@ var _ HistoryReadRequest = (*_HistoryReadRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadRequest)(nil)
 
 // NewHistoryReadRequest factory function for _HistoryReadRequest
-func NewHistoryReadRequest(requestHeader ExtensionObjectDefinition, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_HistoryReadRequest {
+func NewHistoryReadRequest(requestHeader RequestHeader, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, nodesToRead []HistoryReadValueId) *_HistoryReadRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for HistoryReadRequest must not be nil")
+		panic("requestHeader of type RequestHeader for HistoryReadRequest must not be nil")
 	}
 	if historyReadDetails == nil {
 		panic("historyReadDetails of type ExtensionObject for HistoryReadRequest must not be nil")
@@ -88,7 +85,6 @@ func NewHistoryReadRequest(requestHeader ExtensionObjectDefinition, historyReadD
 		HistoryReadDetails:                historyReadDetails,
 		TimestampsToReturn:                timestampsToReturn,
 		ReleaseContinuationPoints:         releaseContinuationPoints,
-		NoOfNodesToRead:                   noOfNodesToRead,
 		NodesToRead:                       nodesToRead,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -268,8 +264,8 @@ func (b *_HistoryReadRequest) CreateHistoryReadRequestBuilder() HistoryReadReque
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_HistoryReadRequest) GetIdentifier() string {
-	return "664"
+func (m *_HistoryReadRequest) GetExtensionId() int32 {
+	return int32(664)
 }
 
 ///////////////////////
@@ -286,7 +282,7 @@ func (m *_HistoryReadRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_HistoryReadRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_HistoryReadRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -302,11 +298,7 @@ func (m *_HistoryReadRequest) GetReleaseContinuationPoints() bool {
 	return m.ReleaseContinuationPoints
 }
 
-func (m *_HistoryReadRequest) GetNoOfNodesToRead() int32 {
-	return m.NoOfNodesToRead
-}
-
-func (m *_HistoryReadRequest) GetNodesToRead() []ExtensionObjectDefinition {
+func (m *_HistoryReadRequest) GetNodesToRead() []HistoryReadValueId {
 	return m.NodesToRead
 }
 
@@ -348,7 +340,7 @@ func (m *_HistoryReadRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (releaseContinuationPoints)
 	lengthInBits += 1
 
-	// Simple field (noOfNodesToRead)
+	// Implicit Field (noOfNodesToRead)
 	lengthInBits += 32
 
 	// Array field
@@ -368,7 +360,7 @@ func (m *_HistoryReadRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_HistoryReadRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyReadRequest HistoryReadRequest, err error) {
+func (m *_HistoryReadRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__historyReadRequest HistoryReadRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -379,13 +371,13 @@ func (m *_HistoryReadRequest) parse(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	historyReadDetails, err := ReadSimpleField[ExtensionObject](ctx, "historyReadDetails", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	historyReadDetails, err := ReadSimpleField[ExtensionObject](ctx, "historyReadDetails", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyReadDetails' field"))
 	}
@@ -409,13 +401,13 @@ func (m *_HistoryReadRequest) parse(ctx context.Context, readBuffer utils.ReadBu
 	}
 	m.ReleaseContinuationPoints = releaseContinuationPoints
 
-	noOfNodesToRead, err := ReadSimpleField(ctx, "noOfNodesToRead", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToRead, err := ReadImplicitField[int32](ctx, "noOfNodesToRead", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToRead' field"))
 	}
-	m.NoOfNodesToRead = noOfNodesToRead
+	_ = noOfNodesToRead
 
-	nodesToRead, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToRead", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("637")), readBuffer), uint64(noOfNodesToRead))
+	nodesToRead, err := ReadCountArrayField[HistoryReadValueId](ctx, "nodesToRead", ReadComplex[HistoryReadValueId](ExtensionObjectDefinitionParseWithBufferProducer[HistoryReadValueId]((int32)(int32(637))), readBuffer), uint64(noOfNodesToRead))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToRead' field"))
 	}
@@ -446,7 +438,7 @@ func (m *_HistoryReadRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(pushErr, "Error pushing for HistoryReadRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
@@ -465,8 +457,8 @@ func (m *_HistoryReadRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 		if err := WriteSimpleField[bool](ctx, "releaseContinuationPoints", m.GetReleaseContinuationPoints(), WriteBoolean(writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'releaseContinuationPoints' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfNodesToRead", m.GetNoOfNodesToRead(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfNodesToRead := int32(utils.InlineIf(bool((m.GetNodesToRead()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToRead()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfNodesToRead", noOfNodesToRead, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToRead' field")
 		}
 

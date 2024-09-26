@@ -174,8 +174,8 @@ func (b *_DoubleComplexNumberType) CreateDoubleComplexNumberTypeBuilder() Double
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DoubleComplexNumberType) GetIdentifier() string {
-	return "12174"
+func (m *_DoubleComplexNumberType) GetExtensionId() int32 {
+	return int32(12174)
 }
 
 ///////////////////////
@@ -236,7 +236,7 @@ func (m *_DoubleComplexNumberType) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DoubleComplexNumberType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__doubleComplexNumberType DoubleComplexNumberType, err error) {
+func (m *_DoubleComplexNumberType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__doubleComplexNumberType DoubleComplexNumberType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -373,8 +373,8 @@ func (b *_AddNodesItem) CreateAddNodesItemBuilder() AddNodesItemBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AddNodesItem) GetIdentifier() string {
-	return "378"
+func (m *_AddNodesItem) GetExtensionId() int32 {
+	return int32(378)
 }
 
 ///////////////////////
@@ -470,7 +470,7 @@ func (m *_AddNodesItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AddNodesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addNodesItem AddNodesItem, err error) {
+func (m *_AddNodesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__addNodesItem AddNodesItem, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -511,7 +511,7 @@ func (m *_AddNodesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 	m.NodeClass = nodeClass
 
-	nodeAttributes, err := ReadSimpleField[ExtensionObject](ctx, "nodeAttributes", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	nodeAttributes, err := ReadSimpleField[ExtensionObject](ctx, "nodeAttributes", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeAttributes' field"))
 	}

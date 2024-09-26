@@ -240,8 +240,8 @@ func (b *_QuantityDimension) CreateQuantityDimensionBuilder() QuantityDimensionB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_QuantityDimension) GetIdentifier() string {
-	return "32440"
+func (m *_QuantityDimension) GetExtensionId() int32 {
+	return int32(32440)
 }
 
 ///////////////////////
@@ -344,7 +344,7 @@ func (m *_QuantityDimension) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_QuantityDimension) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__quantityDimension QuantityDimension, err error) {
+func (m *_QuantityDimension) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__quantityDimension QuantityDimension, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

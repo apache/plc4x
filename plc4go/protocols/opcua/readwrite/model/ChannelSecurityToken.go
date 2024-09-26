@@ -196,8 +196,8 @@ func (b *_ChannelSecurityToken) CreateChannelSecurityTokenBuilder() ChannelSecur
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ChannelSecurityToken) GetIdentifier() string {
-	return "443"
+func (m *_ChannelSecurityToken) GetExtensionId() int32 {
+	return int32(443)
 }
 
 ///////////////////////
@@ -272,7 +272,7 @@ func (m *_ChannelSecurityToken) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ChannelSecurityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__channelSecurityToken ChannelSecurityToken, err error) {
+func (m *_ChannelSecurityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__channelSecurityToken ChannelSecurityToken, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

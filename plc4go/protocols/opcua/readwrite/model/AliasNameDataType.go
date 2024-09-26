@@ -42,8 +42,6 @@ type AliasNameDataType interface {
 	ExtensionObjectDefinition
 	// GetAliasName returns AliasName (property field)
 	GetAliasName() QualifiedName
-	// GetNoOfReferencedNodes returns NoOfReferencedNodes (property field)
-	GetNoOfReferencedNodes() int32
 	// GetReferencedNodes returns ReferencedNodes (property field)
 	GetReferencedNodes() []ExpandedNodeId
 	// IsAliasNameDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -55,23 +53,21 @@ type AliasNameDataType interface {
 // _AliasNameDataType is the data-structure of this message
 type _AliasNameDataType struct {
 	ExtensionObjectDefinitionContract
-	AliasName           QualifiedName
-	NoOfReferencedNodes int32
-	ReferencedNodes     []ExpandedNodeId
+	AliasName       QualifiedName
+	ReferencedNodes []ExpandedNodeId
 }
 
 var _ AliasNameDataType = (*_AliasNameDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AliasNameDataType)(nil)
 
 // NewAliasNameDataType factory function for _AliasNameDataType
-func NewAliasNameDataType(aliasName QualifiedName, noOfReferencedNodes int32, referencedNodes []ExpandedNodeId) *_AliasNameDataType {
+func NewAliasNameDataType(aliasName QualifiedName, referencedNodes []ExpandedNodeId) *_AliasNameDataType {
 	if aliasName == nil {
 		panic("aliasName of type QualifiedName for AliasNameDataType must not be nil")
 	}
 	_result := &_AliasNameDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		AliasName:                         aliasName,
-		NoOfReferencedNodes:               noOfReferencedNodes,
 		ReferencedNodes:                   referencedNodes,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -209,8 +205,8 @@ func (b *_AliasNameDataType) CreateAliasNameDataTypeBuilder() AliasNameDataTypeB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AliasNameDataType) GetIdentifier() string {
-	return "23470"
+func (m *_AliasNameDataType) GetExtensionId() int32 {
+	return int32(23470)
 }
 
 ///////////////////////
@@ -229,10 +225,6 @@ func (m *_AliasNameDataType) GetParent() ExtensionObjectDefinitionContract {
 
 func (m *_AliasNameDataType) GetAliasName() QualifiedName {
 	return m.AliasName
-}
-
-func (m *_AliasNameDataType) GetNoOfReferencedNodes() int32 {
-	return m.NoOfReferencedNodes
 }
 
 func (m *_AliasNameDataType) GetReferencedNodes() []ExpandedNodeId {
@@ -265,7 +257,7 @@ func (m *_AliasNameDataType) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (aliasName)
 	lengthInBits += m.AliasName.GetLengthInBits(ctx)
 
-	// Simple field (noOfReferencedNodes)
+	// Implicit Field (noOfReferencedNodes)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +277,7 @@ func (m *_AliasNameDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AliasNameDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__aliasNameDataType AliasNameDataType, err error) {
+func (m *_AliasNameDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__aliasNameDataType AliasNameDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -302,11 +294,11 @@ func (m *_AliasNameDataType) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.AliasName = aliasName
 
-	noOfReferencedNodes, err := ReadSimpleField(ctx, "noOfReferencedNodes", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReferencedNodes, err := ReadImplicitField[int32](ctx, "noOfReferencedNodes", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencedNodes' field"))
 	}
-	m.NoOfReferencedNodes = noOfReferencedNodes
+	_ = noOfReferencedNodes
 
 	referencedNodes, err := ReadCountArrayField[ExpandedNodeId](ctx, "referencedNodes", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer), uint64(noOfReferencedNodes))
 	if err != nil {
@@ -342,8 +334,8 @@ func (m *_AliasNameDataType) SerializeWithWriteBuffer(ctx context.Context, write
 		if err := WriteSimpleField[QualifiedName](ctx, "aliasName", m.GetAliasName(), WriteComplex[QualifiedName](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'aliasName' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfReferencedNodes", m.GetNoOfReferencedNodes(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfReferencedNodes := int32(utils.InlineIf(bool((m.GetReferencedNodes()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReferencedNodes()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfReferencedNodes", noOfReferencedNodes, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReferencedNodes' field")
 		}
 

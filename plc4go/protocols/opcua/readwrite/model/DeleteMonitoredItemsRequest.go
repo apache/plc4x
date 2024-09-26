@@ -41,11 +41,9 @@ type DeleteMonitoredItemsRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetSubscriptionId returns SubscriptionId (property field)
 	GetSubscriptionId() uint32
-	// GetNoOfMonitoredItemIds returns NoOfMonitoredItemIds (property field)
-	GetNoOfMonitoredItemIds() int32
 	// GetMonitoredItemIds returns MonitoredItemIds (property field)
 	GetMonitoredItemIds() []uint32
 	// IsDeleteMonitoredItemsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,25 +55,23 @@ type DeleteMonitoredItemsRequest interface {
 // _DeleteMonitoredItemsRequest is the data-structure of this message
 type _DeleteMonitoredItemsRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader        ExtensionObjectDefinition
-	SubscriptionId       uint32
-	NoOfMonitoredItemIds int32
-	MonitoredItemIds     []uint32
+	RequestHeader    RequestHeader
+	SubscriptionId   uint32
+	MonitoredItemIds []uint32
 }
 
 var _ DeleteMonitoredItemsRequest = (*_DeleteMonitoredItemsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteMonitoredItemsRequest)(nil)
 
 // NewDeleteMonitoredItemsRequest factory function for _DeleteMonitoredItemsRequest
-func NewDeleteMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_DeleteMonitoredItemsRequest {
+func NewDeleteMonitoredItemsRequest(requestHeader RequestHeader, subscriptionId uint32, monitoredItemIds []uint32) *_DeleteMonitoredItemsRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for DeleteMonitoredItemsRequest must not be nil")
+		panic("requestHeader of type RequestHeader for DeleteMonitoredItemsRequest must not be nil")
 	}
 	_result := &_DeleteMonitoredItemsRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		SubscriptionId:                    subscriptionId,
-		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
 		MonitoredItemIds:                  monitoredItemIds,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -220,8 +216,8 @@ func (b *_DeleteMonitoredItemsRequest) CreateDeleteMonitoredItemsRequestBuilder(
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DeleteMonitoredItemsRequest) GetIdentifier() string {
-	return "781"
+func (m *_DeleteMonitoredItemsRequest) GetExtensionId() int32 {
+	return int32(781)
 }
 
 ///////////////////////
@@ -238,16 +234,12 @@ func (m *_DeleteMonitoredItemsRequest) GetParent() ExtensionObjectDefinitionCont
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_DeleteMonitoredItemsRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_DeleteMonitoredItemsRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
 func (m *_DeleteMonitoredItemsRequest) GetSubscriptionId() uint32 {
 	return m.SubscriptionId
-}
-
-func (m *_DeleteMonitoredItemsRequest) GetNoOfMonitoredItemIds() int32 {
-	return m.NoOfMonitoredItemIds
 }
 
 func (m *_DeleteMonitoredItemsRequest) GetMonitoredItemIds() []uint32 {
@@ -283,7 +275,7 @@ func (m *_DeleteMonitoredItemsRequest) GetLengthInBits(ctx context.Context) uint
 	// Simple field (subscriptionId)
 	lengthInBits += 32
 
-	// Simple field (noOfMonitoredItemIds)
+	// Implicit Field (noOfMonitoredItemIds)
 	lengthInBits += 32
 
 	// Array field
@@ -298,7 +290,7 @@ func (m *_DeleteMonitoredItemsRequest) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DeleteMonitoredItemsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__deleteMonitoredItemsRequest DeleteMonitoredItemsRequest, err error) {
+func (m *_DeleteMonitoredItemsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__deleteMonitoredItemsRequest DeleteMonitoredItemsRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -309,7 +301,7 @@ func (m *_DeleteMonitoredItemsRequest) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -321,11 +313,11 @@ func (m *_DeleteMonitoredItemsRequest) parse(ctx context.Context, readBuffer uti
 	}
 	m.SubscriptionId = subscriptionId
 
-	noOfMonitoredItemIds, err := ReadSimpleField(ctx, "noOfMonitoredItemIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfMonitoredItemIds, err := ReadImplicitField[int32](ctx, "noOfMonitoredItemIds", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMonitoredItemIds' field"))
 	}
-	m.NoOfMonitoredItemIds = noOfMonitoredItemIds
+	_ = noOfMonitoredItemIds
 
 	monitoredItemIds, err := ReadCountArrayField[uint32](ctx, "monitoredItemIds", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfMonitoredItemIds))
 	if err != nil {
@@ -358,15 +350,15 @@ func (m *_DeleteMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for DeleteMonitoredItemsRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
 		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfMonitoredItemIds", m.GetNoOfMonitoredItemIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfMonitoredItemIds := int32(utils.InlineIf(bool((m.GetMonitoredItemIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetMonitoredItemIds()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfMonitoredItemIds", noOfMonitoredItemIds, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfMonitoredItemIds' field")
 		}
 

@@ -50,20 +50,14 @@ type PubSubConnectionDataType interface {
 	GetTransportProfileUri() PascalString
 	// GetAddress returns Address (property field)
 	GetAddress() ExtensionObject
-	// GetNoOfConnectionProperties returns NoOfConnectionProperties (property field)
-	GetNoOfConnectionProperties() int32
 	// GetConnectionProperties returns ConnectionProperties (property field)
-	GetConnectionProperties() []ExtensionObjectDefinition
+	GetConnectionProperties() []KeyValuePair
 	// GetTransportSettings returns TransportSettings (property field)
 	GetTransportSettings() ExtensionObject
-	// GetNoOfWriterGroups returns NoOfWriterGroups (property field)
-	GetNoOfWriterGroups() int32
 	// GetWriterGroups returns WriterGroups (property field)
-	GetWriterGroups() []PubSubGroupDataType
-	// GetNoOfReaderGroups returns NoOfReaderGroups (property field)
-	GetNoOfReaderGroups() int32
+	GetWriterGroups() []WriterGroupDataType
 	// GetReaderGroups returns ReaderGroups (property field)
-	GetReaderGroups() []PubSubGroupDataType
+	GetReaderGroups() []ReaderGroupDataType
 	// IsPubSubConnectionDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPubSubConnectionDataType()
 	// CreateBuilder creates a PubSubConnectionDataTypeBuilder
@@ -73,18 +67,15 @@ type PubSubConnectionDataType interface {
 // _PubSubConnectionDataType is the data-structure of this message
 type _PubSubConnectionDataType struct {
 	ExtensionObjectDefinitionContract
-	Name                     PascalString
-	Enabled                  bool
-	PublisherId              Variant
-	TransportProfileUri      PascalString
-	Address                  ExtensionObject
-	NoOfConnectionProperties int32
-	ConnectionProperties     []ExtensionObjectDefinition
-	TransportSettings        ExtensionObject
-	NoOfWriterGroups         int32
-	WriterGroups             []PubSubGroupDataType
-	NoOfReaderGroups         int32
-	ReaderGroups             []PubSubGroupDataType
+	Name                 PascalString
+	Enabled              bool
+	PublisherId          Variant
+	TransportProfileUri  PascalString
+	Address              ExtensionObject
+	ConnectionProperties []KeyValuePair
+	TransportSettings    ExtensionObject
+	WriterGroups         []WriterGroupDataType
+	ReaderGroups         []ReaderGroupDataType
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -93,7 +84,7 @@ var _ PubSubConnectionDataType = (*_PubSubConnectionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubConnectionDataType)(nil)
 
 // NewPubSubConnectionDataType factory function for _PubSubConnectionDataType
-func NewPubSubConnectionDataType(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, noOfConnectionProperties int32, connectionProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, noOfWriterGroups int32, writerGroups []PubSubGroupDataType, noOfReaderGroups int32, readerGroups []PubSubGroupDataType) *_PubSubConnectionDataType {
+func NewPubSubConnectionDataType(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, connectionProperties []KeyValuePair, transportSettings ExtensionObject, writerGroups []WriterGroupDataType, readerGroups []ReaderGroupDataType) *_PubSubConnectionDataType {
 	if name == nil {
 		panic("name of type PascalString for PubSubConnectionDataType must not be nil")
 	}
@@ -116,12 +107,9 @@ func NewPubSubConnectionDataType(name PascalString, enabled bool, publisherId Va
 		PublisherId:                       publisherId,
 		TransportProfileUri:               transportProfileUri,
 		Address:                           address,
-		NoOfConnectionProperties:          noOfConnectionProperties,
 		ConnectionProperties:              connectionProperties,
 		TransportSettings:                 transportSettings,
-		NoOfWriterGroups:                  noOfWriterGroups,
 		WriterGroups:                      writerGroups,
-		NoOfReaderGroups:                  noOfReaderGroups,
 		ReaderGroups:                      readerGroups,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -406,8 +394,8 @@ func (b *_PubSubConnectionDataType) CreatePubSubConnectionDataTypeBuilder() PubS
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_PubSubConnectionDataType) GetIdentifier() string {
-	return "15619"
+func (m *_PubSubConnectionDataType) GetExtensionId() int32 {
+	return int32(15619)
 }
 
 ///////////////////////
@@ -444,11 +432,7 @@ func (m *_PubSubConnectionDataType) GetAddress() ExtensionObject {
 	return m.Address
 }
 
-func (m *_PubSubConnectionDataType) GetNoOfConnectionProperties() int32 {
-	return m.NoOfConnectionProperties
-}
-
-func (m *_PubSubConnectionDataType) GetConnectionProperties() []ExtensionObjectDefinition {
+func (m *_PubSubConnectionDataType) GetConnectionProperties() []KeyValuePair {
 	return m.ConnectionProperties
 }
 
@@ -456,19 +440,11 @@ func (m *_PubSubConnectionDataType) GetTransportSettings() ExtensionObject {
 	return m.TransportSettings
 }
 
-func (m *_PubSubConnectionDataType) GetNoOfWriterGroups() int32 {
-	return m.NoOfWriterGroups
-}
-
-func (m *_PubSubConnectionDataType) GetWriterGroups() []PubSubGroupDataType {
+func (m *_PubSubConnectionDataType) GetWriterGroups() []WriterGroupDataType {
 	return m.WriterGroups
 }
 
-func (m *_PubSubConnectionDataType) GetNoOfReaderGroups() int32 {
-	return m.NoOfReaderGroups
-}
-
-func (m *_PubSubConnectionDataType) GetReaderGroups() []PubSubGroupDataType {
+func (m *_PubSubConnectionDataType) GetReaderGroups() []ReaderGroupDataType {
 	return m.ReaderGroups
 }
 
@@ -513,7 +489,7 @@ func (m *_PubSubConnectionDataType) GetLengthInBits(ctx context.Context) uint16 
 	// Simple field (address)
 	lengthInBits += m.Address.GetLengthInBits(ctx)
 
-	// Simple field (noOfConnectionProperties)
+	// Implicit Field (noOfConnectionProperties)
 	lengthInBits += 32
 
 	// Array field
@@ -529,7 +505,7 @@ func (m *_PubSubConnectionDataType) GetLengthInBits(ctx context.Context) uint16 
 	// Simple field (transportSettings)
 	lengthInBits += m.TransportSettings.GetLengthInBits(ctx)
 
-	// Simple field (noOfWriterGroups)
+	// Implicit Field (noOfWriterGroups)
 	lengthInBits += 32
 
 	// Array field
@@ -542,7 +518,7 @@ func (m *_PubSubConnectionDataType) GetLengthInBits(ctx context.Context) uint16 
 		}
 	}
 
-	// Simple field (noOfReaderGroups)
+	// Implicit Field (noOfReaderGroups)
 	lengthInBits += 32
 
 	// Array field
@@ -562,7 +538,7 @@ func (m *_PubSubConnectionDataType) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_PubSubConnectionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__pubSubConnectionDataType PubSubConnectionDataType, err error) {
+func (m *_PubSubConnectionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__pubSubConnectionDataType PubSubConnectionDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -603,49 +579,49 @@ func (m *_PubSubConnectionDataType) parse(ctx context.Context, readBuffer utils.
 	}
 	m.TransportProfileUri = transportProfileUri
 
-	address, err := ReadSimpleField[ExtensionObject](ctx, "address", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	address, err := ReadSimpleField[ExtensionObject](ctx, "address", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
 	m.Address = address
 
-	noOfConnectionProperties, err := ReadSimpleField(ctx, "noOfConnectionProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfConnectionProperties, err := ReadImplicitField[int32](ctx, "noOfConnectionProperties", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConnectionProperties' field"))
 	}
-	m.NoOfConnectionProperties = noOfConnectionProperties
+	_ = noOfConnectionProperties
 
-	connectionProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "connectionProperties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfConnectionProperties))
+	connectionProperties, err := ReadCountArrayField[KeyValuePair](ctx, "connectionProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfConnectionProperties))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionProperties' field"))
 	}
 	m.ConnectionProperties = connectionProperties
 
-	transportSettings, err := ReadSimpleField[ExtensionObject](ctx, "transportSettings", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	transportSettings, err := ReadSimpleField[ExtensionObject](ctx, "transportSettings", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSettings' field"))
 	}
 	m.TransportSettings = transportSettings
 
-	noOfWriterGroups, err := ReadSimpleField(ctx, "noOfWriterGroups", ReadSignedInt(readBuffer, uint8(32)))
+	noOfWriterGroups, err := ReadImplicitField[int32](ctx, "noOfWriterGroups", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfWriterGroups' field"))
 	}
-	m.NoOfWriterGroups = noOfWriterGroups
+	_ = noOfWriterGroups
 
-	writerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "writerGroups", ReadComplex[PubSubGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubGroupDataType]((string)("15609")), readBuffer), uint64(noOfWriterGroups))
+	writerGroups, err := ReadCountArrayField[WriterGroupDataType](ctx, "writerGroups", ReadComplex[WriterGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[WriterGroupDataType]((int32)(int32(15482))), readBuffer), uint64(noOfWriterGroups))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writerGroups' field"))
 	}
 	m.WriterGroups = writerGroups
 
-	noOfReaderGroups, err := ReadSimpleField(ctx, "noOfReaderGroups", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReaderGroups, err := ReadImplicitField[int32](ctx, "noOfReaderGroups", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReaderGroups' field"))
 	}
-	m.NoOfReaderGroups = noOfReaderGroups
+	_ = noOfReaderGroups
 
-	readerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "readerGroups", ReadComplex[PubSubGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubGroupDataType]((string)("15609")), readBuffer), uint64(noOfReaderGroups))
+	readerGroups, err := ReadCountArrayField[ReaderGroupDataType](ctx, "readerGroups", ReadComplex[ReaderGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[ReaderGroupDataType]((int32)(int32(15522))), readBuffer), uint64(noOfReaderGroups))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readerGroups' field"))
 	}
@@ -699,8 +675,8 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 		if err := WriteSimpleField[ExtensionObject](ctx, "address", m.GetAddress(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'address' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfConnectionProperties", m.GetNoOfConnectionProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfConnectionProperties := int32(utils.InlineIf(bool((m.GetConnectionProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetConnectionProperties()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfConnectionProperties", noOfConnectionProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfConnectionProperties' field")
 		}
 
@@ -711,16 +687,16 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 		if err := WriteSimpleField[ExtensionObject](ctx, "transportSettings", m.GetTransportSettings(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'transportSettings' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfWriterGroups", m.GetNoOfWriterGroups(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfWriterGroups := int32(utils.InlineIf(bool((m.GetWriterGroups()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetWriterGroups()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfWriterGroups", noOfWriterGroups, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfWriterGroups' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "writerGroups", m.GetWriterGroups(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'writerGroups' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfReaderGroups", m.GetNoOfReaderGroups(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfReaderGroups := int32(utils.InlineIf(bool((m.GetReaderGroups()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReaderGroups()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfReaderGroups", noOfReaderGroups, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReaderGroups' field")
 		}
 

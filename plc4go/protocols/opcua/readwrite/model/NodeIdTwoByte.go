@@ -44,6 +44,8 @@ type NodeIdTwoByte interface {
 	GetId() uint8
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// GetNamespace returns Namespace (virtual field)
+	GetNamespace() int16
 	// IsNodeIdTwoByte is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdTwoByte()
 	// CreateBuilder creates a NodeIdTwoByteBuilder
@@ -202,6 +204,12 @@ func (m *_NodeIdTwoByte) GetIdentifier() string {
 	return fmt.Sprintf("%v", m.GetId())
 }
 
+func (m *_NodeIdTwoByte) GetNamespace() int16 {
+	ctx := context.Background()
+	_ = ctx
+	return int16(-(int16(1)))
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -227,6 +235,8 @@ func (m *_NodeIdTwoByte) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Simple field (id)
 	lengthInBits += 8
+
+	// A virtual field doesn't have any in- or output.
 
 	// A virtual field doesn't have any in- or output.
 
@@ -259,6 +269,12 @@ func (m *_NodeIdTwoByte) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
 	_ = identifier
+
+	namespace, err := ReadVirtualField[int16](ctx, "namespace", (*int16)(nil), -(int16(1)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespace' field"))
+	}
+	_ = namespace
 
 	if closeErr := readBuffer.CloseContext("NodeIdTwoByte"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeIdTwoByte")
@@ -293,6 +309,12 @@ func (m *_NodeIdTwoByte) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		_ = identifier
 		if _identifierErr := writeBuffer.WriteVirtual(ctx, "identifier", m.GetIdentifier()); _identifierErr != nil {
 			return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
+		}
+		// Virtual field
+		namespace := m.GetNamespace()
+		_ = namespace
+		if _namespaceErr := writeBuffer.WriteVirtual(ctx, "namespace", m.GetNamespace()); _namespaceErr != nil {
+			return errors.Wrap(_namespaceErr, "Error serializing 'namespace' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NodeIdTwoByte"); popErr != nil {

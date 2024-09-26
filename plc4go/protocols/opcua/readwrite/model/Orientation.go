@@ -150,8 +150,8 @@ func (b *_Orientation) CreateOrientationBuilder() OrientationBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_Orientation) GetIdentifier() string {
-	return "18813"
+func (m *_Orientation) GetExtensionId() int32 {
+	return int32(18813)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_Orientation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_Orientation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__orientation Orientation, err error) {
+func (m *_Orientation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__orientation Orientation, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

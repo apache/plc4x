@@ -174,8 +174,8 @@ func (b *_ConfigurationVersionDataType) CreateConfigurationVersionDataTypeBuilde
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ConfigurationVersionDataType) GetIdentifier() string {
-	return "14595"
+func (m *_ConfigurationVersionDataType) GetExtensionId() int32 {
+	return int32(14595)
 }
 
 ///////////////////////
@@ -236,7 +236,7 @@ func (m *_ConfigurationVersionDataType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ConfigurationVersionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__configurationVersionDataType ConfigurationVersionDataType, err error) {
+func (m *_ConfigurationVersionDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__configurationVersionDataType ConfigurationVersionDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

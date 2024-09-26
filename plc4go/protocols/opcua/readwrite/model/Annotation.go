@@ -233,8 +233,8 @@ func (b *_Annotation) CreateAnnotationBuilder() AnnotationBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_Annotation) GetIdentifier() string {
-	return "893"
+func (m *_Annotation) GetExtensionId() int32 {
+	return int32(893)
 }
 
 ///////////////////////
@@ -302,7 +302,7 @@ func (m *_Annotation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_Annotation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__annotation Annotation, err error) {
+func (m *_Annotation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__annotation Annotation, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

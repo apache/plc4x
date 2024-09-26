@@ -150,8 +150,8 @@ func (b *_ReaderGroupMessageDataType) CreateReaderGroupMessageDataTypeBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ReaderGroupMessageDataType) GetIdentifier() string {
-	return "15624"
+func (m *_ReaderGroupMessageDataType) GetExtensionId() int32 {
+	return int32(15624)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_ReaderGroupMessageDataType) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ReaderGroupMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__readerGroupMessageDataType ReaderGroupMessageDataType, err error) {
+func (m *_ReaderGroupMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__readerGroupMessageDataType ReaderGroupMessageDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

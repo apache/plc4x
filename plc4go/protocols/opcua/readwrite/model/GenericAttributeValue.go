@@ -198,8 +198,8 @@ func (b *_GenericAttributeValue) CreateGenericAttributeValueBuilder() GenericAtt
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_GenericAttributeValue) GetIdentifier() string {
-	return "17608"
+func (m *_GenericAttributeValue) GetExtensionId() int32 {
+	return int32(17608)
 }
 
 ///////////////////////
@@ -260,7 +260,7 @@ func (m *_GenericAttributeValue) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_GenericAttributeValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__genericAttributeValue GenericAttributeValue, err error) {
+func (m *_GenericAttributeValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__genericAttributeValue GenericAttributeValue, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

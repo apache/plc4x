@@ -301,8 +301,8 @@ func (b *_RequestHeader) CreateRequestHeaderBuilder() RequestHeaderBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RequestHeader) GetIdentifier() string {
-	return "391"
+func (m *_RequestHeader) GetExtensionId() int32 {
+	return int32(391)
 }
 
 ///////////////////////
@@ -398,7 +398,7 @@ func (m *_RequestHeader) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RequestHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__requestHeader RequestHeader, err error) {
+func (m *_RequestHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__requestHeader RequestHeader, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -445,7 +445,7 @@ func (m *_RequestHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 	m.TimeoutHint = timeoutHint
 
-	additionalHeader, err := ReadSimpleField[ExtensionObject](ctx, "additionalHeader", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	additionalHeader, err := ReadSimpleField[ExtensionObject](ctx, "additionalHeader", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalHeader' field"))
 	}

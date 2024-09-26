@@ -41,7 +41,7 @@ type CreateSubscriptionResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// GetSubscriptionId returns SubscriptionId (property field)
 	GetSubscriptionId() uint32
 	// GetRevisedPublishingInterval returns RevisedPublishingInterval (property field)
@@ -59,7 +59,7 @@ type CreateSubscriptionResponse interface {
 // _CreateSubscriptionResponse is the data-structure of this message
 type _CreateSubscriptionResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader            ExtensionObjectDefinition
+	ResponseHeader            ResponseHeader
 	SubscriptionId            uint32
 	RevisedPublishingInterval float64
 	RevisedLifetimeCount      uint32
@@ -70,9 +70,9 @@ var _ CreateSubscriptionResponse = (*_CreateSubscriptionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CreateSubscriptionResponse)(nil)
 
 // NewCreateSubscriptionResponse factory function for _CreateSubscriptionResponse
-func NewCreateSubscriptionResponse(responseHeader ExtensionObjectDefinition, subscriptionId uint32, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_CreateSubscriptionResponse {
+func NewCreateSubscriptionResponse(responseHeader ResponseHeader, subscriptionId uint32, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_CreateSubscriptionResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CreateSubscriptionResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for CreateSubscriptionResponse must not be nil")
 	}
 	_result := &_CreateSubscriptionResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -231,8 +231,8 @@ func (b *_CreateSubscriptionResponse) CreateCreateSubscriptionResponseBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CreateSubscriptionResponse) GetIdentifier() string {
-	return "790"
+func (m *_CreateSubscriptionResponse) GetExtensionId() int32 {
+	return int32(790)
 }
 
 ///////////////////////
@@ -249,7 +249,7 @@ func (m *_CreateSubscriptionResponse) GetParent() ExtensionObjectDefinitionContr
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CreateSubscriptionResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_CreateSubscriptionResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -314,7 +314,7 @@ func (m *_CreateSubscriptionResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CreateSubscriptionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__createSubscriptionResponse CreateSubscriptionResponse, err error) {
+func (m *_CreateSubscriptionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__createSubscriptionResponse CreateSubscriptionResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -325,7 +325,7 @@ func (m *_CreateSubscriptionResponse) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -380,7 +380,7 @@ func (m *_CreateSubscriptionResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for CreateSubscriptionResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 

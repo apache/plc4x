@@ -150,8 +150,8 @@ func (b *_SubscribedDataSetDataType) CreateSubscribedDataSetDataTypeBuilder() Su
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SubscribedDataSetDataType) GetIdentifier() string {
-	return "15632"
+func (m *_SubscribedDataSetDataType) GetExtensionId() int32 {
+	return int32(15632)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_SubscribedDataSetDataType) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SubscribedDataSetDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__subscribedDataSetDataType SubscribedDataSetDataType, err error) {
+func (m *_SubscribedDataSetDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__subscribedDataSetDataType SubscribedDataSetDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

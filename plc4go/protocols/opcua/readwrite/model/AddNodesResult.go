@@ -222,8 +222,8 @@ func (b *_AddNodesResult) CreateAddNodesResultBuilder() AddNodesResultBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AddNodesResult) GetIdentifier() string {
-	return "485"
+func (m *_AddNodesResult) GetExtensionId() int32 {
+	return int32(485)
 }
 
 ///////////////////////
@@ -284,7 +284,7 @@ func (m *_AddNodesResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AddNodesResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addNodesResult AddNodesResult, err error) {
+func (m *_AddNodesResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__addNodesResult AddNodesResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

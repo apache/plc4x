@@ -150,8 +150,8 @@ func (b *_DataTypeDefinition) CreateDataTypeDefinitionBuilder() DataTypeDefiniti
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DataTypeDefinition) GetIdentifier() string {
-	return "99"
+func (m *_DataTypeDefinition) GetExtensionId() int32 {
+	return int32(99)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_DataTypeDefinition) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DataTypeDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataTypeDefinition DataTypeDefinition, err error) {
+func (m *_DataTypeDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__dataTypeDefinition DataTypeDefinition, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

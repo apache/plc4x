@@ -150,8 +150,8 @@ func (b *_NullExtension) CreateNullExtensionBuilder() NullExtensionBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_NullExtension) GetIdentifier() string {
-	return "0"
+func (m *_NullExtension) GetExtensionId() int32 {
+	return int32(0)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_NullExtension) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_NullExtension) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__nullExtension NullExtension, err error) {
+func (m *_NullExtension) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__nullExtension NullExtension, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

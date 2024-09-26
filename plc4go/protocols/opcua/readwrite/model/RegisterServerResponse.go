@@ -41,7 +41,7 @@ type RegisterServerResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// IsRegisterServerResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterServerResponse()
 	// CreateBuilder creates a RegisterServerResponseBuilder
@@ -51,16 +51,16 @@ type RegisterServerResponse interface {
 // _RegisterServerResponse is the data-structure of this message
 type _RegisterServerResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
 }
 
 var _ RegisterServerResponse = (*_RegisterServerResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServerResponse)(nil)
 
 // NewRegisterServerResponse factory function for _RegisterServerResponse
-func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_RegisterServerResponse {
+func NewRegisterServerResponse(responseHeader ResponseHeader) *_RegisterServerResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterServerResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for RegisterServerResponse must not be nil")
 	}
 	_result := &_RegisterServerResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -187,8 +187,8 @@ func (b *_RegisterServerResponse) CreateRegisterServerResponseBuilder() Register
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RegisterServerResponse) GetIdentifier() string {
-	return "440"
+func (m *_RegisterServerResponse) GetExtensionId() int32 {
+	return int32(440)
 }
 
 ///////////////////////
@@ -205,7 +205,7 @@ func (m *_RegisterServerResponse) GetParent() ExtensionObjectDefinitionContract 
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RegisterServerResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_RegisterServerResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -242,7 +242,7 @@ func (m *_RegisterServerResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RegisterServerResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__registerServerResponse RegisterServerResponse, err error) {
+func (m *_RegisterServerResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__registerServerResponse RegisterServerResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -253,7 +253,7 @@ func (m *_RegisterServerResponse) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_RegisterServerResponse) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for RegisterServerResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 

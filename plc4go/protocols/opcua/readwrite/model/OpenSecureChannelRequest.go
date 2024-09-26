@@ -41,7 +41,7 @@ type OpenSecureChannelRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetClientProtocolVersion returns ClientProtocolVersion (property field)
 	GetClientProtocolVersion() uint32
 	// GetRequestType returns RequestType (property field)
@@ -61,7 +61,7 @@ type OpenSecureChannelRequest interface {
 // _OpenSecureChannelRequest is the data-structure of this message
 type _OpenSecureChannelRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader         ExtensionObjectDefinition
+	RequestHeader         RequestHeader
 	ClientProtocolVersion uint32
 	RequestType           SecurityTokenRequestType
 	SecurityMode          MessageSecurityMode
@@ -73,9 +73,9 @@ var _ OpenSecureChannelRequest = (*_OpenSecureChannelRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_OpenSecureChannelRequest)(nil)
 
 // NewOpenSecureChannelRequest factory function for _OpenSecureChannelRequest
-func NewOpenSecureChannelRequest(requestHeader ExtensionObjectDefinition, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) *_OpenSecureChannelRequest {
+func NewOpenSecureChannelRequest(requestHeader RequestHeader, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) *_OpenSecureChannelRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for OpenSecureChannelRequest must not be nil")
+		panic("requestHeader of type RequestHeader for OpenSecureChannelRequest must not be nil")
 	}
 	if clientNonce == nil {
 		panic("clientNonce of type PascalByteString for OpenSecureChannelRequest must not be nil")
@@ -266,8 +266,8 @@ func (b *_OpenSecureChannelRequest) CreateOpenSecureChannelRequestBuilder() Open
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_OpenSecureChannelRequest) GetIdentifier() string {
-	return "446"
+func (m *_OpenSecureChannelRequest) GetExtensionId() int32 {
+	return int32(446)
 }
 
 ///////////////////////
@@ -284,7 +284,7 @@ func (m *_OpenSecureChannelRequest) GetParent() ExtensionObjectDefinitionContrac
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_OpenSecureChannelRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_OpenSecureChannelRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -356,7 +356,7 @@ func (m *_OpenSecureChannelRequest) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OpenSecureChannelRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__openSecureChannelRequest OpenSecureChannelRequest, err error) {
+func (m *_OpenSecureChannelRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__openSecureChannelRequest OpenSecureChannelRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -367,7 +367,7 @@ func (m *_OpenSecureChannelRequest) parse(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -428,7 +428,7 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for OpenSecureChannelRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 

@@ -44,8 +44,6 @@ type SessionSecurityDiagnosticsDataType interface {
 	GetSessionId() NodeId
 	// GetClientUserIdOfSession returns ClientUserIdOfSession (property field)
 	GetClientUserIdOfSession() PascalString
-	// GetNoOfClientUserIdHistory returns NoOfClientUserIdHistory (property field)
-	GetNoOfClientUserIdHistory() int32
 	// GetClientUserIdHistory returns ClientUserIdHistory (property field)
 	GetClientUserIdHistory() []PascalString
 	// GetAuthenticationMechanism returns AuthenticationMechanism (property field)
@@ -71,7 +69,6 @@ type _SessionSecurityDiagnosticsDataType struct {
 	ExtensionObjectDefinitionContract
 	SessionId               NodeId
 	ClientUserIdOfSession   PascalString
-	NoOfClientUserIdHistory int32
 	ClientUserIdHistory     []PascalString
 	AuthenticationMechanism PascalString
 	Encoding                PascalString
@@ -85,7 +82,7 @@ var _ SessionSecurityDiagnosticsDataType = (*_SessionSecurityDiagnosticsDataType
 var _ ExtensionObjectDefinitionRequirements = (*_SessionSecurityDiagnosticsDataType)(nil)
 
 // NewSessionSecurityDiagnosticsDataType factory function for _SessionSecurityDiagnosticsDataType
-func NewSessionSecurityDiagnosticsDataType(sessionId NodeId, clientUserIdOfSession PascalString, noOfClientUserIdHistory int32, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) *_SessionSecurityDiagnosticsDataType {
+func NewSessionSecurityDiagnosticsDataType(sessionId NodeId, clientUserIdOfSession PascalString, clientUserIdHistory []PascalString, authenticationMechanism PascalString, encoding PascalString, transportProtocol PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, clientCertificate PascalByteString) *_SessionSecurityDiagnosticsDataType {
 	if sessionId == nil {
 		panic("sessionId of type NodeId for SessionSecurityDiagnosticsDataType must not be nil")
 	}
@@ -111,7 +108,6 @@ func NewSessionSecurityDiagnosticsDataType(sessionId NodeId, clientUserIdOfSessi
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		SessionId:                         sessionId,
 		ClientUserIdOfSession:             clientUserIdOfSession,
-		NoOfClientUserIdHistory:           noOfClientUserIdHistory,
 		ClientUserIdHistory:               clientUserIdHistory,
 		AuthenticationMechanism:           authenticationMechanism,
 		Encoding:                          encoding,
@@ -430,8 +426,8 @@ func (b *_SessionSecurityDiagnosticsDataType) CreateSessionSecurityDiagnosticsDa
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SessionSecurityDiagnosticsDataType) GetIdentifier() string {
-	return "870"
+func (m *_SessionSecurityDiagnosticsDataType) GetExtensionId() int32 {
+	return int32(870)
 }
 
 ///////////////////////
@@ -454,10 +450,6 @@ func (m *_SessionSecurityDiagnosticsDataType) GetSessionId() NodeId {
 
 func (m *_SessionSecurityDiagnosticsDataType) GetClientUserIdOfSession() PascalString {
 	return m.ClientUserIdOfSession
-}
-
-func (m *_SessionSecurityDiagnosticsDataType) GetNoOfClientUserIdHistory() int32 {
-	return m.NoOfClientUserIdHistory
 }
 
 func (m *_SessionSecurityDiagnosticsDataType) GetClientUserIdHistory() []PascalString {
@@ -517,7 +509,7 @@ func (m *_SessionSecurityDiagnosticsDataType) GetLengthInBits(ctx context.Contex
 	// Simple field (clientUserIdOfSession)
 	lengthInBits += m.ClientUserIdOfSession.GetLengthInBits(ctx)
 
-	// Simple field (noOfClientUserIdHistory)
+	// Implicit Field (noOfClientUserIdHistory)
 	lengthInBits += 32
 
 	// Array field
@@ -555,7 +547,7 @@ func (m *_SessionSecurityDiagnosticsDataType) GetLengthInBytes(ctx context.Conte
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SessionSecurityDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__sessionSecurityDiagnosticsDataType SessionSecurityDiagnosticsDataType, err error) {
+func (m *_SessionSecurityDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__sessionSecurityDiagnosticsDataType SessionSecurityDiagnosticsDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -578,11 +570,11 @@ func (m *_SessionSecurityDiagnosticsDataType) parse(ctx context.Context, readBuf
 	}
 	m.ClientUserIdOfSession = clientUserIdOfSession
 
-	noOfClientUserIdHistory, err := ReadSimpleField(ctx, "noOfClientUserIdHistory", ReadSignedInt(readBuffer, uint8(32)))
+	noOfClientUserIdHistory, err := ReadImplicitField[int32](ctx, "noOfClientUserIdHistory", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfClientUserIdHistory' field"))
 	}
-	m.NoOfClientUserIdHistory = noOfClientUserIdHistory
+	_ = noOfClientUserIdHistory
 
 	clientUserIdHistory, err := ReadCountArrayField[PascalString](ctx, "clientUserIdHistory", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfClientUserIdHistory))
 	if err != nil {
@@ -658,8 +650,8 @@ func (m *_SessionSecurityDiagnosticsDataType) SerializeWithWriteBuffer(ctx conte
 		if err := WriteSimpleField[PascalString](ctx, "clientUserIdOfSession", m.GetClientUserIdOfSession(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientUserIdOfSession' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfClientUserIdHistory", m.GetNoOfClientUserIdHistory(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfClientUserIdHistory := int32(utils.InlineIf(bool((m.GetClientUserIdHistory()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetClientUserIdHistory()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfClientUserIdHistory", noOfClientUserIdHistory, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfClientUserIdHistory' field")
 		}
 

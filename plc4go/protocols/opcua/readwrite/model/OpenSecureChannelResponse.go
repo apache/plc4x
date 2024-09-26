@@ -41,11 +41,11 @@ type OpenSecureChannelResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// GetServerProtocolVersion returns ServerProtocolVersion (property field)
 	GetServerProtocolVersion() uint32
 	// GetSecurityToken returns SecurityToken (property field)
-	GetSecurityToken() ExtensionObjectDefinition
+	GetSecurityToken() ChannelSecurityToken
 	// GetServerNonce returns ServerNonce (property field)
 	GetServerNonce() PascalByteString
 	// IsOpenSecureChannelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,9 +57,9 @@ type OpenSecureChannelResponse interface {
 // _OpenSecureChannelResponse is the data-structure of this message
 type _OpenSecureChannelResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader        ExtensionObjectDefinition
+	ResponseHeader        ResponseHeader
 	ServerProtocolVersion uint32
-	SecurityToken         ExtensionObjectDefinition
+	SecurityToken         ChannelSecurityToken
 	ServerNonce           PascalByteString
 }
 
@@ -67,12 +67,12 @@ var _ OpenSecureChannelResponse = (*_OpenSecureChannelResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_OpenSecureChannelResponse)(nil)
 
 // NewOpenSecureChannelResponse factory function for _OpenSecureChannelResponse
-func NewOpenSecureChannelResponse(responseHeader ExtensionObjectDefinition, serverProtocolVersion uint32, securityToken ExtensionObjectDefinition, serverNonce PascalByteString) *_OpenSecureChannelResponse {
+func NewOpenSecureChannelResponse(responseHeader ResponseHeader, serverProtocolVersion uint32, securityToken ChannelSecurityToken, serverNonce PascalByteString) *_OpenSecureChannelResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for OpenSecureChannelResponse must not be nil")
 	}
 	if securityToken == nil {
-		panic("securityToken of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
+		panic("securityToken of type ChannelSecurityToken for OpenSecureChannelResponse must not be nil")
 	}
 	if serverNonce == nil {
 		panic("serverNonce of type PascalByteString for OpenSecureChannelResponse must not be nil")
@@ -268,8 +268,8 @@ func (b *_OpenSecureChannelResponse) CreateOpenSecureChannelResponseBuilder() Op
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_OpenSecureChannelResponse) GetIdentifier() string {
-	return "449"
+func (m *_OpenSecureChannelResponse) GetExtensionId() int32 {
+	return int32(449)
 }
 
 ///////////////////////
@@ -286,7 +286,7 @@ func (m *_OpenSecureChannelResponse) GetParent() ExtensionObjectDefinitionContra
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_OpenSecureChannelResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_OpenSecureChannelResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -294,7 +294,7 @@ func (m *_OpenSecureChannelResponse) GetServerProtocolVersion() uint32 {
 	return m.ServerProtocolVersion
 }
 
-func (m *_OpenSecureChannelResponse) GetSecurityToken() ExtensionObjectDefinition {
+func (m *_OpenSecureChannelResponse) GetSecurityToken() ChannelSecurityToken {
 	return m.SecurityToken
 }
 
@@ -344,7 +344,7 @@ func (m *_OpenSecureChannelResponse) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OpenSecureChannelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__openSecureChannelResponse OpenSecureChannelResponse, err error) {
+func (m *_OpenSecureChannelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__openSecureChannelResponse OpenSecureChannelResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -355,7 +355,7 @@ func (m *_OpenSecureChannelResponse) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -367,7 +367,7 @@ func (m *_OpenSecureChannelResponse) parse(ctx context.Context, readBuffer utils
 	}
 	m.ServerProtocolVersion = serverProtocolVersion
 
-	securityToken, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "securityToken", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("443")), readBuffer))
+	securityToken, err := ReadSimpleField[ChannelSecurityToken](ctx, "securityToken", ReadComplex[ChannelSecurityToken](ExtensionObjectDefinitionParseWithBufferProducer[ChannelSecurityToken]((int32)(int32(443))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityToken' field"))
 	}
@@ -404,7 +404,7 @@ func (m *_OpenSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for OpenSecureChannelResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
@@ -412,7 +412,7 @@ func (m *_OpenSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(err, "Error serializing 'serverProtocolVersion' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "securityToken", m.GetSecurityToken(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ChannelSecurityToken](ctx, "securityToken", m.GetSecurityToken(), WriteComplex[ChannelSecurityToken](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityToken' field")
 		}
 

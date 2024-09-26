@@ -41,7 +41,7 @@ type ServiceFault interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// IsServiceFault is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceFault()
 	// CreateBuilder creates a ServiceFaultBuilder
@@ -51,16 +51,16 @@ type ServiceFault interface {
 // _ServiceFault is the data-structure of this message
 type _ServiceFault struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
 }
 
 var _ ServiceFault = (*_ServiceFault)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServiceFault)(nil)
 
 // NewServiceFault factory function for _ServiceFault
-func NewServiceFault(responseHeader ExtensionObjectDefinition) *_ServiceFault {
+func NewServiceFault(responseHeader ResponseHeader) *_ServiceFault {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ServiceFault must not be nil")
+		panic("responseHeader of type ResponseHeader for ServiceFault must not be nil")
 	}
 	_result := &_ServiceFault{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -187,8 +187,8 @@ func (b *_ServiceFault) CreateServiceFaultBuilder() ServiceFaultBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ServiceFault) GetIdentifier() string {
-	return "397"
+func (m *_ServiceFault) GetExtensionId() int32 {
+	return int32(397)
 }
 
 ///////////////////////
@@ -205,7 +205,7 @@ func (m *_ServiceFault) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ServiceFault) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_ServiceFault) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -242,7 +242,7 @@ func (m *_ServiceFault) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ServiceFault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serviceFault ServiceFault, err error) {
+func (m *_ServiceFault) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__serviceFault ServiceFault, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -253,7 +253,7 @@ func (m *_ServiceFault) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_ServiceFault) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for ServiceFault")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 

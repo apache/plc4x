@@ -174,8 +174,8 @@ func (b *_SubscriptionAcknowledgement) CreateSubscriptionAcknowledgementBuilder(
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SubscriptionAcknowledgement) GetIdentifier() string {
-	return "823"
+func (m *_SubscriptionAcknowledgement) GetExtensionId() int32 {
+	return int32(823)
 }
 
 ///////////////////////
@@ -236,7 +236,7 @@ func (m *_SubscriptionAcknowledgement) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SubscriptionAcknowledgement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__subscriptionAcknowledgement SubscriptionAcknowledgement, err error) {
+func (m *_SubscriptionAcknowledgement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__subscriptionAcknowledgement SubscriptionAcknowledgement, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

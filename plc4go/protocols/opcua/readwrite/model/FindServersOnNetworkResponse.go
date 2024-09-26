@@ -41,13 +41,11 @@ type FindServersOnNetworkResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// GetLastCounterResetTime returns LastCounterResetTime (property field)
 	GetLastCounterResetTime() int64
-	// GetNoOfServers returns NoOfServers (property field)
-	GetNoOfServers() int32
 	// GetServers returns Servers (property field)
-	GetServers() []ExtensionObjectDefinition
+	GetServers() []ServerOnNetwork
 	// IsFindServersOnNetworkResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFindServersOnNetworkResponse()
 	// CreateBuilder creates a FindServersOnNetworkResponseBuilder
@@ -57,25 +55,23 @@ type FindServersOnNetworkResponse interface {
 // _FindServersOnNetworkResponse is the data-structure of this message
 type _FindServersOnNetworkResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader       ExtensionObjectDefinition
+	ResponseHeader       ResponseHeader
 	LastCounterResetTime int64
-	NoOfServers          int32
-	Servers              []ExtensionObjectDefinition
+	Servers              []ServerOnNetwork
 }
 
 var _ FindServersOnNetworkResponse = (*_FindServersOnNetworkResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersOnNetworkResponse)(nil)
 
 // NewFindServersOnNetworkResponse factory function for _FindServersOnNetworkResponse
-func NewFindServersOnNetworkResponse(responseHeader ExtensionObjectDefinition, lastCounterResetTime int64, noOfServers int32, servers []ExtensionObjectDefinition) *_FindServersOnNetworkResponse {
+func NewFindServersOnNetworkResponse(responseHeader ResponseHeader, lastCounterResetTime int64, servers []ServerOnNetwork) *_FindServersOnNetworkResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for FindServersOnNetworkResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for FindServersOnNetworkResponse must not be nil")
 	}
 	_result := &_FindServersOnNetworkResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
 		LastCounterResetTime:              lastCounterResetTime,
-		NoOfServers:                       noOfServers,
 		Servers:                           servers,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -220,8 +216,8 @@ func (b *_FindServersOnNetworkResponse) CreateFindServersOnNetworkResponseBuilde
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_FindServersOnNetworkResponse) GetIdentifier() string {
-	return "12193"
+func (m *_FindServersOnNetworkResponse) GetExtensionId() int32 {
+	return int32(12193)
 }
 
 ///////////////////////
@@ -238,7 +234,7 @@ func (m *_FindServersOnNetworkResponse) GetParent() ExtensionObjectDefinitionCon
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_FindServersOnNetworkResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_FindServersOnNetworkResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -246,11 +242,7 @@ func (m *_FindServersOnNetworkResponse) GetLastCounterResetTime() int64 {
 	return m.LastCounterResetTime
 }
 
-func (m *_FindServersOnNetworkResponse) GetNoOfServers() int32 {
-	return m.NoOfServers
-}
-
-func (m *_FindServersOnNetworkResponse) GetServers() []ExtensionObjectDefinition {
+func (m *_FindServersOnNetworkResponse) GetServers() []ServerOnNetwork {
 	return m.Servers
 }
 
@@ -283,7 +275,7 @@ func (m *_FindServersOnNetworkResponse) GetLengthInBits(ctx context.Context) uin
 	// Simple field (lastCounterResetTime)
 	lengthInBits += 64
 
-	// Simple field (noOfServers)
+	// Implicit Field (noOfServers)
 	lengthInBits += 32
 
 	// Array field
@@ -303,7 +295,7 @@ func (m *_FindServersOnNetworkResponse) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_FindServersOnNetworkResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__findServersOnNetworkResponse FindServersOnNetworkResponse, err error) {
+func (m *_FindServersOnNetworkResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__findServersOnNetworkResponse FindServersOnNetworkResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -314,7 +306,7 @@ func (m *_FindServersOnNetworkResponse) parse(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -326,13 +318,13 @@ func (m *_FindServersOnNetworkResponse) parse(ctx context.Context, readBuffer ut
 	}
 	m.LastCounterResetTime = lastCounterResetTime
 
-	noOfServers, err := ReadSimpleField(ctx, "noOfServers", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServers, err := ReadImplicitField[int32](ctx, "noOfServers", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServers' field"))
 	}
-	m.NoOfServers = noOfServers
+	_ = noOfServers
 
-	servers, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "servers", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("12191")), readBuffer), uint64(noOfServers))
+	servers, err := ReadCountArrayField[ServerOnNetwork](ctx, "servers", ReadComplex[ServerOnNetwork](ExtensionObjectDefinitionParseWithBufferProducer[ServerOnNetwork]((int32)(int32(12191))), readBuffer), uint64(noOfServers))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'servers' field"))
 	}
@@ -363,15 +355,15 @@ func (m *_FindServersOnNetworkResponse) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for FindServersOnNetworkResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
 		if err := WriteSimpleField[int64](ctx, "lastCounterResetTime", m.GetLastCounterResetTime(), WriteSignedLong(writeBuffer, 64)); err != nil {
 			return errors.Wrap(err, "Error serializing 'lastCounterResetTime' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfServers", m.GetNoOfServers(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfServers := int32(utils.InlineIf(bool((m.GetServers()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServers()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfServers", noOfServers, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServers' field")
 		}
 

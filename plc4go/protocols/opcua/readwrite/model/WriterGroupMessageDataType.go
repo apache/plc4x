@@ -150,8 +150,8 @@ func (b *_WriterGroupMessageDataType) CreateWriterGroupMessageDataTypeBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_WriterGroupMessageDataType) GetIdentifier() string {
-	return "15618"
+func (m *_WriterGroupMessageDataType) GetExtensionId() int32 {
+	return int32(15618)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_WriterGroupMessageDataType) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_WriterGroupMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__writerGroupMessageDataType WriterGroupMessageDataType, err error) {
+func (m *_WriterGroupMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__writerGroupMessageDataType WriterGroupMessageDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

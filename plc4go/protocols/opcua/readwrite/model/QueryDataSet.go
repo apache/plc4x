@@ -44,8 +44,6 @@ type QueryDataSet interface {
 	GetNodeId() ExpandedNodeId
 	// GetTypeDefinitionNode returns TypeDefinitionNode (property field)
 	GetTypeDefinitionNode() ExpandedNodeId
-	// GetNoOfValues returns NoOfValues (property field)
-	GetNoOfValues() int32
 	// GetValues returns Values (property field)
 	GetValues() []Variant
 	// IsQueryDataSet is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,7 +57,6 @@ type _QueryDataSet struct {
 	ExtensionObjectDefinitionContract
 	NodeId             ExpandedNodeId
 	TypeDefinitionNode ExpandedNodeId
-	NoOfValues         int32
 	Values             []Variant
 }
 
@@ -67,7 +64,7 @@ var _ QueryDataSet = (*_QueryDataSet)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryDataSet)(nil)
 
 // NewQueryDataSet factory function for _QueryDataSet
-func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
+func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, values []Variant) *_QueryDataSet {
 	if nodeId == nil {
 		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
 	}
@@ -78,7 +75,6 @@ func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, n
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		NodeId:                            nodeId,
 		TypeDefinitionNode:                typeDefinitionNode,
-		NoOfValues:                        noOfValues,
 		Values:                            values,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -244,8 +240,8 @@ func (b *_QueryDataSet) CreateQueryDataSetBuilder() QueryDataSetBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_QueryDataSet) GetIdentifier() string {
-	return "579"
+func (m *_QueryDataSet) GetExtensionId() int32 {
+	return int32(579)
 }
 
 ///////////////////////
@@ -268,10 +264,6 @@ func (m *_QueryDataSet) GetNodeId() ExpandedNodeId {
 
 func (m *_QueryDataSet) GetTypeDefinitionNode() ExpandedNodeId {
 	return m.TypeDefinitionNode
-}
-
-func (m *_QueryDataSet) GetNoOfValues() int32 {
-	return m.NoOfValues
 }
 
 func (m *_QueryDataSet) GetValues() []Variant {
@@ -307,7 +299,7 @@ func (m *_QueryDataSet) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (typeDefinitionNode)
 	lengthInBits += m.TypeDefinitionNode.GetLengthInBits(ctx)
 
-	// Simple field (noOfValues)
+	// Implicit Field (noOfValues)
 	lengthInBits += 32
 
 	// Array field
@@ -327,7 +319,7 @@ func (m *_QueryDataSet) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_QueryDataSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryDataSet QueryDataSet, err error) {
+func (m *_QueryDataSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__queryDataSet QueryDataSet, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -350,11 +342,11 @@ func (m *_QueryDataSet) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 	m.TypeDefinitionNode = typeDefinitionNode
 
-	noOfValues, err := ReadSimpleField(ctx, "noOfValues", ReadSignedInt(readBuffer, uint8(32)))
+	noOfValues, err := ReadImplicitField[int32](ctx, "noOfValues", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfValues' field"))
 	}
-	m.NoOfValues = noOfValues
+	_ = noOfValues
 
 	values, err := ReadCountArrayField[Variant](ctx, "values", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfValues))
 	if err != nil {
@@ -394,8 +386,8 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		if err := WriteSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", m.GetTypeDefinitionNode(), WriteComplex[ExpandedNodeId](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'typeDefinitionNode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfValues", m.GetNoOfValues(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfValues := int32(utils.InlineIf(bool((m.GetValues()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetValues()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfValues", noOfValues, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfValues' field")
 		}
 

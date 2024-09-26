@@ -150,8 +150,8 @@ func (b *_NotificationData) CreateNotificationDataBuilder() NotificationDataBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_NotificationData) GetIdentifier() string {
-	return "947"
+func (m *_NotificationData) GetExtensionId() int32 {
+	return int32(947)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_NotificationData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_NotificationData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__notificationData NotificationData, err error) {
+func (m *_NotificationData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__notificationData NotificationData, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

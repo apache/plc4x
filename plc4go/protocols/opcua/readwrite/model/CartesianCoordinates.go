@@ -150,8 +150,8 @@ func (b *_CartesianCoordinates) CreateCartesianCoordinatesBuilder() CartesianCoo
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CartesianCoordinates) GetIdentifier() string {
-	return "18811"
+func (m *_CartesianCoordinates) GetExtensionId() int32 {
+	return int32(18811)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_CartesianCoordinates) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CartesianCoordinates) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__cartesianCoordinates CartesianCoordinates, err error) {
+func (m *_CartesianCoordinates) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__cartesianCoordinates CartesianCoordinates, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

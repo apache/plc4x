@@ -41,13 +41,9 @@ type SetMonitoringModeResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfResults returns NoOfResults (property field)
-	GetNoOfResults() int32
+	GetResponseHeader() ResponseHeader
 	// GetResults returns Results (property field)
 	GetResults() []StatusCode
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsSetMonitoringModeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type SetMonitoringModeResponse interface {
 // _SetMonitoringModeResponse is the data-structure of this message
 type _SetMonitoringModeResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader      ExtensionObjectDefinition
-	NoOfResults         int32
-	Results             []StatusCode
-	NoOfDiagnosticInfos int32
-	DiagnosticInfos     []DiagnosticInfo
+	ResponseHeader  ResponseHeader
+	Results         []StatusCode
+	DiagnosticInfos []DiagnosticInfo
 }
 
 var _ SetMonitoringModeResponse = (*_SetMonitoringModeResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetMonitoringModeResponse)(nil)
 
 // NewSetMonitoringModeResponse factory function for _SetMonitoringModeResponse
-func NewSetMonitoringModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetMonitoringModeResponse {
+func NewSetMonitoringModeResponse(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) *_SetMonitoringModeResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for SetMonitoringModeResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for SetMonitoringModeResponse must not be nil")
 	}
 	_result := &_SetMonitoringModeResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
 		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -231,8 +223,8 @@ func (b *_SetMonitoringModeResponse) CreateSetMonitoringModeResponseBuilder() Se
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SetMonitoringModeResponse) GetIdentifier() string {
-	return "772"
+func (m *_SetMonitoringModeResponse) GetExtensionId() int32 {
+	return int32(772)
 }
 
 ///////////////////////
@@ -249,20 +241,12 @@ func (m *_SetMonitoringModeResponse) GetParent() ExtensionObjectDefinitionContra
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_SetMonitoringModeResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_SetMonitoringModeResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
-}
-
-func (m *_SetMonitoringModeResponse) GetNoOfResults() int32 {
-	return m.NoOfResults
 }
 
 func (m *_SetMonitoringModeResponse) GetResults() []StatusCode {
 	return m.Results
-}
-
-func (m *_SetMonitoringModeResponse) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_SetMonitoringModeResponse) GetDiagnosticInfos() []DiagnosticInfo {
@@ -295,7 +279,7 @@ func (m *_SetMonitoringModeResponse) GetLengthInBits(ctx context.Context) uint16
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfResults)
+	// Implicit Field (noOfResults)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +292,7 @@ func (m *_SetMonitoringModeResponse) GetLengthInBits(ctx context.Context) uint16
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +312,7 @@ func (m *_SetMonitoringModeResponse) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SetMonitoringModeResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__setMonitoringModeResponse SetMonitoringModeResponse, err error) {
+func (m *_SetMonitoringModeResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__setMonitoringModeResponse SetMonitoringModeResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -339,17 +323,17 @@ func (m *_SetMonitoringModeResponse) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfResults, err := ReadImplicitField[int32](ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
 	}
-	m.NoOfResults = noOfResults
+	_ = noOfResults
 
 	results, err := ReadCountArrayField[StatusCode](ctx, "results", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfResults))
 	if err != nil {
@@ -357,11 +341,11 @@ func (m *_SetMonitoringModeResponse) parse(ctx context.Context, readBuffer utils
 	}
 	m.Results = results
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -394,19 +378,19 @@ func (m *_SetMonitoringModeResponse) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for SetMonitoringModeResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfResults", m.GetNoOfResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfResults := int32(utils.InlineIf(bool((m.GetResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfResults", noOfResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "results", m.GetResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'results' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 

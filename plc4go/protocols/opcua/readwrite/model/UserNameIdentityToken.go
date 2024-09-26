@@ -38,8 +38,9 @@ type UserNameIdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	utils.Copyable
-	UserIdentityTokenDefinition
+	ExtensionObjectDefinition
+	// GetPolicyId returns PolicyId (property field)
+	GetPolicyId() PascalString
 	// GetUserName returns UserName (property field)
 	GetUserName() PascalString
 	// GetPassword returns Password (property field)
@@ -48,23 +49,25 @@ type UserNameIdentityToken interface {
 	GetEncryptionAlgorithm() PascalString
 	// IsUserNameIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserNameIdentityToken()
-	// CreateBuilder creates a UserNameIdentityTokenBuilder
-	CreateUserNameIdentityTokenBuilder() UserNameIdentityTokenBuilder
 }
 
 // _UserNameIdentityToken is the data-structure of this message
 type _UserNameIdentityToken struct {
-	UserIdentityTokenDefinitionContract
+	ExtensionObjectDefinitionContract
+	PolicyId            PascalString
 	UserName            PascalString
 	Password            PascalByteString
 	EncryptionAlgorithm PascalString
 }
 
 var _ UserNameIdentityToken = (*_UserNameIdentityToken)(nil)
-var _ UserIdentityTokenDefinitionRequirements = (*_UserNameIdentityToken)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_UserNameIdentityToken)(nil)
 
 // NewUserNameIdentityToken factory function for _UserNameIdentityToken
-func NewUserNameIdentityToken(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) *_UserNameIdentityToken {
+func NewUserNameIdentityToken(policyId PascalString, userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) *_UserNameIdentityToken {
+	if policyId == nil {
+		panic("policyId of type PascalString for UserNameIdentityToken must not be nil")
+	}
 	if userName == nil {
 		panic("userName of type PascalString for UserNameIdentityToken must not be nil")
 	}
@@ -75,190 +78,23 @@ func NewUserNameIdentityToken(userName PascalString, password PascalByteString, 
 		panic("encryptionAlgorithm of type PascalString for UserNameIdentityToken must not be nil")
 	}
 	_result := &_UserNameIdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-		UserName:                            userName,
-		Password:                            password,
-		EncryptionAlgorithm:                 encryptionAlgorithm,
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+		UserName:                          userName,
+		Password:                          password,
+		EncryptionAlgorithm:               encryptionAlgorithm,
 	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
-
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Builder
-///////////////////////
-
-// UserNameIdentityTokenBuilder is a builder for UserNameIdentityToken
-type UserNameIdentityTokenBuilder interface {
-	utils.Copyable
-	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder
-	// WithUserName adds UserName (property field)
-	WithUserName(PascalString) UserNameIdentityTokenBuilder
-	// WithUserNameBuilder adds UserName (property field) which is build by the builder
-	WithUserNameBuilder(func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder
-	// WithPassword adds Password (property field)
-	WithPassword(PascalByteString) UserNameIdentityTokenBuilder
-	// WithPasswordBuilder adds Password (property field) which is build by the builder
-	WithPasswordBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) UserNameIdentityTokenBuilder
-	// WithEncryptionAlgorithm adds EncryptionAlgorithm (property field)
-	WithEncryptionAlgorithm(PascalString) UserNameIdentityTokenBuilder
-	// WithEncryptionAlgorithmBuilder adds EncryptionAlgorithm (property field) which is build by the builder
-	WithEncryptionAlgorithmBuilder(func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder
-	// Build builds the UserNameIdentityToken or returns an error if something is wrong
-	Build() (UserNameIdentityToken, error)
-	// MustBuild does the same as Build but panics on error
-	MustBuild() UserNameIdentityToken
-}
-
-// NewUserNameIdentityTokenBuilder() creates a UserNameIdentityTokenBuilder
-func NewUserNameIdentityTokenBuilder() UserNameIdentityTokenBuilder {
-	return &_UserNameIdentityTokenBuilder{_UserNameIdentityToken: new(_UserNameIdentityToken)}
-}
-
-type _UserNameIdentityTokenBuilder struct {
-	*_UserNameIdentityToken
-
-	parentBuilder *_UserIdentityTokenDefinitionBuilder
-
-	err *utils.MultiError
-}
-
-var _ (UserNameIdentityTokenBuilder) = (*_UserNameIdentityTokenBuilder)(nil)
-
-func (b *_UserNameIdentityTokenBuilder) setParent(contract UserIdentityTokenDefinitionContract) {
-	b.UserIdentityTokenDefinitionContract = contract
-}
-
-func (b *_UserNameIdentityTokenBuilder) WithMandatoryFields(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder {
-	return b.WithUserName(userName).WithPassword(password).WithEncryptionAlgorithm(encryptionAlgorithm)
-}
-
-func (b *_UserNameIdentityTokenBuilder) WithUserName(userName PascalString) UserNameIdentityTokenBuilder {
-	b.UserName = userName
-	return b
-}
-
-func (b *_UserNameIdentityTokenBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder {
-	builder := builderSupplier(b.UserName.CreatePascalStringBuilder())
-	var err error
-	b.UserName, err = builder.Build()
-	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
-	}
-	return b
-}
-
-func (b *_UserNameIdentityTokenBuilder) WithPassword(password PascalByteString) UserNameIdentityTokenBuilder {
-	b.Password = password
-	return b
-}
-
-func (b *_UserNameIdentityTokenBuilder) WithPasswordBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) UserNameIdentityTokenBuilder {
-	builder := builderSupplier(b.Password.CreatePascalByteStringBuilder())
-	var err error
-	b.Password, err = builder.Build()
-	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
-	}
-	return b
-}
-
-func (b *_UserNameIdentityTokenBuilder) WithEncryptionAlgorithm(encryptionAlgorithm PascalString) UserNameIdentityTokenBuilder {
-	b.EncryptionAlgorithm = encryptionAlgorithm
-	return b
-}
-
-func (b *_UserNameIdentityTokenBuilder) WithEncryptionAlgorithmBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserNameIdentityTokenBuilder {
-	builder := builderSupplier(b.EncryptionAlgorithm.CreatePascalStringBuilder())
-	var err error
-	b.EncryptionAlgorithm, err = builder.Build()
-	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
-	}
-	return b
-}
-
-func (b *_UserNameIdentityTokenBuilder) Build() (UserNameIdentityToken, error) {
-	if b.UserName == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'userName' not set"))
-	}
-	if b.Password == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'password' not set"))
-	}
-	if b.EncryptionAlgorithm == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'encryptionAlgorithm' not set"))
-	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
-	}
-	return b._UserNameIdentityToken.deepCopy(), nil
-}
-
-func (b *_UserNameIdentityTokenBuilder) MustBuild() UserNameIdentityToken {
-	build, err := b.Build()
-	if err != nil {
-		panic(err)
-	}
-	return build
-}
-
-// Done is used to finish work on this child and return to the parent builder
-func (b *_UserNameIdentityTokenBuilder) Done() UserIdentityTokenDefinitionBuilder {
-	return b.parentBuilder
-}
-
-func (b *_UserNameIdentityTokenBuilder) buildForUserIdentityTokenDefinition() (UserIdentityTokenDefinition, error) {
-	return b.Build()
-}
-
-func (b *_UserNameIdentityTokenBuilder) DeepCopy() any {
-	_copy := b.CreateUserNameIdentityTokenBuilder().(*_UserNameIdentityTokenBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
-	}
-	return _copy
-}
-
-// CreateUserNameIdentityTokenBuilder creates a UserNameIdentityTokenBuilder
-func (b *_UserNameIdentityToken) CreateUserNameIdentityTokenBuilder() UserNameIdentityTokenBuilder {
-	if b == nil {
-		return NewUserNameIdentityTokenBuilder()
-	}
-	return &_UserNameIdentityTokenBuilder{_UserNameIdentityToken: b.deepCopy()}
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_UserNameIdentityToken) GetIdentifier() string {
-	return "username"
+func (m *_UserNameIdentityToken) GetExtensionId() int32 {
+	return int32(324)
 }
 
 ///////////////////////
@@ -266,14 +102,18 @@ func (m *_UserNameIdentityToken) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_UserNameIdentityToken) GetParent() UserIdentityTokenDefinitionContract {
-	return m.UserIdentityTokenDefinitionContract
+func (m *_UserNameIdentityToken) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_UserNameIdentityToken) GetPolicyId() PascalString {
+	return m.PolicyId
+}
 
 func (m *_UserNameIdentityToken) GetUserName() PascalString {
 	return m.UserName
@@ -308,7 +148,10 @@ func (m *_UserNameIdentityToken) GetTypeName() string {
 }
 
 func (m *_UserNameIdentityToken) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+
+	// Simple field (policyId)
+	lengthInBits += m.PolicyId.GetLengthInBits(ctx)
 
 	// Simple field (userName)
 	lengthInBits += m.UserName.GetLengthInBits(ctx)
@@ -326,8 +169,8 @@ func (m *_UserNameIdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_UserNameIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_UserIdentityTokenDefinition, identifier string) (__userNameIdentityToken UserNameIdentityToken, err error) {
-	m.UserIdentityTokenDefinitionContract = parent
+func (m *_UserNameIdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__userNameIdentityToken UserNameIdentityToken, err error) {
+	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -336,6 +179,12 @@ func (m *_UserNameIdentityToken) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+
+	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyId' field"))
+	}
+	m.PolicyId = policyId
 
 	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
 	if err != nil {
@@ -380,6 +229,10 @@ func (m *_UserNameIdentityToken) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for UserNameIdentityToken")
 		}
 
+		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'policyId' field")
+		}
+
 		if err := WriteSimpleField[PascalString](ctx, "userName", m.GetUserName(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'userName' field")
 		}
@@ -397,28 +250,10 @@ func (m *_UserNameIdentityToken) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		return nil
 	}
-	return m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).serializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_UserNameIdentityToken) IsUserNameIdentityToken() {}
-
-func (m *_UserNameIdentityToken) DeepCopy() any {
-	return m.deepCopy()
-}
-
-func (m *_UserNameIdentityToken) deepCopy() *_UserNameIdentityToken {
-	if m == nil {
-		return nil
-	}
-	_UserNameIdentityTokenCopy := &_UserNameIdentityToken{
-		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
-		m.UserName.DeepCopy().(PascalString),
-		m.Password.DeepCopy().(PascalByteString),
-		m.EncryptionAlgorithm.DeepCopy().(PascalString),
-	}
-	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
-	return _UserNameIdentityTokenCopy
-}
 
 func (m *_UserNameIdentityToken) String() string {
 	if m == nil {

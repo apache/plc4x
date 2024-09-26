@@ -222,8 +222,8 @@ func (b *_SignatureData) CreateSignatureDataBuilder() SignatureDataBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SignatureData) GetIdentifier() string {
-	return "458"
+func (m *_SignatureData) GetExtensionId() int32 {
+	return int32(458)
 }
 
 ///////////////////////
@@ -284,7 +284,7 @@ func (m *_SignatureData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SignatureData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__signatureData SignatureData, err error) {
+func (m *_SignatureData) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__signatureData SignatureData, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

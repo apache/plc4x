@@ -43,7 +43,7 @@ type MonitoredItemModifyRequest interface {
 	// GetMonitoredItemId returns MonitoredItemId (property field)
 	GetMonitoredItemId() uint32
 	// GetRequestedParameters returns RequestedParameters (property field)
-	GetRequestedParameters() ExtensionObjectDefinition
+	GetRequestedParameters() MonitoringParameters
 	// IsMonitoredItemModifyRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredItemModifyRequest()
 	// CreateBuilder creates a MonitoredItemModifyRequestBuilder
@@ -54,16 +54,16 @@ type MonitoredItemModifyRequest interface {
 type _MonitoredItemModifyRequest struct {
 	ExtensionObjectDefinitionContract
 	MonitoredItemId     uint32
-	RequestedParameters ExtensionObjectDefinition
+	RequestedParameters MonitoringParameters
 }
 
 var _ MonitoredItemModifyRequest = (*_MonitoredItemModifyRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemModifyRequest)(nil)
 
 // NewMonitoredItemModifyRequest factory function for _MonitoredItemModifyRequest
-func NewMonitoredItemModifyRequest(monitoredItemId uint32, requestedParameters ExtensionObjectDefinition) *_MonitoredItemModifyRequest {
+func NewMonitoredItemModifyRequest(monitoredItemId uint32, requestedParameters MonitoringParameters) *_MonitoredItemModifyRequest {
 	if requestedParameters == nil {
-		panic("requestedParameters of type ExtensionObjectDefinition for MonitoredItemModifyRequest must not be nil")
+		panic("requestedParameters of type MonitoringParameters for MonitoredItemModifyRequest must not be nil")
 	}
 	_result := &_MonitoredItemModifyRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -198,8 +198,8 @@ func (b *_MonitoredItemModifyRequest) CreateMonitoredItemModifyRequestBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_MonitoredItemModifyRequest) GetIdentifier() string {
-	return "757"
+func (m *_MonitoredItemModifyRequest) GetExtensionId() int32 {
+	return int32(757)
 }
 
 ///////////////////////
@@ -220,7 +220,7 @@ func (m *_MonitoredItemModifyRequest) GetMonitoredItemId() uint32 {
 	return m.MonitoredItemId
 }
 
-func (m *_MonitoredItemModifyRequest) GetRequestedParameters() ExtensionObjectDefinition {
+func (m *_MonitoredItemModifyRequest) GetRequestedParameters() MonitoringParameters {
 	return m.RequestedParameters
 }
 
@@ -260,7 +260,7 @@ func (m *_MonitoredItemModifyRequest) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_MonitoredItemModifyRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoredItemModifyRequest MonitoredItemModifyRequest, err error) {
+func (m *_MonitoredItemModifyRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__monitoredItemModifyRequest MonitoredItemModifyRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -277,7 +277,7 @@ func (m *_MonitoredItemModifyRequest) parse(ctx context.Context, readBuffer util
 	}
 	m.MonitoredItemId = monitoredItemId
 
-	requestedParameters, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestedParameters", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("742")), readBuffer))
+	requestedParameters, err := ReadSimpleField[MonitoringParameters](ctx, "requestedParameters", ReadComplex[MonitoringParameters](ExtensionObjectDefinitionParseWithBufferProducer[MonitoringParameters]((int32)(int32(742))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedParameters' field"))
 	}
@@ -312,7 +312,7 @@ func (m *_MonitoredItemModifyRequest) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(err, "Error serializing 'monitoredItemId' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[MonitoringParameters](ctx, "requestedParameters", m.GetRequestedParameters(), WriteComplex[MonitoringParameters](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestedParameters' field")
 		}
 

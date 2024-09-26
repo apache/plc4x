@@ -41,11 +41,9 @@ type BrowseNextRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetReleaseContinuationPoints returns ReleaseContinuationPoints (property field)
 	GetReleaseContinuationPoints() bool
-	// GetNoOfContinuationPoints returns NoOfContinuationPoints (property field)
-	GetNoOfContinuationPoints() int32
 	// GetContinuationPoints returns ContinuationPoints (property field)
 	GetContinuationPoints() []PascalByteString
 	// IsBrowseNextRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,9 +55,8 @@ type BrowseNextRequest interface {
 // _BrowseNextRequest is the data-structure of this message
 type _BrowseNextRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader             ExtensionObjectDefinition
+	RequestHeader             RequestHeader
 	ReleaseContinuationPoints bool
-	NoOfContinuationPoints    int32
 	ContinuationPoints        []PascalByteString
 	// Reserved Fields
 	reservedField0 *uint8
@@ -69,15 +66,14 @@ var _ BrowseNextRequest = (*_BrowseNextRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseNextRequest)(nil)
 
 // NewBrowseNextRequest factory function for _BrowseNextRequest
-func NewBrowseNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) *_BrowseNextRequest {
+func NewBrowseNextRequest(requestHeader RequestHeader, releaseContinuationPoints bool, continuationPoints []PascalByteString) *_BrowseNextRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for BrowseNextRequest must not be nil")
+		panic("requestHeader of type RequestHeader for BrowseNextRequest must not be nil")
 	}
 	_result := &_BrowseNextRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		ReleaseContinuationPoints:         releaseContinuationPoints,
-		NoOfContinuationPoints:            noOfContinuationPoints,
 		ContinuationPoints:                continuationPoints,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -222,8 +218,8 @@ func (b *_BrowseNextRequest) CreateBrowseNextRequestBuilder() BrowseNextRequestB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BrowseNextRequest) GetIdentifier() string {
-	return "533"
+func (m *_BrowseNextRequest) GetExtensionId() int32 {
+	return int32(533)
 }
 
 ///////////////////////
@@ -240,16 +236,12 @@ func (m *_BrowseNextRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_BrowseNextRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_BrowseNextRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
 func (m *_BrowseNextRequest) GetReleaseContinuationPoints() bool {
 	return m.ReleaseContinuationPoints
-}
-
-func (m *_BrowseNextRequest) GetNoOfContinuationPoints() int32 {
-	return m.NoOfContinuationPoints
 }
 
 func (m *_BrowseNextRequest) GetContinuationPoints() []PascalByteString {
@@ -288,7 +280,7 @@ func (m *_BrowseNextRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (releaseContinuationPoints)
 	lengthInBits += 1
 
-	// Simple field (noOfContinuationPoints)
+	// Implicit Field (noOfContinuationPoints)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +300,7 @@ func (m *_BrowseNextRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BrowseNextRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browseNextRequest BrowseNextRequest, err error) {
+func (m *_BrowseNextRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__browseNextRequest BrowseNextRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -319,7 +311,7 @@ func (m *_BrowseNextRequest) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -337,11 +329,11 @@ func (m *_BrowseNextRequest) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.ReleaseContinuationPoints = releaseContinuationPoints
 
-	noOfContinuationPoints, err := ReadSimpleField(ctx, "noOfContinuationPoints", ReadSignedInt(readBuffer, uint8(32)))
+	noOfContinuationPoints, err := ReadImplicitField[int32](ctx, "noOfContinuationPoints", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfContinuationPoints' field"))
 	}
-	m.NoOfContinuationPoints = noOfContinuationPoints
+	_ = noOfContinuationPoints
 
 	continuationPoints, err := ReadCountArrayField[PascalByteString](ctx, "continuationPoints", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfContinuationPoints))
 	if err != nil {
@@ -374,7 +366,7 @@ func (m *_BrowseNextRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for BrowseNextRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
@@ -385,8 +377,8 @@ func (m *_BrowseNextRequest) SerializeWithWriteBuffer(ctx context.Context, write
 		if err := WriteSimpleField[bool](ctx, "releaseContinuationPoints", m.GetReleaseContinuationPoints(), WriteBoolean(writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'releaseContinuationPoints' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfContinuationPoints", m.GetNoOfContinuationPoints(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfContinuationPoints := int32(utils.InlineIf(bool((m.GetContinuationPoints()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetContinuationPoints()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfContinuationPoints", noOfContinuationPoints, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfContinuationPoints' field")
 		}
 

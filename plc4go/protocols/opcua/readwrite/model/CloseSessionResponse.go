@@ -41,7 +41,7 @@ type CloseSessionResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// IsCloseSessionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCloseSessionResponse()
 	// CreateBuilder creates a CloseSessionResponseBuilder
@@ -51,16 +51,16 @@ type CloseSessionResponse interface {
 // _CloseSessionResponse is the data-structure of this message
 type _CloseSessionResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
 }
 
 var _ CloseSessionResponse = (*_CloseSessionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionResponse)(nil)
 
 // NewCloseSessionResponse factory function for _CloseSessionResponse
-func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSessionResponse {
+func NewCloseSessionResponse(responseHeader ResponseHeader) *_CloseSessionResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CloseSessionResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for CloseSessionResponse must not be nil")
 	}
 	_result := &_CloseSessionResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -187,8 +187,8 @@ func (b *_CloseSessionResponse) CreateCloseSessionResponseBuilder() CloseSession
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CloseSessionResponse) GetIdentifier() string {
-	return "476"
+func (m *_CloseSessionResponse) GetExtensionId() int32 {
+	return int32(476)
 }
 
 ///////////////////////
@@ -205,7 +205,7 @@ func (m *_CloseSessionResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CloseSessionResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_CloseSessionResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -242,7 +242,7 @@ func (m *_CloseSessionResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CloseSessionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__closeSessionResponse CloseSessionResponse, err error) {
+func (m *_CloseSessionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__closeSessionResponse CloseSessionResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -253,7 +253,7 @@ func (m *_CloseSessionResponse) parse(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_CloseSessionResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for CloseSessionResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 

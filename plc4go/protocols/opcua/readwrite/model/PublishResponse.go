@@ -41,23 +41,17 @@ type PublishResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// GetSubscriptionId returns SubscriptionId (property field)
 	GetSubscriptionId() uint32
-	// GetNoOfAvailableSequenceNumbers returns NoOfAvailableSequenceNumbers (property field)
-	GetNoOfAvailableSequenceNumbers() int32
 	// GetAvailableSequenceNumbers returns AvailableSequenceNumbers (property field)
 	GetAvailableSequenceNumbers() []uint32
 	// GetMoreNotifications returns MoreNotifications (property field)
 	GetMoreNotifications() bool
 	// GetNotificationMessage returns NotificationMessage (property field)
-	GetNotificationMessage() ExtensionObjectDefinition
-	// GetNoOfResults returns NoOfResults (property field)
-	GetNoOfResults() int32
+	GetNotificationMessage() NotificationMessage
 	// GetResults returns Results (property field)
 	GetResults() []StatusCode
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsPublishResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -69,16 +63,13 @@ type PublishResponse interface {
 // _PublishResponse is the data-structure of this message
 type _PublishResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader               ExtensionObjectDefinition
-	SubscriptionId               uint32
-	NoOfAvailableSequenceNumbers int32
-	AvailableSequenceNumbers     []uint32
-	MoreNotifications            bool
-	NotificationMessage          ExtensionObjectDefinition
-	NoOfResults                  int32
-	Results                      []StatusCode
-	NoOfDiagnosticInfos          int32
-	DiagnosticInfos              []DiagnosticInfo
+	ResponseHeader           ResponseHeader
+	SubscriptionId           uint32
+	AvailableSequenceNumbers []uint32
+	MoreNotifications        bool
+	NotificationMessage      NotificationMessage
+	Results                  []StatusCode
+	DiagnosticInfos          []DiagnosticInfo
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -87,24 +78,21 @@ var _ PublishResponse = (*_PublishResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishResponse)(nil)
 
 // NewPublishResponse factory function for _PublishResponse
-func NewPublishResponse(responseHeader ExtensionObjectDefinition, subscriptionId uint32, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_PublishResponse {
+func NewPublishResponse(responseHeader ResponseHeader, subscriptionId uint32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage NotificationMessage, results []StatusCode, diagnosticInfos []DiagnosticInfo) *_PublishResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for PublishResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for PublishResponse must not be nil")
 	}
 	if notificationMessage == nil {
-		panic("notificationMessage of type ExtensionObjectDefinition for PublishResponse must not be nil")
+		panic("notificationMessage of type NotificationMessage for PublishResponse must not be nil")
 	}
 	_result := &_PublishResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
 		SubscriptionId:                    subscriptionId,
-		NoOfAvailableSequenceNumbers:      noOfAvailableSequenceNumbers,
 		AvailableSequenceNumbers:          availableSequenceNumbers,
 		MoreNotifications:                 moreNotifications,
 		NotificationMessage:               notificationMessage,
-		NoOfResults:                       noOfResults,
 		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -312,8 +300,8 @@ func (b *_PublishResponse) CreatePublishResponseBuilder() PublishResponseBuilder
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_PublishResponse) GetIdentifier() string {
-	return "829"
+func (m *_PublishResponse) GetExtensionId() int32 {
+	return int32(829)
 }
 
 ///////////////////////
@@ -330,16 +318,12 @@ func (m *_PublishResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_PublishResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_PublishResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
 func (m *_PublishResponse) GetSubscriptionId() uint32 {
 	return m.SubscriptionId
-}
-
-func (m *_PublishResponse) GetNoOfAvailableSequenceNumbers() int32 {
-	return m.NoOfAvailableSequenceNumbers
 }
 
 func (m *_PublishResponse) GetAvailableSequenceNumbers() []uint32 {
@@ -350,20 +334,12 @@ func (m *_PublishResponse) GetMoreNotifications() bool {
 	return m.MoreNotifications
 }
 
-func (m *_PublishResponse) GetNotificationMessage() ExtensionObjectDefinition {
+func (m *_PublishResponse) GetNotificationMessage() NotificationMessage {
 	return m.NotificationMessage
-}
-
-func (m *_PublishResponse) GetNoOfResults() int32 {
-	return m.NoOfResults
 }
 
 func (m *_PublishResponse) GetResults() []StatusCode {
 	return m.Results
-}
-
-func (m *_PublishResponse) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_PublishResponse) GetDiagnosticInfos() []DiagnosticInfo {
@@ -399,7 +375,7 @@ func (m *_PublishResponse) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (subscriptionId)
 	lengthInBits += 32
 
-	// Simple field (noOfAvailableSequenceNumbers)
+	// Implicit Field (noOfAvailableSequenceNumbers)
 	lengthInBits += 32
 
 	// Array field
@@ -416,7 +392,7 @@ func (m *_PublishResponse) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (notificationMessage)
 	lengthInBits += m.NotificationMessage.GetLengthInBits(ctx)
 
-	// Simple field (noOfResults)
+	// Implicit Field (noOfResults)
 	lengthInBits += 32
 
 	// Array field
@@ -429,7 +405,7 @@ func (m *_PublishResponse) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -449,7 +425,7 @@ func (m *_PublishResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_PublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__publishResponse PublishResponse, err error) {
+func (m *_PublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__publishResponse PublishResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -460,7 +436,7 @@ func (m *_PublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -472,11 +448,11 @@ func (m *_PublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	m.SubscriptionId = subscriptionId
 
-	noOfAvailableSequenceNumbers, err := ReadSimpleField(ctx, "noOfAvailableSequenceNumbers", ReadSignedInt(readBuffer, uint8(32)))
+	noOfAvailableSequenceNumbers, err := ReadImplicitField[int32](ctx, "noOfAvailableSequenceNumbers", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAvailableSequenceNumbers' field"))
 	}
-	m.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
+	_ = noOfAvailableSequenceNumbers
 
 	availableSequenceNumbers, err := ReadCountArrayField[uint32](ctx, "availableSequenceNumbers", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfAvailableSequenceNumbers))
 	if err != nil {
@@ -496,17 +472,17 @@ func (m *_PublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	m.MoreNotifications = moreNotifications
 
-	notificationMessage, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "notificationMessage", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("805")), readBuffer))
+	notificationMessage, err := ReadSimpleField[NotificationMessage](ctx, "notificationMessage", ReadComplex[NotificationMessage](ExtensionObjectDefinitionParseWithBufferProducer[NotificationMessage]((int32)(int32(805))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationMessage' field"))
 	}
 	m.NotificationMessage = notificationMessage
 
-	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfResults, err := ReadImplicitField[int32](ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
 	}
-	m.NoOfResults = noOfResults
+	_ = noOfResults
 
 	results, err := ReadCountArrayField[StatusCode](ctx, "results", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfResults))
 	if err != nil {
@@ -514,11 +490,11 @@ func (m *_PublishResponse) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	m.Results = results
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -551,15 +527,15 @@ func (m *_PublishResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for PublishResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
 		if err := WriteSimpleField[uint32](ctx, "subscriptionId", m.GetSubscriptionId(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'subscriptionId' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfAvailableSequenceNumbers", m.GetNoOfAvailableSequenceNumbers(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfAvailableSequenceNumbers := int32(utils.InlineIf(bool((m.GetAvailableSequenceNumbers()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetAvailableSequenceNumbers()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfAvailableSequenceNumbers", noOfAvailableSequenceNumbers, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfAvailableSequenceNumbers' field")
 		}
 
@@ -575,19 +551,19 @@ func (m *_PublishResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(err, "Error serializing 'moreNotifications' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "notificationMessage", m.GetNotificationMessage(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[NotificationMessage](ctx, "notificationMessage", m.GetNotificationMessage(), WriteComplex[NotificationMessage](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'notificationMessage' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfResults", m.GetNoOfResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfResults := int32(utils.InlineIf(bool((m.GetResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfResults", noOfResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "results", m.GetResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'results' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 

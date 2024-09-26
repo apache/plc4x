@@ -150,8 +150,8 @@ func (b *_DiscoveryConfiguration) CreateDiscoveryConfigurationBuilder() Discover
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DiscoveryConfiguration) GetIdentifier() string {
-	return "12892"
+func (m *_DiscoveryConfiguration) GetExtensionId() int32 {
+	return int32(12892)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_DiscoveryConfiguration) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DiscoveryConfiguration) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__discoveryConfiguration DiscoveryConfiguration, err error) {
+func (m *_DiscoveryConfiguration) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__discoveryConfiguration DiscoveryConfiguration, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

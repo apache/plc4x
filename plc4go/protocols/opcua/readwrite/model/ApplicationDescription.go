@@ -52,8 +52,6 @@ type ApplicationDescription interface {
 	GetGatewayServerUri() PascalString
 	// GetDiscoveryProfileUri returns DiscoveryProfileUri (property field)
 	GetDiscoveryProfileUri() PascalString
-	// GetNoOfDiscoveryUrls returns NoOfDiscoveryUrls (property field)
-	GetNoOfDiscoveryUrls() int32
 	// GetDiscoveryUrls returns DiscoveryUrls (property field)
 	GetDiscoveryUrls() []PascalString
 	// IsApplicationDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -71,7 +69,6 @@ type _ApplicationDescription struct {
 	ApplicationType     ApplicationType
 	GatewayServerUri    PascalString
 	DiscoveryProfileUri PascalString
-	NoOfDiscoveryUrls   int32
 	DiscoveryUrls       []PascalString
 }
 
@@ -79,7 +76,7 @@ var _ ApplicationDescription = (*_ApplicationDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ApplicationDescription)(nil)
 
 // NewApplicationDescription factory function for _ApplicationDescription
-func NewApplicationDescription(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString) *_ApplicationDescription {
+func NewApplicationDescription(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, discoveryUrls []PascalString) *_ApplicationDescription {
 	if applicationUri == nil {
 		panic("applicationUri of type PascalString for ApplicationDescription must not be nil")
 	}
@@ -103,7 +100,6 @@ func NewApplicationDescription(applicationUri PascalString, productUri PascalStr
 		ApplicationType:                   applicationType,
 		GatewayServerUri:                  gatewayServerUri,
 		DiscoveryProfileUri:               discoveryProfileUri,
-		NoOfDiscoveryUrls:                 noOfDiscoveryUrls,
 		DiscoveryUrls:                     discoveryUrls,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -360,8 +356,8 @@ func (b *_ApplicationDescription) CreateApplicationDescriptionBuilder() Applicat
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ApplicationDescription) GetIdentifier() string {
-	return "310"
+func (m *_ApplicationDescription) GetExtensionId() int32 {
+	return int32(310)
 }
 
 ///////////////////////
@@ -400,10 +396,6 @@ func (m *_ApplicationDescription) GetGatewayServerUri() PascalString {
 
 func (m *_ApplicationDescription) GetDiscoveryProfileUri() PascalString {
 	return m.DiscoveryProfileUri
-}
-
-func (m *_ApplicationDescription) GetNoOfDiscoveryUrls() int32 {
-	return m.NoOfDiscoveryUrls
 }
 
 func (m *_ApplicationDescription) GetDiscoveryUrls() []PascalString {
@@ -451,7 +443,7 @@ func (m *_ApplicationDescription) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (discoveryProfileUri)
 	lengthInBits += m.DiscoveryProfileUri.GetLengthInBits(ctx)
 
-	// Simple field (noOfDiscoveryUrls)
+	// Implicit Field (noOfDiscoveryUrls)
 	lengthInBits += 32
 
 	// Array field
@@ -471,7 +463,7 @@ func (m *_ApplicationDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ApplicationDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__applicationDescription ApplicationDescription, err error) {
+func (m *_ApplicationDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__applicationDescription ApplicationDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -518,11 +510,11 @@ func (m *_ApplicationDescription) parse(ctx context.Context, readBuffer utils.Re
 	}
 	m.DiscoveryProfileUri = discoveryProfileUri
 
-	noOfDiscoveryUrls, err := ReadSimpleField(ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiscoveryUrls, err := ReadImplicitField[int32](ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiscoveryUrls' field"))
 	}
-	m.NoOfDiscoveryUrls = noOfDiscoveryUrls
+	_ = noOfDiscoveryUrls
 
 	discoveryUrls, err := ReadCountArrayField[PascalString](ctx, "discoveryUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfDiscoveryUrls))
 	if err != nil {
@@ -578,8 +570,8 @@ func (m *_ApplicationDescription) SerializeWithWriteBuffer(ctx context.Context, 
 		if err := WriteSimpleField[PascalString](ctx, "discoveryProfileUri", m.GetDiscoveryProfileUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'discoveryProfileUri' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiscoveryUrls", m.GetNoOfDiscoveryUrls(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiscoveryUrls := int32(utils.InlineIf(bool((m.GetDiscoveryUrls()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiscoveryUrls()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiscoveryUrls", noOfDiscoveryUrls, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiscoveryUrls' field")
 		}
 

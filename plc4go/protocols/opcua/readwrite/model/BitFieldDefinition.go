@@ -247,8 +247,8 @@ func (b *_BitFieldDefinition) CreateBitFieldDefinitionBuilder() BitFieldDefiniti
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BitFieldDefinition) GetIdentifier() string {
-	return "32423"
+func (m *_BitFieldDefinition) GetExtensionId() int32 {
+	return int32(32423)
 }
 
 ///////////////////////
@@ -329,7 +329,7 @@ func (m *_BitFieldDefinition) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BitFieldDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__bitFieldDefinition BitFieldDefinition, err error) {
+func (m *_BitFieldDefinition) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__bitFieldDefinition BitFieldDefinition, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

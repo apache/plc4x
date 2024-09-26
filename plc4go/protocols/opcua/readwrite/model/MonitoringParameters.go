@@ -233,8 +233,8 @@ func (b *_MonitoringParameters) CreateMonitoringParametersBuilder() MonitoringPa
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_MonitoringParameters) GetIdentifier() string {
-	return "742"
+func (m *_MonitoringParameters) GetExtensionId() int32 {
+	return int32(742)
 }
 
 ///////////////////////
@@ -319,7 +319,7 @@ func (m *_MonitoringParameters) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_MonitoringParameters) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoringParameters MonitoringParameters, err error) {
+func (m *_MonitoringParameters) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__monitoringParameters MonitoringParameters, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -342,7 +342,7 @@ func (m *_MonitoringParameters) parse(ctx context.Context, readBuffer utils.Read
 	}
 	m.SamplingInterval = samplingInterval
 
-	filter, err := ReadSimpleField[ExtensionObject](ctx, "filter", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	filter, err := ReadSimpleField[ExtensionObject](ctx, "filter", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filter' field"))
 	}

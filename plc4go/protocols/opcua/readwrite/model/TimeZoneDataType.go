@@ -176,8 +176,8 @@ func (b *_TimeZoneDataType) CreateTimeZoneDataTypeBuilder() TimeZoneDataTypeBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_TimeZoneDataType) GetIdentifier() string {
-	return "8914"
+func (m *_TimeZoneDataType) GetExtensionId() int32 {
+	return int32(8914)
 }
 
 ///////////////////////
@@ -241,7 +241,7 @@ func (m *_TimeZoneDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_TimeZoneDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__timeZoneDataType TimeZoneDataType, err error) {
+func (m *_TimeZoneDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__timeZoneDataType TimeZoneDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

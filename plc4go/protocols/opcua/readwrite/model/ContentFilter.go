@@ -40,10 +40,8 @@ type ContentFilter interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfElements returns NoOfElements (property field)
-	GetNoOfElements() int32
 	// GetElements returns Elements (property field)
-	GetElements() []ExtensionObjectDefinition
+	GetElements() []ContentFilterElement
 	// IsContentFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsContentFilter()
 	// CreateBuilder creates a ContentFilterBuilder
@@ -53,18 +51,16 @@ type ContentFilter interface {
 // _ContentFilter is the data-structure of this message
 type _ContentFilter struct {
 	ExtensionObjectDefinitionContract
-	NoOfElements int32
-	Elements     []ExtensionObjectDefinition
+	Elements []ContentFilterElement
 }
 
 var _ ContentFilter = (*_ContentFilter)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilter)(nil)
 
 // NewContentFilter factory function for _ContentFilter
-func NewContentFilter(noOfElements int32, elements []ExtensionObjectDefinition) *_ContentFilter {
+func NewContentFilter(elements []ContentFilterElement) *_ContentFilter {
 	_result := &_ContentFilter{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfElements:                      noOfElements,
 		Elements:                          elements,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -174,8 +170,8 @@ func (b *_ContentFilter) CreateContentFilterBuilder() ContentFilterBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ContentFilter) GetIdentifier() string {
-	return "588"
+func (m *_ContentFilter) GetExtensionId() int32 {
+	return int32(588)
 }
 
 ///////////////////////
@@ -192,11 +188,7 @@ func (m *_ContentFilter) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ContentFilter) GetNoOfElements() int32 {
-	return m.NoOfElements
-}
-
-func (m *_ContentFilter) GetElements() []ExtensionObjectDefinition {
+func (m *_ContentFilter) GetElements() []ContentFilterElement {
 	return m.Elements
 }
 
@@ -223,7 +215,7 @@ func (m *_ContentFilter) GetTypeName() string {
 func (m *_ContentFilter) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
-	// Simple field (noOfElements)
+	// Implicit Field (noOfElements)
 	lengthInBits += 32
 
 	// Array field
@@ -243,7 +235,7 @@ func (m *_ContentFilter) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ContentFilter) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__contentFilter ContentFilter, err error) {
+func (m *_ContentFilter) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__contentFilter ContentFilter, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -254,13 +246,13 @@ func (m *_ContentFilter) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfElements, err := ReadSimpleField(ctx, "noOfElements", ReadSignedInt(readBuffer, uint8(32)))
+	noOfElements, err := ReadImplicitField[int32](ctx, "noOfElements", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfElements' field"))
 	}
-	m.NoOfElements = noOfElements
+	_ = noOfElements
 
-	elements, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "elements", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("585")), readBuffer), uint64(noOfElements))
+	elements, err := ReadCountArrayField[ContentFilterElement](ctx, "elements", ReadComplex[ContentFilterElement](ExtensionObjectDefinitionParseWithBufferProducer[ContentFilterElement]((int32)(int32(585))), readBuffer), uint64(noOfElements))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elements' field"))
 	}
@@ -290,8 +282,8 @@ func (m *_ContentFilter) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		if pushErr := writeBuffer.PushContext("ContentFilter"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ContentFilter")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfElements", m.GetNoOfElements(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfElements := int32(utils.InlineIf(bool((m.GetElements()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetElements()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfElements", noOfElements, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfElements' field")
 		}
 

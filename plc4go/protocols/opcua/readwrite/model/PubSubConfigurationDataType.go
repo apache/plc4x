@@ -40,14 +40,10 @@ type PubSubConfigurationDataType interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfPublishedDataSets returns NoOfPublishedDataSets (property field)
-	GetNoOfPublishedDataSets() int32
 	// GetPublishedDataSets returns PublishedDataSets (property field)
-	GetPublishedDataSets() []ExtensionObjectDefinition
-	// GetNoOfConnections returns NoOfConnections (property field)
-	GetNoOfConnections() int32
+	GetPublishedDataSets() []PublishedDataSetDataType
 	// GetConnections returns Connections (property field)
-	GetConnections() []ExtensionObjectDefinition
+	GetConnections() []PubSubConnectionDataType
 	// GetEnabled returns Enabled (property field)
 	GetEnabled() bool
 	// IsPubSubConfigurationDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,11 +55,9 @@ type PubSubConfigurationDataType interface {
 // _PubSubConfigurationDataType is the data-structure of this message
 type _PubSubConfigurationDataType struct {
 	ExtensionObjectDefinitionContract
-	NoOfPublishedDataSets int32
-	PublishedDataSets     []ExtensionObjectDefinition
-	NoOfConnections       int32
-	Connections           []ExtensionObjectDefinition
-	Enabled               bool
+	PublishedDataSets []PublishedDataSetDataType
+	Connections       []PubSubConnectionDataType
+	Enabled           bool
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -72,12 +66,10 @@ var _ PubSubConfigurationDataType = (*_PubSubConfigurationDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubConfigurationDataType)(nil)
 
 // NewPubSubConfigurationDataType factory function for _PubSubConfigurationDataType
-func NewPubSubConfigurationDataType(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) *_PubSubConfigurationDataType {
+func NewPubSubConfigurationDataType(publishedDataSets []PublishedDataSetDataType, connections []PubSubConnectionDataType, enabled bool) *_PubSubConfigurationDataType {
 	_result := &_PubSubConfigurationDataType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfPublishedDataSets:             noOfPublishedDataSets,
 		PublishedDataSets:                 publishedDataSets,
-		NoOfConnections:                   noOfConnections,
 		Connections:                       connections,
 		Enabled:                           enabled,
 	}
@@ -209,8 +201,8 @@ func (b *_PubSubConfigurationDataType) CreatePubSubConfigurationDataTypeBuilder(
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_PubSubConfigurationDataType) GetIdentifier() string {
-	return "15532"
+func (m *_PubSubConfigurationDataType) GetExtensionId() int32 {
+	return int32(15532)
 }
 
 ///////////////////////
@@ -227,19 +219,11 @@ func (m *_PubSubConfigurationDataType) GetParent() ExtensionObjectDefinitionCont
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_PubSubConfigurationDataType) GetNoOfPublishedDataSets() int32 {
-	return m.NoOfPublishedDataSets
-}
-
-func (m *_PubSubConfigurationDataType) GetPublishedDataSets() []ExtensionObjectDefinition {
+func (m *_PubSubConfigurationDataType) GetPublishedDataSets() []PublishedDataSetDataType {
 	return m.PublishedDataSets
 }
 
-func (m *_PubSubConfigurationDataType) GetNoOfConnections() int32 {
-	return m.NoOfConnections
-}
-
-func (m *_PubSubConfigurationDataType) GetConnections() []ExtensionObjectDefinition {
+func (m *_PubSubConfigurationDataType) GetConnections() []PubSubConnectionDataType {
 	return m.Connections
 }
 
@@ -270,7 +254,7 @@ func (m *_PubSubConfigurationDataType) GetTypeName() string {
 func (m *_PubSubConfigurationDataType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
-	// Simple field (noOfPublishedDataSets)
+	// Implicit Field (noOfPublishedDataSets)
 	lengthInBits += 32
 
 	// Array field
@@ -283,7 +267,7 @@ func (m *_PubSubConfigurationDataType) GetLengthInBits(ctx context.Context) uint
 		}
 	}
 
-	// Simple field (noOfConnections)
+	// Implicit Field (noOfConnections)
 	lengthInBits += 32
 
 	// Array field
@@ -309,7 +293,7 @@ func (m *_PubSubConfigurationDataType) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_PubSubConfigurationDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__pubSubConfigurationDataType PubSubConfigurationDataType, err error) {
+func (m *_PubSubConfigurationDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__pubSubConfigurationDataType PubSubConfigurationDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -320,25 +304,25 @@ func (m *_PubSubConfigurationDataType) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfPublishedDataSets, err := ReadSimpleField(ctx, "noOfPublishedDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	noOfPublishedDataSets, err := ReadImplicitField[int32](ctx, "noOfPublishedDataSets", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPublishedDataSets' field"))
 	}
-	m.NoOfPublishedDataSets = noOfPublishedDataSets
+	_ = noOfPublishedDataSets
 
-	publishedDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "publishedDataSets", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("15580")), readBuffer), uint64(noOfPublishedDataSets))
+	publishedDataSets, err := ReadCountArrayField[PublishedDataSetDataType](ctx, "publishedDataSets", ReadComplex[PublishedDataSetDataType](ExtensionObjectDefinitionParseWithBufferProducer[PublishedDataSetDataType]((int32)(int32(15580))), readBuffer), uint64(noOfPublishedDataSets))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishedDataSets' field"))
 	}
 	m.PublishedDataSets = publishedDataSets
 
-	noOfConnections, err := ReadSimpleField(ctx, "noOfConnections", ReadSignedInt(readBuffer, uint8(32)))
+	noOfConnections, err := ReadImplicitField[int32](ctx, "noOfConnections", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConnections' field"))
 	}
-	m.NoOfConnections = noOfConnections
+	_ = noOfConnections
 
-	connections, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "connections", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("15619")), readBuffer), uint64(noOfConnections))
+	connections, err := ReadCountArrayField[PubSubConnectionDataType](ctx, "connections", ReadComplex[PubSubConnectionDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubConnectionDataType]((int32)(int32(15619))), readBuffer), uint64(noOfConnections))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connections' field"))
 	}
@@ -380,16 +364,16 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 		if pushErr := writeBuffer.PushContext("PubSubConfigurationDataType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for PubSubConfigurationDataType")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfPublishedDataSets", m.GetNoOfPublishedDataSets(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfPublishedDataSets := int32(utils.InlineIf(bool((m.GetPublishedDataSets()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetPublishedDataSets()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfPublishedDataSets", noOfPublishedDataSets, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfPublishedDataSets' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "publishedDataSets", m.GetPublishedDataSets(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'publishedDataSets' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfConnections", m.GetNoOfConnections(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfConnections := int32(utils.InlineIf(bool((m.GetConnections()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetConnections()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfConnections", noOfConnections, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfConnections' field")
 		}
 

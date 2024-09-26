@@ -41,13 +41,9 @@ type HistoryUpdateResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfResults returns NoOfResults (property field)
-	GetNoOfResults() int32
+	GetResponseHeader() ResponseHeader
 	// GetResults returns Results (property field)
-	GetResults() []ExtensionObjectDefinition
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
+	GetResults() []HistoryUpdateResult
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsHistoryUpdateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +55,23 @@ type HistoryUpdateResponse interface {
 // _HistoryUpdateResponse is the data-structure of this message
 type _HistoryUpdateResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader      ExtensionObjectDefinition
-	NoOfResults         int32
-	Results             []ExtensionObjectDefinition
-	NoOfDiagnosticInfos int32
-	DiagnosticInfos     []DiagnosticInfo
+	ResponseHeader  ResponseHeader
+	Results         []HistoryUpdateResult
+	DiagnosticInfos []DiagnosticInfo
 }
 
 var _ HistoryUpdateResponse = (*_HistoryUpdateResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateResponse)(nil)
 
 // NewHistoryUpdateResponse factory function for _HistoryUpdateResponse
-func NewHistoryUpdateResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResponse {
+func NewHistoryUpdateResponse(responseHeader ResponseHeader, results []HistoryUpdateResult, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for HistoryUpdateResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for HistoryUpdateResponse must not be nil")
 	}
 	_result := &_HistoryUpdateResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
 		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -231,8 +223,8 @@ func (b *_HistoryUpdateResponse) CreateHistoryUpdateResponseBuilder() HistoryUpd
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_HistoryUpdateResponse) GetIdentifier() string {
-	return "703"
+func (m *_HistoryUpdateResponse) GetExtensionId() int32 {
+	return int32(703)
 }
 
 ///////////////////////
@@ -249,20 +241,12 @@ func (m *_HistoryUpdateResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_HistoryUpdateResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_HistoryUpdateResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
-func (m *_HistoryUpdateResponse) GetNoOfResults() int32 {
-	return m.NoOfResults
-}
-
-func (m *_HistoryUpdateResponse) GetResults() []ExtensionObjectDefinition {
+func (m *_HistoryUpdateResponse) GetResults() []HistoryUpdateResult {
 	return m.Results
-}
-
-func (m *_HistoryUpdateResponse) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_HistoryUpdateResponse) GetDiagnosticInfos() []DiagnosticInfo {
@@ -295,7 +279,7 @@ func (m *_HistoryUpdateResponse) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfResults)
+	// Implicit Field (noOfResults)
 	lengthInBits += 32
 
 	// Array field
@@ -308,7 +292,7 @@ func (m *_HistoryUpdateResponse) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -328,7 +312,7 @@ func (m *_HistoryUpdateResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_HistoryUpdateResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyUpdateResponse HistoryUpdateResponse, err error) {
+func (m *_HistoryUpdateResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__historyUpdateResponse HistoryUpdateResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -339,29 +323,29 @@ func (m *_HistoryUpdateResponse) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfResults, err := ReadImplicitField[int32](ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
 	}
-	m.NoOfResults = noOfResults
+	_ = noOfResults
 
-	results, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "results", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("697")), readBuffer), uint64(noOfResults))
+	results, err := ReadCountArrayField[HistoryUpdateResult](ctx, "results", ReadComplex[HistoryUpdateResult](ExtensionObjectDefinitionParseWithBufferProducer[HistoryUpdateResult]((int32)(int32(697))), readBuffer), uint64(noOfResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'results' field"))
 	}
 	m.Results = results
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -394,19 +378,19 @@ func (m *_HistoryUpdateResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for HistoryUpdateResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfResults", m.GetNoOfResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfResults := int32(utils.InlineIf(bool((m.GetResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfResults", noOfResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "results", m.GetResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'results' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 

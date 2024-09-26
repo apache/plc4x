@@ -519,8 +519,8 @@ func (b *_SubscriptionDiagnosticsDataType) CreateSubscriptionDiagnosticsDataType
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SubscriptionDiagnosticsDataType) GetIdentifier() string {
-	return "876"
+func (m *_SubscriptionDiagnosticsDataType) GetExtensionId() int32 {
+	return int32(876)
 }
 
 ///////////////////////
@@ -787,7 +787,7 @@ func (m *_SubscriptionDiagnosticsDataType) GetLengthInBytes(ctx context.Context)
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SubscriptionDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__subscriptionDiagnosticsDataType SubscriptionDiagnosticsDataType, err error) {
+func (m *_SubscriptionDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__subscriptionDiagnosticsDataType SubscriptionDiagnosticsDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

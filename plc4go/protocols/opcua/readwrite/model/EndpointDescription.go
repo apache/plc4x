@@ -43,17 +43,15 @@ type EndpointDescription interface {
 	// GetEndpointUrl returns EndpointUrl (property field)
 	GetEndpointUrl() PascalString
 	// GetServer returns Server (property field)
-	GetServer() ExtensionObjectDefinition
+	GetServer() ApplicationDescription
 	// GetServerCertificate returns ServerCertificate (property field)
 	GetServerCertificate() PascalByteString
 	// GetSecurityMode returns SecurityMode (property field)
 	GetSecurityMode() MessageSecurityMode
 	// GetSecurityPolicyUri returns SecurityPolicyUri (property field)
 	GetSecurityPolicyUri() PascalString
-	// GetNoOfUserIdentityTokens returns NoOfUserIdentityTokens (property field)
-	GetNoOfUserIdentityTokens() int32
 	// GetUserIdentityTokens returns UserIdentityTokens (property field)
-	GetUserIdentityTokens() []ExtensionObjectDefinition
+	GetUserIdentityTokens() []UserTokenPolicy
 	// GetTransportProfileUri returns TransportProfileUri (property field)
 	GetTransportProfileUri() PascalString
 	// GetSecurityLevel returns SecurityLevel (property field)
@@ -67,27 +65,26 @@ type EndpointDescription interface {
 // _EndpointDescription is the data-structure of this message
 type _EndpointDescription struct {
 	ExtensionObjectDefinitionContract
-	EndpointUrl            PascalString
-	Server                 ExtensionObjectDefinition
-	ServerCertificate      PascalByteString
-	SecurityMode           MessageSecurityMode
-	SecurityPolicyUri      PascalString
-	NoOfUserIdentityTokens int32
-	UserIdentityTokens     []ExtensionObjectDefinition
-	TransportProfileUri    PascalString
-	SecurityLevel          uint8
+	EndpointUrl         PascalString
+	Server              ApplicationDescription
+	ServerCertificate   PascalByteString
+	SecurityMode        MessageSecurityMode
+	SecurityPolicyUri   PascalString
+	UserIdentityTokens  []UserTokenPolicy
+	TransportProfileUri PascalString
+	SecurityLevel       uint8
 }
 
 var _ EndpointDescription = (*_EndpointDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointDescription)(nil)
 
 // NewEndpointDescription factory function for _EndpointDescription
-func NewEndpointDescription(endpointUrl PascalString, server ExtensionObjectDefinition, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, noOfUserIdentityTokens int32, userIdentityTokens []ExtensionObjectDefinition, transportProfileUri PascalString, securityLevel uint8) *_EndpointDescription {
+func NewEndpointDescription(endpointUrl PascalString, server ApplicationDescription, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, userIdentityTokens []UserTokenPolicy, transportProfileUri PascalString, securityLevel uint8) *_EndpointDescription {
 	if endpointUrl == nil {
 		panic("endpointUrl of type PascalString for EndpointDescription must not be nil")
 	}
 	if server == nil {
-		panic("server of type ExtensionObjectDefinition for EndpointDescription must not be nil")
+		panic("server of type ApplicationDescription for EndpointDescription must not be nil")
 	}
 	if serverCertificate == nil {
 		panic("serverCertificate of type PascalByteString for EndpointDescription must not be nil")
@@ -105,7 +102,6 @@ func NewEndpointDescription(endpointUrl PascalString, server ExtensionObjectDefi
 		ServerCertificate:                 serverCertificate,
 		SecurityMode:                      securityMode,
 		SecurityPolicyUri:                 securityPolicyUri,
-		NoOfUserIdentityTokens:            noOfUserIdentityTokens,
 		UserIdentityTokens:                userIdentityTokens,
 		TransportProfileUri:               transportProfileUri,
 		SecurityLevel:                     securityLevel,
@@ -371,8 +367,8 @@ func (b *_EndpointDescription) CreateEndpointDescriptionBuilder() EndpointDescri
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_EndpointDescription) GetIdentifier() string {
-	return "314"
+func (m *_EndpointDescription) GetExtensionId() int32 {
+	return int32(314)
 }
 
 ///////////////////////
@@ -393,7 +389,7 @@ func (m *_EndpointDescription) GetEndpointUrl() PascalString {
 	return m.EndpointUrl
 }
 
-func (m *_EndpointDescription) GetServer() ExtensionObjectDefinition {
+func (m *_EndpointDescription) GetServer() ApplicationDescription {
 	return m.Server
 }
 
@@ -409,11 +405,7 @@ func (m *_EndpointDescription) GetSecurityPolicyUri() PascalString {
 	return m.SecurityPolicyUri
 }
 
-func (m *_EndpointDescription) GetNoOfUserIdentityTokens() int32 {
-	return m.NoOfUserIdentityTokens
-}
-
-func (m *_EndpointDescription) GetUserIdentityTokens() []ExtensionObjectDefinition {
+func (m *_EndpointDescription) GetUserIdentityTokens() []UserTokenPolicy {
 	return m.UserIdentityTokens
 }
 
@@ -463,7 +455,7 @@ func (m *_EndpointDescription) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (securityPolicyUri)
 	lengthInBits += m.SecurityPolicyUri.GetLengthInBits(ctx)
 
-	// Simple field (noOfUserIdentityTokens)
+	// Implicit Field (noOfUserIdentityTokens)
 	lengthInBits += 32
 
 	// Array field
@@ -489,7 +481,7 @@ func (m *_EndpointDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_EndpointDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__endpointDescription EndpointDescription, err error) {
+func (m *_EndpointDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__endpointDescription EndpointDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -506,7 +498,7 @@ func (m *_EndpointDescription) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.EndpointUrl = endpointUrl
 
-	server, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "server", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("310")), readBuffer))
+	server, err := ReadSimpleField[ApplicationDescription](ctx, "server", ReadComplex[ApplicationDescription](ExtensionObjectDefinitionParseWithBufferProducer[ApplicationDescription]((int32)(int32(310))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
@@ -530,13 +522,13 @@ func (m *_EndpointDescription) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.SecurityPolicyUri = securityPolicyUri
 
-	noOfUserIdentityTokens, err := ReadSimpleField(ctx, "noOfUserIdentityTokens", ReadSignedInt(readBuffer, uint8(32)))
+	noOfUserIdentityTokens, err := ReadImplicitField[int32](ctx, "noOfUserIdentityTokens", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfUserIdentityTokens' field"))
 	}
-	m.NoOfUserIdentityTokens = noOfUserIdentityTokens
+	_ = noOfUserIdentityTokens
 
-	userIdentityTokens, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "userIdentityTokens", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("306")), readBuffer), uint64(noOfUserIdentityTokens))
+	userIdentityTokens, err := ReadCountArrayField[UserTokenPolicy](ctx, "userIdentityTokens", ReadComplex[UserTokenPolicy](ExtensionObjectDefinitionParseWithBufferProducer[UserTokenPolicy]((int32)(int32(306))), readBuffer), uint64(noOfUserIdentityTokens))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userIdentityTokens' field"))
 	}
@@ -583,7 +575,7 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(err, "Error serializing 'endpointUrl' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "server", m.GetServer(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ApplicationDescription](ctx, "server", m.GetServer(), WriteComplex[ApplicationDescription](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'server' field")
 		}
 
@@ -598,8 +590,8 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 		if err := WriteSimpleField[PascalString](ctx, "securityPolicyUri", m.GetSecurityPolicyUri(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityPolicyUri' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfUserIdentityTokens", m.GetNoOfUserIdentityTokens(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfUserIdentityTokens := int32(utils.InlineIf(bool((m.GetUserIdentityTokens()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetUserIdentityTokens()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfUserIdentityTokens", noOfUserIdentityTokens, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfUserIdentityTokens' field")
 		}
 

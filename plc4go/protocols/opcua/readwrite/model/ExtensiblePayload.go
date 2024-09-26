@@ -41,7 +41,7 @@ type ExtensiblePayload interface {
 	utils.Copyable
 	Payload
 	// GetPayload returns Payload (property field)
-	GetPayload() ExtensionObject
+	GetPayload() RootExtensionObject
 	// IsExtensiblePayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExtensiblePayload()
 	// CreateBuilder creates a ExtensiblePayloadBuilder
@@ -51,7 +51,7 @@ type ExtensiblePayload interface {
 // _ExtensiblePayload is the data-structure of this message
 type _ExtensiblePayload struct {
 	PayloadContract
-	Payload ExtensionObject
+	Payload RootExtensionObject
 }
 
 var _ ExtensiblePayload = (*_ExtensiblePayload)(nil)
@@ -60,7 +60,7 @@ var _ PayloadRequirements = (*_ExtensiblePayload)(nil)
 // NewExtensiblePayload factory function for _ExtensiblePayload
 func NewExtensiblePayload(sequenceHeader SequenceHeader, payload RootExtensionObject, byteCount uint32) *_ExtensiblePayload {
 	if payload == nil {
-		panic("payload of type ExtensionObject for ExtensiblePayload must not be nil")
+		panic("payload of type RootExtensionObject for ExtensiblePayload must not be nil")
 	}
 	_result := &_ExtensiblePayload{
 		PayloadContract: NewPayload(sequenceHeader, byteCount),
@@ -205,7 +205,7 @@ func (m *_ExtensiblePayload) GetParent() PayloadContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ExtensiblePayload) GetPayload() ExtensionObject {
+func (m *_ExtensiblePayload) GetPayload() RootExtensionObject {
 	return m.Payload
 }
 
@@ -253,7 +253,7 @@ func (m *_ExtensiblePayload) parse(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	payload, err := ReadSimpleField[ExtensionObject](ctx, "payload", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(false))), readBuffer))
+	payload, err := ReadSimpleField[RootExtensionObject](ctx, "payload", ReadComplex[RootExtensionObject](ExtensionObjectParseWithBufferProducer[RootExtensionObject]((bool)(bool(false))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_ExtensiblePayload) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for ExtensiblePayload")
 		}
 
-		if err := WriteSimpleField[ExtensionObject](ctx, "payload", m.GetPayload(), WriteComplex[ExtensionObject](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RootExtensionObject](ctx, "payload", m.GetPayload(), WriteComplex[RootExtensionObject](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 

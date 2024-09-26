@@ -257,8 +257,8 @@ func (b *_HistoryReadResult) CreateHistoryReadResultBuilder() HistoryReadResultB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_HistoryReadResult) GetIdentifier() string {
-	return "640"
+func (m *_HistoryReadResult) GetExtensionId() int32 {
+	return int32(640)
 }
 
 ///////////////////////
@@ -326,7 +326,7 @@ func (m *_HistoryReadResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_HistoryReadResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyReadResult HistoryReadResult, err error) {
+func (m *_HistoryReadResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__historyReadResult HistoryReadResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -349,7 +349,7 @@ func (m *_HistoryReadResult) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.ContinuationPoint = continuationPoint
 
-	historyData, err := ReadSimpleField[ExtensionObject](ctx, "historyData", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	historyData, err := ReadSimpleField[ExtensionObject](ctx, "historyData", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyData' field"))
 	}

@@ -198,8 +198,8 @@ func (b *_RolePermissionType) CreateRolePermissionTypeBuilder() RolePermissionTy
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RolePermissionType) GetIdentifier() string {
-	return "98"
+func (m *_RolePermissionType) GetExtensionId() int32 {
+	return int32(98)
 }
 
 ///////////////////////
@@ -260,7 +260,7 @@ func (m *_RolePermissionType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RolePermissionType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__rolePermissionType RolePermissionType, err error) {
+func (m *_RolePermissionType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__rolePermissionType RolePermissionType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

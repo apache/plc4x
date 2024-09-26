@@ -174,8 +174,8 @@ func (b *_Range) CreateRangeBuilder() RangeBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_Range) GetIdentifier() string {
-	return "886"
+func (m *_Range) GetExtensionId() int32 {
+	return int32(886)
 }
 
 ///////////////////////
@@ -236,7 +236,7 @@ func (m *_Range) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_Range) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__range Range, err error) {
+func (m *_Range) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__range Range, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

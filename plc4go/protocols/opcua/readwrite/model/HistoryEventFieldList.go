@@ -40,8 +40,6 @@ type HistoryEventFieldList interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfEventFields returns NoOfEventFields (property field)
-	GetNoOfEventFields() int32
 	// GetEventFields returns EventFields (property field)
 	GetEventFields() []Variant
 	// IsHistoryEventFieldList is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -53,18 +51,16 @@ type HistoryEventFieldList interface {
 // _HistoryEventFieldList is the data-structure of this message
 type _HistoryEventFieldList struct {
 	ExtensionObjectDefinitionContract
-	NoOfEventFields int32
-	EventFields     []Variant
+	EventFields []Variant
 }
 
 var _ HistoryEventFieldList = (*_HistoryEventFieldList)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryEventFieldList)(nil)
 
 // NewHistoryEventFieldList factory function for _HistoryEventFieldList
-func NewHistoryEventFieldList(noOfEventFields int32, eventFields []Variant) *_HistoryEventFieldList {
+func NewHistoryEventFieldList(eventFields []Variant) *_HistoryEventFieldList {
 	_result := &_HistoryEventFieldList{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEventFields:                   noOfEventFields,
 		EventFields:                       eventFields,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -174,8 +170,8 @@ func (b *_HistoryEventFieldList) CreateHistoryEventFieldListBuilder() HistoryEve
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_HistoryEventFieldList) GetIdentifier() string {
-	return "922"
+func (m *_HistoryEventFieldList) GetExtensionId() int32 {
+	return int32(922)
 }
 
 ///////////////////////
@@ -191,10 +187,6 @@ func (m *_HistoryEventFieldList) GetParent() ExtensionObjectDefinitionContract {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *_HistoryEventFieldList) GetNoOfEventFields() int32 {
-	return m.NoOfEventFields
-}
 
 func (m *_HistoryEventFieldList) GetEventFields() []Variant {
 	return m.EventFields
@@ -223,7 +215,7 @@ func (m *_HistoryEventFieldList) GetTypeName() string {
 func (m *_HistoryEventFieldList) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
-	// Simple field (noOfEventFields)
+	// Implicit Field (noOfEventFields)
 	lengthInBits += 32
 
 	// Array field
@@ -243,7 +235,7 @@ func (m *_HistoryEventFieldList) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_HistoryEventFieldList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__historyEventFieldList HistoryEventFieldList, err error) {
+func (m *_HistoryEventFieldList) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__historyEventFieldList HistoryEventFieldList, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -254,11 +246,11 @@ func (m *_HistoryEventFieldList) parse(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfEventFields, err := ReadSimpleField(ctx, "noOfEventFields", ReadSignedInt(readBuffer, uint8(32)))
+	noOfEventFields, err := ReadImplicitField[int32](ctx, "noOfEventFields", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEventFields' field"))
 	}
-	m.NoOfEventFields = noOfEventFields
+	_ = noOfEventFields
 
 	eventFields, err := ReadCountArrayField[Variant](ctx, "eventFields", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfEventFields))
 	if err != nil {
@@ -290,8 +282,8 @@ func (m *_HistoryEventFieldList) SerializeWithWriteBuffer(ctx context.Context, w
 		if pushErr := writeBuffer.PushContext("HistoryEventFieldList"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for HistoryEventFieldList")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfEventFields", m.GetNoOfEventFields(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfEventFields := int32(utils.InlineIf(bool((m.GetEventFields()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetEventFields()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfEventFields", noOfEventFields, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfEventFields' field")
 		}
 

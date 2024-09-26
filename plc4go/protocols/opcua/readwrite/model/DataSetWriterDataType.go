@@ -52,10 +52,8 @@ type DataSetWriterDataType interface {
 	GetKeyFrameCount() uint32
 	// GetDataSetName returns DataSetName (property field)
 	GetDataSetName() PascalString
-	// GetNoOfDataSetWriterProperties returns NoOfDataSetWriterProperties (property field)
-	GetNoOfDataSetWriterProperties() int32
 	// GetDataSetWriterProperties returns DataSetWriterProperties (property field)
-	GetDataSetWriterProperties() []ExtensionObjectDefinition
+	GetDataSetWriterProperties() []KeyValuePair
 	// GetTransportSettings returns TransportSettings (property field)
 	GetTransportSettings() ExtensionObject
 	// GetMessageSettings returns MessageSettings (property field)
@@ -69,16 +67,15 @@ type DataSetWriterDataType interface {
 // _DataSetWriterDataType is the data-structure of this message
 type _DataSetWriterDataType struct {
 	ExtensionObjectDefinitionContract
-	Name                        PascalString
-	Enabled                     bool
-	DataSetWriterId             uint16
-	DataSetFieldContentMask     DataSetFieldContentMask
-	KeyFrameCount               uint32
-	DataSetName                 PascalString
-	NoOfDataSetWriterProperties int32
-	DataSetWriterProperties     []ExtensionObjectDefinition
-	TransportSettings           ExtensionObject
-	MessageSettings             ExtensionObject
+	Name                    PascalString
+	Enabled                 bool
+	DataSetWriterId         uint16
+	DataSetFieldContentMask DataSetFieldContentMask
+	KeyFrameCount           uint32
+	DataSetName             PascalString
+	DataSetWriterProperties []KeyValuePair
+	TransportSettings       ExtensionObject
+	MessageSettings         ExtensionObject
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -87,7 +84,7 @@ var _ DataSetWriterDataType = (*_DataSetWriterDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataSetWriterDataType)(nil)
 
 // NewDataSetWriterDataType factory function for _DataSetWriterDataType
-func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) *_DataSetWriterDataType {
+func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, dataSetWriterProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject) *_DataSetWriterDataType {
 	if name == nil {
 		panic("name of type PascalString for DataSetWriterDataType must not be nil")
 	}
@@ -108,7 +105,6 @@ func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId u
 		DataSetFieldContentMask:           dataSetFieldContentMask,
 		KeyFrameCount:                     keyFrameCount,
 		DataSetName:                       dataSetName,
-		NoOfDataSetWriterProperties:       noOfDataSetWriterProperties,
 		DataSetWriterProperties:           dataSetWriterProperties,
 		TransportSettings:                 transportSettings,
 		MessageSettings:                   messageSettings,
@@ -360,8 +356,8 @@ func (b *_DataSetWriterDataType) CreateDataSetWriterDataTypeBuilder() DataSetWri
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DataSetWriterDataType) GetIdentifier() string {
-	return "15599"
+func (m *_DataSetWriterDataType) GetExtensionId() int32 {
+	return int32(15599)
 }
 
 ///////////////////////
@@ -402,11 +398,7 @@ func (m *_DataSetWriterDataType) GetDataSetName() PascalString {
 	return m.DataSetName
 }
 
-func (m *_DataSetWriterDataType) GetNoOfDataSetWriterProperties() int32 {
-	return m.NoOfDataSetWriterProperties
-}
-
-func (m *_DataSetWriterDataType) GetDataSetWriterProperties() []ExtensionObjectDefinition {
+func (m *_DataSetWriterDataType) GetDataSetWriterProperties() []KeyValuePair {
 	return m.DataSetWriterProperties
 }
 
@@ -462,7 +454,7 @@ func (m *_DataSetWriterDataType) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (dataSetName)
 	lengthInBits += m.DataSetName.GetLengthInBits(ctx)
 
-	// Simple field (noOfDataSetWriterProperties)
+	// Implicit Field (noOfDataSetWriterProperties)
 	lengthInBits += 32
 
 	// Array field
@@ -488,7 +480,7 @@ func (m *_DataSetWriterDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DataSetWriterDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataSetWriterDataType DataSetWriterDataType, err error) {
+func (m *_DataSetWriterDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__dataSetWriterDataType DataSetWriterDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -541,25 +533,25 @@ func (m *_DataSetWriterDataType) parse(ctx context.Context, readBuffer utils.Rea
 	}
 	m.DataSetName = dataSetName
 
-	noOfDataSetWriterProperties, err := ReadSimpleField(ctx, "noOfDataSetWriterProperties", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDataSetWriterProperties, err := ReadImplicitField[int32](ctx, "noOfDataSetWriterProperties", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataSetWriterProperties' field"))
 	}
-	m.NoOfDataSetWriterProperties = noOfDataSetWriterProperties
+	_ = noOfDataSetWriterProperties
 
-	dataSetWriterProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "dataSetWriterProperties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfDataSetWriterProperties))
+	dataSetWriterProperties, err := ReadCountArrayField[KeyValuePair](ctx, "dataSetWriterProperties", ReadComplex[KeyValuePair](ExtensionObjectDefinitionParseWithBufferProducer[KeyValuePair]((int32)(int32(14535))), readBuffer), uint64(noOfDataSetWriterProperties))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetWriterProperties' field"))
 	}
 	m.DataSetWriterProperties = dataSetWriterProperties
 
-	transportSettings, err := ReadSimpleField[ExtensionObject](ctx, "transportSettings", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	transportSettings, err := ReadSimpleField[ExtensionObject](ctx, "transportSettings", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSettings' field"))
 	}
 	m.TransportSettings = transportSettings
 
-	messageSettings, err := ReadSimpleField[ExtensionObject](ctx, "messageSettings", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	messageSettings, err := ReadSimpleField[ExtensionObject](ctx, "messageSettings", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageSettings' field"))
 	}
@@ -617,8 +609,8 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 		if err := WriteSimpleField[PascalString](ctx, "dataSetName", m.GetDataSetName(), WriteComplex[PascalString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'dataSetName' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDataSetWriterProperties", m.GetNoOfDataSetWriterProperties(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDataSetWriterProperties := int32(utils.InlineIf(bool((m.GetDataSetWriterProperties()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDataSetWriterProperties()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDataSetWriterProperties", noOfDataSetWriterProperties, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDataSetWriterProperties' field")
 		}
 

@@ -47,7 +47,7 @@ type ServerStatusDataType interface {
 	// GetState returns State (property field)
 	GetState() ServerState
 	// GetBuildInfo returns BuildInfo (property field)
-	GetBuildInfo() ExtensionObjectDefinition
+	GetBuildInfo() BuildInfo
 	// GetSecondsTillShutdown returns SecondsTillShutdown (property field)
 	GetSecondsTillShutdown() uint32
 	// GetShutdownReason returns ShutdownReason (property field)
@@ -64,7 +64,7 @@ type _ServerStatusDataType struct {
 	StartTime           int64
 	CurrentTime         int64
 	State               ServerState
-	BuildInfo           ExtensionObjectDefinition
+	BuildInfo           BuildInfo
 	SecondsTillShutdown uint32
 	ShutdownReason      LocalizedText
 }
@@ -73,9 +73,9 @@ var _ ServerStatusDataType = (*_ServerStatusDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServerStatusDataType)(nil)
 
 // NewServerStatusDataType factory function for _ServerStatusDataType
-func NewServerStatusDataType(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) *_ServerStatusDataType {
+func NewServerStatusDataType(startTime int64, currentTime int64, state ServerState, buildInfo BuildInfo, secondsTillShutdown uint32, shutdownReason LocalizedText) *_ServerStatusDataType {
 	if buildInfo == nil {
-		panic("buildInfo of type ExtensionObjectDefinition for ServerStatusDataType must not be nil")
+		panic("buildInfo of type BuildInfo for ServerStatusDataType must not be nil")
 	}
 	if shutdownReason == nil {
 		panic("shutdownReason of type LocalizedText for ServerStatusDataType must not be nil")
@@ -266,8 +266,8 @@ func (b *_ServerStatusDataType) CreateServerStatusDataTypeBuilder() ServerStatus
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ServerStatusDataType) GetIdentifier() string {
-	return "864"
+func (m *_ServerStatusDataType) GetExtensionId() int32 {
+	return int32(864)
 }
 
 ///////////////////////
@@ -296,7 +296,7 @@ func (m *_ServerStatusDataType) GetState() ServerState {
 	return m.State
 }
 
-func (m *_ServerStatusDataType) GetBuildInfo() ExtensionObjectDefinition {
+func (m *_ServerStatusDataType) GetBuildInfo() BuildInfo {
 	return m.BuildInfo
 }
 
@@ -356,7 +356,7 @@ func (m *_ServerStatusDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ServerStatusDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serverStatusDataType ServerStatusDataType, err error) {
+func (m *_ServerStatusDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__serverStatusDataType ServerStatusDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -385,7 +385,7 @@ func (m *_ServerStatusDataType) parse(ctx context.Context, readBuffer utils.Read
 	}
 	m.State = state
 
-	buildInfo, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "buildInfo", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("340")), readBuffer))
+	buildInfo, err := ReadSimpleField[BuildInfo](ctx, "buildInfo", ReadComplex[BuildInfo](ExtensionObjectDefinitionParseWithBufferProducer[BuildInfo]((int32)(int32(340))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'buildInfo' field"))
 	}
@@ -440,7 +440,7 @@ func (m *_ServerStatusDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(err, "Error serializing 'state' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "buildInfo", m.GetBuildInfo(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[BuildInfo](ctx, "buildInfo", m.GetBuildInfo(), WriteComplex[BuildInfo](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'buildInfo' field")
 		}
 
