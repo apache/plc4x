@@ -342,10 +342,28 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.LTIME), "PT12.345678901S", new PlcLTIME(Duration.parse("PT12.345678901S"))),
 
             // DATE values
-            Arguments.of(new MockTag("mock", PlcValueType.DATE), 1, new PlcDATE(1)),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), LocalDate.ofEpochDay(1234), new PlcDATE(LocalDate.ofEpochDay(1234))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), (byte) 123, new PlcDATE(LocalDate.ofEpochDay(123))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), (short) 1234, new PlcDATE(LocalDate.ofEpochDay(1234))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), 1234, new PlcDATE(LocalDate.ofEpochDay(1234))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), 12345678901L, new PlcDATE(LocalDate.ofEpochDay(12345678901L))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), (float) 1234.56, new PlcDATE(LocalDate.ofEpochDay(1234))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), (double) 1234.56, new PlcDATE(LocalDate.ofEpochDay(1234))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), BigInteger.valueOf(12345678901L), new PlcDATE(LocalDate.ofEpochDay(12345678901L))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), BigDecimal.valueOf(12345678901L), new PlcDATE(LocalDate.ofEpochDay(12345678901L))),
+            Arguments.of(new MockTag("mock", PlcValueType.DATE), LocalDate.parse("+33803290-10-08"), new PlcDATE(LocalDate.ofEpochDay(12345678901L))),
 
             // LDATE values
-            Arguments.of(new MockTag("mock", PlcValueType.LDATE), 1, new PlcLDATE(LocalDate.of(1978, 3,28))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), LocalDate.ofEpochDay(1234), new PlcLDATE(LocalDate.ofEpochDay(1234))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), (byte) 123, new PlcLDATE(LocalDate.parse("1970-01-01"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), (short) 12345, new PlcLDATE(LocalDate.parse("1970-01-01"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), 1234567890, new PlcLDATE(LocalDate.parse("2009-02-14"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), 12345678901L, new PlcLDATE(LocalDate.parse("2361-03-21"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), (float) 123456.56, new PlcLDATE(LocalDate.parse("1970-01-02"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), (double) 12345678.9, new PlcLDATE(LocalDate.parse("1970-05-23"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), BigInteger.valueOf(12345678901L), new PlcLDATE(LocalDate.parse("2361-03-21"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), BigDecimal.valueOf(12345678901L), new PlcLDATE(LocalDate.parse("2361-03-21"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE), "1978-03-28", new PlcLDATE(LocalDate.parse("1978-03-28"))),
 
             // TIME_OF_DAY values
             Arguments.of(new MockTag("mock", PlcValueType.TIME_OF_DAY), 1, new PlcTIME_OF_DAY(LocalTime.of(9, 11))),

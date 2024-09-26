@@ -37,15 +37,15 @@ public class PlcTIME extends PlcIECValue<Duration> {
         } else if (value instanceof Short) {
             return new PlcTIME((Short) value);
         } else if (value instanceof Integer) {
-            return new PlcTIME(Duration.of(((Integer) value).longValue(), ChronoUnit.MILLIS));
+            return new PlcTIME((Integer) value);
         } else if (value instanceof Long) {
-            return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
+            return new PlcTIME((Long) value);
         } else if (value instanceof Float) {
             return new PlcTIME((Float) value);
         } else if (value instanceof Double) {
             return new PlcTIME((Double) value);
         } else if (value instanceof BigInteger) {
-            return new PlcTIME(Duration.of(((BigInteger) value).longValue(), ChronoUnit.MILLIS));
+            return new PlcTIME((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcTIME((BigDecimal) value);
         } else {
