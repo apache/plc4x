@@ -56,7 +56,7 @@ const (
 )
 
 var (
-	SECURITY_POLICY_NONE = readWriteModel.NewPascalString(utils.MakePtr("http://opcfoundation.org/UA/SecurityPolicy#None"))
+	SECURITY_POLICY_NONE = readWriteModel.NewPascalString(utils.ToPtr("http://opcfoundation.org/UA/SecurityPolicy#None"))
 	NULL_STRING          = readWriteModel.NewPascalString(nil)
 	NULL_BYTE_STRING     = readWriteModel.NewPascalByteString(-1, nil)
 	NULL_EXPANDED_NODEID = readWriteModel.NewExpandedNodeId(false,
@@ -73,9 +73,9 @@ var (
 	INET_ADDRESS_PATTERN = regexp.MustCompile(`(.(?P<transportCode>tcp))?://(?P<transportHost>[\w.-]+)(:(?P<transportPort>\d*))?`)
 
 	URI_PATTERN                 = regexp.MustCompile(`^(?P<protocolCode>opc)` + INET_ADDRESS_PATTERN.String() + `(?P<transportEndpoint>[\w/=]*)[?]?`)
-	APPLICATION_URI             = readWriteModel.NewPascalString(utils.MakePtr("urn:apache:plc4x:client"))
-	PRODUCT_URI                 = readWriteModel.NewPascalString(utils.MakePtr("urn:apache:plc4x:client"))
-	APPLICATION_TEXT            = readWriteModel.NewPascalString(utils.MakePtr("OPCUA client for the Apache PLC4X:PLC4J project"))
+	APPLICATION_URI             = readWriteModel.NewPascalString(utils.ToPtr("urn:apache:plc4x:client"))
+	PRODUCT_URI                 = readWriteModel.NewPascalString(utils.ToPtr("urn:apache:plc4x:client"))
+	APPLICATION_TEXT            = readWriteModel.NewPascalString(utils.ToPtr("OPCUA client for the Apache PLC4X:PLC4J project"))
 	DEFAULT_CONNECTION_LIFETIME = uint32(36000000)
 )
 
@@ -381,8 +381,8 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 	)
 
 	extObject := readWriteModel.NewRootExtensionObject(
-		openSecureChannelRequest,
 		expandedNodeId,
+		openSecureChannelRequest,
 		identifier,
 	)
 
@@ -505,7 +505,7 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 	applicationName := readWriteModel.NewLocalizedText(
 		true,
 		true,
-		readWriteModel.NewPascalString(utils.MakePtr("en")),
+		readWriteModel.NewPascalString(utils.ToPtr("en")),
 		APPLICATION_TEXT)
 
 	var discoveryUrls []readWriteModel.PascalString
@@ -539,8 +539,8 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 		nil)
 
 	extObject := readWriteModel.NewRootExtensionObject(
-		createSessionRequest,
 		expandedNodeId,
+		createSessionRequest,
 		identifier,
 	)
 
@@ -653,8 +653,8 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 		nil)
 
 	extObject := readWriteModel.NewRootExtensionObject(
-		activateSessionRequest,
 		expandedNodeId,
+		activateSessionRequest,
 		identifier,
 	)
 
@@ -750,8 +750,8 @@ func (s *SecureChannel) onDisconnect(ctx context.Context, connection *Connection
 		true)
 
 	extObject := readWriteModel.NewRootExtensionObject(
-		closeSessionRequest,
 		expandedNodeId,
+		closeSessionRequest,
 		closeSessionRequest.GetExtensionId(),
 	)
 
@@ -832,8 +832,8 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, conn
 		readWriteModel.NewExtensiblePayload(
 			readWriteModel.NewSequenceHeader(transactionId, transactionId),
 			readWriteModel.NewRootExtensionObject(
-				closeSecureChannelRequest,
 				expandedNodeId,
+				closeSecureChannelRequest,
 				identifier,
 			),
 			0,
@@ -973,8 +973,8 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 	)
 
 	extObject := readWriteModel.NewRootExtensionObject(
-		openSecureChannelRequest,
 		expandedNodeId,
+		openSecureChannelRequest,
 		identifier,
 	)
 
@@ -1101,8 +1101,8 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 	)
 
 	extObject := readWriteModel.NewRootExtensionObject(
-		endpointsRequest,
 		expandedNodeId,
+		endpointsRequest,
 		identifier,
 	)
 
@@ -1230,8 +1230,8 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 		readWriteModel.NewExtensiblePayload(
 			readWriteModel.NewSequenceHeader(transactionId, transactionId),
 			readWriteModel.NewRootExtensionObject(
-				closeSecureChannelRequest,
 				expandedNodeId,
+				closeSecureChannelRequest,
 				identifier,
 			),
 			uint32(0),
@@ -1337,8 +1337,8 @@ func (s *SecureChannel) keepAlive() {
 				nil)
 
 			extObject := readWriteModel.NewRootExtensionObject(
-				openSecureChannelRequest,
 				expandedNodeId,
+				openSecureChannelRequest,
 				identifier,
 			)
 
@@ -1570,9 +1570,9 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 			nil,
 		)
 		return readWriteModel.NewBinaryExtensionObjectWithMask(
-			anonymousIdentityToken,
 			extExpandedNodeId,
 			readWriteModel.NewExtensionObjectEncodingMask(false, false, true),
+			anonymousIdentityToken,
 			anonymousIdentityToken.GetExtensionId(),
 			false,
 		)
@@ -1599,7 +1599,7 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 			readWriteModel.NewPascalString(policyId),
 			readWriteModel.NewPascalString(&s.username),
 			readWriteModel.NewPascalByteString(int32(len(encryptedPassword)), encryptedPassword),
-			readWriteModel.NewPascalString(utils.MakePtr(PASSWORD_ENCRYPTION_ALGORITHM)),
+			readWriteModel.NewPascalString(utils.ToPtr(PASSWORD_ENCRYPTION_ALGORITHM)),
 		)
 		extExpandedNodeId := readWriteModel.NewExpandedNodeId(
 			false, //Namespace Uri Specified
@@ -1608,9 +1608,9 @@ func (s *SecureChannel) getIdentityToken(tokenType readWriteModel.UserTokenType,
 			nil,
 			nil)
 		return readWriteModel.NewBinaryExtensionObjectWithMask(
-			userNameIdentityToken,
 			extExpandedNodeId,
 			readWriteModel.NewExtensionObjectEncodingMask(false, false, true),
+			userNameIdentityToken,
 			userNameIdentityToken.GetExtensionId(),
 			false,
 		)
