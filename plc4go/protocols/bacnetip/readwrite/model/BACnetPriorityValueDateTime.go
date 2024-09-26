@@ -38,6 +38,7 @@ type BACnetPriorityValueDateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetDateTimeValue returns DateTimeValue (property field)
 	GetDateTimeValue() BACnetDateTimeEnclosed
@@ -53,6 +54,19 @@ type _BACnetPriorityValueDateTime struct {
 
 var _ BACnetPriorityValueDateTime = (*_BACnetPriorityValueDateTime)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueDateTime)(nil)
+
+// NewBACnetPriorityValueDateTime factory function for _BACnetPriorityValueDateTime
+func NewBACnetPriorityValueDateTime(peekedTagHeader BACnetTagHeader, dateTimeValue BACnetDateTimeEnclosed, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDateTime {
+	if dateTimeValue == nil {
+		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetPriorityValueDateTime must not be nil")
+	}
+	_result := &_BACnetPriorityValueDateTime{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		DateTimeValue:               dateTimeValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueDateTime) GetDateTimeValue() BACnetDateTimeEnclosed
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueDateTime factory function for _BACnetPriorityValueDateTime
-func NewBACnetPriorityValueDateTime(dateTimeValue BACnetDateTimeEnclosed, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDateTime {
-	if dateTimeValue == nil {
-		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetPriorityValueDateTime must not be nil")
-	}
-	_result := &_BACnetPriorityValueDateTime{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		DateTimeValue:               dateTimeValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueDateTime(structType any) BACnetPriorityValueDateTime {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueDateTime) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetPriorityValueDateTime) IsBACnetPriorityValueDateTime() {}
+
+func (m *_BACnetPriorityValueDateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueDateTime) deepCopy() *_BACnetPriorityValueDateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueDateTimeCopy := &_BACnetPriorityValueDateTime{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueDateTimeCopy
+}
 
 func (m *_BACnetPriorityValueDateTime) String() string {
 	if m == nil {

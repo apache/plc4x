@@ -38,6 +38,7 @@ type ParsingResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -65,6 +66,23 @@ type _ParsingResult struct {
 
 var _ ParsingResult = (*_ParsingResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ParsingResult)(nil)
+
+// NewParsingResult factory function for _ParsingResult
+func NewParsingResult(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) *_ParsingResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for ParsingResult must not be nil")
+	}
+	_result := &_ParsingResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfDataStatusCodes:               noOfDataStatusCodes,
+		DataStatusCodes:                   dataStatusCodes,
+		NoOfDataDiagnosticInfos:           noOfDataDiagnosticInfos,
+		DataDiagnosticInfos:               dataDiagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_ParsingResult) GetDataDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParsingResult factory function for _ParsingResult
-func NewParsingResult(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) *_ParsingResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for ParsingResult must not be nil")
-	}
-	_result := &_ParsingResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfDataStatusCodes:               noOfDataStatusCodes,
-		DataStatusCodes:                   dataStatusCodes,
-		NoOfDataDiagnosticInfos:           noOfDataDiagnosticInfos,
-		DataDiagnosticInfos:               dataDiagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParsingResult(structType any) ParsingResult {
@@ -280,6 +281,26 @@ func (m *_ParsingResult) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_ParsingResult) IsParsingResult() {}
+
+func (m *_ParsingResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParsingResult) deepCopy() *_ParsingResult {
+	if m == nil {
+		return nil
+	}
+	_ParsingResultCopy := &_ParsingResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfDataStatusCodes,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.DataStatusCodes),
+		m.NoOfDataDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DataDiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ParsingResultCopy
+}
 
 func (m *_ParsingResult) String() string {
 	if m == nil {

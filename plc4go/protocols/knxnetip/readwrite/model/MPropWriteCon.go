@@ -36,6 +36,7 @@ type MPropWriteCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMPropWriteCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropWriteCon()
@@ -48,6 +49,15 @@ type _MPropWriteCon struct {
 
 var _ MPropWriteCon = (*_MPropWriteCon)(nil)
 var _ CEMIRequirements = (*_MPropWriteCon)(nil)
+
+// NewMPropWriteCon factory function for _MPropWriteCon
+func NewMPropWriteCon(size uint16) *_MPropWriteCon {
+	_result := &_MPropWriteCon{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_MPropWriteCon) GetMessageCode() uint8 {
 
 func (m *_MPropWriteCon) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMPropWriteCon factory function for _MPropWriteCon
-func NewMPropWriteCon(size uint16) *_MPropWriteCon {
-	_result := &_MPropWriteCon{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_MPropWriteCon) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_MPropWriteCon) IsMPropWriteCon() {}
+
+func (m *_MPropWriteCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropWriteCon) deepCopy() *_MPropWriteCon {
+	if m == nil {
+		return nil
+	}
+	_MPropWriteConCopy := &_MPropWriteCon{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropWriteConCopy
+}
 
 func (m *_MPropWriteCon) String() string {
 	if m == nil {

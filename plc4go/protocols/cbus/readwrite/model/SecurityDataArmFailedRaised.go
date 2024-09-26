@@ -36,6 +36,7 @@ type SecurityDataArmFailedRaised interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataArmFailedRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataArmFailedRaised()
@@ -49,6 +50,15 @@ type _SecurityDataArmFailedRaised struct {
 var _ SecurityDataArmFailedRaised = (*_SecurityDataArmFailedRaised)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataArmFailedRaised)(nil)
 
+// NewSecurityDataArmFailedRaised factory function for _SecurityDataArmFailedRaised
+func NewSecurityDataArmFailedRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataArmFailedRaised {
+	_result := &_SecurityDataArmFailedRaised{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataArmFailedRaised)(nil)
 
 func (m *_SecurityDataArmFailedRaised) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataArmFailedRaised factory function for _SecurityDataArmFailedRaised
-func NewSecurityDataArmFailedRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataArmFailedRaised {
-	_result := &_SecurityDataArmFailedRaised{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataArmFailedRaised) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_SecurityDataArmFailedRaised) IsSecurityDataArmFailedRaised() {}
+
+func (m *_SecurityDataArmFailedRaised) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataArmFailedRaised) deepCopy() *_SecurityDataArmFailedRaised {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataArmFailedRaisedCopy := &_SecurityDataArmFailedRaised{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataArmFailedRaisedCopy
+}
 
 func (m *_SecurityDataArmFailedRaised) String() string {
 	if m == nil {

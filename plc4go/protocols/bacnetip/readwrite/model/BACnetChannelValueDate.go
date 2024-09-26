@@ -38,6 +38,7 @@ type BACnetChannelValueDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
@@ -53,6 +54,19 @@ type _BACnetChannelValueDate struct {
 
 var _ BACnetChannelValueDate = (*_BACnetChannelValueDate)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueDate)(nil)
+
+// NewBACnetChannelValueDate factory function for _BACnetChannelValueDate
+func NewBACnetChannelValueDate(peekedTagHeader BACnetTagHeader, dateValue BACnetApplicationTagDate) *_BACnetChannelValueDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetChannelValueDate must not be nil")
+	}
+	_result := &_BACnetChannelValueDate{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		DateValue:                  dateValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueDate) GetDateValue() BACnetApplicationTagDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueDate factory function for _BACnetChannelValueDate
-func NewBACnetChannelValueDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueDate {
-	if dateValue == nil {
-		panic("dateValue of type BACnetApplicationTagDate for BACnetChannelValueDate must not be nil")
-	}
-	_result := &_BACnetChannelValueDate{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		DateValue:                  dateValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueDate(structType any) BACnetChannelValueDate {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueDate) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetChannelValueDate) IsBACnetChannelValueDate() {}
+
+func (m *_BACnetChannelValueDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueDate) deepCopy() *_BACnetChannelValueDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueDateCopy := &_BACnetChannelValueDate{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueDateCopy
+}
 
 func (m *_BACnetChannelValueDate) String() string {
 	if m == nil {

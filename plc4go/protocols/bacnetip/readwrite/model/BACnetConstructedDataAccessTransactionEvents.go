@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessTransactionEvents interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccessTransactionEvents returns AccessTransactionEvents (property field)
 	GetAccessTransactionEvents() []BACnetAccessEventTagged
@@ -53,6 +54,16 @@ type _BACnetConstructedDataAccessTransactionEvents struct {
 
 var _ BACnetConstructedDataAccessTransactionEvents = (*_BACnetConstructedDataAccessTransactionEvents)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessTransactionEvents)(nil)
+
+// NewBACnetConstructedDataAccessTransactionEvents factory function for _BACnetConstructedDataAccessTransactionEvents
+func NewBACnetConstructedDataAccessTransactionEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessTransactionEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessTransactionEvents {
+	_result := &_BACnetConstructedDataAccessTransactionEvents{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccessTransactionEvents:       accessTransactionEvents,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) GetAccessTransactionEven
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessTransactionEvents factory function for _BACnetConstructedDataAccessTransactionEvents
-func NewBACnetConstructedDataAccessTransactionEvents(accessTransactionEvents []BACnetAccessEventTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessTransactionEvents {
-	_result := &_BACnetConstructedDataAccessTransactionEvents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AccessTransactionEvents:       accessTransactionEvents,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessTransactionEvents(structType any) BACnetConstructedDataAccessTransactionEvents {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataAccessTransactionEvents) IsBACnetConstructedDataAccessTransactionEvents() {
+}
+
+func (m *_BACnetConstructedDataAccessTransactionEvents) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessTransactionEvents) deepCopy() *_BACnetConstructedDataAccessTransactionEvents {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessTransactionEventsCopy := &_BACnetConstructedDataAccessTransactionEvents{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetAccessEventTagged, BACnetAccessEventTagged](m.AccessTransactionEvents),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessTransactionEventsCopy
 }
 
 func (m *_BACnetConstructedDataAccessTransactionEvents) String() string {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesFileAccessMethod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetFileAccessMethod returns FileAccessMethod (property field)
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesFileAccessMethod struct {
 
 var _ BACnetPropertyStatesFileAccessMethod = (*_BACnetPropertyStatesFileAccessMethod)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesFileAccessMethod)(nil)
+
+// NewBACnetPropertyStatesFileAccessMethod factory function for _BACnetPropertyStatesFileAccessMethod
+func NewBACnetPropertyStatesFileAccessMethod(peekedTagHeader BACnetTagHeader, fileAccessMethod BACnetFileAccessMethodTagged) *_BACnetPropertyStatesFileAccessMethod {
+	if fileAccessMethod == nil {
+		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetPropertyStatesFileAccessMethod must not be nil")
+	}
+	_result := &_BACnetPropertyStatesFileAccessMethod{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		FileAccessMethod:             fileAccessMethod,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesFileAccessMethod) GetFileAccessMethod() BACnetFile
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesFileAccessMethod factory function for _BACnetPropertyStatesFileAccessMethod
-func NewBACnetPropertyStatesFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesFileAccessMethod {
-	if fileAccessMethod == nil {
-		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetPropertyStatesFileAccessMethod must not be nil")
-	}
-	_result := &_BACnetPropertyStatesFileAccessMethod{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		FileAccessMethod:             fileAccessMethod,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesFileAccessMethod(structType any) BACnetPropertyStatesFileAccessMethod {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesFileAccessMethod) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetPropertyStatesFileAccessMethod) IsBACnetPropertyStatesFileAccessMethod() {}
+
+func (m *_BACnetPropertyStatesFileAccessMethod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesFileAccessMethod) deepCopy() *_BACnetPropertyStatesFileAccessMethod {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesFileAccessMethodCopy := &_BACnetPropertyStatesFileAccessMethod{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.FileAccessMethod.DeepCopy().(BACnetFileAccessMethodTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesFileAccessMethodCopy
+}
 
 func (m *_BACnetPropertyStatesFileAccessMethod) String() string {
 	if m == nil {

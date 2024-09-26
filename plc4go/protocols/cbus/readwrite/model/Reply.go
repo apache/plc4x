@@ -40,6 +40,7 @@ type Reply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReply()
 }
@@ -76,6 +77,11 @@ type _Reply struct {
 
 var _ ReplyContract = (*_Reply)(nil)
 
+// NewReply factory function for _Reply
+func NewReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_Reply {
+	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -89,11 +95,6 @@ func (m *_Reply) GetPeekedByte() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReply factory function for _Reply
-func NewReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_Reply {
-	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastReply(structType any) Reply {
@@ -168,15 +169,15 @@ func (m *_Reply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOpt
 	var _child Reply
 	switch {
 	case peekedByte == 0x2B: // PowerUpReply
-		if _child, err = (&_PowerUpReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_PowerUpReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PowerUpReply for type-switch of Reply")
 		}
 	case peekedByte == 0x3D: // ParameterChangeReply
-		if _child, err = (&_ParameterChangeReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ParameterChangeReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterChangeReply for type-switch of Reply")
 		}
 	case 0 == 0: // ReplyEncodedReply
-		if _child, err = (&_ReplyEncodedReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ReplyEncodedReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReplyEncodedReply for type-switch of Reply")
 		}
 	default:
@@ -227,3 +228,20 @@ func (m *_Reply) GetRequestContext() RequestContext {
 ////
 
 func (m *_Reply) IsReply() {}
+
+func (m *_Reply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Reply) deepCopy() *_Reply {
+	if m == nil {
+		return nil
+	}
+	_ReplyCopy := &_Reply{
+		nil, // will be set by child
+		m.PeekedByte,
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _ReplyCopy
+}

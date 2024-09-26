@@ -38,6 +38,7 @@ type BACnetObjectTypesSupportedTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -77,6 +78,17 @@ type _BACnetObjectTypesSupportedTagged struct {
 }
 
 var _ BACnetObjectTypesSupportedTagged = (*_BACnetObjectTypesSupportedTagged)(nil)
+
+// NewBACnetObjectTypesSupportedTagged factory function for _BACnetObjectTypesSupportedTagged
+func NewBACnetObjectTypesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetObjectTypesSupportedTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetObjectTypesSupportedTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetObjectTypesSupportedTagged must not be nil")
+	}
+	return &_BACnetObjectTypesSupportedTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,17 +176,6 @@ func (m *_BACnetObjectTypesSupportedTagged) GetLift() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetObjectTypesSupportedTagged factory function for _BACnetObjectTypesSupportedTagged
-func NewBACnetObjectTypesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetObjectTypesSupportedTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetObjectTypesSupportedTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetObjectTypesSupportedTagged must not be nil")
-	}
-	return &_BACnetObjectTypesSupportedTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetObjectTypesSupportedTagged(structType any) BACnetObjectTypesSupportedTagged {
@@ -448,6 +449,23 @@ func (m *_BACnetObjectTypesSupportedTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetObjectTypesSupportedTagged) IsBACnetObjectTypesSupportedTagged() {}
+
+func (m *_BACnetObjectTypesSupportedTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetObjectTypesSupportedTagged) deepCopy() *_BACnetObjectTypesSupportedTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetObjectTypesSupportedTaggedCopy := &_BACnetObjectTypesSupportedTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetObjectTypesSupportedTaggedCopy
+}
 
 func (m *_BACnetObjectTypesSupportedTagged) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type MonitoredSALLongFormSmartMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MonitoredSAL
 	// GetTerminatingByte returns TerminatingByte (property field)
 	GetTerminatingByte() uint32
@@ -75,6 +76,22 @@ type _MonitoredSALLongFormSmartMode struct {
 
 var _ MonitoredSALLongFormSmartMode = (*_MonitoredSALLongFormSmartMode)(nil)
 var _ MonitoredSALRequirements = (*_MonitoredSALLongFormSmartMode)(nil)
+
+// NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
+func NewMonitoredSALLongFormSmartMode(salType byte, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
+	_result := &_MonitoredSALLongFormSmartMode{
+		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
+		TerminatingByte:      terminatingByte,
+		UnitAddress:          unitAddress,
+		BridgeAddress:        bridgeAddress,
+		Application:          application,
+		ReservedByte:         reservedByte,
+		ReplyNetwork:         replyNetwork,
+		SalData:              salData,
+	}
+	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,22 +169,6 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
-func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
-	_result := &_MonitoredSALLongFormSmartMode{
-		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
-		TerminatingByte:      terminatingByte,
-		UnitAddress:          unitAddress,
-		BridgeAddress:        bridgeAddress,
-		Application:          application,
-		ReservedByte:         reservedByte,
-		ReplyNetwork:         replyNetwork,
-		SalData:              salData,
-	}
-	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSALLongFormSmartMode(structType any) MonitoredSALLongFormSmartMode {
@@ -382,6 +383,29 @@ func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_MonitoredSALLongFormSmartMode) IsMonitoredSALLongFormSmartMode() {}
+
+func (m *_MonitoredSALLongFormSmartMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSALLongFormSmartMode) deepCopy() *_MonitoredSALLongFormSmartMode {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALLongFormSmartModeCopy := &_MonitoredSALLongFormSmartMode{
+		m.MonitoredSALContract.(*_MonitoredSAL).deepCopy(),
+		m.TerminatingByte,
+		m.UnitAddress.DeepCopy().(UnitAddress),
+		m.BridgeAddress.DeepCopy().(BridgeAddress),
+		m.Application,
+		utils.CopyPtr[byte](m.ReservedByte),
+		m.ReplyNetwork.DeepCopy().(ReplyNetwork),
+		m.SalData.DeepCopy().(SALData),
+		m.reservedField0,
+	}
+	m.MonitoredSALContract.(*_MonitoredSAL)._SubType = m
+	return _MonitoredSALLongFormSmartModeCopy
+}
 
 func (m *_MonitoredSALLongFormSmartMode) String() string {
 	if m == nil {

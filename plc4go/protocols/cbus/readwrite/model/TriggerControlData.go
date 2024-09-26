@@ -40,6 +40,7 @@ type TriggerControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTriggerControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlData()
 }
@@ -74,6 +75,11 @@ type _TriggerControlData struct {
 }
 
 var _ TriggerControlDataContract = (*_TriggerControlData)(nil)
+
+// NewTriggerControlData factory function for _TriggerControlData
+func NewTriggerControlData(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlData {
+	return &_TriggerControlData{CommandTypeContainer: commandTypeContainer, TriggerGroup: triggerGroup}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,11 +121,6 @@ func (pm *_TriggerControlData) GetIsUnused() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTriggerControlData factory function for _TriggerControlData
-func NewTriggerControlData(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlData {
-	return &_TriggerControlData{CommandTypeContainer: commandTypeContainer, TriggerGroup: triggerGroup}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTriggerControlData(structType any) TriggerControlData {
@@ -227,23 +228,23 @@ func (m *_TriggerControlData) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child TriggerControlData
 	switch {
 	case commandType == TriggerControlCommandType_TRIGGER_EVENT: // TriggerControlDataTriggerEvent
-		if _child, err = (&_TriggerControlDataTriggerEvent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataTriggerEvent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataTriggerEvent for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_TRIGGER_MIN: // TriggerControlDataTriggerMin
-		if _child, err = (&_TriggerControlDataTriggerMin{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataTriggerMin).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataTriggerMin for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_TRIGGER_MAX: // TriggerControlDataTriggerMax
-		if _child, err = (&_TriggerControlDataTriggerMax{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataTriggerMax).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataTriggerMax for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_INDICATOR_KILL: // TriggerControlDataIndicatorKill
-		if _child, err = (&_TriggerControlDataIndicatorKill{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataIndicatorKill).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataIndicatorKill for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_LABEL: // TriggerControlDataLabel
-		if _child, err = (&_TriggerControlDataLabel{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_TriggerControlDataLabel).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataLabel for type-switch of TriggerControlData")
 		}
 	default:
@@ -301,3 +302,19 @@ func (pm *_TriggerControlData) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_TriggerControlData) IsTriggerControlData() {}
+
+func (m *_TriggerControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlData) deepCopy() *_TriggerControlData {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataCopy := &_TriggerControlData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.TriggerGroup,
+	}
+	return _TriggerControlDataCopy
+}

@@ -38,6 +38,7 @@ type ModbusPDUReadInputRegistersRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
@@ -56,6 +57,17 @@ type _ModbusPDUReadInputRegistersRequest struct {
 
 var _ ModbusPDUReadInputRegistersRequest = (*_ModbusPDUReadInputRegistersRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadInputRegistersRequest)(nil)
+
+// NewModbusPDUReadInputRegistersRequest factory function for _ModbusPDUReadInputRegistersRequest
+func NewModbusPDUReadInputRegistersRequest(startingAddress uint16, quantity uint16) *_ModbusPDUReadInputRegistersRequest {
+	_result := &_ModbusPDUReadInputRegistersRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		StartingAddress:   startingAddress,
+		Quantity:          quantity,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_ModbusPDUReadInputRegistersRequest) GetQuantity() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadInputRegistersRequest factory function for _ModbusPDUReadInputRegistersRequest
-func NewModbusPDUReadInputRegistersRequest(startingAddress uint16, quantity uint16) *_ModbusPDUReadInputRegistersRequest {
-	_result := &_ModbusPDUReadInputRegistersRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		StartingAddress:   startingAddress,
-		Quantity:          quantity,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadInputRegistersRequest(structType any) ModbusPDUReadInputRegistersRequest {
@@ -208,6 +209,23 @@ func (m *_ModbusPDUReadInputRegistersRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ModbusPDUReadInputRegistersRequest) IsModbusPDUReadInputRegistersRequest() {}
+
+func (m *_ModbusPDUReadInputRegistersRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadInputRegistersRequest) deepCopy() *_ModbusPDUReadInputRegistersRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadInputRegistersRequestCopy := &_ModbusPDUReadInputRegistersRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.StartingAddress,
+		m.Quantity,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadInputRegistersRequestCopy
+}
 
 func (m *_ModbusPDUReadInputRegistersRequest) String() string {
 	if m == nil {

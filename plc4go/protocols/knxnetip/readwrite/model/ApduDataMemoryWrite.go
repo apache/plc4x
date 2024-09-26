@@ -36,6 +36,7 @@ type ApduDataMemoryWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataMemoryWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataMemoryWrite()
@@ -48,6 +49,15 @@ type _ApduDataMemoryWrite struct {
 
 var _ ApduDataMemoryWrite = (*_ApduDataMemoryWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryWrite)(nil)
+
+// NewApduDataMemoryWrite factory function for _ApduDataMemoryWrite
+func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
+	_result := &_ApduDataMemoryWrite{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataMemoryWrite) GetApciType() uint8 {
 
 func (m *_ApduDataMemoryWrite) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataMemoryWrite factory function for _ApduDataMemoryWrite
-func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
-	_result := &_ApduDataMemoryWrite{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataMemoryWrite) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ApduDataMemoryWrite) IsApduDataMemoryWrite() {}
+
+func (m *_ApduDataMemoryWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataMemoryWrite) deepCopy() *_ApduDataMemoryWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataMemoryWriteCopy := &_ApduDataMemoryWrite{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataMemoryWriteCopy
+}
 
 func (m *_ApduDataMemoryWrite) String() string {
 	if m == nil {

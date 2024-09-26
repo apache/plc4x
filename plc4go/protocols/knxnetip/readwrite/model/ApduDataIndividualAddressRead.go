@@ -36,6 +36,7 @@ type ApduDataIndividualAddressRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataIndividualAddressRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataIndividualAddressRead()
@@ -48,6 +49,15 @@ type _ApduDataIndividualAddressRead struct {
 
 var _ ApduDataIndividualAddressRead = (*_ApduDataIndividualAddressRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataIndividualAddressRead)(nil)
+
+// NewApduDataIndividualAddressRead factory function for _ApduDataIndividualAddressRead
+func NewApduDataIndividualAddressRead(dataLength uint8) *_ApduDataIndividualAddressRead {
+	_result := &_ApduDataIndividualAddressRead{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataIndividualAddressRead) GetApciType() uint8 {
 
 func (m *_ApduDataIndividualAddressRead) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataIndividualAddressRead factory function for _ApduDataIndividualAddressRead
-func NewApduDataIndividualAddressRead(dataLength uint8) *_ApduDataIndividualAddressRead {
-	_result := &_ApduDataIndividualAddressRead{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataIndividualAddressRead) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_ApduDataIndividualAddressRead) IsApduDataIndividualAddressRead() {}
+
+func (m *_ApduDataIndividualAddressRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataIndividualAddressRead) deepCopy() *_ApduDataIndividualAddressRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataIndividualAddressReadCopy := &_ApduDataIndividualAddressRead{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataIndividualAddressReadCopy
+}
 
 func (m *_ApduDataIndividualAddressRead) String() string {
 	if m == nil {

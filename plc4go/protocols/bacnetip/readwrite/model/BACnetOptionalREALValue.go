@@ -38,6 +38,7 @@ type BACnetOptionalREALValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalREAL
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
@@ -53,6 +54,19 @@ type _BACnetOptionalREALValue struct {
 
 var _ BACnetOptionalREALValue = (*_BACnetOptionalREALValue)(nil)
 var _ BACnetOptionalREALRequirements = (*_BACnetOptionalREALValue)(nil)
+
+// NewBACnetOptionalREALValue factory function for _BACnetOptionalREALValue
+func NewBACnetOptionalREALValue(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal) *_BACnetOptionalREALValue {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetOptionalREALValue must not be nil")
+	}
+	_result := &_BACnetOptionalREALValue{
+		BACnetOptionalREALContract: NewBACnetOptionalREAL(peekedTagHeader),
+		RealValue:                  realValue,
+	}
+	_result.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetOptionalREALValue) GetRealValue() BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalREALValue factory function for _BACnetOptionalREALValue
-func NewBACnetOptionalREALValue(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetOptionalREALValue {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetOptionalREALValue must not be nil")
-	}
-	_result := &_BACnetOptionalREALValue{
-		BACnetOptionalREALContract: NewBACnetOptionalREAL(peekedTagHeader),
-		RealValue:                  realValue,
-	}
-	_result.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalREALValue(structType any) BACnetOptionalREALValue {
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalREALValue) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetOptionalREALValue) IsBACnetOptionalREALValue() {}
+
+func (m *_BACnetOptionalREALValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalREALValue) deepCopy() *_BACnetOptionalREALValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalREALValueCopy := &_BACnetOptionalREALValue{
+		m.BACnetOptionalREALContract.(*_BACnetOptionalREAL).deepCopy(),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = m
+	return _BACnetOptionalREALValueCopy
+}
 
 func (m *_BACnetOptionalREALValue) String() string {
 	if m == nil {

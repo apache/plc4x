@@ -38,6 +38,7 @@ type IdentifyReplyCommandGAVValuesCurrent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetValues returns Values (property field)
 	GetValues() []byte
@@ -53,6 +54,16 @@ type _IdentifyReplyCommandGAVValuesCurrent struct {
 
 var _ IdentifyReplyCommandGAVValuesCurrent = (*_IdentifyReplyCommandGAVValuesCurrent)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVValuesCurrent)(nil)
+
+// NewIdentifyReplyCommandGAVValuesCurrent factory function for _IdentifyReplyCommandGAVValuesCurrent
+func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesCurrent {
+	_result := &_IdentifyReplyCommandGAVValuesCurrent{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		Values:                       values,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetValues() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandGAVValuesCurrent factory function for _IdentifyReplyCommandGAVValuesCurrent
-func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesCurrent {
-	_result := &_IdentifyReplyCommandGAVValuesCurrent{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		Values:                       values,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandGAVValuesCurrent(structType any) IdentifyReplyCommandGAVValuesCurrent {
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_IdentifyReplyCommandGAVValuesCurrent) IsIdentifyReplyCommandGAVValuesCurrent() {}
+
+func (m *_IdentifyReplyCommandGAVValuesCurrent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandGAVValuesCurrent) deepCopy() *_IdentifyReplyCommandGAVValuesCurrent {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandGAVValuesCurrentCopy := &_IdentifyReplyCommandGAVValuesCurrent{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Values),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandGAVValuesCurrentCopy
+}
 
 func (m *_IdentifyReplyCommandGAVValuesCurrent) String() string {
 	if m == nil {

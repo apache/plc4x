@@ -38,6 +38,7 @@ type BACnetProgramRequestTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetProgramRequestTagged struct {
 
 var _ BACnetProgramRequestTagged = (*_BACnetProgramRequestTagged)(nil)
 
+// NewBACnetProgramRequestTagged factory function for _BACnetProgramRequestTagged
+func NewBACnetProgramRequestTagged(header BACnetTagHeader, value BACnetProgramRequest, tagNumber uint8, tagClass TagClass) *_BACnetProgramRequestTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProgramRequestTagged must not be nil")
+	}
+	return &_BACnetProgramRequestTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetProgramRequestTagged) GetValue() BACnetProgramRequest {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProgramRequestTagged factory function for _BACnetProgramRequestTagged
-func NewBACnetProgramRequestTagged(header BACnetTagHeader, value BACnetProgramRequest, tagNumber uint8, tagClass TagClass) *_BACnetProgramRequestTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetProgramRequestTagged must not be nil")
-	}
-	return &_BACnetProgramRequestTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProgramRequestTagged(structType any) BACnetProgramRequestTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetProgramRequestTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetProgramRequestTagged) IsBACnetProgramRequestTagged() {}
+
+func (m *_BACnetProgramRequestTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProgramRequestTagged) deepCopy() *_BACnetProgramRequestTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetProgramRequestTaggedCopy := &_BACnetProgramRequestTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetProgramRequestTaggedCopy
+}
 
 func (m *_BACnetProgramRequestTagged) String() string {
 	if m == nil {

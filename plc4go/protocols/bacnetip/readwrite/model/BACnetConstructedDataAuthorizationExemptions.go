@@ -38,6 +38,7 @@ type BACnetConstructedDataAuthorizationExemptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAuthorizationExemption returns AuthorizationExemption (property field)
 	GetAuthorizationExemption() []BACnetAuthorizationExemptionTagged
@@ -53,6 +54,16 @@ type _BACnetConstructedDataAuthorizationExemptions struct {
 
 var _ BACnetConstructedDataAuthorizationExemptions = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
+
+// NewBACnetConstructedDataAuthorizationExemptions factory function for _BACnetConstructedDataAuthorizationExemptions
+func NewBACnetConstructedDataAuthorizationExemptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationExemption []BACnetAuthorizationExemptionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationExemptions {
+	_result := &_BACnetConstructedDataAuthorizationExemptions{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AuthorizationExemption:        authorizationExemption,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetAuthorizationExemptio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAuthorizationExemptions factory function for _BACnetConstructedDataAuthorizationExemptions
-func NewBACnetConstructedDataAuthorizationExemptions(authorizationExemption []BACnetAuthorizationExemptionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationExemptions {
-	_result := &_BACnetConstructedDataAuthorizationExemptions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AuthorizationExemption:        authorizationExemption,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAuthorizationExemptions(structType any) BACnetConstructedDataAuthorizationExemptions {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) IsBACnetConstructedDataAuthorizationExemptions() {
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptions) deepCopy() *_BACnetConstructedDataAuthorizationExemptions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAuthorizationExemptionsCopy := &_BACnetConstructedDataAuthorizationExemptions{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetAuthorizationExemptionTagged, BACnetAuthorizationExemptionTagged](m.AuthorizationExemption),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAuthorizationExemptionsCopy
 }
 
 func (m *_BACnetConstructedDataAuthorizationExemptions) String() string {

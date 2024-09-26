@@ -38,6 +38,7 @@ type BACnetAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetApplicationTagUnsignedInteger
 	// GetMacAddress returns MacAddress (property field)
@@ -59,6 +60,17 @@ type _BACnetAddress struct {
 }
 
 var _ BACnetAddress = (*_BACnetAddress)(nil)
+
+// NewBACnetAddress factory function for _BACnetAddress
+func NewBACnetAddress(networkNumber BACnetApplicationTagUnsignedInteger, macAddress BACnetApplicationTagOctetString) *_BACnetAddress {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetAddress must not be nil")
+	}
+	if macAddress == nil {
+		panic("macAddress of type BACnetApplicationTagOctetString for BACnetAddress must not be nil")
+	}
+	return &_BACnetAddress{NetworkNumber: networkNumber, MacAddress: macAddress}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -104,17 +116,6 @@ func (m *_BACnetAddress) GetIsBroadcast() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAddress factory function for _BACnetAddress
-func NewBACnetAddress(networkNumber BACnetApplicationTagUnsignedInteger, macAddress BACnetApplicationTagOctetString) *_BACnetAddress {
-	if networkNumber == nil {
-		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetAddress must not be nil")
-	}
-	if macAddress == nil {
-		panic("macAddress of type BACnetApplicationTagOctetString for BACnetAddress must not be nil")
-	}
-	return &_BACnetAddress{NetworkNumber: networkNumber, MacAddress: macAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAddress(structType any) BACnetAddress {
@@ -267,6 +268,21 @@ func (m *_BACnetAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_BACnetAddress) IsBACnetAddress() {}
+
+func (m *_BACnetAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAddress) deepCopy() *_BACnetAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetAddressCopy := &_BACnetAddress{
+		m.NetworkNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.MacAddress.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	return _BACnetAddressCopy
+}
 
 func (m *_BACnetAddress) String() string {
 	if m == nil {

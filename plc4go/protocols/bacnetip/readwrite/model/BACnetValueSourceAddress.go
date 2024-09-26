@@ -38,6 +38,7 @@ type BACnetValueSourceAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetValueSource
 	// GetAddress returns Address (property field)
 	GetAddress() BACnetAddressEnclosed
@@ -53,6 +54,19 @@ type _BACnetValueSourceAddress struct {
 
 var _ BACnetValueSourceAddress = (*_BACnetValueSourceAddress)(nil)
 var _ BACnetValueSourceRequirements = (*_BACnetValueSourceAddress)(nil)
+
+// NewBACnetValueSourceAddress factory function for _BACnetValueSourceAddress
+func NewBACnetValueSourceAddress(peekedTagHeader BACnetTagHeader, address BACnetAddressEnclosed) *_BACnetValueSourceAddress {
+	if address == nil {
+		panic("address of type BACnetAddressEnclosed for BACnetValueSourceAddress must not be nil")
+	}
+	_result := &_BACnetValueSourceAddress{
+		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
+		Address:                   address,
+	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetValueSourceAddress) GetAddress() BACnetAddressEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSourceAddress factory function for _BACnetValueSourceAddress
-func NewBACnetValueSourceAddress(address BACnetAddressEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetValueSourceAddress {
-	if address == nil {
-		panic("address of type BACnetAddressEnclosed for BACnetValueSourceAddress must not be nil")
-	}
-	_result := &_BACnetValueSourceAddress{
-		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
-		Address:                   address,
-	}
-	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSourceAddress(structType any) BACnetValueSourceAddress {
@@ -178,6 +179,22 @@ func (m *_BACnetValueSourceAddress) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetValueSourceAddress) IsBACnetValueSourceAddress() {}
+
+func (m *_BACnetValueSourceAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSourceAddress) deepCopy() *_BACnetValueSourceAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceAddressCopy := &_BACnetValueSourceAddress{
+		m.BACnetValueSourceContract.(*_BACnetValueSource).deepCopy(),
+		m.Address.DeepCopy().(BACnetAddressEnclosed),
+	}
+	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	return _BACnetValueSourceAddressCopy
+}
 
 func (m *_BACnetValueSourceAddress) String() string {
 	if m == nil {

@@ -42,6 +42,7 @@ type AlarmMessageObjectAckType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
 	// GetNumberOfValues returns NumberOfValues (property field)
@@ -66,6 +67,17 @@ type _AlarmMessageObjectAckType struct {
 }
 
 var _ AlarmMessageObjectAckType = (*_AlarmMessageObjectAckType)(nil)
+
+// NewAlarmMessageObjectAckType factory function for _AlarmMessageObjectAckType
+func NewAlarmMessageObjectAckType(syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageObjectAckType {
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageObjectAckType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageObjectAckType must not be nil")
+	}
+	return &_AlarmMessageObjectAckType{SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,17 +125,6 @@ func (m *_AlarmMessageObjectAckType) GetLength() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageObjectAckType factory function for _AlarmMessageObjectAckType
-func NewAlarmMessageObjectAckType(syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageObjectAckType {
-	if ackStateGoing == nil {
-		panic("ackStateGoing of type State for AlarmMessageObjectAckType must not be nil")
-	}
-	if ackStateComing == nil {
-		panic("ackStateComing of type State for AlarmMessageObjectAckType must not be nil")
-	}
-	return &_AlarmMessageObjectAckType{SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageObjectAckType(structType any) AlarmMessageObjectAckType {
@@ -299,6 +300,24 @@ func (m *_AlarmMessageObjectAckType) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AlarmMessageObjectAckType) IsAlarmMessageObjectAckType() {}
+
+func (m *_AlarmMessageObjectAckType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageObjectAckType) deepCopy() *_AlarmMessageObjectAckType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageObjectAckTypeCopy := &_AlarmMessageObjectAckType{
+		m.SyntaxId,
+		m.NumberOfValues,
+		m.EventId,
+		m.AckStateGoing.DeepCopy().(State),
+		m.AckStateComing.DeepCopy().(State),
+	}
+	return _AlarmMessageObjectAckTypeCopy
+}
 
 func (m *_AlarmMessageObjectAckType) String() string {
 	if m == nil {

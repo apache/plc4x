@@ -38,6 +38,7 @@ type BACnetPropertyStatesMaintenance interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetMaintenance returns Maintenance (property field)
 	GetMaintenance() BACnetMaintenanceTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesMaintenance struct {
 
 var _ BACnetPropertyStatesMaintenance = (*_BACnetPropertyStatesMaintenance)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesMaintenance)(nil)
+
+// NewBACnetPropertyStatesMaintenance factory function for _BACnetPropertyStatesMaintenance
+func NewBACnetPropertyStatesMaintenance(peekedTagHeader BACnetTagHeader, maintenance BACnetMaintenanceTagged) *_BACnetPropertyStatesMaintenance {
+	if maintenance == nil {
+		panic("maintenance of type BACnetMaintenanceTagged for BACnetPropertyStatesMaintenance must not be nil")
+	}
+	_result := &_BACnetPropertyStatesMaintenance{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Maintenance:                  maintenance,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesMaintenance) GetMaintenance() BACnetMaintenanceTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesMaintenance factory function for _BACnetPropertyStatesMaintenance
-func NewBACnetPropertyStatesMaintenance(maintenance BACnetMaintenanceTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesMaintenance {
-	if maintenance == nil {
-		panic("maintenance of type BACnetMaintenanceTagged for BACnetPropertyStatesMaintenance must not be nil")
-	}
-	_result := &_BACnetPropertyStatesMaintenance{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Maintenance:                  maintenance,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesMaintenance(structType any) BACnetPropertyStatesMaintenance {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesMaintenance) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesMaintenance) IsBACnetPropertyStatesMaintenance() {}
+
+func (m *_BACnetPropertyStatesMaintenance) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesMaintenance) deepCopy() *_BACnetPropertyStatesMaintenance {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesMaintenanceCopy := &_BACnetPropertyStatesMaintenance{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.Maintenance.DeepCopy().(BACnetMaintenanceTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesMaintenanceCopy
+}
 
 func (m *_BACnetPropertyStatesMaintenance) String() string {
 	if m == nil {

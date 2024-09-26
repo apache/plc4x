@@ -38,6 +38,7 @@ type BACnetConstructedDataMachineRoomID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMachineRoomId returns MachineRoomId (property field)
 	GetMachineRoomId() BACnetApplicationTagObjectIdentifier
@@ -55,6 +56,19 @@ type _BACnetConstructedDataMachineRoomID struct {
 
 var _ BACnetConstructedDataMachineRoomID = (*_BACnetConstructedDataMachineRoomID)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMachineRoomID)(nil)
+
+// NewBACnetConstructedDataMachineRoomID factory function for _BACnetConstructedDataMachineRoomID
+func NewBACnetConstructedDataMachineRoomID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, machineRoomId BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMachineRoomID {
+	if machineRoomId == nil {
+		panic("machineRoomId of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataMachineRoomID must not be nil")
+	}
+	_result := &_BACnetConstructedDataMachineRoomID{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MachineRoomId:                 machineRoomId,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataMachineRoomID) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMachineRoomID factory function for _BACnetConstructedDataMachineRoomID
-func NewBACnetConstructedDataMachineRoomID(machineRoomId BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMachineRoomID {
-	if machineRoomId == nil {
-		panic("machineRoomId of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataMachineRoomID must not be nil")
-	}
-	_result := &_BACnetConstructedDataMachineRoomID{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MachineRoomId:                 machineRoomId,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMachineRoomID(structType any) BACnetConstructedDataMachineRoomID {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMachineRoomID) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataMachineRoomID) IsBACnetConstructedDataMachineRoomID() {}
+
+func (m *_BACnetConstructedDataMachineRoomID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMachineRoomID) deepCopy() *_BACnetConstructedDataMachineRoomID {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMachineRoomIDCopy := &_BACnetConstructedDataMachineRoomID{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MachineRoomId.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMachineRoomIDCopy
+}
 
 func (m *_BACnetConstructedDataMachineRoomID) String() string {
 	if m == nil {

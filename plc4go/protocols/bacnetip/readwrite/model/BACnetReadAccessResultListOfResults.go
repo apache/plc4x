@@ -38,6 +38,7 @@ type BACnetReadAccessResultListOfResults interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfReadAccessProperty returns ListOfReadAccessProperty (property field)
@@ -61,6 +62,17 @@ type _BACnetReadAccessResultListOfResults struct {
 
 var _ BACnetReadAccessResultListOfResults = (*_BACnetReadAccessResultListOfResults)(nil)
 
+// NewBACnetReadAccessResultListOfResults factory function for _BACnetReadAccessResultListOfResults
+func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetReadAccessResultListOfResults {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessResultListOfResults must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetReadAccessResultListOfResults must not be nil")
+	}
+	return &_BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -82,17 +94,6 @@ func (m *_BACnetReadAccessResultListOfResults) GetClosingTag() BACnetClosingTag 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReadAccessResultListOfResults factory function for _BACnetReadAccessResultListOfResults
-func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetReadAccessResultListOfResults {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessResultListOfResults must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetReadAccessResultListOfResults must not be nil")
-	}
-	return &_BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReadAccessResultListOfResults(structType any) BACnetReadAccessResultListOfResults {
@@ -233,6 +234,24 @@ func (m *_BACnetReadAccessResultListOfResults) GetObjectTypeArgument() BACnetObj
 ////
 
 func (m *_BACnetReadAccessResultListOfResults) IsBACnetReadAccessResultListOfResults() {}
+
+func (m *_BACnetReadAccessResultListOfResults) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessResultListOfResults) deepCopy() *_BACnetReadAccessResultListOfResults {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessResultListOfResultsCopy := &_BACnetReadAccessResultListOfResults{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetReadAccessProperty, BACnetReadAccessProperty](m.ListOfReadAccessProperty),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+		m.ObjectTypeArgument,
+	}
+	return _BACnetReadAccessResultListOfResultsCopy
+}
 
 func (m *_BACnetReadAccessResultListOfResults) String() string {
 	if m == nil {

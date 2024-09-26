@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestVTOpen interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetVtClass returns VtClass (property field)
 	GetVtClass() BACnetVTClassTagged
@@ -56,6 +57,23 @@ type _BACnetConfirmedServiceRequestVTOpen struct {
 
 var _ BACnetConfirmedServiceRequestVTOpen = (*_BACnetConfirmedServiceRequestVTOpen)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestVTOpen)(nil)
+
+// NewBACnetConfirmedServiceRequestVTOpen factory function for _BACnetConfirmedServiceRequestVTOpen
+func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTOpen {
+	if vtClass == nil {
+		panic("vtClass of type BACnetVTClassTagged for BACnetConfirmedServiceRequestVTOpen must not be nil")
+	}
+	if localVtSessionIdentifier == nil {
+		panic("localVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTOpen must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestVTOpen{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		VtClass:                               vtClass,
+		LocalVtSessionIdentifier:              localVtSessionIdentifier,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) GetLocalVtSessionIdentifier() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestVTOpen factory function for _BACnetConfirmedServiceRequestVTOpen
-func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTOpen {
-	if vtClass == nil {
-		panic("vtClass of type BACnetVTClassTagged for BACnetConfirmedServiceRequestVTOpen must not be nil")
-	}
-	if localVtSessionIdentifier == nil {
-		panic("localVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTOpen must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestVTOpen{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		VtClass:                               vtClass,
-		LocalVtSessionIdentifier:              localVtSessionIdentifier,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestVTOpen(structType any) BACnetConfirmedServiceRequestVTOpen {
@@ -206,6 +207,23 @@ func (m *_BACnetConfirmedServiceRequestVTOpen) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) IsBACnetConfirmedServiceRequestVTOpen() {}
+
+func (m *_BACnetConfirmedServiceRequestVTOpen) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpen) deepCopy() *_BACnetConfirmedServiceRequestVTOpen {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestVTOpenCopy := &_BACnetConfirmedServiceRequestVTOpen{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.VtClass.DeepCopy().(BACnetVTClassTagged),
+		m.LocalVtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestVTOpenCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestVTOpen) String() string {
 	if m == nil {

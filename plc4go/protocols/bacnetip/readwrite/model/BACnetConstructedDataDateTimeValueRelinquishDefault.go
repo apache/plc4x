@@ -38,6 +38,7 @@ type BACnetConstructedDataDateTimeValueRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetDateTime
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDateTimeValueRelinquishDefault struct {
 
 var _ BACnetConstructedDataDateTimeValueRelinquishDefault = (*_BACnetConstructedDataDateTimeValueRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDateTimeValueRelinquishDefault)(nil)
+
+// NewBACnetConstructedDataDateTimeValueRelinquishDefault factory function for _BACnetConstructedDataDateTimeValueRelinquishDefault
+func NewBACnetConstructedDataDateTimeValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimeValueRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetDateTime for BACnetConstructedDataDateTimeValueRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) GetActualValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDateTimeValueRelinquishDefault factory function for _BACnetConstructedDataDateTimeValueRelinquishDefault
-func NewBACnetConstructedDataDateTimeValueRelinquishDefault(relinquishDefault BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimeValueRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetDateTime for BACnetConstructedDataDateTimeValueRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDateTimeValueRelinquishDefault(structType any) BACnetConstructedDataDateTimeValueRelinquishDefault {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) IsBACnetConstructedDataDateTimeValueRelinquishDefault() {
+}
+
+func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) deepCopy() *_BACnetConstructedDataDateTimeValueRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDateTimeValueRelinquishDefaultCopy := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RelinquishDefault.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDateTimeValueRelinquishDefaultCopy
 }
 
 func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) String() string {

@@ -38,6 +38,7 @@ type BACnetEventParameterExtended interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -65,6 +66,35 @@ type _BACnetEventParameterExtended struct {
 
 var _ BACnetEventParameterExtended = (*_BACnetEventParameterExtended)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterExtended)(nil)
+
+// NewBACnetEventParameterExtended factory function for _BACnetEventParameterExtended
+func NewBACnetEventParameterExtended(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetEventParameterExtendedParameters, closingTag BACnetClosingTag) *_BACnetEventParameterExtended {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterExtended must not be nil")
+	}
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetEventParameterExtended must not be nil")
+	}
+	if extendedEventType == nil {
+		panic("extendedEventType of type BACnetContextTagUnsignedInteger for BACnetEventParameterExtended must not be nil")
+	}
+	if parameters == nil {
+		panic("parameters of type BACnetEventParameterExtendedParameters for BACnetEventParameterExtended must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterExtended must not be nil")
+	}
+	_result := &_BACnetEventParameterExtended{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		VendorId:                     vendorId,
+		ExtendedEventType:            extendedEventType,
+		Parameters:                   parameters,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,35 +139,6 @@ func (m *_BACnetEventParameterExtended) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterExtended factory function for _BACnetEventParameterExtended
-func NewBACnetEventParameterExtended(openingTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetEventParameterExtendedParameters, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterExtended {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterExtended must not be nil")
-	}
-	if vendorId == nil {
-		panic("vendorId of type BACnetVendorIdTagged for BACnetEventParameterExtended must not be nil")
-	}
-	if extendedEventType == nil {
-		panic("extendedEventType of type BACnetContextTagUnsignedInteger for BACnetEventParameterExtended must not be nil")
-	}
-	if parameters == nil {
-		panic("parameters of type BACnetEventParameterExtendedParameters for BACnetEventParameterExtended must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterExtended must not be nil")
-	}
-	_result := &_BACnetEventParameterExtended{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		VendorId:                     vendorId,
-		ExtendedEventType:            extendedEventType,
-		Parameters:                   parameters,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterExtended(structType any) BACnetEventParameterExtended {
@@ -274,6 +275,26 @@ func (m *_BACnetEventParameterExtended) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetEventParameterExtended) IsBACnetEventParameterExtended() {}
+
+func (m *_BACnetEventParameterExtended) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterExtended) deepCopy() *_BACnetEventParameterExtended {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterExtendedCopy := &_BACnetEventParameterExtended{
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+		m.ExtendedEventType.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Parameters.DeepCopy().(BACnetEventParameterExtendedParameters),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterExtendedCopy
+}
 
 func (m *_BACnetEventParameterExtended) String() string {
 	if m == nil {

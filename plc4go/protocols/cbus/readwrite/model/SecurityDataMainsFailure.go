@@ -36,6 +36,7 @@ type SecurityDataMainsFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataMainsFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataMainsFailure()
@@ -49,6 +50,15 @@ type _SecurityDataMainsFailure struct {
 var _ SecurityDataMainsFailure = (*_SecurityDataMainsFailure)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataMainsFailure)(nil)
 
+// NewSecurityDataMainsFailure factory function for _SecurityDataMainsFailure
+func NewSecurityDataMainsFailure(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataMainsFailure {
+	_result := &_SecurityDataMainsFailure{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataMainsFailure)(nil)
 
 func (m *_SecurityDataMainsFailure) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataMainsFailure factory function for _SecurityDataMainsFailure
-func NewSecurityDataMainsFailure(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataMainsFailure {
-	_result := &_SecurityDataMainsFailure{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataMainsFailure) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SecurityDataMainsFailure) IsSecurityDataMainsFailure() {}
+
+func (m *_SecurityDataMainsFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataMainsFailure) deepCopy() *_SecurityDataMainsFailure {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataMainsFailureCopy := &_SecurityDataMainsFailure{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataMainsFailureCopy
+}
 
 func (m *_SecurityDataMainsFailure) String() string {
 	if m == nil {

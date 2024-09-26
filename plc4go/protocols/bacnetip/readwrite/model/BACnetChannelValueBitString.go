@@ -38,6 +38,7 @@ type BACnetChannelValueBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
@@ -53,6 +54,19 @@ type _BACnetChannelValueBitString struct {
 
 var _ BACnetChannelValueBitString = (*_BACnetChannelValueBitString)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueBitString)(nil)
+
+// NewBACnetChannelValueBitString factory function for _BACnetChannelValueBitString
+func NewBACnetChannelValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString) *_BACnetChannelValueBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetChannelValueBitString must not be nil")
+	}
+	_result := &_BACnetChannelValueBitString{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		BitStringValue:             bitStringValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueBitString) GetBitStringValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueBitString factory function for _BACnetChannelValueBitString
-func NewBACnetChannelValueBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueBitString {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetChannelValueBitString must not be nil")
-	}
-	_result := &_BACnetChannelValueBitString{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		BitStringValue:             bitStringValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueBitString(structType any) BACnetChannelValueBitString {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueBitString) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetChannelValueBitString) IsBACnetChannelValueBitString() {}
+
+func (m *_BACnetChannelValueBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueBitString) deepCopy() *_BACnetChannelValueBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueBitStringCopy := &_BACnetChannelValueBitString{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueBitStringCopy
+}
 
 func (m *_BACnetChannelValueBitString) String() string {
 	if m == nil {

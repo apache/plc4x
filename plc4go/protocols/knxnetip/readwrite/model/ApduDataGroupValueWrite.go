@@ -38,6 +38,7 @@ type ApduDataGroupValueWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetDataFirstByte returns DataFirstByte (property field)
 	GetDataFirstByte() int8
@@ -56,6 +57,17 @@ type _ApduDataGroupValueWrite struct {
 
 var _ ApduDataGroupValueWrite = (*_ApduDataGroupValueWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataGroupValueWrite)(nil)
+
+// NewApduDataGroupValueWrite factory function for _ApduDataGroupValueWrite
+func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueWrite {
+	_result := &_ApduDataGroupValueWrite{
+		ApduDataContract: NewApduData(dataLength),
+		DataFirstByte:    dataFirstByte,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ApduDataGroupValueWrite) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataGroupValueWrite factory function for _ApduDataGroupValueWrite
-func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueWrite {
-	_result := &_ApduDataGroupValueWrite{
-		ApduDataContract: NewApduData(dataLength),
-		DataFirstByte:    dataFirstByte,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataGroupValueWrite(structType any) ApduDataGroupValueWrite {
@@ -202,6 +203,23 @@ func (m *_ApduDataGroupValueWrite) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_ApduDataGroupValueWrite) IsApduDataGroupValueWrite() {}
+
+func (m *_ApduDataGroupValueWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataGroupValueWrite) deepCopy() *_ApduDataGroupValueWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataGroupValueWriteCopy := &_ApduDataGroupValueWrite{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.DataFirstByte,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataGroupValueWriteCopy
+}
 
 func (m *_ApduDataGroupValueWrite) String() string {
 	if m == nil {

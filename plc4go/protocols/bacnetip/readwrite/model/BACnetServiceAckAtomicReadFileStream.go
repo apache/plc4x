@@ -38,6 +38,7 @@ type BACnetServiceAckAtomicReadFileStream interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAckAtomicReadFileStreamOrRecord
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetApplicationTagSignedInteger
@@ -56,6 +57,23 @@ type _BACnetServiceAckAtomicReadFileStream struct {
 
 var _ BACnetServiceAckAtomicReadFileStream = (*_BACnetServiceAckAtomicReadFileStream)(nil)
 var _ BACnetServiceAckAtomicReadFileStreamOrRecordRequirements = (*_BACnetServiceAckAtomicReadFileStream)(nil)
+
+// NewBACnetServiceAckAtomicReadFileStream factory function for _BACnetServiceAckAtomicReadFileStream
+func NewBACnetServiceAckAtomicReadFileStream(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString) *_BACnetServiceAckAtomicReadFileStream {
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetServiceAckAtomicReadFileStream must not be nil")
+	}
+	if fileData == nil {
+		panic("fileData of type BACnetApplicationTagOctetString for BACnetServiceAckAtomicReadFileStream must not be nil")
+	}
+	_result := &_BACnetServiceAckAtomicReadFileStream{
+		BACnetServiceAckAtomicReadFileStreamOrRecordContract: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
+		FileStartPosition: fileStartPosition,
+		FileData:          fileData,
+	}
+	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,23 +106,6 @@ func (m *_BACnetServiceAckAtomicReadFileStream) GetFileData() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckAtomicReadFileStream factory function for _BACnetServiceAckAtomicReadFileStream
-func NewBACnetServiceAckAtomicReadFileStream(fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetServiceAckAtomicReadFileStream {
-	if fileStartPosition == nil {
-		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetServiceAckAtomicReadFileStream must not be nil")
-	}
-	if fileData == nil {
-		panic("fileData of type BACnetApplicationTagOctetString for BACnetServiceAckAtomicReadFileStream must not be nil")
-	}
-	_result := &_BACnetServiceAckAtomicReadFileStream{
-		BACnetServiceAckAtomicReadFileStreamOrRecordContract: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
-		FileStartPosition: fileStartPosition,
-		FileData:          fileData,
-	}
-	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckAtomicReadFileStream(structType any) BACnetServiceAckAtomicReadFileStream {
@@ -202,6 +203,23 @@ func (m *_BACnetServiceAckAtomicReadFileStream) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetServiceAckAtomicReadFileStream) IsBACnetServiceAckAtomicReadFileStream() {}
+
+func (m *_BACnetServiceAckAtomicReadFileStream) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAtomicReadFileStream) deepCopy() *_BACnetServiceAckAtomicReadFileStream {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAtomicReadFileStreamCopy := &_BACnetServiceAckAtomicReadFileStream{
+		m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).deepCopy(),
+		m.FileStartPosition.DeepCopy().(BACnetApplicationTagSignedInteger),
+		m.FileData.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = m
+	return _BACnetServiceAckAtomicReadFileStreamCopy
+}
 
 func (m *_BACnetServiceAckAtomicReadFileStream) String() string {
 	if m == nil {

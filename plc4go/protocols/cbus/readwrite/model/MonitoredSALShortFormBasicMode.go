@@ -38,6 +38,7 @@ type MonitoredSALShortFormBasicMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MonitoredSAL
 	// GetCounts returns Counts (property field)
 	GetCounts() byte
@@ -68,6 +69,21 @@ type _MonitoredSALShortFormBasicMode struct {
 
 var _ MonitoredSALShortFormBasicMode = (*_MonitoredSALShortFormBasicMode)(nil)
 var _ MonitoredSALRequirements = (*_MonitoredSALShortFormBasicMode)(nil)
+
+// NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
+func NewMonitoredSALShortFormBasicMode(salType byte, counts byte, bridgeCount *uint8, networkNumber *uint8, noCounts *byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
+	_result := &_MonitoredSALShortFormBasicMode{
+		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
+		Counts:               counts,
+		BridgeCount:          bridgeCount,
+		NetworkNumber:        networkNumber,
+		NoCounts:             noCounts,
+		Application:          application,
+		SalData:              salData,
+	}
+	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,21 +132,6 @@ func (m *_MonitoredSALShortFormBasicMode) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *uint8, networkNumber *uint8, noCounts *byte, application ApplicationIdContainer, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
-	_result := &_MonitoredSALShortFormBasicMode{
-		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
-		Counts:               counts,
-		BridgeCount:          bridgeCount,
-		NetworkNumber:        networkNumber,
-		NoCounts:             noCounts,
-		Application:          application,
-		SalData:              salData,
-	}
-	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSALShortFormBasicMode(structType any) MonitoredSALShortFormBasicMode {
@@ -288,6 +289,27 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_MonitoredSALShortFormBasicMode) IsMonitoredSALShortFormBasicMode() {}
+
+func (m *_MonitoredSALShortFormBasicMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSALShortFormBasicMode) deepCopy() *_MonitoredSALShortFormBasicMode {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALShortFormBasicModeCopy := &_MonitoredSALShortFormBasicMode{
+		m.MonitoredSALContract.(*_MonitoredSAL).deepCopy(),
+		m.Counts,
+		utils.CopyPtr[uint8](m.BridgeCount),
+		utils.CopyPtr[uint8](m.NetworkNumber),
+		utils.CopyPtr[byte](m.NoCounts),
+		m.Application,
+		m.SalData.DeepCopy().(SALData),
+	}
+	m.MonitoredSALContract.(*_MonitoredSAL)._SubType = m
+	return _MonitoredSALShortFormBasicModeCopy
+}
 
 func (m *_MonitoredSALShortFormBasicMode) String() string {
 	if m == nil {

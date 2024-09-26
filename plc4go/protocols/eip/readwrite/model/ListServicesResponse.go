@@ -38,6 +38,7 @@ type ListServicesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// GetTypeIds returns TypeIds (property field)
 	GetTypeIds() []TypeId
@@ -53,6 +54,16 @@ type _ListServicesResponse struct {
 
 var _ ListServicesResponse = (*_ListServicesResponse)(nil)
 var _ EipPacketRequirements = (*_ListServicesResponse)(nil)
+
+// NewListServicesResponse factory function for _ListServicesResponse
+func NewListServicesResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32, typeIds []TypeId) *_ListServicesResponse {
+	_result := &_ListServicesResponse{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		TypeIds:           typeIds,
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ListServicesResponse) GetTypeIds() []TypeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewListServicesResponse factory function for _ListServicesResponse
-func NewListServicesResponse(typeIds []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_ListServicesResponse {
-	_result := &_ListServicesResponse{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-		TypeIds:           typeIds,
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastListServicesResponse(structType any) ListServicesResponse {
@@ -207,6 +208,22 @@ func (m *_ListServicesResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ListServicesResponse) IsListServicesResponse() {}
+
+func (m *_ListServicesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListServicesResponse) deepCopy() *_ListServicesResponse {
+	if m == nil {
+		return nil
+	}
+	_ListServicesResponseCopy := &_ListServicesResponse{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _ListServicesResponseCopy
+}
 
 func (m *_ListServicesResponse) String() string {
 	if m == nil {

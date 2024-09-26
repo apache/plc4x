@@ -38,6 +38,7 @@ type BACnetPropertyStatesLightningOperation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLightningOperation returns LightningOperation (property field)
 	GetLightningOperation() BACnetLightingOperationTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesLightningOperation struct {
 
 var _ BACnetPropertyStatesLightningOperation = (*_BACnetPropertyStatesLightningOperation)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLightningOperation)(nil)
+
+// NewBACnetPropertyStatesLightningOperation factory function for _BACnetPropertyStatesLightningOperation
+func NewBACnetPropertyStatesLightningOperation(peekedTagHeader BACnetTagHeader, lightningOperation BACnetLightingOperationTagged) *_BACnetPropertyStatesLightningOperation {
+	if lightningOperation == nil {
+		panic("lightningOperation of type BACnetLightingOperationTagged for BACnetPropertyStatesLightningOperation must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLightningOperation{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LightningOperation:           lightningOperation,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesLightningOperation) GetLightningOperation() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLightningOperation factory function for _BACnetPropertyStatesLightningOperation
-func NewBACnetPropertyStatesLightningOperation(lightningOperation BACnetLightingOperationTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLightningOperation {
-	if lightningOperation == nil {
-		panic("lightningOperation of type BACnetLightingOperationTagged for BACnetPropertyStatesLightningOperation must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLightningOperation{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LightningOperation:           lightningOperation,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLightningOperation(structType any) BACnetPropertyStatesLightningOperation {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLightningOperation) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetPropertyStatesLightningOperation) IsBACnetPropertyStatesLightningOperation() {}
+
+func (m *_BACnetPropertyStatesLightningOperation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLightningOperation) deepCopy() *_BACnetPropertyStatesLightningOperation {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLightningOperationCopy := &_BACnetPropertyStatesLightningOperation{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LightningOperation.DeepCopy().(BACnetLightingOperationTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLightningOperationCopy
+}
 
 func (m *_BACnetPropertyStatesLightningOperation) String() string {
 	if m == nil {

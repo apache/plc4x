@@ -38,6 +38,7 @@ type BACnetAuthenticationStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetAuthenticationStatusTagged struct {
 
 var _ BACnetAuthenticationStatusTagged = (*_BACnetAuthenticationStatusTagged)(nil)
 
+// NewBACnetAuthenticationStatusTagged factory function for _BACnetAuthenticationStatusTagged
+func NewBACnetAuthenticationStatusTagged(header BACnetTagHeader, value BACnetAuthenticationStatus, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthenticationStatusTagged must not be nil")
+	}
+	return &_BACnetAuthenticationStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetAuthenticationStatusTagged) GetValue() BACnetAuthenticationStatu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationStatusTagged factory function for _BACnetAuthenticationStatusTagged
-func NewBACnetAuthenticationStatusTagged(header BACnetTagHeader, value BACnetAuthenticationStatus, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAuthenticationStatusTagged must not be nil")
-	}
-	return &_BACnetAuthenticationStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationStatusTagged(structType any) BACnetAuthenticationStatusTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetAuthenticationStatusTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAuthenticationStatusTagged) IsBACnetAuthenticationStatusTagged() {}
+
+func (m *_BACnetAuthenticationStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationStatusTagged) deepCopy() *_BACnetAuthenticationStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationStatusTaggedCopy := &_BACnetAuthenticationStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAuthenticationStatusTaggedCopy
+}
 
 func (m *_BACnetAuthenticationStatusTagged) String() string {
 	if m == nil {

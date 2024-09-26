@@ -23,8 +23,8 @@ import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 
 // TODO: big WIP
 type Property interface {
-	ReadProperty()
-	WriteProperty()
+	ReadProperty() error
+	WriteProperty() error
 }
 
 type PropertyKlass interface {
@@ -36,25 +36,33 @@ func NewProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), o
 }
 
 type _Property struct {
-	Name     string
-	Klass    func(Args, KWArgs) (PropertyKlass, error)
-	Optional bool
+	name     string
+	klass    func(Args, KWArgs) (PropertyKlass, error)
+	optional bool
+	_default any
+	mutable  bool
 }
 
 var _ Property = (*_Property)(nil)
 
-func WithPropertyOptional(optional bool) func(*_Property) {
-	return func(e *_Property) {
-		e.Optional = optional
-	}
+func WithPropertyOptional(optional bool) GenericApplier[*_Property] {
+	return WrapGenericApplier(func(e *_Property) { e.optional = optional })
 }
 
-func (p *_Property) ReadProperty() {
+func WithPropertyDefault(_default any) GenericApplier[*_Property] {
+	return WrapGenericApplier(func(e *_Property) { e._default = _default })
+}
+
+func WithPropertyMutable(mutable bool) GenericApplier[*_Property] {
+	return WrapGenericApplier(func(e *_Property) { e.mutable = mutable })
+}
+
+func (p *_Property) ReadProperty() error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (p *_Property) WriteProperty() {
+func (p *_Property) WriteProperty() error {
 	//TODO implement me
 	panic("implement me")
 }

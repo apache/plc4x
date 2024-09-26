@@ -38,6 +38,7 @@ type NPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetProtocolVersionNumber returns ProtocolVersionNumber (property field)
 	GetProtocolVersionNumber() uint8
 	// GetControl returns Control (property field)
@@ -89,6 +90,14 @@ type _NPDU struct {
 }
 
 var _ NPDU = (*_NPDU)(nil)
+
+// NewNPDU factory function for _NPDU
+func NewNPDU(protocolVersionNumber uint8, control NPDUControl, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm NLM, apdu APDU, npduLength uint16) *_NPDU {
+	if control == nil {
+		panic("control of type NPDUControl for NPDU must not be nil")
+	}
+	return &_NPDU{ProtocolVersionNumber: protocolVersionNumber, Control: control, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu, NpduLength: npduLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -212,14 +221,6 @@ func (m *_NPDU) GetPayloadSubtraction() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNPDU factory function for _NPDU
-func NewNPDU(protocolVersionNumber uint8, control NPDUControl, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm NLM, apdu APDU, npduLength uint16) *_NPDU {
-	if control == nil {
-		panic("control of type NPDUControl for NPDU must not be nil")
-	}
-	return &_NPDU{ProtocolVersionNumber: protocolVersionNumber, Control: control, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu, NpduLength: npduLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNPDU(structType any) NPDU {
@@ -545,6 +546,31 @@ func (m *_NPDU) GetNpduLength() uint16 {
 ////
 
 func (m *_NPDU) IsNPDU() {}
+
+func (m *_NPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NPDU) deepCopy() *_NPDU {
+	if m == nil {
+		return nil
+	}
+	_NPDUCopy := &_NPDU{
+		m.ProtocolVersionNumber,
+		m.Control.DeepCopy().(NPDUControl),
+		utils.CopyPtr[uint16](m.DestinationNetworkAddress),
+		utils.CopyPtr[uint8](m.DestinationLength),
+		utils.DeepCopySlice[uint8, uint8](m.DestinationAddress),
+		utils.CopyPtr[uint16](m.SourceNetworkAddress),
+		utils.CopyPtr[uint8](m.SourceLength),
+		utils.DeepCopySlice[uint8, uint8](m.SourceAddress),
+		utils.CopyPtr[uint8](m.HopCount),
+		m.Nlm.DeepCopy().(NLM),
+		m.Apdu.DeepCopy().(APDU),
+		m.NpduLength,
+	}
+	return _NPDUCopy
+}
 
 func (m *_NPDU) String() string {
 	if m == nil {

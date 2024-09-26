@@ -36,6 +36,7 @@ type ReaderGroupMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsReaderGroupMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReaderGroupMessageDataType()
@@ -48,6 +49,15 @@ type _ReaderGroupMessageDataType struct {
 
 var _ ReaderGroupMessageDataType = (*_ReaderGroupMessageDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReaderGroupMessageDataType)(nil)
+
+// NewReaderGroupMessageDataType factory function for _ReaderGroupMessageDataType
+func NewReaderGroupMessageDataType() *_ReaderGroupMessageDataType {
+	_result := &_ReaderGroupMessageDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ReaderGroupMessageDataType) GetIdentifier() string {
 
 func (m *_ReaderGroupMessageDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewReaderGroupMessageDataType factory function for _ReaderGroupMessageDataType
-func NewReaderGroupMessageDataType() *_ReaderGroupMessageDataType {
-	_result := &_ReaderGroupMessageDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ReaderGroupMessageDataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ReaderGroupMessageDataType) IsReaderGroupMessageDataType() {}
+
+func (m *_ReaderGroupMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReaderGroupMessageDataType) deepCopy() *_ReaderGroupMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_ReaderGroupMessageDataTypeCopy := &_ReaderGroupMessageDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReaderGroupMessageDataTypeCopy
+}
 
 func (m *_ReaderGroupMessageDataType) String() string {
 	if m == nil {

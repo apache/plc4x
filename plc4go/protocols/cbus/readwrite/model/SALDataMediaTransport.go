@@ -38,6 +38,7 @@ type SALDataMediaTransport interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetMediaTransportControlData returns MediaTransportControlData (property field)
 	GetMediaTransportControlData() MediaTransportControlData
@@ -53,6 +54,19 @@ type _SALDataMediaTransport struct {
 
 var _ SALDataMediaTransport = (*_SALDataMediaTransport)(nil)
 var _ SALDataRequirements = (*_SALDataMediaTransport)(nil)
+
+// NewSALDataMediaTransport factory function for _SALDataMediaTransport
+func NewSALDataMediaTransport(salData SALData, mediaTransportControlData MediaTransportControlData) *_SALDataMediaTransport {
+	if mediaTransportControlData == nil {
+		panic("mediaTransportControlData of type MediaTransportControlData for SALDataMediaTransport must not be nil")
+	}
+	_result := &_SALDataMediaTransport{
+		SALDataContract:           NewSALData(salData),
+		MediaTransportControlData: mediaTransportControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataMediaTransport) GetMediaTransportControlData() MediaTransportCo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataMediaTransport factory function for _SALDataMediaTransport
-func NewSALDataMediaTransport(mediaTransportControlData MediaTransportControlData, salData SALData) *_SALDataMediaTransport {
-	if mediaTransportControlData == nil {
-		panic("mediaTransportControlData of type MediaTransportControlData for SALDataMediaTransport must not be nil")
-	}
-	_result := &_SALDataMediaTransport{
-		SALDataContract:           NewSALData(salData),
-		MediaTransportControlData: mediaTransportControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataMediaTransport(structType any) SALDataMediaTransport {
@@ -182,6 +183,22 @@ func (m *_SALDataMediaTransport) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SALDataMediaTransport) IsSALDataMediaTransport() {}
+
+func (m *_SALDataMediaTransport) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataMediaTransport) deepCopy() *_SALDataMediaTransport {
+	if m == nil {
+		return nil
+	}
+	_SALDataMediaTransportCopy := &_SALDataMediaTransport{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.MediaTransportControlData.DeepCopy().(MediaTransportControlData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataMediaTransportCopy
+}
 
 func (m *_SALDataMediaTransport) String() string {
 	if m == nil {

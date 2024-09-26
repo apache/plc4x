@@ -38,6 +38,7 @@ type BACnetReadAccessSpecification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetOpeningTag returns OpeningTag (property field)
@@ -59,6 +60,20 @@ type _BACnetReadAccessSpecification struct {
 }
 
 var _ BACnetReadAccessSpecification = (*_BACnetReadAccessSpecification)(nil)
+
+// NewBACnetReadAccessSpecification factory function for _BACnetReadAccessSpecification
+func NewBACnetReadAccessSpecification(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyReferences []BACnetPropertyReference, closingTag BACnetClosingTag) *_BACnetReadAccessSpecification {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessSpecification must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessSpecification must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetReadAccessSpecification must not be nil")
+	}
+	return &_BACnetReadAccessSpecification{ObjectIdentifier: objectIdentifier, OpeningTag: openingTag, ListOfPropertyReferences: listOfPropertyReferences, ClosingTag: closingTag}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,20 +100,6 @@ func (m *_BACnetReadAccessSpecification) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReadAccessSpecification factory function for _BACnetReadAccessSpecification
-func NewBACnetReadAccessSpecification(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyReferences []BACnetPropertyReference, closingTag BACnetClosingTag) *_BACnetReadAccessSpecification {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessSpecification must not be nil")
-	}
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessSpecification must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetReadAccessSpecification must not be nil")
-	}
-	return &_BACnetReadAccessSpecification{ObjectIdentifier: objectIdentifier, OpeningTag: openingTag, ListOfPropertyReferences: listOfPropertyReferences, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReadAccessSpecification(structType any) BACnetReadAccessSpecification {
@@ -239,6 +240,23 @@ func (m *_BACnetReadAccessSpecification) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetReadAccessSpecification) IsBACnetReadAccessSpecification() {}
+
+func (m *_BACnetReadAccessSpecification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessSpecification) deepCopy() *_BACnetReadAccessSpecification {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessSpecificationCopy := &_BACnetReadAccessSpecification{
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetPropertyReference, BACnetPropertyReference](m.ListOfPropertyReferences),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetReadAccessSpecificationCopy
+}
 
 func (m *_BACnetReadAccessSpecification) String() string {
 	if m == nil {

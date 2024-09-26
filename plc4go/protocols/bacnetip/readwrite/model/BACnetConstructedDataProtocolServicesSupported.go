@@ -38,6 +38,7 @@ type BACnetConstructedDataProtocolServicesSupported interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProtocolServicesSupported returns ProtocolServicesSupported (property field)
 	GetProtocolServicesSupported() BACnetServicesSupportedTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProtocolServicesSupported struct {
 
 var _ BACnetConstructedDataProtocolServicesSupported = (*_BACnetConstructedDataProtocolServicesSupported)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolServicesSupported)(nil)
+
+// NewBACnetConstructedDataProtocolServicesSupported factory function for _BACnetConstructedDataProtocolServicesSupported
+func NewBACnetConstructedDataProtocolServicesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolServicesSupported BACnetServicesSupportedTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolServicesSupported {
+	if protocolServicesSupported == nil {
+		panic("protocolServicesSupported of type BACnetServicesSupportedTagged for BACnetConstructedDataProtocolServicesSupported must not be nil")
+	}
+	_result := &_BACnetConstructedDataProtocolServicesSupported{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolServicesSupported:     protocolServicesSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProtocolServicesSupported factory function for _BACnetConstructedDataProtocolServicesSupported
-func NewBACnetConstructedDataProtocolServicesSupported(protocolServicesSupported BACnetServicesSupportedTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolServicesSupported {
-	if protocolServicesSupported == nil {
-		panic("protocolServicesSupported of type BACnetServicesSupportedTagged for BACnetConstructedDataProtocolServicesSupported must not be nil")
-	}
-	_result := &_BACnetConstructedDataProtocolServicesSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProtocolServicesSupported:     protocolServicesSupported,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProtocolServicesSupported(structType any) BACnetConstructedDataProtocolServicesSupported {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProtocolServicesSupported) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) IsBACnetConstructedDataProtocolServicesSupported() {
+}
+
+func (m *_BACnetConstructedDataProtocolServicesSupported) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProtocolServicesSupported) deepCopy() *_BACnetConstructedDataProtocolServicesSupported {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProtocolServicesSupportedCopy := &_BACnetConstructedDataProtocolServicesSupported{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProtocolServicesSupported.DeepCopy().(BACnetServicesSupportedTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProtocolServicesSupportedCopy
 }
 
 func (m *_BACnetConstructedDataProtocolServicesSupported) String() string {

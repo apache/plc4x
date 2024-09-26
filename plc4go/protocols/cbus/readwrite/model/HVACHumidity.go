@@ -38,6 +38,7 @@ type HVACHumidity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHumidityValue returns HumidityValue (property field)
 	GetHumidityValue() uint16
 	// GetHumidityInPercent returns HumidityInPercent (virtual field)
@@ -52,6 +53,11 @@ type _HVACHumidity struct {
 }
 
 var _ HVACHumidity = (*_HVACHumidity)(nil)
+
+// NewHVACHumidity factory function for _HVACHumidity
+func NewHVACHumidity(humidityValue uint16) *_HVACHumidity {
+	return &_HVACHumidity{HumidityValue: humidityValue}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,11 +87,6 @@ func (m *_HVACHumidity) GetHumidityInPercent() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACHumidity factory function for _HVACHumidity
-func NewHVACHumidity(humidityValue uint16) *_HVACHumidity {
-	return &_HVACHumidity{HumidityValue: humidityValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACHumidity(structType any) HVACHumidity {
@@ -197,6 +198,20 @@ func (m *_HVACHumidity) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_HVACHumidity) IsHVACHumidity() {}
+
+func (m *_HVACHumidity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACHumidity) deepCopy() *_HVACHumidity {
+	if m == nil {
+		return nil
+	}
+	_HVACHumidityCopy := &_HVACHumidity{
+		m.HumidityValue,
+	}
+	return _HVACHumidityCopy
+}
 
 func (m *_HVACHumidity) String() string {
 	if m == nil {

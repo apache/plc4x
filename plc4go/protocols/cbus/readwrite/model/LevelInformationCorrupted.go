@@ -38,6 +38,7 @@ type LevelInformationCorrupted interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LevelInformation
 	// GetCorruptedNibble1 returns CorruptedNibble1 (property field)
 	GetCorruptedNibble1() uint8
@@ -62,6 +63,19 @@ type _LevelInformationCorrupted struct {
 
 var _ LevelInformationCorrupted = (*_LevelInformationCorrupted)(nil)
 var _ LevelInformationRequirements = (*_LevelInformationCorrupted)(nil)
+
+// NewLevelInformationCorrupted factory function for _LevelInformationCorrupted
+func NewLevelInformationCorrupted(raw uint16, corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8) *_LevelInformationCorrupted {
+	_result := &_LevelInformationCorrupted{
+		LevelInformationContract: NewLevelInformation(raw),
+		CorruptedNibble1:         corruptedNibble1,
+		CorruptedNibble2:         corruptedNibble2,
+		CorruptedNibble3:         corruptedNibble3,
+		CorruptedNibble4:         corruptedNibble4,
+	}
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,19 +116,6 @@ func (m *_LevelInformationCorrupted) GetCorruptedNibble4() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLevelInformationCorrupted factory function for _LevelInformationCorrupted
-func NewLevelInformationCorrupted(corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8, raw uint16) *_LevelInformationCorrupted {
-	_result := &_LevelInformationCorrupted{
-		LevelInformationContract: NewLevelInformation(raw),
-		CorruptedNibble1:         corruptedNibble1,
-		CorruptedNibble2:         corruptedNibble2,
-		CorruptedNibble3:         corruptedNibble3,
-		CorruptedNibble4:         corruptedNibble4,
-	}
-	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLevelInformationCorrupted(structType any) LevelInformationCorrupted {
@@ -238,6 +239,25 @@ func (m *_LevelInformationCorrupted) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_LevelInformationCorrupted) IsLevelInformationCorrupted() {}
+
+func (m *_LevelInformationCorrupted) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LevelInformationCorrupted) deepCopy() *_LevelInformationCorrupted {
+	if m == nil {
+		return nil
+	}
+	_LevelInformationCorruptedCopy := &_LevelInformationCorrupted{
+		m.LevelInformationContract.(*_LevelInformation).deepCopy(),
+		m.CorruptedNibble1,
+		m.CorruptedNibble2,
+		m.CorruptedNibble3,
+		m.CorruptedNibble4,
+	}
+	m.LevelInformationContract.(*_LevelInformation)._SubType = m
+	return _LevelInformationCorruptedCopy
+}
 
 func (m *_LevelInformationCorrupted) String() string {
 	if m == nil {

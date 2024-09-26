@@ -40,6 +40,7 @@ type SysexCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSysexCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommand()
 }
@@ -146,63 +147,63 @@ func (m *_SysexCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	var _child SysexCommand
 	switch {
 	case commandType == 0x00: // SysexCommandExtendedId
-		if _child, err = (&_SysexCommandExtendedId{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandExtendedId).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandExtendedId for type-switch of SysexCommand")
 		}
 	case commandType == 0x69 && response == bool(false): // SysexCommandAnalogMappingQueryRequest
-		if _child, err = (&_SysexCommandAnalogMappingQueryRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandAnalogMappingQueryRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandAnalogMappingQueryRequest for type-switch of SysexCommand")
 		}
 	case commandType == 0x69 && response == bool(true): // SysexCommandAnalogMappingQueryResponse
-		if _child, err = (&_SysexCommandAnalogMappingQueryResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandAnalogMappingQueryResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandAnalogMappingQueryResponse for type-switch of SysexCommand")
 		}
 	case commandType == 0x6A: // SysexCommandAnalogMappingResponse
-		if _child, err = (&_SysexCommandAnalogMappingResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandAnalogMappingResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandAnalogMappingResponse for type-switch of SysexCommand")
 		}
 	case commandType == 0x6B: // SysexCommandCapabilityQuery
-		if _child, err = (&_SysexCommandCapabilityQuery{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandCapabilityQuery).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandCapabilityQuery for type-switch of SysexCommand")
 		}
 	case commandType == 0x6C: // SysexCommandCapabilityResponse
-		if _child, err = (&_SysexCommandCapabilityResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandCapabilityResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandCapabilityResponse for type-switch of SysexCommand")
 		}
 	case commandType == 0x6D: // SysexCommandPinStateQuery
-		if _child, err = (&_SysexCommandPinStateQuery{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandPinStateQuery).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandPinStateQuery for type-switch of SysexCommand")
 		}
 	case commandType == 0x6E: // SysexCommandPinStateResponse
-		if _child, err = (&_SysexCommandPinStateResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandPinStateResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandPinStateResponse for type-switch of SysexCommand")
 		}
 	case commandType == 0x6F: // SysexCommandExtendedAnalog
-		if _child, err = (&_SysexCommandExtendedAnalog{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandExtendedAnalog).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandExtendedAnalog for type-switch of SysexCommand")
 		}
 	case commandType == 0x71: // SysexCommandStringData
-		if _child, err = (&_SysexCommandStringData{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandStringData).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandStringData for type-switch of SysexCommand")
 		}
 	case commandType == 0x79 && response == bool(false): // SysexCommandReportFirmwareRequest
-		if _child, err = (&_SysexCommandReportFirmwareRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandReportFirmwareRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandReportFirmwareRequest for type-switch of SysexCommand")
 		}
 	case commandType == 0x79 && response == bool(true): // SysexCommandReportFirmwareResponse
-		if _child, err = (&_SysexCommandReportFirmwareResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandReportFirmwareResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandReportFirmwareResponse for type-switch of SysexCommand")
 		}
 	case commandType == 0x7A: // SysexCommandSamplingInterval
-		if _child, err = (&_SysexCommandSamplingInterval{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandSamplingInterval).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandSamplingInterval for type-switch of SysexCommand")
 		}
 	case commandType == 0x7E: // SysexCommandSysexNonRealtime
-		if _child, err = (&_SysexCommandSysexNonRealtime{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandSysexNonRealtime).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandSysexNonRealtime for type-switch of SysexCommand")
 		}
 	case commandType == 0x7F: // SysexCommandSysexRealtime
-		if _child, err = (&_SysexCommandSysexRealtime{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_SysexCommandSysexRealtime).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SysexCommandSysexRealtime for type-switch of SysexCommand")
 		}
 	default:
@@ -244,3 +245,17 @@ func (pm *_SysexCommand) serializeParent(ctx context.Context, writeBuffer utils.
 }
 
 func (m *_SysexCommand) IsSysexCommand() {}
+
+func (m *_SysexCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommand) deepCopy() *_SysexCommand {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandCopy := &_SysexCommand{
+		nil, // will be set by child
+	}
+	return _SysexCommandCopy
+}

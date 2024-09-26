@@ -42,6 +42,7 @@ type S7MessageObjectRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7DataAlarmMessage
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -66,6 +67,18 @@ type _S7MessageObjectRequest struct {
 
 var _ S7MessageObjectRequest = (*_S7MessageObjectRequest)(nil)
 var _ S7DataAlarmMessageRequirements = (*_S7MessageObjectRequest)(nil)
+
+// NewS7MessageObjectRequest factory function for _S7MessageObjectRequest
+func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7MessageObjectRequest {
+	_result := &_S7MessageObjectRequest{
+		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
+		SyntaxId:                   syntaxId,
+		QueryType:                  queryType,
+		AlarmType:                  alarmType,
+	}
+	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -123,18 +136,6 @@ func (m *_S7MessageObjectRequest) GetLength() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7MessageObjectRequest factory function for _S7MessageObjectRequest
-func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7MessageObjectRequest {
-	_result := &_S7MessageObjectRequest{
-		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
-		SyntaxId:                   syntaxId,
-		QueryType:                  queryType,
-		AlarmType:                  alarmType,
-	}
-	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7MessageObjectRequest(structType any) S7MessageObjectRequest {
@@ -297,6 +298,26 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_S7MessageObjectRequest) IsS7MessageObjectRequest() {}
+
+func (m *_S7MessageObjectRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageObjectRequest) deepCopy() *_S7MessageObjectRequest {
+	if m == nil {
+		return nil
+	}
+	_S7MessageObjectRequestCopy := &_S7MessageObjectRequest{
+		m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage).deepCopy(),
+		m.SyntaxId,
+		m.QueryType,
+		m.AlarmType,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = m
+	return _S7MessageObjectRequestCopy
+}
 
 func (m *_S7MessageObjectRequest) String() string {
 	if m == nil {

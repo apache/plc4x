@@ -38,6 +38,7 @@ type BACnetConstructedDataControlledVariableReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetControlledVariableReference returns ControlledVariableReference (property field)
 	GetControlledVariableReference() BACnetObjectPropertyReference
@@ -55,6 +56,19 @@ type _BACnetConstructedDataControlledVariableReference struct {
 
 var _ BACnetConstructedDataControlledVariableReference = (*_BACnetConstructedDataControlledVariableReference)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataControlledVariableReference)(nil)
+
+// NewBACnetConstructedDataControlledVariableReference factory function for _BACnetConstructedDataControlledVariableReference
+func NewBACnetConstructedDataControlledVariableReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableReference {
+	if controlledVariableReference == nil {
+		panic("controlledVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataControlledVariableReference must not be nil")
+	}
+	_result := &_BACnetConstructedDataControlledVariableReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ControlledVariableReference:   controlledVariableReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataControlledVariableReference) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataControlledVariableReference factory function for _BACnetConstructedDataControlledVariableReference
-func NewBACnetConstructedDataControlledVariableReference(controlledVariableReference BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableReference {
-	if controlledVariableReference == nil {
-		panic("controlledVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataControlledVariableReference must not be nil")
-	}
-	_result := &_BACnetConstructedDataControlledVariableReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ControlledVariableReference:   controlledVariableReference,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataControlledVariableReference(structType any) BACnetConstructedDataControlledVariableReference {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataControlledVariableReference) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataControlledVariableReference) IsBACnetConstructedDataControlledVariableReference() {
+}
+
+func (m *_BACnetConstructedDataControlledVariableReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataControlledVariableReference) deepCopy() *_BACnetConstructedDataControlledVariableReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataControlledVariableReferenceCopy := &_BACnetConstructedDataControlledVariableReference{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ControlledVariableReference.DeepCopy().(BACnetObjectPropertyReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataControlledVariableReferenceCopy
 }
 
 func (m *_BACnetConstructedDataControlledVariableReference) String() string {

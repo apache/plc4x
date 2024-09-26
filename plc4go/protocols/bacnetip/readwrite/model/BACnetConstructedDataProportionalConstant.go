@@ -38,6 +38,7 @@ type BACnetConstructedDataProportionalConstant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProportionalConstant returns ProportionalConstant (property field)
 	GetProportionalConstant() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProportionalConstant struct {
 
 var _ BACnetConstructedDataProportionalConstant = (*_BACnetConstructedDataProportionalConstant)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProportionalConstant)(nil)
+
+// NewBACnetConstructedDataProportionalConstant factory function for _BACnetConstructedDataProportionalConstant
+func NewBACnetConstructedDataProportionalConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, proportionalConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstant {
+	if proportionalConstant == nil {
+		panic("proportionalConstant of type BACnetApplicationTagReal for BACnetConstructedDataProportionalConstant must not be nil")
+	}
+	_result := &_BACnetConstructedDataProportionalConstant{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProportionalConstant:          proportionalConstant,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProportionalConstant) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProportionalConstant factory function for _BACnetConstructedDataProportionalConstant
-func NewBACnetConstructedDataProportionalConstant(proportionalConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstant {
-	if proportionalConstant == nil {
-		panic("proportionalConstant of type BACnetApplicationTagReal for BACnetConstructedDataProportionalConstant must not be nil")
-	}
-	_result := &_BACnetConstructedDataProportionalConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProportionalConstant:          proportionalConstant,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProportionalConstant(structType any) BACnetConstructedDataProportionalConstant {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProportionalConstant) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataProportionalConstant) IsBACnetConstructedDataProportionalConstant() {}
+
+func (m *_BACnetConstructedDataProportionalConstant) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProportionalConstant) deepCopy() *_BACnetConstructedDataProportionalConstant {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProportionalConstantCopy := &_BACnetConstructedDataProportionalConstant{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProportionalConstant.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProportionalConstantCopy
+}
 
 func (m *_BACnetConstructedDataProportionalConstant) String() string {
 	if m == nil {

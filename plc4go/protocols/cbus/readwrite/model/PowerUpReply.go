@@ -38,6 +38,7 @@ type PowerUpReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Reply
 	// GetPowerUpIndicator returns PowerUpIndicator (property field)
 	GetPowerUpIndicator() PowerUp
@@ -53,6 +54,19 @@ type _PowerUpReply struct {
 
 var _ PowerUpReply = (*_PowerUpReply)(nil)
 var _ ReplyRequirements = (*_PowerUpReply)(nil)
+
+// NewPowerUpReply factory function for _PowerUpReply
+func NewPowerUpReply(peekedByte byte, powerUpIndicator PowerUp, cBusOptions CBusOptions, requestContext RequestContext) *_PowerUpReply {
+	if powerUpIndicator == nil {
+		panic("powerUpIndicator of type PowerUp for PowerUpReply must not be nil")
+	}
+	_result := &_PowerUpReply{
+		ReplyContract:    NewReply(peekedByte, cBusOptions, requestContext),
+		PowerUpIndicator: powerUpIndicator,
+	}
+	_result.ReplyContract.(*_Reply)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_PowerUpReply) GetPowerUpIndicator() PowerUp {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPowerUpReply factory function for _PowerUpReply
-func NewPowerUpReply(powerUpIndicator PowerUp, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_PowerUpReply {
-	if powerUpIndicator == nil {
-		panic("powerUpIndicator of type PowerUp for PowerUpReply must not be nil")
-	}
-	_result := &_PowerUpReply{
-		ReplyContract:    NewReply(peekedByte, cBusOptions, requestContext),
-		PowerUpIndicator: powerUpIndicator,
-	}
-	_result.ReplyContract.(*_Reply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPowerUpReply(structType any) PowerUpReply {
@@ -178,6 +179,22 @@ func (m *_PowerUpReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_PowerUpReply) IsPowerUpReply() {}
+
+func (m *_PowerUpReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PowerUpReply) deepCopy() *_PowerUpReply {
+	if m == nil {
+		return nil
+	}
+	_PowerUpReplyCopy := &_PowerUpReply{
+		m.ReplyContract.(*_Reply).deepCopy(),
+		m.PowerUpIndicator.DeepCopy().(PowerUp),
+	}
+	m.ReplyContract.(*_Reply)._SubType = m
+	return _PowerUpReplyCopy
+}
 
 func (m *_PowerUpReply) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataNotificationClass interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNotificationClass returns NotificationClass (property field)
 	GetNotificationClass() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataNotificationClass struct {
 
 var _ BACnetConstructedDataNotificationClass = (*_BACnetConstructedDataNotificationClass)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationClass)(nil)
+
+// NewBACnetConstructedDataNotificationClass factory function for _BACnetConstructedDataNotificationClass
+func NewBACnetConstructedDataNotificationClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationClass BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClass {
+	if notificationClass == nil {
+		panic("notificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationClass must not be nil")
+	}
+	_result := &_BACnetConstructedDataNotificationClass{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NotificationClass:             notificationClass,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataNotificationClass) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNotificationClass factory function for _BACnetConstructedDataNotificationClass
-func NewBACnetConstructedDataNotificationClass(notificationClass BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClass {
-	if notificationClass == nil {
-		panic("notificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationClass must not be nil")
-	}
-	_result := &_BACnetConstructedDataNotificationClass{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NotificationClass:             notificationClass,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNotificationClass(structType any) BACnetConstructedDataNotificationClass {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNotificationClass) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataNotificationClass) IsBACnetConstructedDataNotificationClass() {}
+
+func (m *_BACnetConstructedDataNotificationClass) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNotificationClass) deepCopy() *_BACnetConstructedDataNotificationClass {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNotificationClassCopy := &_BACnetConstructedDataNotificationClass{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NotificationClass.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNotificationClassCopy
+}
 
 func (m *_BACnetConstructedDataNotificationClass) String() string {
 	if m == nil {

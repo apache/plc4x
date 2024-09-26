@@ -38,6 +38,7 @@ type NLMEstablishConnectionToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
@@ -56,6 +57,17 @@ type _NLMEstablishConnectionToNetwork struct {
 
 var _ NLMEstablishConnectionToNetwork = (*_NLMEstablishConnectionToNetwork)(nil)
 var _ NLMRequirements = (*_NLMEstablishConnectionToNetwork)(nil)
+
+// NewNLMEstablishConnectionToNetwork factory function for _NLMEstablishConnectionToNetwork
+func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, apduLength uint16) *_NLMEstablishConnectionToNetwork {
+	_result := &_NLMEstablishConnectionToNetwork{
+		NLMContract:               NewNLM(apduLength),
+		DestinationNetworkAddress: destinationNetworkAddress,
+		TerminationTime:           terminationTime,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_NLMEstablishConnectionToNetwork) GetTerminationTime() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMEstablishConnectionToNetwork factory function for _NLMEstablishConnectionToNetwork
-func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, apduLength uint16) *_NLMEstablishConnectionToNetwork {
-	_result := &_NLMEstablishConnectionToNetwork{
-		NLMContract:               NewNLM(apduLength),
-		DestinationNetworkAddress: destinationNetworkAddress,
-		TerminationTime:           terminationTime,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMEstablishConnectionToNetwork(structType any) NLMEstablishConnectionToNetwork {
@@ -200,6 +201,23 @@ func (m *_NLMEstablishConnectionToNetwork) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_NLMEstablishConnectionToNetwork) IsNLMEstablishConnectionToNetwork() {}
+
+func (m *_NLMEstablishConnectionToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMEstablishConnectionToNetwork) deepCopy() *_NLMEstablishConnectionToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMEstablishConnectionToNetworkCopy := &_NLMEstablishConnectionToNetwork{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.DestinationNetworkAddress,
+		m.TerminationTime,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMEstablishConnectionToNetworkCopy
+}
 
 func (m *_NLMEstablishConnectionToNetwork) String() string {
 	if m == nil {

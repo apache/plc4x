@@ -38,6 +38,7 @@ type ActivateSessionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -74,6 +75,35 @@ type _ActivateSessionRequest struct {
 
 var _ ActivateSessionRequest = (*_ActivateSessionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ActivateSessionRequest)(nil)
+
+// NewActivateSessionRequest factory function for _ActivateSessionRequest
+func NewActivateSessionRequest(requestHeader ExtensionObjectDefinition, clientSignature ExtensionObjectDefinition, noOfClientSoftwareCertificates int32, clientSoftwareCertificates []ExtensionObjectDefinition, noOfLocaleIds int32, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature ExtensionObjectDefinition) *_ActivateSessionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+	}
+	if clientSignature == nil {
+		panic("clientSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+	}
+	if userIdentityToken == nil {
+		panic("userIdentityToken of type ExtensionObject for ActivateSessionRequest must not be nil")
+	}
+	if userTokenSignature == nil {
+		panic("userTokenSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+	}
+	_result := &_ActivateSessionRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ClientSignature:                   clientSignature,
+		NoOfClientSoftwareCertificates:    noOfClientSoftwareCertificates,
+		ClientSoftwareCertificates:        clientSoftwareCertificates,
+		NoOfLocaleIds:                     noOfLocaleIds,
+		LocaleIds:                         localeIds,
+		UserIdentityToken:                 userIdentityToken,
+		UserTokenSignature:                userTokenSignature,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,35 +164,6 @@ func (m *_ActivateSessionRequest) GetUserTokenSignature() ExtensionObjectDefinit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewActivateSessionRequest factory function for _ActivateSessionRequest
-func NewActivateSessionRequest(requestHeader ExtensionObjectDefinition, clientSignature ExtensionObjectDefinition, noOfClientSoftwareCertificates int32, clientSoftwareCertificates []ExtensionObjectDefinition, noOfLocaleIds int32, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature ExtensionObjectDefinition) *_ActivateSessionRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
-	}
-	if clientSignature == nil {
-		panic("clientSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
-	}
-	if userIdentityToken == nil {
-		panic("userIdentityToken of type ExtensionObject for ActivateSessionRequest must not be nil")
-	}
-	if userTokenSignature == nil {
-		panic("userTokenSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
-	}
-	_result := &_ActivateSessionRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		ClientSignature:                   clientSignature,
-		NoOfClientSoftwareCertificates:    noOfClientSoftwareCertificates,
-		ClientSoftwareCertificates:        clientSoftwareCertificates,
-		NoOfLocaleIds:                     noOfLocaleIds,
-		LocaleIds:                         localeIds,
-		UserIdentityToken:                 userIdentityToken,
-		UserTokenSignature:                userTokenSignature,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastActivateSessionRequest(structType any) ActivateSessionRequest {
@@ -352,6 +353,29 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ActivateSessionRequest) IsActivateSessionRequest() {}
+
+func (m *_ActivateSessionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ActivateSessionRequest) deepCopy() *_ActivateSessionRequest {
+	if m == nil {
+		return nil
+	}
+	_ActivateSessionRequestCopy := &_ActivateSessionRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ClientSignature.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfClientSoftwareCertificates,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ClientSoftwareCertificates),
+		m.NoOfLocaleIds,
+		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
+		m.UserIdentityToken.DeepCopy().(ExtensionObject),
+		m.UserTokenSignature.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ActivateSessionRequestCopy
+}
 
 func (m *_ActivateSessionRequest) String() string {
 	if m == nil {

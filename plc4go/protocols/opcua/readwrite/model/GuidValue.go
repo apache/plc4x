@@ -38,6 +38,7 @@ type GuidValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetData1 returns Data1 (property field)
 	GetData1() uint32
 	// GetData2 returns Data2 (property field)
@@ -62,6 +63,11 @@ type _GuidValue struct {
 }
 
 var _ GuidValue = (*_GuidValue)(nil)
+
+// NewGuidValue factory function for _GuidValue
+func NewGuidValue(data1 uint32, data2 uint16, data3 uint16, data4 []byte, data5 []byte) *_GuidValue {
+	return &_GuidValue{Data1: data1, Data2: data2, Data3: data3, Data4: data4, Data5: data5}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,11 +98,6 @@ func (m *_GuidValue) GetData5() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGuidValue factory function for _GuidValue
-func NewGuidValue(data1 uint32, data2 uint16, data3 uint16, data4 []byte, data5 []byte) *_GuidValue {
-	return &_GuidValue{Data1: data1, Data2: data2, Data3: data3, Data4: data4, Data5: data5}
-}
 
 // Deprecated: use the interface for direct cast
 func CastGuidValue(structType any) GuidValue {
@@ -250,6 +251,24 @@ func (m *_GuidValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_GuidValue) IsGuidValue() {}
+
+func (m *_GuidValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GuidValue) deepCopy() *_GuidValue {
+	if m == nil {
+		return nil
+	}
+	_GuidValueCopy := &_GuidValue{
+		m.Data1,
+		m.Data2,
+		m.Data3,
+		utils.DeepCopySlice[byte, byte](m.Data4),
+		utils.DeepCopySlice[byte, byte](m.Data5),
+	}
+	return _GuidValueCopy
+}
 
 func (m *_GuidValue) String() string {
 	if m == nil {

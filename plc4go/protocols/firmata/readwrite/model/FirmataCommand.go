@@ -40,6 +40,7 @@ type FirmataCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsFirmataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommand()
 }
@@ -149,23 +150,23 @@ func (m *_FirmataCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	var _child FirmataCommand
 	switch {
 	case commandCode == 0x0: // FirmataCommandSysex
-		if _child, err = (&_FirmataCommandSysex{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandSysex).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSysex for type-switch of FirmataCommand")
 		}
 	case commandCode == 0x4: // FirmataCommandSetPinMode
-		if _child, err = (&_FirmataCommandSetPinMode{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandSetPinMode).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSetPinMode for type-switch of FirmataCommand")
 		}
 	case commandCode == 0x5: // FirmataCommandSetDigitalPinValue
-		if _child, err = (&_FirmataCommandSetDigitalPinValue{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandSetDigitalPinValue).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSetDigitalPinValue for type-switch of FirmataCommand")
 		}
 	case commandCode == 0x9: // FirmataCommandProtocolVersion
-		if _child, err = (&_FirmataCommandProtocolVersion{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandProtocolVersion).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandProtocolVersion for type-switch of FirmataCommand")
 		}
 	case commandCode == 0xF: // FirmataCommandSystemReset
-		if _child, err = (&_FirmataCommandSystemReset{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandSystemReset).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSystemReset for type-switch of FirmataCommand")
 		}
 	default:
@@ -217,3 +218,18 @@ func (m *_FirmataCommand) GetResponse() bool {
 ////
 
 func (m *_FirmataCommand) IsFirmataCommand() {}
+
+func (m *_FirmataCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommand) deepCopy() *_FirmataCommand {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandCopy := &_FirmataCommand{
+		nil, // will be set by child
+		m.Response,
+	}
+	return _FirmataCommandCopy
+}

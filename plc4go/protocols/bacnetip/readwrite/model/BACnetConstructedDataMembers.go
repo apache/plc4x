@@ -38,6 +38,7 @@ type BACnetConstructedDataMembers interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMembers returns Members (property field)
 	GetMembers() []BACnetDeviceObjectReference
@@ -53,6 +54,16 @@ type _BACnetConstructedDataMembers struct {
 
 var _ BACnetConstructedDataMembers = (*_BACnetConstructedDataMembers)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMembers)(nil)
+
+// NewBACnetConstructedDataMembers factory function for _BACnetConstructedDataMembers
+func NewBACnetConstructedDataMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, members []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMembers {
+	_result := &_BACnetConstructedDataMembers{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Members:                       members,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataMembers) GetMembers() []BACnetDeviceObjectReferen
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMembers factory function for _BACnetConstructedDataMembers
-func NewBACnetConstructedDataMembers(members []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMembers {
-	_result := &_BACnetConstructedDataMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Members:                       members,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMembers(structType any) BACnetConstructedDataMembers {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataMembers) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataMembers) IsBACnetConstructedDataMembers() {}
+
+func (m *_BACnetConstructedDataMembers) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMembers) deepCopy() *_BACnetConstructedDataMembers {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMembersCopy := &_BACnetConstructedDataMembers{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.Members),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMembersCopy
+}
 
 func (m *_BACnetConstructedDataMembers) String() string {
 	if m == nil {

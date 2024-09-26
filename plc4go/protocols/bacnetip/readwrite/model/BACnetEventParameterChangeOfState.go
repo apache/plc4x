@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -62,6 +63,31 @@ type _BACnetEventParameterChangeOfState struct {
 
 var _ BACnetEventParameterChangeOfState = (*_BACnetEventParameterChangeOfState)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfState)(nil)
+
+// NewBACnetEventParameterChangeOfState factory function for _BACnetEventParameterChangeOfState
+func NewBACnetEventParameterChangeOfState(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfValues BACnetEventParameterChangeOfStateListOfValues, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfState {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfState must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfState must not be nil")
+	}
+	if listOfValues == nil {
+		panic("listOfValues of type BACnetEventParameterChangeOfStateListOfValues for BACnetEventParameterChangeOfState must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfState must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfState{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		ListOfValues:                 listOfValues,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,31 +128,6 @@ func (m *_BACnetEventParameterChangeOfState) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfState factory function for _BACnetEventParameterChangeOfState
-func NewBACnetEventParameterChangeOfState(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfValues BACnetEventParameterChangeOfStateListOfValues, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfState {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfState must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfState must not be nil")
-	}
-	if listOfValues == nil {
-		panic("listOfValues of type BACnetEventParameterChangeOfStateListOfValues for BACnetEventParameterChangeOfState must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfState must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfState{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		ListOfValues:                 listOfValues,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfState(structType any) BACnetEventParameterChangeOfState {
@@ -250,6 +251,25 @@ func (m *_BACnetEventParameterChangeOfState) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetEventParameterChangeOfState) IsBACnetEventParameterChangeOfState() {}
+
+func (m *_BACnetEventParameterChangeOfState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfState) deepCopy() *_BACnetEventParameterChangeOfState {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfStateCopy := &_BACnetEventParameterChangeOfState{
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfValues.DeepCopy().(BACnetEventParameterChangeOfStateListOfValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterChangeOfStateCopy
+}
 
 func (m *_BACnetEventParameterChangeOfState) String() string {
 	if m == nil {

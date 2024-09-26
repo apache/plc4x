@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessEventTag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccessEventTag returns AccessEventTag (property field)
 	GetAccessEventTag() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAccessEventTag struct {
 
 var _ BACnetConstructedDataAccessEventTag = (*_BACnetConstructedDataAccessEventTag)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessEventTag)(nil)
+
+// NewBACnetConstructedDataAccessEventTag factory function for _BACnetConstructedDataAccessEventTag
+func NewBACnetConstructedDataAccessEventTag(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventTag BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTag {
+	if accessEventTag == nil {
+		panic("accessEventTag of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccessEventTag must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccessEventTag{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccessEventTag:                accessEventTag,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAccessEventTag) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessEventTag factory function for _BACnetConstructedDataAccessEventTag
-func NewBACnetConstructedDataAccessEventTag(accessEventTag BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTag {
-	if accessEventTag == nil {
-		panic("accessEventTag of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccessEventTag must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccessEventTag{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AccessEventTag:                accessEventTag,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessEventTag(structType any) BACnetConstructedDataAccessEventTag {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccessEventTag) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataAccessEventTag) IsBACnetConstructedDataAccessEventTag() {}
+
+func (m *_BACnetConstructedDataAccessEventTag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessEventTag) deepCopy() *_BACnetConstructedDataAccessEventTag {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessEventTagCopy := &_BACnetConstructedDataAccessEventTag{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AccessEventTag.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessEventTagCopy
+}
 
 func (m *_BACnetConstructedDataAccessEventTag) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type DataSetReaderTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsDataSetReaderTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSetReaderTransportDataType()
@@ -48,6 +49,15 @@ type _DataSetReaderTransportDataType struct {
 
 var _ DataSetReaderTransportDataType = (*_DataSetReaderTransportDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataSetReaderTransportDataType)(nil)
+
+// NewDataSetReaderTransportDataType factory function for _DataSetReaderTransportDataType
+func NewDataSetReaderTransportDataType() *_DataSetReaderTransportDataType {
+	_result := &_DataSetReaderTransportDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_DataSetReaderTransportDataType) GetIdentifier() string {
 
 func (m *_DataSetReaderTransportDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewDataSetReaderTransportDataType factory function for _DataSetReaderTransportDataType
-func NewDataSetReaderTransportDataType() *_DataSetReaderTransportDataType {
-	_result := &_DataSetReaderTransportDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_DataSetReaderTransportDataType) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_DataSetReaderTransportDataType) IsDataSetReaderTransportDataType() {}
+
+func (m *_DataSetReaderTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSetReaderTransportDataType) deepCopy() *_DataSetReaderTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_DataSetReaderTransportDataTypeCopy := &_DataSetReaderTransportDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataSetReaderTransportDataTypeCopy
+}
 
 func (m *_DataSetReaderTransportDataType) String() string {
 	if m == nil {

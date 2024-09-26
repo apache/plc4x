@@ -38,6 +38,7 @@ type BACnetScaleFloatScale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetScale
 	// GetFloatScale returns FloatScale (property field)
 	GetFloatScale() BACnetContextTagReal
@@ -53,6 +54,19 @@ type _BACnetScaleFloatScale struct {
 
 var _ BACnetScaleFloatScale = (*_BACnetScaleFloatScale)(nil)
 var _ BACnetScaleRequirements = (*_BACnetScaleFloatScale)(nil)
+
+// NewBACnetScaleFloatScale factory function for _BACnetScaleFloatScale
+func NewBACnetScaleFloatScale(peekedTagHeader BACnetTagHeader, floatScale BACnetContextTagReal) *_BACnetScaleFloatScale {
+	if floatScale == nil {
+		panic("floatScale of type BACnetContextTagReal for BACnetScaleFloatScale must not be nil")
+	}
+	_result := &_BACnetScaleFloatScale{
+		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
+		FloatScale:          floatScale,
+	}
+	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetScaleFloatScale) GetFloatScale() BACnetContextTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetScaleFloatScale factory function for _BACnetScaleFloatScale
-func NewBACnetScaleFloatScale(floatScale BACnetContextTagReal, peekedTagHeader BACnetTagHeader) *_BACnetScaleFloatScale {
-	if floatScale == nil {
-		panic("floatScale of type BACnetContextTagReal for BACnetScaleFloatScale must not be nil")
-	}
-	_result := &_BACnetScaleFloatScale{
-		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
-		FloatScale:          floatScale,
-	}
-	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetScaleFloatScale(structType any) BACnetScaleFloatScale {
@@ -178,6 +179,22 @@ func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetScaleFloatScale) IsBACnetScaleFloatScale() {}
+
+func (m *_BACnetScaleFloatScale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetScaleFloatScale) deepCopy() *_BACnetScaleFloatScale {
+	if m == nil {
+		return nil
+	}
+	_BACnetScaleFloatScaleCopy := &_BACnetScaleFloatScale{
+		m.BACnetScaleContract.(*_BACnetScale).deepCopy(),
+		m.FloatScale.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetScaleContract.(*_BACnetScale)._SubType = m
+	return _BACnetScaleFloatScaleCopy
+}
 
 func (m *_BACnetScaleFloatScale) String() string {
 	if m == nil {

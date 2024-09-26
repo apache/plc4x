@@ -38,6 +38,7 @@ type BACnetConstructedDataVirtualMACAddressTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVirtualMacAddressTable returns VirtualMacAddressTable (property field)
 	GetVirtualMacAddressTable() []BACnetVMACEntry
@@ -53,6 +54,16 @@ type _BACnetConstructedDataVirtualMACAddressTable struct {
 
 var _ BACnetConstructedDataVirtualMACAddressTable = (*_BACnetConstructedDataVirtualMACAddressTable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVirtualMACAddressTable)(nil)
+
+// NewBACnetConstructedDataVirtualMACAddressTable factory function for _BACnetConstructedDataVirtualMACAddressTable
+func NewBACnetConstructedDataVirtualMACAddressTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, virtualMacAddressTable []BACnetVMACEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVirtualMACAddressTable {
+	_result := &_BACnetConstructedDataVirtualMACAddressTable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VirtualMacAddressTable:        virtualMacAddressTable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) GetVirtualMacAddressTable
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVirtualMACAddressTable factory function for _BACnetConstructedDataVirtualMACAddressTable
-func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []BACnetVMACEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVirtualMACAddressTable {
-	_result := &_BACnetConstructedDataVirtualMACAddressTable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VirtualMacAddressTable:        virtualMacAddressTable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVirtualMACAddressTable(structType any) BACnetConstructedDataVirtualMACAddressTable {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataVirtualMACAddressTable) IsBACnetConstructedDataVirtualMACAddressTable() {
+}
+
+func (m *_BACnetConstructedDataVirtualMACAddressTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVirtualMACAddressTable) deepCopy() *_BACnetConstructedDataVirtualMACAddressTable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVirtualMACAddressTableCopy := &_BACnetConstructedDataVirtualMACAddressTable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetVMACEntry, BACnetVMACEntry](m.VirtualMacAddressTable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVirtualMACAddressTableCopy
 }
 
 func (m *_BACnetConstructedDataVirtualMACAddressTable) String() string {

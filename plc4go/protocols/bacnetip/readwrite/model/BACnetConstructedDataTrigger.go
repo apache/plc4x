@@ -38,6 +38,7 @@ type BACnetConstructedDataTrigger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTrigger returns Trigger (property field)
 	GetTrigger() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTrigger struct {
 
 var _ BACnetConstructedDataTrigger = (*_BACnetConstructedDataTrigger)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrigger)(nil)
+
+// NewBACnetConstructedDataTrigger factory function for _BACnetConstructedDataTrigger
+func NewBACnetConstructedDataTrigger(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trigger BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrigger {
+	if trigger == nil {
+		panic("trigger of type BACnetApplicationTagBoolean for BACnetConstructedDataTrigger must not be nil")
+	}
+	_result := &_BACnetConstructedDataTrigger{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Trigger:                       trigger,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTrigger) GetActualValue() BACnetApplicationTagBoo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTrigger factory function for _BACnetConstructedDataTrigger
-func NewBACnetConstructedDataTrigger(trigger BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrigger {
-	if trigger == nil {
-		panic("trigger of type BACnetApplicationTagBoolean for BACnetConstructedDataTrigger must not be nil")
-	}
-	_result := &_BACnetConstructedDataTrigger{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Trigger:                       trigger,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTrigger(structType any) BACnetConstructedDataTrigger {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTrigger) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataTrigger) IsBACnetConstructedDataTrigger() {}
+
+func (m *_BACnetConstructedDataTrigger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrigger) deepCopy() *_BACnetConstructedDataTrigger {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTriggerCopy := &_BACnetConstructedDataTrigger{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Trigger.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTriggerCopy
+}
 
 func (m *_BACnetConstructedDataTrigger) String() string {
 	if m == nil {

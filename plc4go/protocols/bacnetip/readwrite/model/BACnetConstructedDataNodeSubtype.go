@@ -38,6 +38,7 @@ type BACnetConstructedDataNodeSubtype interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNodeSubType returns NodeSubType (property field)
 	GetNodeSubType() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataNodeSubtype struct {
 
 var _ BACnetConstructedDataNodeSubtype = (*_BACnetConstructedDataNodeSubtype)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNodeSubtype)(nil)
+
+// NewBACnetConstructedDataNodeSubtype factory function for _BACnetConstructedDataNodeSubtype
+func NewBACnetConstructedDataNodeSubtype(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeSubType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeSubtype {
+	if nodeSubType == nil {
+		panic("nodeSubType of type BACnetApplicationTagCharacterString for BACnetConstructedDataNodeSubtype must not be nil")
+	}
+	_result := &_BACnetConstructedDataNodeSubtype{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NodeSubType:                   nodeSubType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataNodeSubtype) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNodeSubtype factory function for _BACnetConstructedDataNodeSubtype
-func NewBACnetConstructedDataNodeSubtype(nodeSubType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeSubtype {
-	if nodeSubType == nil {
-		panic("nodeSubType of type BACnetApplicationTagCharacterString for BACnetConstructedDataNodeSubtype must not be nil")
-	}
-	_result := &_BACnetConstructedDataNodeSubtype{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NodeSubType:                   nodeSubType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNodeSubtype(structType any) BACnetConstructedDataNodeSubtype {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataNodeSubtype) IsBACnetConstructedDataNodeSubtype() {}
+
+func (m *_BACnetConstructedDataNodeSubtype) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNodeSubtype) deepCopy() *_BACnetConstructedDataNodeSubtype {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNodeSubtypeCopy := &_BACnetConstructedDataNodeSubtype{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NodeSubType.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNodeSubtypeCopy
+}
 
 func (m *_BACnetConstructedDataNodeSubtype) String() string {
 	if m == nil {

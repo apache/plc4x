@@ -38,6 +38,7 @@ type BACnetConstructedDataBinaryLightingOutputRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetBinaryLightingPVTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBinaryLightingOutputRelinquishDefault struct {
 
 var _ BACnetConstructedDataBinaryLightingOutputRelinquishDefault = (*_BACnetConstructedDataBinaryLightingOutputRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryLightingOutputRelinquishDefault)(nil)
+
+// NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault factory function for _BACnetConstructedDataBinaryLightingOutputRelinquishDefault
+func NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetBinaryLightingPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetBinaryLightingPVTagged for BACnetConstructedDataBinaryLightingOutputRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataBinaryLightingOutputRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) GetActualV
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault factory function for _BACnetConstructedDataBinaryLightingOutputRelinquishDefault
-func NewBACnetConstructedDataBinaryLightingOutputRelinquishDefault(relinquishDefault BACnetBinaryLightingPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetBinaryLightingPVTagged for BACnetConstructedDataBinaryLightingOutputRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataBinaryLightingOutputRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBinaryLightingOutputRelinquishDefault(structType any) BACnetConstructedDataBinaryLightingOutputRelinquishDefault {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) SerializeW
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) IsBACnetConstructedDataBinaryLightingOutputRelinquishDefault() {
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) deepCopy() *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryLightingOutputRelinquishDefaultCopy := &_BACnetConstructedDataBinaryLightingOutputRelinquishDefault{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RelinquishDefault.DeepCopy().(BACnetBinaryLightingPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryLightingOutputRelinquishDefaultCopy
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputRelinquishDefault) String() string {

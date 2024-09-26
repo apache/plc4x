@@ -38,6 +38,7 @@ type NodeTypeDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTypeDefinitionNode returns TypeDefinitionNode (property field)
 	GetTypeDefinitionNode() ExpandedNodeId
@@ -64,6 +65,22 @@ type _NodeTypeDescription struct {
 
 var _ NodeTypeDescription = (*_NodeTypeDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NodeTypeDescription)(nil)
+
+// NewNodeTypeDescription factory function for _NodeTypeDescription
+func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) *_NodeTypeDescription {
+	if typeDefinitionNode == nil {
+		panic("typeDefinitionNode of type ExpandedNodeId for NodeTypeDescription must not be nil")
+	}
+	_result := &_NodeTypeDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TypeDefinitionNode:                typeDefinitionNode,
+		IncludeSubTypes:                   includeSubTypes,
+		NoOfDataToReturn:                  noOfDataToReturn,
+		DataToReturn:                      dataToReturn,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,22 +125,6 @@ func (m *_NodeTypeDescription) GetDataToReturn() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeTypeDescription factory function for _NodeTypeDescription
-func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) *_NodeTypeDescription {
-	if typeDefinitionNode == nil {
-		panic("typeDefinitionNode of type ExpandedNodeId for NodeTypeDescription must not be nil")
-	}
-	_result := &_NodeTypeDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		TypeDefinitionNode:                typeDefinitionNode,
-		IncludeSubTypes:                   includeSubTypes,
-		NoOfDataToReturn:                  noOfDataToReturn,
-		DataToReturn:                      dataToReturn,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeTypeDescription(structType any) NodeTypeDescription {
@@ -267,6 +268,26 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NodeTypeDescription) IsNodeTypeDescription() {}
+
+func (m *_NodeTypeDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeTypeDescription) deepCopy() *_NodeTypeDescription {
+	if m == nil {
+		return nil
+	}
+	_NodeTypeDescriptionCopy := &_NodeTypeDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
+		m.IncludeSubTypes,
+		m.NoOfDataToReturn,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.DataToReturn),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NodeTypeDescriptionCopy
+}
 
 func (m *_NodeTypeDescription) String() string {
 	if m == nil {

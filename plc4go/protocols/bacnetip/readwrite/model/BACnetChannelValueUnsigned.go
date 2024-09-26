@@ -38,6 +38,7 @@ type BACnetChannelValueUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetChannelValueUnsigned struct {
 
 var _ BACnetChannelValueUnsigned = (*_BACnetChannelValueUnsigned)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueUnsigned)(nil)
+
+// NewBACnetChannelValueUnsigned factory function for _BACnetChannelValueUnsigned
+func NewBACnetChannelValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetChannelValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetChannelValueUnsigned must not be nil")
+	}
+	_result := &_BACnetChannelValueUnsigned{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		UnsignedValue:              unsignedValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueUnsigned) GetUnsignedValue() BACnetApplicationTagUns
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueUnsigned factory function for _BACnetChannelValueUnsigned
-func NewBACnetChannelValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueUnsigned {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetChannelValueUnsigned must not be nil")
-	}
-	_result := &_BACnetChannelValueUnsigned{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		UnsignedValue:              unsignedValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueUnsigned(structType any) BACnetChannelValueUnsigned {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueUnsigned) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetChannelValueUnsigned) IsBACnetChannelValueUnsigned() {}
+
+func (m *_BACnetChannelValueUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueUnsigned) deepCopy() *_BACnetChannelValueUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueUnsignedCopy := &_BACnetChannelValueUnsigned{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueUnsignedCopy
+}
 
 func (m *_BACnetChannelValueUnsigned) String() string {
 	if m == nil {

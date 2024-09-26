@@ -38,6 +38,7 @@ type BACnetConstructedDataOutputUnits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataOutputUnits struct {
 
 var _ BACnetConstructedDataOutputUnits = (*_BACnetConstructedDataOutputUnits)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOutputUnits)(nil)
+
+// NewBACnetConstructedDataOutputUnits factory function for _BACnetConstructedDataOutputUnits
+func NewBACnetConstructedDataOutputUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutputUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataOutputUnits must not be nil")
+	}
+	_result := &_BACnetConstructedDataOutputUnits{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Units:                         units,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataOutputUnits) GetActualValue() BACnetEngineeringUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOutputUnits factory function for _BACnetConstructedDataOutputUnits
-func NewBACnetConstructedDataOutputUnits(units BACnetEngineeringUnitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutputUnits {
-	if units == nil {
-		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataOutputUnits must not be nil")
-	}
-	_result := &_BACnetConstructedDataOutputUnits{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Units:                         units,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOutputUnits(structType any) BACnetConstructedDataOutputUnits {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOutputUnits) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataOutputUnits) IsBACnetConstructedDataOutputUnits() {}
+
+func (m *_BACnetConstructedDataOutputUnits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOutputUnits) deepCopy() *_BACnetConstructedDataOutputUnits {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOutputUnitsCopy := &_BACnetConstructedDataOutputUnits{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Units.DeepCopy().(BACnetEngineeringUnitsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOutputUnitsCopy
+}
 
 func (m *_BACnetConstructedDataOutputUnits) String() string {
 	if m == nil {

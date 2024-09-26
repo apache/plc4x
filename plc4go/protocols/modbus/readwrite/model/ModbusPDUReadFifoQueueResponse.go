@@ -38,6 +38,7 @@ type ModbusPDUReadFifoQueueResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetFifoValue returns FifoValue (property field)
 	GetFifoValue() []uint16
@@ -53,6 +54,16 @@ type _ModbusPDUReadFifoQueueResponse struct {
 
 var _ ModbusPDUReadFifoQueueResponse = (*_ModbusPDUReadFifoQueueResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadFifoQueueResponse)(nil)
+
+// NewModbusPDUReadFifoQueueResponse factory function for _ModbusPDUReadFifoQueueResponse
+func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *_ModbusPDUReadFifoQueueResponse {
+	_result := &_ModbusPDUReadFifoQueueResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		FifoValue:         fifoValue,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ModbusPDUReadFifoQueueResponse) GetFifoValue() []uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadFifoQueueResponse factory function for _ModbusPDUReadFifoQueueResponse
-func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *_ModbusPDUReadFifoQueueResponse {
-	_result := &_ModbusPDUReadFifoQueueResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		FifoValue:         fifoValue,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadFifoQueueResponse(structType any) ModbusPDUReadFifoQueueResponse {
@@ -215,6 +216,22 @@ func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ModbusPDUReadFifoQueueResponse) IsModbusPDUReadFifoQueueResponse() {}
+
+func (m *_ModbusPDUReadFifoQueueResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFifoQueueResponse) deepCopy() *_ModbusPDUReadFifoQueueResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFifoQueueResponseCopy := &_ModbusPDUReadFifoQueueResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		utils.DeepCopySlice[uint16, uint16](m.FifoValue),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadFifoQueueResponseCopy
+}
 
 func (m *_ModbusPDUReadFifoQueueResponse) String() string {
 	if m == nil {

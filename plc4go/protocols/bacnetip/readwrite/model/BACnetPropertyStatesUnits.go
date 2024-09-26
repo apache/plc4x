@@ -38,6 +38,7 @@ type BACnetPropertyStatesUnits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesUnits struct {
 
 var _ BACnetPropertyStatesUnits = (*_BACnetPropertyStatesUnits)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesUnits)(nil)
+
+// NewBACnetPropertyStatesUnits factory function for _BACnetPropertyStatesUnits
+func NewBACnetPropertyStatesUnits(peekedTagHeader BACnetTagHeader, units BACnetEngineeringUnitsTagged) *_BACnetPropertyStatesUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetPropertyStatesUnits must not be nil")
+	}
+	_result := &_BACnetPropertyStatesUnits{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Units:                        units,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesUnits) GetUnits() BACnetEngineeringUnitsTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesUnits factory function for _BACnetPropertyStatesUnits
-func NewBACnetPropertyStatesUnits(units BACnetEngineeringUnitsTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesUnits {
-	if units == nil {
-		panic("units of type BACnetEngineeringUnitsTagged for BACnetPropertyStatesUnits must not be nil")
-	}
-	_result := &_BACnetPropertyStatesUnits{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Units:                        units,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesUnits(structType any) BACnetPropertyStatesUnits {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesUnits) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetPropertyStatesUnits) IsBACnetPropertyStatesUnits() {}
+
+func (m *_BACnetPropertyStatesUnits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesUnits) deepCopy() *_BACnetPropertyStatesUnits {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesUnitsCopy := &_BACnetPropertyStatesUnits{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.Units.DeepCopy().(BACnetEngineeringUnitsTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesUnitsCopy
+}
 
 func (m *_BACnetPropertyStatesUnits) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type LevelInformationNormal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LevelInformation
 	// GetPair1 returns Pair1 (property field)
 	GetPair1() LevelInformationNibblePair
@@ -60,6 +61,17 @@ type _LevelInformationNormal struct {
 
 var _ LevelInformationNormal = (*_LevelInformationNormal)(nil)
 var _ LevelInformationRequirements = (*_LevelInformationNormal)(nil)
+
+// NewLevelInformationNormal factory function for _LevelInformationNormal
+func NewLevelInformationNormal(raw uint16, pair1 LevelInformationNibblePair, pair2 LevelInformationNibblePair) *_LevelInformationNormal {
+	_result := &_LevelInformationNormal{
+		LevelInformationContract: NewLevelInformation(raw),
+		Pair1:                    pair1,
+		Pair2:                    pair2,
+	}
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,17 +125,6 @@ func (m *_LevelInformationNormal) GetActualLevelInPercent() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLevelInformationNormal factory function for _LevelInformationNormal
-func NewLevelInformationNormal(pair1 LevelInformationNibblePair, pair2 LevelInformationNibblePair, raw uint16) *_LevelInformationNormal {
-	_result := &_LevelInformationNormal{
-		LevelInformationContract: NewLevelInformation(raw),
-		Pair1:                    pair1,
-		Pair2:                    pair2,
-	}
-	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLevelInformationNormal(structType any) LevelInformationNormal {
@@ -249,6 +250,23 @@ func (m *_LevelInformationNormal) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_LevelInformationNormal) IsLevelInformationNormal() {}
+
+func (m *_LevelInformationNormal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LevelInformationNormal) deepCopy() *_LevelInformationNormal {
+	if m == nil {
+		return nil
+	}
+	_LevelInformationNormalCopy := &_LevelInformationNormal{
+		m.LevelInformationContract.(*_LevelInformation).deepCopy(),
+		m.Pair1,
+		m.Pair2,
+	}
+	m.LevelInformationContract.(*_LevelInformation)._SubType = m
+	return _LevelInformationNormalCopy
+}
 
 func (m *_LevelInformationNormal) String() string {
 	if m == nil {

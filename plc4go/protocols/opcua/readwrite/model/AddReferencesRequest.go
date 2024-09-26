@@ -38,6 +38,7 @@ type AddReferencesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _AddReferencesRequest struct {
 
 var _ AddReferencesRequest = (*_AddReferencesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesRequest)(nil)
+
+// NewAddReferencesRequest factory function for _AddReferencesRequest
+func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) *_AddReferencesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for AddReferencesRequest must not be nil")
+	}
+	_result := &_AddReferencesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfReferencesToAdd:               noOfReferencesToAdd,
+		ReferencesToAdd:                   referencesToAdd,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_AddReferencesRequest) GetReferencesToAdd() []ExtensionObjectDefinition
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddReferencesRequest factory function for _AddReferencesRequest
-func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) *_AddReferencesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for AddReferencesRequest must not be nil")
-	}
-	_result := &_AddReferencesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfReferencesToAdd:               noOfReferencesToAdd,
-		ReferencesToAdd:                   referencesToAdd,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddReferencesRequest(structType any) AddReferencesRequest {
@@ -231,6 +232,24 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_AddReferencesRequest) IsAddReferencesRequest() {}
+
+func (m *_AddReferencesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddReferencesRequest) deepCopy() *_AddReferencesRequest {
+	if m == nil {
+		return nil
+	}
+	_AddReferencesRequestCopy := &_AddReferencesRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfReferencesToAdd,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ReferencesToAdd),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddReferencesRequestCopy
+}
 
 func (m *_AddReferencesRequest) String() string {
 	if m == nil {

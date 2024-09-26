@@ -38,6 +38,7 @@ type BACnetConstructedDataScale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetScale returns Scale (property field)
 	GetScale() BACnetScale
@@ -55,6 +56,19 @@ type _BACnetConstructedDataScale struct {
 
 var _ BACnetConstructedDataScale = (*_BACnetConstructedDataScale)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScale)(nil)
+
+// NewBACnetConstructedDataScale factory function for _BACnetConstructedDataScale
+func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scale BACnetScale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
+	if scale == nil {
+		panic("scale of type BACnetScale for BACnetConstructedDataScale must not be nil")
+	}
+	_result := &_BACnetConstructedDataScale{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Scale:                         scale,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataScale) GetActualValue() BACnetScale {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataScale factory function for _BACnetConstructedDataScale
-func NewBACnetConstructedDataScale(scale BACnetScale, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
-	if scale == nil {
-		panic("scale of type BACnetScale for BACnetConstructedDataScale must not be nil")
-	}
-	_result := &_BACnetConstructedDataScale{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Scale:                         scale,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataScale(structType any) BACnetConstructedDataScale {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataScale) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetConstructedDataScale) IsBACnetConstructedDataScale() {}
+
+func (m *_BACnetConstructedDataScale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataScale) deepCopy() *_BACnetConstructedDataScale {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataScaleCopy := &_BACnetConstructedDataScale{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Scale.DeepCopy().(BACnetScale),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataScaleCopy
+}
 
 func (m *_BACnetConstructedDataScale) String() string {
 	if m == nil {

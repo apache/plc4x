@@ -40,6 +40,7 @@ type DescriptionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetDibDeviceInfo returns DibDeviceInfo (property field)
 	GetDibDeviceInfo() DIBDeviceInfo
@@ -58,6 +59,23 @@ type _DescriptionResponse struct {
 
 var _ DescriptionResponse = (*_DescriptionResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_DescriptionResponse)(nil)
+
+// NewDescriptionResponse factory function for _DescriptionResponse
+func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_DescriptionResponse {
+	if dibDeviceInfo == nil {
+		panic("dibDeviceInfo of type DIBDeviceInfo for DescriptionResponse must not be nil")
+	}
+	if dibSuppSvcFamilies == nil {
+		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for DescriptionResponse must not be nil")
+	}
+	_result := &_DescriptionResponse{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		DibDeviceInfo:           dibDeviceInfo,
+		DibSuppSvcFamilies:      dibSuppSvcFamilies,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,23 +112,6 @@ func (m *_DescriptionResponse) GetDibSuppSvcFamilies() DIBSuppSvcFamilies {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDescriptionResponse factory function for _DescriptionResponse
-func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_DescriptionResponse {
-	if dibDeviceInfo == nil {
-		panic("dibDeviceInfo of type DIBDeviceInfo for DescriptionResponse must not be nil")
-	}
-	if dibSuppSvcFamilies == nil {
-		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for DescriptionResponse must not be nil")
-	}
-	_result := &_DescriptionResponse{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		DibDeviceInfo:           dibDeviceInfo,
-		DibSuppSvcFamilies:      dibSuppSvcFamilies,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDescriptionResponse(structType any) DescriptionResponse {
@@ -208,6 +209,23 @@ func (m *_DescriptionResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_DescriptionResponse) IsDescriptionResponse() {}
+
+func (m *_DescriptionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DescriptionResponse) deepCopy() *_DescriptionResponse {
+	if m == nil {
+		return nil
+	}
+	_DescriptionResponseCopy := &_DescriptionResponse{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.DibDeviceInfo.DeepCopy().(DIBDeviceInfo),
+		m.DibSuppSvcFamilies.DeepCopy().(DIBSuppSvcFamilies),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DescriptionResponseCopy
+}
 
 func (m *_DescriptionResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6Address interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6Address returns Ipv6Address (property field)
 	GetIpv6Address() BACnetApplicationTagOctetString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataIPv6Address struct {
 
 var _ BACnetConstructedDataIPv6Address = (*_BACnetConstructedDataIPv6Address)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6Address)(nil)
+
+// NewBACnetConstructedDataIPv6Address factory function for _BACnetConstructedDataIPv6Address
+func NewBACnetConstructedDataIPv6Address(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6Address BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6Address {
+	if ipv6Address == nil {
+		panic("ipv6Address of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6Address must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPv6Address{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Ipv6Address:                   ipv6Address,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataIPv6Address) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPv6Address factory function for _BACnetConstructedDataIPv6Address
-func NewBACnetConstructedDataIPv6Address(ipv6Address BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6Address {
-	if ipv6Address == nil {
-		panic("ipv6Address of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6Address must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPv6Address{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Ipv6Address:                   ipv6Address,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPv6Address(structType any) BACnetConstructedDataIPv6Address {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPv6Address) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataIPv6Address) IsBACnetConstructedDataIPv6Address() {}
+
+func (m *_BACnetConstructedDataIPv6Address) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6Address) deepCopy() *_BACnetConstructedDataIPv6Address {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6AddressCopy := &_BACnetConstructedDataIPv6Address{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Ipv6Address.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6AddressCopy
+}
 
 func (m *_BACnetConstructedDataIPv6Address) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type FirmataMessageSubscribeDigitalPinValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -60,6 +61,17 @@ type _FirmataMessageSubscribeDigitalPinValue struct {
 
 var _ FirmataMessageSubscribeDigitalPinValue = (*_FirmataMessageSubscribeDigitalPinValue)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageSubscribeDigitalPinValue)(nil)
+
+// NewFirmataMessageSubscribeDigitalPinValue factory function for _FirmataMessageSubscribeDigitalPinValue
+func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool, response bool) *_FirmataMessageSubscribeDigitalPinValue {
+	_result := &_FirmataMessageSubscribeDigitalPinValue{
+		FirmataMessageContract: NewFirmataMessage(response),
+		Pin:                    pin,
+		Enable:                 enable,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,17 +108,6 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetEnable() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataMessageSubscribeDigitalPinValue factory function for _FirmataMessageSubscribeDigitalPinValue
-func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool, response bool) *_FirmataMessageSubscribeDigitalPinValue {
-	_result := &_FirmataMessageSubscribeDigitalPinValue{
-		FirmataMessageContract: NewFirmataMessage(response),
-		Pin:                    pin,
-		Enable:                 enable,
-	}
-	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessageSubscribeDigitalPinValue(structType any) FirmataMessageSubscribeDigitalPinValue {
@@ -217,6 +218,24 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_FirmataMessageSubscribeDigitalPinValue) IsFirmataMessageSubscribeDigitalPinValue() {}
+
+func (m *_FirmataMessageSubscribeDigitalPinValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessageSubscribeDigitalPinValue) deepCopy() *_FirmataMessageSubscribeDigitalPinValue {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageSubscribeDigitalPinValueCopy := &_FirmataMessageSubscribeDigitalPinValue{
+		m.FirmataMessageContract.(*_FirmataMessage).deepCopy(),
+		m.Pin,
+		m.Enable,
+		m.reservedField0,
+	}
+	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	return _FirmataMessageSubscribeDigitalPinValueCopy
+}
 
 func (m *_FirmataMessageSubscribeDigitalPinValue) String() string {
 	if m == nil {

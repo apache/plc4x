@@ -38,6 +38,7 @@ type ModbusPDUWriteSingleRegisterResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -56,6 +57,17 @@ type _ModbusPDUWriteSingleRegisterResponse struct {
 
 var _ ModbusPDUWriteSingleRegisterResponse = (*_ModbusPDUWriteSingleRegisterResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteSingleRegisterResponse)(nil)
+
+// NewModbusPDUWriteSingleRegisterResponse factory function for _ModbusPDUWriteSingleRegisterResponse
+func NewModbusPDUWriteSingleRegisterResponse(address uint16, value uint16) *_ModbusPDUWriteSingleRegisterResponse {
+	_result := &_ModbusPDUWriteSingleRegisterResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Address:           address,
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_ModbusPDUWriteSingleRegisterResponse) GetValue() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteSingleRegisterResponse factory function for _ModbusPDUWriteSingleRegisterResponse
-func NewModbusPDUWriteSingleRegisterResponse(address uint16, value uint16) *_ModbusPDUWriteSingleRegisterResponse {
-	_result := &_ModbusPDUWriteSingleRegisterResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Address:           address,
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteSingleRegisterResponse(structType any) ModbusPDUWriteSingleRegisterResponse {
@@ -208,6 +209,23 @@ func (m *_ModbusPDUWriteSingleRegisterResponse) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_ModbusPDUWriteSingleRegisterResponse) IsModbusPDUWriteSingleRegisterResponse() {}
+
+func (m *_ModbusPDUWriteSingleRegisterResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteSingleRegisterResponse) deepCopy() *_ModbusPDUWriteSingleRegisterResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteSingleRegisterResponseCopy := &_ModbusPDUWriteSingleRegisterResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.Address,
+		m.Value,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteSingleRegisterResponseCopy
+}
 
 func (m *_ModbusPDUWriteSingleRegisterResponse) String() string {
 	if m == nil {

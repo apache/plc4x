@@ -36,6 +36,7 @@ type SecurityDataLineCutAlarmCleared interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataLineCutAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLineCutAlarmCleared()
@@ -49,6 +50,15 @@ type _SecurityDataLineCutAlarmCleared struct {
 var _ SecurityDataLineCutAlarmCleared = (*_SecurityDataLineCutAlarmCleared)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataLineCutAlarmCleared)(nil)
 
+// NewSecurityDataLineCutAlarmCleared factory function for _SecurityDataLineCutAlarmCleared
+func NewSecurityDataLineCutAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLineCutAlarmCleared {
+	_result := &_SecurityDataLineCutAlarmCleared{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataLineCutAlarmCleared)(nil)
 
 func (m *_SecurityDataLineCutAlarmCleared) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataLineCutAlarmCleared factory function for _SecurityDataLineCutAlarmCleared
-func NewSecurityDataLineCutAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLineCutAlarmCleared {
-	_result := &_SecurityDataLineCutAlarmCleared{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataLineCutAlarmCleared) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_SecurityDataLineCutAlarmCleared) IsSecurityDataLineCutAlarmCleared() {}
+
+func (m *_SecurityDataLineCutAlarmCleared) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataLineCutAlarmCleared) deepCopy() *_SecurityDataLineCutAlarmCleared {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataLineCutAlarmClearedCopy := &_SecurityDataLineCutAlarmCleared{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataLineCutAlarmClearedCopy
+}
 
 func (m *_SecurityDataLineCutAlarmCleared) String() string {
 	if m == nil {

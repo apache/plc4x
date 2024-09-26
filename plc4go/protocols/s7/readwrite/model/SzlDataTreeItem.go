@@ -38,6 +38,7 @@ type SzlDataTreeItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetItemIndex returns ItemIndex (property field)
 	GetItemIndex() uint16
 	// GetMlfb returns Mlfb (property field)
@@ -62,6 +63,11 @@ type _SzlDataTreeItem struct {
 }
 
 var _ SzlDataTreeItem = (*_SzlDataTreeItem)(nil)
+
+// NewSzlDataTreeItem factory function for _SzlDataTreeItem
+func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) *_SzlDataTreeItem {
+	return &_SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,11 +98,6 @@ func (m *_SzlDataTreeItem) GetAusbe() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSzlDataTreeItem factory function for _SzlDataTreeItem
-func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) *_SzlDataTreeItem {
-	return &_SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSzlDataTreeItem(structType any) SzlDataTreeItem {
@@ -248,6 +249,24 @@ func (m *_SzlDataTreeItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SzlDataTreeItem) IsSzlDataTreeItem() {}
+
+func (m *_SzlDataTreeItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SzlDataTreeItem) deepCopy() *_SzlDataTreeItem {
+	if m == nil {
+		return nil
+	}
+	_SzlDataTreeItemCopy := &_SzlDataTreeItem{
+		m.ItemIndex,
+		utils.DeepCopySlice[byte, byte](m.Mlfb),
+		m.ModuleTypeId,
+		m.Ausbg,
+		m.Ausbe,
+	}
+	return _SzlDataTreeItemCopy
+}
 
 func (m *_SzlDataTreeItem) String() string {
 	if m == nil {

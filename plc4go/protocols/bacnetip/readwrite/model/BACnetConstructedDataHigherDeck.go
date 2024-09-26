@@ -38,6 +38,7 @@ type BACnetConstructedDataHigherDeck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetHigherDeck returns HigherDeck (property field)
 	GetHigherDeck() BACnetApplicationTagObjectIdentifier
@@ -55,6 +56,19 @@ type _BACnetConstructedDataHigherDeck struct {
 
 var _ BACnetConstructedDataHigherDeck = (*_BACnetConstructedDataHigherDeck)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataHigherDeck)(nil)
+
+// NewBACnetConstructedDataHigherDeck factory function for _BACnetConstructedDataHigherDeck
+func NewBACnetConstructedDataHigherDeck(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, higherDeck BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHigherDeck {
+	if higherDeck == nil {
+		panic("higherDeck of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataHigherDeck must not be nil")
+	}
+	_result := &_BACnetConstructedDataHigherDeck{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		HigherDeck:                    higherDeck,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataHigherDeck) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataHigherDeck factory function for _BACnetConstructedDataHigherDeck
-func NewBACnetConstructedDataHigherDeck(higherDeck BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHigherDeck {
-	if higherDeck == nil {
-		panic("higherDeck of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataHigherDeck must not be nil")
-	}
-	_result := &_BACnetConstructedDataHigherDeck{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		HigherDeck:                    higherDeck,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataHigherDeck(structType any) BACnetConstructedDataHigherDeck {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataHigherDeck) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataHigherDeck) IsBACnetConstructedDataHigherDeck() {}
+
+func (m *_BACnetConstructedDataHigherDeck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataHigherDeck) deepCopy() *_BACnetConstructedDataHigherDeck {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataHigherDeckCopy := &_BACnetConstructedDataHigherDeck{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.HigherDeck.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataHigherDeckCopy
+}
 
 func (m *_BACnetConstructedDataHigherDeck) String() string {
 	if m == nil {

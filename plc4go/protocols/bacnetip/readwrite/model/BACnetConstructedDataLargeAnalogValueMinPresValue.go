@@ -38,6 +38,7 @@ type BACnetConstructedDataLargeAnalogValueMinPresValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinPresValue returns MinPresValue (property field)
 	GetMinPresValue() BACnetApplicationTagDouble
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLargeAnalogValueMinPresValue struct {
 
 var _ BACnetConstructedDataLargeAnalogValueMinPresValue = (*_BACnetConstructedDataLargeAnalogValueMinPresValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueMinPresValue)(nil)
+
+// NewBACnetConstructedDataLargeAnalogValueMinPresValue factory function for _BACnetConstructedDataLargeAnalogValueMinPresValue
+func NewBACnetConstructedDataLargeAnalogValueMinPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minPresValue BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueMinPresValue {
+	if minPresValue == nil {
+		panic("minPresValue of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueMinPresValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataLargeAnalogValueMinPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinPresValue:                  minPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLargeAnalogValueMinPresValue factory function for _BACnetConstructedDataLargeAnalogValueMinPresValue
-func NewBACnetConstructedDataLargeAnalogValueMinPresValue(minPresValue BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueMinPresValue {
-	if minPresValue == nil {
-		panic("minPresValue of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueMinPresValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataLargeAnalogValueMinPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinPresValue:                  minPresValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLargeAnalogValueMinPresValue(structType any) BACnetConstructedDataLargeAnalogValueMinPresValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) SerializeWithWriteB
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) IsBACnetConstructedDataLargeAnalogValueMinPresValue() {
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) deepCopy() *_BACnetConstructedDataLargeAnalogValueMinPresValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLargeAnalogValueMinPresValueCopy := &_BACnetConstructedDataLargeAnalogValueMinPresValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MinPresValue.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLargeAnalogValueMinPresValueCopy
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueMinPresValue) String() string {

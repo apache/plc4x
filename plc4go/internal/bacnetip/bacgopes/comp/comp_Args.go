@@ -33,6 +33,9 @@ type Args []any
 var NoArgs = NewArgs()
 
 func NewArgs(args ...any) Args {
+	if len(args) == 0 {
+		return make(Args, 0)
+	}
 	return args
 }
 
@@ -73,19 +76,27 @@ func GAO[T any](args Args, index int, defaultValue T) (T, bool) {
 func (a Args) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 'r':
-		str := a.string(false, false)
-		_, _ = fmt.Fprintf(s, "(%s)", str[1:len(str)-1])
+		_, _ = fmt.Fprint(s, "(")
+		for _, element := range a {
+			switch element := element.(type) {
+			case interface{ StructHeader() []byte }:
+				_, _ = s.Write(element.StructHeader())
+			case fmt.Formatter:
+				element.Format(s, verb)
+			case fmt.Stringer:
+				_, _ = fmt.Fprint(s, element.String())
+			default:
+				_, _ = fmt.Fprintf(s, "'%v'", element)
+			}
+			_, _ = fmt.Fprint(s, ", ")
+		}
+		_, _ = fmt.Fprint(s, ")")
 	case 's', 'v':
-		str := a.String()
-		_, _ = fmt.Fprintf(s, "(%s)", str[1:len(str)-1])
+		_, _ = fmt.Fprint(s, a.String())
 	}
 }
 
 func (a Args) String() string {
-	return a.string(true, true)
-}
-
-func (a Args) string(printIndex bool, printType bool) string {
 	r := ""
 	for i, ea := range a {
 		eat := fmt.Sprintf("%T", ea)
@@ -96,20 +107,21 @@ func (a Args) string(printIndex bool, printType bool) string {
 			ea = "'" + tea + "'"
 		case fmt.Stringer:
 			if !IsNil(tea) {
-				teaString := tea.String()
+				teaString := func() (teaString string) {
+					defer func() {
+						if r := recover(); r != nil {
+							teaString += fmt.Sprintf("%v", r)
+						}
+					}()
+					return tea.String()
+				}()
 				ea = teaString
 				if strings.Contains(teaString, "\n") {
 					ea = "\n" + teaString + "\n"
 				}
 			}
 		}
-		if printIndex {
-			r += fmt.Sprintf("%d: ", i)
-		}
-		r += fmt.Sprintf("%v", ea)
-		if printType {
-			r += fmt.Sprintf(" (%s)", eat)
-		}
+		r += fmt.Sprintf("%d: %v (%s)", i, ea, eat)
 		r += ", "
 	}
 	if r != "" {

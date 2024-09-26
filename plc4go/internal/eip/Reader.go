@@ -94,7 +94,15 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 				readWriteModel.NewNullAddressItem(),
 				readWriteModel.NewUnConnectedDataItem(requestItem),
 			}
-			request := readWriteModel.NewCipRRData(0, 0, typeIds, *m.sessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), 0)
+			request := readWriteModel.NewCipRRData(
+				*m.sessionHandle,
+				uint32(readWriteModel.CIPStatus_Success),
+				[]byte(DefaultSenderContext),
+				0,
+				0,
+				0,
+				typeIds,
+			)
 			transaction := m.tm.StartTransaction()
 			transaction.Submit(func(transaction transactions.RequestTransaction) {
 				if err := m.messageCodec.SendRequest(

@@ -38,6 +38,7 @@ type BACnetConstructedDataGroupID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetGroupId returns GroupId (property field)
 	GetGroupId() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataGroupID struct {
 
 var _ BACnetConstructedDataGroupID = (*_BACnetConstructedDataGroupID)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupID)(nil)
+
+// NewBACnetConstructedDataGroupID factory function for _BACnetConstructedDataGroupID
+func NewBACnetConstructedDataGroupID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, groupId BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupID {
+	if groupId == nil {
+		panic("groupId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGroupID must not be nil")
+	}
+	_result := &_BACnetConstructedDataGroupID{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		GroupId:                       groupId,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataGroupID) GetActualValue() BACnetApplicationTagUns
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataGroupID factory function for _BACnetConstructedDataGroupID
-func NewBACnetConstructedDataGroupID(groupId BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupID {
-	if groupId == nil {
-		panic("groupId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGroupID must not be nil")
-	}
-	_result := &_BACnetConstructedDataGroupID{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		GroupId:                       groupId,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataGroupID(structType any) BACnetConstructedDataGroupID {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataGroupID) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataGroupID) IsBACnetConstructedDataGroupID() {}
+
+func (m *_BACnetConstructedDataGroupID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGroupID) deepCopy() *_BACnetConstructedDataGroupID {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGroupIDCopy := &_BACnetConstructedDataGroupID{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.GroupId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGroupIDCopy
+}
 
 func (m *_BACnetConstructedDataGroupID) String() string {
 	if m == nil {

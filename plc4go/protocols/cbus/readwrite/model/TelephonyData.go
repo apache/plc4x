@@ -40,6 +40,7 @@ type TelephonyData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTelephonyData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyData()
 }
@@ -75,6 +76,11 @@ type _TelephonyData struct {
 
 var _ TelephonyDataContract = (*_TelephonyData)(nil)
 
+// NewTelephonyData factory function for _TelephonyData
+func NewTelephonyData(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyData {
+	return &_TelephonyData{CommandTypeContainer: commandTypeContainer, Argument: argument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,11 +114,6 @@ func (pm *_TelephonyData) GetCommandType() TelephonyCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyData factory function for _TelephonyData
-func NewTelephonyData(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyData {
-	return &_TelephonyData{CommandTypeContainer: commandTypeContainer, Argument: argument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyData(structType any) TelephonyData {
@@ -212,51 +213,51 @@ func (m *_TelephonyData) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	var _child TelephonyData
 	switch {
 	case commandType == TelephonyCommandType_EVENT && argument == 0x01: // TelephonyDataLineOnHook
-		if _child, err = (&_TelephonyDataLineOnHook{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TelephonyDataLineOnHook).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataLineOnHook for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x02: // TelephonyDataLineOffHook
-		if _child, err = (&_TelephonyDataLineOffHook{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_TelephonyDataLineOffHook).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataLineOffHook for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x03: // TelephonyDataDialOutFailure
-		if _child, err = (&_TelephonyDataDialOutFailure{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TelephonyDataDialOutFailure).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataDialOutFailure for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x04: // TelephonyDataDialInFailure
-		if _child, err = (&_TelephonyDataDialInFailure{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TelephonyDataDialInFailure).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataDialInFailure for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x05: // TelephonyDataRinging
-		if _child, err = (&_TelephonyDataRinging{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_TelephonyDataRinging).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataRinging for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x06: // TelephonyDataRecallLastNumber
-		if _child, err = (&_TelephonyDataRecallLastNumber{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_TelephonyDataRecallLastNumber).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataRecallLastNumber for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x07: // TelephonyDataInternetConnectionRequestMade
-		if _child, err = (&_TelephonyDataInternetConnectionRequestMade{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TelephonyDataInternetConnectionRequestMade).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataInternetConnectionRequestMade for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x80: // TelephonyDataIsolateSecondaryOutlet
-		if _child, err = (&_TelephonyDataIsolateSecondaryOutlet{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TelephonyDataIsolateSecondaryOutlet).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataIsolateSecondaryOutlet for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x81: // TelephonyDataRecallLastNumberRequest
-		if _child, err = (&_TelephonyDataRecallLastNumberRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TelephonyDataRecallLastNumberRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataRecallLastNumberRequest for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x82: // TelephonyDataRejectIncomingCall
-		if _child, err = (&_TelephonyDataRejectIncomingCall{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TelephonyDataRejectIncomingCall).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataRejectIncomingCall for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x83: // TelephonyDataDivert
-		if _child, err = (&_TelephonyDataDivert{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_TelephonyDataDivert).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataDivert for type-switch of TelephonyData")
 		}
 	case commandType == TelephonyCommandType_EVENT && argument == 0x84: // TelephonyDataClearDiversion
-		if _child, err = (&_TelephonyDataClearDiversion{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TelephonyDataClearDiversion).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TelephonyDataClearDiversion for type-switch of TelephonyData")
 		}
 	default:
@@ -308,3 +309,19 @@ func (pm *_TelephonyData) serializeParent(ctx context.Context, writeBuffer utils
 }
 
 func (m *_TelephonyData) IsTelephonyData() {}
+
+func (m *_TelephonyData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyData) deepCopy() *_TelephonyData {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataCopy := &_TelephonyData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.Argument,
+	}
+	return _TelephonyDataCopy
+}

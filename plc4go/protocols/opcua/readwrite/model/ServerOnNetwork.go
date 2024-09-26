@@ -38,6 +38,7 @@ type ServerOnNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRecordId returns RecordId (property field)
 	GetRecordId() uint32
@@ -65,6 +66,26 @@ type _ServerOnNetwork struct {
 
 var _ ServerOnNetwork = (*_ServerOnNetwork)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServerOnNetwork)(nil)
+
+// NewServerOnNetwork factory function for _ServerOnNetwork
+func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) *_ServerOnNetwork {
+	if serverName == nil {
+		panic("serverName of type PascalString for ServerOnNetwork must not be nil")
+	}
+	if discoveryUrl == nil {
+		panic("discoveryUrl of type PascalString for ServerOnNetwork must not be nil")
+	}
+	_result := &_ServerOnNetwork{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RecordId:                          recordId,
+		ServerName:                        serverName,
+		DiscoveryUrl:                      discoveryUrl,
+		NoOfServerCapabilities:            noOfServerCapabilities,
+		ServerCapabilities:                serverCapabilities,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,26 +134,6 @@ func (m *_ServerOnNetwork) GetServerCapabilities() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServerOnNetwork factory function for _ServerOnNetwork
-func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) *_ServerOnNetwork {
-	if serverName == nil {
-		panic("serverName of type PascalString for ServerOnNetwork must not be nil")
-	}
-	if discoveryUrl == nil {
-		panic("discoveryUrl of type PascalString for ServerOnNetwork must not be nil")
-	}
-	_result := &_ServerOnNetwork{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RecordId:                          recordId,
-		ServerName:                        serverName,
-		DiscoveryUrl:                      discoveryUrl,
-		NoOfServerCapabilities:            noOfServerCapabilities,
-		ServerCapabilities:                serverCapabilities,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServerOnNetwork(structType any) ServerOnNetwork {
@@ -276,6 +277,26 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ServerOnNetwork) IsServerOnNetwork() {}
+
+func (m *_ServerOnNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServerOnNetwork) deepCopy() *_ServerOnNetwork {
+	if m == nil {
+		return nil
+	}
+	_ServerOnNetworkCopy := &_ServerOnNetwork{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RecordId,
+		m.ServerName.DeepCopy().(PascalString),
+		m.DiscoveryUrl.DeepCopy().(PascalString),
+		m.NoOfServerCapabilities,
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerCapabilities),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServerOnNetworkCopy
+}
 
 func (m *_ServerOnNetwork) String() string {
 	if m == nil {

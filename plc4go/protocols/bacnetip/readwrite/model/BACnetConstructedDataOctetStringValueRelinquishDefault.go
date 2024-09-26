@@ -38,6 +38,7 @@ type BACnetConstructedDataOctetStringValueRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagSignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataOctetStringValueRelinquishDefault struct {
 
 var _ BACnetConstructedDataOctetStringValueRelinquishDefault = (*_BACnetConstructedDataOctetStringValueRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOctetStringValueRelinquishDefault)(nil)
+
+// NewBACnetConstructedDataOctetStringValueRelinquishDefault factory function for _BACnetConstructedDataOctetStringValueRelinquishDefault
+func NewBACnetConstructedDataOctetStringValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOctetStringValueRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagSignedInteger for BACnetConstructedDataOctetStringValueRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataOctetStringValueRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataOctetStringValueRelinquishDefault) GetActualValue
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOctetStringValueRelinquishDefault factory function for _BACnetConstructedDataOctetStringValueRelinquishDefault
-func NewBACnetConstructedDataOctetStringValueRelinquishDefault(relinquishDefault BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOctetStringValueRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetApplicationTagSignedInteger for BACnetConstructedDataOctetStringValueRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataOctetStringValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOctetStringValueRelinquishDefault(structType any) BACnetConstructedDataOctetStringValueRelinquishDefault {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOctetStringValueRelinquishDefault) SerializeWithW
 }
 
 func (m *_BACnetConstructedDataOctetStringValueRelinquishDefault) IsBACnetConstructedDataOctetStringValueRelinquishDefault() {
+}
+
+func (m *_BACnetConstructedDataOctetStringValueRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOctetStringValueRelinquishDefault) deepCopy() *_BACnetConstructedDataOctetStringValueRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOctetStringValueRelinquishDefaultCopy := &_BACnetConstructedDataOctetStringValueRelinquishDefault{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RelinquishDefault.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOctetStringValueRelinquishDefaultCopy
 }
 
 func (m *_BACnetConstructedDataOctetStringValueRelinquishDefault) String() string {

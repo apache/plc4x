@@ -38,6 +38,7 @@ type BACnetConstructedDataTimerState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimerState returns TimerState (property field)
 	GetTimerState() BACnetTimerStateTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTimerState struct {
 
 var _ BACnetConstructedDataTimerState = (*_BACnetConstructedDataTimerState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerState)(nil)
+
+// NewBACnetConstructedDataTimerState factory function for _BACnetConstructedDataTimerState
+func NewBACnetConstructedDataTimerState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timerState BACnetTimerStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerState {
+	if timerState == nil {
+		panic("timerState of type BACnetTimerStateTagged for BACnetConstructedDataTimerState must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimerState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimerState:                    timerState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTimerState) GetActualValue() BACnetTimerStateTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimerState factory function for _BACnetConstructedDataTimerState
-func NewBACnetConstructedDataTimerState(timerState BACnetTimerStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerState {
-	if timerState == nil {
-		panic("timerState of type BACnetTimerStateTagged for BACnetConstructedDataTimerState must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimerState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimerState:                    timerState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimerState(structType any) BACnetConstructedDataTimerState {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimerState) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataTimerState) IsBACnetConstructedDataTimerState() {}
+
+func (m *_BACnetConstructedDataTimerState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimerState) deepCopy() *_BACnetConstructedDataTimerState {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimerStateCopy := &_BACnetConstructedDataTimerState{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TimerState.DeepCopy().(BACnetTimerStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimerStateCopy
+}
 
 func (m *_BACnetConstructedDataTimerState) String() string {
 	if m == nil {

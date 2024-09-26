@@ -38,6 +38,7 @@ type BACnetConstructedDataBBMDForeignDeviceTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBbmdForeignDeviceTable returns BbmdForeignDeviceTable (property field)
 	GetBbmdForeignDeviceTable() []BACnetBDTEntry
@@ -53,6 +54,16 @@ type _BACnetConstructedDataBBMDForeignDeviceTable struct {
 
 var _ BACnetConstructedDataBBMDForeignDeviceTable = (*_BACnetConstructedDataBBMDForeignDeviceTable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDForeignDeviceTable)(nil)
+
+// NewBACnetConstructedDataBBMDForeignDeviceTable factory function for _BACnetConstructedDataBBMDForeignDeviceTable
+func NewBACnetConstructedDataBBMDForeignDeviceTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdForeignDeviceTable []BACnetBDTEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDForeignDeviceTable {
+	_result := &_BACnetConstructedDataBBMDForeignDeviceTable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BbmdForeignDeviceTable:        bbmdForeignDeviceTable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) GetBbmdForeignDeviceTable
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBBMDForeignDeviceTable factory function for _BACnetConstructedDataBBMDForeignDeviceTable
-func NewBACnetConstructedDataBBMDForeignDeviceTable(bbmdForeignDeviceTable []BACnetBDTEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDForeignDeviceTable {
-	_result := &_BACnetConstructedDataBBMDForeignDeviceTable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BbmdForeignDeviceTable:        bbmdForeignDeviceTable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBBMDForeignDeviceTable(structType any) BACnetConstructedDataBBMDForeignDeviceTable {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataBBMDForeignDeviceTable) IsBACnetConstructedDataBBMDForeignDeviceTable() {
+}
+
+func (m *_BACnetConstructedDataBBMDForeignDeviceTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBBMDForeignDeviceTable) deepCopy() *_BACnetConstructedDataBBMDForeignDeviceTable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBBMDForeignDeviceTableCopy := &_BACnetConstructedDataBBMDForeignDeviceTable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetBDTEntry, BACnetBDTEntry](m.BbmdForeignDeviceTable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBBMDForeignDeviceTableCopy
 }
 
 func (m *_BACnetConstructedDataBBMDForeignDeviceTable) String() string {

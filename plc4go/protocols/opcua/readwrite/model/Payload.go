@@ -40,6 +40,7 @@ type Payload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPayload()
 }
@@ -73,6 +74,14 @@ type _Payload struct {
 
 var _ PayloadContract = (*_Payload)(nil)
 
+// NewPayload factory function for _Payload
+func NewPayload(sequenceHeader SequenceHeader, byteCount uint32) *_Payload {
+	if sequenceHeader == nil {
+		panic("sequenceHeader of type SequenceHeader for Payload must not be nil")
+	}
+	return &_Payload{SequenceHeader: sequenceHeader, ByteCount: byteCount}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -86,14 +95,6 @@ func (m *_Payload) GetSequenceHeader() SequenceHeader {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPayload factory function for _Payload
-func NewPayload(sequenceHeader SequenceHeader, byteCount uint32) *_Payload {
-	if sequenceHeader == nil {
-		panic("sequenceHeader of type SequenceHeader for Payload must not be nil")
-	}
-	return &_Payload{SequenceHeader: sequenceHeader, ByteCount: byteCount}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPayload(structType any) Payload {
@@ -171,11 +172,11 @@ func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, exten
 	var _child Payload
 	switch {
 	case extensible == bool(true): // ExtensiblePayload
-		if _child, err = (&_ExtensiblePayload{}).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
+		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ExtensiblePayload for type-switch of Payload")
 		}
 	case extensible == bool(false): // BinaryPayload
-		if _child, err = (&_BinaryPayload{}).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
+		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BinaryPayload for type-switch of Payload")
 		}
 	default:
@@ -227,3 +228,19 @@ func (m *_Payload) GetByteCount() uint32 {
 ////
 
 func (m *_Payload) IsPayload() {}
+
+func (m *_Payload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Payload) deepCopy() *_Payload {
+	if m == nil {
+		return nil
+	}
+	_PayloadCopy := &_Payload{
+		nil, // will be set by child
+		m.SequenceHeader.DeepCopy().(SequenceHeader),
+		m.ByteCount,
+	}
+	return _PayloadCopy
+}

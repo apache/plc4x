@@ -38,6 +38,7 @@ type ParameterValueCustomManufacturer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() CustomManufacturer
@@ -53,6 +54,19 @@ type _ParameterValueCustomManufacturer struct {
 
 var _ ParameterValueCustomManufacturer = (*_ParameterValueCustomManufacturer)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueCustomManufacturer)(nil)
+
+// NewParameterValueCustomManufacturer factory function for _ParameterValueCustomManufacturer
+func NewParameterValueCustomManufacturer(value CustomManufacturer, numBytes uint8) *_ParameterValueCustomManufacturer {
+	if value == nil {
+		panic("value of type CustomManufacturer for ParameterValueCustomManufacturer must not be nil")
+	}
+	_result := &_ParameterValueCustomManufacturer{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_ParameterValueCustomManufacturer) GetValue() CustomManufacturer {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueCustomManufacturer factory function for _ParameterValueCustomManufacturer
-func NewParameterValueCustomManufacturer(value CustomManufacturer, numBytes uint8) *_ParameterValueCustomManufacturer {
-	if value == nil {
-		panic("value of type CustomManufacturer for ParameterValueCustomManufacturer must not be nil")
-	}
-	_result := &_ParameterValueCustomManufacturer{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueCustomManufacturer(structType any) ParameterValueCustomManufacturer {
@@ -182,6 +183,22 @@ func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_ParameterValueCustomManufacturer) IsParameterValueCustomManufacturer() {}
+
+func (m *_ParameterValueCustomManufacturer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueCustomManufacturer) deepCopy() *_ParameterValueCustomManufacturer {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueCustomManufacturerCopy := &_ParameterValueCustomManufacturer{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value.DeepCopy().(CustomManufacturer),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueCustomManufacturerCopy
+}
 
 func (m *_ParameterValueCustomManufacturer) String() string {
 	if m == nil {

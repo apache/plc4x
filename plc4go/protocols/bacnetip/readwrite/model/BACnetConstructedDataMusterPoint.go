@@ -38,6 +38,7 @@ type BACnetConstructedDataMusterPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMusterPoint returns MusterPoint (property field)
 	GetMusterPoint() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataMusterPoint struct {
 
 var _ BACnetConstructedDataMusterPoint = (*_BACnetConstructedDataMusterPoint)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMusterPoint)(nil)
+
+// NewBACnetConstructedDataMusterPoint factory function for _BACnetConstructedDataMusterPoint
+func NewBACnetConstructedDataMusterPoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, musterPoint BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMusterPoint {
+	if musterPoint == nil {
+		panic("musterPoint of type BACnetApplicationTagBoolean for BACnetConstructedDataMusterPoint must not be nil")
+	}
+	_result := &_BACnetConstructedDataMusterPoint{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MusterPoint:                   musterPoint,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataMusterPoint) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMusterPoint factory function for _BACnetConstructedDataMusterPoint
-func NewBACnetConstructedDataMusterPoint(musterPoint BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMusterPoint {
-	if musterPoint == nil {
-		panic("musterPoint of type BACnetApplicationTagBoolean for BACnetConstructedDataMusterPoint must not be nil")
-	}
-	_result := &_BACnetConstructedDataMusterPoint{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MusterPoint:                   musterPoint,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMusterPoint(structType any) BACnetConstructedDataMusterPoint {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataMusterPoint) IsBACnetConstructedDataMusterPoint() {}
+
+func (m *_BACnetConstructedDataMusterPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMusterPoint) deepCopy() *_BACnetConstructedDataMusterPoint {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMusterPointCopy := &_BACnetConstructedDataMusterPoint{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MusterPoint.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMusterPointCopy
+}
 
 func (m *_BACnetConstructedDataMusterPoint) String() string {
 	if m == nil {

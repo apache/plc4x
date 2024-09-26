@@ -38,6 +38,7 @@ type CancelRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -56,6 +57,20 @@ type _CancelRequest struct {
 
 var _ CancelRequest = (*_CancelRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CancelRequest)(nil)
+
+// NewCancelRequest factory function for _CancelRequest
+func NewCancelRequest(requestHeader ExtensionObjectDefinition, requestHandle uint32) *_CancelRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CancelRequest must not be nil")
+	}
+	_result := &_CancelRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		RequestHandle:                     requestHandle,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_CancelRequest) GetRequestHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCancelRequest factory function for _CancelRequest
-func NewCancelRequest(requestHeader ExtensionObjectDefinition, requestHandle uint32) *_CancelRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CancelRequest must not be nil")
-	}
-	_result := &_CancelRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		RequestHandle:                     requestHandle,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCancelRequest(structType any) CancelRequest {
@@ -203,6 +204,23 @@ func (m *_CancelRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_CancelRequest) IsCancelRequest() {}
+
+func (m *_CancelRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CancelRequest) deepCopy() *_CancelRequest {
+	if m == nil {
+		return nil
+	}
+	_CancelRequestCopy := &_CancelRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHandle,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CancelRequestCopy
+}
 
 func (m *_CancelRequest) String() string {
 	if m == nil {

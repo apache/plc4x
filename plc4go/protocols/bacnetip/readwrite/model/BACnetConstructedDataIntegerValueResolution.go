@@ -38,6 +38,7 @@ type BACnetConstructedDataIntegerValueResolution interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagSignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataIntegerValueResolution struct {
 
 var _ BACnetConstructedDataIntegerValueResolution = (*_BACnetConstructedDataIntegerValueResolution)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueResolution)(nil)
+
+// NewBACnetConstructedDataIntegerValueResolution factory function for _BACnetConstructedDataIntegerValueResolution
+func NewBACnetConstructedDataIntegerValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueResolution {
+	if resolution == nil {
+		panic("resolution of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueResolution must not be nil")
+	}
+	_result := &_BACnetConstructedDataIntegerValueResolution{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Resolution:                    resolution,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataIntegerValueResolution) GetActualValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIntegerValueResolution factory function for _BACnetConstructedDataIntegerValueResolution
-func NewBACnetConstructedDataIntegerValueResolution(resolution BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueResolution {
-	if resolution == nil {
-		panic("resolution of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueResolution must not be nil")
-	}
-	_result := &_BACnetConstructedDataIntegerValueResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Resolution:                    resolution,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIntegerValueResolution(structType any) BACnetConstructedDataIntegerValueResolution {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIntegerValueResolution) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataIntegerValueResolution) IsBACnetConstructedDataIntegerValueResolution() {
+}
+
+func (m *_BACnetConstructedDataIntegerValueResolution) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntegerValueResolution) deepCopy() *_BACnetConstructedDataIntegerValueResolution {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntegerValueResolutionCopy := &_BACnetConstructedDataIntegerValueResolution{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Resolution.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntegerValueResolutionCopy
 }
 
 func (m *_BACnetConstructedDataIntegerValueResolution) String() string {

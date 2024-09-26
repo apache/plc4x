@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -59,6 +60,27 @@ type _BACnetFaultParameterFaultState struct {
 
 var _ BACnetFaultParameterFaultState = (*_BACnetFaultParameterFaultState)(nil)
 var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultState)(nil)
+
+// NewBACnetFaultParameterFaultState factory function for _BACnetFaultParameterFaultState
+func NewBACnetFaultParameterFaultState(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultStateListOfFaultValues, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultState {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultState must not be nil")
+	}
+	if listOfFaultValues == nil {
+		panic("listOfFaultValues of type BACnetFaultParameterFaultStateListOfFaultValues for BACnetFaultParameterFaultState must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultState must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultState{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		ListOfFaultValues:            listOfFaultValues,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,27 +117,6 @@ func (m *_BACnetFaultParameterFaultState) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultState factory function for _BACnetFaultParameterFaultState
-func NewBACnetFaultParameterFaultState(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultStateListOfFaultValues, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultState {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultState must not be nil")
-	}
-	if listOfFaultValues == nil {
-		panic("listOfFaultValues of type BACnetFaultParameterFaultStateListOfFaultValues for BACnetFaultParameterFaultState must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultState must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultState{
-		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		ListOfFaultValues:            listOfFaultValues,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultState(structType any) BACnetFaultParameterFaultState {
@@ -226,6 +227,24 @@ func (m *_BACnetFaultParameterFaultState) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetFaultParameterFaultState) IsBACnetFaultParameterFaultState() {}
+
+func (m *_BACnetFaultParameterFaultState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultState) deepCopy() *_BACnetFaultParameterFaultState {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultStateCopy := &_BACnetFaultParameterFaultState{
+		m.BACnetFaultParameterContract.(*_BACnetFaultParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ListOfFaultValues.DeepCopy().(BACnetFaultParameterFaultStateListOfFaultValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
+	return _BACnetFaultParameterFaultStateCopy
+}
 
 func (m *_BACnetFaultParameterFaultState) String() string {
 	if m == nil {

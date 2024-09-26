@@ -41,6 +41,7 @@ type CEMIAdditionalInformationBusmonitorInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMIAdditionalInformation
 	// GetFrameErrorFlag returns FrameErrorFlag (property field)
 	GetFrameErrorFlag() bool
@@ -71,6 +72,21 @@ type _CEMIAdditionalInformationBusmonitorInfo struct {
 
 var _ CEMIAdditionalInformationBusmonitorInfo = (*_CEMIAdditionalInformationBusmonitorInfo)(nil)
 var _ CEMIAdditionalInformationRequirements = (*_CEMIAdditionalInformationBusmonitorInfo)(nil)
+
+// NewCEMIAdditionalInformationBusmonitorInfo factory function for _CEMIAdditionalInformationBusmonitorInfo
+func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *_CEMIAdditionalInformationBusmonitorInfo {
+	_result := &_CEMIAdditionalInformationBusmonitorInfo{
+		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
+		FrameErrorFlag:                    frameErrorFlag,
+		BitErrorFlag:                      bitErrorFlag,
+		ParityErrorFlag:                   parityErrorFlag,
+		UnknownFlag:                       unknownFlag,
+		LostFlag:                          lostFlag,
+		SequenceNumber:                    sequenceNumber,
+	}
+	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,21 +152,6 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLen() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCEMIAdditionalInformationBusmonitorInfo factory function for _CEMIAdditionalInformationBusmonitorInfo
-func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *_CEMIAdditionalInformationBusmonitorInfo {
-	_result := &_CEMIAdditionalInformationBusmonitorInfo{
-		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
-		FrameErrorFlag:                    frameErrorFlag,
-		BitErrorFlag:                      bitErrorFlag,
-		ParityErrorFlag:                   parityErrorFlag,
-		UnknownFlag:                       unknownFlag,
-		LostFlag:                          lostFlag,
-		SequenceNumber:                    sequenceNumber,
-	}
-	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCEMIAdditionalInformationBusmonitorInfo(structType any) CEMIAdditionalInformationBusmonitorInfo {
@@ -313,6 +314,27 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) IsCEMIAdditionalInformationBusmonitorInfo() {}
+
+func (m *_CEMIAdditionalInformationBusmonitorInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CEMIAdditionalInformationBusmonitorInfo) deepCopy() *_CEMIAdditionalInformationBusmonitorInfo {
+	if m == nil {
+		return nil
+	}
+	_CEMIAdditionalInformationBusmonitorInfoCopy := &_CEMIAdditionalInformationBusmonitorInfo{
+		m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).deepCopy(),
+		m.FrameErrorFlag,
+		m.BitErrorFlag,
+		m.ParityErrorFlag,
+		m.UnknownFlag,
+		m.LostFlag,
+		m.SequenceNumber,
+	}
+	m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m
+	return _CEMIAdditionalInformationBusmonitorInfoCopy
+}
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) String() string {
 	if m == nil {

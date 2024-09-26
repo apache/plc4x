@@ -38,6 +38,7 @@ type NLMSecurityResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetResponseCode returns ResponseCode (property field)
 	GetResponseCode() SecurityResponseCode
@@ -62,6 +63,19 @@ type _NLMSecurityResponse struct {
 
 var _ NLMSecurityResponse = (*_NLMSecurityResponse)(nil)
 var _ NLMRequirements = (*_NLMSecurityResponse)(nil)
+
+// NewNLMSecurityResponse factory function for _NLMSecurityResponse
+func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte, apduLength uint16) *_NLMSecurityResponse {
+	_result := &_NLMSecurityResponse{
+		NLMContract:        NewNLM(apduLength),
+		ResponseCode:       responseCode,
+		OriginalMessageId:  originalMessageId,
+		OriginalTimestamp:  originalTimestamp,
+		VariableParameters: variableParameters,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_NLMSecurityResponse) GetVariableParameters() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMSecurityResponse factory function for _NLMSecurityResponse
-func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte, apduLength uint16) *_NLMSecurityResponse {
-	_result := &_NLMSecurityResponse{
-		NLMContract:        NewNLM(apduLength),
-		ResponseCode:       responseCode,
-		OriginalMessageId:  originalMessageId,
-		OriginalTimestamp:  originalTimestamp,
-		VariableParameters: variableParameters,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMSecurityResponse(structType any) NLMSecurityResponse {
@@ -244,6 +245,25 @@ func (m *_NLMSecurityResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NLMSecurityResponse) IsNLMSecurityResponse() {}
+
+func (m *_NLMSecurityResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMSecurityResponse) deepCopy() *_NLMSecurityResponse {
+	if m == nil {
+		return nil
+	}
+	_NLMSecurityResponseCopy := &_NLMSecurityResponse{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.ResponseCode,
+		m.OriginalMessageId,
+		m.OriginalTimestamp,
+		utils.DeepCopySlice[byte, byte](m.VariableParameters),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMSecurityResponseCopy
+}
 
 func (m *_NLMSecurityResponse) String() string {
 	if m == nil {

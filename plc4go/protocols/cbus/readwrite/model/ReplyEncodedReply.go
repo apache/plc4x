@@ -37,6 +37,7 @@ type ReplyEncodedReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Reply
 	// GetEncodedReply returns EncodedReply (property field)
 	GetEncodedReply() EncodedReply
@@ -59,6 +60,17 @@ type _ReplyEncodedReply struct {
 
 var _ ReplyEncodedReply = (*_ReplyEncodedReply)(nil)
 var _ ReplyRequirements = (*_ReplyEncodedReply)(nil)
+
+// NewReplyEncodedReply factory function for _ReplyEncodedReply
+func NewReplyEncodedReply(peekedByte byte, encodedReply EncodedReply, chksum Checksum, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyEncodedReply {
+	_result := &_ReplyEncodedReply{
+		ReplyContract: NewReply(peekedByte, cBusOptions, requestContext),
+		EncodedReply:  encodedReply,
+		Chksum:        chksum,
+	}
+	_result.ReplyContract.(*_Reply)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -112,17 +124,6 @@ func (m *_ReplyEncodedReply) GetChksumDecoded() Checksum {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReplyEncodedReply factory function for _ReplyEncodedReply
-func NewReplyEncodedReply(encodedReply EncodedReply, chksum Checksum, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyEncodedReply {
-	_result := &_ReplyEncodedReply{
-		ReplyContract: NewReply(peekedByte, cBusOptions, requestContext),
-		EncodedReply:  encodedReply,
-		Chksum:        chksum,
-	}
-	_result.ReplyContract.(*_Reply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReplyEncodedReply(structType any) ReplyEncodedReply {
@@ -250,6 +251,23 @@ func (m *_ReplyEncodedReply) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ReplyEncodedReply) IsReplyEncodedReply() {}
+
+func (m *_ReplyEncodedReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReplyEncodedReply) deepCopy() *_ReplyEncodedReply {
+	if m == nil {
+		return nil
+	}
+	_ReplyEncodedReplyCopy := &_ReplyEncodedReply{
+		m.ReplyContract.(*_Reply).deepCopy(),
+		m.EncodedReply.DeepCopy().(EncodedReply),
+		m.Chksum.DeepCopy().(Checksum),
+	}
+	m.ReplyContract.(*_Reply)._SubType = m
+	return _ReplyEncodedReplyCopy
+}
 
 func (m *_ReplyEncodedReply) String() string {
 	if m == nil {

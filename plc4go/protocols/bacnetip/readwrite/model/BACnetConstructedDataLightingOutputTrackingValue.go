@@ -38,6 +38,7 @@ type BACnetConstructedDataLightingOutputTrackingValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTrackingValue returns TrackingValue (property field)
 	GetTrackingValue() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLightingOutputTrackingValue struct {
 
 var _ BACnetConstructedDataLightingOutputTrackingValue = (*_BACnetConstructedDataLightingOutputTrackingValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputTrackingValue)(nil)
+
+// NewBACnetConstructedDataLightingOutputTrackingValue factory function for _BACnetConstructedDataLightingOutputTrackingValue
+func NewBACnetConstructedDataLightingOutputTrackingValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trackingValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputTrackingValue {
+	if trackingValue == nil {
+		panic("trackingValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputTrackingValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataLightingOutputTrackingValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TrackingValue:                 trackingValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLightingOutputTrackingValue factory function for _BACnetConstructedDataLightingOutputTrackingValue
-func NewBACnetConstructedDataLightingOutputTrackingValue(trackingValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputTrackingValue {
-	if trackingValue == nil {
-		panic("trackingValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputTrackingValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataLightingOutputTrackingValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TrackingValue:                 trackingValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLightingOutputTrackingValue(structType any) BACnetConstructedDataLightingOutputTrackingValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) IsBACnetConstructedDataLightingOutputTrackingValue() {
+}
+
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLightingOutputTrackingValue) deepCopy() *_BACnetConstructedDataLightingOutputTrackingValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLightingOutputTrackingValueCopy := &_BACnetConstructedDataLightingOutputTrackingValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TrackingValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLightingOutputTrackingValueCopy
 }
 
 func (m *_BACnetConstructedDataLightingOutputTrackingValue) String() string {

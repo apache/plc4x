@@ -38,6 +38,7 @@ type CustomManufacturer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string
 	// IsCustomManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -54,6 +55,11 @@ type _CustomManufacturer struct {
 
 var _ CustomManufacturer = (*_CustomManufacturer)(nil)
 
+// NewCustomManufacturer factory function for _CustomManufacturer
+func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufacturer {
+	return &_CustomManufacturer{CustomString: customString, NumBytes: numBytes}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -67,11 +73,6 @@ func (m *_CustomManufacturer) GetCustomString() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCustomManufacturer factory function for _CustomManufacturer
-func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufacturer {
-	return &_CustomManufacturer{CustomString: customString, NumBytes: numBytes}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCustomManufacturer(structType any) CustomManufacturer {
@@ -179,6 +180,21 @@ func (m *_CustomManufacturer) GetNumBytes() uint8 {
 ////
 
 func (m *_CustomManufacturer) IsCustomManufacturer() {}
+
+func (m *_CustomManufacturer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CustomManufacturer) deepCopy() *_CustomManufacturer {
+	if m == nil {
+		return nil
+	}
+	_CustomManufacturerCopy := &_CustomManufacturer{
+		m.CustomString,
+		m.NumBytes,
+	}
+	return _CustomManufacturerCopy
+}
 
 func (m *_CustomManufacturer) String() string {
 	if m == nil {

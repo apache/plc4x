@@ -38,6 +38,7 @@ type BACnetConstructedDataDeadband interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeadband returns Deadband (property field)
 	GetDeadband() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDeadband struct {
 
 var _ BACnetConstructedDataDeadband = (*_BACnetConstructedDataDeadband)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeadband)(nil)
+
+// NewBACnetConstructedDataDeadband factory function for _BACnetConstructedDataDeadband
+func NewBACnetConstructedDataDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeadband {
+	if deadband == nil {
+		panic("deadband of type BACnetApplicationTagReal for BACnetConstructedDataDeadband must not be nil")
+	}
+	_result := &_BACnetConstructedDataDeadband{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Deadband:                      deadband,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDeadband) GetActualValue() BACnetApplicationTagRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeadband factory function for _BACnetConstructedDataDeadband
-func NewBACnetConstructedDataDeadband(deadband BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeadband {
-	if deadband == nil {
-		panic("deadband of type BACnetApplicationTagReal for BACnetConstructedDataDeadband must not be nil")
-	}
-	_result := &_BACnetConstructedDataDeadband{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Deadband:                      deadband,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeadband(structType any) BACnetConstructedDataDeadband {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDeadband) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataDeadband) IsBACnetConstructedDataDeadband() {}
+
+func (m *_BACnetConstructedDataDeadband) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDeadband) deepCopy() *_BACnetConstructedDataDeadband {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDeadbandCopy := &_BACnetConstructedDataDeadband{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Deadband.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDeadbandCopy
+}
 
 func (m *_BACnetConstructedDataDeadband) String() string {
 	if m == nil {

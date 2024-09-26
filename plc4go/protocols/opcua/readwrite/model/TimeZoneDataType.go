@@ -38,6 +38,7 @@ type TimeZoneDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetOffset returns Offset (property field)
 	GetOffset() int16
@@ -58,6 +59,17 @@ type _TimeZoneDataType struct {
 
 var _ TimeZoneDataType = (*_TimeZoneDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TimeZoneDataType)(nil)
+
+// NewTimeZoneDataType factory function for _TimeZoneDataType
+func NewTimeZoneDataType(offset int16, daylightSavingInOffset bool) *_TimeZoneDataType {
+	_result := &_TimeZoneDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Offset:                            offset,
+		DaylightSavingInOffset:            daylightSavingInOffset,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +106,6 @@ func (m *_TimeZoneDataType) GetDaylightSavingInOffset() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTimeZoneDataType factory function for _TimeZoneDataType
-func NewTimeZoneDataType(offset int16, daylightSavingInOffset bool) *_TimeZoneDataType {
-	_result := &_TimeZoneDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Offset:                            offset,
-		DaylightSavingInOffset:            daylightSavingInOffset,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTimeZoneDataType(structType any) TimeZoneDataType {
@@ -215,6 +216,24 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_TimeZoneDataType) IsTimeZoneDataType() {}
+
+func (m *_TimeZoneDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TimeZoneDataType) deepCopy() *_TimeZoneDataType {
+	if m == nil {
+		return nil
+	}
+	_TimeZoneDataTypeCopy := &_TimeZoneDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Offset,
+		m.DaylightSavingInOffset,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TimeZoneDataTypeCopy
+}
 
 func (m *_TimeZoneDataType) String() string {
 	if m == nil {

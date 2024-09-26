@@ -40,6 +40,7 @@ type BVLCResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetCode returns Code (property field)
 	GetCode() BVLCResultCode
@@ -55,6 +56,16 @@ type _BVLCResult struct {
 
 var _ BVLCResult = (*_BVLCResult)(nil)
 var _ BVLCRequirements = (*_BVLCResult)(nil)
+
+// NewBVLCResult factory function for _BVLCResult
+func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
+	_result := &_BVLCResult{
+		BVLCContract: NewBVLC(),
+		Code:         code,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,16 +98,6 @@ func (m *_BVLCResult) GetCode() BVLCResultCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCResult factory function for _BVLCResult
-func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
-	_result := &_BVLCResult{
-		BVLCContract: NewBVLC(),
-		Code:         code,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCResult(structType any) BVLCResult {
@@ -181,6 +182,22 @@ func (m *_BVLCResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_BVLCResult) IsBVLCResult() {}
+
+func (m *_BVLCResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCResult) deepCopy() *_BVLCResult {
+	if m == nil {
+		return nil
+	}
+	_BVLCResultCopy := &_BVLCResult{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		m.Code,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCResultCopy
+}
 
 func (m *_BVLCResult) String() string {
 	if m == nil {

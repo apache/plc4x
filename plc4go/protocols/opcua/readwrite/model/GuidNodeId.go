@@ -38,6 +38,7 @@ type GuidNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
@@ -53,6 +54,14 @@ type _GuidNodeId struct {
 }
 
 var _ GuidNodeId = (*_GuidNodeId)(nil)
+
+// NewGuidNodeId factory function for _GuidNodeId
+func NewGuidNodeId(namespaceIndex uint16, identifier GuidValue) *_GuidNodeId {
+	if identifier == nil {
+		panic("identifier of type GuidValue for GuidNodeId must not be nil")
+	}
+	return &_GuidNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_GuidNodeId) GetIdentifier() GuidValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGuidNodeId factory function for _GuidNodeId
-func NewGuidNodeId(namespaceIndex uint16, identifier GuidValue) *_GuidNodeId {
-	if identifier == nil {
-		panic("identifier of type GuidValue for GuidNodeId must not be nil")
-	}
-	return &_GuidNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastGuidNodeId(structType any) GuidNodeId {
@@ -189,6 +190,21 @@ func (m *_GuidNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_GuidNodeId) IsGuidNodeId() {}
+
+func (m *_GuidNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GuidNodeId) deepCopy() *_GuidNodeId {
+	if m == nil {
+		return nil
+	}
+	_GuidNodeIdCopy := &_GuidNodeId{
+		m.NamespaceIndex,
+		m.Identifier.DeepCopy().(GuidValue),
+	}
+	return _GuidNodeIdCopy
+}
 
 func (m *_GuidNodeId) String() string {
 	if m == nil {

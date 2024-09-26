@@ -40,6 +40,7 @@ type S7PayloadUserDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7PayloadUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItem()
 }
@@ -80,6 +81,11 @@ type _S7PayloadUserDataItem struct {
 
 var _ S7PayloadUserDataItemContract = (*_S7PayloadUserDataItem)(nil)
 
+// NewS7PayloadUserDataItem factory function for _S7PayloadUserDataItem
+func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItem {
+	return &_S7PayloadUserDataItem{ReturnCode: returnCode, TransportSize: transportSize, DataLength: dataLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -101,11 +107,6 @@ func (m *_S7PayloadUserDataItem) GetDataLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItem factory function for _S7PayloadUserDataItem
-func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItem {
-	return &_S7PayloadUserDataItem{ReturnCode: returnCode, TransportSize: transportSize, DataLength: dataLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItem(structType any) S7PayloadUserDataItem {
@@ -201,139 +202,139 @@ func (m *_S7PayloadUserDataItem) parse(ctx context.Context, readBuffer utils.Rea
 	var _child S7PayloadUserDataItem
 	switch {
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x00 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCyclicServicesPush
-		if _child, err = (&_S7PayloadUserDataItemCyclicServicesPush{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCyclicServicesPush).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesPush for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x00 && cpuSubfunction == 0x05: // S7PayloadUserDataItemCyclicServicesChangeDrivenPush
-		if _child, err = (&_S7PayloadUserDataItemCyclicServicesChangeDrivenPush{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCyclicServicesChangeDrivenPush).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesChangeDrivenPush for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x04 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCyclicServicesSubscribeRequest
-		if _child, err = (&_S7PayloadUserDataItemCyclicServicesSubscribeRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCyclicServicesSubscribeRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesSubscribeRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x04 && cpuSubfunction == 0x04: // S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
-		if _child, err = (&_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesUnsubscribeRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x08 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCyclicServicesSubscribeResponse
-		if _child, err = (&_S7PayloadUserDataItemCyclicServicesSubscribeResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCyclicServicesSubscribeResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesSubscribeResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x08 && cpuSubfunction == 0x04: // S7PayloadUserDataItemCyclicServicesUnsubscribeResponse
-		if _child, err = (&_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesUnsubscribeResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x08 && cpuSubfunction == 0x05 && dataLength == 0x00: // S7PayloadUserDataItemCyclicServicesErrorResponse
-		if _child, err = (&_S7PayloadUserDataItemCyclicServicesErrorResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCyclicServicesErrorResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesErrorResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x02 && cpuFunctionType == 0x08 && cpuSubfunction == 0x05: // S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
-		if _child, err = (&_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x00 && cpuSubfunction == 0x03: // S7PayloadDiagnosticMessage
-		if _child, err = (&_S7PayloadDiagnosticMessage{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadDiagnosticMessage).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadDiagnosticMessage for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x00 && cpuSubfunction == 0x05: // S7PayloadAlarm8
-		if _child, err = (&_S7PayloadAlarm8{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadAlarm8).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadAlarm8 for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x00 && cpuSubfunction == 0x06: // S7PayloadNotify
-		if _child, err = (&_S7PayloadNotify{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadNotify).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadNotify for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x00 && cpuSubfunction == 0x0c: // S7PayloadAlarmAckInd
-		if _child, err = (&_S7PayloadAlarmAckInd{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadAlarmAckInd).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadAlarmAckInd for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x00 && cpuSubfunction == 0x11: // S7PayloadAlarmSQ
-		if _child, err = (&_S7PayloadAlarmSQ{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadAlarmSQ).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadAlarmSQ for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x00 && cpuSubfunction == 0x12: // S7PayloadAlarmS
-		if _child, err = (&_S7PayloadAlarmS{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadAlarmS).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadAlarmS for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x00 && cpuSubfunction == 0x13: // S7PayloadAlarmSC
-		if _child, err = (&_S7PayloadAlarmSC{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadAlarmSC).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadAlarmSC for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x00 && cpuSubfunction == 0x16: // S7PayloadNotify8
-		if _child, err = (&_S7PayloadNotify8{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadNotify8).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadNotify8 for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x04 && cpuSubfunction == 0x01 && dataLength == 0x00: // S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x04 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionReadSzlRequest
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionReadSzlRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionReadSzlRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionReadSzlRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x08 && cpuSubfunction == 0x01: // S7PayloadUserDataItemCpuFunctionReadSzlResponse
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionReadSzlResponse{}).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionReadSzlResponse).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionReadSzlResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x04 && cpuSubfunction == 0x02: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x00: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x02: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x08 && cpuSubfunction == 0x02 && dataLength == 0x05: // S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x04 && cpuSubfunction == 0x0b: // S7PayloadUserDataItemCpuFunctionAlarmAckRequest
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionAlarmAckRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionAlarmAckRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionAlarmAckRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x08 && cpuSubfunction == 0x0b && dataLength == 0x00: // S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x08 && cpuSubfunction == 0x0b: // S7PayloadUserDataItemCpuFunctionAlarmAckResponse
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionAlarmAckResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionAlarmAckResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionAlarmAckResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x04 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionAlarmQueryRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x08 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-		if _child, err = (&_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{}).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x04 && cpuSubfunction == 0x01: // S7PayloadUserDataItemClkRequest
-		if _child, err = (&_S7PayloadUserDataItemClkRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemClkRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemClkRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x08 && cpuSubfunction == 0x01: // S7PayloadUserDataItemClkResponse
-		if _child, err = (&_S7PayloadUserDataItemClkResponse{}).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemClkResponse).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemClkResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x04 && cpuSubfunction == 0x03: // S7PayloadUserDataItemClkFRequest
-		if _child, err = (&_S7PayloadUserDataItemClkFRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemClkFRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemClkFRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x08 && cpuSubfunction == 0x03: // S7PayloadUserDataItemClkFResponse
-		if _child, err = (&_S7PayloadUserDataItemClkFResponse{}).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemClkFResponse).parse(ctx, readBuffer, m, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemClkFResponse for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x04 && cpuSubfunction == 0x04: // S7PayloadUserDataItemClkSetRequest
-		if _child, err = (&_S7PayloadUserDataItemClkSetRequest{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemClkSetRequest).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemClkSetRequest for type-switch of S7PayloadUserDataItem")
 		}
 	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x08 && cpuSubfunction == 0x04: // S7PayloadUserDataItemClkSetResponse
-		if _child, err = (&_S7PayloadUserDataItemClkSetResponse{}).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
+		if _child, err = new(_S7PayloadUserDataItemClkSetResponse).parse(ctx, readBuffer, m, cpuFunctionGroup, cpuFunctionType, cpuSubfunction); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserDataItemClkSetResponse for type-switch of S7PayloadUserDataItem")
 		}
 	default:
@@ -383,3 +384,20 @@ func (pm *_S7PayloadUserDataItem) serializeParent(ctx context.Context, writeBuff
 }
 
 func (m *_S7PayloadUserDataItem) IsS7PayloadUserDataItem() {}
+
+func (m *_S7PayloadUserDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItem) deepCopy() *_S7PayloadUserDataItem {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCopy := &_S7PayloadUserDataItem{
+		nil, // will be set by child
+		m.ReturnCode,
+		m.TransportSize,
+		m.DataLength,
+	}
+	return _S7PayloadUserDataItemCopy
+}

@@ -38,6 +38,7 @@ type BACnetPropertyStatesBacnetIpMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBacnetIpMode returns BacnetIpMode (property field)
 	GetBacnetIpMode() BACnetIPModeTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesBacnetIpMode struct {
 
 var _ BACnetPropertyStatesBacnetIpMode = (*_BACnetPropertyStatesBacnetIpMode)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBacnetIpMode)(nil)
+
+// NewBACnetPropertyStatesBacnetIpMode factory function for _BACnetPropertyStatesBacnetIpMode
+func NewBACnetPropertyStatesBacnetIpMode(peekedTagHeader BACnetTagHeader, bacnetIpMode BACnetIPModeTagged) *_BACnetPropertyStatesBacnetIpMode {
+	if bacnetIpMode == nil {
+		panic("bacnetIpMode of type BACnetIPModeTagged for BACnetPropertyStatesBacnetIpMode must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBacnetIpMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BacnetIpMode:                 bacnetIpMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetBacnetIpMode() BACnetIPModeTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBacnetIpMode factory function for _BACnetPropertyStatesBacnetIpMode
-func NewBACnetPropertyStatesBacnetIpMode(bacnetIpMode BACnetIPModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBacnetIpMode {
-	if bacnetIpMode == nil {
-		panic("bacnetIpMode of type BACnetIPModeTagged for BACnetPropertyStatesBacnetIpMode must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBacnetIpMode{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BacnetIpMode:                 bacnetIpMode,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBacnetIpMode(structType any) BACnetPropertyStatesBacnetIpMode {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBacnetIpMode) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetPropertyStatesBacnetIpMode) IsBACnetPropertyStatesBacnetIpMode() {}
+
+func (m *_BACnetPropertyStatesBacnetIpMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBacnetIpMode) deepCopy() *_BACnetPropertyStatesBacnetIpMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBacnetIpModeCopy := &_BACnetPropertyStatesBacnetIpMode{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.BacnetIpMode.DeepCopy().(BACnetIPModeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBacnetIpModeCopy
+}
 
 func (m *_BACnetPropertyStatesBacnetIpMode) String() string {
 	if m == nil {

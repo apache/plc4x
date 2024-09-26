@@ -38,6 +38,7 @@ type UserTokenPolicy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetPolicyId returns PolicyId (property field)
 	GetPolicyId() PascalString
@@ -65,6 +66,32 @@ type _UserTokenPolicy struct {
 
 var _ UserTokenPolicy = (*_UserTokenPolicy)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UserTokenPolicy)(nil)
+
+// NewUserTokenPolicy factory function for _UserTokenPolicy
+func NewUserTokenPolicy(policyId PascalString, tokenType UserTokenType, issuedTokenType PascalString, issuerEndpointUrl PascalString, securityPolicyUri PascalString) *_UserTokenPolicy {
+	if policyId == nil {
+		panic("policyId of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if issuedTokenType == nil {
+		panic("issuedTokenType of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if issuerEndpointUrl == nil {
+		panic("issuerEndpointUrl of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for UserTokenPolicy must not be nil")
+	}
+	_result := &_UserTokenPolicy{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+		TokenType:                         tokenType,
+		IssuedTokenType:                   issuedTokenType,
+		IssuerEndpointUrl:                 issuerEndpointUrl,
+		SecurityPolicyUri:                 securityPolicyUri,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,32 +140,6 @@ func (m *_UserTokenPolicy) GetSecurityPolicyUri() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUserTokenPolicy factory function for _UserTokenPolicy
-func NewUserTokenPolicy(policyId PascalString, tokenType UserTokenType, issuedTokenType PascalString, issuerEndpointUrl PascalString, securityPolicyUri PascalString) *_UserTokenPolicy {
-	if policyId == nil {
-		panic("policyId of type PascalString for UserTokenPolicy must not be nil")
-	}
-	if issuedTokenType == nil {
-		panic("issuedTokenType of type PascalString for UserTokenPolicy must not be nil")
-	}
-	if issuerEndpointUrl == nil {
-		panic("issuerEndpointUrl of type PascalString for UserTokenPolicy must not be nil")
-	}
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for UserTokenPolicy must not be nil")
-	}
-	_result := &_UserTokenPolicy{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		PolicyId:                          policyId,
-		TokenType:                         tokenType,
-		IssuedTokenType:                   issuedTokenType,
-		IssuerEndpointUrl:                 issuerEndpointUrl,
-		SecurityPolicyUri:                 securityPolicyUri,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUserTokenPolicy(structType any) UserTokenPolicy {
@@ -275,6 +276,26 @@ func (m *_UserTokenPolicy) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_UserTokenPolicy) IsUserTokenPolicy() {}
+
+func (m *_UserTokenPolicy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UserTokenPolicy) deepCopy() *_UserTokenPolicy {
+	if m == nil {
+		return nil
+	}
+	_UserTokenPolicyCopy := &_UserTokenPolicy{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.PolicyId.DeepCopy().(PascalString),
+		m.TokenType,
+		m.IssuedTokenType.DeepCopy().(PascalString),
+		m.IssuerEndpointUrl.DeepCopy().(PascalString),
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UserTokenPolicyCopy
+}
 
 func (m *_UserTokenPolicy) String() string {
 	if m == nil {

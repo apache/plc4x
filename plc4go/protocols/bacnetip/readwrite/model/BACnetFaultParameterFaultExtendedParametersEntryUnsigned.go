@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryUnsigned struct {
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryUnsigned = (*_BACnetFaultParameterFaultExtendedParametersEntryUnsigned)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryUnsigned)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned factory function for _BACnetFaultParameterFaultExtendedParametersEntryUnsigned
+func NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetFaultParameterFaultExtendedParametersEntryUnsigned must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		UnsignedValue: unsignedValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) GetUnsignedV
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned factory function for _BACnetFaultParameterFaultExtendedParametersEntryUnsigned
-func NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetFaultParameterFaultExtendedParametersEntryUnsigned must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		UnsignedValue: unsignedValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryUnsigned(structType any) BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) SerializeWit
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) IsBACnetFaultParameterFaultExtendedParametersEntryUnsigned() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryUnsignedCopy := &_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryUnsignedCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) String() string {

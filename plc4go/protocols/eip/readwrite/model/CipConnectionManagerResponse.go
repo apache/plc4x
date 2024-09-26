@@ -38,6 +38,7 @@ type CipConnectionManagerResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetOtConnectionId returns OtConnectionId (property field)
 	GetOtConnectionId() uint32
@@ -74,6 +75,22 @@ type _CipConnectionManagerResponse struct {
 
 var _ CipConnectionManagerResponse = (*_CipConnectionManagerResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectionManagerResponse)(nil)
+
+// NewCipConnectionManagerResponse factory function for _CipConnectionManagerResponse
+func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, serviceLen uint16) *_CipConnectionManagerResponse {
+	_result := &_CipConnectionManagerResponse{
+		CipServiceContract:     NewCipService(serviceLen),
+		OtConnectionId:         otConnectionId,
+		ToConnectionId:         toConnectionId,
+		ConnectionSerialNumber: connectionSerialNumber,
+		OriginatorVendorId:     originatorVendorId,
+		OriginatorSerialNumber: originatorSerialNumber,
+		OtApi:                  otApi,
+		ToApi:                  toApi,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -138,22 +155,6 @@ func (m *_CipConnectionManagerResponse) GetToApi() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectionManagerResponse factory function for _CipConnectionManagerResponse
-func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, serviceLen uint16) *_CipConnectionManagerResponse {
-	_result := &_CipConnectionManagerResponse{
-		CipServiceContract:     NewCipService(serviceLen),
-		OtConnectionId:         otConnectionId,
-		ToConnectionId:         toConnectionId,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		OtApi:                  otApi,
-		ToApi:                  toApi,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectionManagerResponse(structType any) CipConnectionManagerResponse {
@@ -355,6 +356,30 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_CipConnectionManagerResponse) IsCipConnectionManagerResponse() {}
+
+func (m *_CipConnectionManagerResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectionManagerResponse) deepCopy() *_CipConnectionManagerResponse {
+	if m == nil {
+		return nil
+	}
+	_CipConnectionManagerResponseCopy := &_CipConnectionManagerResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.OtConnectionId,
+		m.ToConnectionId,
+		m.ConnectionSerialNumber,
+		m.OriginatorVendorId,
+		m.OriginatorSerialNumber,
+		m.OtApi,
+		m.ToApi,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectionManagerResponseCopy
+}
 
 func (m *_CipConnectionManagerResponse) String() string {
 	if m == nil {

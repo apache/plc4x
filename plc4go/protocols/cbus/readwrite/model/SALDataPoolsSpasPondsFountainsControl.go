@@ -38,6 +38,7 @@ type SALDataPoolsSpasPondsFountainsControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetPoolsSpaPondsFountainsData returns PoolsSpaPondsFountainsData (property field)
 	GetPoolsSpaPondsFountainsData() LightingData
@@ -53,6 +54,19 @@ type _SALDataPoolsSpasPondsFountainsControl struct {
 
 var _ SALDataPoolsSpasPondsFountainsControl = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
 var _ SALDataRequirements = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
+
+// NewSALDataPoolsSpasPondsFountainsControl factory function for _SALDataPoolsSpasPondsFountainsControl
+func NewSALDataPoolsSpasPondsFountainsControl(salData SALData, poolsSpaPondsFountainsData LightingData) *_SALDataPoolsSpasPondsFountainsControl {
+	if poolsSpaPondsFountainsData == nil {
+		panic("poolsSpaPondsFountainsData of type LightingData for SALDataPoolsSpasPondsFountainsControl must not be nil")
+	}
+	_result := &_SALDataPoolsSpasPondsFountainsControl{
+		SALDataContract:            NewSALData(salData),
+		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetPoolsSpaPondsFountainsData()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataPoolsSpasPondsFountainsControl factory function for _SALDataPoolsSpasPondsFountainsControl
-func NewSALDataPoolsSpasPondsFountainsControl(poolsSpaPondsFountainsData LightingData, salData SALData) *_SALDataPoolsSpasPondsFountainsControl {
-	if poolsSpaPondsFountainsData == nil {
-		panic("poolsSpaPondsFountainsData of type LightingData for SALDataPoolsSpasPondsFountainsControl must not be nil")
-	}
-	_result := &_SALDataPoolsSpasPondsFountainsControl{
-		SALDataContract:            NewSALData(salData),
-		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataPoolsSpasPondsFountainsControl(structType any) SALDataPoolsSpasPondsFountainsControl {
@@ -182,6 +183,22 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) IsSALDataPoolsSpasPondsFountainsControl() {}
+
+func (m *_SALDataPoolsSpasPondsFountainsControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataPoolsSpasPondsFountainsControl) deepCopy() *_SALDataPoolsSpasPondsFountainsControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataPoolsSpasPondsFountainsControlCopy := &_SALDataPoolsSpasPondsFountainsControl{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.PoolsSpaPondsFountainsData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataPoolsSpasPondsFountainsControlCopy
+}
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) String() string {
 	if m == nil {

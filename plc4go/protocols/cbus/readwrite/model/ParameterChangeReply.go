@@ -38,6 +38,7 @@ type ParameterChangeReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Reply
 	// GetParameterChange returns ParameterChange (property field)
 	GetParameterChange() ParameterChange
@@ -53,6 +54,19 @@ type _ParameterChangeReply struct {
 
 var _ ParameterChangeReply = (*_ParameterChangeReply)(nil)
 var _ ReplyRequirements = (*_ParameterChangeReply)(nil)
+
+// NewParameterChangeReply factory function for _ParameterChangeReply
+func NewParameterChangeReply(peekedByte byte, parameterChange ParameterChange, cBusOptions CBusOptions, requestContext RequestContext) *_ParameterChangeReply {
+	if parameterChange == nil {
+		panic("parameterChange of type ParameterChange for ParameterChangeReply must not be nil")
+	}
+	_result := &_ParameterChangeReply{
+		ReplyContract:   NewReply(peekedByte, cBusOptions, requestContext),
+		ParameterChange: parameterChange,
+	}
+	_result.ReplyContract.(*_Reply)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_ParameterChangeReply) GetParameterChange() ParameterChange {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterChangeReply factory function for _ParameterChangeReply
-func NewParameterChangeReply(parameterChange ParameterChange, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ParameterChangeReply {
-	if parameterChange == nil {
-		panic("parameterChange of type ParameterChange for ParameterChangeReply must not be nil")
-	}
-	_result := &_ParameterChangeReply{
-		ReplyContract:   NewReply(peekedByte, cBusOptions, requestContext),
-		ParameterChange: parameterChange,
-	}
-	_result.ReplyContract.(*_Reply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterChangeReply(structType any) ParameterChangeReply {
@@ -178,6 +179,22 @@ func (m *_ParameterChangeReply) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ParameterChangeReply) IsParameterChangeReply() {}
+
+func (m *_ParameterChangeReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterChangeReply) deepCopy() *_ParameterChangeReply {
+	if m == nil {
+		return nil
+	}
+	_ParameterChangeReplyCopy := &_ParameterChangeReply{
+		m.ReplyContract.(*_Reply).deepCopy(),
+		m.ParameterChange.DeepCopy().(ParameterChange),
+	}
+	m.ReplyContract.(*_Reply)._SubType = m
+	return _ParameterChangeReplyCopy
+}
 
 func (m *_ParameterChangeReply) String() string {
 	if m == nil {

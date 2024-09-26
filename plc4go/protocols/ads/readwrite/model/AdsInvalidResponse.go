@@ -36,6 +36,7 @@ type AdsInvalidResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsInvalidResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsInvalidResponse()
@@ -48,6 +49,15 @@ type _AdsInvalidResponse struct {
 
 var _ AdsInvalidResponse = (*_AdsInvalidResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsInvalidResponse)(nil)
+
+// NewAdsInvalidResponse factory function for _AdsInvalidResponse
+func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsInvalidResponse {
+	_result := &_AdsInvalidResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_AdsInvalidResponse) GetResponse() bool {
 
 func (m *_AdsInvalidResponse) GetParent() AmsPacketContract {
 	return m.AmsPacketContract
-}
-
-// NewAdsInvalidResponse factory function for _AdsInvalidResponse
-func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsInvalidResponse {
-	_result := &_AdsInvalidResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_AdsInvalidResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_AdsInvalidResponse) IsAdsInvalidResponse() {}
+
+func (m *_AdsInvalidResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsInvalidResponse) deepCopy() *_AdsInvalidResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsInvalidResponseCopy := &_AdsInvalidResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsInvalidResponseCopy
+}
 
 func (m *_AdsInvalidResponse) String() string {
 	if m == nil {

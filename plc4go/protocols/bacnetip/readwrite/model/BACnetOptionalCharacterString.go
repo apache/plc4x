@@ -40,6 +40,7 @@ type BACnetOptionalCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetOptionalCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalCharacterString()
 }
@@ -70,6 +71,14 @@ type _BACnetOptionalCharacterString struct {
 
 var _ BACnetOptionalCharacterStringContract = (*_BACnetOptionalCharacterString)(nil)
 
+// NewBACnetOptionalCharacterString factory function for _BACnetOptionalCharacterString
+func NewBACnetOptionalCharacterString(peekedTagHeader BACnetTagHeader) *_BACnetOptionalCharacterString {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalCharacterString must not be nil")
+	}
+	return &_BACnetOptionalCharacterString{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetOptionalCharacterString) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalCharacterString factory function for _BACnetOptionalCharacterString
-func NewBACnetOptionalCharacterString(peekedTagHeader BACnetTagHeader) *_BACnetOptionalCharacterString {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalCharacterString must not be nil")
-	}
-	return &_BACnetOptionalCharacterString{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalCharacterString(structType any) BACnetOptionalCharacterString {
@@ -189,11 +190,11 @@ func (m *_BACnetOptionalCharacterString) parse(ctx context.Context, readBuffer u
 	var _child BACnetOptionalCharacterString
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalCharacterStringNull
-		if _child, err = (&_BACnetOptionalCharacterStringNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalCharacterStringNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalCharacterStringNull for type-switch of BACnetOptionalCharacterString")
 		}
 	case 0 == 0: // BACnetOptionalCharacterStringValue
-		if _child, err = (&_BACnetOptionalCharacterStringValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalCharacterStringValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalCharacterStringValue for type-switch of BACnetOptionalCharacterString")
 		}
 	default:
@@ -237,3 +238,18 @@ func (pm *_BACnetOptionalCharacterString) serializeParent(ctx context.Context, w
 }
 
 func (m *_BACnetOptionalCharacterString) IsBACnetOptionalCharacterString() {}
+
+func (m *_BACnetOptionalCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalCharacterString) deepCopy() *_BACnetOptionalCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalCharacterStringCopy := &_BACnetOptionalCharacterString{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetOptionalCharacterStringCopy
+}

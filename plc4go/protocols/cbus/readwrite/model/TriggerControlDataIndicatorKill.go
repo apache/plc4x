@@ -36,6 +36,7 @@ type TriggerControlDataIndicatorKill interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// IsTriggerControlDataIndicatorKill is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlDataIndicatorKill()
@@ -49,6 +50,15 @@ type _TriggerControlDataIndicatorKill struct {
 var _ TriggerControlDataIndicatorKill = (*_TriggerControlDataIndicatorKill)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataIndicatorKill)(nil)
 
+// NewTriggerControlDataIndicatorKill factory function for _TriggerControlDataIndicatorKill
+func NewTriggerControlDataIndicatorKill(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataIndicatorKill {
+	_result := &_TriggerControlDataIndicatorKill{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ TriggerControlDataRequirements = (*_TriggerControlDataIndicatorKill)(nil)
 
 func (m *_TriggerControlDataIndicatorKill) GetParent() TriggerControlDataContract {
 	return m.TriggerControlDataContract
-}
-
-// NewTriggerControlDataIndicatorKill factory function for _TriggerControlDataIndicatorKill
-func NewTriggerControlDataIndicatorKill(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataIndicatorKill {
-	_result := &_TriggerControlDataIndicatorKill{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_TriggerControlDataIndicatorKill) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_TriggerControlDataIndicatorKill) IsTriggerControlDataIndicatorKill() {}
+
+func (m *_TriggerControlDataIndicatorKill) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataIndicatorKill) deepCopy() *_TriggerControlDataIndicatorKill {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataIndicatorKillCopy := &_TriggerControlDataIndicatorKill{
+		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataIndicatorKillCopy
+}
 
 func (m *_TriggerControlDataIndicatorKill) String() string {
 	if m == nil {

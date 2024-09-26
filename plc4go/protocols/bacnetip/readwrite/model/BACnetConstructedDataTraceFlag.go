@@ -38,6 +38,7 @@ type BACnetConstructedDataTraceFlag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTraceFlag returns TraceFlag (property field)
 	GetTraceFlag() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTraceFlag struct {
 
 var _ BACnetConstructedDataTraceFlag = (*_BACnetConstructedDataTraceFlag)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTraceFlag)(nil)
+
+// NewBACnetConstructedDataTraceFlag factory function for _BACnetConstructedDataTraceFlag
+func NewBACnetConstructedDataTraceFlag(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, traceFlag BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTraceFlag {
+	if traceFlag == nil {
+		panic("traceFlag of type BACnetApplicationTagBoolean for BACnetConstructedDataTraceFlag must not be nil")
+	}
+	_result := &_BACnetConstructedDataTraceFlag{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TraceFlag:                     traceFlag,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTraceFlag) GetActualValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTraceFlag factory function for _BACnetConstructedDataTraceFlag
-func NewBACnetConstructedDataTraceFlag(traceFlag BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTraceFlag {
-	if traceFlag == nil {
-		panic("traceFlag of type BACnetApplicationTagBoolean for BACnetConstructedDataTraceFlag must not be nil")
-	}
-	_result := &_BACnetConstructedDataTraceFlag{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TraceFlag:                     traceFlag,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTraceFlag(structType any) BACnetConstructedDataTraceFlag {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTraceFlag) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataTraceFlag) IsBACnetConstructedDataTraceFlag() {}
+
+func (m *_BACnetConstructedDataTraceFlag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTraceFlag) deepCopy() *_BACnetConstructedDataTraceFlag {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTraceFlagCopy := &_BACnetConstructedDataTraceFlag{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TraceFlag.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTraceFlagCopy
+}
 
 func (m *_BACnetConstructedDataTraceFlag) String() string {
 	if m == nil {

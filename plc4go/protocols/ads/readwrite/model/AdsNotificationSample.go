@@ -38,6 +38,7 @@ type AdsNotificationSample interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
 	// GetSampleSize returns SampleSize (property field)
@@ -56,6 +57,11 @@ type _AdsNotificationSample struct {
 }
 
 var _ AdsNotificationSample = (*_AdsNotificationSample)(nil)
+
+// NewAdsNotificationSample factory function for _AdsNotificationSample
+func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *_AdsNotificationSample {
+	return &_AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +84,6 @@ func (m *_AdsNotificationSample) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsNotificationSample factory function for _AdsNotificationSample
-func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *_AdsNotificationSample {
-	return &_AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsNotificationSample(structType any) AdsNotificationSample {
@@ -208,6 +209,22 @@ func (m *_AdsNotificationSample) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_AdsNotificationSample) IsAdsNotificationSample() {}
+
+func (m *_AdsNotificationSample) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsNotificationSample) deepCopy() *_AdsNotificationSample {
+	if m == nil {
+		return nil
+	}
+	_AdsNotificationSampleCopy := &_AdsNotificationSample{
+		m.NotificationHandle,
+		m.SampleSize,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	return _AdsNotificationSampleCopy
+}
 
 func (m *_AdsNotificationSample) String() string {
 	if m == nil {

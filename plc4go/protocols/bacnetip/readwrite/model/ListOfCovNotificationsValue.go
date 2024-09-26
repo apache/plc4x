@@ -38,6 +38,7 @@ type ListOfCovNotificationsValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -62,6 +63,17 @@ type _ListOfCovNotificationsValue struct {
 }
 
 var _ ListOfCovNotificationsValue = (*_ListOfCovNotificationsValue)(nil)
+
+// NewListOfCovNotificationsValue factory function for _ListOfCovNotificationsValue
+func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime, objectTypeArgument BACnetObjectType) *_ListOfCovNotificationsValue {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for ListOfCovNotificationsValue must not be nil")
+	}
+	if propertyValue == nil {
+		panic("propertyValue of type BACnetConstructedData for ListOfCovNotificationsValue must not be nil")
+	}
+	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectTypeArgument: objectTypeArgument}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +100,6 @@ func (m *_ListOfCovNotificationsValue) GetTimeOfChange() BACnetContextTagTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewListOfCovNotificationsValue factory function for _ListOfCovNotificationsValue
-func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime, objectTypeArgument BACnetObjectType) *_ListOfCovNotificationsValue {
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for ListOfCovNotificationsValue must not be nil")
-	}
-	if propertyValue == nil {
-		panic("propertyValue of type BACnetConstructedData for ListOfCovNotificationsValue must not be nil")
-	}
-	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastListOfCovNotificationsValue(structType any) ListOfCovNotificationsValue {
@@ -257,6 +258,24 @@ func (m *_ListOfCovNotificationsValue) GetObjectTypeArgument() BACnetObjectType 
 ////
 
 func (m *_ListOfCovNotificationsValue) IsListOfCovNotificationsValue() {}
+
+func (m *_ListOfCovNotificationsValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListOfCovNotificationsValue) deepCopy() *_ListOfCovNotificationsValue {
+	if m == nil {
+		return nil
+	}
+	_ListOfCovNotificationsValueCopy := &_ListOfCovNotificationsValue{
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+		m.TimeOfChange.DeepCopy().(BACnetContextTagTime),
+		m.ObjectTypeArgument,
+	}
+	return _ListOfCovNotificationsValueCopy
+}
 
 func (m *_ListOfCovNotificationsValue) String() string {
 	if m == nil {

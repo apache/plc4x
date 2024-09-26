@@ -38,6 +38,7 @@ type MediaTransportControlDataSetCategory interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetCategoryNumber returns CategoryNumber (property field)
 	GetCategoryNumber() uint8
@@ -53,6 +54,16 @@ type _MediaTransportControlDataSetCategory struct {
 
 var _ MediaTransportControlDataSetCategory = (*_MediaTransportControlDataSetCategory)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSetCategory)(nil)
+
+// NewMediaTransportControlDataSetCategory factory function for _MediaTransportControlDataSetCategory
+func NewMediaTransportControlDataSetCategory(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, categoryNumber uint8) *_MediaTransportControlDataSetCategory {
+	_result := &_MediaTransportControlDataSetCategory{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		CategoryNumber:                    categoryNumber,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_MediaTransportControlDataSetCategory) GetCategoryNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSetCategory factory function for _MediaTransportControlDataSetCategory
-func NewMediaTransportControlDataSetCategory(categoryNumber uint8, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSetCategory {
-	_result := &_MediaTransportControlDataSetCategory{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		CategoryNumber:                    categoryNumber,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSetCategory(structType any) MediaTransportControlDataSetCategory {
@@ -175,6 +176,22 @@ func (m *_MediaTransportControlDataSetCategory) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataSetCategory) IsMediaTransportControlDataSetCategory() {}
+
+func (m *_MediaTransportControlDataSetCategory) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSetCategory) deepCopy() *_MediaTransportControlDataSetCategory {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSetCategoryCopy := &_MediaTransportControlDataSetCategory{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.CategoryNumber,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSetCategoryCopy
+}
 
 func (m *_MediaTransportControlDataSetCategory) String() string {
 	if m == nil {

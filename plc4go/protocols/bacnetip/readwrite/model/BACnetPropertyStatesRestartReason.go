@@ -38,6 +38,7 @@ type BACnetPropertyStatesRestartReason interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetRestartReason returns RestartReason (property field)
 	GetRestartReason() BACnetRestartReasonTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesRestartReason struct {
 
 var _ BACnetPropertyStatesRestartReason = (*_BACnetPropertyStatesRestartReason)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesRestartReason)(nil)
+
+// NewBACnetPropertyStatesRestartReason factory function for _BACnetPropertyStatesRestartReason
+func NewBACnetPropertyStatesRestartReason(peekedTagHeader BACnetTagHeader, restartReason BACnetRestartReasonTagged) *_BACnetPropertyStatesRestartReason {
+	if restartReason == nil {
+		panic("restartReason of type BACnetRestartReasonTagged for BACnetPropertyStatesRestartReason must not be nil")
+	}
+	_result := &_BACnetPropertyStatesRestartReason{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		RestartReason:                restartReason,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesRestartReason) GetRestartReason() BACnetRestartRea
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesRestartReason factory function for _BACnetPropertyStatesRestartReason
-func NewBACnetPropertyStatesRestartReason(restartReason BACnetRestartReasonTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesRestartReason {
-	if restartReason == nil {
-		panic("restartReason of type BACnetRestartReasonTagged for BACnetPropertyStatesRestartReason must not be nil")
-	}
-	_result := &_BACnetPropertyStatesRestartReason{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		RestartReason:                restartReason,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesRestartReason(structType any) BACnetPropertyStatesRestartReason {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesRestartReason) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesRestartReason) IsBACnetPropertyStatesRestartReason() {}
+
+func (m *_BACnetPropertyStatesRestartReason) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesRestartReason) deepCopy() *_BACnetPropertyStatesRestartReason {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesRestartReasonCopy := &_BACnetPropertyStatesRestartReason{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.RestartReason.DeepCopy().(BACnetRestartReasonTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesRestartReasonCopy
+}
 
 func (m *_BACnetPropertyStatesRestartReason) String() string {
 	if m == nil {

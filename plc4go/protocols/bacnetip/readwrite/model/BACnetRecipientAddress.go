@@ -38,6 +38,7 @@ type BACnetRecipientAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetRecipient
 	// GetAddressValue returns AddressValue (property field)
 	GetAddressValue() BACnetAddressEnclosed
@@ -53,6 +54,19 @@ type _BACnetRecipientAddress struct {
 
 var _ BACnetRecipientAddress = (*_BACnetRecipientAddress)(nil)
 var _ BACnetRecipientRequirements = (*_BACnetRecipientAddress)(nil)
+
+// NewBACnetRecipientAddress factory function for _BACnetRecipientAddress
+func NewBACnetRecipientAddress(peekedTagHeader BACnetTagHeader, addressValue BACnetAddressEnclosed) *_BACnetRecipientAddress {
+	if addressValue == nil {
+		panic("addressValue of type BACnetAddressEnclosed for BACnetRecipientAddress must not be nil")
+	}
+	_result := &_BACnetRecipientAddress{
+		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
+		AddressValue:            addressValue,
+	}
+	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetRecipientAddress) GetAddressValue() BACnetAddressEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipientAddress factory function for _BACnetRecipientAddress
-func NewBACnetRecipientAddress(addressValue BACnetAddressEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetRecipientAddress {
-	if addressValue == nil {
-		panic("addressValue of type BACnetAddressEnclosed for BACnetRecipientAddress must not be nil")
-	}
-	_result := &_BACnetRecipientAddress{
-		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
-		AddressValue:            addressValue,
-	}
-	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipientAddress(structType any) BACnetRecipientAddress {
@@ -178,6 +179,22 @@ func (m *_BACnetRecipientAddress) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetRecipientAddress) IsBACnetRecipientAddress() {}
+
+func (m *_BACnetRecipientAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipientAddress) deepCopy() *_BACnetRecipientAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientAddressCopy := &_BACnetRecipientAddress{
+		m.BACnetRecipientContract.(*_BACnetRecipient).deepCopy(),
+		m.AddressValue.DeepCopy().(BACnetAddressEnclosed),
+	}
+	m.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m
+	return _BACnetRecipientAddressCopy
+}
 
 func (m *_BACnetRecipientAddress) String() string {
 	if m == nil {

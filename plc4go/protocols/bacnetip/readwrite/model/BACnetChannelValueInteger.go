@@ -38,6 +38,7 @@ type BACnetChannelValueInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
@@ -53,6 +54,19 @@ type _BACnetChannelValueInteger struct {
 
 var _ BACnetChannelValueInteger = (*_BACnetChannelValueInteger)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueInteger)(nil)
+
+// NewBACnetChannelValueInteger factory function for _BACnetChannelValueInteger
+func NewBACnetChannelValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger) *_BACnetChannelValueInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetChannelValueInteger must not be nil")
+	}
+	_result := &_BACnetChannelValueInteger{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		IntegerValue:               integerValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueInteger) GetIntegerValue() BACnetApplicationTagSigne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueInteger factory function for _BACnetChannelValueInteger
-func NewBACnetChannelValueInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueInteger {
-	if integerValue == nil {
-		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetChannelValueInteger must not be nil")
-	}
-	_result := &_BACnetChannelValueInteger{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		IntegerValue:               integerValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueInteger(structType any) BACnetChannelValueInteger {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueInteger) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetChannelValueInteger) IsBACnetChannelValueInteger() {}
+
+func (m *_BACnetChannelValueInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueInteger) deepCopy() *_BACnetChannelValueInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueIntegerCopy := &_BACnetChannelValueInteger{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueIntegerCopy
+}
 
 func (m *_BACnetChannelValueInteger) String() string {
 	if m == nil {

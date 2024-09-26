@@ -38,6 +38,7 @@ type AddNodesResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -56,6 +57,23 @@ type _AddNodesResult struct {
 
 var _ AddNodesResult = (*_AddNodesResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddNodesResult)(nil)
+
+// NewAddNodesResult factory function for _AddNodesResult
+func NewAddNodesResult(statusCode StatusCode, addedNodeId NodeId) *_AddNodesResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for AddNodesResult must not be nil")
+	}
+	if addedNodeId == nil {
+		panic("addedNodeId of type NodeId for AddNodesResult must not be nil")
+	}
+	_result := &_AddNodesResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		AddedNodeId:                       addedNodeId,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_AddNodesResult) GetAddedNodeId() NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddNodesResult factory function for _AddNodesResult
-func NewAddNodesResult(statusCode StatusCode, addedNodeId NodeId) *_AddNodesResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for AddNodesResult must not be nil")
-	}
-	if addedNodeId == nil {
-		panic("addedNodeId of type NodeId for AddNodesResult must not be nil")
-	}
-	_result := &_AddNodesResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		AddedNodeId:                       addedNodeId,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddNodesResult(structType any) AddNodesResult {
@@ -206,6 +207,23 @@ func (m *_AddNodesResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_AddNodesResult) IsAddNodesResult() {}
+
+func (m *_AddNodesResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddNodesResult) deepCopy() *_AddNodesResult {
+	if m == nil {
+		return nil
+	}
+	_AddNodesResultCopy := &_AddNodesResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.AddedNodeId.DeepCopy().(NodeId),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddNodesResultCopy
+}
 
 func (m *_AddNodesResult) String() string {
 	if m == nil {

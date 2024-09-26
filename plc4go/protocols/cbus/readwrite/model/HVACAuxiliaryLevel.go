@@ -38,6 +38,7 @@ type HVACAuxiliaryLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFanMode returns FanMode (property field)
 	GetFanMode() bool
 	// GetMode returns Mode (property field)
@@ -63,6 +64,11 @@ type _HVACAuxiliaryLevel struct {
 }
 
 var _ HVACAuxiliaryLevel = (*_HVACAuxiliaryLevel)(nil)
+
+// NewHVACAuxiliaryLevel factory function for _HVACAuxiliaryLevel
+func NewHVACAuxiliaryLevel(fanMode bool, mode uint8) *_HVACAuxiliaryLevel {
+	return &_HVACAuxiliaryLevel{FanMode: fanMode, Mode: mode}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,11 +120,6 @@ func (m *_HVACAuxiliaryLevel) GetSpeedSettings() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACAuxiliaryLevel factory function for _HVACAuxiliaryLevel
-func NewHVACAuxiliaryLevel(fanMode bool, mode uint8) *_HVACAuxiliaryLevel {
-	return &_HVACAuxiliaryLevel{FanMode: fanMode, Mode: mode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACAuxiliaryLevel(structType any) HVACAuxiliaryLevel {
@@ -298,6 +299,22 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_HVACAuxiliaryLevel) IsHVACAuxiliaryLevel() {}
+
+func (m *_HVACAuxiliaryLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACAuxiliaryLevel) deepCopy() *_HVACAuxiliaryLevel {
+	if m == nil {
+		return nil
+	}
+	_HVACAuxiliaryLevelCopy := &_HVACAuxiliaryLevel{
+		m.FanMode,
+		m.Mode,
+		m.reservedField0,
+	}
+	return _HVACAuxiliaryLevelCopy
+}
 
 func (m *_HVACAuxiliaryLevel) String() string {
 	if m == nil {

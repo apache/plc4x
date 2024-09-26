@@ -38,6 +38,7 @@ type BACnetLandingCallStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFloorNumber returns FloorNumber (property field)
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetCommand returns Command (property field)
@@ -56,6 +57,17 @@ type _BACnetLandingCallStatus struct {
 }
 
 var _ BACnetLandingCallStatus = (*_BACnetLandingCallStatus)(nil)
+
+// NewBACnetLandingCallStatus factory function for _BACnetLandingCallStatus
+func NewBACnetLandingCallStatus(floorNumber BACnetContextTagUnsignedInteger, command BACnetLandingCallStatusCommand, floorText BACnetContextTagCharacterString) *_BACnetLandingCallStatus {
+	if floorNumber == nil {
+		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatus must not be nil")
+	}
+	if command == nil {
+		panic("command of type BACnetLandingCallStatusCommand for BACnetLandingCallStatus must not be nil")
+	}
+	return &_BACnetLandingCallStatus{FloorNumber: floorNumber, Command: command, FloorText: floorText}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +90,6 @@ func (m *_BACnetLandingCallStatus) GetFloorText() BACnetContextTagCharacterStrin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingCallStatus factory function for _BACnetLandingCallStatus
-func NewBACnetLandingCallStatus(floorNumber BACnetContextTagUnsignedInteger, command BACnetLandingCallStatusCommand, floorText BACnetContextTagCharacterString) *_BACnetLandingCallStatus {
-	if floorNumber == nil {
-		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatus must not be nil")
-	}
-	if command == nil {
-		panic("command of type BACnetLandingCallStatusCommand for BACnetLandingCallStatus must not be nil")
-	}
-	return &_BACnetLandingCallStatus{FloorNumber: floorNumber, Command: command, FloorText: floorText}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingCallStatus(structType any) BACnetLandingCallStatus {
@@ -218,6 +219,22 @@ func (m *_BACnetLandingCallStatus) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetLandingCallStatus) IsBACnetLandingCallStatus() {}
+
+func (m *_BACnetLandingCallStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingCallStatus) deepCopy() *_BACnetLandingCallStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingCallStatusCopy := &_BACnetLandingCallStatus{
+		m.FloorNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Command.DeepCopy().(BACnetLandingCallStatusCommand),
+		m.FloorText.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	return _BACnetLandingCallStatusCopy
+}
 
 func (m *_BACnetLandingCallStatus) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _ReadResponse struct {
 
 var _ ReadResponse = (*_ReadResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReadResponse)(nil)
+
+// NewReadResponse factory function for _ReadResponse
+func NewReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []DataValue, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ReadResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ReadResponse must not be nil")
+	}
+	_result := &_ReadResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_ReadResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReadResponse factory function for _ReadResponse
-func NewReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []DataValue, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ReadResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ReadResponse must not be nil")
-	}
-	_result := &_ReadResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReadResponse(structType any) ReadResponse {
@@ -280,6 +281,26 @@ func (m *_ReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_ReadResponse) IsReadResponse() {}
+
+func (m *_ReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReadResponse) deepCopy() *_ReadResponse {
+	if m == nil {
+		return nil
+	}
+	_ReadResponseCopy := &_ReadResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[DataValue, DataValue](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReadResponseCopy
+}
 
 func (m *_ReadResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLinkSpeeds interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataLinkSpeeds struct {
 
 var _ BACnetConstructedDataLinkSpeeds = (*_BACnetConstructedDataLinkSpeeds)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeeds)(nil)
+
+// NewBACnetConstructedDataLinkSpeeds factory function for _BACnetConstructedDataLinkSpeeds
+func NewBACnetConstructedDataLinkSpeeds(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, linkSpeeds []BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeeds {
+	_result := &_BACnetConstructedDataLinkSpeeds{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		LinkSpeeds:                    linkSpeeds,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataLinkSpeeds) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLinkSpeeds factory function for _BACnetConstructedDataLinkSpeeds
-func NewBACnetConstructedDataLinkSpeeds(numberOfDataElements BACnetApplicationTagUnsignedInteger, linkSpeeds []BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeeds {
-	_result := &_BACnetConstructedDataLinkSpeeds{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		LinkSpeeds:                    linkSpeeds,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLinkSpeeds(structType any) BACnetConstructedDataLinkSpeeds {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataLinkSpeeds) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataLinkSpeeds) IsBACnetConstructedDataLinkSpeeds() {}
+
+func (m *_BACnetConstructedDataLinkSpeeds) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLinkSpeeds) deepCopy() *_BACnetConstructedDataLinkSpeeds {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLinkSpeedsCopy := &_BACnetConstructedDataLinkSpeeds{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagReal, BACnetApplicationTagReal](m.LinkSpeeds),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLinkSpeedsCopy
+}
 
 func (m *_BACnetConstructedDataLinkSpeeds) String() string {
 	if m == nil {

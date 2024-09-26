@@ -38,6 +38,7 @@ type BACnetConstructedDataMaskedAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaskedAlarmValues returns MaskedAlarmValues (property field)
 	GetMaskedAlarmValues() []BACnetDoorAlarmStateTagged
@@ -53,6 +54,16 @@ type _BACnetConstructedDataMaskedAlarmValues struct {
 
 var _ BACnetConstructedDataMaskedAlarmValues = (*_BACnetConstructedDataMaskedAlarmValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaskedAlarmValues)(nil)
+
+// NewBACnetConstructedDataMaskedAlarmValues factory function for _BACnetConstructedDataMaskedAlarmValues
+func NewBACnetConstructedDataMaskedAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maskedAlarmValues []BACnetDoorAlarmStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaskedAlarmValues {
+	_result := &_BACnetConstructedDataMaskedAlarmValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaskedAlarmValues:             maskedAlarmValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataMaskedAlarmValues) GetMaskedAlarmValues() []BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaskedAlarmValues factory function for _BACnetConstructedDataMaskedAlarmValues
-func NewBACnetConstructedDataMaskedAlarmValues(maskedAlarmValues []BACnetDoorAlarmStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaskedAlarmValues {
-	_result := &_BACnetConstructedDataMaskedAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaskedAlarmValues:             maskedAlarmValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaskedAlarmValues(structType any) BACnetConstructedDataMaskedAlarmValues {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataMaskedAlarmValues) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataMaskedAlarmValues) IsBACnetConstructedDataMaskedAlarmValues() {}
+
+func (m *_BACnetConstructedDataMaskedAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaskedAlarmValues) deepCopy() *_BACnetConstructedDataMaskedAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaskedAlarmValuesCopy := &_BACnetConstructedDataMaskedAlarmValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDoorAlarmStateTagged, BACnetDoorAlarmStateTagged](m.MaskedAlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaskedAlarmValuesCopy
+}
 
 func (m *_BACnetConstructedDataMaskedAlarmValues) String() string {
 	if m == nil {

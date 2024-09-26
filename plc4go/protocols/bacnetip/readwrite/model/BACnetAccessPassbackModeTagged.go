@@ -38,6 +38,7 @@ type BACnetAccessPassbackModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetAccessPassbackModeTagged struct {
 
 var _ BACnetAccessPassbackModeTagged = (*_BACnetAccessPassbackModeTagged)(nil)
 
+// NewBACnetAccessPassbackModeTagged factory function for _BACnetAccessPassbackModeTagged
+func NewBACnetAccessPassbackModeTagged(header BACnetTagHeader, value BACnetAccessPassbackMode, tagNumber uint8, tagClass TagClass) *_BACnetAccessPassbackModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessPassbackModeTagged must not be nil")
+	}
+	return &_BACnetAccessPassbackModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetAccessPassbackModeTagged) GetValue() BACnetAccessPassbackMode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessPassbackModeTagged factory function for _BACnetAccessPassbackModeTagged
-func NewBACnetAccessPassbackModeTagged(header BACnetTagHeader, value BACnetAccessPassbackMode, tagNumber uint8, tagClass TagClass) *_BACnetAccessPassbackModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessPassbackModeTagged must not be nil")
-	}
-	return &_BACnetAccessPassbackModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessPassbackModeTagged(structType any) BACnetAccessPassbackModeTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetAccessPassbackModeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAccessPassbackModeTagged) IsBACnetAccessPassbackModeTagged() {}
+
+func (m *_BACnetAccessPassbackModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessPassbackModeTagged) deepCopy() *_BACnetAccessPassbackModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessPassbackModeTaggedCopy := &_BACnetAccessPassbackModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessPassbackModeTaggedCopy
+}
 
 func (m *_BACnetAccessPassbackModeTagged) String() string {
 	if m == nil {

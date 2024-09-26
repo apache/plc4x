@@ -38,6 +38,7 @@ type AdsDiscoveryBlockUserName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetUserName returns UserName (property field)
 	GetUserName() AmsString
@@ -53,6 +54,19 @@ type _AdsDiscoveryBlockUserName struct {
 
 var _ AdsDiscoveryBlockUserName = (*_AdsDiscoveryBlockUserName)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockUserName)(nil)
+
+// NewAdsDiscoveryBlockUserName factory function for _AdsDiscoveryBlockUserName
+func NewAdsDiscoveryBlockUserName(userName AmsString) *_AdsDiscoveryBlockUserName {
+	if userName == nil {
+		panic("userName of type AmsString for AdsDiscoveryBlockUserName must not be nil")
+	}
+	_result := &_AdsDiscoveryBlockUserName{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		UserName:                  userName,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_AdsDiscoveryBlockUserName) GetUserName() AmsString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockUserName factory function for _AdsDiscoveryBlockUserName
-func NewAdsDiscoveryBlockUserName(userName AmsString) *_AdsDiscoveryBlockUserName {
-	if userName == nil {
-		panic("userName of type AmsString for AdsDiscoveryBlockUserName must not be nil")
-	}
-	_result := &_AdsDiscoveryBlockUserName{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		UserName:                  userName,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockUserName(structType any) AdsDiscoveryBlockUserName {
@@ -182,6 +183,22 @@ func (m *_AdsDiscoveryBlockUserName) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AdsDiscoveryBlockUserName) IsAdsDiscoveryBlockUserName() {}
+
+func (m *_AdsDiscoveryBlockUserName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockUserName) deepCopy() *_AdsDiscoveryBlockUserName {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockUserNameCopy := &_AdsDiscoveryBlockUserName{
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
+		m.UserName.DeepCopy().(AmsString),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockUserNameCopy
+}
 
 func (m *_AdsDiscoveryBlockUserName) String() string {
 	if m == nil {

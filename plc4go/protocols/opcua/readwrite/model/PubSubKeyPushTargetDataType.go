@@ -38,6 +38,7 @@ type PubSubKeyPushTargetDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetApplicationUri returns ApplicationUri (property field)
 	GetApplicationUri() PascalString
@@ -86,6 +87,39 @@ type _PubSubKeyPushTargetDataType struct {
 
 var _ PubSubKeyPushTargetDataType = (*_PubSubKeyPushTargetDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubKeyPushTargetDataType)(nil)
+
+// NewPubSubKeyPushTargetDataType factory function for _PubSubKeyPushTargetDataType
+func NewPubSubKeyPushTargetDataType(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) *_PubSubKeyPushTargetDataType {
+	if applicationUri == nil {
+		panic("applicationUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if userTokenType == nil {
+		panic("userTokenType of type ExtensionObjectDefinition for PubSubKeyPushTargetDataType must not be nil")
+	}
+	_result := &_PubSubKeyPushTargetDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ApplicationUri:                    applicationUri,
+		NoOfPushTargetFolder:              noOfPushTargetFolder,
+		PushTargetFolder:                  pushTargetFolder,
+		EndpointUrl:                       endpointUrl,
+		SecurityPolicyUri:                 securityPolicyUri,
+		UserTokenType:                     userTokenType,
+		RequestedKeyCount:                 requestedKeyCount,
+		RetryInterval:                     retryInterval,
+		NoOfPushTargetProperties:          noOfPushTargetProperties,
+		PushTargetProperties:              pushTargetProperties,
+		NoOfSecurityGroups:                noOfSecurityGroups,
+		SecurityGroups:                    securityGroups,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,39 +196,6 @@ func (m *_PubSubKeyPushTargetDataType) GetSecurityGroups() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPubSubKeyPushTargetDataType factory function for _PubSubKeyPushTargetDataType
-func NewPubSubKeyPushTargetDataType(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) *_PubSubKeyPushTargetDataType {
-	if applicationUri == nil {
-		panic("applicationUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
-	}
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for PubSubKeyPushTargetDataType must not be nil")
-	}
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
-	}
-	if userTokenType == nil {
-		panic("userTokenType of type ExtensionObjectDefinition for PubSubKeyPushTargetDataType must not be nil")
-	}
-	_result := &_PubSubKeyPushTargetDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ApplicationUri:                    applicationUri,
-		NoOfPushTargetFolder:              noOfPushTargetFolder,
-		PushTargetFolder:                  pushTargetFolder,
-		EndpointUrl:                       endpointUrl,
-		SecurityPolicyUri:                 securityPolicyUri,
-		UserTokenType:                     userTokenType,
-		RequestedKeyCount:                 requestedKeyCount,
-		RetryInterval:                     retryInterval,
-		NoOfPushTargetProperties:          noOfPushTargetProperties,
-		PushTargetProperties:              pushTargetProperties,
-		NoOfSecurityGroups:                noOfSecurityGroups,
-		SecurityGroups:                    securityGroups,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPubSubKeyPushTargetDataType(structType any) PubSubKeyPushTargetDataType {
@@ -443,6 +444,33 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_PubSubKeyPushTargetDataType) IsPubSubKeyPushTargetDataType() {}
+
+func (m *_PubSubKeyPushTargetDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubKeyPushTargetDataType) deepCopy() *_PubSubKeyPushTargetDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubKeyPushTargetDataTypeCopy := &_PubSubKeyPushTargetDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ApplicationUri.DeepCopy().(PascalString),
+		m.NoOfPushTargetFolder,
+		utils.DeepCopySlice[PascalString, PascalString](m.PushTargetFolder),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.UserTokenType.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestedKeyCount,
+		m.RetryInterval,
+		m.NoOfPushTargetProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.PushTargetProperties),
+		m.NoOfSecurityGroups,
+		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroups),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubKeyPushTargetDataTypeCopy
+}
 
 func (m *_PubSubKeyPushTargetDataType) String() string {
 	if m == nil {

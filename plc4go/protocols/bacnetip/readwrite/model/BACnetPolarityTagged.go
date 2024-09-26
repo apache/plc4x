@@ -38,6 +38,7 @@ type BACnetPolarityTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetPolarityTagged struct {
 
 var _ BACnetPolarityTagged = (*_BACnetPolarityTagged)(nil)
 
+// NewBACnetPolarityTagged factory function for _BACnetPolarityTagged
+func NewBACnetPolarityTagged(header BACnetTagHeader, value BACnetPolarity, tagNumber uint8, tagClass TagClass) *_BACnetPolarityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetPolarityTagged must not be nil")
+	}
+	return &_BACnetPolarityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetPolarityTagged) GetValue() BACnetPolarity {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPolarityTagged factory function for _BACnetPolarityTagged
-func NewBACnetPolarityTagged(header BACnetTagHeader, value BACnetPolarity, tagNumber uint8, tagClass TagClass) *_BACnetPolarityTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetPolarityTagged must not be nil")
-	}
-	return &_BACnetPolarityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPolarityTagged(structType any) BACnetPolarityTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetPolarityTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetPolarityTagged) IsBACnetPolarityTagged() {}
+
+func (m *_BACnetPolarityTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPolarityTagged) deepCopy() *_BACnetPolarityTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetPolarityTaggedCopy := &_BACnetPolarityTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetPolarityTaggedCopy
+}
 
 func (m *_BACnetPolarityTagged) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type ApduDataExtKeyResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtKeyResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtKeyResponse()
@@ -48,6 +49,15 @@ type _ApduDataExtKeyResponse struct {
 
 var _ ApduDataExtKeyResponse = (*_ApduDataExtKeyResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtKeyResponse)(nil)
+
+// NewApduDataExtKeyResponse factory function for _ApduDataExtKeyResponse
+func NewApduDataExtKeyResponse(length uint8) *_ApduDataExtKeyResponse {
+	_result := &_ApduDataExtKeyResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtKeyResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtKeyResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtKeyResponse factory function for _ApduDataExtKeyResponse
-func NewApduDataExtKeyResponse(length uint8) *_ApduDataExtKeyResponse {
-	_result := &_ApduDataExtKeyResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtKeyResponse) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ApduDataExtKeyResponse) IsApduDataExtKeyResponse() {}
+
+func (m *_ApduDataExtKeyResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtKeyResponse) deepCopy() *_ApduDataExtKeyResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtKeyResponseCopy := &_ApduDataExtKeyResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtKeyResponseCopy
+}
 
 func (m *_ApduDataExtKeyResponse) String() string {
 	if m == nil {

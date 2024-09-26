@@ -38,6 +38,7 @@ type GetEndpointsResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _GetEndpointsResponse struct {
 
 var _ GetEndpointsResponse = (*_GetEndpointsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_GetEndpointsResponse)(nil)
+
+// NewGetEndpointsResponse factory function for _GetEndpointsResponse
+func NewGetEndpointsResponse(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) *_GetEndpointsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for GetEndpointsResponse must not be nil")
+	}
+	_result := &_GetEndpointsResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfEndpoints:                     noOfEndpoints,
+		Endpoints:                         endpoints,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_GetEndpointsResponse) GetEndpoints() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGetEndpointsResponse factory function for _GetEndpointsResponse
-func NewGetEndpointsResponse(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) *_GetEndpointsResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for GetEndpointsResponse must not be nil")
-	}
-	_result := &_GetEndpointsResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfEndpoints:                     noOfEndpoints,
-		Endpoints:                         endpoints,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGetEndpointsResponse(structType any) GetEndpointsResponse {
@@ -231,6 +232,24 @@ func (m *_GetEndpointsResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_GetEndpointsResponse) IsGetEndpointsResponse() {}
+
+func (m *_GetEndpointsResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetEndpointsResponse) deepCopy() *_GetEndpointsResponse {
+	if m == nil {
+		return nil
+	}
+	_GetEndpointsResponseCopy := &_GetEndpointsResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfEndpoints,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Endpoints),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _GetEndpointsResponseCopy
+}
 
 func (m *_GetEndpointsResponse) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type Union interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsUnion is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnion()
@@ -48,6 +49,15 @@ type _Union struct {
 
 var _ Union = (*_Union)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Union)(nil)
+
+// NewUnion factory function for _Union
+func NewUnion() *_Union {
+	_result := &_Union{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_Union) GetIdentifier() string {
 
 func (m *_Union) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewUnion factory function for _Union
-func NewUnion() *_Union {
-	_result := &_Union{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_Union) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Union) IsUnion() {}
+
+func (m *_Union) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Union) deepCopy() *_Union {
+	if m == nil {
+		return nil
+	}
+	_UnionCopy := &_Union{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UnionCopy
+}
 
 func (m *_Union) String() string {
 	if m == nil {

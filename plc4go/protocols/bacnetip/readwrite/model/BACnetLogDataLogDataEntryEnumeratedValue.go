@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryEnumeratedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetContextTagEnumerated
@@ -53,6 +54,19 @@ type _BACnetLogDataLogDataEntryEnumeratedValue struct {
 
 var _ BACnetLogDataLogDataEntryEnumeratedValue = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
+
+// NewBACnetLogDataLogDataEntryEnumeratedValue factory function for _BACnetLogDataLogDataEntryEnumeratedValue
+func NewBACnetLogDataLogDataEntryEnumeratedValue(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetContextTagEnumerated) *_BACnetLogDataLogDataEntryEnumeratedValue {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogDataLogDataEntryEnumeratedValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryEnumeratedValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		EnumeratedValue:                   enumeratedValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetEnumeratedValue() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryEnumeratedValue factory function for _BACnetLogDataLogDataEntryEnumeratedValue
-func NewBACnetLogDataLogDataEntryEnumeratedValue(enumeratedValue BACnetContextTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryEnumeratedValue {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogDataLogDataEntryEnumeratedValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryEnumeratedValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		EnumeratedValue:                   enumeratedValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryEnumeratedValue(structType any) BACnetLogDataLogDataEntryEnumeratedValue {
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) IsBACnetLogDataLogDataEntryEnumeratedValue() {}
+
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) deepCopy() *_BACnetLogDataLogDataEntryEnumeratedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryEnumeratedValueCopy := &_BACnetLogDataLogDataEntryEnumeratedValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.EnumeratedValue.DeepCopy().(BACnetContextTagEnumerated),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryEnumeratedValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) String() string {
 	if m == nil {

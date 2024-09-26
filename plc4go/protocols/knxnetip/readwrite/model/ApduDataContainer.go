@@ -38,6 +38,7 @@ type ApduDataContainer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Apdu
 	// GetDataApdu returns DataApdu (property field)
 	GetDataApdu() ApduData
@@ -53,6 +54,19 @@ type _ApduDataContainer struct {
 
 var _ ApduDataContainer = (*_ApduDataContainer)(nil)
 var _ ApduRequirements = (*_ApduDataContainer)(nil)
+
+// NewApduDataContainer factory function for _ApduDataContainer
+func NewApduDataContainer(numbered bool, counter uint8, dataApdu ApduData, dataLength uint8) *_ApduDataContainer {
+	if dataApdu == nil {
+		panic("dataApdu of type ApduData for ApduDataContainer must not be nil")
+	}
+	_result := &_ApduDataContainer{
+		ApduContract: NewApdu(numbered, counter, dataLength),
+		DataApdu:     dataApdu,
+	}
+	_result.ApduContract.(*_Apdu)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_ApduDataContainer) GetDataApdu() ApduData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataContainer factory function for _ApduDataContainer
-func NewApduDataContainer(dataApdu ApduData, numbered bool, counter uint8, dataLength uint8) *_ApduDataContainer {
-	if dataApdu == nil {
-		panic("dataApdu of type ApduData for ApduDataContainer must not be nil")
-	}
-	_result := &_ApduDataContainer{
-		ApduContract: NewApdu(numbered, counter, dataLength),
-		DataApdu:     dataApdu,
-	}
-	_result.ApduContract.(*_Apdu)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataContainer(structType any) ApduDataContainer {
@@ -182,6 +183,22 @@ func (m *_ApduDataContainer) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ApduDataContainer) IsApduDataContainer() {}
+
+func (m *_ApduDataContainer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataContainer) deepCopy() *_ApduDataContainer {
+	if m == nil {
+		return nil
+	}
+	_ApduDataContainerCopy := &_ApduDataContainer{
+		m.ApduContract.(*_Apdu).deepCopy(),
+		m.DataApdu.DeepCopy().(ApduData),
+	}
+	m.ApduContract.(*_Apdu)._SubType = m
+	return _ApduDataContainerCopy
+}
 
 func (m *_ApduDataContainer) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type Annotation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMessage returns Message (property field)
 	GetMessage() PascalString
@@ -59,6 +60,24 @@ type _Annotation struct {
 
 var _ Annotation = (*_Annotation)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Annotation)(nil)
+
+// NewAnnotation factory function for _Annotation
+func NewAnnotation(message PascalString, userName PascalString, annotationTime int64) *_Annotation {
+	if message == nil {
+		panic("message of type PascalString for Annotation must not be nil")
+	}
+	if userName == nil {
+		panic("userName of type PascalString for Annotation must not be nil")
+	}
+	_result := &_Annotation{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Message:                           message,
+		UserName:                          userName,
+		AnnotationTime:                    annotationTime,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,24 +118,6 @@ func (m *_Annotation) GetAnnotationTime() int64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAnnotation factory function for _Annotation
-func NewAnnotation(message PascalString, userName PascalString, annotationTime int64) *_Annotation {
-	if message == nil {
-		panic("message of type PascalString for Annotation must not be nil")
-	}
-	if userName == nil {
-		panic("userName of type PascalString for Annotation must not be nil")
-	}
-	_result := &_Annotation{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Message:                           message,
-		UserName:                          userName,
-		AnnotationTime:                    annotationTime,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAnnotation(structType any) Annotation {
@@ -227,6 +228,24 @@ func (m *_Annotation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_Annotation) IsAnnotation() {}
+
+func (m *_Annotation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Annotation) deepCopy() *_Annotation {
+	if m == nil {
+		return nil
+	}
+	_AnnotationCopy := &_Annotation{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Message.DeepCopy().(PascalString),
+		m.UserName.DeepCopy().(PascalString),
+		m.AnnotationTime,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AnnotationCopy
+}
 
 func (m *_Annotation) String() string {
 	if m == nil {

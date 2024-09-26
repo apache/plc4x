@@ -38,6 +38,7 @@ type BACnetChannelValueBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
@@ -53,6 +54,19 @@ type _BACnetChannelValueBoolean struct {
 
 var _ BACnetChannelValueBoolean = (*_BACnetChannelValueBoolean)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueBoolean)(nil)
+
+// NewBACnetChannelValueBoolean factory function for _BACnetChannelValueBoolean
+func NewBACnetChannelValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean) *_BACnetChannelValueBoolean {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetChannelValueBoolean must not be nil")
+	}
+	_result := &_BACnetChannelValueBoolean{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		BooleanValue:               booleanValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueBoolean) GetBooleanValue() BACnetApplicationTagBoole
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueBoolean factory function for _BACnetChannelValueBoolean
-func NewBACnetChannelValueBoolean(booleanValue BACnetApplicationTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueBoolean {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetChannelValueBoolean must not be nil")
-	}
-	_result := &_BACnetChannelValueBoolean{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		BooleanValue:               booleanValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueBoolean(structType any) BACnetChannelValueBoolean {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueBoolean) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetChannelValueBoolean) IsBACnetChannelValueBoolean() {}
+
+func (m *_BACnetChannelValueBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueBoolean) deepCopy() *_BACnetChannelValueBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueBooleanCopy := &_BACnetChannelValueBoolean{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueBooleanCopy
+}
 
 func (m *_BACnetChannelValueBoolean) String() string {
 	if m == nil {

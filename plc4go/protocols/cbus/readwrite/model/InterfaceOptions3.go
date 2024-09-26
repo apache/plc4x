@@ -38,6 +38,7 @@ type InterfaceOptions3 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetExstat returns Exstat (property field)
 	GetExstat() bool
 	// GetPun returns Pun (property field)
@@ -65,6 +66,11 @@ type _InterfaceOptions3 struct {
 
 var _ InterfaceOptions3 = (*_InterfaceOptions3)(nil)
 
+// NewInterfaceOptions3 factory function for _InterfaceOptions3
+func NewInterfaceOptions3(exstat bool, pun bool, localSal bool, pcn bool) *_InterfaceOptions3 {
+	return &_InterfaceOptions3{Exstat: exstat, Pun: pun, LocalSal: localSal, Pcn: pcn}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -90,11 +96,6 @@ func (m *_InterfaceOptions3) GetPcn() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewInterfaceOptions3 factory function for _InterfaceOptions3
-func NewInterfaceOptions3(exstat bool, pun bool, localSal bool, pcn bool) *_InterfaceOptions3 {
-	return &_InterfaceOptions3{Exstat: exstat, Pun: pun, LocalSal: localSal, Pcn: pcn}
-}
 
 // Deprecated: use the interface for direct cast
 func CastInterfaceOptions3(structType any) InterfaceOptions3 {
@@ -283,6 +284,27 @@ func (m *_InterfaceOptions3) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_InterfaceOptions3) IsInterfaceOptions3() {}
+
+func (m *_InterfaceOptions3) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InterfaceOptions3) deepCopy() *_InterfaceOptions3 {
+	if m == nil {
+		return nil
+	}
+	_InterfaceOptions3Copy := &_InterfaceOptions3{
+		m.Exstat,
+		m.Pun,
+		m.LocalSal,
+		m.Pcn,
+		m.reservedField0,
+		m.reservedField1,
+		m.reservedField2,
+		m.reservedField3,
+	}
+	return _InterfaceOptions3Copy
+}
 
 func (m *_InterfaceOptions3) String() string {
 	if m == nil {

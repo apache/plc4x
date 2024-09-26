@@ -38,6 +38,7 @@ type BACnetServiceAckVTOpen interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetRemoteVtSessionIdentifier returns RemoteVtSessionIdentifier (property field)
 	GetRemoteVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetServiceAckVTOpen struct {
 
 var _ BACnetServiceAckVTOpen = (*_BACnetServiceAckVTOpen)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckVTOpen)(nil)
+
+// NewBACnetServiceAckVTOpen factory function for _BACnetServiceAckVTOpen
+func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTOpen {
+	if remoteVtSessionIdentifier == nil {
+		panic("remoteVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTOpen must not be nil")
+	}
+	_result := &_BACnetServiceAckVTOpen{
+		BACnetServiceAckContract:  NewBACnetServiceAck(serviceAckLength),
+		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_BACnetServiceAckVTOpen) GetRemoteVtSessionIdentifier() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckVTOpen factory function for _BACnetServiceAckVTOpen
-func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTOpen {
-	if remoteVtSessionIdentifier == nil {
-		panic("remoteVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTOpen must not be nil")
-	}
-	_result := &_BACnetServiceAckVTOpen{
-		BACnetServiceAckContract:  NewBACnetServiceAck(serviceAckLength),
-		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckVTOpen(structType any) BACnetServiceAckVTOpen {
@@ -182,6 +183,22 @@ func (m *_BACnetServiceAckVTOpen) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetServiceAckVTOpen) IsBACnetServiceAckVTOpen() {}
+
+func (m *_BACnetServiceAckVTOpen) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckVTOpen) deepCopy() *_BACnetServiceAckVTOpen {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckVTOpenCopy := &_BACnetServiceAckVTOpen{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.RemoteVtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckVTOpenCopy
+}
 
 func (m *_BACnetServiceAckVTOpen) String() string {
 	if m == nil {

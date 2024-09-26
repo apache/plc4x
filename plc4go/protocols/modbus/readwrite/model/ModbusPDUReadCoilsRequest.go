@@ -38,6 +38,7 @@ type ModbusPDUReadCoilsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
@@ -56,6 +57,17 @@ type _ModbusPDUReadCoilsRequest struct {
 
 var _ ModbusPDUReadCoilsRequest = (*_ModbusPDUReadCoilsRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadCoilsRequest)(nil)
+
+// NewModbusPDUReadCoilsRequest factory function for _ModbusPDUReadCoilsRequest
+func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) *_ModbusPDUReadCoilsRequest {
+	_result := &_ModbusPDUReadCoilsRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		StartingAddress:   startingAddress,
+		Quantity:          quantity,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_ModbusPDUReadCoilsRequest) GetQuantity() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadCoilsRequest factory function for _ModbusPDUReadCoilsRequest
-func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) *_ModbusPDUReadCoilsRequest {
-	_result := &_ModbusPDUReadCoilsRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		StartingAddress:   startingAddress,
-		Quantity:          quantity,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadCoilsRequest(structType any) ModbusPDUReadCoilsRequest {
@@ -208,6 +209,23 @@ func (m *_ModbusPDUReadCoilsRequest) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_ModbusPDUReadCoilsRequest) IsModbusPDUReadCoilsRequest() {}
+
+func (m *_ModbusPDUReadCoilsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadCoilsRequest) deepCopy() *_ModbusPDUReadCoilsRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadCoilsRequestCopy := &_ModbusPDUReadCoilsRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.StartingAddress,
+		m.Quantity,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadCoilsRequestCopy
+}
 
 func (m *_ModbusPDUReadCoilsRequest) String() string {
 	if m == nil {

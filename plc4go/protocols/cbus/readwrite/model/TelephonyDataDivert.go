@@ -38,6 +38,7 @@ type TelephonyDataDivert interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetNumber returns Number (property field)
 	GetNumber() string
@@ -53,6 +54,16 @@ type _TelephonyDataDivert struct {
 
 var _ TelephonyDataDivert = (*_TelephonyDataDivert)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataDivert)(nil)
+
+// NewTelephonyDataDivert factory function for _TelephonyDataDivert
+func NewTelephonyDataDivert(commandTypeContainer TelephonyCommandTypeContainer, argument byte, number string) *_TelephonyDataDivert {
+	_result := &_TelephonyDataDivert{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Number:                number,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_TelephonyDataDivert) GetNumber() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataDivert factory function for _TelephonyDataDivert
-func NewTelephonyDataDivert(number string, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataDivert {
-	_result := &_TelephonyDataDivert{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		Number:                number,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataDivert(structType any) TelephonyDataDivert {
@@ -175,6 +176,22 @@ func (m *_TelephonyDataDivert) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_TelephonyDataDivert) IsTelephonyDataDivert() {}
+
+func (m *_TelephonyDataDivert) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataDivert) deepCopy() *_TelephonyDataDivert {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataDivertCopy := &_TelephonyDataDivert{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+		m.Number,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataDivertCopy
+}
 
 func (m *_TelephonyDataDivert) String() string {
 	if m == nil {

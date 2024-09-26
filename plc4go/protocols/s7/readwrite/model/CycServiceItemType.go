@@ -43,6 +43,7 @@ type CycServiceItemType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCycServiceItemType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCycServiceItemType()
 }
@@ -74,6 +75,11 @@ type _CycServiceItemType struct {
 
 var _ CycServiceItemTypeContract = (*_CycServiceItemType)(nil)
 
+// NewCycServiceItemType factory function for _CycServiceItemType
+func NewCycServiceItemType(byteLength uint8, syntaxId uint8) *_CycServiceItemType {
+	return &_CycServiceItemType{ByteLength: byteLength, SyntaxId: syntaxId}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -104,11 +110,6 @@ func (m *_CycServiceItemType) GetFunctionId() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCycServiceItemType factory function for _CycServiceItemType
-func NewCycServiceItemType(byteLength uint8, syntaxId uint8) *_CycServiceItemType {
-	return &_CycServiceItemType{ByteLength: byteLength, SyntaxId: syntaxId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCycServiceItemType(structType any) CycServiceItemType {
@@ -204,11 +205,11 @@ func (m *_CycServiceItemType) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child CycServiceItemType
 	switch {
 	case syntaxId == 0x10: // CycServiceItemAnyType
-		if _child, err = (&_CycServiceItemAnyType{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CycServiceItemAnyType).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CycServiceItemAnyType for type-switch of CycServiceItemType")
 		}
 	case syntaxId == 0xb0: // CycServiceItemDbReadType
-		if _child, err = (&_CycServiceItemDbReadType{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CycServiceItemDbReadType).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CycServiceItemDbReadType for type-switch of CycServiceItemType")
 		}
 	default:
@@ -258,3 +259,19 @@ func (pm *_CycServiceItemType) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_CycServiceItemType) IsCycServiceItemType() {}
+
+func (m *_CycServiceItemType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CycServiceItemType) deepCopy() *_CycServiceItemType {
+	if m == nil {
+		return nil
+	}
+	_CycServiceItemTypeCopy := &_CycServiceItemType{
+		nil, // will be set by child
+		m.ByteLength,
+		m.SyntaxId,
+	}
+	return _CycServiceItemTypeCopy
+}

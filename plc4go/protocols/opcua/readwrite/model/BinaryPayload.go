@@ -38,6 +38,7 @@ type BinaryPayload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Payload
 	// GetPayload returns Payload (property field)
 	GetPayload() []byte
@@ -53,6 +54,16 @@ type _BinaryPayload struct {
 
 var _ BinaryPayload = (*_BinaryPayload)(nil)
 var _ PayloadRequirements = (*_BinaryPayload)(nil)
+
+// NewBinaryPayload factory function for _BinaryPayload
+func NewBinaryPayload(sequenceHeader SequenceHeader, payload []byte, byteCount uint32) *_BinaryPayload {
+	_result := &_BinaryPayload{
+		PayloadContract: NewPayload(sequenceHeader, byteCount),
+		Payload:         payload,
+	}
+	_result.PayloadContract.(*_Payload)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_BinaryPayload) GetPayload() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBinaryPayload factory function for _BinaryPayload
-func NewBinaryPayload(payload []byte, sequenceHeader SequenceHeader, byteCount uint32) *_BinaryPayload {
-	_result := &_BinaryPayload{
-		PayloadContract: NewPayload(sequenceHeader, byteCount),
-		Payload:         payload,
-	}
-	_result.PayloadContract.(*_Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBinaryPayload(structType any) BinaryPayload {
@@ -181,6 +182,22 @@ func (m *_BinaryPayload) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_BinaryPayload) IsBinaryPayload() {}
+
+func (m *_BinaryPayload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BinaryPayload) deepCopy() *_BinaryPayload {
+	if m == nil {
+		return nil
+	}
+	_BinaryPayloadCopy := &_BinaryPayload{
+		m.PayloadContract.(*_Payload).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Payload),
+	}
+	m.PayloadContract.(*_Payload)._SubType = m
+	return _BinaryPayloadCopy
+}
 
 func (m *_BinaryPayload) String() string {
 	if m == nil {

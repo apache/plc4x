@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryIntegerValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetContextTagSignedInteger
@@ -53,6 +54,19 @@ type _BACnetLogDataLogDataEntryIntegerValue struct {
 
 var _ BACnetLogDataLogDataEntryIntegerValue = (*_BACnetLogDataLogDataEntryIntegerValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryIntegerValue)(nil)
+
+// NewBACnetLogDataLogDataEntryIntegerValue factory function for _BACnetLogDataLogDataEntryIntegerValue
+func NewBACnetLogDataLogDataEntryIntegerValue(peekedTagHeader BACnetTagHeader, integerValue BACnetContextTagSignedInteger) *_BACnetLogDataLogDataEntryIntegerValue {
+	if integerValue == nil {
+		panic("integerValue of type BACnetContextTagSignedInteger for BACnetLogDataLogDataEntryIntegerValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryIntegerValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		IntegerValue:                      integerValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) GetIntegerValue() BACnetContext
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryIntegerValue factory function for _BACnetLogDataLogDataEntryIntegerValue
-func NewBACnetLogDataLogDataEntryIntegerValue(integerValue BACnetContextTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryIntegerValue {
-	if integerValue == nil {
-		panic("integerValue of type BACnetContextTagSignedInteger for BACnetLogDataLogDataEntryIntegerValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryIntegerValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		IntegerValue:                      integerValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryIntegerValue(structType any) BACnetLogDataLogDataEntryIntegerValue {
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetLogDataLogDataEntryIntegerValue) IsBACnetLogDataLogDataEntryIntegerValue() {}
+
+func (m *_BACnetLogDataLogDataEntryIntegerValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryIntegerValue) deepCopy() *_BACnetLogDataLogDataEntryIntegerValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryIntegerValueCopy := &_BACnetLogDataLogDataEntryIntegerValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.IntegerValue.DeepCopy().(BACnetContextTagSignedInteger),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryIntegerValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryIntegerValue) String() string {
 	if m == nil {

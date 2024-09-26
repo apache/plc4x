@@ -38,6 +38,7 @@ type ListOfCovNotificationsList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetSpecifications returns Specifications (property field)
@@ -60,6 +61,17 @@ type _ListOfCovNotificationsList struct {
 
 var _ ListOfCovNotificationsList = (*_ListOfCovNotificationsList)(nil)
 
+// NewListOfCovNotificationsList factory function for _ListOfCovNotificationsList
+func NewListOfCovNotificationsList(openingTag BACnetOpeningTag, specifications []ListOfCovNotifications, closingTag BACnetClosingTag, tagNumber uint8) *_ListOfCovNotificationsList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ListOfCovNotificationsList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ListOfCovNotificationsList must not be nil")
+	}
+	return &_ListOfCovNotificationsList{OpeningTag: openingTag, Specifications: specifications, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_ListOfCovNotificationsList) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewListOfCovNotificationsList factory function for _ListOfCovNotificationsList
-func NewListOfCovNotificationsList(openingTag BACnetOpeningTag, specifications []ListOfCovNotifications, closingTag BACnetClosingTag, tagNumber uint8) *_ListOfCovNotificationsList {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for ListOfCovNotificationsList must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for ListOfCovNotificationsList must not be nil")
-	}
-	return &_ListOfCovNotificationsList{OpeningTag: openingTag, Specifications: specifications, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastListOfCovNotificationsList(structType any) ListOfCovNotificationsList {
@@ -229,6 +230,23 @@ func (m *_ListOfCovNotificationsList) GetTagNumber() uint8 {
 ////
 
 func (m *_ListOfCovNotificationsList) IsListOfCovNotificationsList() {}
+
+func (m *_ListOfCovNotificationsList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListOfCovNotificationsList) deepCopy() *_ListOfCovNotificationsList {
+	if m == nil {
+		return nil
+	}
+	_ListOfCovNotificationsListCopy := &_ListOfCovNotificationsList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[ListOfCovNotifications, ListOfCovNotifications](m.Specifications),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _ListOfCovNotificationsListCopy
+}
 
 func (m *_ListOfCovNotificationsList) String() string {
 	if m == nil {

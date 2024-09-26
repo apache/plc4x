@@ -40,6 +40,7 @@ type CBusCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommand()
 }
@@ -79,6 +80,14 @@ type _CBusCommand struct {
 
 var _ CBusCommandContract = (*_CBusCommand)(nil)
 
+// NewCBusCommand factory function for _CBusCommand
+func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
+	if header == nil {
+		panic("header of type CBusHeader for CBusCommand must not be nil")
+	}
+	return &_CBusCommand{Header: header, CBusOptions: cBusOptions}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -115,14 +124,6 @@ func (pm *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommand factory function for _CBusCommand
-func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
-	if header == nil {
-		panic("header of type CBusHeader for CBusCommand must not be nil")
-	}
-	return &_CBusCommand{Header: header, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommand(structType any) CBusCommand {
@@ -216,19 +217,19 @@ func (m *_CBusCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, c
 	var _child CBusCommand
 	switch {
 	case 0 == 0 && isDeviceManagement == bool(true): // CBusCommandDeviceManagement
-		if _child, err = (&_CBusCommandDeviceManagement{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusCommandDeviceManagement).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandDeviceManagement for type-switch of CBusCommand")
 		}
 	case destinationAddressType == DestinationAddressType_PointToPointToMultiPoint: // CBusCommandPointToPointToMultiPoint
-		if _child, err = (&_CBusCommandPointToPointToMultiPoint{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusCommandPointToPointToMultiPoint).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandPointToPointToMultiPoint for type-switch of CBusCommand")
 		}
 	case destinationAddressType == DestinationAddressType_PointToMultiPoint: // CBusCommandPointToMultiPoint
-		if _child, err = (&_CBusCommandPointToMultiPoint{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusCommandPointToMultiPoint).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandPointToMultiPoint for type-switch of CBusCommand")
 		}
 	case destinationAddressType == DestinationAddressType_PointToPoint: // CBusCommandPointToPoint
-		if _child, err = (&_CBusCommandPointToPoint{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusCommandPointToPoint).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusCommandPointToPoint for type-switch of CBusCommand")
 		}
 	default:
@@ -292,3 +293,19 @@ func (m *_CBusCommand) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusCommand) IsCBusCommand() {}
+
+func (m *_CBusCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusCommand) deepCopy() *_CBusCommand {
+	if m == nil {
+		return nil
+	}
+	_CBusCommandCopy := &_CBusCommand{
+		nil, // will be set by child
+		m.Header.DeepCopy().(CBusHeader),
+		m.CBusOptions,
+	}
+	return _CBusCommandCopy
+}

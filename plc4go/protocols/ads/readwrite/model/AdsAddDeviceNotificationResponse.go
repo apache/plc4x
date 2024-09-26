@@ -38,6 +38,7 @@ type AdsAddDeviceNotificationResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -56,6 +57,17 @@ type _AdsAddDeviceNotificationResponse struct {
 
 var _ AdsAddDeviceNotificationResponse = (*_AdsAddDeviceNotificationResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsAddDeviceNotificationResponse)(nil)
+
+// NewAdsAddDeviceNotificationResponse factory function for _AdsAddDeviceNotificationResponse
+func NewAdsAddDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, notificationHandle uint32) *_AdsAddDeviceNotificationResponse {
+	_result := &_AdsAddDeviceNotificationResponse{
+		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:             result,
+		NotificationHandle: notificationHandle,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,17 +108,6 @@ func (m *_AdsAddDeviceNotificationResponse) GetNotificationHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsAddDeviceNotificationResponse factory function for _AdsAddDeviceNotificationResponse
-func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsAddDeviceNotificationResponse {
-	_result := &_AdsAddDeviceNotificationResponse{
-		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:             result,
-		NotificationHandle: notificationHandle,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsAddDeviceNotificationResponse(structType any) AdsAddDeviceNotificationResponse {
@@ -204,6 +205,23 @@ func (m *_AdsAddDeviceNotificationResponse) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_AdsAddDeviceNotificationResponse) IsAdsAddDeviceNotificationResponse() {}
+
+func (m *_AdsAddDeviceNotificationResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsAddDeviceNotificationResponse) deepCopy() *_AdsAddDeviceNotificationResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsAddDeviceNotificationResponseCopy := &_AdsAddDeviceNotificationResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Result,
+		m.NotificationHandle,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsAddDeviceNotificationResponseCopy
+}
 
 func (m *_AdsAddDeviceNotificationResponse) String() string {
 	if m == nil {

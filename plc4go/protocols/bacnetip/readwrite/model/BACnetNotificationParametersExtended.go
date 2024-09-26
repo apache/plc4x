@@ -38,6 +38,7 @@ type BACnetNotificationParametersExtended interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -65,6 +66,35 @@ type _BACnetNotificationParametersExtended struct {
 
 var _ BACnetNotificationParametersExtended = (*_BACnetNotificationParametersExtended)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersExtended)(nil)
+
+// NewBACnetNotificationParametersExtended factory function for _BACnetNotificationParametersExtended
+func NewBACnetNotificationParametersExtended(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetNotificationParametersExtendedParameters, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersExtended {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersExtended must not be nil")
+	}
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetNotificationParametersExtended must not be nil")
+	}
+	if extendedEventType == nil {
+		panic("extendedEventType of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersExtended must not be nil")
+	}
+	if parameters == nil {
+		panic("parameters of type BACnetNotificationParametersExtendedParameters for BACnetNotificationParametersExtended must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersExtended must not be nil")
+	}
+	_result := &_BACnetNotificationParametersExtended{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		VendorId:                             vendorId,
+		ExtendedEventType:                    extendedEventType,
+		Parameters:                           parameters,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,35 +139,6 @@ func (m *_BACnetNotificationParametersExtended) GetInnerClosingTag() BACnetClosi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersExtended factory function for _BACnetNotificationParametersExtended
-func NewBACnetNotificationParametersExtended(innerOpeningTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedEventType BACnetContextTagUnsignedInteger, parameters BACnetNotificationParametersExtendedParameters, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersExtended {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersExtended must not be nil")
-	}
-	if vendorId == nil {
-		panic("vendorId of type BACnetVendorIdTagged for BACnetNotificationParametersExtended must not be nil")
-	}
-	if extendedEventType == nil {
-		panic("extendedEventType of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersExtended must not be nil")
-	}
-	if parameters == nil {
-		panic("parameters of type BACnetNotificationParametersExtendedParameters for BACnetNotificationParametersExtended must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersExtended must not be nil")
-	}
-	_result := &_BACnetNotificationParametersExtended{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		VendorId:                             vendorId,
-		ExtendedEventType:                    extendedEventType,
-		Parameters:                           parameters,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersExtended(structType any) BACnetNotificationParametersExtended {
@@ -274,6 +275,26 @@ func (m *_BACnetNotificationParametersExtended) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetNotificationParametersExtended) IsBACnetNotificationParametersExtended() {}
+
+func (m *_BACnetNotificationParametersExtended) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersExtended) deepCopy() *_BACnetNotificationParametersExtended {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersExtendedCopy := &_BACnetNotificationParametersExtended{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+		m.ExtendedEventType.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Parameters.DeepCopy().(BACnetNotificationParametersExtendedParameters),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersExtendedCopy
+}
 
 func (m *_BACnetNotificationParametersExtended) String() string {
 	if m == nil {

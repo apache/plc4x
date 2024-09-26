@@ -38,6 +38,7 @@ type BACnetConstructedDataAPDUSegmentTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetApduSegmentTimeout returns ApduSegmentTimeout (property field)
 	GetApduSegmentTimeout() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAPDUSegmentTimeout struct {
 
 var _ BACnetConstructedDataAPDUSegmentTimeout = (*_BACnetConstructedDataAPDUSegmentTimeout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAPDUSegmentTimeout)(nil)
+
+// NewBACnetConstructedDataAPDUSegmentTimeout factory function for _BACnetConstructedDataAPDUSegmentTimeout
+func NewBACnetConstructedDataAPDUSegmentTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduSegmentTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDUSegmentTimeout {
+	if apduSegmentTimeout == nil {
+		panic("apduSegmentTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDUSegmentTimeout must not be nil")
+	}
+	_result := &_BACnetConstructedDataAPDUSegmentTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ApduSegmentTimeout:            apduSegmentTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAPDUSegmentTimeout factory function for _BACnetConstructedDataAPDUSegmentTimeout
-func NewBACnetConstructedDataAPDUSegmentTimeout(apduSegmentTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDUSegmentTimeout {
-	if apduSegmentTimeout == nil {
-		panic("apduSegmentTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDUSegmentTimeout must not be nil")
-	}
-	_result := &_BACnetConstructedDataAPDUSegmentTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ApduSegmentTimeout:            apduSegmentTimeout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAPDUSegmentTimeout(structType any) BACnetConstructedDataAPDUSegmentTimeout {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) IsBACnetConstructedDataAPDUSegmentTimeout() {}
+
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAPDUSegmentTimeout) deepCopy() *_BACnetConstructedDataAPDUSegmentTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAPDUSegmentTimeoutCopy := &_BACnetConstructedDataAPDUSegmentTimeout{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ApduSegmentTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAPDUSegmentTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataAPDUSegmentTimeout) String() string {
 	if m == nil {

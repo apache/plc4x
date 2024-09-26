@@ -38,6 +38,7 @@ type GroupObjectDescriptorRealisationType7 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDataAddress returns DataAddress (property field)
 	GetDataAddress() uint16
 	// GetUpdateEnable returns UpdateEnable (property field)
@@ -74,6 +75,11 @@ type _GroupObjectDescriptorRealisationType7 struct {
 }
 
 var _ GroupObjectDescriptorRealisationType7 = (*_GroupObjectDescriptorRealisationType7)(nil)
+
+// NewGroupObjectDescriptorRealisationType7 factory function for _GroupObjectDescriptorRealisationType7
+func NewGroupObjectDescriptorRealisationType7(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *_GroupObjectDescriptorRealisationType7 {
+	return &_GroupObjectDescriptorRealisationType7{DataAddress: dataAddress, UpdateEnable: updateEnable, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,11 +126,6 @@ func (m *_GroupObjectDescriptorRealisationType7) GetValueType() ComObjectValueTy
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGroupObjectDescriptorRealisationType7 factory function for _GroupObjectDescriptorRealisationType7
-func NewGroupObjectDescriptorRealisationType7(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *_GroupObjectDescriptorRealisationType7 {
-	return &_GroupObjectDescriptorRealisationType7{DataAddress: dataAddress, UpdateEnable: updateEnable, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastGroupObjectDescriptorRealisationType7(structType any) GroupObjectDescriptorRealisationType7 {
@@ -326,6 +327,28 @@ func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_GroupObjectDescriptorRealisationType7) IsGroupObjectDescriptorRealisationType7() {}
+
+func (m *_GroupObjectDescriptorRealisationType7) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GroupObjectDescriptorRealisationType7) deepCopy() *_GroupObjectDescriptorRealisationType7 {
+	if m == nil {
+		return nil
+	}
+	_GroupObjectDescriptorRealisationType7Copy := &_GroupObjectDescriptorRealisationType7{
+		m.DataAddress,
+		m.UpdateEnable,
+		m.TransmitEnable,
+		m.SegmentSelectorEnable,
+		m.WriteEnable,
+		m.ReadEnable,
+		m.CommunicationEnable,
+		m.Priority,
+		m.ValueType,
+	}
+	return _GroupObjectDescriptorRealisationType7Copy
+}
 
 func (m *_GroupObjectDescriptorRealisationType7) String() string {
 	if m == nil {

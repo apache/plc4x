@@ -38,6 +38,7 @@ type AlarmMessageAckPushType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
 	// GetFunctionId returns FunctionId (property field)
@@ -59,6 +60,14 @@ type _AlarmMessageAckPushType struct {
 }
 
 var _ AlarmMessageAckPushType = (*_AlarmMessageAckPushType)(nil)
+
+// NewAlarmMessageAckPushType factory function for _AlarmMessageAckPushType
+func NewAlarmMessageAckPushType(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageAckObjectPushType) *_AlarmMessageAckPushType {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for AlarmMessageAckPushType must not be nil")
+	}
+	return &_AlarmMessageAckPushType{TimeStamp: timeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,14 +94,6 @@ func (m *_AlarmMessageAckPushType) GetMessageObjects() []AlarmMessageAckObjectPu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageAckPushType factory function for _AlarmMessageAckPushType
-func NewAlarmMessageAckPushType(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageAckObjectPushType) *_AlarmMessageAckPushType {
-	if timeStamp == nil {
-		panic("timeStamp of type DateAndTime for AlarmMessageAckPushType must not be nil")
-	}
-	return &_AlarmMessageAckPushType{TimeStamp: timeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageAckPushType(structType any) AlarmMessageAckPushType {
@@ -236,6 +237,23 @@ func (m *_AlarmMessageAckPushType) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_AlarmMessageAckPushType) IsAlarmMessageAckPushType() {}
+
+func (m *_AlarmMessageAckPushType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageAckPushType) deepCopy() *_AlarmMessageAckPushType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageAckPushTypeCopy := &_AlarmMessageAckPushType{
+		m.TimeStamp.DeepCopy().(DateAndTime),
+		m.FunctionId,
+		m.NumberOfObjects,
+		utils.DeepCopySlice[AlarmMessageAckObjectPushType, AlarmMessageAckObjectPushType](m.MessageObjects),
+	}
+	return _AlarmMessageAckPushTypeCopy
+}
 
 func (m *_AlarmMessageAckPushType) String() string {
 	if m == nil {

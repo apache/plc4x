@@ -38,6 +38,7 @@ type DeleteNodesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _DeleteNodesResponse struct {
 
 var _ DeleteNodesResponse = (*_DeleteNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesResponse)(nil)
+
+// NewDeleteNodesResponse factory function for _DeleteNodesResponse
+func NewDeleteNodesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteNodesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for DeleteNodesResponse must not be nil")
+	}
+	_result := &_DeleteNodesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_DeleteNodesResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteNodesResponse factory function for _DeleteNodesResponse
-func NewDeleteNodesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteNodesResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for DeleteNodesResponse must not be nil")
-	}
-	_result := &_DeleteNodesResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteNodesResponse(structType any) DeleteNodesResponse {
@@ -280,6 +281,26 @@ func (m *_DeleteNodesResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_DeleteNodesResponse) IsDeleteNodesResponse() {}
+
+func (m *_DeleteNodesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteNodesResponse) deepCopy() *_DeleteNodesResponse {
+	if m == nil {
+		return nil
+	}
+	_DeleteNodesResponseCopy := &_DeleteNodesResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteNodesResponseCopy
+}
 
 func (m *_DeleteNodesResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesIntegerValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetContextTagSignedInteger
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesIntegerValue struct {
 
 var _ BACnetPropertyStatesIntegerValue = (*_BACnetPropertyStatesIntegerValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesIntegerValue)(nil)
+
+// NewBACnetPropertyStatesIntegerValue factory function for _BACnetPropertyStatesIntegerValue
+func NewBACnetPropertyStatesIntegerValue(peekedTagHeader BACnetTagHeader, integerValue BACnetContextTagSignedInteger) *_BACnetPropertyStatesIntegerValue {
+	if integerValue == nil {
+		panic("integerValue of type BACnetContextTagSignedInteger for BACnetPropertyStatesIntegerValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesIntegerValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		IntegerValue:                 integerValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesIntegerValue) GetIntegerValue() BACnetContextTagSi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesIntegerValue factory function for _BACnetPropertyStatesIntegerValue
-func NewBACnetPropertyStatesIntegerValue(integerValue BACnetContextTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesIntegerValue {
-	if integerValue == nil {
-		panic("integerValue of type BACnetContextTagSignedInteger for BACnetPropertyStatesIntegerValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesIntegerValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		IntegerValue:                 integerValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesIntegerValue(structType any) BACnetPropertyStatesIntegerValue {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesIntegerValue) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetPropertyStatesIntegerValue) IsBACnetPropertyStatesIntegerValue() {}
+
+func (m *_BACnetPropertyStatesIntegerValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesIntegerValue) deepCopy() *_BACnetPropertyStatesIntegerValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesIntegerValueCopy := &_BACnetPropertyStatesIntegerValue{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.IntegerValue.DeepCopy().(BACnetContextTagSignedInteger),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesIntegerValueCopy
+}
 
 func (m *_BACnetPropertyStatesIntegerValue) String() string {
 	if m == nil {

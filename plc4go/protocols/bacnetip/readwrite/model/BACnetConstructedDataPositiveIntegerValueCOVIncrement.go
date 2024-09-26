@@ -38,6 +38,7 @@ type BACnetConstructedDataPositiveIntegerValueCOVIncrement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataPositiveIntegerValueCOVIncrement struct {
 
 var _ BACnetConstructedDataPositiveIntegerValueCOVIncrement = (*_BACnetConstructedDataPositiveIntegerValueCOVIncrement)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueCOVIncrement)(nil)
+
+// NewBACnetConstructedDataPositiveIntegerValueCOVIncrement factory function for _BACnetConstructedDataPositiveIntegerValueCOVIncrement
+func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueCOVIncrement {
+	if covIncrement == nil {
+		panic("covIncrement of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueCOVIncrement must not be nil")
+	}
+	_result := &_BACnetConstructedDataPositiveIntegerValueCOVIncrement{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovIncrement:                  covIncrement,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) GetActualValue(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPositiveIntegerValueCOVIncrement factory function for _BACnetConstructedDataPositiveIntegerValueCOVIncrement
-func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(covIncrement BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueCOVIncrement {
-	if covIncrement == nil {
-		panic("covIncrement of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueCOVIncrement must not be nil")
-	}
-	_result := &_BACnetConstructedDataPositiveIntegerValueCOVIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CovIncrement:                  covIncrement,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPositiveIntegerValueCOVIncrement(structType any) BACnetConstructedDataPositiveIntegerValueCOVIncrement {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) SerializeWithWr
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) IsBACnetConstructedDataPositiveIntegerValueCOVIncrement() {
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) deepCopy() *_BACnetConstructedDataPositiveIntegerValueCOVIncrement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPositiveIntegerValueCOVIncrementCopy := &_BACnetConstructedDataPositiveIntegerValueCOVIncrement{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CovIncrement.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPositiveIntegerValueCOVIncrementCopy
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) String() string {

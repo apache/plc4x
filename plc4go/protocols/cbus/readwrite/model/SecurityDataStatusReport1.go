@@ -38,6 +38,7 @@ type SecurityDataStatusReport1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetArmCodeType returns ArmCodeType (property field)
 	GetArmCodeType() SecurityArmCode
@@ -62,6 +63,28 @@ type _SecurityDataStatusReport1 struct {
 
 var _ SecurityDataStatusReport1 = (*_SecurityDataStatusReport1)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataStatusReport1)(nil)
+
+// NewSecurityDataStatusReport1 factory function for _SecurityDataStatusReport1
+func NewSecurityDataStatusReport1(commandTypeContainer SecurityCommandTypeContainer, argument byte, armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus) *_SecurityDataStatusReport1 {
+	if armCodeType == nil {
+		panic("armCodeType of type SecurityArmCode for SecurityDataStatusReport1 must not be nil")
+	}
+	if tamperStatus == nil {
+		panic("tamperStatus of type TamperStatus for SecurityDataStatusReport1 must not be nil")
+	}
+	if panicStatus == nil {
+		panic("panicStatus of type PanicStatus for SecurityDataStatusReport1 must not be nil")
+	}
+	_result := &_SecurityDataStatusReport1{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ArmCodeType:          armCodeType,
+		TamperStatus:         tamperStatus,
+		PanicStatus:          panicStatus,
+		ZoneStatus:           zoneStatus,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,28 +125,6 @@ func (m *_SecurityDataStatusReport1) GetZoneStatus() []ZoneStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataStatusReport1 factory function for _SecurityDataStatusReport1
-func NewSecurityDataStatusReport1(armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatusReport1 {
-	if armCodeType == nil {
-		panic("armCodeType of type SecurityArmCode for SecurityDataStatusReport1 must not be nil")
-	}
-	if tamperStatus == nil {
-		panic("tamperStatus of type TamperStatus for SecurityDataStatusReport1 must not be nil")
-	}
-	if panicStatus == nil {
-		panic("panicStatus of type PanicStatus for SecurityDataStatusReport1 must not be nil")
-	}
-	_result := &_SecurityDataStatusReport1{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ArmCodeType:          armCodeType,
-		TamperStatus:         tamperStatus,
-		PanicStatus:          panicStatus,
-		ZoneStatus:           zoneStatus,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataStatusReport1(structType any) SecurityDataStatusReport1 {
@@ -254,6 +255,25 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SecurityDataStatusReport1) IsSecurityDataStatusReport1() {}
+
+func (m *_SecurityDataStatusReport1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataStatusReport1) deepCopy() *_SecurityDataStatusReport1 {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataStatusReport1Copy := &_SecurityDataStatusReport1{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ArmCodeType.DeepCopy().(SecurityArmCode),
+		m.TamperStatus.DeepCopy().(TamperStatus),
+		m.PanicStatus.DeepCopy().(PanicStatus),
+		utils.DeepCopySlice[ZoneStatus, ZoneStatus](m.ZoneStatus),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataStatusReport1Copy
+}
 
 func (m *_SecurityDataStatusReport1) String() string {
 	if m == nil {

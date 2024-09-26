@@ -38,6 +38,7 @@ type ModificationInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetModificationTime returns ModificationTime (property field)
 	GetModificationTime() int64
@@ -59,6 +60,21 @@ type _ModificationInfo struct {
 
 var _ ModificationInfo = (*_ModificationInfo)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModificationInfo)(nil)
+
+// NewModificationInfo factory function for _ModificationInfo
+func NewModificationInfo(modificationTime int64, updateType HistoryUpdateType, userName PascalString) *_ModificationInfo {
+	if userName == nil {
+		panic("userName of type PascalString for ModificationInfo must not be nil")
+	}
+	_result := &_ModificationInfo{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ModificationTime:                  modificationTime,
+		UpdateType:                        updateType,
+		UserName:                          userName,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_ModificationInfo) GetUserName() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModificationInfo factory function for _ModificationInfo
-func NewModificationInfo(modificationTime int64, updateType HistoryUpdateType, userName PascalString) *_ModificationInfo {
-	if userName == nil {
-		panic("userName of type PascalString for ModificationInfo must not be nil")
-	}
-	_result := &_ModificationInfo{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ModificationTime:                  modificationTime,
-		UpdateType:                        updateType,
-		UserName:                          userName,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModificationInfo(structType any) ModificationInfo {
@@ -224,6 +225,24 @@ func (m *_ModificationInfo) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_ModificationInfo) IsModificationInfo() {}
+
+func (m *_ModificationInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModificationInfo) deepCopy() *_ModificationInfo {
+	if m == nil {
+		return nil
+	}
+	_ModificationInfoCopy := &_ModificationInfo{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ModificationTime,
+		m.UpdateType,
+		m.UserName.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModificationInfoCopy
+}
 
 func (m *_ModificationInfo) String() string {
 	if m == nil {

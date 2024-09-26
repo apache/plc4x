@@ -38,6 +38,7 @@ type MACAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddr returns Addr (property field)
 	GetAddr() []byte
 	// IsMACAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _MACAddress struct {
 }
 
 var _ MACAddress = (*_MACAddress)(nil)
+
+// NewMACAddress factory function for _MACAddress
+func NewMACAddress(addr []byte) *_MACAddress {
+	return &_MACAddress{Addr: addr}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_MACAddress) GetAddr() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMACAddress factory function for _MACAddress
-func NewMACAddress(addr []byte) *_MACAddress {
-	return &_MACAddress{Addr: addr}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMACAddress(structType any) MACAddress {
@@ -168,6 +169,20 @@ func (m *_MACAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_MACAddress) IsMACAddress() {}
+
+func (m *_MACAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MACAddress) deepCopy() *_MACAddress {
+	if m == nil {
+		return nil
+	}
+	_MACAddressCopy := &_MACAddress{
+		utils.DeepCopySlice[byte, byte](m.Addr),
+	}
+	return _MACAddressCopy
+}
 
 func (m *_MACAddress) String() string {
 	if m == nil {

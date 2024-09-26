@@ -38,6 +38,7 @@ type ErrorReportingSystemCategory interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSystemCategoryClass returns SystemCategoryClass (property field)
 	GetSystemCategoryClass() ErrorReportingSystemCategoryClass
 	// GetSystemCategoryType returns SystemCategoryType (property field)
@@ -56,6 +57,14 @@ type _ErrorReportingSystemCategory struct {
 }
 
 var _ ErrorReportingSystemCategory = (*_ErrorReportingSystemCategory)(nil)
+
+// NewErrorReportingSystemCategory factory function for _ErrorReportingSystemCategory
+func NewErrorReportingSystemCategory(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) *_ErrorReportingSystemCategory {
+	if systemCategoryType == nil {
+		panic("systemCategoryType of type ErrorReportingSystemCategoryType for ErrorReportingSystemCategory must not be nil")
+	}
+	return &_ErrorReportingSystemCategory{SystemCategoryClass: systemCategoryClass, SystemCategoryType: systemCategoryType, SystemCategoryVariant: systemCategoryVariant}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +87,6 @@ func (m *_ErrorReportingSystemCategory) GetSystemCategoryVariant() ErrorReportin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategory factory function for _ErrorReportingSystemCategory
-func NewErrorReportingSystemCategory(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) *_ErrorReportingSystemCategory {
-	if systemCategoryType == nil {
-		panic("systemCategoryType of type ErrorReportingSystemCategoryType for ErrorReportingSystemCategory must not be nil")
-	}
-	return &_ErrorReportingSystemCategory{SystemCategoryClass: systemCategoryClass, SystemCategoryType: systemCategoryType, SystemCategoryVariant: systemCategoryVariant}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategory(structType any) ErrorReportingSystemCategory {
@@ -209,6 +210,22 @@ func (m *_ErrorReportingSystemCategory) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ErrorReportingSystemCategory) IsErrorReportingSystemCategory() {}
+
+func (m *_ErrorReportingSystemCategory) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategory) deepCopy() *_ErrorReportingSystemCategory {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryCopy := &_ErrorReportingSystemCategory{
+		m.SystemCategoryClass,
+		m.SystemCategoryType.DeepCopy().(ErrorReportingSystemCategoryType),
+		m.SystemCategoryVariant,
+	}
+	return _ErrorReportingSystemCategoryCopy
+}
 
 func (m *_ErrorReportingSystemCategory) String() string {
 	if m == nil {

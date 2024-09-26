@@ -38,6 +38,7 @@ type OpcuaMessageResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetSecurityHeader returns SecurityHeader (property field)
 	GetSecurityHeader() SecurityHeader
@@ -59,6 +60,23 @@ type _OpcuaMessageResponse struct {
 
 var _ OpcuaMessageResponse = (*_OpcuaMessageResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageResponse)(nil)
+
+// NewOpcuaMessageResponse factory function for _OpcuaMessageResponse
+func NewOpcuaMessageResponse(chunk ChunkType, securityHeader SecurityHeader, message Payload, totalLength uint32) *_OpcuaMessageResponse {
+	if securityHeader == nil {
+		panic("securityHeader of type SecurityHeader for OpcuaMessageResponse must not be nil")
+	}
+	if message == nil {
+		panic("message of type Payload for OpcuaMessageResponse must not be nil")
+	}
+	_result := &_OpcuaMessageResponse{
+		MessagePDUContract: NewMessagePDU(chunk),
+		SecurityHeader:     securityHeader,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,23 +117,6 @@ func (m *_OpcuaMessageResponse) GetMessage() Payload {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaMessageResponse factory function for _OpcuaMessageResponse
-func NewOpcuaMessageResponse(securityHeader SecurityHeader, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaMessageResponse {
-	if securityHeader == nil {
-		panic("securityHeader of type SecurityHeader for OpcuaMessageResponse must not be nil")
-	}
-	if message == nil {
-		panic("message of type Payload for OpcuaMessageResponse must not be nil")
-	}
-	_result := &_OpcuaMessageResponse{
-		MessagePDUContract: NewMessagePDU(chunk),
-		SecurityHeader:     securityHeader,
-		Message:            message,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaMessageResponse(structType any) OpcuaMessageResponse {
@@ -223,6 +224,24 @@ func (m *_OpcuaMessageResponse) GetTotalLength() uint32 {
 ////
 
 func (m *_OpcuaMessageResponse) IsOpcuaMessageResponse() {}
+
+func (m *_OpcuaMessageResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaMessageResponse) deepCopy() *_OpcuaMessageResponse {
+	if m == nil {
+		return nil
+	}
+	_OpcuaMessageResponseCopy := &_OpcuaMessageResponse{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.SecurityHeader.DeepCopy().(SecurityHeader),
+		m.Message.DeepCopy().(Payload),
+		m.TotalLength,
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaMessageResponseCopy
+}
 
 func (m *_OpcuaMessageResponse) String() string {
 	if m == nil {

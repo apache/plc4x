@@ -40,6 +40,7 @@ type COTPPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacket()
 }
@@ -76,6 +77,11 @@ type _COTPPacket struct {
 
 var _ COTPPacketContract = (*_COTPPacket)(nil)
 
+// NewCOTPPacket factory function for _COTPPacket
+func NewCOTPPacket(parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacket {
+	return &_COTPPacket{Parameters: parameters, Payload: payload, CotpLen: cotpLen}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -93,11 +99,6 @@ func (m *_COTPPacket) GetPayload() S7Message {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacket factory function for _COTPPacket
-func NewCOTPPacket(parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacket {
-	return &_COTPPacket{Parameters: parameters, Payload: payload, CotpLen: cotpLen}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacket(structType any) COTPPacket {
@@ -196,27 +197,27 @@ func (m *_COTPPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer, co
 	var _child COTPPacket
 	switch {
 	case tpduCode == 0xF0: // COTPPacketData
-		if _child, err = (&_COTPPacketData{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketData).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketData for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xE0: // COTPPacketConnectionRequest
-		if _child, err = (&_COTPPacketConnectionRequest{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketConnectionRequest).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionRequest for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xD0: // COTPPacketConnectionResponse
-		if _child, err = (&_COTPPacketConnectionResponse{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketConnectionResponse).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketConnectionResponse for type-switch of COTPPacket")
 		}
 	case tpduCode == 0x80: // COTPPacketDisconnectRequest
-		if _child, err = (&_COTPPacketDisconnectRequest{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketDisconnectRequest).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectRequest for type-switch of COTPPacket")
 		}
 	case tpduCode == 0xC0: // COTPPacketDisconnectResponse
-		if _child, err = (&_COTPPacketDisconnectResponse{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketDisconnectResponse).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketDisconnectResponse for type-switch of COTPPacket")
 		}
 	case tpduCode == 0x70: // COTPPacketTpduError
-		if _child, err = (&_COTPPacketTpduError{}).parse(ctx, readBuffer, m, cotpLen); err != nil {
+		if _child, err = new(_COTPPacketTpduError).parse(ctx, readBuffer, m, cotpLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPPacketTpduError for type-switch of COTPPacket")
 		}
 	default:
@@ -296,3 +297,20 @@ func (m *_COTPPacket) GetCotpLen() uint16 {
 ////
 
 func (m *_COTPPacket) IsCOTPPacket() {}
+
+func (m *_COTPPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPPacket) deepCopy() *_COTPPacket {
+	if m == nil {
+		return nil
+	}
+	_COTPPacketCopy := &_COTPPacket{
+		nil, // will be set by child
+		utils.DeepCopySlice[COTPParameter, COTPParameter](m.Parameters),
+		m.Payload.DeepCopy().(S7Message),
+		m.CotpLen,
+	}
+	return _COTPPacketCopy
+}

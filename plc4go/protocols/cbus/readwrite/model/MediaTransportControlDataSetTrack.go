@@ -38,6 +38,7 @@ type MediaTransportControlDataSetTrack interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetTrackMSB returns TrackMSB (property field)
 	GetTrackMSB() byte
@@ -62,6 +63,19 @@ type _MediaTransportControlDataSetTrack struct {
 
 var _ MediaTransportControlDataSetTrack = (*_MediaTransportControlDataSetTrack)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSetTrack)(nil)
+
+// NewMediaTransportControlDataSetTrack factory function for _MediaTransportControlDataSetTrack
+func NewMediaTransportControlDataSetTrack(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, trackMSB byte, trackMMSB byte, trackMLSB byte, trackLSB byte) *_MediaTransportControlDataSetTrack {
+	_result := &_MediaTransportControlDataSetTrack{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		TrackMSB:                          trackMSB,
+		TrackMMSB:                         trackMMSB,
+		TrackMLSB:                         trackMLSB,
+		TrackLSB:                          trackLSB,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,19 +116,6 @@ func (m *_MediaTransportControlDataSetTrack) GetTrackLSB() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSetTrack factory function for _MediaTransportControlDataSetTrack
-func NewMediaTransportControlDataSetTrack(trackMSB byte, trackMMSB byte, trackMLSB byte, trackLSB byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSetTrack {
-	_result := &_MediaTransportControlDataSetTrack{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		TrackMSB:                          trackMSB,
-		TrackMMSB:                         trackMMSB,
-		TrackMLSB:                         trackMLSB,
-		TrackLSB:                          trackLSB,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSetTrack(structType any) MediaTransportControlDataSetTrack {
@@ -238,6 +239,25 @@ func (m *_MediaTransportControlDataSetTrack) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_MediaTransportControlDataSetTrack) IsMediaTransportControlDataSetTrack() {}
+
+func (m *_MediaTransportControlDataSetTrack) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSetTrack) deepCopy() *_MediaTransportControlDataSetTrack {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSetTrackCopy := &_MediaTransportControlDataSetTrack{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.TrackMSB,
+		m.TrackMMSB,
+		m.TrackMLSB,
+		m.TrackLSB,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSetTrackCopy
+}
 
 func (m *_MediaTransportControlDataSetTrack) String() string {
 	if m == nil {

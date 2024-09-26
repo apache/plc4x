@@ -38,6 +38,7 @@ type BACnetConstructedDataSlaveAddressBinding interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSlaveAddressBinding returns SlaveAddressBinding (property field)
 	GetSlaveAddressBinding() []BACnetAddressBinding
@@ -53,6 +54,16 @@ type _BACnetConstructedDataSlaveAddressBinding struct {
 
 var _ BACnetConstructedDataSlaveAddressBinding = (*_BACnetConstructedDataSlaveAddressBinding)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSlaveAddressBinding)(nil)
+
+// NewBACnetConstructedDataSlaveAddressBinding factory function for _BACnetConstructedDataSlaveAddressBinding
+func NewBACnetConstructedDataSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveAddressBinding {
+	_result := &_BACnetConstructedDataSlaveAddressBinding{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SlaveAddressBinding:           slaveAddressBinding,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) GetSlaveAddressBinding() []B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSlaveAddressBinding factory function for _BACnetConstructedDataSlaveAddressBinding
-func NewBACnetConstructedDataSlaveAddressBinding(slaveAddressBinding []BACnetAddressBinding, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveAddressBinding {
-	_result := &_BACnetConstructedDataSlaveAddressBinding{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SlaveAddressBinding:           slaveAddressBinding,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSlaveAddressBinding(structType any) BACnetConstructedDataSlaveAddressBinding {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataSlaveAddressBinding) IsBACnetConstructedDataSlaveAddressBinding() {}
+
+func (m *_BACnetConstructedDataSlaveAddressBinding) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSlaveAddressBinding) deepCopy() *_BACnetConstructedDataSlaveAddressBinding {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSlaveAddressBindingCopy := &_BACnetConstructedDataSlaveAddressBinding{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetAddressBinding, BACnetAddressBinding](m.SlaveAddressBinding),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSlaveAddressBindingCopy
+}
 
 func (m *_BACnetConstructedDataSlaveAddressBinding) String() string {
 	if m == nil {

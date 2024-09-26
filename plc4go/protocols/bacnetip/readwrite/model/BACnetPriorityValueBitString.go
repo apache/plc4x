@@ -38,6 +38,7 @@ type BACnetPriorityValueBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
@@ -53,6 +54,19 @@ type _BACnetPriorityValueBitString struct {
 
 var _ BACnetPriorityValueBitString = (*_BACnetPriorityValueBitString)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueBitString)(nil)
+
+// NewBACnetPriorityValueBitString factory function for _BACnetPriorityValueBitString
+func NewBACnetPriorityValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetPriorityValueBitString must not be nil")
+	}
+	_result := &_BACnetPriorityValueBitString{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BitStringValue:              bitStringValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueBitString) GetBitStringValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueBitString factory function for _BACnetPriorityValueBitString
-func NewBACnetPriorityValueBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBitString {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetPriorityValueBitString must not be nil")
-	}
-	_result := &_BACnetPriorityValueBitString{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		BitStringValue:              bitStringValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueBitString(structType any) BACnetPriorityValueBitString {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueBitString) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetPriorityValueBitString) IsBACnetPriorityValueBitString() {}
+
+func (m *_BACnetPriorityValueBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueBitString) deepCopy() *_BACnetPriorityValueBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueBitStringCopy := &_BACnetPriorityValueBitString{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueBitStringCopy
+}
 
 func (m *_BACnetPriorityValueBitString) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6DHCPLeaseTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6DhcpLeaseTime returns Ipv6DhcpLeaseTime (property field)
 	GetIpv6DhcpLeaseTime() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataIPv6DHCPLeaseTime struct {
 
 var _ BACnetConstructedDataIPv6DHCPLeaseTime = (*_BACnetConstructedDataIPv6DHCPLeaseTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DHCPLeaseTime)(nil)
+
+// NewBACnetConstructedDataIPv6DHCPLeaseTime factory function for _BACnetConstructedDataIPv6DHCPLeaseTime
+func NewBACnetConstructedDataIPv6DHCPLeaseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6DhcpLeaseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPLeaseTime {
+	if ipv6DhcpLeaseTime == nil {
+		panic("ipv6DhcpLeaseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPv6DHCPLeaseTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPv6DHCPLeaseTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Ipv6DhcpLeaseTime:             ipv6DhcpLeaseTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPv6DHCPLeaseTime factory function for _BACnetConstructedDataIPv6DHCPLeaseTime
-func NewBACnetConstructedDataIPv6DHCPLeaseTime(ipv6DhcpLeaseTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPLeaseTime {
-	if ipv6DhcpLeaseTime == nil {
-		panic("ipv6DhcpLeaseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPv6DHCPLeaseTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPv6DHCPLeaseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Ipv6DhcpLeaseTime:             ipv6DhcpLeaseTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPv6DHCPLeaseTime(structType any) BACnetConstructedDataIPv6DHCPLeaseTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) IsBACnetConstructedDataIPv6DHCPLeaseTime() {}
+
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) deepCopy() *_BACnetConstructedDataIPv6DHCPLeaseTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6DHCPLeaseTimeCopy := &_BACnetConstructedDataIPv6DHCPLeaseTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Ipv6DhcpLeaseTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6DHCPLeaseTimeCopy
+}
 
 func (m *_BACnetConstructedDataIPv6DHCPLeaseTime) String() string {
 	if m == nil {

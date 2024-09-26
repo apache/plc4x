@@ -38,6 +38,7 @@ type RepublishResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -56,6 +57,23 @@ type _RepublishResponse struct {
 
 var _ RepublishResponse = (*_RepublishResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RepublishResponse)(nil)
+
+// NewRepublishResponse factory function for _RepublishResponse
+func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) *_RepublishResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RepublishResponse must not be nil")
+	}
+	if notificationMessage == nil {
+		panic("notificationMessage of type ExtensionObjectDefinition for RepublishResponse must not be nil")
+	}
+	_result := &_RepublishResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NotificationMessage:               notificationMessage,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_RepublishResponse) GetNotificationMessage() ExtensionObjectDefinition 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRepublishResponse factory function for _RepublishResponse
-func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) *_RepublishResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RepublishResponse must not be nil")
-	}
-	if notificationMessage == nil {
-		panic("notificationMessage of type ExtensionObjectDefinition for RepublishResponse must not be nil")
-	}
-	_result := &_RepublishResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NotificationMessage:               notificationMessage,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRepublishResponse(structType any) RepublishResponse {
@@ -206,6 +207,23 @@ func (m *_RepublishResponse) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_RepublishResponse) IsRepublishResponse() {}
+
+func (m *_RepublishResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RepublishResponse) deepCopy() *_RepublishResponse {
+	if m == nil {
+		return nil
+	}
+	_RepublishResponseCopy := &_RepublishResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NotificationMessage.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RepublishResponseCopy
+}
 
 func (m *_RepublishResponse) String() string {
 	if m == nil {

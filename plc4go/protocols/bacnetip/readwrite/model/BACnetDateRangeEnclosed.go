@@ -38,6 +38,7 @@ type BACnetDateRangeEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetDateRange returns DateRange (property field)
@@ -60,6 +61,20 @@ type _BACnetDateRangeEnclosed struct {
 
 var _ BACnetDateRangeEnclosed = (*_BACnetDateRangeEnclosed)(nil)
 
+// NewBACnetDateRangeEnclosed factory function for _BACnetDateRangeEnclosed
+func NewBACnetDateRangeEnclosed(openingTag BACnetOpeningTag, dateRange BACnetDateRange, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDateRangeEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDateRangeEnclosed must not be nil")
+	}
+	if dateRange == nil {
+		panic("dateRange of type BACnetDateRange for BACnetDateRangeEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDateRangeEnclosed must not be nil")
+	}
+	return &_BACnetDateRangeEnclosed{OpeningTag: openingTag, DateRange: dateRange, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +96,6 @@ func (m *_BACnetDateRangeEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDateRangeEnclosed factory function for _BACnetDateRangeEnclosed
-func NewBACnetDateRangeEnclosed(openingTag BACnetOpeningTag, dateRange BACnetDateRange, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDateRangeEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetDateRangeEnclosed must not be nil")
-	}
-	if dateRange == nil {
-		panic("dateRange of type BACnetDateRange for BACnetDateRangeEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetDateRangeEnclosed must not be nil")
-	}
-	return &_BACnetDateRangeEnclosed{OpeningTag: openingTag, DateRange: dateRange, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDateRangeEnclosed(structType any) BACnetDateRangeEnclosed {
@@ -228,6 +229,23 @@ func (m *_BACnetDateRangeEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetDateRangeEnclosed) IsBACnetDateRangeEnclosed() {}
+
+func (m *_BACnetDateRangeEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDateRangeEnclosed) deepCopy() *_BACnetDateRangeEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetDateRangeEnclosedCopy := &_BACnetDateRangeEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.DateRange.DeepCopy().(BACnetDateRange),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetDateRangeEnclosedCopy
+}
 
 func (m *_BACnetDateRangeEnclosed) String() string {
 	if m == nil {

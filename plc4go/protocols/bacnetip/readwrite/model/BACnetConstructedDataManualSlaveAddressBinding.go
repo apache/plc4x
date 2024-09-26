@@ -38,6 +38,7 @@ type BACnetConstructedDataManualSlaveAddressBinding interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetManualSlaveAddressBinding returns ManualSlaveAddressBinding (property field)
 	GetManualSlaveAddressBinding() []BACnetAddressBinding
@@ -53,6 +54,16 @@ type _BACnetConstructedDataManualSlaveAddressBinding struct {
 
 var _ BACnetConstructedDataManualSlaveAddressBinding = (*_BACnetConstructedDataManualSlaveAddressBinding)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataManualSlaveAddressBinding)(nil)
+
+// NewBACnetConstructedDataManualSlaveAddressBinding factory function for _BACnetConstructedDataManualSlaveAddressBinding
+func NewBACnetConstructedDataManualSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, manualSlaveAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManualSlaveAddressBinding {
+	_result := &_BACnetConstructedDataManualSlaveAddressBinding{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ManualSlaveAddressBinding:     manualSlaveAddressBinding,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) GetManualSlaveAddressB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataManualSlaveAddressBinding factory function for _BACnetConstructedDataManualSlaveAddressBinding
-func NewBACnetConstructedDataManualSlaveAddressBinding(manualSlaveAddressBinding []BACnetAddressBinding, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManualSlaveAddressBinding {
-	_result := &_BACnetConstructedDataManualSlaveAddressBinding{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ManualSlaveAddressBinding:     manualSlaveAddressBinding,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataManualSlaveAddressBinding(structType any) BACnetConstructedDataManualSlaveAddressBinding {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataManualSlaveAddressBinding) IsBACnetConstructedDataManualSlaveAddressBinding() {
+}
+
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataManualSlaveAddressBinding) deepCopy() *_BACnetConstructedDataManualSlaveAddressBinding {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataManualSlaveAddressBindingCopy := &_BACnetConstructedDataManualSlaveAddressBinding{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetAddressBinding, BACnetAddressBinding](m.ManualSlaveAddressBinding),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataManualSlaveAddressBindingCopy
 }
 
 func (m *_BACnetConstructedDataManualSlaveAddressBinding) String() string {

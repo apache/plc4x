@@ -40,6 +40,7 @@ type CBusPointToPointCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusPointToPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointCommand()
 }
@@ -78,6 +79,14 @@ type _CBusPointToPointCommand struct {
 
 var _ CBusPointToPointCommandContract = (*_CBusPointToPointCommand)(nil)
 
+// NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
+func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommand {
+	if calData == nil {
+		panic("calData of type CALData for CBusPointToPointCommand must not be nil")
+	}
+	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, CBusOptions: cBusOptions}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -111,14 +120,6 @@ func (pm *_CBusPointToPointCommand) GetIsDirect() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
-func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommand {
-	if calData == nil {
-		panic("calData of type CALData for CBusPointToPointCommand must not be nil")
-	}
-	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToPointCommand(structType any) CBusPointToPointCommand {
@@ -204,11 +205,11 @@ func (m *_CBusPointToPointCommand) parse(ctx context.Context, readBuffer utils.R
 	var _child CBusPointToPointCommand
 	switch {
 	case isDirect == bool(true): // CBusPointToPointCommandDirect
-		if _child, err = (&_CBusPointToPointCommandDirect{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToPointCommandDirect).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToPointCommandDirect for type-switch of CBusPointToPointCommand")
 		}
 	case isDirect == bool(false): // CBusPointToPointCommandIndirect
-		if _child, err = (&_CBusPointToPointCommandIndirect{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToPointCommandIndirect).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToPointCommandIndirect for type-switch of CBusPointToPointCommand")
 		}
 	default:
@@ -272,3 +273,20 @@ func (m *_CBusPointToPointCommand) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusPointToPointCommand) IsCBusPointToPointCommand() {}
+
+func (m *_CBusPointToPointCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointCommand) deepCopy() *_CBusPointToPointCommand {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointCommandCopy := &_CBusPointToPointCommand{
+		nil, // will be set by child
+		m.BridgeAddressCountPeek,
+		m.CalData.DeepCopy().(CALData),
+		m.CBusOptions,
+	}
+	return _CBusPointToPointCommandCopy
+}

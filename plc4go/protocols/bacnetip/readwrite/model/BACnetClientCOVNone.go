@@ -38,6 +38,7 @@ type BACnetClientCOVNone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetClientCOV
 	// GetDefaultIncrement returns DefaultIncrement (property field)
 	GetDefaultIncrement() BACnetApplicationTagNull
@@ -53,6 +54,19 @@ type _BACnetClientCOVNone struct {
 
 var _ BACnetClientCOVNone = (*_BACnetClientCOVNone)(nil)
 var _ BACnetClientCOVRequirements = (*_BACnetClientCOVNone)(nil)
+
+// NewBACnetClientCOVNone factory function for _BACnetClientCOVNone
+func NewBACnetClientCOVNone(peekedTagHeader BACnetTagHeader, defaultIncrement BACnetApplicationTagNull) *_BACnetClientCOVNone {
+	if defaultIncrement == nil {
+		panic("defaultIncrement of type BACnetApplicationTagNull for BACnetClientCOVNone must not be nil")
+	}
+	_result := &_BACnetClientCOVNone{
+		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
+		DefaultIncrement:        defaultIncrement,
+	}
+	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetClientCOVNone) GetDefaultIncrement() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClientCOVNone factory function for _BACnetClientCOVNone
-func NewBACnetClientCOVNone(defaultIncrement BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetClientCOVNone {
-	if defaultIncrement == nil {
-		panic("defaultIncrement of type BACnetApplicationTagNull for BACnetClientCOVNone must not be nil")
-	}
-	_result := &_BACnetClientCOVNone{
-		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
-		DefaultIncrement:        defaultIncrement,
-	}
-	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClientCOVNone(structType any) BACnetClientCOVNone {
@@ -178,6 +179,22 @@ func (m *_BACnetClientCOVNone) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetClientCOVNone) IsBACnetClientCOVNone() {}
+
+func (m *_BACnetClientCOVNone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetClientCOVNone) deepCopy() *_BACnetClientCOVNone {
+	if m == nil {
+		return nil
+	}
+	_BACnetClientCOVNoneCopy := &_BACnetClientCOVNone{
+		m.BACnetClientCOVContract.(*_BACnetClientCOV).deepCopy(),
+		m.DefaultIncrement.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = m
+	return _BACnetClientCOVNoneCopy
+}
 
 func (m *_BACnetClientCOVNone) String() string {
 	if m == nil {

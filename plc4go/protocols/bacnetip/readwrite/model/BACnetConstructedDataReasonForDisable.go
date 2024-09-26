@@ -38,6 +38,7 @@ type BACnetConstructedDataReasonForDisable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReasonForDisable returns ReasonForDisable (property field)
 	GetReasonForDisable() []BACnetAccessCredentialDisableReasonTagged
@@ -53,6 +54,16 @@ type _BACnetConstructedDataReasonForDisable struct {
 
 var _ BACnetConstructedDataReasonForDisable = (*_BACnetConstructedDataReasonForDisable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForDisable)(nil)
+
+// NewBACnetConstructedDataReasonForDisable factory function for _BACnetConstructedDataReasonForDisable
+func NewBACnetConstructedDataReasonForDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reasonForDisable []BACnetAccessCredentialDisableReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForDisable {
+	_result := &_BACnetConstructedDataReasonForDisable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ReasonForDisable:              reasonForDisable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataReasonForDisable) GetReasonForDisable() []BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReasonForDisable factory function for _BACnetConstructedDataReasonForDisable
-func NewBACnetConstructedDataReasonForDisable(reasonForDisable []BACnetAccessCredentialDisableReasonTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForDisable {
-	_result := &_BACnetConstructedDataReasonForDisable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ReasonForDisable:              reasonForDisable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReasonForDisable(structType any) BACnetConstructedDataReasonForDisable {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataReasonForDisable) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataReasonForDisable) IsBACnetConstructedDataReasonForDisable() {}
+
+func (m *_BACnetConstructedDataReasonForDisable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReasonForDisable) deepCopy() *_BACnetConstructedDataReasonForDisable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReasonForDisableCopy := &_BACnetConstructedDataReasonForDisable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetAccessCredentialDisableReasonTagged, BACnetAccessCredentialDisableReasonTagged](m.ReasonForDisable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReasonForDisableCopy
+}
 
 func (m *_BACnetConstructedDataReasonForDisable) String() string {
 	if m == nil {

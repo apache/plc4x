@@ -38,6 +38,7 @@ type BACnetEventParameterNone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
@@ -53,6 +54,19 @@ type _BACnetEventParameterNone struct {
 
 var _ BACnetEventParameterNone = (*_BACnetEventParameterNone)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterNone)(nil)
+
+// NewBACnetEventParameterNone factory function for _BACnetEventParameterNone
+func NewBACnetEventParameterNone(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetEventParameterNone {
+	if none == nil {
+		panic("none of type BACnetContextTagNull for BACnetEventParameterNone must not be nil")
+	}
+	_result := &_BACnetEventParameterNone{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		None:                         none,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetEventParameterNone) GetNone() BACnetContextTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterNone factory function for _BACnetEventParameterNone
-func NewBACnetEventParameterNone(none BACnetContextTagNull, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterNone {
-	if none == nil {
-		panic("none of type BACnetContextTagNull for BACnetEventParameterNone must not be nil")
-	}
-	_result := &_BACnetEventParameterNone{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		None:                         none,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterNone(structType any) BACnetEventParameterNone {
@@ -178,6 +179,22 @@ func (m *_BACnetEventParameterNone) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetEventParameterNone) IsBACnetEventParameterNone() {}
+
+func (m *_BACnetEventParameterNone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterNone) deepCopy() *_BACnetEventParameterNone {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterNoneCopy := &_BACnetEventParameterNone{
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
+		m.None.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterNoneCopy
+}
 
 func (m *_BACnetEventParameterNone) String() string {
 	if m == nil {

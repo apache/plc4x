@@ -38,6 +38,7 @@ type BACnetConstructedDataLoggingRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLoggingRecord returns LoggingRecord (property field)
 	GetLoggingRecord() BACnetAccumulatorRecord
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLoggingRecord struct {
 
 var _ BACnetConstructedDataLoggingRecord = (*_BACnetConstructedDataLoggingRecord)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoggingRecord)(nil)
+
+// NewBACnetConstructedDataLoggingRecord factory function for _BACnetConstructedDataLoggingRecord
+func NewBACnetConstructedDataLoggingRecord(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, loggingRecord BACnetAccumulatorRecord, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingRecord {
+	if loggingRecord == nil {
+		panic("loggingRecord of type BACnetAccumulatorRecord for BACnetConstructedDataLoggingRecord must not be nil")
+	}
+	_result := &_BACnetConstructedDataLoggingRecord{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LoggingRecord:                 loggingRecord,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLoggingRecord) GetActualValue() BACnetAccumulator
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLoggingRecord factory function for _BACnetConstructedDataLoggingRecord
-func NewBACnetConstructedDataLoggingRecord(loggingRecord BACnetAccumulatorRecord, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingRecord {
-	if loggingRecord == nil {
-		panic("loggingRecord of type BACnetAccumulatorRecord for BACnetConstructedDataLoggingRecord must not be nil")
-	}
-	_result := &_BACnetConstructedDataLoggingRecord{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LoggingRecord:                 loggingRecord,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLoggingRecord(structType any) BACnetConstructedDataLoggingRecord {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoggingRecord) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataLoggingRecord) IsBACnetConstructedDataLoggingRecord() {}
+
+func (m *_BACnetConstructedDataLoggingRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoggingRecord) deepCopy() *_BACnetConstructedDataLoggingRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoggingRecordCopy := &_BACnetConstructedDataLoggingRecord{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LoggingRecord.DeepCopy().(BACnetAccumulatorRecord),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoggingRecordCopy
+}
 
 func (m *_BACnetConstructedDataLoggingRecord) String() string {
 	if m == nil {

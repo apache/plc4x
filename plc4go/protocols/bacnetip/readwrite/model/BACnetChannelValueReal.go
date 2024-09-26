@@ -38,6 +38,7 @@ type BACnetChannelValueReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
@@ -53,6 +54,19 @@ type _BACnetChannelValueReal struct {
 
 var _ BACnetChannelValueReal = (*_BACnetChannelValueReal)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueReal)(nil)
+
+// NewBACnetChannelValueReal factory function for _BACnetChannelValueReal
+func NewBACnetChannelValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal) *_BACnetChannelValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetChannelValueReal must not be nil")
+	}
+	_result := &_BACnetChannelValueReal{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		RealValue:                  realValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueReal) GetRealValue() BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueReal factory function for _BACnetChannelValueReal
-func NewBACnetChannelValueReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueReal {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetChannelValueReal must not be nil")
-	}
-	_result := &_BACnetChannelValueReal{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		RealValue:                  realValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueReal(structType any) BACnetChannelValueReal {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueReal) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetChannelValueReal) IsBACnetChannelValueReal() {}
+
+func (m *_BACnetChannelValueReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueReal) deepCopy() *_BACnetChannelValueReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueRealCopy := &_BACnetChannelValueReal{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueRealCopy
+}
 
 func (m *_BACnetChannelValueReal) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetOptionalBinaryPVValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalBinaryPV
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
@@ -53,6 +54,19 @@ type _BACnetOptionalBinaryPVValue struct {
 
 var _ BACnetOptionalBinaryPVValue = (*_BACnetOptionalBinaryPVValue)(nil)
 var _ BACnetOptionalBinaryPVRequirements = (*_BACnetOptionalBinaryPVValue)(nil)
+
+// NewBACnetOptionalBinaryPVValue factory function for _BACnetOptionalBinaryPVValue
+func NewBACnetOptionalBinaryPVValue(peekedTagHeader BACnetTagHeader, binaryPv BACnetBinaryPVTagged) *_BACnetOptionalBinaryPVValue {
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetOptionalBinaryPVValue must not be nil")
+	}
+	_result := &_BACnetOptionalBinaryPVValue{
+		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
+		BinaryPv:                       binaryPv,
+	}
+	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetOptionalBinaryPVValue) GetBinaryPv() BACnetBinaryPVTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalBinaryPVValue factory function for _BACnetOptionalBinaryPVValue
-func NewBACnetOptionalBinaryPVValue(binaryPv BACnetBinaryPVTagged, peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPVValue {
-	if binaryPv == nil {
-		panic("binaryPv of type BACnetBinaryPVTagged for BACnetOptionalBinaryPVValue must not be nil")
-	}
-	_result := &_BACnetOptionalBinaryPVValue{
-		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
-		BinaryPv:                       binaryPv,
-	}
-	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalBinaryPVValue(structType any) BACnetOptionalBinaryPVValue {
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalBinaryPVValue) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetOptionalBinaryPVValue) IsBACnetOptionalBinaryPVValue() {}
+
+func (m *_BACnetOptionalBinaryPVValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalBinaryPVValue) deepCopy() *_BACnetOptionalBinaryPVValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalBinaryPVValueCopy := &_BACnetOptionalBinaryPVValue{
+		m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).deepCopy(),
+		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = m
+	return _BACnetOptionalBinaryPVValueCopy
+}
 
 func (m *_BACnetOptionalBinaryPVValue) String() string {
 	if m == nil {

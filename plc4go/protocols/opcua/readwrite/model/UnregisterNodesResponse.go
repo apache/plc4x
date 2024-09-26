@@ -38,6 +38,7 @@ type UnregisterNodesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -53,6 +54,19 @@ type _UnregisterNodesResponse struct {
 
 var _ UnregisterNodesResponse = (*_UnregisterNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UnregisterNodesResponse)(nil)
+
+// NewUnregisterNodesResponse factory function for _UnregisterNodesResponse
+func NewUnregisterNodesResponse(responseHeader ExtensionObjectDefinition) *_UnregisterNodesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for UnregisterNodesResponse must not be nil")
+	}
+	_result := &_UnregisterNodesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_UnregisterNodesResponse) GetResponseHeader() ExtensionObjectDefinition
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnregisterNodesResponse factory function for _UnregisterNodesResponse
-func NewUnregisterNodesResponse(responseHeader ExtensionObjectDefinition) *_UnregisterNodesResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for UnregisterNodesResponse must not be nil")
-	}
-	_result := &_UnregisterNodesResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnregisterNodesResponse(structType any) UnregisterNodesResponse {
@@ -182,6 +183,22 @@ func (m *_UnregisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_UnregisterNodesResponse) IsUnregisterNodesResponse() {}
+
+func (m *_UnregisterNodesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnregisterNodesResponse) deepCopy() *_UnregisterNodesResponse {
+	if m == nil {
+		return nil
+	}
+	_UnregisterNodesResponseCopy := &_UnregisterNodesResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UnregisterNodesResponseCopy
+}
 
 func (m *_UnregisterNodesResponse) String() string {
 	if m == nil {

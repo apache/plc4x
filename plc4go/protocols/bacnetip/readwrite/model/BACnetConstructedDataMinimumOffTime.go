@@ -38,6 +38,7 @@ type BACnetConstructedDataMinimumOffTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinimumOffTime returns MinimumOffTime (property field)
 	GetMinimumOffTime() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataMinimumOffTime struct {
 
 var _ BACnetConstructedDataMinimumOffTime = (*_BACnetConstructedDataMinimumOffTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumOffTime)(nil)
+
+// NewBACnetConstructedDataMinimumOffTime factory function for _BACnetConstructedDataMinimumOffTime
+func NewBACnetConstructedDataMinimumOffTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumOffTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOffTime {
+	if minimumOffTime == nil {
+		panic("minimumOffTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOffTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataMinimumOffTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinimumOffTime:                minimumOffTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataMinimumOffTime) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMinimumOffTime factory function for _BACnetConstructedDataMinimumOffTime
-func NewBACnetConstructedDataMinimumOffTime(minimumOffTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOffTime {
-	if minimumOffTime == nil {
-		panic("minimumOffTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOffTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataMinimumOffTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinimumOffTime:                minimumOffTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMinimumOffTime(structType any) BACnetConstructedDataMinimumOffTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMinimumOffTime) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataMinimumOffTime) IsBACnetConstructedDataMinimumOffTime() {}
+
+func (m *_BACnetConstructedDataMinimumOffTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMinimumOffTime) deepCopy() *_BACnetConstructedDataMinimumOffTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMinimumOffTimeCopy := &_BACnetConstructedDataMinimumOffTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MinimumOffTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMinimumOffTimeCopy
+}
 
 func (m *_BACnetConstructedDataMinimumOffTime) String() string {
 	if m == nil {

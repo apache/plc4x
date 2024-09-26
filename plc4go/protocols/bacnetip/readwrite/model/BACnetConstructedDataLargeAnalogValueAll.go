@@ -36,6 +36,7 @@ type BACnetConstructedDataLargeAnalogValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataLargeAnalogValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLargeAnalogValueAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataLargeAnalogValueAll struct {
 
 var _ BACnetConstructedDataLargeAnalogValueAll = (*_BACnetConstructedDataLargeAnalogValueAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueAll)(nil)
+
+// NewBACnetConstructedDataLargeAnalogValueAll factory function for _BACnetConstructedDataLargeAnalogValueAll
+func NewBACnetConstructedDataLargeAnalogValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueAll {
+	_result := &_BACnetConstructedDataLargeAnalogValueAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueAll) GetPropertyIdentifierArgumen
 
 func (m *_BACnetConstructedDataLargeAnalogValueAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataLargeAnalogValueAll factory function for _BACnetConstructedDataLargeAnalogValueAll
-func NewBACnetConstructedDataLargeAnalogValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueAll {
-	_result := &_BACnetConstructedDataLargeAnalogValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataLargeAnalogValueAll) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataLargeAnalogValueAll) IsBACnetConstructedDataLargeAnalogValueAll() {}
+
+func (m *_BACnetConstructedDataLargeAnalogValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueAll) deepCopy() *_BACnetConstructedDataLargeAnalogValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLargeAnalogValueAllCopy := &_BACnetConstructedDataLargeAnalogValueAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLargeAnalogValueAllCopy
+}
 
 func (m *_BACnetConstructedDataLargeAnalogValueAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLockout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLockout returns Lockout (property field)
 	GetLockout() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLockout struct {
 
 var _ BACnetConstructedDataLockout = (*_BACnetConstructedDataLockout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLockout)(nil)
+
+// NewBACnetConstructedDataLockout factory function for _BACnetConstructedDataLockout
+func NewBACnetConstructedDataLockout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockout BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockout {
+	if lockout == nil {
+		panic("lockout of type BACnetApplicationTagBoolean for BACnetConstructedDataLockout must not be nil")
+	}
+	_result := &_BACnetConstructedDataLockout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Lockout:                       lockout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLockout) GetActualValue() BACnetApplicationTagBoo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLockout factory function for _BACnetConstructedDataLockout
-func NewBACnetConstructedDataLockout(lockout BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockout {
-	if lockout == nil {
-		panic("lockout of type BACnetApplicationTagBoolean for BACnetConstructedDataLockout must not be nil")
-	}
-	_result := &_BACnetConstructedDataLockout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Lockout:                       lockout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLockout(structType any) BACnetConstructedDataLockout {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLockout) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataLockout) IsBACnetConstructedDataLockout() {}
+
+func (m *_BACnetConstructedDataLockout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLockout) deepCopy() *_BACnetConstructedDataLockout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLockoutCopy := &_BACnetConstructedDataLockout{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Lockout.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLockoutCopy
+}
 
 func (m *_BACnetConstructedDataLockout) String() string {
 	if m == nil {

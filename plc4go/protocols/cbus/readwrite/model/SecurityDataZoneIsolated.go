@@ -38,6 +38,7 @@ type SecurityDataZoneIsolated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
@@ -53,6 +54,16 @@ type _SecurityDataZoneIsolated struct {
 
 var _ SecurityDataZoneIsolated = (*_SecurityDataZoneIsolated)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataZoneIsolated)(nil)
+
+// NewSecurityDataZoneIsolated factory function for _SecurityDataZoneIsolated
+func NewSecurityDataZoneIsolated(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneIsolated {
+	_result := &_SecurityDataZoneIsolated{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_SecurityDataZoneIsolated) GetZoneNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataZoneIsolated factory function for _SecurityDataZoneIsolated
-func NewSecurityDataZoneIsolated(zoneNumber uint8, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataZoneIsolated {
-	_result := &_SecurityDataZoneIsolated{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataZoneIsolated(structType any) SecurityDataZoneIsolated {
@@ -175,6 +176,22 @@ func (m *_SecurityDataZoneIsolated) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SecurityDataZoneIsolated) IsSecurityDataZoneIsolated() {}
+
+func (m *_SecurityDataZoneIsolated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataZoneIsolated) deepCopy() *_SecurityDataZoneIsolated {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataZoneIsolatedCopy := &_SecurityDataZoneIsolated{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ZoneNumber,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataZoneIsolatedCopy
+}
 
 func (m *_SecurityDataZoneIsolated) String() string {
 	if m == nil {

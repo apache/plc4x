@@ -38,6 +38,7 @@ type DF1RequestProtectedTypedLogicalRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1RequestCommand
 	// GetByteSize returns ByteSize (property field)
 	GetByteSize() uint8
@@ -65,6 +66,20 @@ type _DF1RequestProtectedTypedLogicalRead struct {
 
 var _ DF1RequestProtectedTypedLogicalRead = (*_DF1RequestProtectedTypedLogicalRead)(nil)
 var _ DF1RequestCommandRequirements = (*_DF1RequestProtectedTypedLogicalRead)(nil)
+
+// NewDF1RequestProtectedTypedLogicalRead factory function for _DF1RequestProtectedTypedLogicalRead
+func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *_DF1RequestProtectedTypedLogicalRead {
+	_result := &_DF1RequestProtectedTypedLogicalRead{
+		DF1RequestCommandContract: NewDF1RequestCommand(),
+		ByteSize:                  byteSize,
+		FileNumber:                fileNumber,
+		FileType:                  fileType,
+		ElementNumber:             elementNumber,
+		SubElementNumber:          subElementNumber,
+	}
+	_result.DF1RequestCommandContract.(*_DF1RequestCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,20 +128,6 @@ func (m *_DF1RequestProtectedTypedLogicalRead) GetSubElementNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1RequestProtectedTypedLogicalRead factory function for _DF1RequestProtectedTypedLogicalRead
-func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *_DF1RequestProtectedTypedLogicalRead {
-	_result := &_DF1RequestProtectedTypedLogicalRead{
-		DF1RequestCommandContract: NewDF1RequestCommand(),
-		ByteSize:                  byteSize,
-		FileNumber:                fileNumber,
-		FileType:                  fileType,
-		ElementNumber:             elementNumber,
-		SubElementNumber:          subElementNumber,
-	}
-	_result.DF1RequestCommandContract.(*_DF1RequestCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1RequestProtectedTypedLogicalRead(structType any) DF1RequestProtectedTypedLogicalRead {
@@ -263,6 +264,26 @@ func (m *_DF1RequestProtectedTypedLogicalRead) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_DF1RequestProtectedTypedLogicalRead) IsDF1RequestProtectedTypedLogicalRead() {}
+
+func (m *_DF1RequestProtectedTypedLogicalRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1RequestProtectedTypedLogicalRead) deepCopy() *_DF1RequestProtectedTypedLogicalRead {
+	if m == nil {
+		return nil
+	}
+	_DF1RequestProtectedTypedLogicalReadCopy := &_DF1RequestProtectedTypedLogicalRead{
+		m.DF1RequestCommandContract.(*_DF1RequestCommand).deepCopy(),
+		m.ByteSize,
+		m.FileNumber,
+		m.FileType,
+		m.ElementNumber,
+		m.SubElementNumber,
+	}
+	m.DF1RequestCommandContract.(*_DF1RequestCommand)._SubType = m
+	return _DF1RequestProtectedTypedLogicalReadCopy
+}
 
 func (m *_DF1RequestProtectedTypedLogicalRead) String() string {
 	if m == nil {

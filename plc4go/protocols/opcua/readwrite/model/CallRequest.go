@@ -38,6 +38,7 @@ type CallRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _CallRequest struct {
 
 var _ CallRequest = (*_CallRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallRequest)(nil)
+
+// NewCallRequest factory function for _CallRequest
+func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) *_CallRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CallRequest must not be nil")
+	}
+	_result := &_CallRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfMethodsToCall:                 noOfMethodsToCall,
+		MethodsToCall:                     methodsToCall,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_CallRequest) GetMethodsToCall() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCallRequest factory function for _CallRequest
-func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) *_CallRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CallRequest must not be nil")
-	}
-	_result := &_CallRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfMethodsToCall:                 noOfMethodsToCall,
-		MethodsToCall:                     methodsToCall,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCallRequest(structType any) CallRequest {
@@ -231,6 +232,24 @@ func (m *_CallRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_CallRequest) IsCallRequest() {}
+
+func (m *_CallRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CallRequest) deepCopy() *_CallRequest {
+	if m == nil {
+		return nil
+	}
+	_CallRequestCopy := &_CallRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfMethodsToCall,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MethodsToCall),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CallRequestCopy
+}
 
 func (m *_CallRequest) String() string {
 	if m == nil {

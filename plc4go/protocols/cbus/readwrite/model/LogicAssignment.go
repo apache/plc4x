@@ -38,6 +38,7 @@ type LogicAssignment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetGreaterOfOrLogic returns GreaterOfOrLogic (property field)
 	GetGreaterOfOrLogic() bool
 	// GetReStrikeDelay returns ReStrikeDelay (property field)
@@ -68,6 +69,11 @@ type _LogicAssignment struct {
 }
 
 var _ LogicAssignment = (*_LogicAssignment)(nil)
+
+// NewLogicAssignment factory function for _LogicAssignment
+func NewLogicAssignment(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) *_LogicAssignment {
+	return &_LogicAssignment{GreaterOfOrLogic: greaterOfOrLogic, ReStrikeDelay: reStrikeDelay, AssignedToGav16: assignedToGav16, AssignedToGav15: assignedToGav15, AssignedToGav14: assignedToGav14, AssignedToGav13: assignedToGav13}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,11 +108,6 @@ func (m *_LogicAssignment) GetAssignedToGav13() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLogicAssignment factory function for _LogicAssignment
-func NewLogicAssignment(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) *_LogicAssignment {
-	return &_LogicAssignment{GreaterOfOrLogic: greaterOfOrLogic, ReStrikeDelay: reStrikeDelay, AssignedToGav16: assignedToGav16, AssignedToGav15: assignedToGav15, AssignedToGav14: assignedToGav14, AssignedToGav13: assignedToGav13}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLogicAssignment(structType any) LogicAssignment {
@@ -295,6 +296,27 @@ func (m *_LogicAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_LogicAssignment) IsLogicAssignment() {}
+
+func (m *_LogicAssignment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LogicAssignment) deepCopy() *_LogicAssignment {
+	if m == nil {
+		return nil
+	}
+	_LogicAssignmentCopy := &_LogicAssignment{
+		m.GreaterOfOrLogic,
+		m.ReStrikeDelay,
+		m.AssignedToGav16,
+		m.AssignedToGav15,
+		m.AssignedToGav14,
+		m.AssignedToGav13,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _LogicAssignmentCopy
+}
 
 func (m *_LogicAssignment) String() string {
 	if m == nil {

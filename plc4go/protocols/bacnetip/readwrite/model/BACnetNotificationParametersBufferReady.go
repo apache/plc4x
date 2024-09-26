@@ -38,6 +38,7 @@ type BACnetNotificationParametersBufferReady interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -65,6 +66,35 @@ type _BACnetNotificationParametersBufferReady struct {
 
 var _ BACnetNotificationParametersBufferReady = (*_BACnetNotificationParametersBufferReady)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersBufferReady)(nil)
+
+// NewBACnetNotificationParametersBufferReady factory function for _BACnetNotificationParametersBufferReady
+func NewBACnetNotificationParametersBufferReady(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, bufferProperty BACnetDeviceObjectPropertyReferenceEnclosed, previousNotification BACnetContextTagUnsignedInteger, currentNotification BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersBufferReady {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersBufferReady must not be nil")
+	}
+	if bufferProperty == nil {
+		panic("bufferProperty of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetNotificationParametersBufferReady must not be nil")
+	}
+	if previousNotification == nil {
+		panic("previousNotification of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersBufferReady must not be nil")
+	}
+	if currentNotification == nil {
+		panic("currentNotification of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersBufferReady must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersBufferReady must not be nil")
+	}
+	_result := &_BACnetNotificationParametersBufferReady{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		BufferProperty:                       bufferProperty,
+		PreviousNotification:                 previousNotification,
+		CurrentNotification:                  currentNotification,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,35 +139,6 @@ func (m *_BACnetNotificationParametersBufferReady) GetInnerClosingTag() BACnetCl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersBufferReady factory function for _BACnetNotificationParametersBufferReady
-func NewBACnetNotificationParametersBufferReady(innerOpeningTag BACnetOpeningTag, bufferProperty BACnetDeviceObjectPropertyReferenceEnclosed, previousNotification BACnetContextTagUnsignedInteger, currentNotification BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersBufferReady {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersBufferReady must not be nil")
-	}
-	if bufferProperty == nil {
-		panic("bufferProperty of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetNotificationParametersBufferReady must not be nil")
-	}
-	if previousNotification == nil {
-		panic("previousNotification of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersBufferReady must not be nil")
-	}
-	if currentNotification == nil {
-		panic("currentNotification of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersBufferReady must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersBufferReady must not be nil")
-	}
-	_result := &_BACnetNotificationParametersBufferReady{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		BufferProperty:                       bufferProperty,
-		PreviousNotification:                 previousNotification,
-		CurrentNotification:                  currentNotification,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersBufferReady(structType any) BACnetNotificationParametersBufferReady {
@@ -274,6 +275,26 @@ func (m *_BACnetNotificationParametersBufferReady) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetNotificationParametersBufferReady) IsBACnetNotificationParametersBufferReady() {}
+
+func (m *_BACnetNotificationParametersBufferReady) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersBufferReady) deepCopy() *_BACnetNotificationParametersBufferReady {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersBufferReadyCopy := &_BACnetNotificationParametersBufferReady{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.BufferProperty.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.PreviousNotification.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.CurrentNotification.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersBufferReadyCopy
+}
 
 func (m *_BACnetNotificationParametersBufferReady) String() string {
 	if m == nil {

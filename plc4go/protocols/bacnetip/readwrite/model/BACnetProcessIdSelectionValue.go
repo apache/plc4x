@@ -38,6 +38,7 @@ type BACnetProcessIdSelectionValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetProcessIdSelection
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetProcessIdSelectionValue struct {
 
 var _ BACnetProcessIdSelectionValue = (*_BACnetProcessIdSelectionValue)(nil)
 var _ BACnetProcessIdSelectionRequirements = (*_BACnetProcessIdSelectionValue)(nil)
+
+// NewBACnetProcessIdSelectionValue factory function for _BACnetProcessIdSelectionValue
+func NewBACnetProcessIdSelectionValue(peekedTagHeader BACnetTagHeader, processIdentifier BACnetApplicationTagUnsignedInteger) *_BACnetProcessIdSelectionValue {
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetProcessIdSelectionValue must not be nil")
+	}
+	_result := &_BACnetProcessIdSelectionValue{
+		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
+		ProcessIdentifier:                processIdentifier,
+	}
+	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetProcessIdSelectionValue) GetProcessIdentifier() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProcessIdSelectionValue factory function for _BACnetProcessIdSelectionValue
-func NewBACnetProcessIdSelectionValue(processIdentifier BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelectionValue {
-	if processIdentifier == nil {
-		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetProcessIdSelectionValue must not be nil")
-	}
-	_result := &_BACnetProcessIdSelectionValue{
-		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
-		ProcessIdentifier:                processIdentifier,
-	}
-	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProcessIdSelectionValue(structType any) BACnetProcessIdSelectionValue {
@@ -178,6 +179,22 @@ func (m *_BACnetProcessIdSelectionValue) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetProcessIdSelectionValue) IsBACnetProcessIdSelectionValue() {}
+
+func (m *_BACnetProcessIdSelectionValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProcessIdSelectionValue) deepCopy() *_BACnetProcessIdSelectionValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetProcessIdSelectionValueCopy := &_BACnetProcessIdSelectionValue{
+		m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection).deepCopy(),
+		m.ProcessIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = m
+	return _BACnetProcessIdSelectionValueCopy
+}
 
 func (m *_BACnetProcessIdSelectionValue) String() string {
 	if m == nil {

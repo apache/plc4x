@@ -38,6 +38,7 @@ type NLMUpdateKeyUpdate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetControlFlags returns ControlFlags (property field)
 	GetControlFlags() NLMUpdateKeyUpdateControlFlags
@@ -83,6 +84,29 @@ type _NLMUpdateKeyUpdate struct {
 
 var _ NLMUpdateKeyUpdate = (*_NLMUpdateKeyUpdate)(nil)
 var _ NLMRequirements = (*_NLMUpdateKeyUpdate)(nil)
+
+// NewNLMUpdateKeyUpdate factory function for _NLMUpdateKeyUpdate
+func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyRevision *byte, set1ActivationTime *uint32, set1ExpirationTime *uint32, set1KeyCount *uint8, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2KeyRevision *byte, set2ActivationTime *uint32, set2ExpirationTime *uint32, set2KeyCount *uint8, set2Keys []NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyUpdate {
+	if controlFlags == nil {
+		panic("controlFlags of type NLMUpdateKeyUpdateControlFlags for NLMUpdateKeyUpdate must not be nil")
+	}
+	_result := &_NLMUpdateKeyUpdate{
+		NLMContract:        NewNLM(apduLength),
+		ControlFlags:       controlFlags,
+		Set1KeyRevision:    set1KeyRevision,
+		Set1ActivationTime: set1ActivationTime,
+		Set1ExpirationTime: set1ExpirationTime,
+		Set1KeyCount:       set1KeyCount,
+		Set1Keys:           set1Keys,
+		Set2KeyRevision:    set2KeyRevision,
+		Set2ActivationTime: set2ActivationTime,
+		Set2ExpirationTime: set2ExpirationTime,
+		Set2KeyCount:       set2KeyCount,
+		Set2Keys:           set2Keys,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -155,29 +179,6 @@ func (m *_NLMUpdateKeyUpdate) GetSet2Keys() []NLMUpdateKeyUpdateKeyEntry {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMUpdateKeyUpdate factory function for _NLMUpdateKeyUpdate
-func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyRevision *byte, set1ActivationTime *uint32, set1ExpirationTime *uint32, set1KeyCount *uint8, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2KeyRevision *byte, set2ActivationTime *uint32, set2ExpirationTime *uint32, set2KeyCount *uint8, set2Keys []NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyUpdate {
-	if controlFlags == nil {
-		panic("controlFlags of type NLMUpdateKeyUpdateControlFlags for NLMUpdateKeyUpdate must not be nil")
-	}
-	_result := &_NLMUpdateKeyUpdate{
-		NLMContract:        NewNLM(apduLength),
-		ControlFlags:       controlFlags,
-		Set1KeyRevision:    set1KeyRevision,
-		Set1ActivationTime: set1ActivationTime,
-		Set1ExpirationTime: set1ExpirationTime,
-		Set1KeyCount:       set1KeyCount,
-		Set1Keys:           set1Keys,
-		Set2KeyRevision:    set2KeyRevision,
-		Set2ActivationTime: set2ActivationTime,
-		Set2ExpirationTime: set2ExpirationTime,
-		Set2KeyCount:       set2KeyCount,
-		Set2Keys:           set2Keys,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMUpdateKeyUpdate(structType any) NLMUpdateKeyUpdate {
@@ -430,6 +431,32 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_NLMUpdateKeyUpdate) IsNLMUpdateKeyUpdate() {}
+
+func (m *_NLMUpdateKeyUpdate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMUpdateKeyUpdate) deepCopy() *_NLMUpdateKeyUpdate {
+	if m == nil {
+		return nil
+	}
+	_NLMUpdateKeyUpdateCopy := &_NLMUpdateKeyUpdate{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.ControlFlags.DeepCopy().(NLMUpdateKeyUpdateControlFlags),
+		utils.CopyPtr[byte](m.Set1KeyRevision),
+		utils.CopyPtr[uint32](m.Set1ActivationTime),
+		utils.CopyPtr[uint32](m.Set1ExpirationTime),
+		utils.CopyPtr[uint8](m.Set1KeyCount),
+		utils.DeepCopySlice[NLMUpdateKeyUpdateKeyEntry, NLMUpdateKeyUpdateKeyEntry](m.Set1Keys),
+		utils.CopyPtr[byte](m.Set2KeyRevision),
+		utils.CopyPtr[uint32](m.Set2ActivationTime),
+		utils.CopyPtr[uint32](m.Set2ExpirationTime),
+		utils.CopyPtr[uint8](m.Set2KeyCount),
+		utils.DeepCopySlice[NLMUpdateKeyUpdateKeyEntry, NLMUpdateKeyUpdateKeyEntry](m.Set2Keys),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMUpdateKeyUpdateCopy
+}
 
 func (m *_NLMUpdateKeyUpdate) String() string {
 	if m == nil {

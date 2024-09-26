@@ -38,6 +38,7 @@ type BACnetConstructedDataOutOfService interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOutOfService returns OutOfService (property field)
 	GetOutOfService() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataOutOfService struct {
 
 var _ BACnetConstructedDataOutOfService = (*_BACnetConstructedDataOutOfService)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOutOfService)(nil)
+
+// NewBACnetConstructedDataOutOfService factory function for _BACnetConstructedDataOutOfService
+func NewBACnetConstructedDataOutOfService(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, outOfService BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutOfService {
+	if outOfService == nil {
+		panic("outOfService of type BACnetApplicationTagBoolean for BACnetConstructedDataOutOfService must not be nil")
+	}
+	_result := &_BACnetConstructedDataOutOfService{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OutOfService:                  outOfService,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataOutOfService) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOutOfService factory function for _BACnetConstructedDataOutOfService
-func NewBACnetConstructedDataOutOfService(outOfService BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutOfService {
-	if outOfService == nil {
-		panic("outOfService of type BACnetApplicationTagBoolean for BACnetConstructedDataOutOfService must not be nil")
-	}
-	_result := &_BACnetConstructedDataOutOfService{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OutOfService:                  outOfService,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOutOfService(structType any) BACnetConstructedDataOutOfService {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOutOfService) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataOutOfService) IsBACnetConstructedDataOutOfService() {}
+
+func (m *_BACnetConstructedDataOutOfService) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOutOfService) deepCopy() *_BACnetConstructedDataOutOfService {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOutOfServiceCopy := &_BACnetConstructedDataOutOfService{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.OutOfService.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOutOfServiceCopy
+}
 
 func (m *_BACnetConstructedDataOutOfService) String() string {
 	if m == nil {

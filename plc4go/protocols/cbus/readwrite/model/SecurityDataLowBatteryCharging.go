@@ -38,6 +38,7 @@ type SecurityDataLowBatteryCharging interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetStartStop returns StartStop (property field)
 	GetStartStop() byte
@@ -57,6 +58,16 @@ type _SecurityDataLowBatteryCharging struct {
 
 var _ SecurityDataLowBatteryCharging = (*_SecurityDataLowBatteryCharging)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataLowBatteryCharging)(nil)
+
+// NewSecurityDataLowBatteryCharging factory function for _SecurityDataLowBatteryCharging
+func NewSecurityDataLowBatteryCharging(commandTypeContainer SecurityCommandTypeContainer, argument byte, startStop byte) *_SecurityDataLowBatteryCharging {
+	_result := &_SecurityDataLowBatteryCharging{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		StartStop:            startStop,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +117,6 @@ func (m *_SecurityDataLowBatteryCharging) GetChargeStarted() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataLowBatteryCharging factory function for _SecurityDataLowBatteryCharging
-func NewSecurityDataLowBatteryCharging(startStop byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLowBatteryCharging {
-	_result := &_SecurityDataLowBatteryCharging{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		StartStop:            startStop,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataLowBatteryCharging(structType any) SecurityDataLowBatteryCharging {
@@ -228,6 +229,22 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_SecurityDataLowBatteryCharging) IsSecurityDataLowBatteryCharging() {}
+
+func (m *_SecurityDataLowBatteryCharging) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataLowBatteryCharging) deepCopy() *_SecurityDataLowBatteryCharging {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataLowBatteryChargingCopy := &_SecurityDataLowBatteryCharging{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.StartStop,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataLowBatteryChargingCopy
+}
 
 func (m *_SecurityDataLowBatteryCharging) String() string {
 	if m == nil {

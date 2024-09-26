@@ -38,6 +38,7 @@ type VariantString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantString struct {
 
 var _ VariantString = (*_VariantString)(nil)
 var _ VariantRequirements = (*_VariantString)(nil)
+
+// NewVariantString factory function for _VariantString
+func NewVariantString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []PascalString) *_VariantString {
+	_result := &_VariantString{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantString) GetValue() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantString factory function for _VariantString
-func NewVariantString(arrayLength *int32, value []PascalString, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantString {
-	_result := &_VariantString{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantString(structType any) VariantString {
@@ -210,6 +211,23 @@ func (m *_VariantString) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_VariantString) IsVariantString() {}
+
+func (m *_VariantString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantString) deepCopy() *_VariantString {
+	if m == nil {
+		return nil
+	}
+	_VariantStringCopy := &_VariantString{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[PascalString, PascalString](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantStringCopy
+}
 
 func (m *_VariantString) String() string {
 	if m == nil {

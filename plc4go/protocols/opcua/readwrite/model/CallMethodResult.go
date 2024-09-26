@@ -38,6 +38,7 @@ type CallMethodResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -71,6 +72,25 @@ type _CallMethodResult struct {
 
 var _ CallMethodResult = (*_CallMethodResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallMethodResult)(nil)
+
+// NewCallMethodResult factory function for _CallMethodResult
+func NewCallMethodResult(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) *_CallMethodResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for CallMethodResult must not be nil")
+	}
+	_result := &_CallMethodResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfInputArgumentResults:          noOfInputArgumentResults,
+		InputArgumentResults:              inputArgumentResults,
+		NoOfInputArgumentDiagnosticInfos:  noOfInputArgumentDiagnosticInfos,
+		InputArgumentDiagnosticInfos:      inputArgumentDiagnosticInfos,
+		NoOfOutputArguments:               noOfOutputArguments,
+		OutputArguments:                   outputArguments,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,25 +147,6 @@ func (m *_CallMethodResult) GetOutputArguments() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCallMethodResult factory function for _CallMethodResult
-func NewCallMethodResult(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) *_CallMethodResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for CallMethodResult must not be nil")
-	}
-	_result := &_CallMethodResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfInputArgumentResults:          noOfInputArgumentResults,
-		InputArgumentResults:              inputArgumentResults,
-		NoOfInputArgumentDiagnosticInfos:  noOfInputArgumentDiagnosticInfos,
-		InputArgumentDiagnosticInfos:      inputArgumentDiagnosticInfos,
-		NoOfOutputArguments:               noOfOutputArguments,
-		OutputArguments:                   outputArguments,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCallMethodResult(structType any) CallMethodResult {
@@ -329,6 +330,28 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_CallMethodResult) IsCallMethodResult() {}
+
+func (m *_CallMethodResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CallMethodResult) deepCopy() *_CallMethodResult {
+	if m == nil {
+		return nil
+	}
+	_CallMethodResultCopy := &_CallMethodResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfInputArgumentResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.InputArgumentResults),
+		m.NoOfInputArgumentDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.InputArgumentDiagnosticInfos),
+		m.NoOfOutputArguments,
+		utils.DeepCopySlice[Variant, Variant](m.OutputArguments),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CallMethodResultCopy
+}
 
 func (m *_CallMethodResult) String() string {
 	if m == nil {

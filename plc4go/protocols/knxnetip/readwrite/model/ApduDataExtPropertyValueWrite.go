@@ -38,6 +38,7 @@ type ApduDataExtPropertyValueWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -65,6 +66,20 @@ type _ApduDataExtPropertyValueWrite struct {
 
 var _ ApduDataExtPropertyValueWrite = (*_ApduDataExtPropertyValueWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueWrite)(nil)
+
+// NewApduDataExtPropertyValueWrite factory function for _ApduDataExtPropertyValueWrite
+func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueWrite {
+	_result := &_ApduDataExtPropertyValueWrite{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Count:               count,
+		Index:               index,
+		Data:                data,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,20 +128,6 @@ func (m *_ApduDataExtPropertyValueWrite) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyValueWrite factory function for _ApduDataExtPropertyValueWrite
-func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueWrite {
-	_result := &_ApduDataExtPropertyValueWrite{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Count:               count,
-		Index:               index,
-		Data:                data,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyValueWrite(structType any) ApduDataExtPropertyValueWrite {
@@ -265,6 +266,26 @@ func (m *_ApduDataExtPropertyValueWrite) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_ApduDataExtPropertyValueWrite) IsApduDataExtPropertyValueWrite() {}
+
+func (m *_ApduDataExtPropertyValueWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtPropertyValueWrite) deepCopy() *_ApduDataExtPropertyValueWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtPropertyValueWriteCopy := &_ApduDataExtPropertyValueWrite{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.ObjectIndex,
+		m.PropertyId,
+		m.Count,
+		m.Index,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtPropertyValueWriteCopy
+}
 
 func (m *_ApduDataExtPropertyValueWrite) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type OpcuaOpenRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetOpenRequest returns OpenRequest (property field)
 	GetOpenRequest() OpenChannelMessage
@@ -59,6 +60,23 @@ type _OpcuaOpenRequest struct {
 
 var _ OpcuaOpenRequest = (*_OpcuaOpenRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaOpenRequest)(nil)
+
+// NewOpcuaOpenRequest factory function for _OpcuaOpenRequest
+func NewOpcuaOpenRequest(chunk ChunkType, openRequest OpenChannelMessage, message Payload, totalLength uint32) *_OpcuaOpenRequest {
+	if openRequest == nil {
+		panic("openRequest of type OpenChannelMessage for OpcuaOpenRequest must not be nil")
+	}
+	if message == nil {
+		panic("message of type Payload for OpcuaOpenRequest must not be nil")
+	}
+	_result := &_OpcuaOpenRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		OpenRequest:        openRequest,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,23 +117,6 @@ func (m *_OpcuaOpenRequest) GetMessage() Payload {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaOpenRequest factory function for _OpcuaOpenRequest
-func NewOpcuaOpenRequest(openRequest OpenChannelMessage, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaOpenRequest {
-	if openRequest == nil {
-		panic("openRequest of type OpenChannelMessage for OpcuaOpenRequest must not be nil")
-	}
-	if message == nil {
-		panic("message of type Payload for OpcuaOpenRequest must not be nil")
-	}
-	_result := &_OpcuaOpenRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		OpenRequest:        openRequest,
-		Message:            message,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaOpenRequest(structType any) OpcuaOpenRequest {
@@ -223,6 +224,24 @@ func (m *_OpcuaOpenRequest) GetTotalLength() uint32 {
 ////
 
 func (m *_OpcuaOpenRequest) IsOpcuaOpenRequest() {}
+
+func (m *_OpcuaOpenRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaOpenRequest) deepCopy() *_OpcuaOpenRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaOpenRequestCopy := &_OpcuaOpenRequest{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.OpenRequest.DeepCopy().(OpenChannelMessage),
+		m.Message.DeepCopy().(Payload),
+		m.TotalLength,
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaOpenRequestCopy
+}
 
 func (m *_OpcuaOpenRequest) String() string {
 	if m == nil {

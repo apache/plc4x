@@ -38,6 +38,7 @@ type BACnetConstructedDataNextStoppingFloor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNextStoppingFloor returns NextStoppingFloor (property field)
 	GetNextStoppingFloor() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataNextStoppingFloor struct {
 
 var _ BACnetConstructedDataNextStoppingFloor = (*_BACnetConstructedDataNextStoppingFloor)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNextStoppingFloor)(nil)
+
+// NewBACnetConstructedDataNextStoppingFloor factory function for _BACnetConstructedDataNextStoppingFloor
+func NewBACnetConstructedDataNextStoppingFloor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nextStoppingFloor BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNextStoppingFloor {
+	if nextStoppingFloor == nil {
+		panic("nextStoppingFloor of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNextStoppingFloor must not be nil")
+	}
+	_result := &_BACnetConstructedDataNextStoppingFloor{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NextStoppingFloor:             nextStoppingFloor,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataNextStoppingFloor) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNextStoppingFloor factory function for _BACnetConstructedDataNextStoppingFloor
-func NewBACnetConstructedDataNextStoppingFloor(nextStoppingFloor BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNextStoppingFloor {
-	if nextStoppingFloor == nil {
-		panic("nextStoppingFloor of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNextStoppingFloor must not be nil")
-	}
-	_result := &_BACnetConstructedDataNextStoppingFloor{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NextStoppingFloor:             nextStoppingFloor,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNextStoppingFloor(structType any) BACnetConstructedDataNextStoppingFloor {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNextStoppingFloor) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataNextStoppingFloor) IsBACnetConstructedDataNextStoppingFloor() {}
+
+func (m *_BACnetConstructedDataNextStoppingFloor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNextStoppingFloor) deepCopy() *_BACnetConstructedDataNextStoppingFloor {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNextStoppingFloorCopy := &_BACnetConstructedDataNextStoppingFloor{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NextStoppingFloor.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNextStoppingFloorCopy
+}
 
 func (m *_BACnetConstructedDataNextStoppingFloor) String() string {
 	if m == nil {

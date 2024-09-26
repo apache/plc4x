@@ -40,6 +40,7 @@ type BACnetLogData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogData()
 }
@@ -81,6 +82,20 @@ type _BACnetLogData struct {
 
 var _ BACnetLogDataContract = (*_BACnetLogData)(nil)
 
+// NewBACnetLogData factory function for _BACnetLogData
+func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogData {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetLogData must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetLogData must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetLogData must not be nil")
+	}
+	return &_BACnetLogData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -118,20 +133,6 @@ func (pm *_BACnetLogData) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogData factory function for _BACnetLogData
-func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogData {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetLogData must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetLogData must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetLogData must not be nil")
-	}
-	return &_BACnetLogData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogData(structType any) BACnetLogData {
@@ -226,15 +227,15 @@ func (m *_BACnetLogData) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	var _child BACnetLogData
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogStatus
-		if _child, err = (&_BACnetLogDataLogStatus{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogStatus).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogStatus for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogData
-		if _child, err = (&_BACnetLogDataLogData{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogData).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogData for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataTimeChange
-		if _child, err = (&_BACnetLogDataLogDataTimeChange{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogDataTimeChange).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogDataTimeChange for type-switch of BACnetLogData")
 		}
 	default:
@@ -302,3 +303,21 @@ func (m *_BACnetLogData) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetLogData) IsBACnetLogData() {}
+
+func (m *_BACnetLogData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogData) deepCopy() *_BACnetLogData {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataCopy := &_BACnetLogData{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetLogDataCopy
+}

@@ -38,6 +38,7 @@ type BACnetConstructedDataNumberOfAPDURetries interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfApduRetries returns NumberOfApduRetries (property field)
 	GetNumberOfApduRetries() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataNumberOfAPDURetries struct {
 
 var _ BACnetConstructedDataNumberOfAPDURetries = (*_BACnetConstructedDataNumberOfAPDURetries)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfAPDURetries)(nil)
+
+// NewBACnetConstructedDataNumberOfAPDURetries factory function for _BACnetConstructedDataNumberOfAPDURetries
+func NewBACnetConstructedDataNumberOfAPDURetries(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfApduRetries BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAPDURetries {
+	if numberOfApduRetries == nil {
+		panic("numberOfApduRetries of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAPDURetries must not be nil")
+	}
+	_result := &_BACnetConstructedDataNumberOfAPDURetries{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfApduRetries:           numberOfApduRetries,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) GetActualValue() BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNumberOfAPDURetries factory function for _BACnetConstructedDataNumberOfAPDURetries
-func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAPDURetries {
-	if numberOfApduRetries == nil {
-		panic("numberOfApduRetries of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAPDURetries must not be nil")
-	}
-	_result := &_BACnetConstructedDataNumberOfAPDURetries{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfApduRetries:           numberOfApduRetries,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNumberOfAPDURetries(structType any) BACnetConstructedDataNumberOfAPDURetries {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNumberOfAPDURetries) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataNumberOfAPDURetries) IsBACnetConstructedDataNumberOfAPDURetries() {}
+
+func (m *_BACnetConstructedDataNumberOfAPDURetries) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNumberOfAPDURetries) deepCopy() *_BACnetConstructedDataNumberOfAPDURetries {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNumberOfAPDURetriesCopy := &_BACnetConstructedDataNumberOfAPDURetries{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfApduRetries.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNumberOfAPDURetriesCopy
+}
 
 func (m *_BACnetConstructedDataNumberOfAPDURetries) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type AdsDiscoveryBlockFingerprint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -53,6 +54,16 @@ type _AdsDiscoveryBlockFingerprint struct {
 
 var _ AdsDiscoveryBlockFingerprint = (*_AdsDiscoveryBlockFingerprint)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockFingerprint)(nil)
+
+// NewAdsDiscoveryBlockFingerprint factory function for _AdsDiscoveryBlockFingerprint
+func NewAdsDiscoveryBlockFingerprint(data []byte) *_AdsDiscoveryBlockFingerprint {
+	_result := &_AdsDiscoveryBlockFingerprint{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		Data:                      data,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_AdsDiscoveryBlockFingerprint) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockFingerprint factory function for _AdsDiscoveryBlockFingerprint
-func NewAdsDiscoveryBlockFingerprint(data []byte) *_AdsDiscoveryBlockFingerprint {
-	_result := &_AdsDiscoveryBlockFingerprint{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		Data:                      data,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockFingerprint(structType any) AdsDiscoveryBlockFingerprint {
@@ -194,6 +195,22 @@ func (m *_AdsDiscoveryBlockFingerprint) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_AdsDiscoveryBlockFingerprint) IsAdsDiscoveryBlockFingerprint() {}
+
+func (m *_AdsDiscoveryBlockFingerprint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockFingerprint) deepCopy() *_AdsDiscoveryBlockFingerprint {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockFingerprintCopy := &_AdsDiscoveryBlockFingerprint{
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockFingerprintCopy
+}
 
 func (m *_AdsDiscoveryBlockFingerprint) String() string {
 	if m == nil {

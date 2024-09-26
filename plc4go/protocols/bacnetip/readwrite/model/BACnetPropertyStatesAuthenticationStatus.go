@@ -38,6 +38,7 @@ type BACnetPropertyStatesAuthenticationStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetAuthenticationStatus returns AuthenticationStatus (property field)
 	GetAuthenticationStatus() BACnetAuthenticationStatusTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesAuthenticationStatus struct {
 
 var _ BACnetPropertyStatesAuthenticationStatus = (*_BACnetPropertyStatesAuthenticationStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAuthenticationStatus)(nil)
+
+// NewBACnetPropertyStatesAuthenticationStatus factory function for _BACnetPropertyStatesAuthenticationStatus
+func NewBACnetPropertyStatesAuthenticationStatus(peekedTagHeader BACnetTagHeader, authenticationStatus BACnetAuthenticationStatusTagged) *_BACnetPropertyStatesAuthenticationStatus {
+	if authenticationStatus == nil {
+		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetPropertyStatesAuthenticationStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesAuthenticationStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		AuthenticationStatus:         authenticationStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) GetAuthenticationStatus() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesAuthenticationStatus factory function for _BACnetPropertyStatesAuthenticationStatus
-func NewBACnetPropertyStatesAuthenticationStatus(authenticationStatus BACnetAuthenticationStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAuthenticationStatus {
-	if authenticationStatus == nil {
-		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetPropertyStatesAuthenticationStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesAuthenticationStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		AuthenticationStatus:         authenticationStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesAuthenticationStatus(structType any) BACnetPropertyStatesAuthenticationStatus {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetPropertyStatesAuthenticationStatus) IsBACnetPropertyStatesAuthenticationStatus() {}
+
+func (m *_BACnetPropertyStatesAuthenticationStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesAuthenticationStatus) deepCopy() *_BACnetPropertyStatesAuthenticationStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesAuthenticationStatusCopy := &_BACnetPropertyStatesAuthenticationStatus{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.AuthenticationStatus.DeepCopy().(BACnetAuthenticationStatusTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesAuthenticationStatusCopy
+}
 
 func (m *_BACnetPropertyStatesAuthenticationStatus) String() string {
 	if m == nil {

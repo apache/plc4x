@@ -38,6 +38,7 @@ type COTPParameterDisconnectAdditionalInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPParameter
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -53,6 +54,16 @@ type _COTPParameterDisconnectAdditionalInformation struct {
 
 var _ COTPParameterDisconnectAdditionalInformation = (*_COTPParameterDisconnectAdditionalInformation)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterDisconnectAdditionalInformation)(nil)
+
+// NewCOTPParameterDisconnectAdditionalInformation factory function for _COTPParameterDisconnectAdditionalInformation
+func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *_COTPParameterDisconnectAdditionalInformation {
+	_result := &_COTPParameterDisconnectAdditionalInformation{
+		COTPParameterContract: NewCOTPParameter(rest),
+		Data:                  data,
+	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_COTPParameterDisconnectAdditionalInformation) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPParameterDisconnectAdditionalInformation factory function for _COTPParameterDisconnectAdditionalInformation
-func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *_COTPParameterDisconnectAdditionalInformation {
-	_result := &_COTPParameterDisconnectAdditionalInformation{
-		COTPParameterContract: NewCOTPParameter(rest),
-		Data:                  data,
-	}
-	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPParameterDisconnectAdditionalInformation(structType any) COTPParameterDisconnectAdditionalInformation {
@@ -181,6 +182,22 @@ func (m *_COTPParameterDisconnectAdditionalInformation) SerializeWithWriteBuffer
 }
 
 func (m *_COTPParameterDisconnectAdditionalInformation) IsCOTPParameterDisconnectAdditionalInformation() {
+}
+
+func (m *_COTPParameterDisconnectAdditionalInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameterDisconnectAdditionalInformation) deepCopy() *_COTPParameterDisconnectAdditionalInformation {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterDisconnectAdditionalInformationCopy := &_COTPParameterDisconnectAdditionalInformation{
+		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	return _COTPParameterDisconnectAdditionalInformationCopy
 }
 
 func (m *_COTPParameterDisconnectAdditionalInformation) String() string {

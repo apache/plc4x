@@ -36,6 +36,7 @@ type TDataConnectedInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsTDataConnectedInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataConnectedInd()
@@ -48,6 +49,15 @@ type _TDataConnectedInd struct {
 
 var _ TDataConnectedInd = (*_TDataConnectedInd)(nil)
 var _ CEMIRequirements = (*_TDataConnectedInd)(nil)
+
+// NewTDataConnectedInd factory function for _TDataConnectedInd
+func NewTDataConnectedInd(size uint16) *_TDataConnectedInd {
+	_result := &_TDataConnectedInd{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_TDataConnectedInd) GetMessageCode() uint8 {
 
 func (m *_TDataConnectedInd) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewTDataConnectedInd factory function for _TDataConnectedInd
-func NewTDataConnectedInd(size uint16) *_TDataConnectedInd {
-	_result := &_TDataConnectedInd{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_TDataConnectedInd) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_TDataConnectedInd) IsTDataConnectedInd() {}
+
+func (m *_TDataConnectedInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TDataConnectedInd) deepCopy() *_TDataConnectedInd {
+	if m == nil {
+		return nil
+	}
+	_TDataConnectedIndCopy := &_TDataConnectedInd{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _TDataConnectedIndCopy
+}
 
 func (m *_TDataConnectedInd) String() string {
 	if m == nil {

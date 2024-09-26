@@ -38,6 +38,7 @@ type ReferenceDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReferenceTypeId returns ReferenceTypeId (property field)
 	GetReferenceTypeId() NodeId
@@ -73,6 +74,37 @@ type _ReferenceDescription struct {
 
 var _ ReferenceDescription = (*_ReferenceDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReferenceDescription)(nil)
+
+// NewReferenceDescription factory function for _ReferenceDescription
+func NewReferenceDescription(referenceTypeId NodeId, isForward bool, nodeId ExpandedNodeId, browseName QualifiedName, displayName LocalizedText, nodeClass NodeClass, typeDefinition ExpandedNodeId) *_ReferenceDescription {
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for ReferenceDescription must not be nil")
+	}
+	if nodeId == nil {
+		panic("nodeId of type ExpandedNodeId for ReferenceDescription must not be nil")
+	}
+	if browseName == nil {
+		panic("browseName of type QualifiedName for ReferenceDescription must not be nil")
+	}
+	if displayName == nil {
+		panic("displayName of type LocalizedText for ReferenceDescription must not be nil")
+	}
+	if typeDefinition == nil {
+		panic("typeDefinition of type ExpandedNodeId for ReferenceDescription must not be nil")
+	}
+	_result := &_ReferenceDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ReferenceTypeId:                   referenceTypeId,
+		IsForward:                         isForward,
+		NodeId:                            nodeId,
+		BrowseName:                        browseName,
+		DisplayName:                       displayName,
+		NodeClass:                         nodeClass,
+		TypeDefinition:                    typeDefinition,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,37 +161,6 @@ func (m *_ReferenceDescription) GetTypeDefinition() ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReferenceDescription factory function for _ReferenceDescription
-func NewReferenceDescription(referenceTypeId NodeId, isForward bool, nodeId ExpandedNodeId, browseName QualifiedName, displayName LocalizedText, nodeClass NodeClass, typeDefinition ExpandedNodeId) *_ReferenceDescription {
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for ReferenceDescription must not be nil")
-	}
-	if nodeId == nil {
-		panic("nodeId of type ExpandedNodeId for ReferenceDescription must not be nil")
-	}
-	if browseName == nil {
-		panic("browseName of type QualifiedName for ReferenceDescription must not be nil")
-	}
-	if displayName == nil {
-		panic("displayName of type LocalizedText for ReferenceDescription must not be nil")
-	}
-	if typeDefinition == nil {
-		panic("typeDefinition of type ExpandedNodeId for ReferenceDescription must not be nil")
-	}
-	_result := &_ReferenceDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ReferenceTypeId:                   referenceTypeId,
-		IsForward:                         isForward,
-		NodeId:                            nodeId,
-		BrowseName:                        browseName,
-		DisplayName:                       displayName,
-		NodeClass:                         nodeClass,
-		TypeDefinition:                    typeDefinition,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReferenceDescription(structType any) ReferenceDescription {
@@ -335,6 +336,29 @@ func (m *_ReferenceDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ReferenceDescription) IsReferenceDescription() {}
+
+func (m *_ReferenceDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReferenceDescription) deepCopy() *_ReferenceDescription {
+	if m == nil {
+		return nil
+	}
+	_ReferenceDescriptionCopy := &_ReferenceDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IsForward,
+		m.NodeId.DeepCopy().(ExpandedNodeId),
+		m.BrowseName.DeepCopy().(QualifiedName),
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.NodeClass,
+		m.TypeDefinition.DeepCopy().(ExpandedNodeId),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReferenceDescriptionCopy
+}
 
 func (m *_ReferenceDescription) String() string {
 	if m == nil {

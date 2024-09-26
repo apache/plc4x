@@ -38,6 +38,7 @@ type AmsSerialResetFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMagicCookie returns MagicCookie (property field)
 	GetMagicCookie() uint16
 	// GetTransmitterAddress returns TransmitterAddress (property field)
@@ -65,6 +66,11 @@ type _AmsSerialResetFrame struct {
 }
 
 var _ AmsSerialResetFrame = (*_AmsSerialResetFrame)(nil)
+
+// NewAmsSerialResetFrame factory function for _AmsSerialResetFrame
+func NewAmsSerialResetFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialResetFrame {
+	return &_AmsSerialResetFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,11 +105,6 @@ func (m *_AmsSerialResetFrame) GetCrc() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsSerialResetFrame factory function for _AmsSerialResetFrame
-func NewAmsSerialResetFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialResetFrame {
-	return &_AmsSerialResetFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsSerialResetFrame(structType any) AmsSerialResetFrame {
@@ -266,6 +267,25 @@ func (m *_AmsSerialResetFrame) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_AmsSerialResetFrame) IsAmsSerialResetFrame() {}
+
+func (m *_AmsSerialResetFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsSerialResetFrame) deepCopy() *_AmsSerialResetFrame {
+	if m == nil {
+		return nil
+	}
+	_AmsSerialResetFrameCopy := &_AmsSerialResetFrame{
+		m.MagicCookie,
+		m.TransmitterAddress,
+		m.ReceiverAddress,
+		m.FragmentNumber,
+		m.Length,
+		m.Crc,
+	}
+	return _AmsSerialResetFrameCopy
+}
 
 func (m *_AmsSerialResetFrame) String() string {
 	if m == nil {

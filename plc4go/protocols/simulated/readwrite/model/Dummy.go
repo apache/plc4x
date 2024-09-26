@@ -40,6 +40,7 @@ type Dummy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDummy returns Dummy (property field)
 	GetDummy() uint16
 	// IsDummy is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -52,6 +53,11 @@ type _Dummy struct {
 }
 
 var _ Dummy = (*_Dummy)(nil)
+
+// NewDummy factory function for _Dummy
+func NewDummy(dummy uint16) *_Dummy {
+	return &_Dummy{Dummy: dummy}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,11 +72,6 @@ func (m *_Dummy) GetDummy() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDummy factory function for _Dummy
-func NewDummy(dummy uint16) *_Dummy {
-	return &_Dummy{Dummy: dummy}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDummy(structType any) Dummy {
@@ -168,6 +169,20 @@ func (m *_Dummy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Dummy) IsDummy() {}
+
+func (m *_Dummy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Dummy) deepCopy() *_Dummy {
+	if m == nil {
+		return nil
+	}
+	_DummyCopy := &_Dummy{
+		m.Dummy,
+	}
+	return _DummyCopy
+}
 
 func (m *_Dummy) String() string {
 	if m == nil {

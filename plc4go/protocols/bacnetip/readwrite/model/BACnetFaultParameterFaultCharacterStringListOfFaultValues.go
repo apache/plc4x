@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultCharacterStringListOfFaultValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfFaultValues returns ListOfFaultValues (property field)
@@ -60,6 +61,17 @@ type _BACnetFaultParameterFaultCharacterStringListOfFaultValues struct {
 
 var _ BACnetFaultParameterFaultCharacterStringListOfFaultValues = (*_BACnetFaultParameterFaultCharacterStringListOfFaultValues)(nil)
 
+// NewBACnetFaultParameterFaultCharacterStringListOfFaultValues factory function for _BACnetFaultParameterFaultCharacterStringListOfFaultValues
+func NewBACnetFaultParameterFaultCharacterStringListOfFaultValues(openingTag BACnetOpeningTag, listOfFaultValues []BACnetApplicationTagCharacterString, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultCharacterStringListOfFaultValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultCharacterStringListOfFaultValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultCharacterStringListOfFaultValues must not be nil")
+	}
+	return &_BACnetFaultParameterFaultCharacterStringListOfFaultValues{OpeningTag: openingTag, ListOfFaultValues: listOfFaultValues, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) GetClosingT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultCharacterStringListOfFaultValues factory function for _BACnetFaultParameterFaultCharacterStringListOfFaultValues
-func NewBACnetFaultParameterFaultCharacterStringListOfFaultValues(openingTag BACnetOpeningTag, listOfFaultValues []BACnetApplicationTagCharacterString, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultCharacterStringListOfFaultValues {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultCharacterStringListOfFaultValues must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultCharacterStringListOfFaultValues must not be nil")
-	}
-	return &_BACnetFaultParameterFaultCharacterStringListOfFaultValues{OpeningTag: openingTag, ListOfFaultValues: listOfFaultValues, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultCharacterStringListOfFaultValues(structType any) BACnetFaultParameterFaultCharacterStringListOfFaultValues {
@@ -229,6 +230,23 @@ func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) GetTagNumbe
 ////
 
 func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) IsBACnetFaultParameterFaultCharacterStringListOfFaultValues() {
+}
+
+func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) deepCopy() *_BACnetFaultParameterFaultCharacterStringListOfFaultValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultCharacterStringListOfFaultValuesCopy := &_BACnetFaultParameterFaultCharacterStringListOfFaultValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.ListOfFaultValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetFaultParameterFaultCharacterStringListOfFaultValuesCopy
 }
 
 func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) String() string {

@@ -36,6 +36,7 @@ type SALDataReserved interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataReserved is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataReserved()
@@ -48,6 +49,15 @@ type _SALDataReserved struct {
 
 var _ SALDataReserved = (*_SALDataReserved)(nil)
 var _ SALDataRequirements = (*_SALDataReserved)(nil)
+
+// NewSALDataReserved factory function for _SALDataReserved
+func NewSALDataReserved(salData SALData) *_SALDataReserved {
+	_result := &_SALDataReserved{
+		SALDataContract: NewSALData(salData),
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_SALDataReserved) GetApplicationId() ApplicationId {
 
 func (m *_SALDataReserved) GetParent() SALDataContract {
 	return m.SALDataContract
-}
-
-// NewSALDataReserved factory function for _SALDataReserved
-func NewSALDataReserved(salData SALData) *_SALDataReserved {
-	_result := &_SALDataReserved{
-		SALDataContract: NewSALData(salData),
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -151,6 +152,21 @@ func (m *_SALDataReserved) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SALDataReserved) IsSALDataReserved() {}
+
+func (m *_SALDataReserved) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataReserved) deepCopy() *_SALDataReserved {
+	if m == nil {
+		return nil
+	}
+	_SALDataReservedCopy := &_SALDataReserved{
+		m.SALDataContract.(*_SALData).deepCopy(),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataReservedCopy
+}
 
 func (m *_SALDataReserved) String() string {
 	if m == nil {

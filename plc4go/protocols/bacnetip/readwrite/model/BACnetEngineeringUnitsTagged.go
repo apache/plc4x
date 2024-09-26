@@ -38,6 +38,7 @@ type BACnetEngineeringUnitsTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetEngineeringUnitsTagged struct {
 }
 
 var _ BACnetEngineeringUnitsTagged = (*_BACnetEngineeringUnitsTagged)(nil)
+
+// NewBACnetEngineeringUnitsTagged factory function for _BACnetEngineeringUnitsTagged
+func NewBACnetEngineeringUnitsTagged(header BACnetTagHeader, value BACnetEngineeringUnits, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEngineeringUnitsTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetEngineeringUnitsTagged must not be nil")
+	}
+	return &_BACnetEngineeringUnitsTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetEngineeringUnitsTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEngineeringUnitsTagged factory function for _BACnetEngineeringUnitsTagged
-func NewBACnetEngineeringUnitsTagged(header BACnetTagHeader, value BACnetEngineeringUnits, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEngineeringUnitsTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetEngineeringUnitsTagged must not be nil")
-	}
-	return &_BACnetEngineeringUnitsTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEngineeringUnitsTagged(structType any) BACnetEngineeringUnitsTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetEngineeringUnitsTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetEngineeringUnitsTagged) IsBACnetEngineeringUnitsTagged() {}
+
+func (m *_BACnetEngineeringUnitsTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEngineeringUnitsTagged) deepCopy() *_BACnetEngineeringUnitsTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetEngineeringUnitsTaggedCopy := &_BACnetEngineeringUnitsTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetEngineeringUnitsTaggedCopy
+}
 
 func (m *_BACnetEngineeringUnitsTagged) String() string {
 	if m == nil {

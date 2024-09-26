@@ -38,6 +38,7 @@ type ReferenceListEntryDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() NodeId
@@ -61,6 +62,24 @@ type _ReferenceListEntryDataType struct {
 
 var _ ReferenceListEntryDataType = (*_ReferenceListEntryDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReferenceListEntryDataType)(nil)
+
+// NewReferenceListEntryDataType factory function for _ReferenceListEntryDataType
+func NewReferenceListEntryDataType(referenceType NodeId, isForward bool, targetNode ExpandedNodeId) *_ReferenceListEntryDataType {
+	if referenceType == nil {
+		panic("referenceType of type NodeId for ReferenceListEntryDataType must not be nil")
+	}
+	if targetNode == nil {
+		panic("targetNode of type ExpandedNodeId for ReferenceListEntryDataType must not be nil")
+	}
+	_result := &_ReferenceListEntryDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ReferenceType:                     referenceType,
+		IsForward:                         isForward,
+		TargetNode:                        targetNode,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,24 +120,6 @@ func (m *_ReferenceListEntryDataType) GetTargetNode() ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReferenceListEntryDataType factory function for _ReferenceListEntryDataType
-func NewReferenceListEntryDataType(referenceType NodeId, isForward bool, targetNode ExpandedNodeId) *_ReferenceListEntryDataType {
-	if referenceType == nil {
-		panic("referenceType of type NodeId for ReferenceListEntryDataType must not be nil")
-	}
-	if targetNode == nil {
-		panic("targetNode of type ExpandedNodeId for ReferenceListEntryDataType must not be nil")
-	}
-	_result := &_ReferenceListEntryDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ReferenceType:                     referenceType,
-		IsForward:                         isForward,
-		TargetNode:                        targetNode,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReferenceListEntryDataType(structType any) ReferenceListEntryDataType {
@@ -242,6 +243,25 @@ func (m *_ReferenceListEntryDataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ReferenceListEntryDataType) IsReferenceListEntryDataType() {}
+
+func (m *_ReferenceListEntryDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReferenceListEntryDataType) deepCopy() *_ReferenceListEntryDataType {
+	if m == nil {
+		return nil
+	}
+	_ReferenceListEntryDataTypeCopy := &_ReferenceListEntryDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ReferenceType.DeepCopy().(NodeId),
+		m.IsForward,
+		m.TargetNode.DeepCopy().(ExpandedNodeId),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReferenceListEntryDataTypeCopy
+}
 
 func (m *_ReferenceListEntryDataType) String() string {
 	if m == nil {

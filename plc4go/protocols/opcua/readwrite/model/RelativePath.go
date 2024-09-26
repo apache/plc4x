@@ -38,6 +38,7 @@ type RelativePath interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfElements returns NoOfElements (property field)
 	GetNoOfElements() int32
@@ -56,6 +57,17 @@ type _RelativePath struct {
 
 var _ RelativePath = (*_RelativePath)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RelativePath)(nil)
+
+// NewRelativePath factory function for _RelativePath
+func NewRelativePath(noOfElements int32, elements []ExtensionObjectDefinition) *_RelativePath {
+	_result := &_RelativePath{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfElements:                      noOfElements,
+		Elements:                          elements,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_RelativePath) GetElements() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRelativePath factory function for _RelativePath
-func NewRelativePath(noOfElements int32, elements []ExtensionObjectDefinition) *_RelativePath {
-	_result := &_RelativePath{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfElements:                      noOfElements,
-		Elements:                          elements,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRelativePath(structType any) RelativePath {
@@ -207,6 +208,23 @@ func (m *_RelativePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_RelativePath) IsRelativePath() {}
+
+func (m *_RelativePath) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RelativePath) deepCopy() *_RelativePath {
+	if m == nil {
+		return nil
+	}
+	_RelativePathCopy := &_RelativePath{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfElements,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Elements),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RelativePathCopy
+}
 
 func (m *_RelativePath) String() string {
 	if m == nil {

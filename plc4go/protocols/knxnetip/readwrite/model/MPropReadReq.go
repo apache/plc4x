@@ -38,6 +38,7 @@ type MPropReadReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetInterfaceObjectType returns InterfaceObjectType (property field)
 	GetInterfaceObjectType() uint16
@@ -65,6 +66,20 @@ type _MPropReadReq struct {
 
 var _ MPropReadReq = (*_MPropReadReq)(nil)
 var _ CEMIRequirements = (*_MPropReadReq)(nil)
+
+// NewMPropReadReq factory function for _MPropReadReq
+func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, size uint16) *_MPropReadReq {
+	_result := &_MPropReadReq{
+		CEMIContract:        NewCEMI(size),
+		InterfaceObjectType: interfaceObjectType,
+		ObjectInstance:      objectInstance,
+		PropertyId:          propertyId,
+		NumberOfElements:    numberOfElements,
+		StartIndex:          startIndex,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,20 +128,6 @@ func (m *_MPropReadReq) GetStartIndex() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMPropReadReq factory function for _MPropReadReq
-func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, size uint16) *_MPropReadReq {
-	_result := &_MPropReadReq{
-		CEMIContract:        NewCEMI(size),
-		InterfaceObjectType: interfaceObjectType,
-		ObjectInstance:      objectInstance,
-		PropertyId:          propertyId,
-		NumberOfElements:    numberOfElements,
-		StartIndex:          startIndex,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMPropReadReq(structType any) MPropReadReq {
@@ -263,6 +264,26 @@ func (m *_MPropReadReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_MPropReadReq) IsMPropReadReq() {}
+
+func (m *_MPropReadReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropReadReq) deepCopy() *_MPropReadReq {
+	if m == nil {
+		return nil
+	}
+	_MPropReadReqCopy := &_MPropReadReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+		m.InterfaceObjectType,
+		m.ObjectInstance,
+		m.PropertyId,
+		m.NumberOfElements,
+		m.StartIndex,
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropReadReqCopy
+}
 
 func (m *_MPropReadReq) String() string {
 	if m == nil {

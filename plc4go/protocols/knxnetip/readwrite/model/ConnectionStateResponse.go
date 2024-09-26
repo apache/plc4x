@@ -40,6 +40,7 @@ type ConnectionStateResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
@@ -58,6 +59,17 @@ type _ConnectionStateResponse struct {
 
 var _ ConnectionStateResponse = (*_ConnectionStateResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_ConnectionStateResponse)(nil)
+
+// NewConnectionStateResponse factory function for _ConnectionStateResponse
+func NewConnectionStateResponse(communicationChannelId uint8, status Status) *_ConnectionStateResponse {
+	_result := &_ConnectionStateResponse{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		CommunicationChannelId:  communicationChannelId,
+		Status:                  status,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +106,6 @@ func (m *_ConnectionStateResponse) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionStateResponse factory function for _ConnectionStateResponse
-func NewConnectionStateResponse(communicationChannelId uint8, status Status) *_ConnectionStateResponse {
-	_result := &_ConnectionStateResponse{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		CommunicationChannelId:  communicationChannelId,
-		Status:                  status,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionStateResponse(structType any) ConnectionStateResponse {
@@ -202,6 +203,23 @@ func (m *_ConnectionStateResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_ConnectionStateResponse) IsConnectionStateResponse() {}
+
+func (m *_ConnectionStateResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionStateResponse) deepCopy() *_ConnectionStateResponse {
+	if m == nil {
+		return nil
+	}
+	_ConnectionStateResponseCopy := &_ConnectionStateResponse{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.CommunicationChannelId,
+		m.Status,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _ConnectionStateResponseCopy
+}
 
 func (m *_ConnectionStateResponse) String() string {
 	if m == nil {

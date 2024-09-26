@@ -38,6 +38,7 @@ type MonitoredSALReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EncodedReply
 	// GetMonitoredSAL returns MonitoredSAL (property field)
 	GetMonitoredSAL() MonitoredSAL
@@ -53,6 +54,19 @@ type _MonitoredSALReply struct {
 
 var _ MonitoredSALReply = (*_MonitoredSALReply)(nil)
 var _ EncodedReplyRequirements = (*_MonitoredSALReply)(nil)
+
+// NewMonitoredSALReply factory function for _MonitoredSALReply
+func NewMonitoredSALReply(peekedByte byte, monitoredSAL MonitoredSAL, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
+	if monitoredSAL == nil {
+		panic("monitoredSAL of type MonitoredSAL for MonitoredSALReply must not be nil")
+	}
+	_result := &_MonitoredSALReply{
+		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+		MonitoredSAL:         monitoredSAL,
+	}
+	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_MonitoredSALReply) GetMonitoredSAL() MonitoredSAL {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSALReply factory function for _MonitoredSALReply
-func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
-	if monitoredSAL == nil {
-		panic("monitoredSAL of type MonitoredSAL for MonitoredSALReply must not be nil")
-	}
-	_result := &_MonitoredSALReply{
-		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
-		MonitoredSAL:         monitoredSAL,
-	}
-	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSALReply(structType any) MonitoredSALReply {
@@ -178,6 +179,22 @@ func (m *_MonitoredSALReply) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_MonitoredSALReply) IsMonitoredSALReply() {}
+
+func (m *_MonitoredSALReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSALReply) deepCopy() *_MonitoredSALReply {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALReplyCopy := &_MonitoredSALReply{
+		m.EncodedReplyContract.(*_EncodedReply).deepCopy(),
+		m.MonitoredSAL.DeepCopy().(MonitoredSAL),
+	}
+	m.EncodedReplyContract.(*_EncodedReply)._SubType = m
+	return _MonitoredSALReplyCopy
+}
 
 func (m *_MonitoredSALReply) String() string {
 	if m == nil {

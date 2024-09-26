@@ -38,6 +38,7 @@ type LDataCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
@@ -59,6 +60,21 @@ type _LDataCon struct {
 
 var _ LDataCon = (*_LDataCon)(nil)
 var _ CEMIRequirements = (*_LDataCon)(nil)
+
+// NewLDataCon factory function for _LDataCon
+func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataCon {
+	if dataFrame == nil {
+		panic("dataFrame of type LDataFrame for LDataCon must not be nil")
+	}
+	_result := &_LDataCon{
+		CEMIContract:                NewCEMI(size),
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_LDataCon) GetDataFrame() LDataFrame {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataCon factory function for _LDataCon
-func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataCon {
-	if dataFrame == nil {
-		panic("dataFrame of type LDataFrame for LDataCon must not be nil")
-	}
-	_result := &_LDataCon{
-		CEMIContract:                NewCEMI(size),
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataCon(structType any) LDataCon {
@@ -228,6 +229,24 @@ func (m *_LDataCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_LDataCon) IsLDataCon() {}
+
+func (m *_LDataCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataCon) deepCopy() *_LDataCon {
+	if m == nil {
+		return nil
+	}
+	_LDataConCopy := &_LDataCon{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+		m.AdditionalInformationLength,
+		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
+		m.DataFrame.DeepCopy().(LDataFrame),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LDataConCopy
+}
 
 func (m *_LDataCon) String() string {
 	if m == nil {

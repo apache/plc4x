@@ -38,6 +38,7 @@ type AdsReadWriteRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
@@ -65,6 +66,20 @@ type _AdsReadWriteRequest struct {
 
 var _ AdsReadWriteRequest = (*_AdsReadWriteRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadWriteRequest)(nil)
+
+// NewAdsReadWriteRequest factory function for _AdsReadWriteRequest
+func NewAdsReadWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) *_AdsReadWriteRequest {
+	_result := &_AdsReadWriteRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		IndexGroup:        indexGroup,
+		IndexOffset:       indexOffset,
+		ReadLength:        readLength,
+		Items:             items,
+		Data:              data,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -117,20 +132,6 @@ func (m *_AdsReadWriteRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsReadWriteRequest factory function for _AdsReadWriteRequest
-func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadWriteRequest {
-	_result := &_AdsReadWriteRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		IndexGroup:        indexGroup,
-		IndexOffset:       indexOffset,
-		ReadLength:        readLength,
-		Items:             items,
-		Data:              data,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsReadWriteRequest(structType any) AdsReadWriteRequest {
@@ -289,6 +290,26 @@ func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_AdsReadWriteRequest) IsAdsReadWriteRequest() {}
+
+func (m *_AdsReadWriteRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadWriteRequest) deepCopy() *_AdsReadWriteRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsReadWriteRequestCopy := &_AdsReadWriteRequest{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.IndexGroup,
+		m.IndexOffset,
+		m.ReadLength,
+		utils.DeepCopySlice[AdsMultiRequestItem, AdsMultiRequestItem](m.Items),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadWriteRequestCopy
+}
 
 func (m *_AdsReadWriteRequest) String() string {
 	if m == nil {

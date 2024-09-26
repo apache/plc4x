@@ -38,6 +38,7 @@ type GroupObjectDescriptorRealisationType1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDataPointer returns DataPointer (property field)
 	GetDataPointer() uint8
 	// GetTransmitEnable returns TransmitEnable (property field)
@@ -73,6 +74,11 @@ type _GroupObjectDescriptorRealisationType1 struct {
 }
 
 var _ GroupObjectDescriptorRealisationType1 = (*_GroupObjectDescriptorRealisationType1)(nil)
+
+// NewGroupObjectDescriptorRealisationType1 factory function for _GroupObjectDescriptorRealisationType1
+func NewGroupObjectDescriptorRealisationType1(dataPointer uint8, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *_GroupObjectDescriptorRealisationType1 {
+	return &_GroupObjectDescriptorRealisationType1{DataPointer: dataPointer, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,11 +121,6 @@ func (m *_GroupObjectDescriptorRealisationType1) GetValueType() ComObjectValueTy
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGroupObjectDescriptorRealisationType1 factory function for _GroupObjectDescriptorRealisationType1
-func NewGroupObjectDescriptorRealisationType1(dataPointer uint8, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *_GroupObjectDescriptorRealisationType1 {
-	return &_GroupObjectDescriptorRealisationType1{DataPointer: dataPointer, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastGroupObjectDescriptorRealisationType1(structType any) GroupObjectDescriptorRealisationType1 {
@@ -321,6 +322,28 @@ func (m *_GroupObjectDescriptorRealisationType1) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_GroupObjectDescriptorRealisationType1) IsGroupObjectDescriptorRealisationType1() {}
+
+func (m *_GroupObjectDescriptorRealisationType1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GroupObjectDescriptorRealisationType1) deepCopy() *_GroupObjectDescriptorRealisationType1 {
+	if m == nil {
+		return nil
+	}
+	_GroupObjectDescriptorRealisationType1Copy := &_GroupObjectDescriptorRealisationType1{
+		m.DataPointer,
+		m.TransmitEnable,
+		m.SegmentSelectorEnable,
+		m.WriteEnable,
+		m.ReadEnable,
+		m.CommunicationEnable,
+		m.Priority,
+		m.ValueType,
+		m.reservedField0,
+	}
+	return _GroupObjectDescriptorRealisationType1Copy
+}
 
 func (m *_GroupObjectDescriptorRealisationType1) String() string {
 	if m == nil {

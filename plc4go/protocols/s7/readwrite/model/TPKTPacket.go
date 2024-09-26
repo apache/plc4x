@@ -43,6 +43,7 @@ type TPKTPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPayload returns Payload (property field)
 	GetPayload() COTPPacket
 	// IsTPKTPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -57,6 +58,14 @@ type _TPKTPacket struct {
 }
 
 var _ TPKTPacket = (*_TPKTPacket)(nil)
+
+// NewTPKTPacket factory function for _TPKTPacket
+func NewTPKTPacket(payload COTPPacket) *_TPKTPacket {
+	if payload == nil {
+		panic("payload of type COTPPacket for TPKTPacket must not be nil")
+	}
+	return &_TPKTPacket{Payload: payload}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -84,14 +93,6 @@ func (m *_TPKTPacket) GetProtocolId() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTPKTPacket factory function for _TPKTPacket
-func NewTPKTPacket(payload COTPPacket) *_TPKTPacket {
-	if payload == nil {
-		panic("payload of type COTPPacket for TPKTPacket must not be nil")
-	}
-	return &_TPKTPacket{Payload: payload}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTPKTPacket(structType any) TPKTPacket {
@@ -228,6 +229,21 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_TPKTPacket) IsTPKTPacket() {}
+
+func (m *_TPKTPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TPKTPacket) deepCopy() *_TPKTPacket {
+	if m == nil {
+		return nil
+	}
+	_TPKTPacketCopy := &_TPKTPacket{
+		m.Payload.DeepCopy().(COTPPacket),
+		m.reservedField0,
+	}
+	return _TPKTPacketCopy
+}
 
 func (m *_TPKTPacket) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataCarDoorZone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarDoorZone returns CarDoorZone (property field)
 	GetCarDoorZone() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCarDoorZone struct {
 
 var _ BACnetConstructedDataCarDoorZone = (*_BACnetConstructedDataCarDoorZone)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDoorZone)(nil)
+
+// NewBACnetConstructedDataCarDoorZone factory function for _BACnetConstructedDataCarDoorZone
+func NewBACnetConstructedDataCarDoorZone(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carDoorZone BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorZone {
+	if carDoorZone == nil {
+		panic("carDoorZone of type BACnetApplicationTagBoolean for BACnetConstructedDataCarDoorZone must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarDoorZone{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarDoorZone:                   carDoorZone,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCarDoorZone) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarDoorZone factory function for _BACnetConstructedDataCarDoorZone
-func NewBACnetConstructedDataCarDoorZone(carDoorZone BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorZone {
-	if carDoorZone == nil {
-		panic("carDoorZone of type BACnetApplicationTagBoolean for BACnetConstructedDataCarDoorZone must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarDoorZone{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CarDoorZone:                   carDoorZone,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarDoorZone(structType any) BACnetConstructedDataCarDoorZone {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCarDoorZone) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataCarDoorZone) IsBACnetConstructedDataCarDoorZone() {}
+
+func (m *_BACnetConstructedDataCarDoorZone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarDoorZone) deepCopy() *_BACnetConstructedDataCarDoorZone {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarDoorZoneCopy := &_BACnetConstructedDataCarDoorZone{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CarDoorZone.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarDoorZoneCopy
+}
 
 func (m *_BACnetConstructedDataCarDoorZone) String() string {
 	if m == nil {

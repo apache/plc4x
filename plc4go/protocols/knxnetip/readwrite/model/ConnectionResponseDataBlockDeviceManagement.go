@@ -36,6 +36,7 @@ type ConnectionResponseDataBlockDeviceManagement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ConnectionResponseDataBlock
 	// IsConnectionResponseDataBlockDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlockDeviceManagement()
@@ -48,6 +49,15 @@ type _ConnectionResponseDataBlockDeviceManagement struct {
 
 var _ ConnectionResponseDataBlockDeviceManagement = (*_ConnectionResponseDataBlockDeviceManagement)(nil)
 var _ ConnectionResponseDataBlockRequirements = (*_ConnectionResponseDataBlockDeviceManagement)(nil)
+
+// NewConnectionResponseDataBlockDeviceManagement factory function for _ConnectionResponseDataBlockDeviceManagement
+func NewConnectionResponseDataBlockDeviceManagement() *_ConnectionResponseDataBlockDeviceManagement {
+	_result := &_ConnectionResponseDataBlockDeviceManagement{
+		ConnectionResponseDataBlockContract: NewConnectionResponseDataBlock(),
+	}
+	_result.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) GetConnectionType() uint8
 
 func (m *_ConnectionResponseDataBlockDeviceManagement) GetParent() ConnectionResponseDataBlockContract {
 	return m.ConnectionResponseDataBlockContract
-}
-
-// NewConnectionResponseDataBlockDeviceManagement factory function for _ConnectionResponseDataBlockDeviceManagement
-func NewConnectionResponseDataBlockDeviceManagement() *_ConnectionResponseDataBlockDeviceManagement {
-	_result := &_ConnectionResponseDataBlockDeviceManagement{
-		ConnectionResponseDataBlockContract: NewConnectionResponseDataBlock(),
-	}
-	_result.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) SerializeWithWriteBuffer(
 }
 
 func (m *_ConnectionResponseDataBlockDeviceManagement) IsConnectionResponseDataBlockDeviceManagement() {
+}
+
+func (m *_ConnectionResponseDataBlockDeviceManagement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionResponseDataBlockDeviceManagement) deepCopy() *_ConnectionResponseDataBlockDeviceManagement {
+	if m == nil {
+		return nil
+	}
+	_ConnectionResponseDataBlockDeviceManagementCopy := &_ConnectionResponseDataBlockDeviceManagement{
+		m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock).deepCopy(),
+	}
+	m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = m
+	return _ConnectionResponseDataBlockDeviceManagementCopy
 }
 
 func (m *_ConnectionResponseDataBlockDeviceManagement) String() string {

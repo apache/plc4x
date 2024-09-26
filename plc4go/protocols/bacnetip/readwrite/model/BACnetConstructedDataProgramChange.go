@@ -38,6 +38,7 @@ type BACnetConstructedDataProgramChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProgramChange returns ProgramChange (property field)
 	GetProgramChange() BACnetProgramRequestTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProgramChange struct {
 
 var _ BACnetConstructedDataProgramChange = (*_BACnetConstructedDataProgramChange)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramChange)(nil)
+
+// NewBACnetConstructedDataProgramChange factory function for _BACnetConstructedDataProgramChange
+func NewBACnetConstructedDataProgramChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programChange BACnetProgramRequestTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramChange {
+	if programChange == nil {
+		panic("programChange of type BACnetProgramRequestTagged for BACnetConstructedDataProgramChange must not be nil")
+	}
+	_result := &_BACnetConstructedDataProgramChange{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramChange:                 programChange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProgramChange) GetActualValue() BACnetProgramRequ
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProgramChange factory function for _BACnetConstructedDataProgramChange
-func NewBACnetConstructedDataProgramChange(programChange BACnetProgramRequestTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramChange {
-	if programChange == nil {
-		panic("programChange of type BACnetProgramRequestTagged for BACnetConstructedDataProgramChange must not be nil")
-	}
-	_result := &_BACnetConstructedDataProgramChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProgramChange:                 programChange,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProgramChange(structType any) BACnetConstructedDataProgramChange {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProgramChange) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataProgramChange) IsBACnetConstructedDataProgramChange() {}
+
+func (m *_BACnetConstructedDataProgramChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProgramChange) deepCopy() *_BACnetConstructedDataProgramChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProgramChangeCopy := &_BACnetConstructedDataProgramChange{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProgramChange.DeepCopy().(BACnetProgramRequestTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProgramChangeCopy
+}
 
 func (m *_BACnetConstructedDataProgramChange) String() string {
 	if m == nil {

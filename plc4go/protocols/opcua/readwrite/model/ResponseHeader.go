@@ -38,6 +38,7 @@ type ResponseHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() int64
@@ -71,6 +72,31 @@ type _ResponseHeader struct {
 
 var _ ResponseHeader = (*_ResponseHeader)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ResponseHeader)(nil)
+
+// NewResponseHeader factory function for _ResponseHeader
+func NewResponseHeader(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) *_ResponseHeader {
+	if serviceResult == nil {
+		panic("serviceResult of type StatusCode for ResponseHeader must not be nil")
+	}
+	if serviceDiagnostics == nil {
+		panic("serviceDiagnostics of type DiagnosticInfo for ResponseHeader must not be nil")
+	}
+	if additionalHeader == nil {
+		panic("additionalHeader of type ExtensionObject for ResponseHeader must not be nil")
+	}
+	_result := &_ResponseHeader{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Timestamp:                         timestamp,
+		RequestHandle:                     requestHandle,
+		ServiceResult:                     serviceResult,
+		ServiceDiagnostics:                serviceDiagnostics,
+		NoOfStringTable:                   noOfStringTable,
+		StringTable:                       stringTable,
+		AdditionalHeader:                  additionalHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,31 +153,6 @@ func (m *_ResponseHeader) GetAdditionalHeader() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewResponseHeader factory function for _ResponseHeader
-func NewResponseHeader(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) *_ResponseHeader {
-	if serviceResult == nil {
-		panic("serviceResult of type StatusCode for ResponseHeader must not be nil")
-	}
-	if serviceDiagnostics == nil {
-		panic("serviceDiagnostics of type DiagnosticInfo for ResponseHeader must not be nil")
-	}
-	if additionalHeader == nil {
-		panic("additionalHeader of type ExtensionObject for ResponseHeader must not be nil")
-	}
-	_result := &_ResponseHeader{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Timestamp:                         timestamp,
-		RequestHandle:                     requestHandle,
-		ServiceResult:                     serviceResult,
-		ServiceDiagnostics:                serviceDiagnostics,
-		NoOfStringTable:                   noOfStringTable,
-		StringTable:                       stringTable,
-		AdditionalHeader:                  additionalHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastResponseHeader(structType any) ResponseHeader {
@@ -321,6 +322,28 @@ func (m *_ResponseHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ResponseHeader) IsResponseHeader() {}
+
+func (m *_ResponseHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ResponseHeader) deepCopy() *_ResponseHeader {
+	if m == nil {
+		return nil
+	}
+	_ResponseHeaderCopy := &_ResponseHeader{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Timestamp,
+		m.RequestHandle,
+		m.ServiceResult.DeepCopy().(StatusCode),
+		m.ServiceDiagnostics.DeepCopy().(DiagnosticInfo),
+		m.NoOfStringTable,
+		utils.DeepCopySlice[PascalString, PascalString](m.StringTable),
+		m.AdditionalHeader.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ResponseHeaderCopy
+}
 
 func (m *_ResponseHeader) String() string {
 	if m == nil {

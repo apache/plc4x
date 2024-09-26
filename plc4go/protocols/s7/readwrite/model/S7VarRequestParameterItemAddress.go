@@ -38,6 +38,7 @@ type S7VarRequestParameterItemAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7VarRequestParameterItem
 	// GetAddress returns Address (property field)
 	GetAddress() S7Address
@@ -53,6 +54,19 @@ type _S7VarRequestParameterItemAddress struct {
 
 var _ S7VarRequestParameterItemAddress = (*_S7VarRequestParameterItemAddress)(nil)
 var _ S7VarRequestParameterItemRequirements = (*_S7VarRequestParameterItemAddress)(nil)
+
+// NewS7VarRequestParameterItemAddress factory function for _S7VarRequestParameterItemAddress
+func NewS7VarRequestParameterItemAddress(address S7Address) *_S7VarRequestParameterItemAddress {
+	if address == nil {
+		panic("address of type S7Address for S7VarRequestParameterItemAddress must not be nil")
+	}
+	_result := &_S7VarRequestParameterItemAddress{
+		S7VarRequestParameterItemContract: NewS7VarRequestParameterItem(),
+		Address:                           address,
+	}
+	_result.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_S7VarRequestParameterItemAddress) GetAddress() S7Address {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7VarRequestParameterItemAddress factory function for _S7VarRequestParameterItemAddress
-func NewS7VarRequestParameterItemAddress(address S7Address) *_S7VarRequestParameterItemAddress {
-	if address == nil {
-		panic("address of type S7Address for S7VarRequestParameterItemAddress must not be nil")
-	}
-	_result := &_S7VarRequestParameterItemAddress{
-		S7VarRequestParameterItemContract: NewS7VarRequestParameterItem(),
-		Address:                           address,
-	}
-	_result.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7VarRequestParameterItemAddress(structType any) S7VarRequestParameterItemAddress {
@@ -195,6 +196,22 @@ func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_S7VarRequestParameterItemAddress) IsS7VarRequestParameterItemAddress() {}
+
+func (m *_S7VarRequestParameterItemAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7VarRequestParameterItemAddress) deepCopy() *_S7VarRequestParameterItemAddress {
+	if m == nil {
+		return nil
+	}
+	_S7VarRequestParameterItemAddressCopy := &_S7VarRequestParameterItemAddress{
+		m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem).deepCopy(),
+		m.Address.DeepCopy().(S7Address),
+	}
+	m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = m
+	return _S7VarRequestParameterItemAddressCopy
+}
 
 func (m *_S7VarRequestParameterItemAddress) String() string {
 	if m == nil {

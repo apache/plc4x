@@ -38,6 +38,7 @@ type BACnetPropertyStatesLightningInProgress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLightningInProgress returns LightningInProgress (property field)
 	GetLightningInProgress() BACnetLightingInProgressTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesLightningInProgress struct {
 
 var _ BACnetPropertyStatesLightningInProgress = (*_BACnetPropertyStatesLightningInProgress)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLightningInProgress)(nil)
+
+// NewBACnetPropertyStatesLightningInProgress factory function for _BACnetPropertyStatesLightningInProgress
+func NewBACnetPropertyStatesLightningInProgress(peekedTagHeader BACnetTagHeader, lightningInProgress BACnetLightingInProgressTagged) *_BACnetPropertyStatesLightningInProgress {
+	if lightningInProgress == nil {
+		panic("lightningInProgress of type BACnetLightingInProgressTagged for BACnetPropertyStatesLightningInProgress must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLightningInProgress{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LightningInProgress:          lightningInProgress,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesLightningInProgress) GetLightningInProgress() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLightningInProgress factory function for _BACnetPropertyStatesLightningInProgress
-func NewBACnetPropertyStatesLightningInProgress(lightningInProgress BACnetLightingInProgressTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLightningInProgress {
-	if lightningInProgress == nil {
-		panic("lightningInProgress of type BACnetLightingInProgressTagged for BACnetPropertyStatesLightningInProgress must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLightningInProgress{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LightningInProgress:          lightningInProgress,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLightningInProgress(structType any) BACnetPropertyStatesLightningInProgress {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLightningInProgress) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetPropertyStatesLightningInProgress) IsBACnetPropertyStatesLightningInProgress() {}
+
+func (m *_BACnetPropertyStatesLightningInProgress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLightningInProgress) deepCopy() *_BACnetPropertyStatesLightningInProgress {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLightningInProgressCopy := &_BACnetPropertyStatesLightningInProgress{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LightningInProgress.DeepCopy().(BACnetLightingInProgressTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLightningInProgressCopy
+}
 
 func (m *_BACnetPropertyStatesLightningInProgress) String() string {
 	if m == nil {

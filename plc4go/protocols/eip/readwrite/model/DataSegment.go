@@ -38,6 +38,7 @@ type DataSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() DataSegmentType
@@ -53,6 +54,19 @@ type _DataSegment struct {
 
 var _ DataSegment = (*_DataSegment)(nil)
 var _ PathSegmentRequirements = (*_DataSegment)(nil)
+
+// NewDataSegment factory function for _DataSegment
+func NewDataSegment(segmentType DataSegmentType) *_DataSegment {
+	if segmentType == nil {
+		panic("segmentType of type DataSegmentType for DataSegment must not be nil")
+	}
+	_result := &_DataSegment{
+		PathSegmentContract: NewPathSegment(),
+		SegmentType:         segmentType,
+	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_DataSegment) GetSegmentType() DataSegmentType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataSegment factory function for _DataSegment
-func NewDataSegment(segmentType DataSegmentType) *_DataSegment {
-	if segmentType == nil {
-		panic("segmentType of type DataSegmentType for DataSegment must not be nil")
-	}
-	_result := &_DataSegment{
-		PathSegmentContract: NewPathSegment(),
-		SegmentType:         segmentType,
-	}
-	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataSegment(structType any) DataSegment {
@@ -182,6 +183,22 @@ func (m *_DataSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_DataSegment) IsDataSegment() {}
+
+func (m *_DataSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSegment) deepCopy() *_DataSegment {
+	if m == nil {
+		return nil
+	}
+	_DataSegmentCopy := &_DataSegment{
+		m.PathSegmentContract.(*_PathSegment).deepCopy(),
+		m.SegmentType.DeepCopy().(DataSegmentType),
+	}
+	m.PathSegmentContract.(*_PathSegment)._SubType = m
+	return _DataSegmentCopy
+}
 
 func (m *_DataSegment) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataShedDuration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetShedDuration returns ShedDuration (property field)
 	GetShedDuration() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataShedDuration struct {
 
 var _ BACnetConstructedDataShedDuration = (*_BACnetConstructedDataShedDuration)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataShedDuration)(nil)
+
+// NewBACnetConstructedDataShedDuration factory function for _BACnetConstructedDataShedDuration
+func NewBACnetConstructedDataShedDuration(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, shedDuration BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedDuration {
+	if shedDuration == nil {
+		panic("shedDuration of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataShedDuration must not be nil")
+	}
+	_result := &_BACnetConstructedDataShedDuration{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ShedDuration:                  shedDuration,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataShedDuration) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataShedDuration factory function for _BACnetConstructedDataShedDuration
-func NewBACnetConstructedDataShedDuration(shedDuration BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedDuration {
-	if shedDuration == nil {
-		panic("shedDuration of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataShedDuration must not be nil")
-	}
-	_result := &_BACnetConstructedDataShedDuration{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ShedDuration:                  shedDuration,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataShedDuration(structType any) BACnetConstructedDataShedDuration {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataShedDuration) IsBACnetConstructedDataShedDuration() {}
+
+func (m *_BACnetConstructedDataShedDuration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataShedDuration) deepCopy() *_BACnetConstructedDataShedDuration {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataShedDurationCopy := &_BACnetConstructedDataShedDuration{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ShedDuration.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataShedDurationCopy
+}
 
 func (m *_BACnetConstructedDataShedDuration) String() string {
 	if m == nil {

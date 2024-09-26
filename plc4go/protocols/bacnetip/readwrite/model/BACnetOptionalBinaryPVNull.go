@@ -38,6 +38,7 @@ type BACnetOptionalBinaryPVNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalBinaryPV
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -53,6 +54,19 @@ type _BACnetOptionalBinaryPVNull struct {
 
 var _ BACnetOptionalBinaryPVNull = (*_BACnetOptionalBinaryPVNull)(nil)
 var _ BACnetOptionalBinaryPVRequirements = (*_BACnetOptionalBinaryPVNull)(nil)
+
+// NewBACnetOptionalBinaryPVNull factory function for _BACnetOptionalBinaryPVNull
+func NewBACnetOptionalBinaryPVNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalBinaryPVNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalBinaryPVNull must not be nil")
+	}
+	_result := &_BACnetOptionalBinaryPVNull{
+		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
+		NullValue:                      nullValue,
+	}
+	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetOptionalBinaryPVNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalBinaryPVNull factory function for _BACnetOptionalBinaryPVNull
-func NewBACnetOptionalBinaryPVNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPVNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalBinaryPVNull must not be nil")
-	}
-	_result := &_BACnetOptionalBinaryPVNull{
-		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
-		NullValue:                      nullValue,
-	}
-	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalBinaryPVNull(structType any) BACnetOptionalBinaryPVNull {
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalBinaryPVNull) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetOptionalBinaryPVNull) IsBACnetOptionalBinaryPVNull() {}
+
+func (m *_BACnetOptionalBinaryPVNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalBinaryPVNull) deepCopy() *_BACnetOptionalBinaryPVNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalBinaryPVNullCopy := &_BACnetOptionalBinaryPVNull{
+		m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).deepCopy(),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = m
+	return _BACnetOptionalBinaryPVNullCopy
+}
 
 func (m *_BACnetOptionalBinaryPVNull) String() string {
 	if m == nil {

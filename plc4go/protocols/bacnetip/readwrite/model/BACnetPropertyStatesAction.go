@@ -38,6 +38,7 @@ type BACnetPropertyStatesAction interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetAction returns Action (property field)
 	GetAction() BACnetActionTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesAction struct {
 
 var _ BACnetPropertyStatesAction = (*_BACnetPropertyStatesAction)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAction)(nil)
+
+// NewBACnetPropertyStatesAction factory function for _BACnetPropertyStatesAction
+func NewBACnetPropertyStatesAction(peekedTagHeader BACnetTagHeader, action BACnetActionTagged) *_BACnetPropertyStatesAction {
+	if action == nil {
+		panic("action of type BACnetActionTagged for BACnetPropertyStatesAction must not be nil")
+	}
+	_result := &_BACnetPropertyStatesAction{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Action:                       action,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesAction) GetAction() BACnetActionTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesAction factory function for _BACnetPropertyStatesAction
-func NewBACnetPropertyStatesAction(action BACnetActionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAction {
-	if action == nil {
-		panic("action of type BACnetActionTagged for BACnetPropertyStatesAction must not be nil")
-	}
-	_result := &_BACnetPropertyStatesAction{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Action:                       action,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesAction(structType any) BACnetPropertyStatesAction {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesAction) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetPropertyStatesAction) IsBACnetPropertyStatesAction() {}
+
+func (m *_BACnetPropertyStatesAction) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesAction) deepCopy() *_BACnetPropertyStatesAction {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesActionCopy := &_BACnetPropertyStatesAction{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.Action.DeepCopy().(BACnetActionTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesActionCopy
+}
 
 func (m *_BACnetPropertyStatesAction) String() string {
 	if m == nil {

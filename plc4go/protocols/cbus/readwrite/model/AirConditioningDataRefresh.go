@@ -38,6 +38,7 @@ type AirConditioningDataRefresh interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -53,6 +54,16 @@ type _AirConditioningDataRefresh struct {
 
 var _ AirConditioningDataRefresh = (*_AirConditioningDataRefresh)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataRefresh)(nil)
+
+// NewAirConditioningDataRefresh factory function for _AirConditioningDataRefresh
+func NewAirConditioningDataRefresh(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte) *_AirConditioningDataRefresh {
+	_result := &_AirConditioningDataRefresh{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_AirConditioningDataRefresh) GetZoneGroup() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataRefresh factory function for _AirConditioningDataRefresh
-func NewAirConditioningDataRefresh(zoneGroup byte, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataRefresh {
-	_result := &_AirConditioningDataRefresh{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataRefresh(structType any) AirConditioningDataRefresh {
@@ -175,6 +176,22 @@ func (m *_AirConditioningDataRefresh) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_AirConditioningDataRefresh) IsAirConditioningDataRefresh() {}
+
+func (m *_AirConditioningDataRefresh) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataRefresh) deepCopy() *_AirConditioningDataRefresh {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataRefreshCopy := &_AirConditioningDataRefresh{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataRefreshCopy
+}
 
 func (m *_AirConditioningDataRefresh) String() string {
 	if m == nil {

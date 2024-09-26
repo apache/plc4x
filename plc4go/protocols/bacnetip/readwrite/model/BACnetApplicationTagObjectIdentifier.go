@@ -38,6 +38,7 @@ type BACnetApplicationTagObjectIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadObjectIdentifier
@@ -57,6 +58,19 @@ type _BACnetApplicationTagObjectIdentifier struct {
 
 var _ BACnetApplicationTagObjectIdentifier = (*_BACnetApplicationTagObjectIdentifier)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagObjectIdentifier)(nil)
+
+// NewBACnetApplicationTagObjectIdentifier factory function for _BACnetApplicationTagObjectIdentifier
+func NewBACnetApplicationTagObjectIdentifier(header BACnetTagHeader, payload BACnetTagPayloadObjectIdentifier) *_BACnetApplicationTagObjectIdentifier {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadObjectIdentifier for BACnetApplicationTagObjectIdentifier must not be nil")
+	}
+	_result := &_BACnetApplicationTagObjectIdentifier{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetApplicationTagObjectIdentifier) GetInstanceNumber() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagObjectIdentifier factory function for _BACnetApplicationTagObjectIdentifier
-func NewBACnetApplicationTagObjectIdentifier(payload BACnetTagPayloadObjectIdentifier, header BACnetTagHeader) *_BACnetApplicationTagObjectIdentifier {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadObjectIdentifier for BACnetApplicationTagObjectIdentifier must not be nil")
-	}
-	_result := &_BACnetApplicationTagObjectIdentifier{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagObjectIdentifier(structType any) BACnetApplicationTagObjectIdentifier {
@@ -231,6 +232,22 @@ func (m *_BACnetApplicationTagObjectIdentifier) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetApplicationTagObjectIdentifier) IsBACnetApplicationTagObjectIdentifier() {}
+
+func (m *_BACnetApplicationTagObjectIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagObjectIdentifier) deepCopy() *_BACnetApplicationTagObjectIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagObjectIdentifierCopy := &_BACnetApplicationTagObjectIdentifier{
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadObjectIdentifier),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagObjectIdentifierCopy
+}
 
 func (m *_BACnetApplicationTagObjectIdentifier) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type S7MessageObjectResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7DataAlarmMessage
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
@@ -58,6 +59,17 @@ type _S7MessageObjectResponse struct {
 
 var _ S7MessageObjectResponse = (*_S7MessageObjectResponse)(nil)
 var _ S7DataAlarmMessageRequirements = (*_S7MessageObjectResponse)(nil)
+
+// NewS7MessageObjectResponse factory function for _S7MessageObjectResponse
+func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7MessageObjectResponse {
+	_result := &_S7MessageObjectResponse{
+		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
+		ReturnCode:                 returnCode,
+		TransportSize:              transportSize,
+	}
+	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +106,6 @@ func (m *_S7MessageObjectResponse) GetTransportSize() DataTransportSize {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7MessageObjectResponse factory function for _S7MessageObjectResponse
-func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7MessageObjectResponse {
-	_result := &_S7MessageObjectResponse{
-		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
-		ReturnCode:                 returnCode,
-		TransportSize:              transportSize,
-	}
-	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7MessageObjectResponse(structType any) S7MessageObjectResponse {
@@ -215,6 +216,24 @@ func (m *_S7MessageObjectResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_S7MessageObjectResponse) IsS7MessageObjectResponse() {}
+
+func (m *_S7MessageObjectResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageObjectResponse) deepCopy() *_S7MessageObjectResponse {
+	if m == nil {
+		return nil
+	}
+	_S7MessageObjectResponseCopy := &_S7MessageObjectResponse{
+		m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage).deepCopy(),
+		m.ReturnCode,
+		m.TransportSize,
+		m.reservedField0,
+	}
+	m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = m
+	return _S7MessageObjectResponseCopy
+}
 
 func (m *_S7MessageObjectResponse) String() string {
 	if m == nil {

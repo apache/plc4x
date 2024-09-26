@@ -38,6 +38,7 @@ type BACnetPropertyStatesLockStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLockStatus returns LockStatus (property field)
 	GetLockStatus() BACnetLockStatusTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesLockStatus struct {
 
 var _ BACnetPropertyStatesLockStatus = (*_BACnetPropertyStatesLockStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLockStatus)(nil)
+
+// NewBACnetPropertyStatesLockStatus factory function for _BACnetPropertyStatesLockStatus
+func NewBACnetPropertyStatesLockStatus(peekedTagHeader BACnetTagHeader, lockStatus BACnetLockStatusTagged) *_BACnetPropertyStatesLockStatus {
+	if lockStatus == nil {
+		panic("lockStatus of type BACnetLockStatusTagged for BACnetPropertyStatesLockStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLockStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LockStatus:                   lockStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesLockStatus) GetLockStatus() BACnetLockStatusTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLockStatus factory function for _BACnetPropertyStatesLockStatus
-func NewBACnetPropertyStatesLockStatus(lockStatus BACnetLockStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLockStatus {
-	if lockStatus == nil {
-		panic("lockStatus of type BACnetLockStatusTagged for BACnetPropertyStatesLockStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLockStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LockStatus:                   lockStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLockStatus(structType any) BACnetPropertyStatesLockStatus {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLockStatus) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetPropertyStatesLockStatus) IsBACnetPropertyStatesLockStatus() {}
+
+func (m *_BACnetPropertyStatesLockStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLockStatus) deepCopy() *_BACnetPropertyStatesLockStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLockStatusCopy := &_BACnetPropertyStatesLockStatus{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LockStatus.DeepCopy().(BACnetLockStatusTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLockStatusCopy
+}
 
 func (m *_BACnetPropertyStatesLockStatus) String() string {
 	if m == nil {

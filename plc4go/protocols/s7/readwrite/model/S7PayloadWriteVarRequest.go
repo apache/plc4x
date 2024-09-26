@@ -38,6 +38,7 @@ type S7PayloadWriteVarRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7VarPayloadDataItem
@@ -53,6 +54,16 @@ type _S7PayloadWriteVarRequest struct {
 
 var _ S7PayloadWriteVarRequest = (*_S7PayloadWriteVarRequest)(nil)
 var _ S7PayloadRequirements = (*_S7PayloadWriteVarRequest)(nil)
+
+// NewS7PayloadWriteVarRequest factory function for _S7PayloadWriteVarRequest
+func NewS7PayloadWriteVarRequest(items []S7VarPayloadDataItem, parameter S7Parameter) *_S7PayloadWriteVarRequest {
+	_result := &_S7PayloadWriteVarRequest{
+		S7PayloadContract: NewS7Payload(parameter),
+		Items:             items,
+	}
+	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_S7PayloadWriteVarRequest) GetItems() []S7VarPayloadDataItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadWriteVarRequest factory function for _S7PayloadWriteVarRequest
-func NewS7PayloadWriteVarRequest(items []S7VarPayloadDataItem, parameter S7Parameter) *_S7PayloadWriteVarRequest {
-	_result := &_S7PayloadWriteVarRequest{
-		S7PayloadContract: NewS7Payload(parameter),
-		Items:             items,
-	}
-	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadWriteVarRequest(structType any) S7PayloadWriteVarRequest {
@@ -190,6 +191,22 @@ func (m *_S7PayloadWriteVarRequest) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_S7PayloadWriteVarRequest) IsS7PayloadWriteVarRequest() {}
+
+func (m *_S7PayloadWriteVarRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadWriteVarRequest) deepCopy() *_S7PayloadWriteVarRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadWriteVarRequestCopy := &_S7PayloadWriteVarRequest{
+		m.S7PayloadContract.(*_S7Payload).deepCopy(),
+		utils.DeepCopySlice[S7VarPayloadDataItem, S7VarPayloadDataItem](m.Items),
+	}
+	m.S7PayloadContract.(*_S7Payload)._SubType = m
+	return _S7PayloadWriteVarRequestCopy
+}
 
 func (m *_S7PayloadWriteVarRequest) String() string {
 	if m == nil {

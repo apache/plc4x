@@ -38,6 +38,7 @@ type BACnetHostNPortEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetBacnetHostNPort returns BacnetHostNPort (property field)
@@ -60,6 +61,20 @@ type _BACnetHostNPortEnclosed struct {
 
 var _ BACnetHostNPortEnclosed = (*_BACnetHostNPortEnclosed)(nil)
 
+// NewBACnetHostNPortEnclosed factory function for _BACnetHostNPortEnclosed
+func NewBACnetHostNPortEnclosed(openingTag BACnetOpeningTag, bacnetHostNPort BACnetHostNPort, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetHostNPortEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetHostNPortEnclosed must not be nil")
+	}
+	if bacnetHostNPort == nil {
+		panic("bacnetHostNPort of type BACnetHostNPort for BACnetHostNPortEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetHostNPortEnclosed must not be nil")
+	}
+	return &_BACnetHostNPortEnclosed{OpeningTag: openingTag, BacnetHostNPort: bacnetHostNPort, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +96,6 @@ func (m *_BACnetHostNPortEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostNPortEnclosed factory function for _BACnetHostNPortEnclosed
-func NewBACnetHostNPortEnclosed(openingTag BACnetOpeningTag, bacnetHostNPort BACnetHostNPort, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetHostNPortEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetHostNPortEnclosed must not be nil")
-	}
-	if bacnetHostNPort == nil {
-		panic("bacnetHostNPort of type BACnetHostNPort for BACnetHostNPortEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetHostNPortEnclosed must not be nil")
-	}
-	return &_BACnetHostNPortEnclosed{OpeningTag: openingTag, BacnetHostNPort: bacnetHostNPort, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostNPortEnclosed(structType any) BACnetHostNPortEnclosed {
@@ -228,6 +229,23 @@ func (m *_BACnetHostNPortEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetHostNPortEnclosed) IsBACnetHostNPortEnclosed() {}
+
+func (m *_BACnetHostNPortEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostNPortEnclosed) deepCopy() *_BACnetHostNPortEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostNPortEnclosedCopy := &_BACnetHostNPortEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.BacnetHostNPort.DeepCopy().(BACnetHostNPort),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetHostNPortEnclosedCopy
+}
 
 func (m *_BACnetHostNPortEnclosed) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataBBMDAcceptFDRegistrations interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBbmdAcceptFDRegistrations returns BbmdAcceptFDRegistrations (property field)
 	GetBbmdAcceptFDRegistrations() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBBMDAcceptFDRegistrations struct {
 
 var _ BACnetConstructedDataBBMDAcceptFDRegistrations = (*_BACnetConstructedDataBBMDAcceptFDRegistrations)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDAcceptFDRegistrations)(nil)
+
+// NewBACnetConstructedDataBBMDAcceptFDRegistrations factory function for _BACnetConstructedDataBBMDAcceptFDRegistrations
+func NewBACnetConstructedDataBBMDAcceptFDRegistrations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdAcceptFDRegistrations BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
+	if bbmdAcceptFDRegistrations == nil {
+		panic("bbmdAcceptFDRegistrations of type BACnetApplicationTagBoolean for BACnetConstructedDataBBMDAcceptFDRegistrations must not be nil")
+	}
+	_result := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BbmdAcceptFDRegistrations:     bbmdAcceptFDRegistrations,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBBMDAcceptFDRegistrations factory function for _BACnetConstructedDataBBMDAcceptFDRegistrations
-func NewBACnetConstructedDataBBMDAcceptFDRegistrations(bbmdAcceptFDRegistrations BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
-	if bbmdAcceptFDRegistrations == nil {
-		panic("bbmdAcceptFDRegistrations of type BACnetApplicationTagBoolean for BACnetConstructedDataBBMDAcceptFDRegistrations must not be nil")
-	}
-	_result := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BbmdAcceptFDRegistrations:     bbmdAcceptFDRegistrations,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBBMDAcceptFDRegistrations(structType any) BACnetConstructedDataBBMDAcceptFDRegistrations {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) IsBACnetConstructedDataBBMDAcceptFDRegistrations() {
+}
+
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) deepCopy() *_BACnetConstructedDataBBMDAcceptFDRegistrations {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBBMDAcceptFDRegistrationsCopy := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BbmdAcceptFDRegistrations.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBBMDAcceptFDRegistrationsCopy
 }
 
 func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) String() string {

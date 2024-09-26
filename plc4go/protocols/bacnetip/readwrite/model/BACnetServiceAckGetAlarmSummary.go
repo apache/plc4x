@@ -38,6 +38,7 @@ type BACnetServiceAckGetAlarmSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -59,6 +60,27 @@ type _BACnetServiceAckGetAlarmSummary struct {
 
 var _ BACnetServiceAckGetAlarmSummary = (*_BACnetServiceAckGetAlarmSummary)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetAlarmSummary)(nil)
+
+// NewBACnetServiceAckGetAlarmSummary factory function for _BACnetServiceAckGetAlarmSummary
+func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint32) *_BACnetServiceAckGetAlarmSummary {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckGetAlarmSummary must not be nil")
+	}
+	if eventState == nil {
+		panic("eventState of type BACnetEventStateTagged for BACnetServiceAckGetAlarmSummary must not be nil")
+	}
+	if acknowledgedTransitions == nil {
+		panic("acknowledgedTransitions of type BACnetEventTransitionBitsTagged for BACnetServiceAckGetAlarmSummary must not be nil")
+	}
+	_result := &_BACnetServiceAckGetAlarmSummary{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ObjectIdentifier:         objectIdentifier,
+		EventState:               eventState,
+		AcknowledgedTransitions:  acknowledgedTransitions,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,27 +121,6 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetAcknowledgedTransitions() BACnetEv
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckGetAlarmSummary factory function for _BACnetServiceAckGetAlarmSummary
-func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint32) *_BACnetServiceAckGetAlarmSummary {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckGetAlarmSummary must not be nil")
-	}
-	if eventState == nil {
-		panic("eventState of type BACnetEventStateTagged for BACnetServiceAckGetAlarmSummary must not be nil")
-	}
-	if acknowledgedTransitions == nil {
-		panic("acknowledgedTransitions of type BACnetEventTransitionBitsTagged for BACnetServiceAckGetAlarmSummary must not be nil")
-	}
-	_result := &_BACnetServiceAckGetAlarmSummary{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		ObjectIdentifier:         objectIdentifier,
-		EventState:               eventState,
-		AcknowledgedTransitions:  acknowledgedTransitions,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckGetAlarmSummary(structType any) BACnetServiceAckGetAlarmSummary {
@@ -230,6 +231,24 @@ func (m *_BACnetServiceAckGetAlarmSummary) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetServiceAckGetAlarmSummary) IsBACnetServiceAckGetAlarmSummary() {}
+
+func (m *_BACnetServiceAckGetAlarmSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckGetAlarmSummary) deepCopy() *_BACnetServiceAckGetAlarmSummary {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckGetAlarmSummaryCopy := &_BACnetServiceAckGetAlarmSummary{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.EventState.DeepCopy().(BACnetEventStateTagged),
+		m.AcknowledgedTransitions.DeepCopy().(BACnetEventTransitionBitsTagged),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckGetAlarmSummaryCopy
+}
 
 func (m *_BACnetServiceAckGetAlarmSummary) String() string {
 	if m == nil {

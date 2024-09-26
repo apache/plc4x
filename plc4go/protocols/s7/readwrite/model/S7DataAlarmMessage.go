@@ -44,6 +44,7 @@ type S7DataAlarmMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7DataAlarmMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7DataAlarmMessage()
 }
@@ -69,6 +70,11 @@ type _S7DataAlarmMessage struct {
 
 var _ S7DataAlarmMessageContract = (*_S7DataAlarmMessage)(nil)
 
+// NewS7DataAlarmMessage factory function for _S7DataAlarmMessage
+func NewS7DataAlarmMessage() *_S7DataAlarmMessage {
+	return &_S7DataAlarmMessage{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -86,11 +92,6 @@ func (m *_S7DataAlarmMessage) GetNumberMessageObj() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7DataAlarmMessage factory function for _S7DataAlarmMessage
-func NewS7DataAlarmMessage() *_S7DataAlarmMessage {
-	return &_S7DataAlarmMessage{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7DataAlarmMessage(structType any) S7DataAlarmMessage {
@@ -177,11 +178,11 @@ func (m *_S7DataAlarmMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child S7DataAlarmMessage
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
-		if _child, err = (&_S7MessageObjectRequest{}).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
+		if _child, err = new(_S7MessageObjectRequest).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageObjectRequest for type-switch of S7DataAlarmMessage")
 		}
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
-		if _child, err = (&_S7MessageObjectResponse{}).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
+		if _child, err = new(_S7MessageObjectResponse).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageObjectResponse for type-switch of S7DataAlarmMessage")
 		}
 	default:
@@ -227,3 +228,17 @@ func (pm *_S7DataAlarmMessage) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_S7DataAlarmMessage) IsS7DataAlarmMessage() {}
+
+func (m *_S7DataAlarmMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7DataAlarmMessage) deepCopy() *_S7DataAlarmMessage {
+	if m == nil {
+		return nil
+	}
+	_S7DataAlarmMessageCopy := &_S7DataAlarmMessage{
+		nil, // will be set by child
+	}
+	return _S7DataAlarmMessageCopy
+}

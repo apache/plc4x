@@ -38,6 +38,7 @@ type IdentityMappingRuleType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetCriteriaType returns CriteriaType (property field)
 	GetCriteriaType() IdentityCriteriaType
@@ -56,6 +57,20 @@ type _IdentityMappingRuleType struct {
 
 var _ IdentityMappingRuleType = (*_IdentityMappingRuleType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_IdentityMappingRuleType)(nil)
+
+// NewIdentityMappingRuleType factory function for _IdentityMappingRuleType
+func NewIdentityMappingRuleType(criteriaType IdentityCriteriaType, criteria PascalString) *_IdentityMappingRuleType {
+	if criteria == nil {
+		panic("criteria of type PascalString for IdentityMappingRuleType must not be nil")
+	}
+	_result := &_IdentityMappingRuleType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		CriteriaType:                      criteriaType,
+		Criteria:                          criteria,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_IdentityMappingRuleType) GetCriteria() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentityMappingRuleType factory function for _IdentityMappingRuleType
-func NewIdentityMappingRuleType(criteriaType IdentityCriteriaType, criteria PascalString) *_IdentityMappingRuleType {
-	if criteria == nil {
-		panic("criteria of type PascalString for IdentityMappingRuleType must not be nil")
-	}
-	_result := &_IdentityMappingRuleType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		CriteriaType:                      criteriaType,
-		Criteria:                          criteria,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentityMappingRuleType(structType any) IdentityMappingRuleType {
@@ -203,6 +204,23 @@ func (m *_IdentityMappingRuleType) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_IdentityMappingRuleType) IsIdentityMappingRuleType() {}
+
+func (m *_IdentityMappingRuleType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentityMappingRuleType) deepCopy() *_IdentityMappingRuleType {
+	if m == nil {
+		return nil
+	}
+	_IdentityMappingRuleTypeCopy := &_IdentityMappingRuleType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.CriteriaType,
+		m.Criteria.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _IdentityMappingRuleTypeCopy
+}
 
 func (m *_IdentityMappingRuleType) String() string {
 	if m == nil {

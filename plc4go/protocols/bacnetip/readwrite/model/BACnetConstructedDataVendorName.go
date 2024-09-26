@@ -38,6 +38,7 @@ type BACnetConstructedDataVendorName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVendorName returns VendorName (property field)
 	GetVendorName() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataVendorName struct {
 
 var _ BACnetConstructedDataVendorName = (*_BACnetConstructedDataVendorName)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVendorName)(nil)
+
+// NewBACnetConstructedDataVendorName factory function for _BACnetConstructedDataVendorName
+func NewBACnetConstructedDataVendorName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vendorName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorName {
+	if vendorName == nil {
+		panic("vendorName of type BACnetApplicationTagCharacterString for BACnetConstructedDataVendorName must not be nil")
+	}
+	_result := &_BACnetConstructedDataVendorName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VendorName:                    vendorName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataVendorName) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVendorName factory function for _BACnetConstructedDataVendorName
-func NewBACnetConstructedDataVendorName(vendorName BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorName {
-	if vendorName == nil {
-		panic("vendorName of type BACnetApplicationTagCharacterString for BACnetConstructedDataVendorName must not be nil")
-	}
-	_result := &_BACnetConstructedDataVendorName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VendorName:                    vendorName,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVendorName(structType any) BACnetConstructedDataVendorName {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataVendorName) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataVendorName) IsBACnetConstructedDataVendorName() {}
+
+func (m *_BACnetConstructedDataVendorName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVendorName) deepCopy() *_BACnetConstructedDataVendorName {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVendorNameCopy := &_BACnetConstructedDataVendorName{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.VendorName.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVendorNameCopy
+}
 
 func (m *_BACnetConstructedDataVendorName) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type TDataIndividualReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsTDataIndividualReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataIndividualReq()
@@ -48,6 +49,15 @@ type _TDataIndividualReq struct {
 
 var _ TDataIndividualReq = (*_TDataIndividualReq)(nil)
 var _ CEMIRequirements = (*_TDataIndividualReq)(nil)
+
+// NewTDataIndividualReq factory function for _TDataIndividualReq
+func NewTDataIndividualReq(size uint16) *_TDataIndividualReq {
+	_result := &_TDataIndividualReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_TDataIndividualReq) GetMessageCode() uint8 {
 
 func (m *_TDataIndividualReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewTDataIndividualReq factory function for _TDataIndividualReq
-func NewTDataIndividualReq(size uint16) *_TDataIndividualReq {
-	_result := &_TDataIndividualReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_TDataIndividualReq) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_TDataIndividualReq) IsTDataIndividualReq() {}
+
+func (m *_TDataIndividualReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TDataIndividualReq) deepCopy() *_TDataIndividualReq {
+	if m == nil {
+		return nil
+	}
+	_TDataIndividualReqCopy := &_TDataIndividualReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _TDataIndividualReqCopy
+}
 
 func (m *_TDataIndividualReq) String() string {
 	if m == nil {

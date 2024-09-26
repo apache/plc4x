@@ -38,6 +38,7 @@ type ConnectedAddressItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetConnectionId returns ConnectionId (property field)
 	GetConnectionId() uint32
@@ -55,6 +56,16 @@ type _ConnectedAddressItem struct {
 
 var _ ConnectedAddressItem = (*_ConnectedAddressItem)(nil)
 var _ TypeIdRequirements = (*_ConnectedAddressItem)(nil)
+
+// NewConnectedAddressItem factory function for _ConnectedAddressItem
+func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
+	_result := &_ConnectedAddressItem{
+		TypeIdContract: NewTypeId(),
+		ConnectionId:   connectionId,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,16 +98,6 @@ func (m *_ConnectedAddressItem) GetConnectionId() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectedAddressItem factory function for _ConnectedAddressItem
-func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
-	_result := &_ConnectedAddressItem{
-		TypeIdContract: NewTypeId(),
-		ConnectionId:   connectionId,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectedAddressItem(structType any) ConnectedAddressItem {
@@ -194,6 +195,23 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ConnectedAddressItem) IsConnectedAddressItem() {}
+
+func (m *_ConnectedAddressItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectedAddressItem) deepCopy() *_ConnectedAddressItem {
+	if m == nil {
+		return nil
+	}
+	_ConnectedAddressItemCopy := &_ConnectedAddressItem{
+		m.TypeIdContract.(*_TypeId).deepCopy(),
+		m.ConnectionId,
+		m.reservedField0,
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _ConnectedAddressItemCopy
+}
 
 func (m *_ConnectedAddressItem) String() string {
 	if m == nil {

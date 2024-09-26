@@ -36,6 +36,7 @@ type BACnetConstructedDataStructuredViewAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataStructuredViewAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataStructuredViewAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataStructuredViewAll struct {
 
 var _ BACnetConstructedDataStructuredViewAll = (*_BACnetConstructedDataStructuredViewAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStructuredViewAll)(nil)
+
+// NewBACnetConstructedDataStructuredViewAll factory function for _BACnetConstructedDataStructuredViewAll
+func NewBACnetConstructedDataStructuredViewAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStructuredViewAll {
+	_result := &_BACnetConstructedDataStructuredViewAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataStructuredViewAll) GetPropertyIdentifierArgument(
 
 func (m *_BACnetConstructedDataStructuredViewAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataStructuredViewAll factory function for _BACnetConstructedDataStructuredViewAll
-func NewBACnetConstructedDataStructuredViewAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStructuredViewAll {
-	_result := &_BACnetConstructedDataStructuredViewAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataStructuredViewAll) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataStructuredViewAll) IsBACnetConstructedDataStructuredViewAll() {}
+
+func (m *_BACnetConstructedDataStructuredViewAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStructuredViewAll) deepCopy() *_BACnetConstructedDataStructuredViewAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStructuredViewAllCopy := &_BACnetConstructedDataStructuredViewAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStructuredViewAllCopy
+}
 
 func (m *_BACnetConstructedDataStructuredViewAll) String() string {
 	if m == nil {

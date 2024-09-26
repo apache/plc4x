@@ -30,7 +30,6 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvllservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/service"
@@ -70,15 +69,16 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *IPNetw
 	}
 
 	// build a local device object
-	localDevice := &TestDeviceObject{
-		LocalDeviceObject: NewLocalDeviceObject(
-			NoArgs,
-			NKW(
-				KWObjectName, b.name,
-				KWObjectIdentifier, "device:999",
-				KWVendorIdentifier, 999,
-			),
+	localDevice, err := NewTestDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, b.name,
+			KWObjectIdentifier, "device:999",
+			KWVendorIdentifier, 999,
 		),
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating test device")
 	}
 
 	// continue with initialization

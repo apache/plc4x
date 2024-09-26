@@ -38,6 +38,7 @@ type NetworkGroupDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetServerUri returns ServerUri (property field)
 	GetServerUri() PascalString
@@ -59,6 +60,21 @@ type _NetworkGroupDataType struct {
 
 var _ NetworkGroupDataType = (*_NetworkGroupDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NetworkGroupDataType)(nil)
+
+// NewNetworkGroupDataType factory function for _NetworkGroupDataType
+func NewNetworkGroupDataType(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) *_NetworkGroupDataType {
+	if serverUri == nil {
+		panic("serverUri of type PascalString for NetworkGroupDataType must not be nil")
+	}
+	_result := &_NetworkGroupDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ServerUri:                         serverUri,
+		NoOfNetworkPaths:                  noOfNetworkPaths,
+		NetworkPaths:                      networkPaths,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_NetworkGroupDataType) GetNetworkPaths() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNetworkGroupDataType factory function for _NetworkGroupDataType
-func NewNetworkGroupDataType(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) *_NetworkGroupDataType {
-	if serverUri == nil {
-		panic("serverUri of type PascalString for NetworkGroupDataType must not be nil")
-	}
-	_result := &_NetworkGroupDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ServerUri:                         serverUri,
-		NoOfNetworkPaths:                  noOfNetworkPaths,
-		NetworkPaths:                      networkPaths,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNetworkGroupDataType(structType any) NetworkGroupDataType {
@@ -231,6 +232,24 @@ func (m *_NetworkGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_NetworkGroupDataType) IsNetworkGroupDataType() {}
+
+func (m *_NetworkGroupDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkGroupDataType) deepCopy() *_NetworkGroupDataType {
+	if m == nil {
+		return nil
+	}
+	_NetworkGroupDataTypeCopy := &_NetworkGroupDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ServerUri.DeepCopy().(PascalString),
+		m.NoOfNetworkPaths,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NetworkPaths),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NetworkGroupDataTypeCopy
+}
 
 func (m *_NetworkGroupDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesBinaryLightningValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBinaryLightningValue returns BinaryLightningValue (property field)
 	GetBinaryLightningValue() BACnetBinaryLightingPVTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesBinaryLightningValue struct {
 
 var _ BACnetPropertyStatesBinaryLightningValue = (*_BACnetPropertyStatesBinaryLightningValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBinaryLightningValue)(nil)
+
+// NewBACnetPropertyStatesBinaryLightningValue factory function for _BACnetPropertyStatesBinaryLightningValue
+func NewBACnetPropertyStatesBinaryLightningValue(peekedTagHeader BACnetTagHeader, binaryLightningValue BACnetBinaryLightingPVTagged) *_BACnetPropertyStatesBinaryLightningValue {
+	if binaryLightningValue == nil {
+		panic("binaryLightningValue of type BACnetBinaryLightingPVTagged for BACnetPropertyStatesBinaryLightningValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBinaryLightningValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BinaryLightningValue:         binaryLightningValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) GetBinaryLightningValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBinaryLightningValue factory function for _BACnetPropertyStatesBinaryLightningValue
-func NewBACnetPropertyStatesBinaryLightningValue(binaryLightningValue BACnetBinaryLightingPVTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBinaryLightningValue {
-	if binaryLightningValue == nil {
-		panic("binaryLightningValue of type BACnetBinaryLightingPVTagged for BACnetPropertyStatesBinaryLightningValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBinaryLightningValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BinaryLightningValue:         binaryLightningValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBinaryLightningValue(structType any) BACnetPropertyStatesBinaryLightningValue {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetPropertyStatesBinaryLightningValue) IsBACnetPropertyStatesBinaryLightningValue() {}
+
+func (m *_BACnetPropertyStatesBinaryLightningValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBinaryLightningValue) deepCopy() *_BACnetPropertyStatesBinaryLightningValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBinaryLightningValueCopy := &_BACnetPropertyStatesBinaryLightningValue{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.BinaryLightningValue.DeepCopy().(BACnetBinaryLightingPVTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBinaryLightningValueCopy
+}
 
 func (m *_BACnetPropertyStatesBinaryLightningValue) String() string {
 	if m == nil {

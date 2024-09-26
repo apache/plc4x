@@ -38,6 +38,7 @@ type BACnetContextTagDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadDouble
@@ -55,6 +56,19 @@ type _BACnetContextTagDouble struct {
 
 var _ BACnetContextTagDouble = (*_BACnetContextTagDouble)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagDouble)(nil)
+
+// NewBACnetContextTagDouble factory function for _BACnetContextTagDouble
+func NewBACnetContextTagDouble(header BACnetTagHeader, payload BACnetTagPayloadDouble, tagNumberArgument uint8) *_BACnetContextTagDouble {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadDouble for BACnetContextTagDouble must not be nil")
+	}
+	_result := &_BACnetContextTagDouble{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,19 +116,6 @@ func (m *_BACnetContextTagDouble) GetActualValue() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagDouble factory function for _BACnetContextTagDouble
-func NewBACnetContextTagDouble(payload BACnetTagPayloadDouble, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagDouble {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadDouble for BACnetContextTagDouble must not be nil")
-	}
-	_result := &_BACnetContextTagDouble{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagDouble(structType any) BACnetContextTagDouble {
@@ -213,6 +214,22 @@ func (m *_BACnetContextTagDouble) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetContextTagDouble) IsBACnetContextTagDouble() {}
+
+func (m *_BACnetContextTagDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagDouble) deepCopy() *_BACnetContextTagDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagDoubleCopy := &_BACnetContextTagDouble{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadDouble),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagDoubleCopy
+}
 
 func (m *_BACnetContextTagDouble) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type TunnelingRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetTunnelingRequestDataBlock returns TunnelingRequestDataBlock (property field)
 	GetTunnelingRequestDataBlock() TunnelingRequestDataBlock
@@ -61,6 +62,23 @@ type _TunnelingRequest struct {
 
 var _ TunnelingRequest = (*_TunnelingRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_TunnelingRequest)(nil)
+
+// NewTunnelingRequest factory function for _TunnelingRequest
+func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI, totalLength uint16) *_TunnelingRequest {
+	if tunnelingRequestDataBlock == nil {
+		panic("tunnelingRequestDataBlock of type TunnelingRequestDataBlock for TunnelingRequest must not be nil")
+	}
+	if cemi == nil {
+		panic("cemi of type CEMI for TunnelingRequest must not be nil")
+	}
+	_result := &_TunnelingRequest{
+		KnxNetIpMessageContract:   NewKnxNetIpMessage(),
+		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
+		Cemi:                      cemi,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,23 +115,6 @@ func (m *_TunnelingRequest) GetCemi() CEMI {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingRequest factory function for _TunnelingRequest
-func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI, totalLength uint16) *_TunnelingRequest {
-	if tunnelingRequestDataBlock == nil {
-		panic("tunnelingRequestDataBlock of type TunnelingRequestDataBlock for TunnelingRequest must not be nil")
-	}
-	if cemi == nil {
-		panic("cemi of type CEMI for TunnelingRequest must not be nil")
-	}
-	_result := &_TunnelingRequest{
-		KnxNetIpMessageContract:   NewKnxNetIpMessage(),
-		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
-		Cemi:                      cemi,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingRequest(structType any) TunnelingRequest {
@@ -221,6 +222,24 @@ func (m *_TunnelingRequest) GetTotalLength() uint16 {
 ////
 
 func (m *_TunnelingRequest) IsTunnelingRequest() {}
+
+func (m *_TunnelingRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TunnelingRequest) deepCopy() *_TunnelingRequest {
+	if m == nil {
+		return nil
+	}
+	_TunnelingRequestCopy := &_TunnelingRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.TunnelingRequestDataBlock.DeepCopy().(TunnelingRequestDataBlock),
+		m.Cemi.DeepCopy().(CEMI),
+		m.TotalLength,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _TunnelingRequestCopy
+}
 
 func (m *_TunnelingRequest) String() string {
 	if m == nil {

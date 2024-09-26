@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedBits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfValueNewValue
 	// GetChangedBits returns ChangedBits (property field)
 	GetChangedBits() BACnetContextTagBitString
@@ -53,6 +54,19 @@ type _BACnetNotificationParametersChangeOfValueNewValueChangedBits struct {
 
 var _ BACnetNotificationParametersChangeOfValueNewValueChangedBits = (*_BACnetNotificationParametersChangeOfValueNewValueChangedBits)(nil)
 var _ BACnetNotificationParametersChangeOfValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfValueNewValueChangedBits)(nil)
+
+// NewBACnetNotificationParametersChangeOfValueNewValueChangedBits factory function for _BACnetNotificationParametersChangeOfValueNewValueChangedBits
+func NewBACnetNotificationParametersChangeOfValueNewValueChangedBits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changedBits BACnetContextTagBitString, tagNumber uint8) *_BACnetNotificationParametersChangeOfValueNewValueChangedBits {
+	if changedBits == nil {
+		panic("changedBits of type BACnetContextTagBitString for BACnetNotificationParametersChangeOfValueNewValueChangedBits must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
+		BACnetNotificationParametersChangeOfValueNewValueContract: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		ChangedBits: changedBits,
+	}
+	_result.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) GetChang
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfValueNewValueChangedBits factory function for _BACnetNotificationParametersChangeOfValueNewValueChangedBits
-func NewBACnetNotificationParametersChangeOfValueNewValueChangedBits(changedBits BACnetContextTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfValueNewValueChangedBits {
-	if changedBits == nil {
-		panic("changedBits of type BACnetContextTagBitString for BACnetNotificationParametersChangeOfValueNewValueChangedBits must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
-		BACnetNotificationParametersChangeOfValueNewValueContract: NewBACnetNotificationParametersChangeOfValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		ChangedBits: changedBits,
-	}
-	_result.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfValueNewValueChangedBits(structType any) BACnetNotificationParametersChangeOfValueNewValueChangedBits {
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) Serializ
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) IsBACnetNotificationParametersChangeOfValueNewValueChangedBits() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) deepCopy() *_BACnetNotificationParametersChangeOfValueNewValueChangedBits {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfValueNewValueChangedBitsCopy := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
+		m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue).deepCopy(),
+		m.ChangedBits.DeepCopy().(BACnetContextTagBitString),
+	}
+	m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfValueNewValueChangedBitsCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) String() string {

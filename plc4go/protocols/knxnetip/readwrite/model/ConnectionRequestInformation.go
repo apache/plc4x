@@ -40,6 +40,7 @@ type ConnectionRequestInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsConnectionRequestInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequestInformation()
 }
@@ -153,11 +154,11 @@ func (m *_ConnectionRequestInformation) parse(ctx context.Context, readBuffer ut
 	var _child ConnectionRequestInformation
 	switch {
 	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
-		if _child, err = (&_ConnectionRequestInformationDeviceManagement{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionRequestInformationDeviceManagement).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionRequestInformationDeviceManagement for type-switch of ConnectionRequestInformation")
 		}
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
-		if _child, err = (&_ConnectionRequestInformationTunnelConnection{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionRequestInformationTunnelConnection).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionRequestInformationTunnelConnection for type-switch of ConnectionRequestInformation")
 		}
 	default:
@@ -203,3 +204,17 @@ func (pm *_ConnectionRequestInformation) serializeParent(ctx context.Context, wr
 }
 
 func (m *_ConnectionRequestInformation) IsConnectionRequestInformation() {}
+
+func (m *_ConnectionRequestInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequestInformation) deepCopy() *_ConnectionRequestInformation {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestInformationCopy := &_ConnectionRequestInformation{
+		nil, // will be set by child
+	}
+	return _ConnectionRequestInformationCopy
+}

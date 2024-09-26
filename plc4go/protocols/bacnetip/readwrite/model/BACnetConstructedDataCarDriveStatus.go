@@ -38,6 +38,7 @@ type BACnetConstructedDataCarDriveStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarDriveStatus returns CarDriveStatus (property field)
 	GetCarDriveStatus() BACnetLiftCarDriveStatusTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCarDriveStatus struct {
 
 var _ BACnetConstructedDataCarDriveStatus = (*_BACnetConstructedDataCarDriveStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDriveStatus)(nil)
+
+// NewBACnetConstructedDataCarDriveStatus factory function for _BACnetConstructedDataCarDriveStatus
+func NewBACnetConstructedDataCarDriveStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carDriveStatus BACnetLiftCarDriveStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDriveStatus {
+	if carDriveStatus == nil {
+		panic("carDriveStatus of type BACnetLiftCarDriveStatusTagged for BACnetConstructedDataCarDriveStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarDriveStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarDriveStatus:                carDriveStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCarDriveStatus) GetActualValue() BACnetLiftCarDri
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarDriveStatus factory function for _BACnetConstructedDataCarDriveStatus
-func NewBACnetConstructedDataCarDriveStatus(carDriveStatus BACnetLiftCarDriveStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDriveStatus {
-	if carDriveStatus == nil {
-		panic("carDriveStatus of type BACnetLiftCarDriveStatusTagged for BACnetConstructedDataCarDriveStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarDriveStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CarDriveStatus:                carDriveStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarDriveStatus(structType any) BACnetConstructedDataCarDriveStatus {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCarDriveStatus) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataCarDriveStatus) IsBACnetConstructedDataCarDriveStatus() {}
+
+func (m *_BACnetConstructedDataCarDriveStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarDriveStatus) deepCopy() *_BACnetConstructedDataCarDriveStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarDriveStatusCopy := &_BACnetConstructedDataCarDriveStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CarDriveStatus.DeepCopy().(BACnetLiftCarDriveStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarDriveStatusCopy
+}
 
 func (m *_BACnetConstructedDataCarDriveStatus) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeOfDeviceRestart interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeOfDeviceRestart returns TimeOfDeviceRestart (property field)
 	GetTimeOfDeviceRestart() BACnetTimeStamp
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTimeOfDeviceRestart struct {
 
 var _ BACnetConstructedDataTimeOfDeviceRestart = (*_BACnetConstructedDataTimeOfDeviceRestart)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeOfDeviceRestart)(nil)
+
+// NewBACnetConstructedDataTimeOfDeviceRestart factory function for _BACnetConstructedDataTimeOfDeviceRestart
+func NewBACnetConstructedDataTimeOfDeviceRestart(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfDeviceRestart BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfDeviceRestart {
+	if timeOfDeviceRestart == nil {
+		panic("timeOfDeviceRestart of type BACnetTimeStamp for BACnetConstructedDataTimeOfDeviceRestart must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimeOfDeviceRestart{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeOfDeviceRestart:           timeOfDeviceRestart,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) GetActualValue() BACnetTimeS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimeOfDeviceRestart factory function for _BACnetConstructedDataTimeOfDeviceRestart
-func NewBACnetConstructedDataTimeOfDeviceRestart(timeOfDeviceRestart BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfDeviceRestart {
-	if timeOfDeviceRestart == nil {
-		panic("timeOfDeviceRestart of type BACnetTimeStamp for BACnetConstructedDataTimeOfDeviceRestart must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimeOfDeviceRestart{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimeOfDeviceRestart:           timeOfDeviceRestart,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimeOfDeviceRestart(structType any) BACnetConstructedDataTimeOfDeviceRestart {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataTimeOfDeviceRestart) IsBACnetConstructedDataTimeOfDeviceRestart() {}
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) deepCopy() *_BACnetConstructedDataTimeOfDeviceRestart {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeOfDeviceRestartCopy := &_BACnetConstructedDataTimeOfDeviceRestart{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TimeOfDeviceRestart.DeepCopy().(BACnetTimeStamp),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeOfDeviceRestartCopy
+}
 
 func (m *_BACnetConstructedDataTimeOfDeviceRestart) String() string {
 	if m == nil {

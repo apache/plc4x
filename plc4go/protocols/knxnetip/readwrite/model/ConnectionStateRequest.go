@@ -40,6 +40,7 @@ type ConnectionStateRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
@@ -60,6 +61,20 @@ type _ConnectionStateRequest struct {
 
 var _ ConnectionStateRequest = (*_ConnectionStateRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_ConnectionStateRequest)(nil)
+
+// NewConnectionStateRequest factory function for _ConnectionStateRequest
+func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_ConnectionStateRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for ConnectionStateRequest must not be nil")
+	}
+	_result := &_ConnectionStateRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		CommunicationChannelId:  communicationChannelId,
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,20 +111,6 @@ func (m *_ConnectionStateRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionStateRequest factory function for _ConnectionStateRequest
-func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_ConnectionStateRequest {
-	if hpaiControlEndpoint == nil {
-		panic("hpaiControlEndpoint of type HPAIControlEndpoint for ConnectionStateRequest must not be nil")
-	}
-	_result := &_ConnectionStateRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		CommunicationChannelId:  communicationChannelId,
-		HpaiControlEndpoint:     hpaiControlEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionStateRequest(structType any) ConnectionStateRequest {
@@ -220,6 +221,24 @@ func (m *_ConnectionStateRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ConnectionStateRequest) IsConnectionStateRequest() {}
+
+func (m *_ConnectionStateRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionStateRequest) deepCopy() *_ConnectionStateRequest {
+	if m == nil {
+		return nil
+	}
+	_ConnectionStateRequestCopy := &_ConnectionStateRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.CommunicationChannelId,
+		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+		m.reservedField0,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _ConnectionStateRequestCopy
+}
 
 func (m *_ConnectionStateRequest) String() string {
 	if m == nil {

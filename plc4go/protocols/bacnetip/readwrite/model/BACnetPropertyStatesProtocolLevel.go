@@ -38,6 +38,7 @@ type BACnetPropertyStatesProtocolLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesProtocolLevel struct {
 
 var _ BACnetPropertyStatesProtocolLevel = (*_BACnetPropertyStatesProtocolLevel)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesProtocolLevel)(nil)
+
+// NewBACnetPropertyStatesProtocolLevel factory function for _BACnetPropertyStatesProtocolLevel
+func NewBACnetPropertyStatesProtocolLevel(peekedTagHeader BACnetTagHeader, protocolLevel BACnetProtocolLevelTagged) *_BACnetPropertyStatesProtocolLevel {
+	if protocolLevel == nil {
+		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetPropertyStatesProtocolLevel must not be nil")
+	}
+	_result := &_BACnetPropertyStatesProtocolLevel{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ProtocolLevel:                protocolLevel,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesProtocolLevel) GetProtocolLevel() BACnetProtocolLe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesProtocolLevel factory function for _BACnetPropertyStatesProtocolLevel
-func NewBACnetPropertyStatesProtocolLevel(protocolLevel BACnetProtocolLevelTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesProtocolLevel {
-	if protocolLevel == nil {
-		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetPropertyStatesProtocolLevel must not be nil")
-	}
-	_result := &_BACnetPropertyStatesProtocolLevel{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ProtocolLevel:                protocolLevel,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesProtocolLevel(structType any) BACnetPropertyStatesProtocolLevel {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesProtocolLevel) IsBACnetPropertyStatesProtocolLevel() {}
+
+func (m *_BACnetPropertyStatesProtocolLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesProtocolLevel) deepCopy() *_BACnetPropertyStatesProtocolLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesProtocolLevelCopy := &_BACnetPropertyStatesProtocolLevel{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.ProtocolLevel.DeepCopy().(BACnetProtocolLevelTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesProtocolLevelCopy
+}
 
 func (m *_BACnetPropertyStatesProtocolLevel) String() string {
 	if m == nil {

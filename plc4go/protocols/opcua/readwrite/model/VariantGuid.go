@@ -38,6 +38,7 @@ type VariantGuid interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantGuid struct {
 
 var _ VariantGuid = (*_VariantGuid)(nil)
 var _ VariantRequirements = (*_VariantGuid)(nil)
+
+// NewVariantGuid factory function for _VariantGuid
+func NewVariantGuid(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []GuidValue) *_VariantGuid {
+	_result := &_VariantGuid{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantGuid) GetValue() []GuidValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantGuid factory function for _VariantGuid
-func NewVariantGuid(arrayLength *int32, value []GuidValue, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantGuid {
-	_result := &_VariantGuid{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantGuid(structType any) VariantGuid {
@@ -210,6 +211,23 @@ func (m *_VariantGuid) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_VariantGuid) IsVariantGuid() {}
+
+func (m *_VariantGuid) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantGuid) deepCopy() *_VariantGuid {
+	if m == nil {
+		return nil
+	}
+	_VariantGuidCopy := &_VariantGuid{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[GuidValue, GuidValue](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantGuidCopy
+}
 
 func (m *_VariantGuid) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type QueryNextResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -62,6 +63,25 @@ type _QueryNextResponse struct {
 
 var _ QueryNextResponse = (*_QueryNextResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryNextResponse)(nil)
+
+// NewQueryNextResponse factory function for _QueryNextResponse
+func NewQueryNextResponse(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, revisedContinuationPoint PascalByteString) *_QueryNextResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for QueryNextResponse must not be nil")
+	}
+	if revisedContinuationPoint == nil {
+		panic("revisedContinuationPoint of type PascalByteString for QueryNextResponse must not be nil")
+	}
+	_result := &_QueryNextResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfQueryDataSets:                 noOfQueryDataSets,
+		QueryDataSets:                     queryDataSets,
+		RevisedContinuationPoint:          revisedContinuationPoint,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +126,6 @@ func (m *_QueryNextResponse) GetRevisedContinuationPoint() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryNextResponse factory function for _QueryNextResponse
-func NewQueryNextResponse(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, revisedContinuationPoint PascalByteString) *_QueryNextResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for QueryNextResponse must not be nil")
-	}
-	if revisedContinuationPoint == nil {
-		panic("revisedContinuationPoint of type PascalByteString for QueryNextResponse must not be nil")
-	}
-	_result := &_QueryNextResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfQueryDataSets:                 noOfQueryDataSets,
-		QueryDataSets:                     queryDataSets,
-		RevisedContinuationPoint:          revisedContinuationPoint,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryNextResponse(structType any) QueryNextResponse {
@@ -255,6 +256,25 @@ func (m *_QueryNextResponse) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_QueryNextResponse) IsQueryNextResponse() {}
+
+func (m *_QueryNextResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryNextResponse) deepCopy() *_QueryNextResponse {
+	if m == nil {
+		return nil
+	}
+	_QueryNextResponseCopy := &_QueryNextResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfQueryDataSets,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.QueryDataSets),
+		m.RevisedContinuationPoint.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryNextResponseCopy
+}
 
 func (m *_QueryNextResponse) String() string {
 	if m == nil {

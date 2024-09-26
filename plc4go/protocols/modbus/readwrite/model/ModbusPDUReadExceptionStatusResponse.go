@@ -38,6 +38,7 @@ type ModbusPDUReadExceptionStatusResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() uint8
@@ -53,6 +54,16 @@ type _ModbusPDUReadExceptionStatusResponse struct {
 
 var _ ModbusPDUReadExceptionStatusResponse = (*_ModbusPDUReadExceptionStatusResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadExceptionStatusResponse)(nil)
+
+// NewModbusPDUReadExceptionStatusResponse factory function for _ModbusPDUReadExceptionStatusResponse
+func NewModbusPDUReadExceptionStatusResponse(value uint8) *_ModbusPDUReadExceptionStatusResponse {
+	_result := &_ModbusPDUReadExceptionStatusResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ModbusPDUReadExceptionStatusResponse) GetValue() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadExceptionStatusResponse factory function for _ModbusPDUReadExceptionStatusResponse
-func NewModbusPDUReadExceptionStatusResponse(value uint8) *_ModbusPDUReadExceptionStatusResponse {
-	_result := &_ModbusPDUReadExceptionStatusResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadExceptionStatusResponse(structType any) ModbusPDUReadExceptionStatusResponse {
@@ -187,6 +188,22 @@ func (m *_ModbusPDUReadExceptionStatusResponse) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_ModbusPDUReadExceptionStatusResponse) IsModbusPDUReadExceptionStatusResponse() {}
+
+func (m *_ModbusPDUReadExceptionStatusResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadExceptionStatusResponse) deepCopy() *_ModbusPDUReadExceptionStatusResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadExceptionStatusResponseCopy := &_ModbusPDUReadExceptionStatusResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.Value,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadExceptionStatusResponseCopy
+}
 
 func (m *_ModbusPDUReadExceptionStatusResponse) String() string {
 	if m == nil {

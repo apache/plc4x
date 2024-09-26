@@ -38,6 +38,7 @@ type BACnetPriorityValueInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
@@ -53,6 +54,19 @@ type _BACnetPriorityValueInteger struct {
 
 var _ BACnetPriorityValueInteger = (*_BACnetPriorityValueInteger)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueInteger)(nil)
+
+// NewBACnetPriorityValueInteger factory function for _BACnetPriorityValueInteger
+func NewBACnetPriorityValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetPriorityValueInteger must not be nil")
+	}
+	_result := &_BACnetPriorityValueInteger{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		IntegerValue:                integerValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueInteger) GetIntegerValue() BACnetApplicationTagSign
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueInteger factory function for _BACnetPriorityValueInteger
-func NewBACnetPriorityValueInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueInteger {
-	if integerValue == nil {
-		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetPriorityValueInteger must not be nil")
-	}
-	_result := &_BACnetPriorityValueInteger{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		IntegerValue:                integerValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueInteger(structType any) BACnetPriorityValueInteger {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueInteger) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetPriorityValueInteger) IsBACnetPriorityValueInteger() {}
+
+func (m *_BACnetPriorityValueInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueInteger) deepCopy() *_BACnetPriorityValueInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueIntegerCopy := &_BACnetPriorityValueInteger{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueIntegerCopy
+}
 
 func (m *_BACnetPriorityValueInteger) String() string {
 	if m == nil {

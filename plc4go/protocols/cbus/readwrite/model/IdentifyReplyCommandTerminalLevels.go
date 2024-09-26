@@ -38,6 +38,7 @@ type IdentifyReplyCommandTerminalLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetTerminalLevels returns TerminalLevels (property field)
 	GetTerminalLevels() []byte
@@ -53,6 +54,16 @@ type _IdentifyReplyCommandTerminalLevels struct {
 
 var _ IdentifyReplyCommandTerminalLevels = (*_IdentifyReplyCommandTerminalLevels)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandTerminalLevels)(nil)
+
+// NewIdentifyReplyCommandTerminalLevels factory function for _IdentifyReplyCommandTerminalLevels
+func NewIdentifyReplyCommandTerminalLevels(terminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandTerminalLevels {
+	_result := &_IdentifyReplyCommandTerminalLevels{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		TerminalLevels:               terminalLevels,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_IdentifyReplyCommandTerminalLevels) GetTerminalLevels() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandTerminalLevels factory function for _IdentifyReplyCommandTerminalLevels
-func NewIdentifyReplyCommandTerminalLevels(terminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandTerminalLevels {
-	_result := &_IdentifyReplyCommandTerminalLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		TerminalLevels:               terminalLevels,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandTerminalLevels(structType any) IdentifyReplyCommandTerminalLevels {
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandTerminalLevels) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_IdentifyReplyCommandTerminalLevels) IsIdentifyReplyCommandTerminalLevels() {}
+
+func (m *_IdentifyReplyCommandTerminalLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandTerminalLevels) deepCopy() *_IdentifyReplyCommandTerminalLevels {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandTerminalLevelsCopy := &_IdentifyReplyCommandTerminalLevels{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.TerminalLevels),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandTerminalLevelsCopy
+}
 
 func (m *_IdentifyReplyCommandTerminalLevels) String() string {
 	if m == nil {

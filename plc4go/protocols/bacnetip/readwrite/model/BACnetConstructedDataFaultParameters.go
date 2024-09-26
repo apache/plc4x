@@ -38,6 +38,7 @@ type BACnetConstructedDataFaultParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultParameters returns FaultParameters (property field)
 	GetFaultParameters() BACnetFaultParameter
@@ -55,6 +56,19 @@ type _BACnetConstructedDataFaultParameters struct {
 
 var _ BACnetConstructedDataFaultParameters = (*_BACnetConstructedDataFaultParameters)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultParameters)(nil)
+
+// NewBACnetConstructedDataFaultParameters factory function for _BACnetConstructedDataFaultParameters
+func NewBACnetConstructedDataFaultParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultParameters BACnetFaultParameter, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultParameters {
+	if faultParameters == nil {
+		panic("faultParameters of type BACnetFaultParameter for BACnetConstructedDataFaultParameters must not be nil")
+	}
+	_result := &_BACnetConstructedDataFaultParameters{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultParameters:               faultParameters,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataFaultParameters) GetActualValue() BACnetFaultPara
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFaultParameters factory function for _BACnetConstructedDataFaultParameters
-func NewBACnetConstructedDataFaultParameters(faultParameters BACnetFaultParameter, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultParameters {
-	if faultParameters == nil {
-		panic("faultParameters of type BACnetFaultParameter for BACnetConstructedDataFaultParameters must not be nil")
-	}
-	_result := &_BACnetConstructedDataFaultParameters{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultParameters:               faultParameters,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFaultParameters(structType any) BACnetConstructedDataFaultParameters {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFaultParameters) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataFaultParameters) IsBACnetConstructedDataFaultParameters() {}
+
+func (m *_BACnetConstructedDataFaultParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFaultParameters) deepCopy() *_BACnetConstructedDataFaultParameters {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFaultParametersCopy := &_BACnetConstructedDataFaultParameters{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FaultParameters.DeepCopy().(BACnetFaultParameter),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFaultParametersCopy
+}
 
 func (m *_BACnetConstructedDataFaultParameters) String() string {
 	if m == nil {

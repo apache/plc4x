@@ -38,6 +38,7 @@ type ParameterValueBaudRateSelector interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() BaudRateSelector
@@ -56,6 +57,17 @@ type _ParameterValueBaudRateSelector struct {
 
 var _ ParameterValueBaudRateSelector = (*_ParameterValueBaudRateSelector)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueBaudRateSelector)(nil)
+
+// NewParameterValueBaudRateSelector factory function for _ParameterValueBaudRateSelector
+func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numBytes uint8) *_ParameterValueBaudRateSelector {
+	_result := &_ParameterValueBaudRateSelector{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ParameterValueBaudRateSelector) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueBaudRateSelector factory function for _ParameterValueBaudRateSelector
-func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numBytes uint8) *_ParameterValueBaudRateSelector {
-	_result := &_ParameterValueBaudRateSelector{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueBaudRateSelector(structType any) ParameterValueBaudRateSelector {
@@ -207,6 +208,23 @@ func (m *_ParameterValueBaudRateSelector) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ParameterValueBaudRateSelector) IsParameterValueBaudRateSelector() {}
+
+func (m *_ParameterValueBaudRateSelector) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueBaudRateSelector) deepCopy() *_ParameterValueBaudRateSelector {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueBaudRateSelectorCopy := &_ParameterValueBaudRateSelector{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueBaudRateSelectorCopy
+}
 
 func (m *_ParameterValueBaudRateSelector) String() string {
 	if m == nil {

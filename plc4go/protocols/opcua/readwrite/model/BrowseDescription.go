@@ -38,6 +38,7 @@ type BrowseDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -70,6 +71,27 @@ type _BrowseDescription struct {
 
 var _ BrowseDescription = (*_BrowseDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseDescription)(nil)
+
+// NewBrowseDescription factory function for _BrowseDescription
+func NewBrowseDescription(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) *_BrowseDescription {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for BrowseDescription must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for BrowseDescription must not be nil")
+	}
+	_result := &_BrowseDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		BrowseDirection:                   browseDirection,
+		ReferenceTypeId:                   referenceTypeId,
+		IncludeSubtypes:                   includeSubtypes,
+		NodeClassMask:                     nodeClassMask,
+		ResultMask:                        resultMask,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -122,27 +144,6 @@ func (m *_BrowseDescription) GetResultMask() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseDescription factory function for _BrowseDescription
-func NewBrowseDescription(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) *_BrowseDescription {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for BrowseDescription must not be nil")
-	}
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for BrowseDescription must not be nil")
-	}
-	_result := &_BrowseDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		BrowseDirection:                   browseDirection,
-		ReferenceTypeId:                   referenceTypeId,
-		IncludeSubtypes:                   includeSubtypes,
-		NodeClassMask:                     nodeClassMask,
-		ResultMask:                        resultMask,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseDescription(structType any) BrowseDescription {
@@ -305,6 +306,28 @@ func (m *_BrowseDescription) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_BrowseDescription) IsBrowseDescription() {}
+
+func (m *_BrowseDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseDescription) deepCopy() *_BrowseDescription {
+	if m == nil {
+		return nil
+	}
+	_BrowseDescriptionCopy := &_BrowseDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.BrowseDirection,
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IncludeSubtypes,
+		m.NodeClassMask,
+		m.ResultMask,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseDescriptionCopy
+}
 
 func (m *_BrowseDescription) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type COTPParameterCallingTsap interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPParameter
 	// GetTsapId returns TsapId (property field)
 	GetTsapId() uint16
@@ -53,6 +54,16 @@ type _COTPParameterCallingTsap struct {
 
 var _ COTPParameterCallingTsap = (*_COTPParameterCallingTsap)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterCallingTsap)(nil)
+
+// NewCOTPParameterCallingTsap factory function for _COTPParameterCallingTsap
+func NewCOTPParameterCallingTsap(tsapId uint16, rest uint8) *_COTPParameterCallingTsap {
+	_result := &_COTPParameterCallingTsap{
+		COTPParameterContract: NewCOTPParameter(rest),
+		TsapId:                tsapId,
+	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_COTPParameterCallingTsap) GetTsapId() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPParameterCallingTsap factory function for _COTPParameterCallingTsap
-func NewCOTPParameterCallingTsap(tsapId uint16, rest uint8) *_COTPParameterCallingTsap {
-	_result := &_COTPParameterCallingTsap{
-		COTPParameterContract: NewCOTPParameter(rest),
-		TsapId:                tsapId,
-	}
-	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPParameterCallingTsap(structType any) COTPParameterCallingTsap {
@@ -179,6 +180,22 @@ func (m *_COTPParameterCallingTsap) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_COTPParameterCallingTsap) IsCOTPParameterCallingTsap() {}
+
+func (m *_COTPParameterCallingTsap) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameterCallingTsap) deepCopy() *_COTPParameterCallingTsap {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterCallingTsapCopy := &_COTPParameterCallingTsap{
+		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
+		m.TsapId,
+	}
+	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	return _COTPParameterCallingTsapCopy
+}
 
 func (m *_COTPParameterCallingTsap) String() string {
 	if m == nil {

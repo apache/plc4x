@@ -38,6 +38,7 @@ type BACnetDailySchedule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetDaySchedule returns DaySchedule (property field)
@@ -56,6 +57,17 @@ type _BACnetDailySchedule struct {
 }
 
 var _ BACnetDailySchedule = (*_BACnetDailySchedule)(nil)
+
+// NewBACnetDailySchedule factory function for _BACnetDailySchedule
+func NewBACnetDailySchedule(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) *_BACnetDailySchedule {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDailySchedule must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDailySchedule must not be nil")
+	}
+	return &_BACnetDailySchedule{OpeningTag: openingTag, DaySchedule: daySchedule, ClosingTag: closingTag}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +90,6 @@ func (m *_BACnetDailySchedule) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDailySchedule factory function for _BACnetDailySchedule
-func NewBACnetDailySchedule(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) *_BACnetDailySchedule {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetDailySchedule must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetDailySchedule must not be nil")
-	}
-	return &_BACnetDailySchedule{OpeningTag: openingTag, DaySchedule: daySchedule, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDailySchedule(structType any) BACnetDailySchedule {
@@ -216,6 +217,22 @@ func (m *_BACnetDailySchedule) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetDailySchedule) IsBACnetDailySchedule() {}
+
+func (m *_BACnetDailySchedule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDailySchedule) deepCopy() *_BACnetDailySchedule {
+	if m == nil {
+		return nil
+	}
+	_BACnetDailyScheduleCopy := &_BACnetDailySchedule{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimeValue, BACnetTimeValue](m.DaySchedule),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetDailyScheduleCopy
+}
 
 func (m *_BACnetDailySchedule) String() string {
 	if m == nil {

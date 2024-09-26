@@ -40,6 +40,7 @@ type BVLCForwardedNPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
@@ -64,6 +65,21 @@ type _BVLCForwardedNPDU struct {
 
 var _ BVLCForwardedNPDU = (*_BVLCForwardedNPDU)(nil)
 var _ BVLCRequirements = (*_BVLCForwardedNPDU)(nil)
+
+// NewBVLCForwardedNPDU factory function for _BVLCForwardedNPDU
+func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength uint16) *_BVLCForwardedNPDU {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCForwardedNPDU must not be nil")
+	}
+	_result := &_BVLCForwardedNPDU{
+		BVLCContract: NewBVLC(),
+		Ip:           ip,
+		Port:         port,
+		Npdu:         npdu,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -104,21 +120,6 @@ func (m *_BVLCForwardedNPDU) GetNpdu() NPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCForwardedNPDU factory function for _BVLCForwardedNPDU
-func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength uint16) *_BVLCForwardedNPDU {
-	if npdu == nil {
-		panic("npdu of type NPDU for BVLCForwardedNPDU must not be nil")
-	}
-	_result := &_BVLCForwardedNPDU{
-		BVLCContract: NewBVLC(),
-		Ip:           ip,
-		Port:         port,
-		Npdu:         npdu,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCForwardedNPDU(structType any) BVLCForwardedNPDU {
@@ -241,6 +242,25 @@ func (m *_BVLCForwardedNPDU) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCForwardedNPDU) IsBVLCForwardedNPDU() {}
+
+func (m *_BVLCForwardedNPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCForwardedNPDU) deepCopy() *_BVLCForwardedNPDU {
+	if m == nil {
+		return nil
+	}
+	_BVLCForwardedNPDUCopy := &_BVLCForwardedNPDU{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		utils.DeepCopySlice[uint8, uint8](m.Ip),
+		m.Port,
+		m.Npdu.DeepCopy().(NPDU),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCForwardedNPDUCopy
+}
 
 func (m *_BVLCForwardedNPDU) String() string {
 	if m == nil {

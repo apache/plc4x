@@ -40,6 +40,7 @@ type BACnetConfirmedServiceRequestReadRangeRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetConfirmedServiceRequestReadRangeRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadRangeRange()
 }
@@ -75,6 +76,20 @@ type _BACnetConfirmedServiceRequestReadRangeRange struct {
 }
 
 var _ BACnetConfirmedServiceRequestReadRangeRangeContract = (*_BACnetConfirmedServiceRequestReadRangeRange)(nil)
+
+// NewBACnetConfirmedServiceRequestReadRangeRange factory function for _BACnetConfirmedServiceRequestReadRangeRange
+func NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRange {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestReadRangeRange{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,20 +128,6 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) GetPeekedTagNumber() uin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestReadRangeRange factory function for _BACnetConfirmedServiceRequestReadRangeRange
-func NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRange {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
-	}
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestReadRangeRange{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestReadRangeRange(structType any) BACnetConfirmedServiceRequestReadRangeRange {
@@ -221,15 +222,15 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) parse(ctx context.Context
 	var _child BACnetConfirmedServiceRequestReadRangeRange
 	switch {
 	case peekedTagNumber == 0x3: // BACnetConfirmedServiceRequestReadRangeRangeByPosition
-		if _child, err = (&_BACnetConfirmedServiceRequestReadRangeRangeByPosition{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestReadRangeRangeByPosition).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRangeRangeByPosition for type-switch of BACnetConfirmedServiceRequestReadRangeRange")
 		}
 	case peekedTagNumber == 0x6: // BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
-		if _child, err = (&_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber for type-switch of BACnetConfirmedServiceRequestReadRangeRange")
 		}
 	case peekedTagNumber == 0x7: // BACnetConfirmedServiceRequestReadRangeRangeByTime
-		if _child, err = (&_BACnetConfirmedServiceRequestReadRangeRangeByTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestReadRangeRangeByTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRangeRangeByTime for type-switch of BACnetConfirmedServiceRequestReadRangeRange")
 		}
 	default:
@@ -287,4 +288,21 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) serializeParent(ctx cont
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRange) IsBACnetConfirmedServiceRequestReadRangeRange() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) deepCopy() *_BACnetConfirmedServiceRequestReadRangeRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadRangeRangeCopy := &_BACnetConfirmedServiceRequestReadRangeRange{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetConfirmedServiceRequestReadRangeRangeCopy
 }

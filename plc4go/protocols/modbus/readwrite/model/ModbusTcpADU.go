@@ -43,6 +43,7 @@ type ModbusTcpADU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusADU
 	// GetTransactionIdentifier returns TransactionIdentifier (property field)
 	GetTransactionIdentifier() uint16
@@ -64,6 +65,21 @@ type _ModbusTcpADU struct {
 
 var _ ModbusTcpADU = (*_ModbusTcpADU)(nil)
 var _ ModbusADURequirements = (*_ModbusTcpADU)(nil)
+
+// NewModbusTcpADU factory function for _ModbusTcpADU
+func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU, response bool) *_ModbusTcpADU {
+	if pdu == nil {
+		panic("pdu of type ModbusPDU for ModbusTcpADU must not be nil")
+	}
+	_result := &_ModbusTcpADU{
+		ModbusADUContract:     NewModbusADU(response),
+		TransactionIdentifier: transactionIdentifier,
+		UnitIdentifier:        unitIdentifier,
+		Pdu:                   pdu,
+	}
+	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -117,21 +133,6 @@ func (m *_ModbusTcpADU) GetProtocolIdentifier() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusTcpADU factory function for _ModbusTcpADU
-func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU, response bool) *_ModbusTcpADU {
-	if pdu == nil {
-		panic("pdu of type ModbusPDU for ModbusTcpADU must not be nil")
-	}
-	_result := &_ModbusTcpADU{
-		ModbusADUContract:     NewModbusADU(response),
-		TransactionIdentifier: transactionIdentifier,
-		UnitIdentifier:        unitIdentifier,
-		Pdu:                   pdu,
-	}
-	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusTcpADU(structType any) ModbusTcpADU {
@@ -268,6 +269,24 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_ModbusTcpADU) IsModbusTcpADU() {}
+
+func (m *_ModbusTcpADU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusTcpADU) deepCopy() *_ModbusTcpADU {
+	if m == nil {
+		return nil
+	}
+	_ModbusTcpADUCopy := &_ModbusTcpADU{
+		m.ModbusADUContract.(*_ModbusADU).deepCopy(),
+		m.TransactionIdentifier,
+		m.UnitIdentifier,
+		m.Pdu.DeepCopy().(ModbusPDU),
+	}
+	m.ModbusADUContract.(*_ModbusADU)._SubType = m
+	return _ModbusTcpADUCopy
+}
 
 func (m *_ModbusTcpADU) String() string {
 	if m == nil {

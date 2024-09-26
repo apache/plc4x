@@ -38,6 +38,7 @@ type BACnetConstructedDataListOfObjectPropertyReferences interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReferences returns References (property field)
 	GetReferences() []BACnetDeviceObjectPropertyReference
@@ -53,6 +54,16 @@ type _BACnetConstructedDataListOfObjectPropertyReferences struct {
 
 var _ BACnetConstructedDataListOfObjectPropertyReferences = (*_BACnetConstructedDataListOfObjectPropertyReferences)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataListOfObjectPropertyReferences)(nil)
+
+// NewBACnetConstructedDataListOfObjectPropertyReferences factory function for _BACnetConstructedDataListOfObjectPropertyReferences
+func NewBACnetConstructedDataListOfObjectPropertyReferences(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, references []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfObjectPropertyReferences {
+	_result := &_BACnetConstructedDataListOfObjectPropertyReferences{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		References:                    references,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) GetReferences() [
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataListOfObjectPropertyReferences factory function for _BACnetConstructedDataListOfObjectPropertyReferences
-func NewBACnetConstructedDataListOfObjectPropertyReferences(references []BACnetDeviceObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfObjectPropertyReferences {
-	_result := &_BACnetConstructedDataListOfObjectPropertyReferences{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		References:                    references,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataListOfObjectPropertyReferences(structType any) BACnetConstructedDataListOfObjectPropertyReferences {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataListOfObjectPropertyReferences) IsBACnetConstructedDataListOfObjectPropertyReferences() {
+}
+
+func (m *_BACnetConstructedDataListOfObjectPropertyReferences) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataListOfObjectPropertyReferences) deepCopy() *_BACnetConstructedDataListOfObjectPropertyReferences {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataListOfObjectPropertyReferencesCopy := &_BACnetConstructedDataListOfObjectPropertyReferences{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.References),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataListOfObjectPropertyReferencesCopy
 }
 
 func (m *_BACnetConstructedDataListOfObjectPropertyReferences) String() string {

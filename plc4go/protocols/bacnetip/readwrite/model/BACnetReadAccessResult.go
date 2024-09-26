@@ -38,6 +38,7 @@ type BACnetReadAccessResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetListOfResults returns ListOfResults (property field)
@@ -53,6 +54,14 @@ type _BACnetReadAccessResult struct {
 }
 
 var _ BACnetReadAccessResult = (*_BACnetReadAccessResult)(nil)
+
+// NewBACnetReadAccessResult factory function for _BACnetReadAccessResult
+func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, listOfResults BACnetReadAccessResultListOfResults) *_BACnetReadAccessResult {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessResult must not be nil")
+	}
+	return &_BACnetReadAccessResult{ObjectIdentifier: objectIdentifier, ListOfResults: listOfResults}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_BACnetReadAccessResult) GetListOfResults() BACnetReadAccessResultListO
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReadAccessResult factory function for _BACnetReadAccessResult
-func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, listOfResults BACnetReadAccessResultListOfResults) *_BACnetReadAccessResult {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessResult must not be nil")
-	}
-	return &_BACnetReadAccessResult{ObjectIdentifier: objectIdentifier, ListOfResults: listOfResults}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReadAccessResult(structType any) BACnetReadAccessResult {
@@ -195,6 +196,21 @@ func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetReadAccessResult) IsBACnetReadAccessResult() {}
+
+func (m *_BACnetReadAccessResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessResult) deepCopy() *_BACnetReadAccessResult {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessResultCopy := &_BACnetReadAccessResult{
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.ListOfResults.DeepCopy().(BACnetReadAccessResultListOfResults),
+	}
+	return _BACnetReadAccessResultCopy
+}
 
 func (m *_BACnetReadAccessResult) String() string {
 	if m == nil {

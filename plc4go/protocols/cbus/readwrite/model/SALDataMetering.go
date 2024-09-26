@@ -38,6 +38,7 @@ type SALDataMetering interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetMeteringData returns MeteringData (property field)
 	GetMeteringData() MeteringData
@@ -53,6 +54,19 @@ type _SALDataMetering struct {
 
 var _ SALDataMetering = (*_SALDataMetering)(nil)
 var _ SALDataRequirements = (*_SALDataMetering)(nil)
+
+// NewSALDataMetering factory function for _SALDataMetering
+func NewSALDataMetering(salData SALData, meteringData MeteringData) *_SALDataMetering {
+	if meteringData == nil {
+		panic("meteringData of type MeteringData for SALDataMetering must not be nil")
+	}
+	_result := &_SALDataMetering{
+		SALDataContract: NewSALData(salData),
+		MeteringData:    meteringData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataMetering) GetMeteringData() MeteringData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataMetering factory function for _SALDataMetering
-func NewSALDataMetering(meteringData MeteringData, salData SALData) *_SALDataMetering {
-	if meteringData == nil {
-		panic("meteringData of type MeteringData for SALDataMetering must not be nil")
-	}
-	_result := &_SALDataMetering{
-		SALDataContract: NewSALData(salData),
-		MeteringData:    meteringData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataMetering(structType any) SALDataMetering {
@@ -182,6 +183,22 @@ func (m *_SALDataMetering) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SALDataMetering) IsSALDataMetering() {}
+
+func (m *_SALDataMetering) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataMetering) deepCopy() *_SALDataMetering {
+	if m == nil {
+		return nil
+	}
+	_SALDataMeteringCopy := &_SALDataMetering{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.MeteringData.DeepCopy().(MeteringData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataMeteringCopy
+}
 
 func (m *_SALDataMetering) String() string {
 	if m == nil {

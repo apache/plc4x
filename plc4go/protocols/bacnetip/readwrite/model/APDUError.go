@@ -38,6 +38,7 @@ type APDUError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
@@ -61,6 +62,21 @@ type _APDUError struct {
 
 var _ APDUError = (*_APDUError)(nil)
 var _ APDURequirements = (*_APDUError)(nil)
+
+// NewAPDUError factory function for _APDUError
+func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError, apduLength uint16) *_APDUError {
+	if error == nil {
+		panic("error of type BACnetError for APDUError must not be nil")
+	}
+	_result := &_APDUError{
+		APDUContract:     NewAPDU(apduLength),
+		OriginalInvokeId: originalInvokeId,
+		ErrorChoice:      errorChoice,
+		Error:            error,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,21 +117,6 @@ func (m *_APDUError) GetError() BACnetError {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUError factory function for _APDUError
-func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError, apduLength uint16) *_APDUError {
-	if error == nil {
-		panic("error of type BACnetError for APDUError must not be nil")
-	}
-	_result := &_APDUError{
-		APDUContract:     NewAPDU(apduLength),
-		OriginalInvokeId: originalInvokeId,
-		ErrorChoice:      errorChoice,
-		Error:            error,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUError(structType any) APDUError {
@@ -239,6 +240,25 @@ func (m *_APDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_APDUError) IsAPDUError() {}
+
+func (m *_APDUError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUError) deepCopy() *_APDUError {
+	if m == nil {
+		return nil
+	}
+	_APDUErrorCopy := &_APDUError{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.OriginalInvokeId,
+		m.ErrorChoice,
+		m.Error.DeepCopy().(BACnetError),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUErrorCopy
+}
 
 func (m *_APDUError) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetSzlId returns SzlId (property field)
 	GetSzlId() SzlId
@@ -56,6 +57,20 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
 
 var _ S7PayloadUserDataItemCpuFunctionReadSzlRequest = (*_S7PayloadUserDataItemCpuFunctionReadSzlRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionReadSzlRequest)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionReadSzlRequest factory function for _S7PayloadUserDataItemCpuFunctionReadSzlRequest
+func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, szlId SzlId, szlIndex uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+	if szlId == nil {
+		panic("szlId of type SzlId for S7PayloadUserDataItemCpuFunctionReadSzlRequest must not be nil")
+	}
+	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		SzlId:                         szlId,
+		SzlIndex:                      szlIndex,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,20 +115,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetSzlIndex() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionReadSzlRequest factory function for _S7PayloadUserDataItemCpuFunctionReadSzlRequest
-func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId SzlId, szlIndex uint16, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlRequest {
-	if szlId == nil {
-		panic("szlId of type SzlId for S7PayloadUserDataItemCpuFunctionReadSzlRequest must not be nil")
-	}
-	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		SzlId:                         szlId,
-		SzlIndex:                      szlIndex,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType any) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
@@ -211,6 +212,23 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) SerializeWithWriteBuff
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) IsS7PayloadUserDataItemCpuFunctionReadSzlRequest() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) deepCopy() *_S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionReadSzlRequestCopy := &_S7PayloadUserDataItemCpuFunctionReadSzlRequest{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.SzlId.DeepCopy().(SzlId),
+		m.SzlIndex,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionReadSzlRequestCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) String() string {

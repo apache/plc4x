@@ -38,6 +38,7 @@ type ApduControlContainer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Apdu
 	// GetControlApdu returns ControlApdu (property field)
 	GetControlApdu() ApduControl
@@ -53,6 +54,19 @@ type _ApduControlContainer struct {
 
 var _ ApduControlContainer = (*_ApduControlContainer)(nil)
 var _ ApduRequirements = (*_ApduControlContainer)(nil)
+
+// NewApduControlContainer factory function for _ApduControlContainer
+func NewApduControlContainer(numbered bool, counter uint8, controlApdu ApduControl, dataLength uint8) *_ApduControlContainer {
+	if controlApdu == nil {
+		panic("controlApdu of type ApduControl for ApduControlContainer must not be nil")
+	}
+	_result := &_ApduControlContainer{
+		ApduContract: NewApdu(numbered, counter, dataLength),
+		ControlApdu:  controlApdu,
+	}
+	_result.ApduContract.(*_Apdu)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_ApduControlContainer) GetControlApdu() ApduControl {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduControlContainer factory function for _ApduControlContainer
-func NewApduControlContainer(controlApdu ApduControl, numbered bool, counter uint8, dataLength uint8) *_ApduControlContainer {
-	if controlApdu == nil {
-		panic("controlApdu of type ApduControl for ApduControlContainer must not be nil")
-	}
-	_result := &_ApduControlContainer{
-		ApduContract: NewApdu(numbered, counter, dataLength),
-		ControlApdu:  controlApdu,
-	}
-	_result.ApduContract.(*_Apdu)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduControlContainer(structType any) ApduControlContainer {
@@ -182,6 +183,22 @@ func (m *_ApduControlContainer) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ApduControlContainer) IsApduControlContainer() {}
+
+func (m *_ApduControlContainer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlContainer) deepCopy() *_ApduControlContainer {
+	if m == nil {
+		return nil
+	}
+	_ApduControlContainerCopy := &_ApduControlContainer{
+		m.ApduContract.(*_Apdu).deepCopy(),
+		m.ControlApdu.DeepCopy().(ApduControl),
+	}
+	m.ApduContract.(*_Apdu)._SubType = m
+	return _ApduControlContainerCopy
+}
 
 func (m *_ApduControlContainer) String() string {
 	if m == nil {

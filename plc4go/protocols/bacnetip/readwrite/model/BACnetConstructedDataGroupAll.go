@@ -36,6 +36,7 @@ type BACnetConstructedDataGroupAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataGroupAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGroupAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataGroupAll struct {
 
 var _ BACnetConstructedDataGroupAll = (*_BACnetConstructedDataGroupAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupAll)(nil)
+
+// NewBACnetConstructedDataGroupAll factory function for _BACnetConstructedDataGroupAll
+func NewBACnetConstructedDataGroupAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupAll {
+	_result := &_BACnetConstructedDataGroupAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataGroupAll) GetPropertyIdentifierArgument() BACnetP
 
 func (m *_BACnetConstructedDataGroupAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataGroupAll factory function for _BACnetConstructedDataGroupAll
-func NewBACnetConstructedDataGroupAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupAll {
-	_result := &_BACnetConstructedDataGroupAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataGroupAll) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataGroupAll) IsBACnetConstructedDataGroupAll() {}
+
+func (m *_BACnetConstructedDataGroupAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGroupAll) deepCopy() *_BACnetConstructedDataGroupAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGroupAllCopy := &_BACnetConstructedDataGroupAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGroupAllCopy
+}
 
 func (m *_BACnetConstructedDataGroupAll) String() string {
 	if m == nil {

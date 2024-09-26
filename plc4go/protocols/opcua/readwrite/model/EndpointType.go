@@ -38,6 +38,7 @@ type EndpointType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetEndpointUrl returns EndpointUrl (property field)
 	GetEndpointUrl() PascalString
@@ -62,6 +63,28 @@ type _EndpointType struct {
 
 var _ EndpointType = (*_EndpointType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointType)(nil)
+
+// NewEndpointType factory function for _EndpointType
+func NewEndpointType(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) *_EndpointType {
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for EndpointType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for EndpointType must not be nil")
+	}
+	if transportProfileUri == nil {
+		panic("transportProfileUri of type PascalString for EndpointType must not be nil")
+	}
+	_result := &_EndpointType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		EndpointUrl:                       endpointUrl,
+		SecurityMode:                      securityMode,
+		SecurityPolicyUri:                 securityPolicyUri,
+		TransportProfileUri:               transportProfileUri,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +129,6 @@ func (m *_EndpointType) GetTransportProfileUri() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEndpointType factory function for _EndpointType
-func NewEndpointType(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) *_EndpointType {
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for EndpointType must not be nil")
-	}
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for EndpointType must not be nil")
-	}
-	if transportProfileUri == nil {
-		panic("transportProfileUri of type PascalString for EndpointType must not be nil")
-	}
-	_result := &_EndpointType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		EndpointUrl:                       endpointUrl,
-		SecurityMode:                      securityMode,
-		SecurityPolicyUri:                 securityPolicyUri,
-		TransportProfileUri:               transportProfileUri,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEndpointType(structType any) EndpointType {
@@ -251,6 +252,25 @@ func (m *_EndpointType) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_EndpointType) IsEndpointType() {}
+
+func (m *_EndpointType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EndpointType) deepCopy() *_EndpointType {
+	if m == nil {
+		return nil
+	}
+	_EndpointTypeCopy := &_EndpointType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.SecurityMode,
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.TransportProfileUri.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EndpointTypeCopy
+}
 
 func (m *_EndpointType) String() string {
 	if m == nil {

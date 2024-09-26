@@ -38,6 +38,7 @@ type KnxNetIpDeviceManagement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -53,6 +54,16 @@ type _KnxNetIpDeviceManagement struct {
 
 var _ KnxNetIpDeviceManagement = (*_KnxNetIpDeviceManagement)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpDeviceManagement)(nil)
+
+// NewKnxNetIpDeviceManagement factory function for _KnxNetIpDeviceManagement
+func NewKnxNetIpDeviceManagement(version uint8) *_KnxNetIpDeviceManagement {
+	_result := &_KnxNetIpDeviceManagement{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_KnxNetIpDeviceManagement) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpDeviceManagement factory function for _KnxNetIpDeviceManagement
-func NewKnxNetIpDeviceManagement(version uint8) *_KnxNetIpDeviceManagement {
-	_result := &_KnxNetIpDeviceManagement{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpDeviceManagement(structType any) KnxNetIpDeviceManagement {
@@ -179,6 +180,22 @@ func (m *_KnxNetIpDeviceManagement) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_KnxNetIpDeviceManagement) IsKnxNetIpDeviceManagement() {}
+
+func (m *_KnxNetIpDeviceManagement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpDeviceManagement) deepCopy() *_KnxNetIpDeviceManagement {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpDeviceManagementCopy := &_KnxNetIpDeviceManagement{
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpDeviceManagementCopy
+}
 
 func (m *_KnxNetIpDeviceManagement) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesPolarity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetPolarity returns Polarity (property field)
 	GetPolarity() BACnetPolarityTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesPolarity struct {
 
 var _ BACnetPropertyStatesPolarity = (*_BACnetPropertyStatesPolarity)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesPolarity)(nil)
+
+// NewBACnetPropertyStatesPolarity factory function for _BACnetPropertyStatesPolarity
+func NewBACnetPropertyStatesPolarity(peekedTagHeader BACnetTagHeader, polarity BACnetPolarityTagged) *_BACnetPropertyStatesPolarity {
+	if polarity == nil {
+		panic("polarity of type BACnetPolarityTagged for BACnetPropertyStatesPolarity must not be nil")
+	}
+	_result := &_BACnetPropertyStatesPolarity{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Polarity:                     polarity,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesPolarity) GetPolarity() BACnetPolarityTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesPolarity factory function for _BACnetPropertyStatesPolarity
-func NewBACnetPropertyStatesPolarity(polarity BACnetPolarityTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesPolarity {
-	if polarity == nil {
-		panic("polarity of type BACnetPolarityTagged for BACnetPropertyStatesPolarity must not be nil")
-	}
-	_result := &_BACnetPropertyStatesPolarity{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Polarity:                     polarity,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesPolarity(structType any) BACnetPropertyStatesPolarity {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetPropertyStatesPolarity) IsBACnetPropertyStatesPolarity() {}
+
+func (m *_BACnetPropertyStatesPolarity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesPolarity) deepCopy() *_BACnetPropertyStatesPolarity {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesPolarityCopy := &_BACnetPropertyStatesPolarity{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.Polarity.DeepCopy().(BACnetPolarityTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesPolarityCopy
+}
 
 func (m *_BACnetPropertyStatesPolarity) String() string {
 	if m == nil {

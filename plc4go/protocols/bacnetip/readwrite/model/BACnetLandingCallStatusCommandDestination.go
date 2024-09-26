@@ -38,6 +38,7 @@ type BACnetLandingCallStatusCommandDestination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLandingCallStatusCommand
 	// GetDestination returns Destination (property field)
 	GetDestination() BACnetContextTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetLandingCallStatusCommandDestination struct {
 
 var _ BACnetLandingCallStatusCommandDestination = (*_BACnetLandingCallStatusCommandDestination)(nil)
 var _ BACnetLandingCallStatusCommandRequirements = (*_BACnetLandingCallStatusCommandDestination)(nil)
+
+// NewBACnetLandingCallStatusCommandDestination factory function for _BACnetLandingCallStatusCommandDestination
+func NewBACnetLandingCallStatusCommandDestination(peekedTagHeader BACnetTagHeader, destination BACnetContextTagUnsignedInteger) *_BACnetLandingCallStatusCommandDestination {
+	if destination == nil {
+		panic("destination of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatusCommandDestination must not be nil")
+	}
+	_result := &_BACnetLandingCallStatusCommandDestination{
+		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
+		Destination:                            destination,
+	}
+	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetDestination() BACnetCont
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingCallStatusCommandDestination factory function for _BACnetLandingCallStatusCommandDestination
-func NewBACnetLandingCallStatusCommandDestination(destination BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommandDestination {
-	if destination == nil {
-		panic("destination of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatusCommandDestination must not be nil")
-	}
-	_result := &_BACnetLandingCallStatusCommandDestination{
-		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
-		Destination:                            destination,
-	}
-	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingCallStatusCommandDestination(structType any) BACnetLandingCallStatusCommandDestination {
@@ -178,6 +179,22 @@ func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetLandingCallStatusCommandDestination) IsBACnetLandingCallStatusCommandDestination() {}
+
+func (m *_BACnetLandingCallStatusCommandDestination) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingCallStatusCommandDestination) deepCopy() *_BACnetLandingCallStatusCommandDestination {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingCallStatusCommandDestinationCopy := &_BACnetLandingCallStatusCommandDestination{
+		m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).deepCopy(),
+		m.Destination.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = m
+	return _BACnetLandingCallStatusCommandDestinationCopy
+}
 
 func (m *_BACnetLandingCallStatusCommandDestination) String() string {
 	if m == nil {

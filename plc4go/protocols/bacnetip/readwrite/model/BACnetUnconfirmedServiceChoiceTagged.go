@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceChoiceTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetUnconfirmedServiceChoiceTagged struct {
 
 var _ BACnetUnconfirmedServiceChoiceTagged = (*_BACnetUnconfirmedServiceChoiceTagged)(nil)
 
+// NewBACnetUnconfirmedServiceChoiceTagged factory function for _BACnetUnconfirmedServiceChoiceTagged
+func NewBACnetUnconfirmedServiceChoiceTagged(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice, tagNumber uint8, tagClass TagClass) *_BACnetUnconfirmedServiceChoiceTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetUnconfirmedServiceChoiceTagged must not be nil")
+	}
+	return &_BACnetUnconfirmedServiceChoiceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) GetValue() BACnetUnconfirmedServ
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceChoiceTagged factory function for _BACnetUnconfirmedServiceChoiceTagged
-func NewBACnetUnconfirmedServiceChoiceTagged(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice, tagNumber uint8, tagClass TagClass) *_BACnetUnconfirmedServiceChoiceTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetUnconfirmedServiceChoiceTagged must not be nil")
-	}
-	return &_BACnetUnconfirmedServiceChoiceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceChoiceTagged(structType any) BACnetUnconfirmedServiceChoiceTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetUnconfirmedServiceChoiceTagged) IsBACnetUnconfirmedServiceChoiceTagged() {}
+
+func (m *_BACnetUnconfirmedServiceChoiceTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTagged) deepCopy() *_BACnetUnconfirmedServiceChoiceTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceChoiceTaggedCopy := &_BACnetUnconfirmedServiceChoiceTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetUnconfirmedServiceChoiceTaggedCopy
+}
 
 func (m *_BACnetUnconfirmedServiceChoiceTagged) String() string {
 	if m == nil {

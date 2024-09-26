@@ -36,6 +36,7 @@ type LRawInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsLRawInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLRawInd()
@@ -48,6 +49,15 @@ type _LRawInd struct {
 
 var _ LRawInd = (*_LRawInd)(nil)
 var _ CEMIRequirements = (*_LRawInd)(nil)
+
+// NewLRawInd factory function for _LRawInd
+func NewLRawInd(size uint16) *_LRawInd {
+	_result := &_LRawInd{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_LRawInd) GetMessageCode() uint8 {
 
 func (m *_LRawInd) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewLRawInd factory function for _LRawInd
-func NewLRawInd(size uint16) *_LRawInd {
-	_result := &_LRawInd{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_LRawInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_LRawInd) IsLRawInd() {}
+
+func (m *_LRawInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LRawInd) deepCopy() *_LRawInd {
+	if m == nil {
+		return nil
+	}
+	_LRawIndCopy := &_LRawInd{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LRawIndCopy
+}
 
 func (m *_LRawInd) String() string {
 	if m == nil {

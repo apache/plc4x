@@ -38,6 +38,7 @@ type BACnetConstructedDataLinkSpeed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLinkSpeed returns LinkSpeed (property field)
 	GetLinkSpeed() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLinkSpeed struct {
 
 var _ BACnetConstructedDataLinkSpeed = (*_BACnetConstructedDataLinkSpeed)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeed)(nil)
+
+// NewBACnetConstructedDataLinkSpeed factory function for _BACnetConstructedDataLinkSpeed
+func NewBACnetConstructedDataLinkSpeed(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, linkSpeed BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeed {
+	if linkSpeed == nil {
+		panic("linkSpeed of type BACnetApplicationTagReal for BACnetConstructedDataLinkSpeed must not be nil")
+	}
+	_result := &_BACnetConstructedDataLinkSpeed{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LinkSpeed:                     linkSpeed,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLinkSpeed) GetActualValue() BACnetApplicationTagR
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLinkSpeed factory function for _BACnetConstructedDataLinkSpeed
-func NewBACnetConstructedDataLinkSpeed(linkSpeed BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeed {
-	if linkSpeed == nil {
-		panic("linkSpeed of type BACnetApplicationTagReal for BACnetConstructedDataLinkSpeed must not be nil")
-	}
-	_result := &_BACnetConstructedDataLinkSpeed{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LinkSpeed:                     linkSpeed,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLinkSpeed(structType any) BACnetConstructedDataLinkSpeed {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLinkSpeed) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataLinkSpeed) IsBACnetConstructedDataLinkSpeed() {}
+
+func (m *_BACnetConstructedDataLinkSpeed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLinkSpeed) deepCopy() *_BACnetConstructedDataLinkSpeed {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLinkSpeedCopy := &_BACnetConstructedDataLinkSpeed{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LinkSpeed.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLinkSpeedCopy
+}
 
 func (m *_BACnetConstructedDataLinkSpeed) String() string {
 	if m == nil {

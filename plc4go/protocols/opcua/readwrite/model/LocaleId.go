@@ -36,6 +36,7 @@ type LocaleId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLocaleId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLocaleId()
 }
@@ -134,6 +135,18 @@ func (m *_LocaleId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_LocaleId) IsLocaleId() {}
+
+func (m *_LocaleId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LocaleId) deepCopy() *_LocaleId {
+	if m == nil {
+		return nil
+	}
+	_LocaleIdCopy := &_LocaleId{}
+	return _LocaleIdCopy
+}
 
 func (m *_LocaleId) String() string {
 	if m == nil {

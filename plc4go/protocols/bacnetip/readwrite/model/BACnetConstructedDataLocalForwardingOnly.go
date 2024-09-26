@@ -38,6 +38,7 @@ type BACnetConstructedDataLocalForwardingOnly interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLocalForwardingOnly returns LocalForwardingOnly (property field)
 	GetLocalForwardingOnly() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLocalForwardingOnly struct {
 
 var _ BACnetConstructedDataLocalForwardingOnly = (*_BACnetConstructedDataLocalForwardingOnly)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalForwardingOnly)(nil)
+
+// NewBACnetConstructedDataLocalForwardingOnly factory function for _BACnetConstructedDataLocalForwardingOnly
+func NewBACnetConstructedDataLocalForwardingOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localForwardingOnly BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalForwardingOnly {
+	if localForwardingOnly == nil {
+		panic("localForwardingOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataLocalForwardingOnly must not be nil")
+	}
+	_result := &_BACnetConstructedDataLocalForwardingOnly{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LocalForwardingOnly:           localForwardingOnly,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) GetActualValue() BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLocalForwardingOnly factory function for _BACnetConstructedDataLocalForwardingOnly
-func NewBACnetConstructedDataLocalForwardingOnly(localForwardingOnly BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalForwardingOnly {
-	if localForwardingOnly == nil {
-		panic("localForwardingOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataLocalForwardingOnly must not be nil")
-	}
-	_result := &_BACnetConstructedDataLocalForwardingOnly{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LocalForwardingOnly:           localForwardingOnly,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLocalForwardingOnly(structType any) BACnetConstructedDataLocalForwardingOnly {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataLocalForwardingOnly) IsBACnetConstructedDataLocalForwardingOnly() {}
+
+func (m *_BACnetConstructedDataLocalForwardingOnly) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLocalForwardingOnly) deepCopy() *_BACnetConstructedDataLocalForwardingOnly {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLocalForwardingOnlyCopy := &_BACnetConstructedDataLocalForwardingOnly{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LocalForwardingOnly.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLocalForwardingOnlyCopy
+}
 
 func (m *_BACnetConstructedDataLocalForwardingOnly) String() string {
 	if m == nil {

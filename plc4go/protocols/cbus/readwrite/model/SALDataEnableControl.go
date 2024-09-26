@@ -38,6 +38,7 @@ type SALDataEnableControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetEnableControlData returns EnableControlData (property field)
 	GetEnableControlData() EnableControlData
@@ -53,6 +54,19 @@ type _SALDataEnableControl struct {
 
 var _ SALDataEnableControl = (*_SALDataEnableControl)(nil)
 var _ SALDataRequirements = (*_SALDataEnableControl)(nil)
+
+// NewSALDataEnableControl factory function for _SALDataEnableControl
+func NewSALDataEnableControl(salData SALData, enableControlData EnableControlData) *_SALDataEnableControl {
+	if enableControlData == nil {
+		panic("enableControlData of type EnableControlData for SALDataEnableControl must not be nil")
+	}
+	_result := &_SALDataEnableControl{
+		SALDataContract:   NewSALData(salData),
+		EnableControlData: enableControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataEnableControl) GetEnableControlData() EnableControlData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataEnableControl factory function for _SALDataEnableControl
-func NewSALDataEnableControl(enableControlData EnableControlData, salData SALData) *_SALDataEnableControl {
-	if enableControlData == nil {
-		panic("enableControlData of type EnableControlData for SALDataEnableControl must not be nil")
-	}
-	_result := &_SALDataEnableControl{
-		SALDataContract:   NewSALData(salData),
-		EnableControlData: enableControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataEnableControl(structType any) SALDataEnableControl {
@@ -182,6 +183,22 @@ func (m *_SALDataEnableControl) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SALDataEnableControl) IsSALDataEnableControl() {}
+
+func (m *_SALDataEnableControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataEnableControl) deepCopy() *_SALDataEnableControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataEnableControlCopy := &_SALDataEnableControl{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.EnableControlData.DeepCopy().(EnableControlData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataEnableControlCopy
+}
 
 func (m *_SALDataEnableControl) String() string {
 	if m == nil {

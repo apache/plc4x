@@ -38,6 +38,7 @@ type BACnetContextTagReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadReal
@@ -55,6 +56,19 @@ type _BACnetContextTagReal struct {
 
 var _ BACnetContextTagReal = (*_BACnetContextTagReal)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagReal)(nil)
+
+// NewBACnetContextTagReal factory function for _BACnetContextTagReal
+func NewBACnetContextTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal, tagNumberArgument uint8) *_BACnetContextTagReal {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadReal for BACnetContextTagReal must not be nil")
+	}
+	_result := &_BACnetContextTagReal{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,19 +116,6 @@ func (m *_BACnetContextTagReal) GetActualValue() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagReal factory function for _BACnetContextTagReal
-func NewBACnetContextTagReal(payload BACnetTagPayloadReal, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagReal {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadReal for BACnetContextTagReal must not be nil")
-	}
-	_result := &_BACnetContextTagReal{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagReal(structType any) BACnetContextTagReal {
@@ -213,6 +214,22 @@ func (m *_BACnetContextTagReal) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetContextTagReal) IsBACnetContextTagReal() {}
+
+func (m *_BACnetContextTagReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagReal) deepCopy() *_BACnetContextTagReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagRealCopy := &_BACnetContextTagReal{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadReal),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagRealCopy
+}
 
 func (m *_BACnetContextTagReal) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type DecimalString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDecimalString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDecimalString()
 }
@@ -134,6 +135,18 @@ func (m *_DecimalString) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_DecimalString) IsDecimalString() {}
+
+func (m *_DecimalString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DecimalString) deepCopy() *_DecimalString {
+	if m == nil {
+		return nil
+	}
+	_DecimalStringCopy := &_DecimalString{}
+	return _DecimalStringCopy
+}
 
 func (m *_DecimalString) String() string {
 	if m == nil {

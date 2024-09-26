@@ -38,6 +38,7 @@ type XVType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetX returns X (property field)
 	GetX() float64
@@ -56,6 +57,17 @@ type _XVType struct {
 
 var _ XVType = (*_XVType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_XVType)(nil)
+
+// NewXVType factory function for _XVType
+func NewXVType(x float64, value float32) *_XVType {
+	_result := &_XVType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		X:                                 x,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_XVType) GetValue() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewXVType factory function for _XVType
-func NewXVType(x float64, value float32) *_XVType {
-	_result := &_XVType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		X:                                 x,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastXVType(structType any) XVType {
@@ -200,6 +201,23 @@ func (m *_XVType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 }
 
 func (m *_XVType) IsXVType() {}
+
+func (m *_XVType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_XVType) deepCopy() *_XVType {
+	if m == nil {
+		return nil
+	}
+	_XVTypeCopy := &_XVType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.X,
+		m.Value,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _XVTypeCopy
+}
 
 func (m *_XVType) String() string {
 	if m == nil {

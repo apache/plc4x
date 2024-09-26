@@ -38,6 +38,7 @@ type BACnetPropertyStatesTimerTransition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetTimerTransition returns TimerTransition (property field)
 	GetTimerTransition() BACnetTimerTransitionTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesTimerTransition struct {
 
 var _ BACnetPropertyStatesTimerTransition = (*_BACnetPropertyStatesTimerTransition)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesTimerTransition)(nil)
+
+// NewBACnetPropertyStatesTimerTransition factory function for _BACnetPropertyStatesTimerTransition
+func NewBACnetPropertyStatesTimerTransition(peekedTagHeader BACnetTagHeader, timerTransition BACnetTimerTransitionTagged) *_BACnetPropertyStatesTimerTransition {
+	if timerTransition == nil {
+		panic("timerTransition of type BACnetTimerTransitionTagged for BACnetPropertyStatesTimerTransition must not be nil")
+	}
+	_result := &_BACnetPropertyStatesTimerTransition{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		TimerTransition:              timerTransition,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesTimerTransition) GetTimerTransition() BACnetTimerT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesTimerTransition factory function for _BACnetPropertyStatesTimerTransition
-func NewBACnetPropertyStatesTimerTransition(timerTransition BACnetTimerTransitionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesTimerTransition {
-	if timerTransition == nil {
-		panic("timerTransition of type BACnetTimerTransitionTagged for BACnetPropertyStatesTimerTransition must not be nil")
-	}
-	_result := &_BACnetPropertyStatesTimerTransition{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		TimerTransition:              timerTransition,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesTimerTransition(structType any) BACnetPropertyStatesTimerTransition {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesTimerTransition) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetPropertyStatesTimerTransition) IsBACnetPropertyStatesTimerTransition() {}
+
+func (m *_BACnetPropertyStatesTimerTransition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesTimerTransition) deepCopy() *_BACnetPropertyStatesTimerTransition {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesTimerTransitionCopy := &_BACnetPropertyStatesTimerTransition{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.TimerTransition.DeepCopy().(BACnetTimerTransitionTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesTimerTransitionCopy
+}
 
 func (m *_BACnetPropertyStatesTimerTransition) String() string {
 	if m == nil {

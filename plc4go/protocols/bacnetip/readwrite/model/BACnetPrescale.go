@@ -38,6 +38,7 @@ type BACnetPrescale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMultiplier returns Multiplier (property field)
 	GetMultiplier() BACnetContextTagUnsignedInteger
 	// GetModuloDivide returns ModuloDivide (property field)
@@ -53,6 +54,17 @@ type _BACnetPrescale struct {
 }
 
 var _ BACnetPrescale = (*_BACnetPrescale)(nil)
+
+// NewBACnetPrescale factory function for _BACnetPrescale
+func NewBACnetPrescale(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) *_BACnetPrescale {
+	if multiplier == nil {
+		panic("multiplier of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
+	}
+	if moduloDivide == nil {
+		panic("moduloDivide of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
+	}
+	return &_BACnetPrescale{Multiplier: multiplier, ModuloDivide: moduloDivide}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetPrescale) GetModuloDivide() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPrescale factory function for _BACnetPrescale
-func NewBACnetPrescale(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) *_BACnetPrescale {
-	if multiplier == nil {
-		panic("multiplier of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
-	}
-	if moduloDivide == nil {
-		panic("moduloDivide of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
-	}
-	return &_BACnetPrescale{Multiplier: multiplier, ModuloDivide: moduloDivide}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPrescale(structType any) BACnetPrescale {
@@ -192,6 +193,21 @@ func (m *_BACnetPrescale) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetPrescale) IsBACnetPrescale() {}
+
+func (m *_BACnetPrescale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPrescale) deepCopy() *_BACnetPrescale {
+	if m == nil {
+		return nil
+	}
+	_BACnetPrescaleCopy := &_BACnetPrescale{
+		m.Multiplier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ModuloDivide.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetPrescaleCopy
+}
 
 func (m *_BACnetPrescale) String() string {
 	if m == nil {

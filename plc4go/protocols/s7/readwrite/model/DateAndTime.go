@@ -39,6 +39,7 @@ type DateAndTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetYear returns Year (property field)
 	GetYear() uint8
 	// GetMonth returns Month (property field)
@@ -72,6 +73,11 @@ type _DateAndTime struct {
 }
 
 var _ DateAndTime = (*_DateAndTime)(nil)
+
+// NewDateAndTime factory function for _DateAndTime
+func NewDateAndTime(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) *_DateAndTime {
+	return &_DateAndTime{Year: year, Month: month, Day: day, Hour: hour, Minutes: minutes, Seconds: seconds, Msec: msec, Dow: dow}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,11 +120,6 @@ func (m *_DateAndTime) GetDow() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDateAndTime factory function for _DateAndTime
-func NewDateAndTime(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) *_DateAndTime {
-	return &_DateAndTime{Year: year, Month: month, Day: day, Hour: hour, Minutes: minutes, Seconds: seconds, Msec: msec, Dow: dow}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDateAndTime(structType any) DateAndTime {
@@ -307,6 +308,27 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_DateAndTime) IsDateAndTime() {}
+
+func (m *_DateAndTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DateAndTime) deepCopy() *_DateAndTime {
+	if m == nil {
+		return nil
+	}
+	_DateAndTimeCopy := &_DateAndTime{
+		m.Year,
+		m.Month,
+		m.Day,
+		m.Hour,
+		m.Minutes,
+		m.Seconds,
+		m.Msec,
+		m.Dow,
+	}
+	return _DateAndTimeCopy
+}
 
 func (m *_DateAndTime) String() string {
 	if m == nil {

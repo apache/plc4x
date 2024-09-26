@@ -38,6 +38,7 @@ type BACnetValueSourceObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetValueSource
 	// GetObject returns Object (property field)
 	GetObject() BACnetDeviceObjectReferenceEnclosed
@@ -53,6 +54,19 @@ type _BACnetValueSourceObject struct {
 
 var _ BACnetValueSourceObject = (*_BACnetValueSourceObject)(nil)
 var _ BACnetValueSourceRequirements = (*_BACnetValueSourceObject)(nil)
+
+// NewBACnetValueSourceObject factory function for _BACnetValueSourceObject
+func NewBACnetValueSourceObject(peekedTagHeader BACnetTagHeader, object BACnetDeviceObjectReferenceEnclosed) *_BACnetValueSourceObject {
+	if object == nil {
+		panic("object of type BACnetDeviceObjectReferenceEnclosed for BACnetValueSourceObject must not be nil")
+	}
+	_result := &_BACnetValueSourceObject{
+		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
+		Object:                    object,
+	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetValueSourceObject) GetObject() BACnetDeviceObjectReferenceEnclos
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSourceObject factory function for _BACnetValueSourceObject
-func NewBACnetValueSourceObject(object BACnetDeviceObjectReferenceEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetValueSourceObject {
-	if object == nil {
-		panic("object of type BACnetDeviceObjectReferenceEnclosed for BACnetValueSourceObject must not be nil")
-	}
-	_result := &_BACnetValueSourceObject{
-		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
-		Object:                    object,
-	}
-	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSourceObject(structType any) BACnetValueSourceObject {
@@ -178,6 +179,22 @@ func (m *_BACnetValueSourceObject) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetValueSourceObject) IsBACnetValueSourceObject() {}
+
+func (m *_BACnetValueSourceObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSourceObject) deepCopy() *_BACnetValueSourceObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceObjectCopy := &_BACnetValueSourceObject{
+		m.BACnetValueSourceContract.(*_BACnetValueSource).deepCopy(),
+		m.Object.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+	}
+	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	return _BACnetValueSourceObjectCopy
+}
 
 func (m *_BACnetValueSourceObject) String() string {
 	if m == nil {

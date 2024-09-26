@@ -38,6 +38,7 @@ type EventNotificationList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfEvents returns NoOfEvents (property field)
 	GetNoOfEvents() int32
@@ -56,6 +57,17 @@ type _EventNotificationList struct {
 
 var _ EventNotificationList = (*_EventNotificationList)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EventNotificationList)(nil)
+
+// NewEventNotificationList factory function for _EventNotificationList
+func NewEventNotificationList(noOfEvents int32, events []ExtensionObjectDefinition) *_EventNotificationList {
+	_result := &_EventNotificationList{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEvents:                        noOfEvents,
+		Events:                            events,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_EventNotificationList) GetEvents() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEventNotificationList factory function for _EventNotificationList
-func NewEventNotificationList(noOfEvents int32, events []ExtensionObjectDefinition) *_EventNotificationList {
-	_result := &_EventNotificationList{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEvents:                        noOfEvents,
-		Events:                            events,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEventNotificationList(structType any) EventNotificationList {
@@ -220,6 +221,23 @@ func (m *_EventNotificationList) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_EventNotificationList) IsEventNotificationList() {}
+
+func (m *_EventNotificationList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EventNotificationList) deepCopy() *_EventNotificationList {
+	if m == nil {
+		return nil
+	}
+	_EventNotificationListCopy := &_EventNotificationList{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfEvents,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Events),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EventNotificationListCopy
+}
 
 func (m *_EventNotificationList) String() string {
 	if m == nil {

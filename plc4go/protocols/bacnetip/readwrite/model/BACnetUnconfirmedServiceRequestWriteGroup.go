@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestWriteGroup interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetGroupNumber returns GroupNumber (property field)
 	GetGroupNumber() BACnetContextTagUnsignedInteger
@@ -62,6 +63,28 @@ type _BACnetUnconfirmedServiceRequestWriteGroup struct {
 
 var _ BACnetUnconfirmedServiceRequestWriteGroup = (*_BACnetUnconfirmedServiceRequestWriteGroup)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWriteGroup)(nil)
+
+// NewBACnetUnconfirmedServiceRequestWriteGroup factory function for _BACnetUnconfirmedServiceRequestWriteGroup
+func NewBACnetUnconfirmedServiceRequestWriteGroup(groupNumber BACnetContextTagUnsignedInteger, writePriority BACnetContextTagUnsignedInteger, changeList BACnetGroupChannelValueList, inhibitDelay BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWriteGroup {
+	if groupNumber == nil {
+		panic("groupNumber of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
+	}
+	if writePriority == nil {
+		panic("writePriority of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
+	}
+	if changeList == nil {
+		panic("changeList of type BACnetGroupChannelValueList for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestWriteGroup{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		GroupNumber:                             groupNumber,
+		WritePriority:                           writePriority,
+		ChangeList:                              changeList,
+		InhibitDelay:                            inhibitDelay,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +129,6 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) GetInhibitDelay() BACnetCon
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWriteGroup factory function for _BACnetUnconfirmedServiceRequestWriteGroup
-func NewBACnetUnconfirmedServiceRequestWriteGroup(groupNumber BACnetContextTagUnsignedInteger, writePriority BACnetContextTagUnsignedInteger, changeList BACnetGroupChannelValueList, inhibitDelay BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWriteGroup {
-	if groupNumber == nil {
-		panic("groupNumber of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
-	}
-	if writePriority == nil {
-		panic("writePriority of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
-	}
-	if changeList == nil {
-		panic("changeList of type BACnetGroupChannelValueList for BACnetUnconfirmedServiceRequestWriteGroup must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestWriteGroup{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		GroupNumber:                             groupNumber,
-		WritePriority:                           writePriority,
-		ChangeList:                              changeList,
-		InhibitDelay:                            inhibitDelay,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWriteGroup(structType any) BACnetUnconfirmedServiceRequestWriteGroup {
@@ -257,6 +258,25 @@ func (m *_BACnetUnconfirmedServiceRequestWriteGroup) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) IsBACnetUnconfirmedServiceRequestWriteGroup() {}
+
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWriteGroup) deepCopy() *_BACnetUnconfirmedServiceRequestWriteGroup {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestWriteGroupCopy := &_BACnetUnconfirmedServiceRequestWriteGroup{
+		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
+		m.GroupNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.WritePriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ChangeList.DeepCopy().(BACnetGroupChannelValueList),
+		m.InhibitDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestWriteGroupCopy
+}
 
 func (m *_BACnetUnconfirmedServiceRequestWriteGroup) String() string {
 	if m == nil {

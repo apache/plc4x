@@ -38,6 +38,7 @@ type FindServersOnNetworkRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _FindServersOnNetworkRequest struct {
 
 var _ FindServersOnNetworkRequest = (*_FindServersOnNetworkRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersOnNetworkRequest)(nil)
+
+// NewFindServersOnNetworkRequest factory function for _FindServersOnNetworkRequest
+func NewFindServersOnNetworkRequest(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) *_FindServersOnNetworkRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for FindServersOnNetworkRequest must not be nil")
+	}
+	_result := &_FindServersOnNetworkRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		StartingRecordId:                  startingRecordId,
+		MaxRecordsToReturn:                maxRecordsToReturn,
+		NoOfServerCapabilityFilter:        noOfServerCapabilityFilter,
+		ServerCapabilityFilter:            serverCapabilityFilter,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_FindServersOnNetworkRequest) GetServerCapabilityFilter() []PascalStrin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFindServersOnNetworkRequest factory function for _FindServersOnNetworkRequest
-func NewFindServersOnNetworkRequest(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) *_FindServersOnNetworkRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for FindServersOnNetworkRequest must not be nil")
-	}
-	_result := &_FindServersOnNetworkRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		StartingRecordId:                  startingRecordId,
-		MaxRecordsToReturn:                maxRecordsToReturn,
-		NoOfServerCapabilityFilter:        noOfServerCapabilityFilter,
-		ServerCapabilityFilter:            serverCapabilityFilter,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFindServersOnNetworkRequest(structType any) FindServersOnNetworkRequest {
@@ -273,6 +274,26 @@ func (m *_FindServersOnNetworkRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_FindServersOnNetworkRequest) IsFindServersOnNetworkRequest() {}
+
+func (m *_FindServersOnNetworkRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FindServersOnNetworkRequest) deepCopy() *_FindServersOnNetworkRequest {
+	if m == nil {
+		return nil
+	}
+	_FindServersOnNetworkRequestCopy := &_FindServersOnNetworkRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.StartingRecordId,
+		m.MaxRecordsToReturn,
+		m.NoOfServerCapabilityFilter,
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerCapabilityFilter),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FindServersOnNetworkRequestCopy
+}
 
 func (m *_FindServersOnNetworkRequest) String() string {
 	if m == nil {

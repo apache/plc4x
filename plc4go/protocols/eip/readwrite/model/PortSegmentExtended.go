@@ -38,6 +38,7 @@ type PortSegmentExtended interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PortSegmentType
 	// GetPort returns Port (property field)
 	GetPort() uint8
@@ -61,6 +62,18 @@ type _PortSegmentExtended struct {
 
 var _ PortSegmentExtended = (*_PortSegmentExtended)(nil)
 var _ PortSegmentTypeRequirements = (*_PortSegmentExtended)(nil)
+
+// NewPortSegmentExtended factory function for _PortSegmentExtended
+func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *_PortSegmentExtended {
+	_result := &_PortSegmentExtended{
+		PortSegmentTypeContract: NewPortSegmentType(),
+		Port:                    port,
+		LinkAddressSize:         linkAddressSize,
+		Address:                 address,
+	}
+	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,18 +129,6 @@ func (m *_PortSegmentExtended) GetPaddingByte() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPortSegmentExtended factory function for _PortSegmentExtended
-func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *_PortSegmentExtended {
-	_result := &_PortSegmentExtended{
-		PortSegmentTypeContract: NewPortSegmentType(),
-		Port:                    port,
-		LinkAddressSize:         linkAddressSize,
-		Address:                 address,
-	}
-	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPortSegmentExtended(structType any) PortSegmentExtended {
@@ -252,6 +253,24 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_PortSegmentExtended) IsPortSegmentExtended() {}
+
+func (m *_PortSegmentExtended) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegmentExtended) deepCopy() *_PortSegmentExtended {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentExtendedCopy := &_PortSegmentExtended{
+		m.PortSegmentTypeContract.(*_PortSegmentType).deepCopy(),
+		m.Port,
+		m.LinkAddressSize,
+		m.Address,
+	}
+	m.PortSegmentTypeContract.(*_PortSegmentType)._SubType = m
+	return _PortSegmentExtendedCopy
+}
 
 func (m *_PortSegmentExtended) String() string {
 	if m == nil {

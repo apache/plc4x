@@ -38,6 +38,7 @@ type WriteResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _WriteResponse struct {
 
 var _ WriteResponse = (*_WriteResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_WriteResponse)(nil)
+
+// NewWriteResponse factory function for _WriteResponse
+func NewWriteResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_WriteResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for WriteResponse must not be nil")
+	}
+	_result := &_WriteResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_WriteResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewWriteResponse factory function for _WriteResponse
-func NewWriteResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_WriteResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for WriteResponse must not be nil")
-	}
-	_result := &_WriteResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastWriteResponse(structType any) WriteResponse {
@@ -280,6 +281,26 @@ func (m *_WriteResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_WriteResponse) IsWriteResponse() {}
+
+func (m *_WriteResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WriteResponse) deepCopy() *_WriteResponse {
+	if m == nil {
+		return nil
+	}
+	_WriteResponseCopy := &_WriteResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _WriteResponseCopy
+}
 
 func (m *_WriteResponse) String() string {
 	if m == nil {

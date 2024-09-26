@@ -38,6 +38,7 @@ type BACnetAccessZoneOccupancyStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetAccessZoneOccupancyStateTagged struct {
 }
 
 var _ BACnetAccessZoneOccupancyStateTagged = (*_BACnetAccessZoneOccupancyStateTagged)(nil)
+
+// NewBACnetAccessZoneOccupancyStateTagged factory function for _BACnetAccessZoneOccupancyStateTagged
+func NewBACnetAccessZoneOccupancyStateTagged(header BACnetTagHeader, value BACnetAccessZoneOccupancyState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessZoneOccupancyStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessZoneOccupancyStateTagged must not be nil")
+	}
+	return &_BACnetAccessZoneOccupancyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessZoneOccupancyStateTagged factory function for _BACnetAccessZoneOccupancyStateTagged
-func NewBACnetAccessZoneOccupancyStateTagged(header BACnetTagHeader, value BACnetAccessZoneOccupancyState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessZoneOccupancyStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessZoneOccupancyStateTagged must not be nil")
-	}
-	return &_BACnetAccessZoneOccupancyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessZoneOccupancyStateTagged(structType any) BACnetAccessZoneOccupancyStateTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetAccessZoneOccupancyStateTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAccessZoneOccupancyStateTagged) IsBACnetAccessZoneOccupancyStateTagged() {}
+
+func (m *_BACnetAccessZoneOccupancyStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTagged) deepCopy() *_BACnetAccessZoneOccupancyStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessZoneOccupancyStateTaggedCopy := &_BACnetAccessZoneOccupancyStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessZoneOccupancyStateTaggedCopy
+}
 
 func (m *_BACnetAccessZoneOccupancyStateTagged) String() string {
 	if m == nil {

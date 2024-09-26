@@ -38,6 +38,7 @@ type BACnetConstructedDataDaysRemaining interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDaysRemaining returns DaysRemaining (property field)
 	GetDaysRemaining() BACnetApplicationTagSignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDaysRemaining struct {
 
 var _ BACnetConstructedDataDaysRemaining = (*_BACnetConstructedDataDaysRemaining)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDaysRemaining)(nil)
+
+// NewBACnetConstructedDataDaysRemaining factory function for _BACnetConstructedDataDaysRemaining
+func NewBACnetConstructedDataDaysRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daysRemaining BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaysRemaining {
+	if daysRemaining == nil {
+		panic("daysRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataDaysRemaining must not be nil")
+	}
+	_result := &_BACnetConstructedDataDaysRemaining{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DaysRemaining:                 daysRemaining,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDaysRemaining) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDaysRemaining factory function for _BACnetConstructedDataDaysRemaining
-func NewBACnetConstructedDataDaysRemaining(daysRemaining BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaysRemaining {
-	if daysRemaining == nil {
-		panic("daysRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataDaysRemaining must not be nil")
-	}
-	_result := &_BACnetConstructedDataDaysRemaining{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DaysRemaining:                 daysRemaining,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDaysRemaining(structType any) BACnetConstructedDataDaysRemaining {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDaysRemaining) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataDaysRemaining) IsBACnetConstructedDataDaysRemaining() {}
+
+func (m *_BACnetConstructedDataDaysRemaining) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDaysRemaining) deepCopy() *_BACnetConstructedDataDaysRemaining {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDaysRemainingCopy := &_BACnetConstructedDataDaysRemaining{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DaysRemaining.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDaysRemainingCopy
+}
 
 func (m *_BACnetConstructedDataDaysRemaining) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetTagPayloadBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetUnusedBits returns UnusedBits (property field)
 	GetUnusedBits() uint8
 	// GetData returns Data (property field)
@@ -60,6 +61,11 @@ type _BACnetTagPayloadBitString struct {
 
 var _ BACnetTagPayloadBitString = (*_BACnetTagPayloadBitString)(nil)
 
+// NewBACnetTagPayloadBitString factory function for _BACnetTagPayloadBitString
+func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, actualLength uint32) *_BACnetTagPayloadBitString {
+	return &_BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused, ActualLength: actualLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +87,6 @@ func (m *_BACnetTagPayloadBitString) GetUnused() []bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadBitString factory function for _BACnetTagPayloadBitString
-func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, actualLength uint32) *_BACnetTagPayloadBitString {
-	return &_BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadBitString(structType any) BACnetTagPayloadBitString {
@@ -223,6 +224,23 @@ func (m *_BACnetTagPayloadBitString) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadBitString) IsBACnetTagPayloadBitString() {}
+
+func (m *_BACnetTagPayloadBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadBitString) deepCopy() *_BACnetTagPayloadBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadBitStringCopy := &_BACnetTagPayloadBitString{
+		m.UnusedBits,
+		utils.DeepCopySlice[bool, bool](m.Data),
+		utils.DeepCopySlice[bool, bool](m.Unused),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadBitStringCopy
+}
 
 func (m *_BACnetTagPayloadBitString) String() string {
 	if m == nil {

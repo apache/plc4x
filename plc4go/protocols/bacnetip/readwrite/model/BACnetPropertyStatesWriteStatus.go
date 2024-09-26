@@ -38,6 +38,7 @@ type BACnetPropertyStatesWriteStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetWriteStatus returns WriteStatus (property field)
 	GetWriteStatus() BACnetWriteStatusTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesWriteStatus struct {
 
 var _ BACnetPropertyStatesWriteStatus = (*_BACnetPropertyStatesWriteStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesWriteStatus)(nil)
+
+// NewBACnetPropertyStatesWriteStatus factory function for _BACnetPropertyStatesWriteStatus
+func NewBACnetPropertyStatesWriteStatus(peekedTagHeader BACnetTagHeader, writeStatus BACnetWriteStatusTagged) *_BACnetPropertyStatesWriteStatus {
+	if writeStatus == nil {
+		panic("writeStatus of type BACnetWriteStatusTagged for BACnetPropertyStatesWriteStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesWriteStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		WriteStatus:                  writeStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesWriteStatus) GetWriteStatus() BACnetWriteStatusTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesWriteStatus factory function for _BACnetPropertyStatesWriteStatus
-func NewBACnetPropertyStatesWriteStatus(writeStatus BACnetWriteStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesWriteStatus {
-	if writeStatus == nil {
-		panic("writeStatus of type BACnetWriteStatusTagged for BACnetPropertyStatesWriteStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesWriteStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		WriteStatus:                  writeStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesWriteStatus(structType any) BACnetPropertyStatesWriteStatus {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesWriteStatus) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesWriteStatus) IsBACnetPropertyStatesWriteStatus() {}
+
+func (m *_BACnetPropertyStatesWriteStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesWriteStatus) deepCopy() *_BACnetPropertyStatesWriteStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesWriteStatusCopy := &_BACnetPropertyStatesWriteStatus{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.WriteStatus.DeepCopy().(BACnetWriteStatusTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesWriteStatusCopy
+}
 
 func (m *_BACnetPropertyStatesWriteStatus) String() string {
 	if m == nil {

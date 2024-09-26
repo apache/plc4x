@@ -38,6 +38,7 @@ type RequestHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAuthenticationToken returns AuthenticationToken (property field)
 	GetAuthenticationToken() NodeId
@@ -71,6 +72,31 @@ type _RequestHeader struct {
 
 var _ RequestHeader = (*_RequestHeader)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RequestHeader)(nil)
+
+// NewRequestHeader factory function for _RequestHeader
+func NewRequestHeader(authenticationToken NodeId, timestamp int64, requestHandle uint32, returnDiagnostics uint32, auditEntryId PascalString, timeoutHint uint32, additionalHeader ExtensionObject) *_RequestHeader {
+	if authenticationToken == nil {
+		panic("authenticationToken of type NodeId for RequestHeader must not be nil")
+	}
+	if auditEntryId == nil {
+		panic("auditEntryId of type PascalString for RequestHeader must not be nil")
+	}
+	if additionalHeader == nil {
+		panic("additionalHeader of type ExtensionObject for RequestHeader must not be nil")
+	}
+	_result := &_RequestHeader{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		AuthenticationToken:               authenticationToken,
+		Timestamp:                         timestamp,
+		RequestHandle:                     requestHandle,
+		ReturnDiagnostics:                 returnDiagnostics,
+		AuditEntryId:                      auditEntryId,
+		TimeoutHint:                       timeoutHint,
+		AdditionalHeader:                  additionalHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,31 +153,6 @@ func (m *_RequestHeader) GetAdditionalHeader() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestHeader factory function for _RequestHeader
-func NewRequestHeader(authenticationToken NodeId, timestamp int64, requestHandle uint32, returnDiagnostics uint32, auditEntryId PascalString, timeoutHint uint32, additionalHeader ExtensionObject) *_RequestHeader {
-	if authenticationToken == nil {
-		panic("authenticationToken of type NodeId for RequestHeader must not be nil")
-	}
-	if auditEntryId == nil {
-		panic("auditEntryId of type PascalString for RequestHeader must not be nil")
-	}
-	if additionalHeader == nil {
-		panic("additionalHeader of type ExtensionObject for RequestHeader must not be nil")
-	}
-	_result := &_RequestHeader{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		AuthenticationToken:               authenticationToken,
-		Timestamp:                         timestamp,
-		RequestHandle:                     requestHandle,
-		ReturnDiagnostics:                 returnDiagnostics,
-		AuditEntryId:                      auditEntryId,
-		TimeoutHint:                       timeoutHint,
-		AdditionalHeader:                  additionalHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestHeader(structType any) RequestHeader {
@@ -314,6 +315,28 @@ func (m *_RequestHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_RequestHeader) IsRequestHeader() {}
+
+func (m *_RequestHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestHeader) deepCopy() *_RequestHeader {
+	if m == nil {
+		return nil
+	}
+	_RequestHeaderCopy := &_RequestHeader{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.AuthenticationToken.DeepCopy().(NodeId),
+		m.Timestamp,
+		m.RequestHandle,
+		m.ReturnDiagnostics,
+		m.AuditEntryId.DeepCopy().(PascalString),
+		m.TimeoutHint,
+		m.AdditionalHeader.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RequestHeaderCopy
+}
 
 func (m *_RequestHeader) String() string {
 	if m == nil {

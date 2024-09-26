@@ -38,6 +38,7 @@ type SetTriggeringRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -71,6 +72,25 @@ type _SetTriggeringRequest struct {
 
 var _ SetTriggeringRequest = (*_SetTriggeringRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetTriggeringRequest)(nil)
+
+// NewSetTriggeringRequest factory function for _SetTriggeringRequest
+func NewSetTriggeringRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) *_SetTriggeringRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetTriggeringRequest must not be nil")
+	}
+	_result := &_SetTriggeringRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		TriggeringItemId:                  triggeringItemId,
+		NoOfLinksToAdd:                    noOfLinksToAdd,
+		LinksToAdd:                        linksToAdd,
+		NoOfLinksToRemove:                 noOfLinksToRemove,
+		LinksToRemove:                     linksToRemove,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,25 +147,6 @@ func (m *_SetTriggeringRequest) GetLinksToRemove() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetTriggeringRequest factory function for _SetTriggeringRequest
-func NewSetTriggeringRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) *_SetTriggeringRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for SetTriggeringRequest must not be nil")
-	}
-	_result := &_SetTriggeringRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		TriggeringItemId:                  triggeringItemId,
-		NoOfLinksToAdd:                    noOfLinksToAdd,
-		LinksToAdd:                        linksToAdd,
-		NoOfLinksToRemove:                 noOfLinksToRemove,
-		LinksToRemove:                     linksToRemove,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetTriggeringRequest(structType any) SetTriggeringRequest {
@@ -312,6 +313,28 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SetTriggeringRequest) IsSetTriggeringRequest() {}
+
+func (m *_SetTriggeringRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetTriggeringRequest) deepCopy() *_SetTriggeringRequest {
+	if m == nil {
+		return nil
+	}
+	_SetTriggeringRequestCopy := &_SetTriggeringRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.TriggeringItemId,
+		m.NoOfLinksToAdd,
+		utils.DeepCopySlice[uint32, uint32](m.LinksToAdd),
+		m.NoOfLinksToRemove,
+		utils.DeepCopySlice[uint32, uint32](m.LinksToRemove),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetTriggeringRequestCopy
+}
 
 func (m *_SetTriggeringRequest) String() string {
 	if m == nil {

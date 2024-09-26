@@ -38,6 +38,7 @@ type AirConditioningDataSetHvacSetbackLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -62,6 +63,28 @@ type _AirConditioningDataSetHvacSetbackLimit struct {
 
 var _ AirConditioningDataSetHvacSetbackLimit = (*_AirConditioningDataSetHvacSetbackLimit)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataSetHvacSetbackLimit)(nil)
+
+// NewAirConditioningDataSetHvacSetbackLimit factory function for _AirConditioningDataSetHvacSetbackLimit
+func NewAirConditioningDataSetHvacSetbackLimit(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, limit HVACTemperature, hvacModeAndFlags HVACModeAndFlags) *_AirConditioningDataSetHvacSetbackLimit {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetHvacSetbackLimit must not be nil")
+	}
+	if limit == nil {
+		panic("limit of type HVACTemperature for AirConditioningDataSetHvacSetbackLimit must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetHvacSetbackLimit must not be nil")
+	}
+	_result := &_AirConditioningDataSetHvacSetbackLimit{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Limit:                       limit,
+		HvacModeAndFlags:            hvacModeAndFlags,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,28 +125,6 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) GetHvacModeAndFlags() HVACMode
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataSetHvacSetbackLimit factory function for _AirConditioningDataSetHvacSetbackLimit
-func NewAirConditioningDataSetHvacSetbackLimit(zoneGroup byte, zoneList HVACZoneList, limit HVACTemperature, hvacModeAndFlags HVACModeAndFlags, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetHvacSetbackLimit {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataSetHvacSetbackLimit must not be nil")
-	}
-	if limit == nil {
-		panic("limit of type HVACTemperature for AirConditioningDataSetHvacSetbackLimit must not be nil")
-	}
-	if hvacModeAndFlags == nil {
-		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetHvacSetbackLimit must not be nil")
-	}
-	_result := &_AirConditioningDataSetHvacSetbackLimit{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Limit:                       limit,
-		HvacModeAndFlags:            hvacModeAndFlags,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataSetHvacSetbackLimit(structType any) AirConditioningDataSetHvacSetbackLimit {
@@ -247,6 +248,25 @@ func (m *_AirConditioningDataSetHvacSetbackLimit) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_AirConditioningDataSetHvacSetbackLimit) IsAirConditioningDataSetHvacSetbackLimit() {}
+
+func (m *_AirConditioningDataSetHvacSetbackLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataSetHvacSetbackLimit) deepCopy() *_AirConditioningDataSetHvacSetbackLimit {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataSetHvacSetbackLimitCopy := &_AirConditioningDataSetHvacSetbackLimit{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Limit.DeepCopy().(HVACTemperature),
+		m.HvacModeAndFlags.DeepCopy().(HVACModeAndFlags),
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataSetHvacSetbackLimitCopy
+}
 
 func (m *_AirConditioningDataSetHvacSetbackLimit) String() string {
 	if m == nil {

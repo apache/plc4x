@@ -36,6 +36,7 @@ type ClockAndTimekeepingDataRequestRefresh interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ClockAndTimekeepingData
 	// IsClockAndTimekeepingDataRequestRefresh is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsClockAndTimekeepingDataRequestRefresh()
@@ -49,6 +50,15 @@ type _ClockAndTimekeepingDataRequestRefresh struct {
 var _ ClockAndTimekeepingDataRequestRefresh = (*_ClockAndTimekeepingDataRequestRefresh)(nil)
 var _ ClockAndTimekeepingDataRequirements = (*_ClockAndTimekeepingDataRequestRefresh)(nil)
 
+// NewClockAndTimekeepingDataRequestRefresh factory function for _ClockAndTimekeepingDataRequestRefresh
+func NewClockAndTimekeepingDataRequestRefresh(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingDataRequestRefresh {
+	_result := &_ClockAndTimekeepingDataRequestRefresh{
+		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
+	}
+	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ ClockAndTimekeepingDataRequirements = (*_ClockAndTimekeepingDataRequestRef
 
 func (m *_ClockAndTimekeepingDataRequestRefresh) GetParent() ClockAndTimekeepingDataContract {
 	return m.ClockAndTimekeepingDataContract
-}
-
-// NewClockAndTimekeepingDataRequestRefresh factory function for _ClockAndTimekeepingDataRequestRefresh
-func NewClockAndTimekeepingDataRequestRefresh(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingDataRequestRefresh {
-	_result := &_ClockAndTimekeepingDataRequestRefresh{
-		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
-	}
-	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_ClockAndTimekeepingDataRequestRefresh) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_ClockAndTimekeepingDataRequestRefresh) IsClockAndTimekeepingDataRequestRefresh() {}
+
+func (m *_ClockAndTimekeepingDataRequestRefresh) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ClockAndTimekeepingDataRequestRefresh) deepCopy() *_ClockAndTimekeepingDataRequestRefresh {
+	if m == nil {
+		return nil
+	}
+	_ClockAndTimekeepingDataRequestRefreshCopy := &_ClockAndTimekeepingDataRequestRefresh{
+		m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).deepCopy(),
+	}
+	m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
+	return _ClockAndTimekeepingDataRequestRefreshCopy
+}
 
 func (m *_ClockAndTimekeepingDataRequestRefresh) String() string {
 	if m == nil {

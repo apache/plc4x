@@ -38,6 +38,7 @@ type BACnetWriteStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetWriteStatusTagged struct {
 
 var _ BACnetWriteStatusTagged = (*_BACnetWriteStatusTagged)(nil)
 
+// NewBACnetWriteStatusTagged factory function for _BACnetWriteStatusTagged
+func NewBACnetWriteStatusTagged(header BACnetTagHeader, value BACnetWriteStatus, tagNumber uint8, tagClass TagClass) *_BACnetWriteStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetWriteStatusTagged must not be nil")
+	}
+	return &_BACnetWriteStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetWriteStatusTagged) GetValue() BACnetWriteStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetWriteStatusTagged factory function for _BACnetWriteStatusTagged
-func NewBACnetWriteStatusTagged(header BACnetTagHeader, value BACnetWriteStatus, tagNumber uint8, tagClass TagClass) *_BACnetWriteStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetWriteStatusTagged must not be nil")
-	}
-	return &_BACnetWriteStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetWriteStatusTagged(structType any) BACnetWriteStatusTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetWriteStatusTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetWriteStatusTagged) IsBACnetWriteStatusTagged() {}
+
+func (m *_BACnetWriteStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetWriteStatusTagged) deepCopy() *_BACnetWriteStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetWriteStatusTaggedCopy := &_BACnetWriteStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetWriteStatusTaggedCopy
+}
 
 func (m *_BACnetWriteStatusTagged) String() string {
 	if m == nil {

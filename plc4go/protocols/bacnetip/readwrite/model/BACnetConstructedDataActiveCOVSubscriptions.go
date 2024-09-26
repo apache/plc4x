@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveCOVSubscriptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveCOVSubscriptions returns ActiveCOVSubscriptions (property field)
 	GetActiveCOVSubscriptions() []BACnetCOVSubscription
@@ -53,6 +54,16 @@ type _BACnetConstructedDataActiveCOVSubscriptions struct {
 
 var _ BACnetConstructedDataActiveCOVSubscriptions = (*_BACnetConstructedDataActiveCOVSubscriptions)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveCOVSubscriptions)(nil)
+
+// NewBACnetConstructedDataActiveCOVSubscriptions factory function for _BACnetConstructedDataActiveCOVSubscriptions
+func NewBACnetConstructedDataActiveCOVSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVSubscriptions []BACnetCOVSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVSubscriptions {
+	_result := &_BACnetConstructedDataActiveCOVSubscriptions{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveCOVSubscriptions:        activeCOVSubscriptions,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetActiveCOVSubscriptions
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveCOVSubscriptions factory function for _BACnetConstructedDataActiveCOVSubscriptions
-func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []BACnetCOVSubscription, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVSubscriptions {
-	_result := &_BACnetConstructedDataActiveCOVSubscriptions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveCOVSubscriptions:        activeCOVSubscriptions,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveCOVSubscriptions(structType any) BACnetConstructedDataActiveCOVSubscriptions {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) SerializeWithWriteBuffer(
 }
 
 func (m *_BACnetConstructedDataActiveCOVSubscriptions) IsBACnetConstructedDataActiveCOVSubscriptions() {
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) deepCopy() *_BACnetConstructedDataActiveCOVSubscriptions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveCOVSubscriptionsCopy := &_BACnetConstructedDataActiveCOVSubscriptions{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetCOVSubscription, BACnetCOVSubscription](m.ActiveCOVSubscriptions),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveCOVSubscriptionsCopy
 }
 
 func (m *_BACnetConstructedDataActiveCOVSubscriptions) String() string {

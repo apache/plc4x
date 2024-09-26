@@ -40,6 +40,7 @@ type BVLCWriteBroadcastDistributionTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCBroadcastDistributionTableEntry
@@ -58,6 +59,16 @@ type _BVLCWriteBroadcastDistributionTable struct {
 
 var _ BVLCWriteBroadcastDistributionTable = (*_BVLCWriteBroadcastDistributionTable)(nil)
 var _ BVLCRequirements = (*_BVLCWriteBroadcastDistributionTable)(nil)
+
+// NewBVLCWriteBroadcastDistributionTable factory function for _BVLCWriteBroadcastDistributionTable
+func NewBVLCWriteBroadcastDistributionTable(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCWriteBroadcastDistributionTable {
+	_result := &_BVLCWriteBroadcastDistributionTable{
+		BVLCContract: NewBVLC(),
+		Table:        table,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,16 +101,6 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetTable() []BVLCBroadcastDistrib
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCWriteBroadcastDistributionTable factory function for _BVLCWriteBroadcastDistributionTable
-func NewBVLCWriteBroadcastDistributionTable(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCWriteBroadcastDistributionTable {
-	_result := &_BVLCWriteBroadcastDistributionTable{
-		BVLCContract: NewBVLC(),
-		Table:        table,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCWriteBroadcastDistributionTable(structType any) BVLCWriteBroadcastDistributionTable {
@@ -198,6 +199,23 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCWriteBroadcastDistributionTable) IsBVLCWriteBroadcastDistributionTable() {}
+
+func (m *_BVLCWriteBroadcastDistributionTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCWriteBroadcastDistributionTable) deepCopy() *_BVLCWriteBroadcastDistributionTable {
+	if m == nil {
+		return nil
+	}
+	_BVLCWriteBroadcastDistributionTableCopy := &_BVLCWriteBroadcastDistributionTable{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		utils.DeepCopySlice[BVLCBroadcastDistributionTableEntry, BVLCBroadcastDistributionTableEntry](m.Table),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCWriteBroadcastDistributionTableCopy
+}
 
 func (m *_BVLCWriteBroadcastDistributionTable) String() string {
 	if m == nil {

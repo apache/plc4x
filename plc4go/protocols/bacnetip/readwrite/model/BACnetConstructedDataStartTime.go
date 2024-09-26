@@ -38,6 +38,7 @@ type BACnetConstructedDataStartTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStartTime returns StartTime (property field)
 	GetStartTime() BACnetDateTime
@@ -55,6 +56,19 @@ type _BACnetConstructedDataStartTime struct {
 
 var _ BACnetConstructedDataStartTime = (*_BACnetConstructedDataStartTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStartTime)(nil)
+
+// NewBACnetConstructedDataStartTime factory function for _BACnetConstructedDataStartTime
+func NewBACnetConstructedDataStartTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, startTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStartTime {
+	if startTime == nil {
+		panic("startTime of type BACnetDateTime for BACnetConstructedDataStartTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataStartTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		StartTime:                     startTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataStartTime) GetActualValue() BACnetDateTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataStartTime factory function for _BACnetConstructedDataStartTime
-func NewBACnetConstructedDataStartTime(startTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStartTime {
-	if startTime == nil {
-		panic("startTime of type BACnetDateTime for BACnetConstructedDataStartTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataStartTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		StartTime:                     startTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataStartTime(structType any) BACnetConstructedDataStartTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataStartTime) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataStartTime) IsBACnetConstructedDataStartTime() {}
+
+func (m *_BACnetConstructedDataStartTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStartTime) deepCopy() *_BACnetConstructedDataStartTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStartTimeCopy := &_BACnetConstructedDataStartTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.StartTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStartTimeCopy
+}
 
 func (m *_BACnetConstructedDataStartTime) String() string {
 	if m == nil {

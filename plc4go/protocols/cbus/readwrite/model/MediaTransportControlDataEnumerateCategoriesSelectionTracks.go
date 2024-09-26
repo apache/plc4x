@@ -38,6 +38,7 @@ type MediaTransportControlDataEnumerateCategoriesSelectionTracks interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetEnumerateType returns EnumerateType (property field)
 	GetEnumerateType() byte
@@ -64,6 +65,17 @@ type _MediaTransportControlDataEnumerateCategoriesSelectionTracks struct {
 
 var _ MediaTransportControlDataEnumerateCategoriesSelectionTracks = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracks)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracks)(nil)
+
+// NewMediaTransportControlDataEnumerateCategoriesSelectionTracks factory function for _MediaTransportControlDataEnumerateCategoriesSelectionTracks
+func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, enumerateType byte, start uint8) *_MediaTransportControlDataEnumerateCategoriesSelectionTracks {
+	_result := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		EnumerateType:                     enumerateType,
+		Start:                             start,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,17 +141,6 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetIsRese
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataEnumerateCategoriesSelectionTracks factory function for _MediaTransportControlDataEnumerateCategoriesSelectionTracks
-func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(enumerateType byte, start uint8, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataEnumerateCategoriesSelectionTracks {
-	_result := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		EnumerateType:                     enumerateType,
-		Start:                             start,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataEnumerateCategoriesSelectionTracks(structType any) MediaTransportControlDataEnumerateCategoriesSelectionTracks {
@@ -293,6 +294,23 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) IsMediaTransportControlDataEnumerateCategoriesSelectionTracks() {
+}
+
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) deepCopy() *_MediaTransportControlDataEnumerateCategoriesSelectionTracks {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataEnumerateCategoriesSelectionTracksCopy := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.EnumerateType,
+		m.Start,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataEnumerateCategoriesSelectionTracksCopy
 }
 
 func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) String() string {

@@ -38,6 +38,7 @@ type BACnetSpecialEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPeriod returns Period (property field)
 	GetPeriod() BACnetSpecialEventPeriod
 	// GetListOfTimeValues returns ListOfTimeValues (property field)
@@ -56,6 +57,20 @@ type _BACnetSpecialEvent struct {
 }
 
 var _ BACnetSpecialEvent = (*_BACnetSpecialEvent)(nil)
+
+// NewBACnetSpecialEvent factory function for _BACnetSpecialEvent
+func NewBACnetSpecialEvent(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) *_BACnetSpecialEvent {
+	if period == nil {
+		panic("period of type BACnetSpecialEventPeriod for BACnetSpecialEvent must not be nil")
+	}
+	if listOfTimeValues == nil {
+		panic("listOfTimeValues of type BACnetSpecialEventListOfTimeValues for BACnetSpecialEvent must not be nil")
+	}
+	if eventPriority == nil {
+		panic("eventPriority of type BACnetContextTagUnsignedInteger for BACnetSpecialEvent must not be nil")
+	}
+	return &_BACnetSpecialEvent{Period: period, ListOfTimeValues: listOfTimeValues, EventPriority: eventPriority}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,20 +93,6 @@ func (m *_BACnetSpecialEvent) GetEventPriority() BACnetContextTagUnsignedInteger
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSpecialEvent factory function for _BACnetSpecialEvent
-func NewBACnetSpecialEvent(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) *_BACnetSpecialEvent {
-	if period == nil {
-		panic("period of type BACnetSpecialEventPeriod for BACnetSpecialEvent must not be nil")
-	}
-	if listOfTimeValues == nil {
-		panic("listOfTimeValues of type BACnetSpecialEventListOfTimeValues for BACnetSpecialEvent must not be nil")
-	}
-	if eventPriority == nil {
-		panic("eventPriority of type BACnetContextTagUnsignedInteger for BACnetSpecialEvent must not be nil")
-	}
-	return &_BACnetSpecialEvent{Period: period, ListOfTimeValues: listOfTimeValues, EventPriority: eventPriority}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSpecialEvent(structType any) BACnetSpecialEvent {
@@ -215,6 +216,22 @@ func (m *_BACnetSpecialEvent) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_BACnetSpecialEvent) IsBACnetSpecialEvent() {}
+
+func (m *_BACnetSpecialEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSpecialEvent) deepCopy() *_BACnetSpecialEvent {
+	if m == nil {
+		return nil
+	}
+	_BACnetSpecialEventCopy := &_BACnetSpecialEvent{
+		m.Period.DeepCopy().(BACnetSpecialEventPeriod),
+		m.ListOfTimeValues.DeepCopy().(BACnetSpecialEventListOfTimeValues),
+		m.EventPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetSpecialEventCopy
+}
 
 func (m *_BACnetSpecialEvent) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ErrorEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetError returns Error (property field)
@@ -60,6 +61,20 @@ type _ErrorEnclosed struct {
 
 var _ ErrorEnclosed = (*_ErrorEnclosed)(nil)
 
+// NewErrorEnclosed factory function for _ErrorEnclosed
+func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag, tagNumber uint8) *_ErrorEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ErrorEnclosed must not be nil")
+	}
+	if error == nil {
+		panic("error of type Error for ErrorEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ErrorEnclosed must not be nil")
+	}
+	return &_ErrorEnclosed{OpeningTag: openingTag, Error: error, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +96,6 @@ func (m *_ErrorEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorEnclosed factory function for _ErrorEnclosed
-func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag, tagNumber uint8) *_ErrorEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for ErrorEnclosed must not be nil")
-	}
-	if error == nil {
-		panic("error of type Error for ErrorEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for ErrorEnclosed must not be nil")
-	}
-	return &_ErrorEnclosed{OpeningTag: openingTag, Error: error, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorEnclosed(structType any) ErrorEnclosed {
@@ -228,6 +229,23 @@ func (m *_ErrorEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_ErrorEnclosed) IsErrorEnclosed() {}
+
+func (m *_ErrorEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorEnclosed) deepCopy() *_ErrorEnclosed {
+	if m == nil {
+		return nil
+	}
+	_ErrorEnclosedCopy := &_ErrorEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.Error.DeepCopy().(Error),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _ErrorEnclosedCopy
+}
 
 func (m *_ErrorEnclosed) String() string {
 	if m == nil {

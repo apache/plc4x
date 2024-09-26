@@ -36,6 +36,7 @@ type TelephonyDataClearDiversion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// IsTelephonyDataClearDiversion is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataClearDiversion()
@@ -49,6 +50,15 @@ type _TelephonyDataClearDiversion struct {
 var _ TelephonyDataClearDiversion = (*_TelephonyDataClearDiversion)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataClearDiversion)(nil)
 
+// NewTelephonyDataClearDiversion factory function for _TelephonyDataClearDiversion
+func NewTelephonyDataClearDiversion(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataClearDiversion {
+	_result := &_TelephonyDataClearDiversion{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ TelephonyDataRequirements = (*_TelephonyDataClearDiversion)(nil)
 
 func (m *_TelephonyDataClearDiversion) GetParent() TelephonyDataContract {
 	return m.TelephonyDataContract
-}
-
-// NewTelephonyDataClearDiversion factory function for _TelephonyDataClearDiversion
-func NewTelephonyDataClearDiversion(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataClearDiversion {
-	_result := &_TelephonyDataClearDiversion{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_TelephonyDataClearDiversion) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_TelephonyDataClearDiversion) IsTelephonyDataClearDiversion() {}
+
+func (m *_TelephonyDataClearDiversion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataClearDiversion) deepCopy() *_TelephonyDataClearDiversion {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataClearDiversionCopy := &_TelephonyDataClearDiversion{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataClearDiversionCopy
+}
 
 func (m *_TelephonyDataClearDiversion) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BitFieldDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -65,6 +66,25 @@ type _BitFieldDefinition struct {
 
 var _ BitFieldDefinition = (*_BitFieldDefinition)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BitFieldDefinition)(nil)
+
+// NewBitFieldDefinition factory function for _BitFieldDefinition
+func NewBitFieldDefinition(name PascalString, description LocalizedText, startingBitPosition uint32, endingBitPosition uint32) *_BitFieldDefinition {
+	if name == nil {
+		panic("name of type PascalString for BitFieldDefinition must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for BitFieldDefinition must not be nil")
+	}
+	_result := &_BitFieldDefinition{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Description:                       description,
+		StartingBitPosition:               startingBitPosition,
+		EndingBitPosition:                 endingBitPosition,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,25 +129,6 @@ func (m *_BitFieldDefinition) GetEndingBitPosition() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBitFieldDefinition factory function for _BitFieldDefinition
-func NewBitFieldDefinition(name PascalString, description LocalizedText, startingBitPosition uint32, endingBitPosition uint32) *_BitFieldDefinition {
-	if name == nil {
-		panic("name of type PascalString for BitFieldDefinition must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for BitFieldDefinition must not be nil")
-	}
-	_result := &_BitFieldDefinition{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Description:                       description,
-		StartingBitPosition:               startingBitPosition,
-		EndingBitPosition:                 endingBitPosition,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBitFieldDefinition(structType any) BitFieldDefinition {
@@ -277,6 +278,27 @@ func (m *_BitFieldDefinition) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_BitFieldDefinition) IsBitFieldDefinition() {}
+
+func (m *_BitFieldDefinition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BitFieldDefinition) deepCopy() *_BitFieldDefinition {
+	if m == nil {
+		return nil
+	}
+	_BitFieldDefinitionCopy := &_BitFieldDefinition{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.Description.DeepCopy().(LocalizedText),
+		m.StartingBitPosition,
+		m.EndingBitPosition,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BitFieldDefinitionCopy
+}
 
 func (m *_BitFieldDefinition) String() string {
 	if m == nil {

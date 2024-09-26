@@ -38,6 +38,7 @@ type NLMChallengeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetMessageChallenge returns MessageChallenge (property field)
 	GetMessageChallenge() byte
@@ -59,6 +60,18 @@ type _NLMChallengeRequest struct {
 
 var _ NLMChallengeRequest = (*_NLMChallengeRequest)(nil)
 var _ NLMRequirements = (*_NLMChallengeRequest)(nil)
+
+// NewNLMChallengeRequest factory function for _NLMChallengeRequest
+func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32, apduLength uint16) *_NLMChallengeRequest {
+	_result := &_NLMChallengeRequest{
+		NLMContract:       NewNLM(apduLength),
+		MessageChallenge:  messageChallenge,
+		OriginalMessageId: originalMessageId,
+		OriginalTimestamp: originalTimestamp,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +112,6 @@ func (m *_NLMChallengeRequest) GetOriginalTimestamp() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMChallengeRequest factory function for _NLMChallengeRequest
-func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32, apduLength uint16) *_NLMChallengeRequest {
-	_result := &_NLMChallengeRequest{
-		NLMContract:       NewNLM(apduLength),
-		MessageChallenge:  messageChallenge,
-		OriginalMessageId: originalMessageId,
-		OriginalTimestamp: originalTimestamp,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMChallengeRequest(structType any) NLMChallengeRequest {
@@ -221,6 +222,24 @@ func (m *_NLMChallengeRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NLMChallengeRequest) IsNLMChallengeRequest() {}
+
+func (m *_NLMChallengeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMChallengeRequest) deepCopy() *_NLMChallengeRequest {
+	if m == nil {
+		return nil
+	}
+	_NLMChallengeRequestCopy := &_NLMChallengeRequest{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.MessageChallenge,
+		m.OriginalMessageId,
+		m.OriginalTimestamp,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMChallengeRequestCopy
+}
 
 func (m *_NLMChallengeRequest) String() string {
 	if m == nil {

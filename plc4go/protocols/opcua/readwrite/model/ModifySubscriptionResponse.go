@@ -38,6 +38,7 @@ type ModifySubscriptionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -62,6 +63,22 @@ type _ModifySubscriptionResponse struct {
 
 var _ ModifySubscriptionResponse = (*_ModifySubscriptionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModifySubscriptionResponse)(nil)
+
+// NewModifySubscriptionResponse factory function for _ModifySubscriptionResponse
+func NewModifySubscriptionResponse(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_ModifySubscriptionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ModifySubscriptionResponse must not be nil")
+	}
+	_result := &_ModifySubscriptionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		RevisedPublishingInterval:         revisedPublishingInterval,
+		RevisedLifetimeCount:              revisedLifetimeCount,
+		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,22 +123,6 @@ func (m *_ModifySubscriptionResponse) GetRevisedMaxKeepAliveCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModifySubscriptionResponse factory function for _ModifySubscriptionResponse
-func NewModifySubscriptionResponse(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_ModifySubscriptionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ModifySubscriptionResponse must not be nil")
-	}
-	_result := &_ModifySubscriptionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		RevisedPublishingInterval:         revisedPublishingInterval,
-		RevisedLifetimeCount:              revisedLifetimeCount,
-		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModifySubscriptionResponse(structType any) ModifySubscriptionResponse {
@@ -245,6 +246,25 @@ func (m *_ModifySubscriptionResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ModifySubscriptionResponse) IsModifySubscriptionResponse() {}
+
+func (m *_ModifySubscriptionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModifySubscriptionResponse) deepCopy() *_ModifySubscriptionResponse {
+	if m == nil {
+		return nil
+	}
+	_ModifySubscriptionResponseCopy := &_ModifySubscriptionResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RevisedPublishingInterval,
+		m.RevisedLifetimeCount,
+		m.RevisedMaxKeepAliveCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModifySubscriptionResponseCopy
+}
 
 func (m *_ModifySubscriptionResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataCOVPeriod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovPeriod returns CovPeriod (property field)
 	GetCovPeriod() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCOVPeriod struct {
 
 var _ BACnetConstructedDataCOVPeriod = (*_BACnetConstructedDataCOVPeriod)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVPeriod)(nil)
+
+// NewBACnetConstructedDataCOVPeriod factory function for _BACnetConstructedDataCOVPeriod
+func NewBACnetConstructedDataCOVPeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covPeriod BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVPeriod {
+	if covPeriod == nil {
+		panic("covPeriod of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVPeriod must not be nil")
+	}
+	_result := &_BACnetConstructedDataCOVPeriod{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovPeriod:                     covPeriod,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCOVPeriod) GetActualValue() BACnetApplicationTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCOVPeriod factory function for _BACnetConstructedDataCOVPeriod
-func NewBACnetConstructedDataCOVPeriod(covPeriod BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVPeriod {
-	if covPeriod == nil {
-		panic("covPeriod of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVPeriod must not be nil")
-	}
-	_result := &_BACnetConstructedDataCOVPeriod{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CovPeriod:                     covPeriod,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCOVPeriod(structType any) BACnetConstructedDataCOVPeriod {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCOVPeriod) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataCOVPeriod) IsBACnetConstructedDataCOVPeriod() {}
+
+func (m *_BACnetConstructedDataCOVPeriod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCOVPeriod) deepCopy() *_BACnetConstructedDataCOVPeriod {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCOVPeriodCopy := &_BACnetConstructedDataCOVPeriod{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CovPeriod.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCOVPeriodCopy
+}
 
 func (m *_BACnetConstructedDataCOVPeriod) String() string {
 	if m == nil {

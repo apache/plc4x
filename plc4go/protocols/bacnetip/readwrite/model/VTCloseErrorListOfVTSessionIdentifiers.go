@@ -38,6 +38,7 @@ type VTCloseErrorListOfVTSessionIdentifiers interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfVtSessionIdentifiers returns ListOfVtSessionIdentifiers (property field)
@@ -60,6 +61,17 @@ type _VTCloseErrorListOfVTSessionIdentifiers struct {
 
 var _ VTCloseErrorListOfVTSessionIdentifiers = (*_VTCloseErrorListOfVTSessionIdentifiers)(nil)
 
+// NewVTCloseErrorListOfVTSessionIdentifiers factory function for _VTCloseErrorListOfVTSessionIdentifiers
+func NewVTCloseErrorListOfVTSessionIdentifiers(openingTag BACnetOpeningTag, listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_VTCloseErrorListOfVTSessionIdentifiers {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
+	}
+	return &_VTCloseErrorListOfVTSessionIdentifiers{OpeningTag: openingTag, ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) GetClosingTag() BACnetClosingT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVTCloseErrorListOfVTSessionIdentifiers factory function for _VTCloseErrorListOfVTSessionIdentifiers
-func NewVTCloseErrorListOfVTSessionIdentifiers(openingTag BACnetOpeningTag, listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_VTCloseErrorListOfVTSessionIdentifiers {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
-	}
-	return &_VTCloseErrorListOfVTSessionIdentifiers{OpeningTag: openingTag, ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastVTCloseErrorListOfVTSessionIdentifiers(structType any) VTCloseErrorListOfVTSessionIdentifiers {
@@ -229,6 +230,23 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) GetTagNumber() uint8 {
 ////
 
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) IsVTCloseErrorListOfVTSessionIdentifiers() {}
+
+func (m *_VTCloseErrorListOfVTSessionIdentifiers) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VTCloseErrorListOfVTSessionIdentifiers) deepCopy() *_VTCloseErrorListOfVTSessionIdentifiers {
+	if m == nil {
+		return nil
+	}
+	_VTCloseErrorListOfVTSessionIdentifiersCopy := &_VTCloseErrorListOfVTSessionIdentifiers{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ListOfVtSessionIdentifiers),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _VTCloseErrorListOfVTSessionIdentifiersCopy
+}
 
 func (m *_VTCloseErrorListOfVTSessionIdentifiers) String() string {
 	if m == nil {

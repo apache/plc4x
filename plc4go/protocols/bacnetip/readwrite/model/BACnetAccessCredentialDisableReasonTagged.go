@@ -38,6 +38,7 @@ type BACnetAccessCredentialDisableReasonTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetAccessCredentialDisableReasonTagged struct {
 }
 
 var _ BACnetAccessCredentialDisableReasonTagged = (*_BACnetAccessCredentialDisableReasonTagged)(nil)
+
+// NewBACnetAccessCredentialDisableReasonTagged factory function for _BACnetAccessCredentialDisableReasonTagged
+func NewBACnetAccessCredentialDisableReasonTagged(header BACnetTagHeader, value BACnetAccessCredentialDisableReason, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessCredentialDisableReasonTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessCredentialDisableReasonTagged must not be nil")
+	}
+	return &_BACnetAccessCredentialDisableReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetAccessCredentialDisableReasonTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessCredentialDisableReasonTagged factory function for _BACnetAccessCredentialDisableReasonTagged
-func NewBACnetAccessCredentialDisableReasonTagged(header BACnetTagHeader, value BACnetAccessCredentialDisableReason, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessCredentialDisableReasonTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessCredentialDisableReasonTagged must not be nil")
-	}
-	return &_BACnetAccessCredentialDisableReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessCredentialDisableReasonTagged(structType any) BACnetAccessCredentialDisableReasonTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetAccessCredentialDisableReasonTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAccessCredentialDisableReasonTagged) IsBACnetAccessCredentialDisableReasonTagged() {}
+
+func (m *_BACnetAccessCredentialDisableReasonTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessCredentialDisableReasonTagged) deepCopy() *_BACnetAccessCredentialDisableReasonTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessCredentialDisableReasonTaggedCopy := &_BACnetAccessCredentialDisableReasonTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessCredentialDisableReasonTaggedCopy
+}
 
 func (m *_BACnetAccessCredentialDisableReasonTagged) String() string {
 	if m == nil {

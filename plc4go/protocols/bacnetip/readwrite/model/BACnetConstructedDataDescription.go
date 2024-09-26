@@ -38,6 +38,7 @@ type BACnetConstructedDataDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDescription returns Description (property field)
 	GetDescription() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDescription struct {
 
 var _ BACnetConstructedDataDescription = (*_BACnetConstructedDataDescription)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDescription)(nil)
+
+// NewBACnetConstructedDataDescription factory function for _BACnetConstructedDataDescription
+func NewBACnetConstructedDataDescription(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, description BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescription {
+	if description == nil {
+		panic("description of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescription must not be nil")
+	}
+	_result := &_BACnetConstructedDataDescription{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Description:                   description,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDescription) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDescription factory function for _BACnetConstructedDataDescription
-func NewBACnetConstructedDataDescription(description BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescription {
-	if description == nil {
-		panic("description of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescription must not be nil")
-	}
-	_result := &_BACnetConstructedDataDescription{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Description:                   description,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDescription(structType any) BACnetConstructedDataDescription {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDescription) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataDescription) IsBACnetConstructedDataDescription() {}
+
+func (m *_BACnetConstructedDataDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDescription) deepCopy() *_BACnetConstructedDataDescription {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDescriptionCopy := &_BACnetConstructedDataDescription{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Description.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDescriptionCopy
+}
 
 func (m *_BACnetConstructedDataDescription) String() string {
 	if m == nil {

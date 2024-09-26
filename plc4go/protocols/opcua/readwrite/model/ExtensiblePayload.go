@@ -38,6 +38,7 @@ type ExtensiblePayload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Payload
 	// GetPayload returns Payload (property field)
 	GetPayload() ExtensionObject
@@ -53,6 +54,19 @@ type _ExtensiblePayload struct {
 
 var _ ExtensiblePayload = (*_ExtensiblePayload)(nil)
 var _ PayloadRequirements = (*_ExtensiblePayload)(nil)
+
+// NewExtensiblePayload factory function for _ExtensiblePayload
+func NewExtensiblePayload(sequenceHeader SequenceHeader, payload ExtensionObject, byteCount uint32) *_ExtensiblePayload {
+	if payload == nil {
+		panic("payload of type ExtensionObject for ExtensiblePayload must not be nil")
+	}
+	_result := &_ExtensiblePayload{
+		PayloadContract: NewPayload(sequenceHeader, byteCount),
+		Payload:         payload,
+	}
+	_result.PayloadContract.(*_Payload)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_ExtensiblePayload) GetPayload() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensiblePayload factory function for _ExtensiblePayload
-func NewExtensiblePayload(payload ExtensionObject, sequenceHeader SequenceHeader, byteCount uint32) *_ExtensiblePayload {
-	if payload == nil {
-		panic("payload of type ExtensionObject for ExtensiblePayload must not be nil")
-	}
-	_result := &_ExtensiblePayload{
-		PayloadContract: NewPayload(sequenceHeader, byteCount),
-		Payload:         payload,
-	}
-	_result.PayloadContract.(*_Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensiblePayload(structType any) ExtensiblePayload {
@@ -182,6 +183,22 @@ func (m *_ExtensiblePayload) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ExtensiblePayload) IsExtensiblePayload() {}
+
+func (m *_ExtensiblePayload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExtensiblePayload) deepCopy() *_ExtensiblePayload {
+	if m == nil {
+		return nil
+	}
+	_ExtensiblePayloadCopy := &_ExtensiblePayload{
+		m.PayloadContract.(*_Payload).deepCopy(),
+		m.Payload.DeepCopy().(ExtensionObject),
+	}
+	m.PayloadContract.(*_Payload)._SubType = m
+	return _ExtensiblePayloadCopy
+}
 
 func (m *_ExtensiblePayload) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type NLM interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsNLM is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLM()
 }
@@ -74,6 +75,11 @@ type _NLM struct {
 
 var _ NLMContract = (*_NLM)(nil)
 
+// NewNLM factory function for _NLM
+func NewNLM(apduLength uint16) *_NLM {
+	return &_NLM{ApduLength: apduLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
@@ -90,11 +96,6 @@ func (pm *_NLM) GetIsVendorProprietaryMessage() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLM factory function for _NLM
-func NewNLM(apduLength uint16) *_NLM {
-	return &_NLM{ApduLength: apduLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLM(structType any) NLM {
@@ -178,91 +179,91 @@ func (m *_NLM) parse(ctx context.Context, readBuffer utils.ReadBuffer, apduLengt
 	var _child NLM
 	switch {
 	case messageType == 0x00: // NLMWhoIsRouterToNetwork
-		if _child, err = (&_NLMWhoIsRouterToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMWhoIsRouterToNetwork).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMWhoIsRouterToNetwork for type-switch of NLM")
 		}
 	case messageType == 0x01: // NLMIAmRouterToNetwork
-		if _child, err = (&_NLMIAmRouterToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMIAmRouterToNetwork).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMIAmRouterToNetwork for type-switch of NLM")
 		}
 	case messageType == 0x02: // NLMICouldBeRouterToNetwork
-		if _child, err = (&_NLMICouldBeRouterToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMICouldBeRouterToNetwork).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMICouldBeRouterToNetwork for type-switch of NLM")
 		}
 	case messageType == 0x03: // NLMRejectMessageToNetwork
-		if _child, err = (&_NLMRejectMessageToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMRejectMessageToNetwork).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMRejectMessageToNetwork for type-switch of NLM")
 		}
 	case messageType == 0x04: // NLMRouterBusyToNetwork
-		if _child, err = (&_NLMRouterBusyToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMRouterBusyToNetwork).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMRouterBusyToNetwork for type-switch of NLM")
 		}
 	case messageType == 0x05: // NLMRouterAvailableToNetwork
-		if _child, err = (&_NLMRouterAvailableToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMRouterAvailableToNetwork).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMRouterAvailableToNetwork for type-switch of NLM")
 		}
 	case messageType == 0x06: // NLMInitializeRoutingTable
-		if _child, err = (&_NLMInitializeRoutingTable{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMInitializeRoutingTable).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMInitializeRoutingTable for type-switch of NLM")
 		}
 	case messageType == 0x07: // NLMInitializeRoutingTableAck
-		if _child, err = (&_NLMInitializeRoutingTableAck{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMInitializeRoutingTableAck).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMInitializeRoutingTableAck for type-switch of NLM")
 		}
 	case messageType == 0x08: // NLMEstablishConnectionToNetwork
-		if _child, err = (&_NLMEstablishConnectionToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMEstablishConnectionToNetwork).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMEstablishConnectionToNetwork for type-switch of NLM")
 		}
 	case messageType == 0x09: // NLMDisconnectConnectionToNetwork
-		if _child, err = (&_NLMDisconnectConnectionToNetwork{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMDisconnectConnectionToNetwork).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMDisconnectConnectionToNetwork for type-switch of NLM")
 		}
 	case messageType == 0x0A: // NLMChallengeRequest
-		if _child, err = (&_NLMChallengeRequest{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMChallengeRequest).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMChallengeRequest for type-switch of NLM")
 		}
 	case messageType == 0x0B: // NLMSecurityPayload
-		if _child, err = (&_NLMSecurityPayload{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMSecurityPayload).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMSecurityPayload for type-switch of NLM")
 		}
 	case messageType == 0x0C: // NLMSecurityResponse
-		if _child, err = (&_NLMSecurityResponse{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMSecurityResponse).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMSecurityResponse for type-switch of NLM")
 		}
 	case messageType == 0x0D: // NLMRequestKeyUpdate
-		if _child, err = (&_NLMRequestKeyUpdate{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMRequestKeyUpdate).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMRequestKeyUpdate for type-switch of NLM")
 		}
 	case messageType == 0x0E: // NLMUpdateKeyUpdate
-		if _child, err = (&_NLMUpdateKeyUpdate{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMUpdateKeyUpdate).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMUpdateKeyUpdate for type-switch of NLM")
 		}
 	case messageType == 0x0F: // NLMUpdateKeyDistributionKey
-		if _child, err = (&_NLMUpdateKeyDistributionKey{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMUpdateKeyDistributionKey).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMUpdateKeyDistributionKey for type-switch of NLM")
 		}
 	case messageType == 0x10: // NLMRequestMasterKey
-		if _child, err = (&_NLMRequestMasterKey{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMRequestMasterKey).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMRequestMasterKey for type-switch of NLM")
 		}
 	case messageType == 0x11: // NLMSetMasterKey
-		if _child, err = (&_NLMSetMasterKey{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMSetMasterKey).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMSetMasterKey for type-switch of NLM")
 		}
 	case messageType == 0x12: // NLMWhatIsNetworkNumber
-		if _child, err = (&_NLMWhatIsNetworkNumber{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMWhatIsNetworkNumber).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMWhatIsNetworkNumber for type-switch of NLM")
 		}
 	case messageType == 0x13: // NLMNetworkNumberIs
-		if _child, err = (&_NLMNetworkNumberIs{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMNetworkNumberIs).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMNetworkNumberIs for type-switch of NLM")
 		}
 	case 0 == 0 && isVendorProprietaryMessage == bool(false): // NLMReserved
-		if _child, err = (&_NLMReserved{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMReserved).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMReserved for type-switch of NLM")
 		}
 	case 0 == 0: // NLMVendorProprietaryMessage
-		if _child, err = (&_NLMVendorProprietaryMessage{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_NLMVendorProprietaryMessage).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NLMVendorProprietaryMessage for type-switch of NLM")
 		}
 	default:
@@ -320,3 +321,18 @@ func (m *_NLM) GetApduLength() uint16 {
 ////
 
 func (m *_NLM) IsNLM() {}
+
+func (m *_NLM) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLM) deepCopy() *_NLM {
+	if m == nil {
+		return nil
+	}
+	_NLMCopy := &_NLM{
+		nil, // will be set by child
+		m.ApduLength,
+	}
+	return _NLMCopy
+}

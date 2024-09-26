@@ -38,6 +38,7 @@ type BACnetPropertyStatesEscalatorFault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetEscalatorFault returns EscalatorFault (property field)
 	GetEscalatorFault() BACnetEscalatorFaultTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesEscalatorFault struct {
 
 var _ BACnetPropertyStatesEscalatorFault = (*_BACnetPropertyStatesEscalatorFault)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEscalatorFault)(nil)
+
+// NewBACnetPropertyStatesEscalatorFault factory function for _BACnetPropertyStatesEscalatorFault
+func NewBACnetPropertyStatesEscalatorFault(peekedTagHeader BACnetTagHeader, escalatorFault BACnetEscalatorFaultTagged) *_BACnetPropertyStatesEscalatorFault {
+	if escalatorFault == nil {
+		panic("escalatorFault of type BACnetEscalatorFaultTagged for BACnetPropertyStatesEscalatorFault must not be nil")
+	}
+	_result := &_BACnetPropertyStatesEscalatorFault{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EscalatorFault:               escalatorFault,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesEscalatorFault) GetEscalatorFault() BACnetEscalato
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesEscalatorFault factory function for _BACnetPropertyStatesEscalatorFault
-func NewBACnetPropertyStatesEscalatorFault(escalatorFault BACnetEscalatorFaultTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEscalatorFault {
-	if escalatorFault == nil {
-		panic("escalatorFault of type BACnetEscalatorFaultTagged for BACnetPropertyStatesEscalatorFault must not be nil")
-	}
-	_result := &_BACnetPropertyStatesEscalatorFault{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		EscalatorFault:               escalatorFault,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesEscalatorFault(structType any) BACnetPropertyStatesEscalatorFault {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesEscalatorFault) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetPropertyStatesEscalatorFault) IsBACnetPropertyStatesEscalatorFault() {}
+
+func (m *_BACnetPropertyStatesEscalatorFault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEscalatorFault) deepCopy() *_BACnetPropertyStatesEscalatorFault {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEscalatorFaultCopy := &_BACnetPropertyStatesEscalatorFault{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.EscalatorFault.DeepCopy().(BACnetEscalatorFaultTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesEscalatorFaultCopy
+}
 
 func (m *_BACnetPropertyStatesEscalatorFault) String() string {
 	if m == nil {

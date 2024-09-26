@@ -38,6 +38,7 @@ type ExtensionObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTypeId returns TypeId (property field)
 	GetTypeId() ExpandedNodeId
 	// GetEncodingMask returns EncodingMask (property field)
@@ -61,6 +62,17 @@ type _ExtensionObject struct {
 }
 
 var _ ExtensionObject = (*_ExtensionObject)(nil)
+
+// NewExtensionObject factory function for _ExtensionObject
+func NewExtensionObject(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, body ExtensionObjectDefinition, includeEncodingMask bool) *_ExtensionObject {
+	if typeId == nil {
+		panic("typeId of type ExpandedNodeId for ExtensionObject must not be nil")
+	}
+	if body == nil {
+		panic("body of type ExtensionObjectDefinition for ExtensionObject must not be nil")
+	}
+	return &_ExtensionObject{TypeId: typeId, EncodingMask: encodingMask, Body: body, IncludeEncodingMask: includeEncodingMask}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_ExtensionObject) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensionObject factory function for _ExtensionObject
-func NewExtensionObject(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, body ExtensionObjectDefinition, includeEncodingMask bool) *_ExtensionObject {
-	if typeId == nil {
-		panic("typeId of type ExpandedNodeId for ExtensionObject must not be nil")
-	}
-	if body == nil {
-		panic("body of type ExtensionObjectDefinition for ExtensionObject must not be nil")
-	}
-	return &_ExtensionObject{TypeId: typeId, EncodingMask: encodingMask, Body: body, IncludeEncodingMask: includeEncodingMask}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensionObject(structType any) ExtensionObject {
@@ -264,6 +265,23 @@ func (m *_ExtensionObject) GetIncludeEncodingMask() bool {
 ////
 
 func (m *_ExtensionObject) IsExtensionObject() {}
+
+func (m *_ExtensionObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExtensionObject) deepCopy() *_ExtensionObject {
+	if m == nil {
+		return nil
+	}
+	_ExtensionObjectCopy := &_ExtensionObject{
+		m.TypeId.DeepCopy().(ExpandedNodeId),
+		m.EncodingMask.DeepCopy().(ExtensionObjectEncodingMask),
+		m.Body.DeepCopy().(ExtensionObjectDefinition),
+		m.IncludeEncodingMask,
+	}
+	return _ExtensionObjectCopy
+}
 
 func (m *_ExtensionObject) String() string {
 	if m == nil {

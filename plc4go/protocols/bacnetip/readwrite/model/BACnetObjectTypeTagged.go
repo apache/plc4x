@@ -38,6 +38,7 @@ type BACnetObjectTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetObjectTypeTagged struct {
 }
 
 var _ BACnetObjectTypeTagged = (*_BACnetObjectTypeTagged)(nil)
+
+// NewBACnetObjectTypeTagged factory function for _BACnetObjectTypeTagged
+func NewBACnetObjectTypeTagged(header BACnetTagHeader, value BACnetObjectType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetObjectTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetObjectTypeTagged must not be nil")
+	}
+	return &_BACnetObjectTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetObjectTypeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetObjectTypeTagged factory function for _BACnetObjectTypeTagged
-func NewBACnetObjectTypeTagged(header BACnetTagHeader, value BACnetObjectType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetObjectTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetObjectTypeTagged must not be nil")
-	}
-	return &_BACnetObjectTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetObjectTypeTagged(structType any) BACnetObjectTypeTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetObjectTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetObjectTypeTagged) IsBACnetObjectTypeTagged() {}
+
+func (m *_BACnetObjectTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetObjectTypeTagged) deepCopy() *_BACnetObjectTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetObjectTypeTaggedCopy := &_BACnetObjectTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetObjectTypeTaggedCopy
+}
 
 func (m *_BACnetObjectTypeTagged) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ApduDataMemoryRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetNumBytes returns NumBytes (property field)
 	GetNumBytes() uint8
@@ -56,6 +57,17 @@ type _ApduDataMemoryRead struct {
 
 var _ ApduDataMemoryRead = (*_ApduDataMemoryRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryRead)(nil)
+
+// NewApduDataMemoryRead factory function for _ApduDataMemoryRead
+func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *_ApduDataMemoryRead {
+	_result := &_ApduDataMemoryRead{
+		ApduDataContract: NewApduData(dataLength),
+		NumBytes:         numBytes,
+		Address:          address,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ApduDataMemoryRead) GetAddress() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataMemoryRead factory function for _ApduDataMemoryRead
-func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *_ApduDataMemoryRead {
-	_result := &_ApduDataMemoryRead{
-		ApduDataContract: NewApduData(dataLength),
-		NumBytes:         numBytes,
-		Address:          address,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataMemoryRead(structType any) ApduDataMemoryRead {
@@ -200,6 +201,23 @@ func (m *_ApduDataMemoryRead) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_ApduDataMemoryRead) IsApduDataMemoryRead() {}
+
+func (m *_ApduDataMemoryRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataMemoryRead) deepCopy() *_ApduDataMemoryRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataMemoryReadCopy := &_ApduDataMemoryRead{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.NumBytes,
+		m.Address,
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataMemoryReadCopy
+}
 
 func (m *_ApduDataMemoryRead) String() string {
 	if m == nil {

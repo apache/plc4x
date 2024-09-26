@@ -36,6 +36,7 @@ type SALDataRoomControlSystem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataRoomControlSystem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataRoomControlSystem()
@@ -48,6 +49,15 @@ type _SALDataRoomControlSystem struct {
 
 var _ SALDataRoomControlSystem = (*_SALDataRoomControlSystem)(nil)
 var _ SALDataRequirements = (*_SALDataRoomControlSystem)(nil)
+
+// NewSALDataRoomControlSystem factory function for _SALDataRoomControlSystem
+func NewSALDataRoomControlSystem(salData SALData) *_SALDataRoomControlSystem {
+	_result := &_SALDataRoomControlSystem{
+		SALDataContract: NewSALData(salData),
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_SALDataRoomControlSystem) GetApplicationId() ApplicationId {
 
 func (m *_SALDataRoomControlSystem) GetParent() SALDataContract {
 	return m.SALDataContract
-}
-
-// NewSALDataRoomControlSystem factory function for _SALDataRoomControlSystem
-func NewSALDataRoomControlSystem(salData SALData) *_SALDataRoomControlSystem {
-	_result := &_SALDataRoomControlSystem{
-		SALDataContract: NewSALData(salData),
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -151,6 +152,21 @@ func (m *_SALDataRoomControlSystem) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SALDataRoomControlSystem) IsSALDataRoomControlSystem() {}
+
+func (m *_SALDataRoomControlSystem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataRoomControlSystem) deepCopy() *_SALDataRoomControlSystem {
+	if m == nil {
+		return nil
+	}
+	_SALDataRoomControlSystemCopy := &_SALDataRoomControlSystem{
+		m.SALDataContract.(*_SALData).deepCopy(),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataRoomControlSystemCopy
+}
 
 func (m *_SALDataRoomControlSystem) String() string {
 	if m == nil {

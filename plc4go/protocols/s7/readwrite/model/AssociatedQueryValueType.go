@@ -38,6 +38,7 @@ type AssociatedQueryValueType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
@@ -59,6 +60,11 @@ type _AssociatedQueryValueType struct {
 }
 
 var _ AssociatedQueryValueType = (*_AssociatedQueryValueType)(nil)
+
+// NewAssociatedQueryValueType factory function for _AssociatedQueryValueType
+func NewAssociatedQueryValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedQueryValueType {
+	return &_AssociatedQueryValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +91,6 @@ func (m *_AssociatedQueryValueType) GetData() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAssociatedQueryValueType factory function for _AssociatedQueryValueType
-func NewAssociatedQueryValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedQueryValueType {
-	return &_AssociatedQueryValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAssociatedQueryValueType(structType any) AssociatedQueryValueType {
@@ -228,6 +229,23 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_AssociatedQueryValueType) IsAssociatedQueryValueType() {}
+
+func (m *_AssociatedQueryValueType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AssociatedQueryValueType) deepCopy() *_AssociatedQueryValueType {
+	if m == nil {
+		return nil
+	}
+	_AssociatedQueryValueTypeCopy := &_AssociatedQueryValueType{
+		m.ReturnCode,
+		m.TransportSize,
+		m.ValueLength,
+		utils.DeepCopySlice[uint8, uint8](m.Data),
+	}
+	return _AssociatedQueryValueTypeCopy
+}
 
 func (m *_AssociatedQueryValueType) String() string {
 	if m == nil {

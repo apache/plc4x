@@ -38,6 +38,7 @@ type SALDataAccessControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetAccessControlData returns AccessControlData (property field)
 	GetAccessControlData() AccessControlData
@@ -53,6 +54,19 @@ type _SALDataAccessControl struct {
 
 var _ SALDataAccessControl = (*_SALDataAccessControl)(nil)
 var _ SALDataRequirements = (*_SALDataAccessControl)(nil)
+
+// NewSALDataAccessControl factory function for _SALDataAccessControl
+func NewSALDataAccessControl(salData SALData, accessControlData AccessControlData) *_SALDataAccessControl {
+	if accessControlData == nil {
+		panic("accessControlData of type AccessControlData for SALDataAccessControl must not be nil")
+	}
+	_result := &_SALDataAccessControl{
+		SALDataContract:   NewSALData(salData),
+		AccessControlData: accessControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataAccessControl) GetAccessControlData() AccessControlData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataAccessControl factory function for _SALDataAccessControl
-func NewSALDataAccessControl(accessControlData AccessControlData, salData SALData) *_SALDataAccessControl {
-	if accessControlData == nil {
-		panic("accessControlData of type AccessControlData for SALDataAccessControl must not be nil")
-	}
-	_result := &_SALDataAccessControl{
-		SALDataContract:   NewSALData(salData),
-		AccessControlData: accessControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataAccessControl(structType any) SALDataAccessControl {
@@ -182,6 +183,22 @@ func (m *_SALDataAccessControl) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SALDataAccessControl) IsSALDataAccessControl() {}
+
+func (m *_SALDataAccessControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataAccessControl) deepCopy() *_SALDataAccessControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataAccessControlCopy := &_SALDataAccessControl{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.AccessControlData.DeepCopy().(AccessControlData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataAccessControlCopy
+}
 
 func (m *_SALDataAccessControl) String() string {
 	if m == nil {

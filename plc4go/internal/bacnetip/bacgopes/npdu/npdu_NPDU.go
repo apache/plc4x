@@ -21,8 +21,6 @@ package npdu
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -225,12 +223,4 @@ func (n *_NPDU) deepCopy() *_NPDU {
 
 func (n *_NPDU) DeepCopy() any {
 	return n.deepCopy()
-}
-
-func (n *_NPDU) String() string {
-	if IsDebuggingActive() {
-		npci := "\t" + strings.Join(strings.Split(n._NPCI.String(), "\n"), "\n\t")
-		return fmt.Sprintf("<NPDU instance at %p>%s\n\tpduData = %s", n, npci, Btox(n.GetPduData(), "."))
-	}
-	return fmt.Sprintf("NPDU{%s}", n._NPCI)
 }

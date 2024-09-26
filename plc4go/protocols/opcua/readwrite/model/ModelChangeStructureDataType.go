@@ -38,6 +38,7 @@ type ModelChangeStructureDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAffected returns Affected (property field)
 	GetAffected() NodeId
@@ -59,6 +60,24 @@ type _ModelChangeStructureDataType struct {
 
 var _ ModelChangeStructureDataType = (*_ModelChangeStructureDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModelChangeStructureDataType)(nil)
+
+// NewModelChangeStructureDataType factory function for _ModelChangeStructureDataType
+func NewModelChangeStructureDataType(affected NodeId, affectedType NodeId, verb uint8) *_ModelChangeStructureDataType {
+	if affected == nil {
+		panic("affected of type NodeId for ModelChangeStructureDataType must not be nil")
+	}
+	if affectedType == nil {
+		panic("affectedType of type NodeId for ModelChangeStructureDataType must not be nil")
+	}
+	_result := &_ModelChangeStructureDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Affected:                          affected,
+		AffectedType:                      affectedType,
+		Verb:                              verb,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,24 +118,6 @@ func (m *_ModelChangeStructureDataType) GetVerb() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModelChangeStructureDataType factory function for _ModelChangeStructureDataType
-func NewModelChangeStructureDataType(affected NodeId, affectedType NodeId, verb uint8) *_ModelChangeStructureDataType {
-	if affected == nil {
-		panic("affected of type NodeId for ModelChangeStructureDataType must not be nil")
-	}
-	if affectedType == nil {
-		panic("affectedType of type NodeId for ModelChangeStructureDataType must not be nil")
-	}
-	_result := &_ModelChangeStructureDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Affected:                          affected,
-		AffectedType:                      affectedType,
-		Verb:                              verb,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModelChangeStructureDataType(structType any) ModelChangeStructureDataType {
@@ -227,6 +228,24 @@ func (m *_ModelChangeStructureDataType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ModelChangeStructureDataType) IsModelChangeStructureDataType() {}
+
+func (m *_ModelChangeStructureDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModelChangeStructureDataType) deepCopy() *_ModelChangeStructureDataType {
+	if m == nil {
+		return nil
+	}
+	_ModelChangeStructureDataTypeCopy := &_ModelChangeStructureDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Affected.DeepCopy().(NodeId),
+		m.AffectedType.DeepCopy().(NodeId),
+		m.Verb,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModelChangeStructureDataTypeCopy
+}
 
 func (m *_ModelChangeStructureDataType) String() string {
 	if m == nil {

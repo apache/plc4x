@@ -36,6 +36,7 @@ type AccessControlDataAccessPointForcedOpen interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AccessControlData
 	// IsAccessControlDataAccessPointForcedOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataAccessPointForcedOpen()
@@ -49,6 +50,15 @@ type _AccessControlDataAccessPointForcedOpen struct {
 var _ AccessControlDataAccessPointForcedOpen = (*_AccessControlDataAccessPointForcedOpen)(nil)
 var _ AccessControlDataRequirements = (*_AccessControlDataAccessPointForcedOpen)(nil)
 
+// NewAccessControlDataAccessPointForcedOpen factory function for _AccessControlDataAccessPointForcedOpen
+func NewAccessControlDataAccessPointForcedOpen(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataAccessPointForcedOpen {
+	_result := &_AccessControlDataAccessPointForcedOpen{
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ AccessControlDataRequirements = (*_AccessControlDataAccessPointForcedOpen)
 
 func (m *_AccessControlDataAccessPointForcedOpen) GetParent() AccessControlDataContract {
 	return m.AccessControlDataContract
-}
-
-// NewAccessControlDataAccessPointForcedOpen factory function for _AccessControlDataAccessPointForcedOpen
-func NewAccessControlDataAccessPointForcedOpen(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataAccessPointForcedOpen {
-	_result := &_AccessControlDataAccessPointForcedOpen{
-		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
-	}
-	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_AccessControlDataAccessPointForcedOpen) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_AccessControlDataAccessPointForcedOpen) IsAccessControlDataAccessPointForcedOpen() {}
+
+func (m *_AccessControlDataAccessPointForcedOpen) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlDataAccessPointForcedOpen) deepCopy() *_AccessControlDataAccessPointForcedOpen {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataAccessPointForcedOpenCopy := &_AccessControlDataAccessPointForcedOpen{
+		m.AccessControlDataContract.(*_AccessControlData).deepCopy(),
+	}
+	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	return _AccessControlDataAccessPointForcedOpenCopy
+}
 
 func (m *_AccessControlDataAccessPointForcedOpen) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CurrencyUnitType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNumericCode returns NumericCode (property field)
 	GetNumericCode() int16
@@ -62,6 +63,25 @@ type _CurrencyUnitType struct {
 
 var _ CurrencyUnitType = (*_CurrencyUnitType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CurrencyUnitType)(nil)
+
+// NewCurrencyUnitType factory function for _CurrencyUnitType
+func NewCurrencyUnitType(numericCode int16, exponent int8, alphabeticCode PascalString, currency LocalizedText) *_CurrencyUnitType {
+	if alphabeticCode == nil {
+		panic("alphabeticCode of type PascalString for CurrencyUnitType must not be nil")
+	}
+	if currency == nil {
+		panic("currency of type LocalizedText for CurrencyUnitType must not be nil")
+	}
+	_result := &_CurrencyUnitType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NumericCode:                       numericCode,
+		Exponent:                          exponent,
+		AlphabeticCode:                    alphabeticCode,
+		Currency:                          currency,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +126,6 @@ func (m *_CurrencyUnitType) GetCurrency() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCurrencyUnitType factory function for _CurrencyUnitType
-func NewCurrencyUnitType(numericCode int16, exponent int8, alphabeticCode PascalString, currency LocalizedText) *_CurrencyUnitType {
-	if alphabeticCode == nil {
-		panic("alphabeticCode of type PascalString for CurrencyUnitType must not be nil")
-	}
-	if currency == nil {
-		panic("currency of type LocalizedText for CurrencyUnitType must not be nil")
-	}
-	_result := &_CurrencyUnitType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NumericCode:                       numericCode,
-		Exponent:                          exponent,
-		AlphabeticCode:                    alphabeticCode,
-		Currency:                          currency,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCurrencyUnitType(structType any) CurrencyUnitType {
@@ -248,6 +249,25 @@ func (m *_CurrencyUnitType) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_CurrencyUnitType) IsCurrencyUnitType() {}
+
+func (m *_CurrencyUnitType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CurrencyUnitType) deepCopy() *_CurrencyUnitType {
+	if m == nil {
+		return nil
+	}
+	_CurrencyUnitTypeCopy := &_CurrencyUnitType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NumericCode,
+		m.Exponent,
+		m.AlphabeticCode.DeepCopy().(PascalString),
+		m.Currency.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CurrencyUnitTypeCopy
+}
 
 func (m *_CurrencyUnitType) String() string {
 	if m == nil {

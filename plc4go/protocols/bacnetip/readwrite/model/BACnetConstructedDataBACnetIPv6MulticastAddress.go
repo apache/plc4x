@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPv6MulticastAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6MulticastAddress returns Ipv6MulticastAddress (property field)
 	GetIpv6MulticastAddress() BACnetApplicationTagOctetString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBACnetIPv6MulticastAddress struct {
 
 var _ BACnetConstructedDataBACnetIPv6MulticastAddress = (*_BACnetConstructedDataBACnetIPv6MulticastAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPv6MulticastAddress)(nil)
+
+// NewBACnetConstructedDataBACnetIPv6MulticastAddress factory function for _BACnetConstructedDataBACnetIPv6MulticastAddress
+func NewBACnetConstructedDataBACnetIPv6MulticastAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6MulticastAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6MulticastAddress {
+	if ipv6MulticastAddress == nil {
+		panic("ipv6MulticastAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataBACnetIPv6MulticastAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataBACnetIPv6MulticastAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Ipv6MulticastAddress:          ipv6MulticastAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) GetActualValue() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBACnetIPv6MulticastAddress factory function for _BACnetConstructedDataBACnetIPv6MulticastAddress
-func NewBACnetConstructedDataBACnetIPv6MulticastAddress(ipv6MulticastAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6MulticastAddress {
-	if ipv6MulticastAddress == nil {
-		panic("ipv6MulticastAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataBACnetIPv6MulticastAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataBACnetIPv6MulticastAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Ipv6MulticastAddress:          ipv6MulticastAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBACnetIPv6MulticastAddress(structType any) BACnetConstructedDataBACnetIPv6MulticastAddress {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) IsBACnetConstructedDataBACnetIPv6MulticastAddress() {
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) deepCopy() *_BACnetConstructedDataBACnetIPv6MulticastAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPv6MulticastAddressCopy := &_BACnetConstructedDataBACnetIPv6MulticastAddress{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Ipv6MulticastAddress.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPv6MulticastAddressCopy
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) String() string {

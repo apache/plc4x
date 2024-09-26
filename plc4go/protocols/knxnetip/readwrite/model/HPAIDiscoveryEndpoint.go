@@ -38,6 +38,7 @@ type HPAIDiscoveryEndpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
@@ -56,6 +57,14 @@ type _HPAIDiscoveryEndpoint struct {
 }
 
 var _ HPAIDiscoveryEndpoint = (*_HPAIDiscoveryEndpoint)(nil)
+
+// NewHPAIDiscoveryEndpoint factory function for _HPAIDiscoveryEndpoint
+func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDiscoveryEndpoint {
+	if ipAddress == nil {
+		panic("ipAddress of type IPAddress for HPAIDiscoveryEndpoint must not be nil")
+	}
+	return &_HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +87,6 @@ func (m *_HPAIDiscoveryEndpoint) GetIpPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHPAIDiscoveryEndpoint factory function for _HPAIDiscoveryEndpoint
-func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDiscoveryEndpoint {
-	if ipAddress == nil {
-		panic("ipAddress of type IPAddress for HPAIDiscoveryEndpoint must not be nil")
-	}
-	return &_HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHPAIDiscoveryEndpoint(structType any) HPAIDiscoveryEndpoint {
@@ -222,6 +223,22 @@ func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_HPAIDiscoveryEndpoint) IsHPAIDiscoveryEndpoint() {}
+
+func (m *_HPAIDiscoveryEndpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HPAIDiscoveryEndpoint) deepCopy() *_HPAIDiscoveryEndpoint {
+	if m == nil {
+		return nil
+	}
+	_HPAIDiscoveryEndpointCopy := &_HPAIDiscoveryEndpoint{
+		m.HostProtocolCode,
+		m.IpAddress.DeepCopy().(IPAddress),
+		m.IpPort,
+	}
+	return _HPAIDiscoveryEndpointCopy
+}
 
 func (m *_HPAIDiscoveryEndpoint) String() string {
 	if m == nil {

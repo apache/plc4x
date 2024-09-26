@@ -40,6 +40,7 @@ type BACnetOptionalBinaryPV interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetOptionalBinaryPV is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalBinaryPV()
 }
@@ -70,6 +71,14 @@ type _BACnetOptionalBinaryPV struct {
 
 var _ BACnetOptionalBinaryPVContract = (*_BACnetOptionalBinaryPV)(nil)
 
+// NewBACnetOptionalBinaryPV factory function for _BACnetOptionalBinaryPV
+func NewBACnetOptionalBinaryPV(peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPV {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalBinaryPV must not be nil")
+	}
+	return &_BACnetOptionalBinaryPV{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetOptionalBinaryPV) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalBinaryPV factory function for _BACnetOptionalBinaryPV
-func NewBACnetOptionalBinaryPV(peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPV {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalBinaryPV must not be nil")
-	}
-	return &_BACnetOptionalBinaryPV{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalBinaryPV(structType any) BACnetOptionalBinaryPV {
@@ -189,11 +190,11 @@ func (m *_BACnetOptionalBinaryPV) parse(ctx context.Context, readBuffer utils.Re
 	var _child BACnetOptionalBinaryPV
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalBinaryPVNull
-		if _child, err = (&_BACnetOptionalBinaryPVNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalBinaryPVNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalBinaryPVNull for type-switch of BACnetOptionalBinaryPV")
 		}
 	case 0 == 0: // BACnetOptionalBinaryPVValue
-		if _child, err = (&_BACnetOptionalBinaryPVValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalBinaryPVValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalBinaryPVValue for type-switch of BACnetOptionalBinaryPV")
 		}
 	default:
@@ -237,3 +238,18 @@ func (pm *_BACnetOptionalBinaryPV) serializeParent(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetOptionalBinaryPV) IsBACnetOptionalBinaryPV() {}
+
+func (m *_BACnetOptionalBinaryPV) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalBinaryPV) deepCopy() *_BACnetOptionalBinaryPV {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalBinaryPVCopy := &_BACnetOptionalBinaryPV{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetOptionalBinaryPVCopy
+}

@@ -38,6 +38,7 @@ type BACnetConstructedDataArchive interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetArchive returns Archive (property field)
 	GetArchive() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataArchive struct {
 
 var _ BACnetConstructedDataArchive = (*_BACnetConstructedDataArchive)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataArchive)(nil)
+
+// NewBACnetConstructedDataArchive factory function for _BACnetConstructedDataArchive
+func NewBACnetConstructedDataArchive(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, archive BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataArchive {
+	if archive == nil {
+		panic("archive of type BACnetApplicationTagBoolean for BACnetConstructedDataArchive must not be nil")
+	}
+	_result := &_BACnetConstructedDataArchive{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Archive:                       archive,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataArchive) GetActualValue() BACnetApplicationTagBoo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataArchive factory function for _BACnetConstructedDataArchive
-func NewBACnetConstructedDataArchive(archive BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataArchive {
-	if archive == nil {
-		panic("archive of type BACnetApplicationTagBoolean for BACnetConstructedDataArchive must not be nil")
-	}
-	_result := &_BACnetConstructedDataArchive{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Archive:                       archive,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataArchive(structType any) BACnetConstructedDataArchive {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataArchive) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataArchive) IsBACnetConstructedDataArchive() {}
+
+func (m *_BACnetConstructedDataArchive) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataArchive) deepCopy() *_BACnetConstructedDataArchive {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataArchiveCopy := &_BACnetConstructedDataArchive{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Archive.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataArchiveCopy
+}
 
 func (m *_BACnetConstructedDataArchive) String() string {
 	if m == nil {

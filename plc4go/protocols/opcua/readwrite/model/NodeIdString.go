@@ -38,6 +38,7 @@ type NodeIdString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NodeIdTypeDefinition
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
@@ -58,6 +59,20 @@ type _NodeIdString struct {
 
 var _ NodeIdString = (*_NodeIdString)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdString)(nil)
+
+// NewNodeIdString factory function for _NodeIdString
+func NewNodeIdString(namespaceIndex uint16, id PascalString) *_NodeIdString {
+	if id == nil {
+		panic("id of type PascalString for NodeIdString must not be nil")
+	}
+	_result := &_NodeIdString{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,20 +124,6 @@ func (m *_NodeIdString) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdString factory function for _NodeIdString
-func NewNodeIdString(namespaceIndex uint16, id PascalString) *_NodeIdString {
-	if id == nil {
-		panic("id of type PascalString for NodeIdString must not be nil")
-	}
-	_result := &_NodeIdString{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		NamespaceIndex:               namespaceIndex,
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdString(structType any) NodeIdString {
@@ -234,6 +235,23 @@ func (m *_NodeIdString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_NodeIdString) IsNodeIdString() {}
+
+func (m *_NodeIdString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdString) deepCopy() *_NodeIdString {
+	if m == nil {
+		return nil
+	}
+	_NodeIdStringCopy := &_NodeIdString{
+		m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).deepCopy(),
+		m.NamespaceIndex,
+		m.Id.DeepCopy().(PascalString),
+	}
+	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	return _NodeIdStringCopy
+}
 
 func (m *_NodeIdString) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type DeleteReferencesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _DeleteReferencesRequest struct {
 
 var _ DeleteReferencesRequest = (*_DeleteReferencesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteReferencesRequest)(nil)
+
+// NewDeleteReferencesRequest factory function for _DeleteReferencesRequest
+func NewDeleteReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) *_DeleteReferencesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteReferencesRequest must not be nil")
+	}
+	_result := &_DeleteReferencesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfReferencesToDelete:            noOfReferencesToDelete,
+		ReferencesToDelete:                referencesToDelete,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_DeleteReferencesRequest) GetReferencesToDelete() []ExtensionObjectDefi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteReferencesRequest factory function for _DeleteReferencesRequest
-func NewDeleteReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) *_DeleteReferencesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for DeleteReferencesRequest must not be nil")
-	}
-	_result := &_DeleteReferencesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfReferencesToDelete:            noOfReferencesToDelete,
-		ReferencesToDelete:                referencesToDelete,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteReferencesRequest(structType any) DeleteReferencesRequest {
@@ -231,6 +232,24 @@ func (m *_DeleteReferencesRequest) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_DeleteReferencesRequest) IsDeleteReferencesRequest() {}
+
+func (m *_DeleteReferencesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteReferencesRequest) deepCopy() *_DeleteReferencesRequest {
+	if m == nil {
+		return nil
+	}
+	_DeleteReferencesRequestCopy := &_DeleteReferencesRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfReferencesToDelete,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ReferencesToDelete),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteReferencesRequestCopy
+}
 
 func (m *_DeleteReferencesRequest) String() string {
 	if m == nil {

@@ -41,6 +41,7 @@ type CBusCommandDeviceManagement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusCommand
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -59,6 +60,17 @@ type _CBusCommandDeviceManagement struct {
 
 var _ CBusCommandDeviceManagement = (*_CBusCommandDeviceManagement)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandDeviceManagement)(nil)
+
+// NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
+func NewCBusCommandDeviceManagement(header CBusHeader, paramNo Parameter, parameterValue byte, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
+	_result := &_CBusCommandDeviceManagement{
+		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		ParamNo:             paramNo,
+		ParameterValue:      parameterValue,
+	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -104,17 +116,6 @@ func (m *_CBusCommandDeviceManagement) GetDelimiter() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
-func NewCBusCommandDeviceManagement(paramNo Parameter, parameterValue byte, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
-	_result := &_CBusCommandDeviceManagement{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
-		ParamNo:             paramNo,
-		ParameterValue:      parameterValue,
-	}
-	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommandDeviceManagement(structType any) CBusCommandDeviceManagement {
@@ -225,6 +226,23 @@ func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_CBusCommandDeviceManagement) IsCBusCommandDeviceManagement() {}
+
+func (m *_CBusCommandDeviceManagement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusCommandDeviceManagement) deepCopy() *_CBusCommandDeviceManagement {
+	if m == nil {
+		return nil
+	}
+	_CBusCommandDeviceManagementCopy := &_CBusCommandDeviceManagement{
+		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
+		m.ParamNo,
+		m.ParameterValue,
+	}
+	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	return _CBusCommandDeviceManagementCopy
+}
 
 func (m *_CBusCommandDeviceManagement) String() string {
 	if m == nil {

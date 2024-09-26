@@ -38,6 +38,7 @@ type DataTypeSchemaHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfNamespaces returns NoOfNamespaces (property field)
 	GetNoOfNamespaces() int32
@@ -74,6 +75,23 @@ type _DataTypeSchemaHeader struct {
 
 var _ DataTypeSchemaHeader = (*_DataTypeSchemaHeader)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataTypeSchemaHeader)(nil)
+
+// NewDataTypeSchemaHeader factory function for _DataTypeSchemaHeader
+func NewDataTypeSchemaHeader(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) *_DataTypeSchemaHeader {
+	_result := &_DataTypeSchemaHeader{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfNamespaces:                    noOfNamespaces,
+		Namespaces:                        namespaces,
+		NoOfStructureDataTypes:            noOfStructureDataTypes,
+		StructureDataTypes:                structureDataTypes,
+		NoOfEnumDataTypes:                 noOfEnumDataTypes,
+		EnumDataTypes:                     enumDataTypes,
+		NoOfSimpleDataTypes:               noOfSimpleDataTypes,
+		SimpleDataTypes:                   simpleDataTypes,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,23 +152,6 @@ func (m *_DataTypeSchemaHeader) GetSimpleDataTypes() []DataTypeDescription {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataTypeSchemaHeader factory function for _DataTypeSchemaHeader
-func NewDataTypeSchemaHeader(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) *_DataTypeSchemaHeader {
-	_result := &_DataTypeSchemaHeader{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfNamespaces:                    noOfNamespaces,
-		Namespaces:                        namespaces,
-		NoOfStructureDataTypes:            noOfStructureDataTypes,
-		StructureDataTypes:                structureDataTypes,
-		NoOfEnumDataTypes:                 noOfEnumDataTypes,
-		EnumDataTypes:                     enumDataTypes,
-		NoOfSimpleDataTypes:               noOfSimpleDataTypes,
-		SimpleDataTypes:                   simpleDataTypes,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataTypeSchemaHeader(structType any) DataTypeSchemaHeader {
@@ -354,6 +355,29 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_DataTypeSchemaHeader) IsDataTypeSchemaHeader() {}
+
+func (m *_DataTypeSchemaHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataTypeSchemaHeader) deepCopy() *_DataTypeSchemaHeader {
+	if m == nil {
+		return nil
+	}
+	_DataTypeSchemaHeaderCopy := &_DataTypeSchemaHeader{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfNamespaces,
+		utils.DeepCopySlice[PascalString, PascalString](m.Namespaces),
+		m.NoOfStructureDataTypes,
+		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.StructureDataTypes),
+		m.NoOfEnumDataTypes,
+		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.EnumDataTypes),
+		m.NoOfSimpleDataTypes,
+		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.SimpleDataTypes),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataTypeSchemaHeaderCopy
+}
 
 func (m *_DataTypeSchemaHeader) String() string {
 	if m == nil {

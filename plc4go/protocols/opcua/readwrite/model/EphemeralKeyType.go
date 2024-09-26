@@ -38,6 +38,7 @@ type EphemeralKeyType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetPublicKey returns PublicKey (property field)
 	GetPublicKey() PascalByteString
@@ -56,6 +57,23 @@ type _EphemeralKeyType struct {
 
 var _ EphemeralKeyType = (*_EphemeralKeyType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EphemeralKeyType)(nil)
+
+// NewEphemeralKeyType factory function for _EphemeralKeyType
+func NewEphemeralKeyType(publicKey PascalByteString, signature PascalByteString) *_EphemeralKeyType {
+	if publicKey == nil {
+		panic("publicKey of type PascalByteString for EphemeralKeyType must not be nil")
+	}
+	if signature == nil {
+		panic("signature of type PascalByteString for EphemeralKeyType must not be nil")
+	}
+	_result := &_EphemeralKeyType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PublicKey:                         publicKey,
+		Signature:                         signature,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_EphemeralKeyType) GetSignature() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEphemeralKeyType factory function for _EphemeralKeyType
-func NewEphemeralKeyType(publicKey PascalByteString, signature PascalByteString) *_EphemeralKeyType {
-	if publicKey == nil {
-		panic("publicKey of type PascalByteString for EphemeralKeyType must not be nil")
-	}
-	if signature == nil {
-		panic("signature of type PascalByteString for EphemeralKeyType must not be nil")
-	}
-	_result := &_EphemeralKeyType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		PublicKey:                         publicKey,
-		Signature:                         signature,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEphemeralKeyType(structType any) EphemeralKeyType {
@@ -206,6 +207,23 @@ func (m *_EphemeralKeyType) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_EphemeralKeyType) IsEphemeralKeyType() {}
+
+func (m *_EphemeralKeyType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EphemeralKeyType) deepCopy() *_EphemeralKeyType {
+	if m == nil {
+		return nil
+	}
+	_EphemeralKeyTypeCopy := &_EphemeralKeyType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.PublicKey.DeepCopy().(PascalByteString),
+		m.Signature.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EphemeralKeyTypeCopy
+}
 
 func (m *_EphemeralKeyType) String() string {
 	if m == nil {

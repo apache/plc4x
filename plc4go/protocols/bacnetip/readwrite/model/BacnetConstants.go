@@ -41,6 +41,7 @@ type BacnetConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBacnetConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBacnetConstants()
 }
@@ -50,6 +51,11 @@ type _BacnetConstants struct {
 }
 
 var _ BacnetConstants = (*_BacnetConstants)(nil)
+
+// NewBacnetConstants factory function for _BacnetConstants
+func NewBacnetConstants() *_BacnetConstants {
+	return &_BacnetConstants{}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_BacnetConstants) GetBacnetUdpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBacnetConstants factory function for _BacnetConstants
-func NewBacnetConstants() *_BacnetConstants {
-	return &_BacnetConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBacnetConstants(structType any) BacnetConstants {
@@ -166,6 +167,18 @@ func (m *_BacnetConstants) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BacnetConstants) IsBacnetConstants() {}
+
+func (m *_BacnetConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BacnetConstants) deepCopy() *_BacnetConstants {
+	if m == nil {
+		return nil
+	}
+	_BacnetConstantsCopy := &_BacnetConstants{}
+	return _BacnetConstantsCopy
+}
 
 func (m *_BacnetConstants) String() string {
 	if m == nil {

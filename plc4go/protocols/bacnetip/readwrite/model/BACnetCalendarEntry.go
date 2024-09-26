@@ -40,6 +40,7 @@ type BACnetCalendarEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCalendarEntry()
 }
@@ -70,6 +71,14 @@ type _BACnetCalendarEntry struct {
 
 var _ BACnetCalendarEntryContract = (*_BACnetCalendarEntry)(nil)
 
+// NewBACnetCalendarEntry factory function for _BACnetCalendarEntry
+func NewBACnetCalendarEntry(peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntry {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetCalendarEntry must not be nil")
+	}
+	return &_BACnetCalendarEntry{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCalendarEntry factory function for _BACnetCalendarEntry
-func NewBACnetCalendarEntry(peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntry {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetCalendarEntry must not be nil")
-	}
-	return &_BACnetCalendarEntry{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCalendarEntry(structType any) BACnetCalendarEntry {
@@ -194,15 +195,15 @@ func (m *_BACnetCalendarEntry) parse(ctx context.Context, readBuffer utils.ReadB
 	var _child BACnetCalendarEntry
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetCalendarEntryDate
-		if _child, err = (&_BACnetCalendarEntryDate{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetCalendarEntryDate).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetCalendarEntryDate for type-switch of BACnetCalendarEntry")
 		}
 	case peekedTagNumber == uint8(1): // BACnetCalendarEntryDateRange
-		if _child, err = (&_BACnetCalendarEntryDateRange{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetCalendarEntryDateRange).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetCalendarEntryDateRange for type-switch of BACnetCalendarEntry")
 		}
 	case peekedTagNumber == uint8(2): // BACnetCalendarEntryWeekNDay
-		if _child, err = (&_BACnetCalendarEntryWeekNDay{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetCalendarEntryWeekNDay).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetCalendarEntryWeekNDay for type-switch of BACnetCalendarEntry")
 		}
 	default:
@@ -246,3 +247,18 @@ func (pm *_BACnetCalendarEntry) serializeParent(ctx context.Context, writeBuffer
 }
 
 func (m *_BACnetCalendarEntry) IsBACnetCalendarEntry() {}
+
+func (m *_BACnetCalendarEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCalendarEntry) deepCopy() *_BACnetCalendarEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetCalendarEntryCopy := &_BACnetCalendarEntry{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetCalendarEntryCopy
+}

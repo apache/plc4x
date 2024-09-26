@@ -38,6 +38,7 @@ type AdsMultiRequestItemRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsMultiRequestItem
 	// GetItemIndexGroup returns ItemIndexGroup (property field)
 	GetItemIndexGroup() uint32
@@ -59,6 +60,18 @@ type _AdsMultiRequestItemRead struct {
 
 var _ AdsMultiRequestItemRead = (*_AdsMultiRequestItemRead)(nil)
 var _ AdsMultiRequestItemRequirements = (*_AdsMultiRequestItemRead)(nil)
+
+// NewAdsMultiRequestItemRead factory function for _AdsMultiRequestItemRead
+func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) *_AdsMultiRequestItemRead {
+	_result := &_AdsMultiRequestItemRead{
+		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
+		ItemIndexGroup:              itemIndexGroup,
+		ItemIndexOffset:             itemIndexOffset,
+		ItemReadLength:              itemReadLength,
+	}
+	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +112,6 @@ func (m *_AdsMultiRequestItemRead) GetItemReadLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsMultiRequestItemRead factory function for _AdsMultiRequestItemRead
-func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) *_AdsMultiRequestItemRead {
-	_result := &_AdsMultiRequestItemRead{
-		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
-		ItemIndexGroup:              itemIndexGroup,
-		ItemIndexOffset:             itemIndexOffset,
-		ItemReadLength:              itemReadLength,
-	}
-	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsMultiRequestItemRead(structType any) AdsMultiRequestItemRead {
@@ -221,6 +222,24 @@ func (m *_AdsMultiRequestItemRead) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_AdsMultiRequestItemRead) IsAdsMultiRequestItemRead() {}
+
+func (m *_AdsMultiRequestItemRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsMultiRequestItemRead) deepCopy() *_AdsMultiRequestItemRead {
+	if m == nil {
+		return nil
+	}
+	_AdsMultiRequestItemReadCopy := &_AdsMultiRequestItemRead{
+		m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).deepCopy(),
+		m.ItemIndexGroup,
+		m.ItemIndexOffset,
+		m.ItemReadLength,
+	}
+	m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = m
+	return _AdsMultiRequestItemReadCopy
+}
 
 func (m *_AdsMultiRequestItemRead) String() string {
 	if m == nil {

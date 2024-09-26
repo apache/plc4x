@@ -38,6 +38,7 @@ type BACnetConstructedDataMaxFailedAttempts interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxFailedAttempts returns MaxFailedAttempts (property field)
 	GetMaxFailedAttempts() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataMaxFailedAttempts struct {
 
 var _ BACnetConstructedDataMaxFailedAttempts = (*_BACnetConstructedDataMaxFailedAttempts)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxFailedAttempts)(nil)
+
+// NewBACnetConstructedDataMaxFailedAttempts factory function for _BACnetConstructedDataMaxFailedAttempts
+func NewBACnetConstructedDataMaxFailedAttempts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxFailedAttempts BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxFailedAttempts {
+	if maxFailedAttempts == nil {
+		panic("maxFailedAttempts of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxFailedAttempts must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaxFailedAttempts{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxFailedAttempts:             maxFailedAttempts,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaxFailedAttempts factory function for _BACnetConstructedDataMaxFailedAttempts
-func NewBACnetConstructedDataMaxFailedAttempts(maxFailedAttempts BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxFailedAttempts {
-	if maxFailedAttempts == nil {
-		panic("maxFailedAttempts of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxFailedAttempts must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaxFailedAttempts{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxFailedAttempts:             maxFailedAttempts,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaxFailedAttempts(structType any) BACnetConstructedDataMaxFailedAttempts {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataMaxFailedAttempts) IsBACnetConstructedDataMaxFailedAttempts() {}
+
+func (m *_BACnetConstructedDataMaxFailedAttempts) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaxFailedAttempts) deepCopy() *_BACnetConstructedDataMaxFailedAttempts {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaxFailedAttemptsCopy := &_BACnetConstructedDataMaxFailedAttempts{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MaxFailedAttempts.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaxFailedAttemptsCopy
+}
 
 func (m *_BACnetConstructedDataMaxFailedAttempts) String() string {
 	if m == nil {

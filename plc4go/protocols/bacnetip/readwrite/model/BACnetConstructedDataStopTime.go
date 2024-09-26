@@ -38,6 +38,7 @@ type BACnetConstructedDataStopTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStopTime returns StopTime (property field)
 	GetStopTime() BACnetDateTime
@@ -55,6 +56,19 @@ type _BACnetConstructedDataStopTime struct {
 
 var _ BACnetConstructedDataStopTime = (*_BACnetConstructedDataStopTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStopTime)(nil)
+
+// NewBACnetConstructedDataStopTime factory function for _BACnetConstructedDataStopTime
+func NewBACnetConstructedDataStopTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, stopTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStopTime {
+	if stopTime == nil {
+		panic("stopTime of type BACnetDateTime for BACnetConstructedDataStopTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataStopTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		StopTime:                      stopTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataStopTime) GetActualValue() BACnetDateTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataStopTime factory function for _BACnetConstructedDataStopTime
-func NewBACnetConstructedDataStopTime(stopTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStopTime {
-	if stopTime == nil {
-		panic("stopTime of type BACnetDateTime for BACnetConstructedDataStopTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataStopTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		StopTime:                      stopTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataStopTime(structType any) BACnetConstructedDataStopTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataStopTime) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataStopTime) IsBACnetConstructedDataStopTime() {}
+
+func (m *_BACnetConstructedDataStopTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStopTime) deepCopy() *_BACnetConstructedDataStopTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStopTimeCopy := &_BACnetConstructedDataStopTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.StopTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStopTimeCopy
+}
 
 func (m *_BACnetConstructedDataStopTime) String() string {
 	if m == nil {

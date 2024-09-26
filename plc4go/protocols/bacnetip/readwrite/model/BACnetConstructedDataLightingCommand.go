@@ -38,6 +38,7 @@ type BACnetConstructedDataLightingCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLightingCommand returns LightingCommand (property field)
 	GetLightingCommand() BACnetLightingCommand
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLightingCommand struct {
 
 var _ BACnetConstructedDataLightingCommand = (*_BACnetConstructedDataLightingCommand)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingCommand)(nil)
+
+// NewBACnetConstructedDataLightingCommand factory function for _BACnetConstructedDataLightingCommand
+func NewBACnetConstructedDataLightingCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lightingCommand BACnetLightingCommand, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommand {
+	if lightingCommand == nil {
+		panic("lightingCommand of type BACnetLightingCommand for BACnetConstructedDataLightingCommand must not be nil")
+	}
+	_result := &_BACnetConstructedDataLightingCommand{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LightingCommand:               lightingCommand,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLightingCommand) GetActualValue() BACnetLightingC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLightingCommand factory function for _BACnetConstructedDataLightingCommand
-func NewBACnetConstructedDataLightingCommand(lightingCommand BACnetLightingCommand, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommand {
-	if lightingCommand == nil {
-		panic("lightingCommand of type BACnetLightingCommand for BACnetConstructedDataLightingCommand must not be nil")
-	}
-	_result := &_BACnetConstructedDataLightingCommand{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LightingCommand:               lightingCommand,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLightingCommand(structType any) BACnetConstructedDataLightingCommand {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLightingCommand) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataLightingCommand) IsBACnetConstructedDataLightingCommand() {}
+
+func (m *_BACnetConstructedDataLightingCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLightingCommand) deepCopy() *_BACnetConstructedDataLightingCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLightingCommandCopy := &_BACnetConstructedDataLightingCommand{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LightingCommand.DeepCopy().(BACnetLightingCommand),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLightingCommandCopy
+}
 
 func (m *_BACnetConstructedDataLightingCommand) String() string {
 	if m == nil {

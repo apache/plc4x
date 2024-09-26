@@ -36,6 +36,7 @@ type WriterGroupTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsWriterGroupTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsWriterGroupTransportDataType()
@@ -48,6 +49,15 @@ type _WriterGroupTransportDataType struct {
 
 var _ WriterGroupTransportDataType = (*_WriterGroupTransportDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_WriterGroupTransportDataType)(nil)
+
+// NewWriterGroupTransportDataType factory function for _WriterGroupTransportDataType
+func NewWriterGroupTransportDataType() *_WriterGroupTransportDataType {
+	_result := &_WriterGroupTransportDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_WriterGroupTransportDataType) GetIdentifier() string {
 
 func (m *_WriterGroupTransportDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewWriterGroupTransportDataType factory function for _WriterGroupTransportDataType
-func NewWriterGroupTransportDataType() *_WriterGroupTransportDataType {
-	_result := &_WriterGroupTransportDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_WriterGroupTransportDataType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_WriterGroupTransportDataType) IsWriterGroupTransportDataType() {}
+
+func (m *_WriterGroupTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WriterGroupTransportDataType) deepCopy() *_WriterGroupTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_WriterGroupTransportDataTypeCopy := &_WriterGroupTransportDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _WriterGroupTransportDataTypeCopy
+}
 
 func (m *_WriterGroupTransportDataType) String() string {
 	if m == nil {

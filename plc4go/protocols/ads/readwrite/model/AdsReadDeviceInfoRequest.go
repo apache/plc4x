@@ -36,6 +36,7 @@ type AdsReadDeviceInfoRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsReadDeviceInfoRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadDeviceInfoRequest()
@@ -48,6 +49,15 @@ type _AdsReadDeviceInfoRequest struct {
 
 var _ AdsReadDeviceInfoRequest = (*_AdsReadDeviceInfoRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadDeviceInfoRequest)(nil)
+
+// NewAdsReadDeviceInfoRequest factory function for _AdsReadDeviceInfoRequest
+func NewAdsReadDeviceInfoRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadDeviceInfoRequest {
+	_result := &_AdsReadDeviceInfoRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_AdsReadDeviceInfoRequest) GetResponse() bool {
 
 func (m *_AdsReadDeviceInfoRequest) GetParent() AmsPacketContract {
 	return m.AmsPacketContract
-}
-
-// NewAdsReadDeviceInfoRequest factory function for _AdsReadDeviceInfoRequest
-func NewAdsReadDeviceInfoRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadDeviceInfoRequest {
-	_result := &_AdsReadDeviceInfoRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_AdsReadDeviceInfoRequest) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_AdsReadDeviceInfoRequest) IsAdsReadDeviceInfoRequest() {}
+
+func (m *_AdsReadDeviceInfoRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadDeviceInfoRequest) deepCopy() *_AdsReadDeviceInfoRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsReadDeviceInfoRequestCopy := &_AdsReadDeviceInfoRequest{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadDeviceInfoRequestCopy
+}
 
 func (m *_AdsReadDeviceInfoRequest) String() string {
 	if m == nil {

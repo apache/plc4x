@@ -38,6 +38,7 @@ type HistoryEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfEvents returns NoOfEvents (property field)
 	GetNoOfEvents() int32
@@ -56,6 +57,17 @@ type _HistoryEvent struct {
 
 var _ HistoryEvent = (*_HistoryEvent)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryEvent)(nil)
+
+// NewHistoryEvent factory function for _HistoryEvent
+func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_HistoryEvent {
+	_result := &_HistoryEvent{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEvents:                        noOfEvents,
+		Events:                            events,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_HistoryEvent) GetEvents() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryEvent factory function for _HistoryEvent
-func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_HistoryEvent {
-	_result := &_HistoryEvent{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEvents:                        noOfEvents,
-		Events:                            events,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryEvent(structType any) HistoryEvent {
@@ -207,6 +208,23 @@ func (m *_HistoryEvent) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_HistoryEvent) IsHistoryEvent() {}
+
+func (m *_HistoryEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryEvent) deepCopy() *_HistoryEvent {
+	if m == nil {
+		return nil
+	}
+	_HistoryEventCopy := &_HistoryEvent{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfEvents,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Events),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryEventCopy
+}
 
 func (m *_HistoryEvent) String() string {
 	if m == nil {

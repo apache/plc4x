@@ -36,6 +36,7 @@ type ApduDataUserMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataUserMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataUserMessage()
@@ -48,6 +49,15 @@ type _ApduDataUserMessage struct {
 
 var _ ApduDataUserMessage = (*_ApduDataUserMessage)(nil)
 var _ ApduDataRequirements = (*_ApduDataUserMessage)(nil)
+
+// NewApduDataUserMessage factory function for _ApduDataUserMessage
+func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
+	_result := &_ApduDataUserMessage{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataUserMessage) GetApciType() uint8 {
 
 func (m *_ApduDataUserMessage) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataUserMessage factory function for _ApduDataUserMessage
-func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
-	_result := &_ApduDataUserMessage{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataUserMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ApduDataUserMessage) IsApduDataUserMessage() {}
+
+func (m *_ApduDataUserMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataUserMessage) deepCopy() *_ApduDataUserMessage {
+	if m == nil {
+		return nil
+	}
+	_ApduDataUserMessageCopy := &_ApduDataUserMessage{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataUserMessageCopy
+}
 
 func (m *_ApduDataUserMessage) String() string {
 	if m == nil {

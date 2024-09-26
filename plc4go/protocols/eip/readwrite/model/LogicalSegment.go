@@ -38,6 +38,7 @@ type LogicalSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() LogicalSegmentType
@@ -53,6 +54,19 @@ type _LogicalSegment struct {
 
 var _ LogicalSegment = (*_LogicalSegment)(nil)
 var _ PathSegmentRequirements = (*_LogicalSegment)(nil)
+
+// NewLogicalSegment factory function for _LogicalSegment
+func NewLogicalSegment(segmentType LogicalSegmentType) *_LogicalSegment {
+	if segmentType == nil {
+		panic("segmentType of type LogicalSegmentType for LogicalSegment must not be nil")
+	}
+	_result := &_LogicalSegment{
+		PathSegmentContract: NewPathSegment(),
+		SegmentType:         segmentType,
+	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_LogicalSegment) GetSegmentType() LogicalSegmentType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLogicalSegment factory function for _LogicalSegment
-func NewLogicalSegment(segmentType LogicalSegmentType) *_LogicalSegment {
-	if segmentType == nil {
-		panic("segmentType of type LogicalSegmentType for LogicalSegment must not be nil")
-	}
-	_result := &_LogicalSegment{
-		PathSegmentContract: NewPathSegment(),
-		SegmentType:         segmentType,
-	}
-	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLogicalSegment(structType any) LogicalSegment {
@@ -182,6 +183,22 @@ func (m *_LogicalSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_LogicalSegment) IsLogicalSegment() {}
+
+func (m *_LogicalSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LogicalSegment) deepCopy() *_LogicalSegment {
+	if m == nil {
+		return nil
+	}
+	_LogicalSegmentCopy := &_LogicalSegment{
+		m.PathSegmentContract.(*_PathSegment).deepCopy(),
+		m.SegmentType.DeepCopy().(LogicalSegmentType),
+	}
+	m.PathSegmentContract.(*_PathSegment)._SubType = m
+	return _LogicalSegmentCopy
+}
 
 func (m *_LogicalSegment) String() string {
 	if m == nil {

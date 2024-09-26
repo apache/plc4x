@@ -38,6 +38,7 @@ type BACnetConstructedDataLocalTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLocalTime returns LocalTime (property field)
 	GetLocalTime() BACnetApplicationTagTime
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLocalTime struct {
 
 var _ BACnetConstructedDataLocalTime = (*_BACnetConstructedDataLocalTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalTime)(nil)
+
+// NewBACnetConstructedDataLocalTime factory function for _BACnetConstructedDataLocalTime
+func NewBACnetConstructedDataLocalTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localTime BACnetApplicationTagTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalTime {
+	if localTime == nil {
+		panic("localTime of type BACnetApplicationTagTime for BACnetConstructedDataLocalTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataLocalTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LocalTime:                     localTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLocalTime) GetActualValue() BACnetApplicationTagT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLocalTime factory function for _BACnetConstructedDataLocalTime
-func NewBACnetConstructedDataLocalTime(localTime BACnetApplicationTagTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalTime {
-	if localTime == nil {
-		panic("localTime of type BACnetApplicationTagTime for BACnetConstructedDataLocalTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataLocalTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LocalTime:                     localTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLocalTime(structType any) BACnetConstructedDataLocalTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLocalTime) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataLocalTime) IsBACnetConstructedDataLocalTime() {}
+
+func (m *_BACnetConstructedDataLocalTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLocalTime) deepCopy() *_BACnetConstructedDataLocalTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLocalTimeCopy := &_BACnetConstructedDataLocalTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LocalTime.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLocalTimeCopy
+}
 
 func (m *_BACnetConstructedDataLocalTime) String() string {
 	if m == nil {

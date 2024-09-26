@@ -38,6 +38,7 @@ type APDUUnconfirmedRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetServiceRequest returns ServiceRequest (property field)
 	GetServiceRequest() BACnetUnconfirmedServiceRequest
@@ -55,6 +56,19 @@ type _APDUUnconfirmedRequest struct {
 
 var _ APDUUnconfirmedRequest = (*_APDUUnconfirmedRequest)(nil)
 var _ APDURequirements = (*_APDUUnconfirmedRequest)(nil)
+
+// NewAPDUUnconfirmedRequest factory function for _APDUUnconfirmedRequest
+func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, apduLength uint16) *_APDUUnconfirmedRequest {
+	if serviceRequest == nil {
+		panic("serviceRequest of type BACnetUnconfirmedServiceRequest for APDUUnconfirmedRequest must not be nil")
+	}
+	_result := &_APDUUnconfirmedRequest{
+		APDUContract:   NewAPDU(apduLength),
+		ServiceRequest: serviceRequest,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +101,6 @@ func (m *_APDUUnconfirmedRequest) GetServiceRequest() BACnetUnconfirmedServiceRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUUnconfirmedRequest factory function for _APDUUnconfirmedRequest
-func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, apduLength uint16) *_APDUUnconfirmedRequest {
-	if serviceRequest == nil {
-		panic("serviceRequest of type BACnetUnconfirmedServiceRequest for APDUUnconfirmedRequest must not be nil")
-	}
-	_result := &_APDUUnconfirmedRequest{
-		APDUContract:   NewAPDU(apduLength),
-		ServiceRequest: serviceRequest,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUUnconfirmedRequest(structType any) APDUUnconfirmedRequest {
@@ -197,6 +198,23 @@ func (m *_APDUUnconfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_APDUUnconfirmedRequest) IsAPDUUnconfirmedRequest() {}
+
+func (m *_APDUUnconfirmedRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUUnconfirmedRequest) deepCopy() *_APDUUnconfirmedRequest {
+	if m == nil {
+		return nil
+	}
+	_APDUUnconfirmedRequestCopy := &_APDUUnconfirmedRequest{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.ServiceRequest.DeepCopy().(BACnetUnconfirmedServiceRequest),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUUnconfirmedRequestCopy
+}
 
 func (m *_APDUUnconfirmedRequest) String() string {
 	if m == nil {

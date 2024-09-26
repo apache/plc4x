@@ -43,6 +43,7 @@ type AdsDiscovery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRequestId returns RequestId (property field)
 	GetRequestId() uint32
 	// GetOperation returns Operation (property field)
@@ -67,6 +68,14 @@ type _AdsDiscovery struct {
 }
 
 var _ AdsDiscovery = (*_AdsDiscovery)(nil)
+
+// NewAdsDiscovery factory function for _AdsDiscovery
+func NewAdsDiscovery(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) *_AdsDiscovery {
+	if amsNetId == nil {
+		panic("amsNetId of type AmsNetId for AdsDiscovery must not be nil")
+	}
+	return &_AdsDiscovery{RequestId: requestId, Operation: operation, AmsNetId: amsNetId, PortNumber: portNumber, Blocks: blocks}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,14 +119,6 @@ func (m *_AdsDiscovery) GetHeader() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscovery factory function for _AdsDiscovery
-func NewAdsDiscovery(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) *_AdsDiscovery {
-	if amsNetId == nil {
-		panic("amsNetId of type AmsNetId for AdsDiscovery must not be nil")
-	}
-	return &_AdsDiscovery{RequestId: requestId, Operation: operation, AmsNetId: amsNetId, PortNumber: portNumber, Blocks: blocks}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscovery(structType any) AdsDiscovery {
@@ -300,6 +301,24 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_AdsDiscovery) IsAdsDiscovery() {}
+
+func (m *_AdsDiscovery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscovery) deepCopy() *_AdsDiscovery {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryCopy := &_AdsDiscovery{
+		m.RequestId,
+		m.Operation,
+		m.AmsNetId.DeepCopy().(AmsNetId),
+		m.PortNumber,
+		utils.DeepCopySlice[AdsDiscoveryBlock, AdsDiscoveryBlock](m.Blocks),
+	}
+	return _AdsDiscoveryCopy
+}
 
 func (m *_AdsDiscovery) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataProfileName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProfileName returns ProfileName (property field)
 	GetProfileName() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProfileName struct {
 
 var _ BACnetConstructedDataProfileName = (*_BACnetConstructedDataProfileName)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProfileName)(nil)
+
+// NewBACnetConstructedDataProfileName factory function for _BACnetConstructedDataProfileName
+func NewBACnetConstructedDataProfileName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, profileName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProfileName {
+	if profileName == nil {
+		panic("profileName of type BACnetApplicationTagCharacterString for BACnetConstructedDataProfileName must not be nil")
+	}
+	_result := &_BACnetConstructedDataProfileName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProfileName:                   profileName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProfileName) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProfileName factory function for _BACnetConstructedDataProfileName
-func NewBACnetConstructedDataProfileName(profileName BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProfileName {
-	if profileName == nil {
-		panic("profileName of type BACnetApplicationTagCharacterString for BACnetConstructedDataProfileName must not be nil")
-	}
-	_result := &_BACnetConstructedDataProfileName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProfileName:                   profileName,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProfileName(structType any) BACnetConstructedDataProfileName {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProfileName) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataProfileName) IsBACnetConstructedDataProfileName() {}
+
+func (m *_BACnetConstructedDataProfileName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProfileName) deepCopy() *_BACnetConstructedDataProfileName {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProfileNameCopy := &_BACnetConstructedDataProfileName{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProfileName.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProfileNameCopy
+}
 
 func (m *_BACnetConstructedDataProfileName) String() string {
 	if m == nil {

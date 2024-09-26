@@ -36,6 +36,7 @@ type GetAttributeListRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsGetAttributeListRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeListRequest()
@@ -48,6 +49,15 @@ type _GetAttributeListRequest struct {
 
 var _ GetAttributeListRequest = (*_GetAttributeListRequest)(nil)
 var _ CipServiceRequirements = (*_GetAttributeListRequest)(nil)
+
+// NewGetAttributeListRequest factory function for _GetAttributeListRequest
+func NewGetAttributeListRequest(serviceLen uint16) *_GetAttributeListRequest {
+	_result := &_GetAttributeListRequest{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_GetAttributeListRequest) GetConnected() bool {
 
 func (m *_GetAttributeListRequest) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewGetAttributeListRequest factory function for _GetAttributeListRequest
-func NewGetAttributeListRequest(serviceLen uint16) *_GetAttributeListRequest {
-	_result := &_GetAttributeListRequest{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_GetAttributeListRequest) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_GetAttributeListRequest) IsGetAttributeListRequest() {}
+
+func (m *_GetAttributeListRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetAttributeListRequest) deepCopy() *_GetAttributeListRequest {
+	if m == nil {
+		return nil
+	}
+	_GetAttributeListRequestCopy := &_GetAttributeListRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _GetAttributeListRequestCopy
+}
 
 func (m *_GetAttributeListRequest) String() string {
 	if m == nil {

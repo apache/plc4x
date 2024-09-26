@@ -36,6 +36,7 @@ type ApduDataExtDomainAddressWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtDomainAddressWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressWrite()
@@ -48,6 +49,15 @@ type _ApduDataExtDomainAddressWrite struct {
 
 var _ ApduDataExtDomainAddressWrite = (*_ApduDataExtDomainAddressWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressWrite)(nil)
+
+// NewApduDataExtDomainAddressWrite factory function for _ApduDataExtDomainAddressWrite
+func NewApduDataExtDomainAddressWrite(length uint8) *_ApduDataExtDomainAddressWrite {
+	_result := &_ApduDataExtDomainAddressWrite{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtDomainAddressWrite) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtDomainAddressWrite) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtDomainAddressWrite factory function for _ApduDataExtDomainAddressWrite
-func NewApduDataExtDomainAddressWrite(length uint8) *_ApduDataExtDomainAddressWrite {
-	_result := &_ApduDataExtDomainAddressWrite{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtDomainAddressWrite) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_ApduDataExtDomainAddressWrite) IsApduDataExtDomainAddressWrite() {}
+
+func (m *_ApduDataExtDomainAddressWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtDomainAddressWrite) deepCopy() *_ApduDataExtDomainAddressWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtDomainAddressWriteCopy := &_ApduDataExtDomainAddressWrite{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtDomainAddressWriteCopy
+}
 
 func (m *_ApduDataExtDomainAddressWrite) String() string {
 	if m == nil {

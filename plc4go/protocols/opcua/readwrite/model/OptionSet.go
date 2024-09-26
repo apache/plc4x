@@ -38,6 +38,7 @@ type OptionSet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetValue returns Value (property field)
 	GetValue() PascalByteString
@@ -56,6 +57,23 @@ type _OptionSet struct {
 
 var _ OptionSet = (*_OptionSet)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_OptionSet)(nil)
+
+// NewOptionSet factory function for _OptionSet
+func NewOptionSet(value PascalByteString, validBits PascalByteString) *_OptionSet {
+	if value == nil {
+		panic("value of type PascalByteString for OptionSet must not be nil")
+	}
+	if validBits == nil {
+		panic("validBits of type PascalByteString for OptionSet must not be nil")
+	}
+	_result := &_OptionSet{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Value:                             value,
+		ValidBits:                         validBits,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_OptionSet) GetValidBits() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOptionSet factory function for _OptionSet
-func NewOptionSet(value PascalByteString, validBits PascalByteString) *_OptionSet {
-	if value == nil {
-		panic("value of type PascalByteString for OptionSet must not be nil")
-	}
-	if validBits == nil {
-		panic("validBits of type PascalByteString for OptionSet must not be nil")
-	}
-	_result := &_OptionSet{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Value:                             value,
-		ValidBits:                         validBits,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOptionSet(structType any) OptionSet {
@@ -206,6 +207,23 @@ func (m *_OptionSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_OptionSet) IsOptionSet() {}
+
+func (m *_OptionSet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OptionSet) deepCopy() *_OptionSet {
+	if m == nil {
+		return nil
+	}
+	_OptionSetCopy := &_OptionSet{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Value.DeepCopy().(PascalByteString),
+		m.ValidBits.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _OptionSetCopy
+}
 
 func (m *_OptionSet) String() string {
 	if m == nil {

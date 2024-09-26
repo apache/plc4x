@@ -36,6 +36,7 @@ type SysexCommandStringData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandStringData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandStringData()
@@ -48,6 +49,15 @@ type _SysexCommandStringData struct {
 
 var _ SysexCommandStringData = (*_SysexCommandStringData)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandStringData)(nil)
+
+// NewSysexCommandStringData factory function for _SysexCommandStringData
+func NewSysexCommandStringData() *_SysexCommandStringData {
+	_result := &_SysexCommandStringData{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_SysexCommandStringData) GetResponse() bool {
 
 func (m *_SysexCommandStringData) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandStringData factory function for _SysexCommandStringData
-func NewSysexCommandStringData() *_SysexCommandStringData {
-	_result := &_SysexCommandStringData{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_SysexCommandStringData) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SysexCommandStringData) IsSysexCommandStringData() {}
+
+func (m *_SysexCommandStringData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandStringData) deepCopy() *_SysexCommandStringData {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandStringDataCopy := &_SysexCommandStringData{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandStringDataCopy
+}
 
 func (m *_SysexCommandStringData) String() string {
 	if m == nil {

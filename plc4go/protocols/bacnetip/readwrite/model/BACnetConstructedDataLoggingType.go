@@ -38,6 +38,7 @@ type BACnetConstructedDataLoggingType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLoggingType returns LoggingType (property field)
 	GetLoggingType() BACnetLoggingTypeTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLoggingType struct {
 
 var _ BACnetConstructedDataLoggingType = (*_BACnetConstructedDataLoggingType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoggingType)(nil)
+
+// NewBACnetConstructedDataLoggingType factory function for _BACnetConstructedDataLoggingType
+func NewBACnetConstructedDataLoggingType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, loggingType BACnetLoggingTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingType {
+	if loggingType == nil {
+		panic("loggingType of type BACnetLoggingTypeTagged for BACnetConstructedDataLoggingType must not be nil")
+	}
+	_result := &_BACnetConstructedDataLoggingType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LoggingType:                   loggingType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLoggingType) GetActualValue() BACnetLoggingTypeTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLoggingType factory function for _BACnetConstructedDataLoggingType
-func NewBACnetConstructedDataLoggingType(loggingType BACnetLoggingTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingType {
-	if loggingType == nil {
-		panic("loggingType of type BACnetLoggingTypeTagged for BACnetConstructedDataLoggingType must not be nil")
-	}
-	_result := &_BACnetConstructedDataLoggingType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LoggingType:                   loggingType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLoggingType(structType any) BACnetConstructedDataLoggingType {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoggingType) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataLoggingType) IsBACnetConstructedDataLoggingType() {}
+
+func (m *_BACnetConstructedDataLoggingType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoggingType) deepCopy() *_BACnetConstructedDataLoggingType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoggingTypeCopy := &_BACnetConstructedDataLoggingType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LoggingType.DeepCopy().(BACnetLoggingTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoggingTypeCopy
+}
 
 func (m *_BACnetConstructedDataLoggingType) String() string {
 	if m == nil {

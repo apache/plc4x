@@ -36,6 +36,7 @@ type DurationString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDurationString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDurationString()
 }
@@ -134,6 +135,18 @@ func (m *_DurationString) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_DurationString) IsDurationString() {}
+
+func (m *_DurationString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DurationString) deepCopy() *_DurationString {
+	if m == nil {
+		return nil
+	}
+	_DurationStringCopy := &_DurationString{}
+	return _DurationStringCopy
+}
 
 func (m *_DurationString) String() string {
 	if m == nil {

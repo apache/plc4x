@@ -38,6 +38,7 @@ type VTCloseError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -56,6 +57,20 @@ type _VTCloseError struct {
 
 var _ VTCloseError = (*_VTCloseError)(nil)
 var _ BACnetErrorRequirements = (*_VTCloseError)(nil)
+
+// NewVTCloseError factory function for _VTCloseError
+func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) *_VTCloseError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for VTCloseError must not be nil")
+	}
+	_result := &_VTCloseError{
+		BACnetErrorContract:        NewBACnetError(),
+		ErrorType:                  errorType,
+		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_VTCloseError) GetListOfVtSessionIdentifiers() VTCloseErrorListOfVTSess
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVTCloseError factory function for _VTCloseError
-func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) *_VTCloseError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for VTCloseError must not be nil")
-	}
-	_result := &_VTCloseError{
-		BACnetErrorContract:        NewBACnetError(),
-		ErrorType:                  errorType,
-		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVTCloseError(structType any) VTCloseError {
@@ -209,6 +210,23 @@ func (m *_VTCloseError) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_VTCloseError) IsVTCloseError() {}
+
+func (m *_VTCloseError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VTCloseError) deepCopy() *_VTCloseError {
+	if m == nil {
+		return nil
+	}
+	_VTCloseErrorCopy := &_VTCloseError{
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.ListOfVtSessionIdentifiers.DeepCopy().(VTCloseErrorListOfVTSessionIdentifiers),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _VTCloseErrorCopy
+}
 
 func (m *_VTCloseError) String() string {
 	if m == nil {

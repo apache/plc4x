@@ -40,6 +40,7 @@ type MeasurementData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMeasurementData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeasurementData()
 }
@@ -70,6 +71,11 @@ type _MeasurementData struct {
 
 var _ MeasurementDataContract = (*_MeasurementData)(nil)
 
+// NewMeasurementData factory function for _MeasurementData
+func NewMeasurementData(commandTypeContainer MeasurementCommandTypeContainer) *_MeasurementData {
+	return &_MeasurementData{CommandTypeContainer: commandTypeContainer}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +105,6 @@ func (pm *_MeasurementData) GetCommandType() MeasurementCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeasurementData factory function for _MeasurementData
-func NewMeasurementData(commandTypeContainer MeasurementCommandTypeContainer) *_MeasurementData {
-	return &_MeasurementData{CommandTypeContainer: commandTypeContainer}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeasurementData(structType any) MeasurementData {
@@ -194,7 +195,7 @@ func (m *_MeasurementData) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child MeasurementData
 	switch {
 	case commandType == MeasurementCommandType_MEASUREMENT_EVENT: // MeasurementDataChannelMeasurementData
-		if _child, err = (&_MeasurementDataChannelMeasurementData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeasurementDataChannelMeasurementData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeasurementDataChannelMeasurementData for type-switch of MeasurementData")
 		}
 	default:
@@ -242,3 +243,18 @@ func (pm *_MeasurementData) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_MeasurementData) IsMeasurementData() {}
+
+func (m *_MeasurementData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeasurementData) deepCopy() *_MeasurementData {
+	if m == nil {
+		return nil
+	}
+	_MeasurementDataCopy := &_MeasurementData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+	}
+	return _MeasurementDataCopy
+}

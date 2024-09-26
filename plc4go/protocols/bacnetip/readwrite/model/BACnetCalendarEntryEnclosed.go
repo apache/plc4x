@@ -38,6 +38,7 @@ type BACnetCalendarEntryEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetCalendarEntry returns CalendarEntry (property field)
@@ -60,6 +61,20 @@ type _BACnetCalendarEntryEnclosed struct {
 
 var _ BACnetCalendarEntryEnclosed = (*_BACnetCalendarEntryEnclosed)(nil)
 
+// NewBACnetCalendarEntryEnclosed factory function for _BACnetCalendarEntryEnclosed
+func NewBACnetCalendarEntryEnclosed(openingTag BACnetOpeningTag, calendarEntry BACnetCalendarEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetCalendarEntryEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetCalendarEntryEnclosed must not be nil")
+	}
+	if calendarEntry == nil {
+		panic("calendarEntry of type BACnetCalendarEntry for BACnetCalendarEntryEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetCalendarEntryEnclosed must not be nil")
+	}
+	return &_BACnetCalendarEntryEnclosed{OpeningTag: openingTag, CalendarEntry: calendarEntry, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +96,6 @@ func (m *_BACnetCalendarEntryEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCalendarEntryEnclosed factory function for _BACnetCalendarEntryEnclosed
-func NewBACnetCalendarEntryEnclosed(openingTag BACnetOpeningTag, calendarEntry BACnetCalendarEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetCalendarEntryEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetCalendarEntryEnclosed must not be nil")
-	}
-	if calendarEntry == nil {
-		panic("calendarEntry of type BACnetCalendarEntry for BACnetCalendarEntryEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetCalendarEntryEnclosed must not be nil")
-	}
-	return &_BACnetCalendarEntryEnclosed{OpeningTag: openingTag, CalendarEntry: calendarEntry, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCalendarEntryEnclosed(structType any) BACnetCalendarEntryEnclosed {
@@ -228,6 +229,23 @@ func (m *_BACnetCalendarEntryEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetCalendarEntryEnclosed) IsBACnetCalendarEntryEnclosed() {}
+
+func (m *_BACnetCalendarEntryEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCalendarEntryEnclosed) deepCopy() *_BACnetCalendarEntryEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetCalendarEntryEnclosedCopy := &_BACnetCalendarEntryEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.CalendarEntry.DeepCopy().(BACnetCalendarEntry),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetCalendarEntryEnclosedCopy
+}
 
 func (m *_BACnetCalendarEntryEnclosed) String() string {
 	if m == nil {

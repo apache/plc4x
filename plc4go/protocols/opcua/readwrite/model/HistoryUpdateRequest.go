@@ -38,6 +38,7 @@ type HistoryUpdateRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _HistoryUpdateRequest struct {
 
 var _ HistoryUpdateRequest = (*_HistoryUpdateRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateRequest)(nil)
+
+// NewHistoryUpdateRequest factory function for _HistoryUpdateRequest
+func NewHistoryUpdateRequest(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) *_HistoryUpdateRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for HistoryUpdateRequest must not be nil")
+	}
+	_result := &_HistoryUpdateRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfHistoryUpdateDetails:          noOfHistoryUpdateDetails,
+		HistoryUpdateDetails:              historyUpdateDetails,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_HistoryUpdateRequest) GetHistoryUpdateDetails() []ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryUpdateRequest factory function for _HistoryUpdateRequest
-func NewHistoryUpdateRequest(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) *_HistoryUpdateRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for HistoryUpdateRequest must not be nil")
-	}
-	_result := &_HistoryUpdateRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfHistoryUpdateDetails:          noOfHistoryUpdateDetails,
-		HistoryUpdateDetails:              historyUpdateDetails,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryUpdateRequest(structType any) HistoryUpdateRequest {
@@ -231,6 +232,24 @@ func (m *_HistoryUpdateRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_HistoryUpdateRequest) IsHistoryUpdateRequest() {}
+
+func (m *_HistoryUpdateRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryUpdateRequest) deepCopy() *_HistoryUpdateRequest {
+	if m == nil {
+		return nil
+	}
+	_HistoryUpdateRequestCopy := &_HistoryUpdateRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfHistoryUpdateDetails,
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.HistoryUpdateDetails),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryUpdateRequestCopy
+}
 
 func (m *_HistoryUpdateRequest) String() string {
 	if m == nil {

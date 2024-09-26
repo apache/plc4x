@@ -38,6 +38,7 @@ type AmsNetId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOctet1 returns Octet1 (property field)
 	GetOctet1() uint8
 	// GetOctet2 returns Octet2 (property field)
@@ -65,6 +66,11 @@ type _AmsNetId struct {
 }
 
 var _ AmsNetId = (*_AmsNetId)(nil)
+
+// NewAmsNetId factory function for _AmsNetId
+func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *_AmsNetId {
+	return &_AmsNetId{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4, Octet5: octet5, Octet6: octet6}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,11 +105,6 @@ func (m *_AmsNetId) GetOctet6() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsNetId factory function for _AmsNetId
-func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *_AmsNetId {
-	return &_AmsNetId{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4, Octet5: octet5, Octet6: octet6}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsNetId(structType any) AmsNetId {
@@ -266,6 +267,25 @@ func (m *_AmsNetId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_AmsNetId) IsAmsNetId() {}
+
+func (m *_AmsNetId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsNetId) deepCopy() *_AmsNetId {
+	if m == nil {
+		return nil
+	}
+	_AmsNetIdCopy := &_AmsNetId{
+		m.Octet1,
+		m.Octet2,
+		m.Octet3,
+		m.Octet4,
+		m.Octet5,
+		m.Octet6,
+	}
+	return _AmsNetIdCopy
+}
 
 func (m *_AmsNetId) String() string {
 	if m == nil {

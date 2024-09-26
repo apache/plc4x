@@ -38,6 +38,7 @@ type BACnetConstructedDataFullDutyBaseline interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFullDutyBaseLine returns FullDutyBaseLine (property field)
 	GetFullDutyBaseLine() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataFullDutyBaseline struct {
 
 var _ BACnetConstructedDataFullDutyBaseline = (*_BACnetConstructedDataFullDutyBaseline)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFullDutyBaseline)(nil)
+
+// NewBACnetConstructedDataFullDutyBaseline factory function for _BACnetConstructedDataFullDutyBaseline
+func NewBACnetConstructedDataFullDutyBaseline(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fullDutyBaseLine BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFullDutyBaseline {
+	if fullDutyBaseLine == nil {
+		panic("fullDutyBaseLine of type BACnetApplicationTagReal for BACnetConstructedDataFullDutyBaseline must not be nil")
+	}
+	_result := &_BACnetConstructedDataFullDutyBaseline{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FullDutyBaseLine:              fullDutyBaseLine,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataFullDutyBaseline) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFullDutyBaseline factory function for _BACnetConstructedDataFullDutyBaseline
-func NewBACnetConstructedDataFullDutyBaseline(fullDutyBaseLine BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFullDutyBaseline {
-	if fullDutyBaseLine == nil {
-		panic("fullDutyBaseLine of type BACnetApplicationTagReal for BACnetConstructedDataFullDutyBaseline must not be nil")
-	}
-	_result := &_BACnetConstructedDataFullDutyBaseline{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FullDutyBaseLine:              fullDutyBaseLine,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFullDutyBaseline(structType any) BACnetConstructedDataFullDutyBaseline {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFullDutyBaseline) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataFullDutyBaseline) IsBACnetConstructedDataFullDutyBaseline() {}
+
+func (m *_BACnetConstructedDataFullDutyBaseline) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFullDutyBaseline) deepCopy() *_BACnetConstructedDataFullDutyBaseline {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFullDutyBaselineCopy := &_BACnetConstructedDataFullDutyBaseline{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FullDutyBaseLine.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFullDutyBaselineCopy
+}
 
 func (m *_BACnetConstructedDataFullDutyBaseline) String() string {
 	if m == nil {

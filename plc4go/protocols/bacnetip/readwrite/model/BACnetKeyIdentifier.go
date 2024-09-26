@@ -38,6 +38,7 @@ type BACnetKeyIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAlgorithm returns Algorithm (property field)
 	GetAlgorithm() BACnetContextTagUnsignedInteger
 	// GetKeyId returns KeyId (property field)
@@ -53,6 +54,17 @@ type _BACnetKeyIdentifier struct {
 }
 
 var _ BACnetKeyIdentifier = (*_BACnetKeyIdentifier)(nil)
+
+// NewBACnetKeyIdentifier factory function for _BACnetKeyIdentifier
+func NewBACnetKeyIdentifier(algorithm BACnetContextTagUnsignedInteger, keyId BACnetContextTagUnsignedInteger) *_BACnetKeyIdentifier {
+	if algorithm == nil {
+		panic("algorithm of type BACnetContextTagUnsignedInteger for BACnetKeyIdentifier must not be nil")
+	}
+	if keyId == nil {
+		panic("keyId of type BACnetContextTagUnsignedInteger for BACnetKeyIdentifier must not be nil")
+	}
+	return &_BACnetKeyIdentifier{Algorithm: algorithm, KeyId: keyId}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetKeyIdentifier) GetKeyId() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetKeyIdentifier factory function for _BACnetKeyIdentifier
-func NewBACnetKeyIdentifier(algorithm BACnetContextTagUnsignedInteger, keyId BACnetContextTagUnsignedInteger) *_BACnetKeyIdentifier {
-	if algorithm == nil {
-		panic("algorithm of type BACnetContextTagUnsignedInteger for BACnetKeyIdentifier must not be nil")
-	}
-	if keyId == nil {
-		panic("keyId of type BACnetContextTagUnsignedInteger for BACnetKeyIdentifier must not be nil")
-	}
-	return &_BACnetKeyIdentifier{Algorithm: algorithm, KeyId: keyId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetKeyIdentifier(structType any) BACnetKeyIdentifier {
@@ -192,6 +193,21 @@ func (m *_BACnetKeyIdentifier) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetKeyIdentifier) IsBACnetKeyIdentifier() {}
+
+func (m *_BACnetKeyIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetKeyIdentifier) deepCopy() *_BACnetKeyIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetKeyIdentifierCopy := &_BACnetKeyIdentifier{
+		m.Algorithm.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.KeyId.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetKeyIdentifierCopy
+}
 
 func (m *_BACnetKeyIdentifier) String() string {
 	if m == nil {

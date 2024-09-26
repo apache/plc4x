@@ -38,6 +38,7 @@ type SetMonitoringModeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _SetMonitoringModeResponse struct {
 
 var _ SetMonitoringModeResponse = (*_SetMonitoringModeResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetMonitoringModeResponse)(nil)
+
+// NewSetMonitoringModeResponse factory function for _SetMonitoringModeResponse
+func NewSetMonitoringModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetMonitoringModeResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetMonitoringModeResponse must not be nil")
+	}
+	_result := &_SetMonitoringModeResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_SetMonitoringModeResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetMonitoringModeResponse factory function for _SetMonitoringModeResponse
-func NewSetMonitoringModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetMonitoringModeResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for SetMonitoringModeResponse must not be nil")
-	}
-	_result := &_SetMonitoringModeResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetMonitoringModeResponse(structType any) SetMonitoringModeResponse {
@@ -280,6 +281,26 @@ func (m *_SetMonitoringModeResponse) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SetMonitoringModeResponse) IsSetMonitoringModeResponse() {}
+
+func (m *_SetMonitoringModeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetMonitoringModeResponse) deepCopy() *_SetMonitoringModeResponse {
+	if m == nil {
+		return nil
+	}
+	_SetMonitoringModeResponseCopy := &_SetMonitoringModeResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetMonitoringModeResponseCopy
+}
 
 func (m *_SetMonitoringModeResponse) String() string {
 	if m == nil {

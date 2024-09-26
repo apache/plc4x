@@ -41,6 +41,7 @@ type AdsDiscoveryConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAdsDiscoveryConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryConstants()
 }
@@ -50,6 +51,11 @@ type _AdsDiscoveryConstants struct {
 }
 
 var _ AdsDiscoveryConstants = (*_AdsDiscoveryConstants)(nil)
+
+// NewAdsDiscoveryConstants factory function for _AdsDiscoveryConstants
+func NewAdsDiscoveryConstants() *_AdsDiscoveryConstants {
+	return &_AdsDiscoveryConstants{}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_AdsDiscoveryConstants) GetAdsDiscoveryUdpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryConstants factory function for _AdsDiscoveryConstants
-func NewAdsDiscoveryConstants() *_AdsDiscoveryConstants {
-	return &_AdsDiscoveryConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryConstants(structType any) AdsDiscoveryConstants {
@@ -166,6 +167,18 @@ func (m *_AdsDiscoveryConstants) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_AdsDiscoveryConstants) IsAdsDiscoveryConstants() {}
+
+func (m *_AdsDiscoveryConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryConstants) deepCopy() *_AdsDiscoveryConstants {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryConstantsCopy := &_AdsDiscoveryConstants{}
+	return _AdsDiscoveryConstantsCopy
+}
 
 func (m *_AdsDiscoveryConstants) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCommand returns Command (property field)
 	GetCommand() BACnetNetworkPortCommandTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCommand struct {
 
 var _ BACnetConstructedDataCommand = (*_BACnetConstructedDataCommand)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCommand)(nil)
+
+// NewBACnetConstructedDataCommand factory function for _BACnetConstructedDataCommand
+func NewBACnetConstructedDataCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, command BACnetNetworkPortCommandTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommand {
+	if command == nil {
+		panic("command of type BACnetNetworkPortCommandTagged for BACnetConstructedDataCommand must not be nil")
+	}
+	_result := &_BACnetConstructedDataCommand{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Command:                       command,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCommand) GetActualValue() BACnetNetworkPortComman
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCommand factory function for _BACnetConstructedDataCommand
-func NewBACnetConstructedDataCommand(command BACnetNetworkPortCommandTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommand {
-	if command == nil {
-		panic("command of type BACnetNetworkPortCommandTagged for BACnetConstructedDataCommand must not be nil")
-	}
-	_result := &_BACnetConstructedDataCommand{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Command:                       command,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCommand(structType any) BACnetConstructedDataCommand {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCommand) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataCommand) IsBACnetConstructedDataCommand() {}
+
+func (m *_BACnetConstructedDataCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCommand) deepCopy() *_BACnetConstructedDataCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCommandCopy := &_BACnetConstructedDataCommand{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Command.DeepCopy().(BACnetNetworkPortCommandTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCommandCopy
+}
 
 func (m *_BACnetConstructedDataCommand) String() string {
 	if m == nil {

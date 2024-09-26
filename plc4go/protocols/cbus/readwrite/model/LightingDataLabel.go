@@ -38,6 +38,7 @@ type LightingDataLabel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
@@ -62,6 +63,22 @@ type _LightingDataLabel struct {
 
 var _ LightingDataLabel = (*_LightingDataLabel)(nil)
 var _ LightingDataRequirements = (*_LightingDataLabel)(nil)
+
+// NewLightingDataLabel factory function for _LightingDataLabel
+func NewLightingDataLabel(commandTypeContainer LightingCommandTypeContainer, group byte, labelOptions LightingLabelOptions, language *Language, data []byte) *_LightingDataLabel {
+	if labelOptions == nil {
+		panic("labelOptions of type LightingLabelOptions for LightingDataLabel must not be nil")
+	}
+	_result := &_LightingDataLabel{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+		LabelOptions:         labelOptions,
+		Language:             language,
+		Data:                 data,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,22 +119,6 @@ func (m *_LightingDataLabel) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataLabel factory function for _LightingDataLabel
-func NewLightingDataLabel(group byte, labelOptions LightingLabelOptions, language *Language, data []byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataLabel {
-	if labelOptions == nil {
-		panic("labelOptions of type LightingLabelOptions for LightingDataLabel must not be nil")
-	}
-	_result := &_LightingDataLabel{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-		LabelOptions:         labelOptions,
-		Language:             language,
-		Data:                 data,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataLabel(structType any) LightingDataLabel {
@@ -246,6 +247,25 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_LightingDataLabel) IsLightingDataLabel() {}
+
+func (m *_LightingDataLabel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataLabel) deepCopy() *_LightingDataLabel {
+	if m == nil {
+		return nil
+	}
+	_LightingDataLabelCopy := &_LightingDataLabel{
+		m.LightingDataContract.(*_LightingData).deepCopy(),
+		m.Group,
+		m.LabelOptions.DeepCopy().(LightingLabelOptions),
+		utils.CopyPtr[Language](m.Language),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataLabelCopy
+}
 
 func (m *_LightingDataLabel) String() string {
 	if m == nil {

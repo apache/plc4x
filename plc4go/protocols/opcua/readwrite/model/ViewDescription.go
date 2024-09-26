@@ -38,6 +38,7 @@ type ViewDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetViewId returns ViewId (property field)
 	GetViewId() NodeId
@@ -59,6 +60,21 @@ type _ViewDescription struct {
 
 var _ ViewDescription = (*_ViewDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ViewDescription)(nil)
+
+// NewViewDescription factory function for _ViewDescription
+func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_ViewDescription {
+	if viewId == nil {
+		panic("viewId of type NodeId for ViewDescription must not be nil")
+	}
+	_result := &_ViewDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ViewId:                            viewId,
+		Timestamp:                         timestamp,
+		ViewVersion:                       viewVersion,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_ViewDescription) GetViewVersion() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewViewDescription factory function for _ViewDescription
-func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_ViewDescription {
-	if viewId == nil {
-		panic("viewId of type NodeId for ViewDescription must not be nil")
-	}
-	_result := &_ViewDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ViewId:                            viewId,
-		Timestamp:                         timestamp,
-		ViewVersion:                       viewVersion,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastViewDescription(structType any) ViewDescription {
@@ -224,6 +225,24 @@ func (m *_ViewDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ViewDescription) IsViewDescription() {}
+
+func (m *_ViewDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ViewDescription) deepCopy() *_ViewDescription {
+	if m == nil {
+		return nil
+	}
+	_ViewDescriptionCopy := &_ViewDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ViewId.DeepCopy().(NodeId),
+		m.Timestamp,
+		m.ViewVersion,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ViewDescriptionCopy
+}
 
 func (m *_ViewDescription) String() string {
 	if m == nil {

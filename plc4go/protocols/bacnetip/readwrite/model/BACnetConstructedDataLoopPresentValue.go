@@ -38,6 +38,7 @@ type BACnetConstructedDataLoopPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLoopPresentValue struct {
 
 var _ BACnetConstructedDataLoopPresentValue = (*_BACnetConstructedDataLoopPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoopPresentValue)(nil)
+
+// NewBACnetConstructedDataLoopPresentValue factory function for _BACnetConstructedDataLoopPresentValue
+func NewBACnetConstructedDataLoopPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetApplicationTagReal for BACnetConstructedDataLoopPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataLoopPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLoopPresentValue) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLoopPresentValue factory function for _BACnetConstructedDataLoopPresentValue
-func NewBACnetConstructedDataLoopPresentValue(presentValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetApplicationTagReal for BACnetConstructedDataLoopPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataLoopPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLoopPresentValue(structType any) BACnetConstructedDataLoopPresentValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoopPresentValue) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataLoopPresentValue) IsBACnetConstructedDataLoopPresentValue() {}
+
+func (m *_BACnetConstructedDataLoopPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoopPresentValue) deepCopy() *_BACnetConstructedDataLoopPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoopPresentValueCopy := &_BACnetConstructedDataLoopPresentValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PresentValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoopPresentValueCopy
+}
 
 func (m *_BACnetConstructedDataLoopPresentValue) String() string {
 	if m == nil {

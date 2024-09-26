@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessDoorAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetDoorAlarmStateTagged
@@ -53,6 +54,16 @@ type _BACnetConstructedDataAccessDoorAlarmValues struct {
 
 var _ BACnetConstructedDataAccessDoorAlarmValues = (*_BACnetConstructedDataAccessDoorAlarmValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessDoorAlarmValues)(nil)
+
+// NewBACnetConstructedDataAccessDoorAlarmValues factory function for _BACnetConstructedDataAccessDoorAlarmValues
+func NewBACnetConstructedDataAccessDoorAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetDoorAlarmStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorAlarmValues {
+	_result := &_BACnetConstructedDataAccessDoorAlarmValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AlarmValues:                   alarmValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataAccessDoorAlarmValues) GetAlarmValues() []BACnetD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessDoorAlarmValues factory function for _BACnetConstructedDataAccessDoorAlarmValues
-func NewBACnetConstructedDataAccessDoorAlarmValues(alarmValues []BACnetDoorAlarmStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorAlarmValues {
-	_result := &_BACnetConstructedDataAccessDoorAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AlarmValues:                   alarmValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessDoorAlarmValues(structType any) BACnetConstructedDataAccessDoorAlarmValues {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAccessDoorAlarmValues) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataAccessDoorAlarmValues) IsBACnetConstructedDataAccessDoorAlarmValues() {
+}
+
+func (m *_BACnetConstructedDataAccessDoorAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessDoorAlarmValues) deepCopy() *_BACnetConstructedDataAccessDoorAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessDoorAlarmValuesCopy := &_BACnetConstructedDataAccessDoorAlarmValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDoorAlarmStateTagged, BACnetDoorAlarmStateTagged](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessDoorAlarmValuesCopy
 }
 
 func (m *_BACnetConstructedDataAccessDoorAlarmValues) String() string {

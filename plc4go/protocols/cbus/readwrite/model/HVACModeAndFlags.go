@@ -38,6 +38,7 @@ type HVACModeAndFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAuxiliaryLevel returns AuxiliaryLevel (property field)
 	GetAuxiliaryLevel() bool
 	// GetGuard returns Guard (property field)
@@ -80,6 +81,11 @@ type _HVACModeAndFlags struct {
 }
 
 var _ HVACModeAndFlags = (*_HVACModeAndFlags)(nil)
+
+// NewHVACModeAndFlags factory function for _HVACModeAndFlags
+func NewHVACModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) *_HVACModeAndFlags {
+	return &_HVACModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -167,11 +173,6 @@ func (m *_HVACModeAndFlags) GetIsLevelRaw() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACModeAndFlags factory function for _HVACModeAndFlags
-func NewHVACModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) *_HVACModeAndFlags {
-	return &_HVACModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACModeAndFlags(structType any) HVACModeAndFlags {
@@ -446,6 +447,25 @@ func (m *_HVACModeAndFlags) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_HVACModeAndFlags) IsHVACModeAndFlags() {}
+
+func (m *_HVACModeAndFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACModeAndFlags) deepCopy() *_HVACModeAndFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACModeAndFlagsCopy := &_HVACModeAndFlags{
+		m.AuxiliaryLevel,
+		m.Guard,
+		m.Setback,
+		m.Level,
+		m.Mode,
+		m.reservedField0,
+	}
+	return _HVACModeAndFlagsCopy
+}
 
 func (m *_HVACModeAndFlags) String() string {
 	if m == nil {

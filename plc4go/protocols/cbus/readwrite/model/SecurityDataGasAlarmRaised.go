@@ -36,6 +36,7 @@ type SecurityDataGasAlarmRaised interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataGasAlarmRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataGasAlarmRaised()
@@ -49,6 +50,15 @@ type _SecurityDataGasAlarmRaised struct {
 var _ SecurityDataGasAlarmRaised = (*_SecurityDataGasAlarmRaised)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataGasAlarmRaised)(nil)
 
+// NewSecurityDataGasAlarmRaised factory function for _SecurityDataGasAlarmRaised
+func NewSecurityDataGasAlarmRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataGasAlarmRaised {
+	_result := &_SecurityDataGasAlarmRaised{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataGasAlarmRaised)(nil)
 
 func (m *_SecurityDataGasAlarmRaised) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataGasAlarmRaised factory function for _SecurityDataGasAlarmRaised
-func NewSecurityDataGasAlarmRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataGasAlarmRaised {
-	_result := &_SecurityDataGasAlarmRaised{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataGasAlarmRaised) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataGasAlarmRaised) IsSecurityDataGasAlarmRaised() {}
+
+func (m *_SecurityDataGasAlarmRaised) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataGasAlarmRaised) deepCopy() *_SecurityDataGasAlarmRaised {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataGasAlarmRaisedCopy := &_SecurityDataGasAlarmRaised{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataGasAlarmRaisedCopy
+}
 
 func (m *_SecurityDataGasAlarmRaised) String() string {
 	if m == nil {

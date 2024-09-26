@@ -38,6 +38,7 @@ type NLMWhoIsRouterToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() *uint16
@@ -53,6 +54,16 @@ type _NLMWhoIsRouterToNetwork struct {
 
 var _ NLMWhoIsRouterToNetwork = (*_NLMWhoIsRouterToNetwork)(nil)
 var _ NLMRequirements = (*_NLMWhoIsRouterToNetwork)(nil)
+
+// NewNLMWhoIsRouterToNetwork factory function for _NLMWhoIsRouterToNetwork
+func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress *uint16, apduLength uint16) *_NLMWhoIsRouterToNetwork {
+	_result := &_NLMWhoIsRouterToNetwork{
+		NLMContract:               NewNLM(apduLength),
+		DestinationNetworkAddress: destinationNetworkAddress,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_NLMWhoIsRouterToNetwork) GetDestinationNetworkAddress() *uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMWhoIsRouterToNetwork factory function for _NLMWhoIsRouterToNetwork
-func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress *uint16, apduLength uint16) *_NLMWhoIsRouterToNetwork {
-	_result := &_NLMWhoIsRouterToNetwork{
-		NLMContract:               NewNLM(apduLength),
-		DestinationNetworkAddress: destinationNetworkAddress,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMWhoIsRouterToNetwork(structType any) NLMWhoIsRouterToNetwork {
@@ -182,6 +183,22 @@ func (m *_NLMWhoIsRouterToNetwork) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_NLMWhoIsRouterToNetwork) IsNLMWhoIsRouterToNetwork() {}
+
+func (m *_NLMWhoIsRouterToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMWhoIsRouterToNetwork) deepCopy() *_NLMWhoIsRouterToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMWhoIsRouterToNetworkCopy := &_NLMWhoIsRouterToNetwork{
+		m.NLMContract.(*_NLM).deepCopy(),
+		utils.CopyPtr[uint16](m.DestinationNetworkAddress),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMWhoIsRouterToNetworkCopy
+}
 
 func (m *_NLMWhoIsRouterToNetwork) String() string {
 	if m == nil {

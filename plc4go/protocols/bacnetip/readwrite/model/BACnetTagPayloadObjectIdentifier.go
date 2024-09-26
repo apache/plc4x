@@ -38,6 +38,7 @@ type BACnetTagPayloadObjectIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectType returns ObjectType (property field)
 	GetObjectType() BACnetObjectType
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -58,6 +59,11 @@ type _BACnetTagPayloadObjectIdentifier struct {
 }
 
 var _ BACnetTagPayloadObjectIdentifier = (*_BACnetTagPayloadObjectIdentifier)(nil)
+
+// NewBACnetTagPayloadObjectIdentifier factory function for _BACnetTagPayloadObjectIdentifier
+func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) *_BACnetTagPayloadObjectIdentifier {
+	return &_BACnetTagPayloadObjectIdentifier{ObjectType: objectType, ProprietaryValue: proprietaryValue, InstanceNumber: instanceNumber}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,11 +101,6 @@ func (m *_BACnetTagPayloadObjectIdentifier) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadObjectIdentifier factory function for _BACnetTagPayloadObjectIdentifier
-func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) *_BACnetTagPayloadObjectIdentifier {
-	return &_BACnetTagPayloadObjectIdentifier{ObjectType: objectType, ProprietaryValue: proprietaryValue, InstanceNumber: instanceNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadObjectIdentifier(structType any) BACnetTagPayloadObjectIdentifier {
@@ -239,6 +240,22 @@ func (m *_BACnetTagPayloadObjectIdentifier) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetTagPayloadObjectIdentifier) IsBACnetTagPayloadObjectIdentifier() {}
+
+func (m *_BACnetTagPayloadObjectIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadObjectIdentifier) deepCopy() *_BACnetTagPayloadObjectIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadObjectIdentifierCopy := &_BACnetTagPayloadObjectIdentifier{
+		m.ObjectType,
+		m.ProprietaryValue,
+		m.InstanceNumber,
+	}
+	return _BACnetTagPayloadObjectIdentifierCopy
+}
 
 func (m *_BACnetTagPayloadObjectIdentifier) String() string {
 	if m == nil {

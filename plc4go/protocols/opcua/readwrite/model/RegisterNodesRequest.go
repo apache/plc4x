@@ -38,6 +38,7 @@ type RegisterNodesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _RegisterNodesRequest struct {
 
 var _ RegisterNodesRequest = (*_RegisterNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterNodesRequest)(nil)
+
+// NewRegisterNodesRequest factory function for _RegisterNodesRequest
+func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) *_RegisterNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RegisterNodesRequest must not be nil")
+	}
+	_result := &_RegisterNodesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToRegister:               noOfNodesToRegister,
+		NodesToRegister:                   nodesToRegister,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_RegisterNodesRequest) GetNodesToRegister() []NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterNodesRequest factory function for _RegisterNodesRequest
-func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) *_RegisterNodesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterNodesRequest must not be nil")
-	}
-	_result := &_RegisterNodesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfNodesToRegister:               noOfNodesToRegister,
-		NodesToRegister:                   nodesToRegister,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterNodesRequest(structType any) RegisterNodesRequest {
@@ -231,6 +232,24 @@ func (m *_RegisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_RegisterNodesRequest) IsRegisterNodesRequest() {}
+
+func (m *_RegisterNodesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterNodesRequest) deepCopy() *_RegisterNodesRequest {
+	if m == nil {
+		return nil
+	}
+	_RegisterNodesRequestCopy := &_RegisterNodesRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodesToRegister,
+		utils.DeepCopySlice[NodeId, NodeId](m.NodesToRegister),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterNodesRequestCopy
+}
 
 func (m *_RegisterNodesRequest) String() string {
 	if m == nil {

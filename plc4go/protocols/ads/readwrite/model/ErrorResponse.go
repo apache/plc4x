@@ -36,6 +36,7 @@ type ErrorResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorResponse()
@@ -48,6 +49,15 @@ type _ErrorResponse struct {
 
 var _ ErrorResponse = (*_ErrorResponse)(nil)
 var _ AmsPacketRequirements = (*_ErrorResponse)(nil)
+
+// NewErrorResponse factory function for _ErrorResponse
+func NewErrorResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_ErrorResponse {
+	_result := &_ErrorResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_ErrorResponse) GetResponse() bool {
 
 func (m *_ErrorResponse) GetParent() AmsPacketContract {
 	return m.AmsPacketContract
-}
-
-// NewErrorResponse factory function for _ErrorResponse
-func NewErrorResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_ErrorResponse {
-	_result := &_ErrorResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_ErrorResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_ErrorResponse) IsErrorResponse() {}
+
+func (m *_ErrorResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorResponse) deepCopy() *_ErrorResponse {
+	if m == nil {
+		return nil
+	}
+	_ErrorResponseCopy := &_ErrorResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _ErrorResponseCopy
+}
 
 func (m *_ErrorResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type IdentifyReplyCommandCurrentSenseLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetCurrentSenseLevels returns CurrentSenseLevels (property field)
 	GetCurrentSenseLevels() []byte
@@ -53,6 +54,16 @@ type _IdentifyReplyCommandCurrentSenseLevels struct {
 
 var _ IdentifyReplyCommandCurrentSenseLevels = (*_IdentifyReplyCommandCurrentSenseLevels)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandCurrentSenseLevels)(nil)
+
+// NewIdentifyReplyCommandCurrentSenseLevels factory function for _IdentifyReplyCommandCurrentSenseLevels
+func NewIdentifyReplyCommandCurrentSenseLevels(currentSenseLevels []byte, numBytes uint8) *_IdentifyReplyCommandCurrentSenseLevels {
+	_result := &_IdentifyReplyCommandCurrentSenseLevels{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		CurrentSenseLevels:           currentSenseLevels,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetCurrentSenseLevels() []byte
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandCurrentSenseLevels factory function for _IdentifyReplyCommandCurrentSenseLevels
-func NewIdentifyReplyCommandCurrentSenseLevels(currentSenseLevels []byte, numBytes uint8) *_IdentifyReplyCommandCurrentSenseLevels {
-	_result := &_IdentifyReplyCommandCurrentSenseLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		CurrentSenseLevels:           currentSenseLevels,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandCurrentSenseLevels(structType any) IdentifyReplyCommandCurrentSenseLevels {
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) IsIdentifyReplyCommandCurrentSenseLevels() {}
+
+func (m *_IdentifyReplyCommandCurrentSenseLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandCurrentSenseLevels) deepCopy() *_IdentifyReplyCommandCurrentSenseLevels {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandCurrentSenseLevelsCopy := &_IdentifyReplyCommandCurrentSenseLevels{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.CurrentSenseLevels),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandCurrentSenseLevelsCopy
+}
 
 func (m *_IdentifyReplyCommandCurrentSenseLevels) String() string {
 	if m == nil {

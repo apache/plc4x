@@ -38,6 +38,7 @@ type SecurityDataZoneUnsealed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
@@ -53,6 +54,16 @@ type _SecurityDataZoneUnsealed struct {
 
 var _ SecurityDataZoneUnsealed = (*_SecurityDataZoneUnsealed)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataZoneUnsealed)(nil)
+
+// NewSecurityDataZoneUnsealed factory function for _SecurityDataZoneUnsealed
+func NewSecurityDataZoneUnsealed(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneUnsealed {
+	_result := &_SecurityDataZoneUnsealed{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_SecurityDataZoneUnsealed) GetZoneNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataZoneUnsealed factory function for _SecurityDataZoneUnsealed
-func NewSecurityDataZoneUnsealed(zoneNumber uint8, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataZoneUnsealed {
-	_result := &_SecurityDataZoneUnsealed{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataZoneUnsealed(structType any) SecurityDataZoneUnsealed {
@@ -175,6 +176,22 @@ func (m *_SecurityDataZoneUnsealed) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SecurityDataZoneUnsealed) IsSecurityDataZoneUnsealed() {}
+
+func (m *_SecurityDataZoneUnsealed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataZoneUnsealed) deepCopy() *_SecurityDataZoneUnsealed {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataZoneUnsealedCopy := &_SecurityDataZoneUnsealed{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ZoneNumber,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataZoneUnsealedCopy
+}
 
 func (m *_SecurityDataZoneUnsealed) String() string {
 	if m == nil {

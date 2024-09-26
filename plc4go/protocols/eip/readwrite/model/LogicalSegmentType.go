@@ -40,6 +40,7 @@ type LogicalSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLogicalSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLogicalSegmentType()
 }
@@ -144,15 +145,15 @@ func (m *_LogicalSegmentType) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child LogicalSegmentType
 	switch {
 	case logicalSegmentType == 0x00: // ClassID
-		if _child, err = (&_ClassID{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ClassID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ClassID for type-switch of LogicalSegmentType")
 		}
 	case logicalSegmentType == 0x01: // InstanceID
-		if _child, err = (&_InstanceID{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_InstanceID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type InstanceID for type-switch of LogicalSegmentType")
 		}
 	case logicalSegmentType == 0x02: // MemberID
-		if _child, err = (&_MemberID{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MemberID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MemberID for type-switch of LogicalSegmentType")
 		}
 	default:
@@ -194,3 +195,17 @@ func (pm *_LogicalSegmentType) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_LogicalSegmentType) IsLogicalSegmentType() {}
+
+func (m *_LogicalSegmentType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LogicalSegmentType) deepCopy() *_LogicalSegmentType {
+	if m == nil {
+		return nil
+	}
+	_LogicalSegmentTypeCopy := &_LogicalSegmentType{
+		nil, // will be set by child
+	}
+	return _LogicalSegmentTypeCopy
+}

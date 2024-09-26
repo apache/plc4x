@@ -36,6 +36,7 @@ type BACnetConstructedDataScheduleAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataScheduleAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataScheduleAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataScheduleAll struct {
 
 var _ BACnetConstructedDataScheduleAll = (*_BACnetConstructedDataScheduleAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScheduleAll)(nil)
+
+// NewBACnetConstructedDataScheduleAll factory function for _BACnetConstructedDataScheduleAll
+func NewBACnetConstructedDataScheduleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleAll {
+	_result := &_BACnetConstructedDataScheduleAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataScheduleAll) GetPropertyIdentifierArgument() BACn
 
 func (m *_BACnetConstructedDataScheduleAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataScheduleAll factory function for _BACnetConstructedDataScheduleAll
-func NewBACnetConstructedDataScheduleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleAll {
-	_result := &_BACnetConstructedDataScheduleAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataScheduleAll) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataScheduleAll) IsBACnetConstructedDataScheduleAll() {}
+
+func (m *_BACnetConstructedDataScheduleAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataScheduleAll) deepCopy() *_BACnetConstructedDataScheduleAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataScheduleAllCopy := &_BACnetConstructedDataScheduleAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataScheduleAllCopy
+}
 
 func (m *_BACnetConstructedDataScheduleAll) String() string {
 	if m == nil {

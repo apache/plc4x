@@ -36,6 +36,7 @@ type AdsReadStateRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsReadStateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadStateRequest()
@@ -48,6 +49,15 @@ type _AdsReadStateRequest struct {
 
 var _ AdsReadStateRequest = (*_AdsReadStateRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadStateRequest)(nil)
+
+// NewAdsReadStateRequest factory function for _AdsReadStateRequest
+func NewAdsReadStateRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadStateRequest {
+	_result := &_AdsReadStateRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_AdsReadStateRequest) GetResponse() bool {
 
 func (m *_AdsReadStateRequest) GetParent() AmsPacketContract {
 	return m.AmsPacketContract
-}
-
-// NewAdsReadStateRequest factory function for _AdsReadStateRequest
-func NewAdsReadStateRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadStateRequest {
-	_result := &_AdsReadStateRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_AdsReadStateRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_AdsReadStateRequest) IsAdsReadStateRequest() {}
+
+func (m *_AdsReadStateRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadStateRequest) deepCopy() *_AdsReadStateRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsReadStateRequestCopy := &_AdsReadStateRequest{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadStateRequestCopy
+}
 
 func (m *_AdsReadStateRequest) String() string {
 	if m == nil {

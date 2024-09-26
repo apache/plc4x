@@ -38,6 +38,7 @@ type AirConditioningDataSetPlantHvacLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -71,6 +72,28 @@ type _AirConditioningDataSetPlantHvacLevel struct {
 
 var _ AirConditioningDataSetPlantHvacLevel = (*_AirConditioningDataSetPlantHvacLevel)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataSetPlantHvacLevel)(nil)
+
+// NewAirConditioningDataSetPlantHvacLevel factory function for _AirConditioningDataSetPlantHvacLevel
+func NewAirConditioningDataSetPlantHvacLevel(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, hvacModeAndFlags HVACModeAndFlags, hvacType HVACType, level HVACTemperature, rawLevel HVACRawLevels, auxLevel HVACAuxiliaryLevel) *_AirConditioningDataSetPlantHvacLevel {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetPlantHvacLevel must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetPlantHvacLevel must not be nil")
+	}
+	_result := &_AirConditioningDataSetPlantHvacLevel{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		HvacModeAndFlags:            hvacModeAndFlags,
+		HvacType:                    hvacType,
+		Level:                       level,
+		RawLevel:                    rawLevel,
+		AuxLevel:                    auxLevel,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -123,28 +146,6 @@ func (m *_AirConditioningDataSetPlantHvacLevel) GetAuxLevel() HVACAuxiliaryLevel
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataSetPlantHvacLevel factory function for _AirConditioningDataSetPlantHvacLevel
-func NewAirConditioningDataSetPlantHvacLevel(zoneGroup byte, zoneList HVACZoneList, hvacModeAndFlags HVACModeAndFlags, hvacType HVACType, level HVACTemperature, rawLevel HVACRawLevels, auxLevel HVACAuxiliaryLevel, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetPlantHvacLevel {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataSetPlantHvacLevel must not be nil")
-	}
-	if hvacModeAndFlags == nil {
-		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetPlantHvacLevel must not be nil")
-	}
-	_result := &_AirConditioningDataSetPlantHvacLevel{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		HvacModeAndFlags:            hvacModeAndFlags,
-		HvacType:                    hvacType,
-		Level:                       level,
-		RawLevel:                    rawLevel,
-		AuxLevel:                    auxLevel,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataSetPlantHvacLevel(structType any) AirConditioningDataSetPlantHvacLevel {
@@ -325,6 +326,28 @@ func (m *_AirConditioningDataSetPlantHvacLevel) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_AirConditioningDataSetPlantHvacLevel) IsAirConditioningDataSetPlantHvacLevel() {}
+
+func (m *_AirConditioningDataSetPlantHvacLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataSetPlantHvacLevel) deepCopy() *_AirConditioningDataSetPlantHvacLevel {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataSetPlantHvacLevelCopy := &_AirConditioningDataSetPlantHvacLevel{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.HvacModeAndFlags.DeepCopy().(HVACModeAndFlags),
+		m.HvacType,
+		m.Level.DeepCopy().(HVACTemperature),
+		m.RawLevel.DeepCopy().(HVACRawLevels),
+		m.AuxLevel.DeepCopy().(HVACAuxiliaryLevel),
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataSetPlantHvacLevelCopy
+}
 
 func (m *_AirConditioningDataSetPlantHvacLevel) String() string {
 	if m == nil {

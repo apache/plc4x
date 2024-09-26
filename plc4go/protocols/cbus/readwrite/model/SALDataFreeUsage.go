@@ -36,6 +36,7 @@ type SALDataFreeUsage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataFreeUsage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataFreeUsage()
@@ -48,6 +49,15 @@ type _SALDataFreeUsage struct {
 
 var _ SALDataFreeUsage = (*_SALDataFreeUsage)(nil)
 var _ SALDataRequirements = (*_SALDataFreeUsage)(nil)
+
+// NewSALDataFreeUsage factory function for _SALDataFreeUsage
+func NewSALDataFreeUsage(salData SALData) *_SALDataFreeUsage {
+	_result := &_SALDataFreeUsage{
+		SALDataContract: NewSALData(salData),
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_SALDataFreeUsage) GetApplicationId() ApplicationId {
 
 func (m *_SALDataFreeUsage) GetParent() SALDataContract {
 	return m.SALDataContract
-}
-
-// NewSALDataFreeUsage factory function for _SALDataFreeUsage
-func NewSALDataFreeUsage(salData SALData) *_SALDataFreeUsage {
-	_result := &_SALDataFreeUsage{
-		SALDataContract: NewSALData(salData),
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -151,6 +152,21 @@ func (m *_SALDataFreeUsage) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_SALDataFreeUsage) IsSALDataFreeUsage() {}
+
+func (m *_SALDataFreeUsage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataFreeUsage) deepCopy() *_SALDataFreeUsage {
+	if m == nil {
+		return nil
+	}
+	_SALDataFreeUsageCopy := &_SALDataFreeUsage{
+		m.SALDataContract.(*_SALData).deepCopy(),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataFreeUsageCopy
+}
 
 func (m *_SALDataFreeUsage) String() string {
 	if m == nil {

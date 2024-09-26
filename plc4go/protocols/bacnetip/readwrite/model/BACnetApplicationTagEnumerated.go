@@ -38,6 +38,7 @@ type BACnetApplicationTagEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadEnumerated
@@ -55,6 +56,19 @@ type _BACnetApplicationTagEnumerated struct {
 
 var _ BACnetApplicationTagEnumerated = (*_BACnetApplicationTagEnumerated)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagEnumerated)(nil)
+
+// NewBACnetApplicationTagEnumerated factory function for _BACnetApplicationTagEnumerated
+func NewBACnetApplicationTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated) *_BACnetApplicationTagEnumerated {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadEnumerated for BACnetApplicationTagEnumerated must not be nil")
+	}
+	_result := &_BACnetApplicationTagEnumerated{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -98,19 +112,6 @@ func (m *_BACnetApplicationTagEnumerated) GetActualValue() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagEnumerated factory function for _BACnetApplicationTagEnumerated
-func NewBACnetApplicationTagEnumerated(payload BACnetTagPayloadEnumerated, header BACnetTagHeader) *_BACnetApplicationTagEnumerated {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadEnumerated for BACnetApplicationTagEnumerated must not be nil")
-	}
-	_result := &_BACnetApplicationTagEnumerated{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagEnumerated(structType any) BACnetApplicationTagEnumerated {
@@ -209,6 +210,22 @@ func (m *_BACnetApplicationTagEnumerated) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetApplicationTagEnumerated) IsBACnetApplicationTagEnumerated() {}
+
+func (m *_BACnetApplicationTagEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagEnumerated) deepCopy() *_BACnetApplicationTagEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagEnumeratedCopy := &_BACnetApplicationTagEnumerated{
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadEnumerated),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagEnumeratedCopy
+}
 
 func (m *_BACnetApplicationTagEnumerated) String() string {
 	if m == nil {

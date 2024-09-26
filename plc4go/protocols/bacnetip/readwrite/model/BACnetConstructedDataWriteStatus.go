@@ -38,6 +38,7 @@ type BACnetConstructedDataWriteStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetWriteStatus returns WriteStatus (property field)
 	GetWriteStatus() BACnetWriteStatusTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataWriteStatus struct {
 
 var _ BACnetConstructedDataWriteStatus = (*_BACnetConstructedDataWriteStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWriteStatus)(nil)
+
+// NewBACnetConstructedDataWriteStatus factory function for _BACnetConstructedDataWriteStatus
+func NewBACnetConstructedDataWriteStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, writeStatus BACnetWriteStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWriteStatus {
+	if writeStatus == nil {
+		panic("writeStatus of type BACnetWriteStatusTagged for BACnetConstructedDataWriteStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataWriteStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		WriteStatus:                   writeStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataWriteStatus) GetActualValue() BACnetWriteStatusTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataWriteStatus factory function for _BACnetConstructedDataWriteStatus
-func NewBACnetConstructedDataWriteStatus(writeStatus BACnetWriteStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWriteStatus {
-	if writeStatus == nil {
-		panic("writeStatus of type BACnetWriteStatusTagged for BACnetConstructedDataWriteStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataWriteStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		WriteStatus:                   writeStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataWriteStatus(structType any) BACnetConstructedDataWriteStatus {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataWriteStatus) IsBACnetConstructedDataWriteStatus() {}
+
+func (m *_BACnetConstructedDataWriteStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataWriteStatus) deepCopy() *_BACnetConstructedDataWriteStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataWriteStatusCopy := &_BACnetConstructedDataWriteStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.WriteStatus.DeepCopy().(BACnetWriteStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataWriteStatusCopy
+}
 
 func (m *_BACnetConstructedDataWriteStatus) String() string {
 	if m == nil {

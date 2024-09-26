@@ -36,6 +36,7 @@ type CALReplyShort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALReply
 	// IsCALReplyShort is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReplyShort()
@@ -49,6 +50,15 @@ type _CALReplyShort struct {
 var _ CALReplyShort = (*_CALReplyShort)(nil)
 var _ CALReplyRequirements = (*_CALReplyShort)(nil)
 
+// NewCALReplyShort factory function for _CALReplyShort
+func NewCALReplyShort(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyShort {
+	_result := &_CALReplyShort{
+		CALReplyContract: NewCALReply(calType, calData, cBusOptions, requestContext),
+	}
+	_result.CALReplyContract.(*_CALReply)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ CALReplyRequirements = (*_CALReplyShort)(nil)
 
 func (m *_CALReplyShort) GetParent() CALReplyContract {
 	return m.CALReplyContract
-}
-
-// NewCALReplyShort factory function for _CALReplyShort
-func NewCALReplyShort(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyShort {
-	_result := &_CALReplyShort{
-		CALReplyContract: NewCALReply(calType, calData, cBusOptions, requestContext),
-	}
-	_result.CALReplyContract.(*_CALReply)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_CALReplyShort) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_CALReplyShort) IsCALReplyShort() {}
+
+func (m *_CALReplyShort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALReplyShort) deepCopy() *_CALReplyShort {
+	if m == nil {
+		return nil
+	}
+	_CALReplyShortCopy := &_CALReplyShort{
+		m.CALReplyContract.(*_CALReply).deepCopy(),
+	}
+	m.CALReplyContract.(*_CALReply)._SubType = m
+	return _CALReplyShortCopy
+}
 
 func (m *_CALReplyShort) String() string {
 	if m == nil {

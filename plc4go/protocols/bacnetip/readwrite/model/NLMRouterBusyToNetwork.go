@@ -38,6 +38,7 @@ type NLMRouterBusyToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddresses returns DestinationNetworkAddresses (property field)
 	GetDestinationNetworkAddresses() []uint16
@@ -53,6 +54,16 @@ type _NLMRouterBusyToNetwork struct {
 
 var _ NLMRouterBusyToNetwork = (*_NLMRouterBusyToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRouterBusyToNetwork)(nil)
+
+// NewNLMRouterBusyToNetwork factory function for _NLMRouterBusyToNetwork
+func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterBusyToNetwork {
+	_result := &_NLMRouterBusyToNetwork{
+		NLMContract:                 NewNLM(apduLength),
+		DestinationNetworkAddresses: destinationNetworkAddresses,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_NLMRouterBusyToNetwork) GetDestinationNetworkAddresses() []uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRouterBusyToNetwork factory function for _NLMRouterBusyToNetwork
-func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterBusyToNetwork {
-	_result := &_NLMRouterBusyToNetwork{
-		NLMContract:                 NewNLM(apduLength),
-		DestinationNetworkAddresses: destinationNetworkAddresses,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRouterBusyToNetwork(structType any) NLMRouterBusyToNetwork {
@@ -181,6 +182,22 @@ func (m *_NLMRouterBusyToNetwork) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_NLMRouterBusyToNetwork) IsNLMRouterBusyToNetwork() {}
+
+func (m *_NLMRouterBusyToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRouterBusyToNetwork) deepCopy() *_NLMRouterBusyToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMRouterBusyToNetworkCopy := &_NLMRouterBusyToNetwork{
+		m.NLMContract.(*_NLM).deepCopy(),
+		utils.DeepCopySlice[uint16, uint16](m.DestinationNetworkAddresses),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRouterBusyToNetworkCopy
+}
 
 func (m *_NLMRouterBusyToNetwork) String() string {
 	if m == nil {

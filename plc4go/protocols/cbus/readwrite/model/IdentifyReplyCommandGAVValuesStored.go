@@ -38,6 +38,7 @@ type IdentifyReplyCommandGAVValuesStored interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetValues returns Values (property field)
 	GetValues() []byte
@@ -53,6 +54,16 @@ type _IdentifyReplyCommandGAVValuesStored struct {
 
 var _ IdentifyReplyCommandGAVValuesStored = (*_IdentifyReplyCommandGAVValuesStored)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVValuesStored)(nil)
+
+// NewIdentifyReplyCommandGAVValuesStored factory function for _IdentifyReplyCommandGAVValuesStored
+func NewIdentifyReplyCommandGAVValuesStored(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesStored {
+	_result := &_IdentifyReplyCommandGAVValuesStored{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		Values:                       values,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_IdentifyReplyCommandGAVValuesStored) GetValues() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandGAVValuesStored factory function for _IdentifyReplyCommandGAVValuesStored
-func NewIdentifyReplyCommandGAVValuesStored(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesStored {
-	_result := &_IdentifyReplyCommandGAVValuesStored{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		Values:                       values,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandGAVValuesStored(structType any) IdentifyReplyCommandGAVValuesStored {
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandGAVValuesStored) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_IdentifyReplyCommandGAVValuesStored) IsIdentifyReplyCommandGAVValuesStored() {}
+
+func (m *_IdentifyReplyCommandGAVValuesStored) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandGAVValuesStored) deepCopy() *_IdentifyReplyCommandGAVValuesStored {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandGAVValuesStoredCopy := &_IdentifyReplyCommandGAVValuesStored{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Values),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandGAVValuesStoredCopy
+}
 
 func (m *_IdentifyReplyCommandGAVValuesStored) String() string {
 	if m == nil {

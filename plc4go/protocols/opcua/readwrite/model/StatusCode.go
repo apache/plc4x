@@ -38,6 +38,7 @@ type StatusCode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() uint32
 	// IsStatusCode is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _StatusCode struct {
 }
 
 var _ StatusCode = (*_StatusCode)(nil)
+
+// NewStatusCode factory function for _StatusCode
+func NewStatusCode(statusCode uint32) *_StatusCode {
+	return &_StatusCode{StatusCode: statusCode}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_StatusCode) GetStatusCode() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusCode factory function for _StatusCode
-func NewStatusCode(statusCode uint32) *_StatusCode {
-	return &_StatusCode{StatusCode: statusCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusCode(structType any) StatusCode {
@@ -166,6 +167,20 @@ func (m *_StatusCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_StatusCode) IsStatusCode() {}
+
+func (m *_StatusCode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusCode) deepCopy() *_StatusCode {
+	if m == nil {
+		return nil
+	}
+	_StatusCodeCopy := &_StatusCode{
+		m.StatusCode,
+	}
+	return _StatusCodeCopy
+}
 
 func (m *_StatusCode) String() string {
 	if m == nil {

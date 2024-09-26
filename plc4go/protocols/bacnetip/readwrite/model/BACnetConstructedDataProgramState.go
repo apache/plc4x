@@ -38,6 +38,7 @@ type BACnetConstructedDataProgramState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProgramState returns ProgramState (property field)
 	GetProgramState() BACnetProgramStateTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProgramState struct {
 
 var _ BACnetConstructedDataProgramState = (*_BACnetConstructedDataProgramState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramState)(nil)
+
+// NewBACnetConstructedDataProgramState factory function for _BACnetConstructedDataProgramState
+func NewBACnetConstructedDataProgramState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programState BACnetProgramStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramState {
+	if programState == nil {
+		panic("programState of type BACnetProgramStateTagged for BACnetConstructedDataProgramState must not be nil")
+	}
+	_result := &_BACnetConstructedDataProgramState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramState:                  programState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProgramState) GetActualValue() BACnetProgramState
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProgramState factory function for _BACnetConstructedDataProgramState
-func NewBACnetConstructedDataProgramState(programState BACnetProgramStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramState {
-	if programState == nil {
-		panic("programState of type BACnetProgramStateTagged for BACnetConstructedDataProgramState must not be nil")
-	}
-	_result := &_BACnetConstructedDataProgramState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProgramState:                  programState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProgramState(structType any) BACnetConstructedDataProgramState {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProgramState) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataProgramState) IsBACnetConstructedDataProgramState() {}
+
+func (m *_BACnetConstructedDataProgramState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProgramState) deepCopy() *_BACnetConstructedDataProgramState {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProgramStateCopy := &_BACnetConstructedDataProgramState{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProgramState.DeepCopy().(BACnetProgramStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProgramStateCopy
+}
 
 func (m *_BACnetConstructedDataProgramState) String() string {
 	if m == nil {

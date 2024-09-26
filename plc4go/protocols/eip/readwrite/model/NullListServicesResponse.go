@@ -36,6 +36,7 @@ type NullListServicesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsNullListServicesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullListServicesResponse()
@@ -48,6 +49,15 @@ type _NullListServicesResponse struct {
 
 var _ NullListServicesResponse = (*_NullListServicesResponse)(nil)
 var _ EipPacketRequirements = (*_NullListServicesResponse)(nil)
+
+// NewNullListServicesResponse factory function for _NullListServicesResponse
+func NewNullListServicesResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_NullListServicesResponse {
+	_result := &_NullListServicesResponse{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_NullListServicesResponse) GetPacketLength() uint16 {
 
 func (m *_NullListServicesResponse) GetParent() EipPacketContract {
 	return m.EipPacketContract
-}
-
-// NewNullListServicesResponse factory function for _NullListServicesResponse
-func NewNullListServicesResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_NullListServicesResponse {
-	_result := &_NullListServicesResponse{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_NullListServicesResponse) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_NullListServicesResponse) IsNullListServicesResponse() {}
+
+func (m *_NullListServicesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullListServicesResponse) deepCopy() *_NullListServicesResponse {
+	if m == nil {
+		return nil
+	}
+	_NullListServicesResponseCopy := &_NullListServicesResponse{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _NullListServicesResponseCopy
+}
 
 func (m *_NullListServicesResponse) String() string {
 	if m == nil {

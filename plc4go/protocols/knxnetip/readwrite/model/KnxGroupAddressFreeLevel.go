@@ -38,6 +38,7 @@ type KnxGroupAddressFreeLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxGroupAddress
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint16
@@ -53,6 +54,16 @@ type _KnxGroupAddressFreeLevel struct {
 
 var _ KnxGroupAddressFreeLevel = (*_KnxGroupAddressFreeLevel)(nil)
 var _ KnxGroupAddressRequirements = (*_KnxGroupAddressFreeLevel)(nil)
+
+// NewKnxGroupAddressFreeLevel factory function for _KnxGroupAddressFreeLevel
+func NewKnxGroupAddressFreeLevel(subGroup uint16) *_KnxGroupAddressFreeLevel {
+	_result := &_KnxGroupAddressFreeLevel{
+		KnxGroupAddressContract: NewKnxGroupAddress(),
+		SubGroup:                subGroup,
+	}
+	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_KnxGroupAddressFreeLevel) GetSubGroup() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxGroupAddressFreeLevel factory function for _KnxGroupAddressFreeLevel
-func NewKnxGroupAddressFreeLevel(subGroup uint16) *_KnxGroupAddressFreeLevel {
-	_result := &_KnxGroupAddressFreeLevel{
-		KnxGroupAddressContract: NewKnxGroupAddress(),
-		SubGroup:                subGroup,
-	}
-	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxGroupAddressFreeLevel(structType any) KnxGroupAddressFreeLevel {
@@ -179,6 +180,22 @@ func (m *_KnxGroupAddressFreeLevel) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_KnxGroupAddressFreeLevel) IsKnxGroupAddressFreeLevel() {}
+
+func (m *_KnxGroupAddressFreeLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxGroupAddressFreeLevel) deepCopy() *_KnxGroupAddressFreeLevel {
+	if m == nil {
+		return nil
+	}
+	_KnxGroupAddressFreeLevelCopy := &_KnxGroupAddressFreeLevel{
+		m.KnxGroupAddressContract.(*_KnxGroupAddress).deepCopy(),
+		m.SubGroup,
+	}
+	m.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = m
+	return _KnxGroupAddressFreeLevelCopy
+}
 
 func (m *_KnxGroupAddressFreeLevel) String() string {
 	if m == nil {

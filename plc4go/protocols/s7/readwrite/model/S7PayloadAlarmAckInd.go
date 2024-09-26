@@ -38,6 +38,7 @@ type S7PayloadAlarmAckInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() AlarmMessageAckPushType
@@ -53,6 +54,19 @@ type _S7PayloadAlarmAckInd struct {
 
 var _ S7PayloadAlarmAckInd = (*_S7PayloadAlarmAckInd)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadAlarmAckInd)(nil)
+
+// NewS7PayloadAlarmAckInd factory function for _S7PayloadAlarmAckInd
+func NewS7PayloadAlarmAckInd(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, alarmMessage AlarmMessageAckPushType) *_S7PayloadAlarmAckInd {
+	if alarmMessage == nil {
+		panic("alarmMessage of type AlarmMessageAckPushType for S7PayloadAlarmAckInd must not be nil")
+	}
+	_result := &_S7PayloadAlarmAckInd{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		AlarmMessage:                  alarmMessage,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,19 +107,6 @@ func (m *_S7PayloadAlarmAckInd) GetAlarmMessage() AlarmMessageAckPushType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadAlarmAckInd factory function for _S7PayloadAlarmAckInd
-func NewS7PayloadAlarmAckInd(alarmMessage AlarmMessageAckPushType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadAlarmAckInd {
-	if alarmMessage == nil {
-		panic("alarmMessage of type AlarmMessageAckPushType for S7PayloadAlarmAckInd must not be nil")
-	}
-	_result := &_S7PayloadAlarmAckInd{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		AlarmMessage:                  alarmMessage,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadAlarmAckInd(structType any) S7PayloadAlarmAckInd {
@@ -190,6 +191,22 @@ func (m *_S7PayloadAlarmAckInd) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_S7PayloadAlarmAckInd) IsS7PayloadAlarmAckInd() {}
+
+func (m *_S7PayloadAlarmAckInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadAlarmAckInd) deepCopy() *_S7PayloadAlarmAckInd {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadAlarmAckIndCopy := &_S7PayloadAlarmAckInd{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.AlarmMessage.DeepCopy().(AlarmMessageAckPushType),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadAlarmAckIndCopy
+}
 
 func (m *_S7PayloadAlarmAckInd) String() string {
 	if m == nil {

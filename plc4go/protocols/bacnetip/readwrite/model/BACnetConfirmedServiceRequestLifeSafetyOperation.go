@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetRequestingProcessIdentifier returns RequestingProcessIdentifier (property field)
 	GetRequestingProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -62,6 +63,28 @@ type _BACnetConfirmedServiceRequestLifeSafetyOperation struct {
 
 var _ BACnetConfirmedServiceRequestLifeSafetyOperation = (*_BACnetConfirmedServiceRequestLifeSafetyOperation)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestLifeSafetyOperation)(nil)
+
+// NewBACnetConfirmedServiceRequestLifeSafetyOperation factory function for _BACnetConfirmedServiceRequestLifeSafetyOperation
+func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged, objectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestLifeSafetyOperation {
+	if requestingProcessIdentifier == nil {
+		panic("requestingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
+	}
+	if requestingSource == nil {
+		panic("requestingSource of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
+	}
+	if request == nil {
+		panic("request of type BACnetLifeSafetyOperationTagged for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		RequestingProcessIdentifier:           requestingProcessIdentifier,
+		RequestingSource:                      requestingSource,
+		Request:                               request,
+		ObjectIdentifier:                      objectIdentifier,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +129,6 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) GetObjectIdentifier(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestLifeSafetyOperation factory function for _BACnetConfirmedServiceRequestLifeSafetyOperation
-func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged, objectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestLifeSafetyOperation {
-	if requestingProcessIdentifier == nil {
-		panic("requestingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
-	}
-	if requestingSource == nil {
-		panic("requestingSource of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
-	}
-	if request == nil {
-		panic("request of type BACnetLifeSafetyOperationTagged for BACnetConfirmedServiceRequestLifeSafetyOperation must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		RequestingProcessIdentifier:           requestingProcessIdentifier,
-		RequestingSource:                      requestingSource,
-		Request:                               request,
-		ObjectIdentifier:                      objectIdentifier,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestLifeSafetyOperation(structType any) BACnetConfirmedServiceRequestLifeSafetyOperation {
@@ -257,6 +258,25 @@ func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) SerializeWithWriteBu
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) IsBACnetConfirmedServiceRequestLifeSafetyOperation() {
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) deepCopy() *_BACnetConfirmedServiceRequestLifeSafetyOperation {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestLifeSafetyOperationCopy := &_BACnetConfirmedServiceRequestLifeSafetyOperation{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.RequestingProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.RequestingSource.DeepCopy().(BACnetContextTagCharacterString),
+		m.Request.DeepCopy().(BACnetLifeSafetyOperationTagged),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestLifeSafetyOperationCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) String() string {

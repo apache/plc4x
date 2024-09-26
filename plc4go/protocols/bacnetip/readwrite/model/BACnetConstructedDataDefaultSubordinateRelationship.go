@@ -38,6 +38,7 @@ type BACnetConstructedDataDefaultSubordinateRelationship interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDefaultSubordinateRelationship returns DefaultSubordinateRelationship (property field)
 	GetDefaultSubordinateRelationship() BACnetRelationshipTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDefaultSubordinateRelationship struct {
 
 var _ BACnetConstructedDataDefaultSubordinateRelationship = (*_BACnetConstructedDataDefaultSubordinateRelationship)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultSubordinateRelationship)(nil)
+
+// NewBACnetConstructedDataDefaultSubordinateRelationship factory function for _BACnetConstructedDataDefaultSubordinateRelationship
+func NewBACnetConstructedDataDefaultSubordinateRelationship(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultSubordinateRelationship BACnetRelationshipTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultSubordinateRelationship {
+	if defaultSubordinateRelationship == nil {
+		panic("defaultSubordinateRelationship of type BACnetRelationshipTagged for BACnetConstructedDataDefaultSubordinateRelationship must not be nil")
+	}
+	_result := &_BACnetConstructedDataDefaultSubordinateRelationship{
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DefaultSubordinateRelationship: defaultSubordinateRelationship,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetActualValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDefaultSubordinateRelationship factory function for _BACnetConstructedDataDefaultSubordinateRelationship
-func NewBACnetConstructedDataDefaultSubordinateRelationship(defaultSubordinateRelationship BACnetRelationshipTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultSubordinateRelationship {
-	if defaultSubordinateRelationship == nil {
-		panic("defaultSubordinateRelationship of type BACnetRelationshipTagged for BACnetConstructedDataDefaultSubordinateRelationship must not be nil")
-	}
-	_result := &_BACnetConstructedDataDefaultSubordinateRelationship{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DefaultSubordinateRelationship: defaultSubordinateRelationship,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDefaultSubordinateRelationship(structType any) BACnetConstructedDataDefaultSubordinateRelationship {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataDefaultSubordinateRelationship) IsBACnetConstructedDataDefaultSubordinateRelationship() {
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) deepCopy() *_BACnetConstructedDataDefaultSubordinateRelationship {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDefaultSubordinateRelationshipCopy := &_BACnetConstructedDataDefaultSubordinateRelationship{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DefaultSubordinateRelationship.DeepCopy().(BACnetRelationshipTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDefaultSubordinateRelationshipCopy
 }
 
 func (m *_BACnetConstructedDataDefaultSubordinateRelationship) String() string {

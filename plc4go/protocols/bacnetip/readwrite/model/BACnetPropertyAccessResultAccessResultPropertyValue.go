@@ -38,6 +38,7 @@ type BACnetPropertyAccessResultAccessResultPropertyValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyAccessResultAccessResult
 	// GetPropertyValue returns PropertyValue (property field)
 	GetPropertyValue() BACnetConstructedData
@@ -53,6 +54,19 @@ type _BACnetPropertyAccessResultAccessResultPropertyValue struct {
 
 var _ BACnetPropertyAccessResultAccessResultPropertyValue = (*_BACnetPropertyAccessResultAccessResultPropertyValue)(nil)
 var _ BACnetPropertyAccessResultAccessResultRequirements = (*_BACnetPropertyAccessResultAccessResultPropertyValue)(nil)
+
+// NewBACnetPropertyAccessResultAccessResultPropertyValue factory function for _BACnetPropertyAccessResultAccessResultPropertyValue
+func NewBACnetPropertyAccessResultAccessResultPropertyValue(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyValue {
+	if propertyValue == nil {
+		panic("propertyValue of type BACnetConstructedData for BACnetPropertyAccessResultAccessResultPropertyValue must not be nil")
+	}
+	_result := &_BACnetPropertyAccessResultAccessResultPropertyValue{
+		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
+		PropertyValue: propertyValue,
+	}
+	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetPropertyValue(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyAccessResultAccessResultPropertyValue factory function for _BACnetPropertyAccessResultAccessResultPropertyValue
-func NewBACnetPropertyAccessResultAccessResultPropertyValue(propertyValue BACnetConstructedData, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyValue {
-	if propertyValue == nil {
-		panic("propertyValue of type BACnetConstructedData for BACnetPropertyAccessResultAccessResultPropertyValue must not be nil")
-	}
-	_result := &_BACnetPropertyAccessResultAccessResultPropertyValue{
-		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
-		PropertyValue: propertyValue,
-	}
-	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyAccessResultAccessResultPropertyValue(structType any) BACnetPropertyAccessResultAccessResultPropertyValue {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) SerializeWithWrit
 }
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) IsBACnetPropertyAccessResultAccessResultPropertyValue() {
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) deepCopy() *_BACnetPropertyAccessResultAccessResultPropertyValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyAccessResultAccessResultPropertyValueCopy := &_BACnetPropertyAccessResultAccessResultPropertyValue{
+		m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult).deepCopy(),
+		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = m
+	return _BACnetPropertyAccessResultAccessResultPropertyValueCopy
 }
 
 func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) String() string {

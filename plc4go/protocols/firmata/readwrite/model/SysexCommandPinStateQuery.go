@@ -38,6 +38,7 @@ type SysexCommandPinStateQuery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -53,6 +54,16 @@ type _SysexCommandPinStateQuery struct {
 
 var _ SysexCommandPinStateQuery = (*_SysexCommandPinStateQuery)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandPinStateQuery)(nil)
+
+// NewSysexCommandPinStateQuery factory function for _SysexCommandPinStateQuery
+func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
+	_result := &_SysexCommandPinStateQuery{
+		SysexCommandContract: NewSysexCommand(),
+		Pin:                  pin,
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_SysexCommandPinStateQuery) GetPin() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSysexCommandPinStateQuery factory function for _SysexCommandPinStateQuery
-func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
-	_result := &_SysexCommandPinStateQuery{
-		SysexCommandContract: NewSysexCommand(),
-		Pin:                  pin,
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSysexCommandPinStateQuery(structType any) SysexCommandPinStateQuery {
@@ -183,6 +184,22 @@ func (m *_SysexCommandPinStateQuery) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SysexCommandPinStateQuery) IsSysexCommandPinStateQuery() {}
+
+func (m *_SysexCommandPinStateQuery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandPinStateQuery) deepCopy() *_SysexCommandPinStateQuery {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandPinStateQueryCopy := &_SysexCommandPinStateQuery{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+		m.Pin,
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandPinStateQueryCopy
+}
 
 func (m *_SysexCommandPinStateQuery) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataCommandTimeArray interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataCommandTimeArray struct {
 
 var _ BACnetConstructedDataCommandTimeArray = (*_BACnetConstructedDataCommandTimeArray)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCommandTimeArray)(nil)
+
+// NewBACnetConstructedDataCommandTimeArray factory function for _BACnetConstructedDataCommandTimeArray
+func NewBACnetConstructedDataCommandTimeArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, commandTimeArray []BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommandTimeArray {
+	_result := &_BACnetConstructedDataCommandTimeArray{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		CommandTimeArray:              commandTimeArray,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataCommandTimeArray) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCommandTimeArray factory function for _BACnetConstructedDataCommandTimeArray
-func NewBACnetConstructedDataCommandTimeArray(numberOfDataElements BACnetApplicationTagUnsignedInteger, commandTimeArray []BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommandTimeArray {
-	_result := &_BACnetConstructedDataCommandTimeArray{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		CommandTimeArray:              commandTimeArray,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCommandTimeArray(structType any) BACnetConstructedDataCommandTimeArray {
@@ -252,6 +253,23 @@ func (m *_BACnetConstructedDataCommandTimeArray) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataCommandTimeArray) IsBACnetConstructedDataCommandTimeArray() {}
+
+func (m *_BACnetConstructedDataCommandTimeArray) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCommandTimeArray) deepCopy() *_BACnetConstructedDataCommandTimeArray {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCommandTimeArrayCopy := &_BACnetConstructedDataCommandTimeArray{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetTimeStamp, BACnetTimeStamp](m.CommandTimeArray),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCommandTimeArrayCopy
+}
 
 func (m *_BACnetConstructedDataCommandTimeArray) String() string {
 	if m == nil {

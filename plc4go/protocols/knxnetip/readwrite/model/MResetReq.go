@@ -36,6 +36,7 @@ type MResetReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMResetReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMResetReq()
@@ -48,6 +49,15 @@ type _MResetReq struct {
 
 var _ MResetReq = (*_MResetReq)(nil)
 var _ CEMIRequirements = (*_MResetReq)(nil)
+
+// NewMResetReq factory function for _MResetReq
+func NewMResetReq(size uint16) *_MResetReq {
+	_result := &_MResetReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_MResetReq) GetMessageCode() uint8 {
 
 func (m *_MResetReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMResetReq factory function for _MResetReq
-func NewMResetReq(size uint16) *_MResetReq {
-	_result := &_MResetReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_MResetReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_MResetReq) IsMResetReq() {}
+
+func (m *_MResetReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MResetReq) deepCopy() *_MResetReq {
+	if m == nil {
+		return nil
+	}
+	_MResetReqCopy := &_MResetReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MResetReqCopy
+}
 
 func (m *_MResetReq) String() string {
 	if m == nil {

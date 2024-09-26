@@ -38,6 +38,7 @@ type ApduDataOther interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetExtendedApdu returns ExtendedApdu (property field)
 	GetExtendedApdu() ApduDataExt
@@ -53,6 +54,19 @@ type _ApduDataOther struct {
 
 var _ ApduDataOther = (*_ApduDataOther)(nil)
 var _ ApduDataRequirements = (*_ApduDataOther)(nil)
+
+// NewApduDataOther factory function for _ApduDataOther
+func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
+	if extendedApdu == nil {
+		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
+	}
+	_result := &_ApduDataOther{
+		ApduDataContract: NewApduData(dataLength),
+		ExtendedApdu:     extendedApdu,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_ApduDataOther) GetExtendedApdu() ApduDataExt {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataOther factory function for _ApduDataOther
-func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
-	if extendedApdu == nil {
-		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
-	}
-	_result := &_ApduDataOther{
-		ApduDataContract: NewApduData(dataLength),
-		ExtendedApdu:     extendedApdu,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataOther(structType any) ApduDataOther {
@@ -182,6 +183,22 @@ func (m *_ApduDataOther) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_ApduDataOther) IsApduDataOther() {}
+
+func (m *_ApduDataOther) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataOther) deepCopy() *_ApduDataOther {
+	if m == nil {
+		return nil
+	}
+	_ApduDataOtherCopy := &_ApduDataOther{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.ExtendedApdu.DeepCopy().(ApduDataExt),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataOtherCopy
+}
 
 func (m *_ApduDataOther) String() string {
 	if m == nil {

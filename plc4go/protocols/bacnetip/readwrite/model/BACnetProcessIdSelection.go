@@ -40,6 +40,7 @@ type BACnetProcessIdSelection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetProcessIdSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProcessIdSelection()
 }
@@ -70,6 +71,14 @@ type _BACnetProcessIdSelection struct {
 
 var _ BACnetProcessIdSelectionContract = (*_BACnetProcessIdSelection)(nil)
 
+// NewBACnetProcessIdSelection factory function for _BACnetProcessIdSelection
+func NewBACnetProcessIdSelection(peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelection {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetProcessIdSelection must not be nil")
+	}
+	return &_BACnetProcessIdSelection{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetProcessIdSelection) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProcessIdSelection factory function for _BACnetProcessIdSelection
-func NewBACnetProcessIdSelection(peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelection {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetProcessIdSelection must not be nil")
-	}
-	return &_BACnetProcessIdSelection{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProcessIdSelection(structType any) BACnetProcessIdSelection {
@@ -189,11 +190,11 @@ func (m *_BACnetProcessIdSelection) parse(ctx context.Context, readBuffer utils.
 	var _child BACnetProcessIdSelection
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetProcessIdSelectionNull
-		if _child, err = (&_BACnetProcessIdSelectionNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetProcessIdSelectionNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetProcessIdSelectionNull for type-switch of BACnetProcessIdSelection")
 		}
 	case 0 == 0: // BACnetProcessIdSelectionValue
-		if _child, err = (&_BACnetProcessIdSelectionValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetProcessIdSelectionValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetProcessIdSelectionValue for type-switch of BACnetProcessIdSelection")
 		}
 	default:
@@ -237,3 +238,18 @@ func (pm *_BACnetProcessIdSelection) serializeParent(ctx context.Context, writeB
 }
 
 func (m *_BACnetProcessIdSelection) IsBACnetProcessIdSelection() {}
+
+func (m *_BACnetProcessIdSelection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProcessIdSelection) deepCopy() *_BACnetProcessIdSelection {
+	if m == nil {
+		return nil
+	}
+	_BACnetProcessIdSelectionCopy := &_BACnetProcessIdSelection{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetProcessIdSelectionCopy
+}

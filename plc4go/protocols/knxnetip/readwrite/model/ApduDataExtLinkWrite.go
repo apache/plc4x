@@ -36,6 +36,7 @@ type ApduDataExtLinkWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtLinkWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtLinkWrite()
@@ -48,6 +49,15 @@ type _ApduDataExtLinkWrite struct {
 
 var _ ApduDataExtLinkWrite = (*_ApduDataExtLinkWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtLinkWrite)(nil)
+
+// NewApduDataExtLinkWrite factory function for _ApduDataExtLinkWrite
+func NewApduDataExtLinkWrite(length uint8) *_ApduDataExtLinkWrite {
+	_result := &_ApduDataExtLinkWrite{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtLinkWrite) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtLinkWrite) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtLinkWrite factory function for _ApduDataExtLinkWrite
-func NewApduDataExtLinkWrite(length uint8) *_ApduDataExtLinkWrite {
-	_result := &_ApduDataExtLinkWrite{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtLinkWrite) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ApduDataExtLinkWrite) IsApduDataExtLinkWrite() {}
+
+func (m *_ApduDataExtLinkWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtLinkWrite) deepCopy() *_ApduDataExtLinkWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtLinkWriteCopy := &_ApduDataExtLinkWrite{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtLinkWriteCopy
+}
 
 func (m *_ApduDataExtLinkWrite) String() string {
 	if m == nil {

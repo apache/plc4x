@@ -38,6 +38,7 @@ type BACnetPropertyStatesEscalatorOperationDirection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetEscalatorOperationDirection returns EscalatorOperationDirection (property field)
 	GetEscalatorOperationDirection() BACnetEscalatorOperationDirectionTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesEscalatorOperationDirection struct {
 
 var _ BACnetPropertyStatesEscalatorOperationDirection = (*_BACnetPropertyStatesEscalatorOperationDirection)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEscalatorOperationDirection)(nil)
+
+// NewBACnetPropertyStatesEscalatorOperationDirection factory function for _BACnetPropertyStatesEscalatorOperationDirection
+func NewBACnetPropertyStatesEscalatorOperationDirection(peekedTagHeader BACnetTagHeader, escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) *_BACnetPropertyStatesEscalatorOperationDirection {
+	if escalatorOperationDirection == nil {
+		panic("escalatorOperationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetPropertyStatesEscalatorOperationDirection must not be nil")
+	}
+	_result := &_BACnetPropertyStatesEscalatorOperationDirection{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EscalatorOperationDirection:  escalatorOperationDirection,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetEscalatorOperation
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesEscalatorOperationDirection factory function for _BACnetPropertyStatesEscalatorOperationDirection
-func NewBACnetPropertyStatesEscalatorOperationDirection(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEscalatorOperationDirection {
-	if escalatorOperationDirection == nil {
-		panic("escalatorOperationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetPropertyStatesEscalatorOperationDirection must not be nil")
-	}
-	_result := &_BACnetPropertyStatesEscalatorOperationDirection{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		EscalatorOperationDirection:  escalatorOperationDirection,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesEscalatorOperationDirection(structType any) BACnetPropertyStatesEscalatorOperationDirection {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) SerializeWithWriteBuf
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) IsBACnetPropertyStatesEscalatorOperationDirection() {
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) deepCopy() *_BACnetPropertyStatesEscalatorOperationDirection {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEscalatorOperationDirectionCopy := &_BACnetPropertyStatesEscalatorOperationDirection{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.EscalatorOperationDirection.DeepCopy().(BACnetEscalatorOperationDirectionTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesEscalatorOperationDirectionCopy
 }
 
 func (m *_BACnetPropertyStatesEscalatorOperationDirection) String() string {

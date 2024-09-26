@@ -38,6 +38,7 @@ type BACnetConstructedDataNotificationThreshold interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNotificationThreshold returns NotificationThreshold (property field)
 	GetNotificationThreshold() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataNotificationThreshold struct {
 
 var _ BACnetConstructedDataNotificationThreshold = (*_BACnetConstructedDataNotificationThreshold)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationThreshold)(nil)
+
+// NewBACnetConstructedDataNotificationThreshold factory function for _BACnetConstructedDataNotificationThreshold
+func NewBACnetConstructedDataNotificationThreshold(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationThreshold BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationThreshold {
+	if notificationThreshold == nil {
+		panic("notificationThreshold of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationThreshold must not be nil")
+	}
+	_result := &_BACnetConstructedDataNotificationThreshold{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NotificationThreshold:         notificationThreshold,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataNotificationThreshold) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNotificationThreshold factory function for _BACnetConstructedDataNotificationThreshold
-func NewBACnetConstructedDataNotificationThreshold(notificationThreshold BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationThreshold {
-	if notificationThreshold == nil {
-		panic("notificationThreshold of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationThreshold must not be nil")
-	}
-	_result := &_BACnetConstructedDataNotificationThreshold{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NotificationThreshold:         notificationThreshold,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNotificationThreshold(structType any) BACnetConstructedDataNotificationThreshold {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNotificationThreshold) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataNotificationThreshold) IsBACnetConstructedDataNotificationThreshold() {
+}
+
+func (m *_BACnetConstructedDataNotificationThreshold) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNotificationThreshold) deepCopy() *_BACnetConstructedDataNotificationThreshold {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNotificationThresholdCopy := &_BACnetConstructedDataNotificationThreshold{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NotificationThreshold.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNotificationThresholdCopy
 }
 
 func (m *_BACnetConstructedDataNotificationThreshold) String() string {

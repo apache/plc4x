@@ -38,6 +38,7 @@ type S7AddressAny interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Address
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() TransportSize
@@ -70,6 +71,21 @@ type _S7AddressAny struct {
 
 var _ S7AddressAny = (*_S7AddressAny)(nil)
 var _ S7AddressRequirements = (*_S7AddressAny)(nil)
+
+// NewS7AddressAny factory function for _S7AddressAny
+func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *_S7AddressAny {
+	_result := &_S7AddressAny{
+		S7AddressContract: NewS7Address(),
+		TransportSize:     transportSize,
+		NumberOfElements:  numberOfElements,
+		DbNumber:          dbNumber,
+		Area:              area,
+		ByteAddress:       byteAddress,
+		BitAddress:        bitAddress,
+	}
+	_result.S7AddressContract.(*_S7Address)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -122,21 +138,6 @@ func (m *_S7AddressAny) GetBitAddress() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7AddressAny factory function for _S7AddressAny
-func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *_S7AddressAny {
-	_result := &_S7AddressAny{
-		S7AddressContract: NewS7Address(),
-		TransportSize:     transportSize,
-		NumberOfElements:  numberOfElements,
-		DbNumber:          dbNumber,
-		Area:              area,
-		ByteAddress:       byteAddress,
-		BitAddress:        bitAddress,
-	}
-	_result.S7AddressContract.(*_S7Address)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7AddressAny(structType any) S7AddressAny {
@@ -299,6 +300,28 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_S7AddressAny) IsS7AddressAny() {}
+
+func (m *_S7AddressAny) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7AddressAny) deepCopy() *_S7AddressAny {
+	if m == nil {
+		return nil
+	}
+	_S7AddressAnyCopy := &_S7AddressAny{
+		m.S7AddressContract.(*_S7Address).deepCopy(),
+		m.TransportSize,
+		m.NumberOfElements,
+		m.DbNumber,
+		m.Area,
+		m.ByteAddress,
+		m.BitAddress,
+		m.reservedField0,
+	}
+	m.S7AddressContract.(*_S7Address)._SubType = m
+	return _S7AddressAnyCopy
+}
 
 func (m *_S7AddressAny) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetServiceAckAtomicWriteFile interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetContextTagSignedInteger
@@ -53,6 +54,19 @@ type _BACnetServiceAckAtomicWriteFile struct {
 
 var _ BACnetServiceAckAtomicWriteFile = (*_BACnetServiceAckAtomicWriteFile)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicWriteFile)(nil)
+
+// NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
+func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetContextTagSignedInteger for BACnetServiceAckAtomicWriteFile must not be nil")
+	}
+	_result := &_BACnetServiceAckAtomicWriteFile{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		FileStartPosition:        fileStartPosition,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetFileStartPosition() BACnetContextT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
-func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
-	if fileStartPosition == nil {
-		panic("fileStartPosition of type BACnetContextTagSignedInteger for BACnetServiceAckAtomicWriteFile must not be nil")
-	}
-	_result := &_BACnetServiceAckAtomicWriteFile{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		FileStartPosition:        fileStartPosition,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckAtomicWriteFile(structType any) BACnetServiceAckAtomicWriteFile {
@@ -182,6 +183,22 @@ func (m *_BACnetServiceAckAtomicWriteFile) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetServiceAckAtomicWriteFile) IsBACnetServiceAckAtomicWriteFile() {}
+
+func (m *_BACnetServiceAckAtomicWriteFile) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAtomicWriteFile) deepCopy() *_BACnetServiceAckAtomicWriteFile {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAtomicWriteFileCopy := &_BACnetServiceAckAtomicWriteFile{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.FileStartPosition.DeepCopy().(BACnetContextTagSignedInteger),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckAtomicWriteFileCopy
+}
 
 func (m *_BACnetServiceAckAtomicWriteFile) String() string {
 	if m == nil {

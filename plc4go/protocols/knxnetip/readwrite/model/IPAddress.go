@@ -38,6 +38,7 @@ type IPAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddr returns Addr (property field)
 	GetAddr() []byte
 	// IsIPAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _IPAddress struct {
 }
 
 var _ IPAddress = (*_IPAddress)(nil)
+
+// NewIPAddress factory function for _IPAddress
+func NewIPAddress(addr []byte) *_IPAddress {
+	return &_IPAddress{Addr: addr}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_IPAddress) GetAddr() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIPAddress factory function for _IPAddress
-func NewIPAddress(addr []byte) *_IPAddress {
-	return &_IPAddress{Addr: addr}
-}
 
 // Deprecated: use the interface for direct cast
 func CastIPAddress(structType any) IPAddress {
@@ -168,6 +169,20 @@ func (m *_IPAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_IPAddress) IsIPAddress() {}
+
+func (m *_IPAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IPAddress) deepCopy() *_IPAddress {
+	if m == nil {
+		return nil
+	}
+	_IPAddressCopy := &_IPAddress{
+		utils.DeepCopySlice[byte, byte](m.Addr),
+	}
+	return _IPAddressCopy
+}
 
 func (m *_IPAddress) String() string {
 	if m == nil {

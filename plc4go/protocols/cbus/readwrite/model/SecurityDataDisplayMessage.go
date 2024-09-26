@@ -38,6 +38,7 @@ type SecurityDataDisplayMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetMessage returns Message (property field)
 	GetMessage() string
@@ -53,6 +54,16 @@ type _SecurityDataDisplayMessage struct {
 
 var _ SecurityDataDisplayMessage = (*_SecurityDataDisplayMessage)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataDisplayMessage)(nil)
+
+// NewSecurityDataDisplayMessage factory function for _SecurityDataDisplayMessage
+func NewSecurityDataDisplayMessage(commandTypeContainer SecurityCommandTypeContainer, argument byte, message string) *_SecurityDataDisplayMessage {
+	_result := &_SecurityDataDisplayMessage{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Message:              message,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_SecurityDataDisplayMessage) GetMessage() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataDisplayMessage factory function for _SecurityDataDisplayMessage
-func NewSecurityDataDisplayMessage(message string, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDisplayMessage {
-	_result := &_SecurityDataDisplayMessage{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Message:              message,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataDisplayMessage(structType any) SecurityDataDisplayMessage {
@@ -175,6 +176,22 @@ func (m *_SecurityDataDisplayMessage) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataDisplayMessage) IsSecurityDataDisplayMessage() {}
+
+func (m *_SecurityDataDisplayMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataDisplayMessage) deepCopy() *_SecurityDataDisplayMessage {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataDisplayMessageCopy := &_SecurityDataDisplayMessage{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.Message,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataDisplayMessageCopy
+}
 
 func (m *_SecurityDataDisplayMessage) String() string {
 	if m == nil {

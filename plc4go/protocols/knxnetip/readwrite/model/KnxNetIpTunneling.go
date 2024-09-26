@@ -38,6 +38,7 @@ type KnxNetIpTunneling interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -53,6 +54,16 @@ type _KnxNetIpTunneling struct {
 
 var _ KnxNetIpTunneling = (*_KnxNetIpTunneling)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpTunneling)(nil)
+
+// NewKnxNetIpTunneling factory function for _KnxNetIpTunneling
+func NewKnxNetIpTunneling(version uint8) *_KnxNetIpTunneling {
+	_result := &_KnxNetIpTunneling{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_KnxNetIpTunneling) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpTunneling factory function for _KnxNetIpTunneling
-func NewKnxNetIpTunneling(version uint8) *_KnxNetIpTunneling {
-	_result := &_KnxNetIpTunneling{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpTunneling(structType any) KnxNetIpTunneling {
@@ -179,6 +180,22 @@ func (m *_KnxNetIpTunneling) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_KnxNetIpTunneling) IsKnxNetIpTunneling() {}
+
+func (m *_KnxNetIpTunneling) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpTunneling) deepCopy() *_KnxNetIpTunneling {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpTunnelingCopy := &_KnxNetIpTunneling{
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpTunnelingCopy
+}
 
 func (m *_KnxNetIpTunneling) String() string {
 	if m == nil {

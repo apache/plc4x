@@ -38,6 +38,7 @@ type CipConnectedRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetPathSegments returns PathSegments (property field)
 	GetPathSegments() []byte
@@ -56,6 +57,16 @@ type _CipConnectedRequest struct {
 
 var _ CipConnectedRequest = (*_CipConnectedRequest)(nil)
 var _ CipServiceRequirements = (*_CipConnectedRequest)(nil)
+
+// NewCipConnectedRequest factory function for _CipConnectedRequest
+func NewCipConnectedRequest(pathSegments []byte, serviceLen uint16) *_CipConnectedRequest {
+	_result := &_CipConnectedRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		PathSegments:       pathSegments,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,16 +107,6 @@ func (m *_CipConnectedRequest) GetPathSegments() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectedRequest factory function for _CipConnectedRequest
-func NewCipConnectedRequest(pathSegments []byte, serviceLen uint16) *_CipConnectedRequest {
-	_result := &_CipConnectedRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		PathSegments:       pathSegments,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectedRequest(structType any) CipConnectedRequest {
@@ -231,6 +232,24 @@ func (m *_CipConnectedRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_CipConnectedRequest) IsCipConnectedRequest() {}
+
+func (m *_CipConnectedRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectedRequest) deepCopy() *_CipConnectedRequest {
+	if m == nil {
+		return nil
+	}
+	_CipConnectedRequestCopy := &_CipConnectedRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.PathSegments),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectedRequestCopy
+}
 
 func (m *_CipConnectedRequest) String() string {
 	if m == nil {

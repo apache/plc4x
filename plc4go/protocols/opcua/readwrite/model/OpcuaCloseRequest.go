@@ -38,6 +38,7 @@ type OpcuaCloseRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetSecurityHeader returns SecurityHeader (property field)
 	GetSecurityHeader() SecurityHeader
@@ -56,6 +57,23 @@ type _OpcuaCloseRequest struct {
 
 var _ OpcuaCloseRequest = (*_OpcuaCloseRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaCloseRequest)(nil)
+
+// NewOpcuaCloseRequest factory function for _OpcuaCloseRequest
+func NewOpcuaCloseRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload) *_OpcuaCloseRequest {
+	if securityHeader == nil {
+		panic("securityHeader of type SecurityHeader for OpcuaCloseRequest must not be nil")
+	}
+	if message == nil {
+		panic("message of type Payload for OpcuaCloseRequest must not be nil")
+	}
+	_result := &_OpcuaCloseRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		SecurityHeader:     securityHeader,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,23 +114,6 @@ func (m *_OpcuaCloseRequest) GetMessage() Payload {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaCloseRequest factory function for _OpcuaCloseRequest
-func NewOpcuaCloseRequest(securityHeader SecurityHeader, message Payload, chunk ChunkType) *_OpcuaCloseRequest {
-	if securityHeader == nil {
-		panic("securityHeader of type SecurityHeader for OpcuaCloseRequest must not be nil")
-	}
-	if message == nil {
-		panic("message of type Payload for OpcuaCloseRequest must not be nil")
-	}
-	_result := &_OpcuaCloseRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		SecurityHeader:     securityHeader,
-		Message:            message,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaCloseRequest(structType any) OpcuaCloseRequest {
@@ -210,6 +211,23 @@ func (m *_OpcuaCloseRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_OpcuaCloseRequest) IsOpcuaCloseRequest() {}
+
+func (m *_OpcuaCloseRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaCloseRequest) deepCopy() *_OpcuaCloseRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaCloseRequestCopy := &_OpcuaCloseRequest{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.SecurityHeader.DeepCopy().(SecurityHeader),
+		m.Message.DeepCopy().(Payload),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaCloseRequestCopy
+}
 
 func (m *_OpcuaCloseRequest) String() string {
 	if m == nil {

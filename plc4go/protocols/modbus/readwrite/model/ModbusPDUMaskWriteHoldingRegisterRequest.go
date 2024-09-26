@@ -38,6 +38,7 @@ type ModbusPDUMaskWriteHoldingRegisterRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetReferenceAddress returns ReferenceAddress (property field)
 	GetReferenceAddress() uint16
@@ -59,6 +60,18 @@ type _ModbusPDUMaskWriteHoldingRegisterRequest struct {
 
 var _ ModbusPDUMaskWriteHoldingRegisterRequest = (*_ModbusPDUMaskWriteHoldingRegisterRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUMaskWriteHoldingRegisterRequest)(nil)
+
+// NewModbusPDUMaskWriteHoldingRegisterRequest factory function for _ModbusPDUMaskWriteHoldingRegisterRequest
+func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMask uint16, orMask uint16) *_ModbusPDUMaskWriteHoldingRegisterRequest {
+	_result := &_ModbusPDUMaskWriteHoldingRegisterRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		ReferenceAddress:  referenceAddress,
+		AndMask:           andMask,
+		OrMask:            orMask,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,18 +120,6 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetOrMask() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUMaskWriteHoldingRegisterRequest factory function for _ModbusPDUMaskWriteHoldingRegisterRequest
-func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMask uint16, orMask uint16) *_ModbusPDUMaskWriteHoldingRegisterRequest {
-	_result := &_ModbusPDUMaskWriteHoldingRegisterRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		ReferenceAddress:  referenceAddress,
-		AndMask:           andMask,
-		OrMask:            orMask,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUMaskWriteHoldingRegisterRequest(structType any) ModbusPDUMaskWriteHoldingRegisterRequest {
@@ -229,6 +230,24 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) IsModbusPDUMaskWriteHoldingRegisterRequest() {}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) deepCopy() *_ModbusPDUMaskWriteHoldingRegisterRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUMaskWriteHoldingRegisterRequestCopy := &_ModbusPDUMaskWriteHoldingRegisterRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.ReferenceAddress,
+		m.AndMask,
+		m.OrMask,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUMaskWriteHoldingRegisterRequestCopy
+}
 
 func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) String() string {
 	if m == nil {

@@ -31,11 +31,11 @@ import (
 )
 
 func TestBanana(t *testing.T) {
-	typeNames = utils.MakePtr("Example")
-	suffix = utils.MakePtr("_test")
-	tests = utils.MakePtr(true)
-	pkgIndex = utils.MakePtr(1)
-	output = utils.MakePtr(path.Join(t.TempDir(), "aTestOutput.go"))
+	typeNames = utils.ToPtr("Example")
+	suffix = utils.ToPtr("_test")
+	tests = utils.ToPtr(true)
+	pkgIndex = utils.ToPtr(1)
+	output = utils.ToPtr(path.Join(t.TempDir(), "aTestOutput.go"))
 	main()
 	time.Sleep(1 * time.Second)
 	file, err := os.ReadFile(outputFile)

@@ -38,6 +38,7 @@ type BACnetPriorityValueOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
@@ -53,6 +54,19 @@ type _BACnetPriorityValueOctetString struct {
 
 var _ BACnetPriorityValueOctetString = (*_BACnetPriorityValueOctetString)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueOctetString)(nil)
+
+// NewBACnetPriorityValueOctetString factory function for _BACnetPriorityValueOctetString
+func NewBACnetPriorityValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetPriorityValueOctetString must not be nil")
+	}
+	_result := &_BACnetPriorityValueOctetString{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		OctetStringValue:            octetStringValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueOctetString) GetOctetStringValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueOctetString factory function for _BACnetPriorityValueOctetString
-func NewBACnetPriorityValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueOctetString {
-	if octetStringValue == nil {
-		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetPriorityValueOctetString must not be nil")
-	}
-	_result := &_BACnetPriorityValueOctetString{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		OctetStringValue:            octetStringValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueOctetString(structType any) BACnetPriorityValueOctetString {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueOctetString) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetPriorityValueOctetString) IsBACnetPriorityValueOctetString() {}
+
+func (m *_BACnetPriorityValueOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueOctetString) deepCopy() *_BACnetPriorityValueOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueOctetStringCopy := &_BACnetPriorityValueOctetString{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueOctetStringCopy
+}
 
 func (m *_BACnetPriorityValueOctetString) String() string {
 	if m == nil {

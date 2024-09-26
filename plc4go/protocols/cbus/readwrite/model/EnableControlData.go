@@ -38,6 +38,7 @@ type EnableControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() EnableControlCommandTypeContainer
 	// GetEnableNetworkVariable returns EnableNetworkVariable (property field)
@@ -58,6 +59,11 @@ type _EnableControlData struct {
 }
 
 var _ EnableControlData = (*_EnableControlData)(nil)
+
+// NewEnableControlData factory function for _EnableControlData
+func NewEnableControlData(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) *_EnableControlData {
+	return &_EnableControlData{CommandTypeContainer: commandTypeContainer, EnableNetworkVariable: enableNetworkVariable, Value: value}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,11 +101,6 @@ func (m *_EnableControlData) GetCommandType() EnableControlCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEnableControlData factory function for _EnableControlData
-func NewEnableControlData(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) *_EnableControlData {
-	return &_EnableControlData{CommandTypeContainer: commandTypeContainer, EnableNetworkVariable: enableNetworkVariable, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastEnableControlData(structType any) EnableControlData {
@@ -242,6 +243,22 @@ func (m *_EnableControlData) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_EnableControlData) IsEnableControlData() {}
+
+func (m *_EnableControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EnableControlData) deepCopy() *_EnableControlData {
+	if m == nil {
+		return nil
+	}
+	_EnableControlDataCopy := &_EnableControlData{
+		m.CommandTypeContainer,
+		m.EnableNetworkVariable,
+		m.Value,
+	}
+	return _EnableControlDataCopy
+}
 
 func (m *_EnableControlData) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type AddReferencesItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSourceNodeId returns SourceNodeId (property field)
 	GetSourceNodeId() NodeId
@@ -70,6 +71,33 @@ type _AddReferencesItem struct {
 
 var _ AddReferencesItem = (*_AddReferencesItem)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesItem)(nil)
+
+// NewAddReferencesItem factory function for _AddReferencesItem
+func NewAddReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) *_AddReferencesItem {
+	if sourceNodeId == nil {
+		panic("sourceNodeId of type NodeId for AddReferencesItem must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for AddReferencesItem must not be nil")
+	}
+	if targetServerUri == nil {
+		panic("targetServerUri of type PascalString for AddReferencesItem must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type ExpandedNodeId for AddReferencesItem must not be nil")
+	}
+	_result := &_AddReferencesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SourceNodeId:                      sourceNodeId,
+		ReferenceTypeId:                   referenceTypeId,
+		IsForward:                         isForward,
+		TargetServerUri:                   targetServerUri,
+		TargetNodeId:                      targetNodeId,
+		TargetNodeClass:                   targetNodeClass,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -122,33 +150,6 @@ func (m *_AddReferencesItem) GetTargetNodeClass() NodeClass {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddReferencesItem factory function for _AddReferencesItem
-func NewAddReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) *_AddReferencesItem {
-	if sourceNodeId == nil {
-		panic("sourceNodeId of type NodeId for AddReferencesItem must not be nil")
-	}
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for AddReferencesItem must not be nil")
-	}
-	if targetServerUri == nil {
-		panic("targetServerUri of type PascalString for AddReferencesItem must not be nil")
-	}
-	if targetNodeId == nil {
-		panic("targetNodeId of type ExpandedNodeId for AddReferencesItem must not be nil")
-	}
-	_result := &_AddReferencesItem{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SourceNodeId:                      sourceNodeId,
-		ReferenceTypeId:                   referenceTypeId,
-		IsForward:                         isForward,
-		TargetServerUri:                   targetServerUri,
-		TargetNodeId:                      targetNodeId,
-		TargetNodeClass:                   targetNodeClass,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddReferencesItem(structType any) AddReferencesItem {
@@ -311,6 +312,28 @@ func (m *_AddReferencesItem) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_AddReferencesItem) IsAddReferencesItem() {}
+
+func (m *_AddReferencesItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddReferencesItem) deepCopy() *_AddReferencesItem {
+	if m == nil {
+		return nil
+	}
+	_AddReferencesItemCopy := &_AddReferencesItem{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SourceNodeId.DeepCopy().(NodeId),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IsForward,
+		m.TargetServerUri.DeepCopy().(PascalString),
+		m.TargetNodeId.DeepCopy().(ExpandedNodeId),
+		m.TargetNodeClass,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddReferencesItemCopy
+}
 
 func (m *_AddReferencesItem) String() string {
 	if m == nil {

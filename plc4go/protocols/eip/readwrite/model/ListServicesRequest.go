@@ -36,6 +36,7 @@ type ListServicesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsListServicesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsListServicesRequest()
@@ -48,6 +49,15 @@ type _ListServicesRequest struct {
 
 var _ ListServicesRequest = (*_ListServicesRequest)(nil)
 var _ EipPacketRequirements = (*_ListServicesRequest)(nil)
+
+// NewListServicesRequest factory function for _ListServicesRequest
+func NewListServicesRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_ListServicesRequest {
+	_result := &_ListServicesRequest{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_ListServicesRequest) GetPacketLength() uint16 {
 
 func (m *_ListServicesRequest) GetParent() EipPacketContract {
 	return m.EipPacketContract
-}
-
-// NewListServicesRequest factory function for _ListServicesRequest
-func NewListServicesRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_ListServicesRequest {
-	_result := &_ListServicesRequest{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_ListServicesRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ListServicesRequest) IsListServicesRequest() {}
+
+func (m *_ListServicesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListServicesRequest) deepCopy() *_ListServicesRequest {
+	if m == nil {
+		return nil
+	}
+	_ListServicesRequestCopy := &_ListServicesRequest{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _ListServicesRequestCopy
+}
 
 func (m *_ListServicesRequest) String() string {
 	if m == nil {

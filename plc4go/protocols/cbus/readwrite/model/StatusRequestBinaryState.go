@@ -38,6 +38,7 @@ type StatusRequestBinaryState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -56,6 +57,16 @@ type _StatusRequestBinaryState struct {
 
 var _ StatusRequestBinaryState = (*_StatusRequestBinaryState)(nil)
 var _ StatusRequestRequirements = (*_StatusRequestBinaryState)(nil)
+
+// NewStatusRequestBinaryState factory function for _StatusRequestBinaryState
+func NewStatusRequestBinaryState(statusType byte, application ApplicationIdContainer) *_StatusRequestBinaryState {
+	_result := &_StatusRequestBinaryState{
+		StatusRequestContract: NewStatusRequest(statusType),
+		Application:           application,
+	}
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -84,16 +95,6 @@ func (m *_StatusRequestBinaryState) GetApplication() ApplicationIdContainer {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusRequestBinaryState factory function for _StatusRequestBinaryState
-func NewStatusRequestBinaryState(application ApplicationIdContainer, statusType byte) *_StatusRequestBinaryState {
-	_result := &_StatusRequestBinaryState{
-		StatusRequestContract: NewStatusRequest(statusType),
-		Application:           application,
-	}
-	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusRequestBinaryState(structType any) StatusRequestBinaryState {
@@ -204,6 +205,24 @@ func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_StatusRequestBinaryState) IsStatusRequestBinaryState() {}
+
+func (m *_StatusRequestBinaryState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusRequestBinaryState) deepCopy() *_StatusRequestBinaryState {
+	if m == nil {
+		return nil
+	}
+	_StatusRequestBinaryStateCopy := &_StatusRequestBinaryState{
+		m.StatusRequestContract.(*_StatusRequest).deepCopy(),
+		m.Application,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.StatusRequestContract.(*_StatusRequest)._SubType = m
+	return _StatusRequestBinaryStateCopy
+}
 
 func (m *_StatusRequestBinaryState) String() string {
 	if m == nil {

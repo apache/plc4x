@@ -38,6 +38,7 @@ type ParameterValueRaw interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -53,6 +54,16 @@ type _ParameterValueRaw struct {
 
 var _ ParameterValueRaw = (*_ParameterValueRaw)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueRaw)(nil)
+
+// NewParameterValueRaw factory function for _ParameterValueRaw
+func NewParameterValueRaw(data []byte, numBytes uint8) *_ParameterValueRaw {
+	_result := &_ParameterValueRaw{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_ParameterValueRaw) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueRaw factory function for _ParameterValueRaw
-func NewParameterValueRaw(data []byte, numBytes uint8) *_ParameterValueRaw {
-	_result := &_ParameterValueRaw{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueRaw(structType any) ParameterValueRaw {
@@ -181,6 +182,22 @@ func (m *_ParameterValueRaw) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ParameterValueRaw) IsParameterValueRaw() {}
+
+func (m *_ParameterValueRaw) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueRaw) deepCopy() *_ParameterValueRaw {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueRawCopy := &_ParameterValueRaw{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueRawCopy
+}
 
 func (m *_ParameterValueRaw) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type UriString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsUriString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUriString()
 }
@@ -134,6 +135,18 @@ func (m *_UriString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_UriString) IsUriString() {}
+
+func (m *_UriString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UriString) deepCopy() *_UriString {
+	if m == nil {
+		return nil
+	}
+	_UriStringCopy := &_UriString{}
+	return _UriStringCopy
+}
 
 func (m *_UriString) String() string {
 	if m == nil {

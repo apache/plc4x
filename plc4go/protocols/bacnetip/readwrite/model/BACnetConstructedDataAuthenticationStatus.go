@@ -38,6 +38,7 @@ type BACnetConstructedDataAuthenticationStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAuthenticationStatus returns AuthenticationStatus (property field)
 	GetAuthenticationStatus() BACnetAuthenticationStatusTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAuthenticationStatus struct {
 
 var _ BACnetConstructedDataAuthenticationStatus = (*_BACnetConstructedDataAuthenticationStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthenticationStatus)(nil)
+
+// NewBACnetConstructedDataAuthenticationStatus factory function for _BACnetConstructedDataAuthenticationStatus
+func NewBACnetConstructedDataAuthenticationStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authenticationStatus BACnetAuthenticationStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationStatus {
+	if authenticationStatus == nil {
+		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetConstructedDataAuthenticationStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataAuthenticationStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AuthenticationStatus:          authenticationStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAuthenticationStatus) GetActualValue() BACnetAuth
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAuthenticationStatus factory function for _BACnetConstructedDataAuthenticationStatus
-func NewBACnetConstructedDataAuthenticationStatus(authenticationStatus BACnetAuthenticationStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationStatus {
-	if authenticationStatus == nil {
-		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetConstructedDataAuthenticationStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataAuthenticationStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AuthenticationStatus:          authenticationStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAuthenticationStatus(structType any) BACnetConstructedDataAuthenticationStatus {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAuthenticationStatus) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataAuthenticationStatus) IsBACnetConstructedDataAuthenticationStatus() {}
+
+func (m *_BACnetConstructedDataAuthenticationStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAuthenticationStatus) deepCopy() *_BACnetConstructedDataAuthenticationStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAuthenticationStatusCopy := &_BACnetConstructedDataAuthenticationStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AuthenticationStatus.DeepCopy().(BACnetAuthenticationStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAuthenticationStatusCopy
+}
 
 func (m *_BACnetConstructedDataAuthenticationStatus) String() string {
 	if m == nil {

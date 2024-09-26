@@ -38,6 +38,7 @@ type AmsSerialAcknowledgeFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMagicCookie returns MagicCookie (property field)
 	GetMagicCookie() uint16
 	// GetTransmitterAddress returns TransmitterAddress (property field)
@@ -65,6 +66,11 @@ type _AmsSerialAcknowledgeFrame struct {
 }
 
 var _ AmsSerialAcknowledgeFrame = (*_AmsSerialAcknowledgeFrame)(nil)
+
+// NewAmsSerialAcknowledgeFrame factory function for _AmsSerialAcknowledgeFrame
+func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialAcknowledgeFrame {
+	return &_AmsSerialAcknowledgeFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,11 +105,6 @@ func (m *_AmsSerialAcknowledgeFrame) GetCrc() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsSerialAcknowledgeFrame factory function for _AmsSerialAcknowledgeFrame
-func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialAcknowledgeFrame {
-	return &_AmsSerialAcknowledgeFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsSerialAcknowledgeFrame(structType any) AmsSerialAcknowledgeFrame {
@@ -266,6 +267,25 @@ func (m *_AmsSerialAcknowledgeFrame) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AmsSerialAcknowledgeFrame) IsAmsSerialAcknowledgeFrame() {}
+
+func (m *_AmsSerialAcknowledgeFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsSerialAcknowledgeFrame) deepCopy() *_AmsSerialAcknowledgeFrame {
+	if m == nil {
+		return nil
+	}
+	_AmsSerialAcknowledgeFrameCopy := &_AmsSerialAcknowledgeFrame{
+		m.MagicCookie,
+		m.TransmitterAddress,
+		m.ReceiverAddress,
+		m.FragmentNumber,
+		m.Length,
+		m.Crc,
+	}
+	return _AmsSerialAcknowledgeFrameCopy
+}
 
 func (m *_AmsSerialAcknowledgeFrame) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type TamperStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetIsNoTamper returns IsNoTamper (virtual field)
@@ -56,6 +57,11 @@ type _TamperStatus struct {
 }
 
 var _ TamperStatus = (*_TamperStatus)(nil)
+
+// NewTamperStatus factory function for _TamperStatus
+func NewTamperStatus(status uint8) *_TamperStatus {
+	return &_TamperStatus{Status: status}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,11 +103,6 @@ func (m *_TamperStatus) GetIsTamperActive() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTamperStatus factory function for _TamperStatus
-func NewTamperStatus(status uint8) *_TamperStatus {
-	return &_TamperStatus{Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTamperStatus(structType any) TamperStatus {
@@ -241,6 +242,20 @@ func (m *_TamperStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_TamperStatus) IsTamperStatus() {}
+
+func (m *_TamperStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TamperStatus) deepCopy() *_TamperStatus {
+	if m == nil {
+		return nil
+	}
+	_TamperStatusCopy := &_TamperStatus{
+		m.Status,
+	}
+	return _TamperStatusCopy
+}
 
 func (m *_TamperStatus) String() string {
 	if m == nil {

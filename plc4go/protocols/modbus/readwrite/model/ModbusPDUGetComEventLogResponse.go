@@ -38,6 +38,7 @@ type ModbusPDUGetComEventLogResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStatus returns Status (property field)
 	GetStatus() uint16
@@ -62,6 +63,19 @@ type _ModbusPDUGetComEventLogResponse struct {
 
 var _ ModbusPDUGetComEventLogResponse = (*_ModbusPDUGetComEventLogResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUGetComEventLogResponse)(nil)
+
+// NewModbusPDUGetComEventLogResponse factory function for _ModbusPDUGetComEventLogResponse
+func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *_ModbusPDUGetComEventLogResponse {
+	_result := &_ModbusPDUGetComEventLogResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Status:            status,
+		EventCount:        eventCount,
+		MessageCount:      messageCount,
+		Events:            events,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,19 +128,6 @@ func (m *_ModbusPDUGetComEventLogResponse) GetEvents() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUGetComEventLogResponse factory function for _ModbusPDUGetComEventLogResponse
-func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *_ModbusPDUGetComEventLogResponse {
-	_result := &_ModbusPDUGetComEventLogResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Status:            status,
-		EventCount:        eventCount,
-		MessageCount:      messageCount,
-		Events:            events,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUGetComEventLogResponse(structType any) ModbusPDUGetComEventLogResponse {
@@ -265,6 +266,25 @@ func (m *_ModbusPDUGetComEventLogResponse) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ModbusPDUGetComEventLogResponse) IsModbusPDUGetComEventLogResponse() {}
+
+func (m *_ModbusPDUGetComEventLogResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUGetComEventLogResponse) deepCopy() *_ModbusPDUGetComEventLogResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUGetComEventLogResponseCopy := &_ModbusPDUGetComEventLogResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.Status,
+		m.EventCount,
+		m.MessageCount,
+		utils.DeepCopySlice[byte, byte](m.Events),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUGetComEventLogResponseCopy
+}
 
 func (m *_ModbusPDUGetComEventLogResponse) String() string {
 	if m == nil {

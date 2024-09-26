@@ -38,6 +38,7 @@ type BACnetAuthorizationModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetAuthorizationModeTagged struct {
 }
 
 var _ BACnetAuthorizationModeTagged = (*_BACnetAuthorizationModeTagged)(nil)
+
+// NewBACnetAuthorizationModeTagged factory function for _BACnetAuthorizationModeTagged
+func NewBACnetAuthorizationModeTagged(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthorizationModeTagged must not be nil")
+	}
+	return &_BACnetAuthorizationModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetAuthorizationModeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthorizationModeTagged factory function for _BACnetAuthorizationModeTagged
-func NewBACnetAuthorizationModeTagged(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAuthorizationModeTagged must not be nil")
-	}
-	return &_BACnetAuthorizationModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthorizationModeTagged(structType any) BACnetAuthorizationModeTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetAuthorizationModeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAuthorizationModeTagged) IsBACnetAuthorizationModeTagged() {}
+
+func (m *_BACnetAuthorizationModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthorizationModeTagged) deepCopy() *_BACnetAuthorizationModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthorizationModeTaggedCopy := &_BACnetAuthorizationModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAuthorizationModeTaggedCopy
+}
 
 func (m *_BACnetAuthorizationModeTagged) String() string {
 	if m == nil {

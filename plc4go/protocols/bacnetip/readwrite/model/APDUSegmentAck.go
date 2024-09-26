@@ -38,6 +38,7 @@ type APDUSegmentAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetNegativeAck returns NegativeAck (property field)
 	GetNegativeAck() bool
@@ -67,6 +68,20 @@ type _APDUSegmentAck struct {
 
 var _ APDUSegmentAck = (*_APDUSegmentAck)(nil)
 var _ APDURequirements = (*_APDUSegmentAck)(nil)
+
+// NewAPDUSegmentAck factory function for _APDUSegmentAck
+func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
+	_result := &_APDUSegmentAck{
+		APDUContract:     NewAPDU(apduLength),
+		NegativeAck:      negativeAck,
+		Server:           server,
+		OriginalInvokeId: originalInvokeId,
+		SequenceNumber:   sequenceNumber,
+		ActualWindowSize: actualWindowSize,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,20 +130,6 @@ func (m *_APDUSegmentAck) GetActualWindowSize() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUSegmentAck factory function for _APDUSegmentAck
-func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
-	_result := &_APDUSegmentAck{
-		APDUContract:     NewAPDU(apduLength),
-		NegativeAck:      negativeAck,
-		Server:           server,
-		OriginalInvokeId: originalInvokeId,
-		SequenceNumber:   sequenceNumber,
-		ActualWindowSize: actualWindowSize,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUSegmentAck(structType any) APDUSegmentAck {
@@ -278,6 +279,27 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_APDUSegmentAck) IsAPDUSegmentAck() {}
+
+func (m *_APDUSegmentAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUSegmentAck) deepCopy() *_APDUSegmentAck {
+	if m == nil {
+		return nil
+	}
+	_APDUSegmentAckCopy := &_APDUSegmentAck{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.NegativeAck,
+		m.Server,
+		m.OriginalInvokeId,
+		m.SequenceNumber,
+		m.ActualWindowSize,
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUSegmentAckCopy
+}
 
 func (m *_APDUSegmentAck) String() string {
 	if m == nil {

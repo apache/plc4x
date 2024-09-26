@@ -38,6 +38,7 @@ type CycServiceItemAnyType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CycServiceItemType
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() TransportSize
@@ -65,6 +66,20 @@ type _CycServiceItemAnyType struct {
 
 var _ CycServiceItemAnyType = (*_CycServiceItemAnyType)(nil)
 var _ CycServiceItemTypeRequirements = (*_CycServiceItemAnyType)(nil)
+
+// NewCycServiceItemAnyType factory function for _CycServiceItemAnyType
+func NewCycServiceItemAnyType(byteLength uint8, syntaxId uint8, transportSize TransportSize, length uint16, dbNumber uint16, memoryArea MemoryArea, address uint32) *_CycServiceItemAnyType {
+	_result := &_CycServiceItemAnyType{
+		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
+		TransportSize:              transportSize,
+		Length:                     length,
+		DbNumber:                   dbNumber,
+		MemoryArea:                 memoryArea,
+		Address:                    address,
+	}
+	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,20 +124,6 @@ func (m *_CycServiceItemAnyType) GetAddress() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCycServiceItemAnyType factory function for _CycServiceItemAnyType
-func NewCycServiceItemAnyType(transportSize TransportSize, length uint16, dbNumber uint16, memoryArea MemoryArea, address uint32, byteLength uint8, syntaxId uint8) *_CycServiceItemAnyType {
-	_result := &_CycServiceItemAnyType{
-		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
-		TransportSize:              transportSize,
-		Length:                     length,
-		DbNumber:                   dbNumber,
-		MemoryArea:                 memoryArea,
-		Address:                    address,
-	}
-	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCycServiceItemAnyType(structType any) CycServiceItemAnyType {
@@ -259,6 +260,26 @@ func (m *_CycServiceItemAnyType) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_CycServiceItemAnyType) IsCycServiceItemAnyType() {}
+
+func (m *_CycServiceItemAnyType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CycServiceItemAnyType) deepCopy() *_CycServiceItemAnyType {
+	if m == nil {
+		return nil
+	}
+	_CycServiceItemAnyTypeCopy := &_CycServiceItemAnyType{
+		m.CycServiceItemTypeContract.(*_CycServiceItemType).deepCopy(),
+		m.TransportSize,
+		m.Length,
+		m.DbNumber,
+		m.MemoryArea,
+		m.Address,
+	}
+	m.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = m
+	return _CycServiceItemAnyTypeCopy
+}
 
 func (m *_CycServiceItemAnyType) String() string {
 	if m == nil {

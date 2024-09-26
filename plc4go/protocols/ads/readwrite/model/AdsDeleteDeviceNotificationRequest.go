@@ -38,6 +38,7 @@ type AdsDeleteDeviceNotificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
@@ -53,6 +54,16 @@ type _AdsDeleteDeviceNotificationRequest struct {
 
 var _ AdsDeleteDeviceNotificationRequest = (*_AdsDeleteDeviceNotificationRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsDeleteDeviceNotificationRequest)(nil)
+
+// NewAdsDeleteDeviceNotificationRequest factory function for _AdsDeleteDeviceNotificationRequest
+func NewAdsDeleteDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, notificationHandle uint32) *_AdsDeleteDeviceNotificationRequest {
+	_result := &_AdsDeleteDeviceNotificationRequest{
+		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		NotificationHandle: notificationHandle,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetNotificationHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDeleteDeviceNotificationRequest factory function for _AdsDeleteDeviceNotificationRequest
-func NewAdsDeleteDeviceNotificationRequest(notificationHandle uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeleteDeviceNotificationRequest {
-	_result := &_AdsDeleteDeviceNotificationRequest{
-		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		NotificationHandle: notificationHandle,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDeleteDeviceNotificationRequest(structType any) AdsDeleteDeviceNotificationRequest {
@@ -183,6 +184,22 @@ func (m *_AdsDeleteDeviceNotificationRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_AdsDeleteDeviceNotificationRequest) IsAdsDeleteDeviceNotificationRequest() {}
+
+func (m *_AdsDeleteDeviceNotificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDeleteDeviceNotificationRequest) deepCopy() *_AdsDeleteDeviceNotificationRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsDeleteDeviceNotificationRequestCopy := &_AdsDeleteDeviceNotificationRequest{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.NotificationHandle,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsDeleteDeviceNotificationRequestCopy
+}
 
 func (m *_AdsDeleteDeviceNotificationRequest) String() string {
 	if m == nil {

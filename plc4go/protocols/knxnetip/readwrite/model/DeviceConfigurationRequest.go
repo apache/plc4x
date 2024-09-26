@@ -40,6 +40,7 @@ type DeviceConfigurationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetDeviceConfigurationRequestDataBlock returns DeviceConfigurationRequestDataBlock (property field)
 	GetDeviceConfigurationRequestDataBlock() DeviceConfigurationRequestDataBlock
@@ -61,6 +62,23 @@ type _DeviceConfigurationRequest struct {
 
 var _ DeviceConfigurationRequest = (*_DeviceConfigurationRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_DeviceConfigurationRequest)(nil)
+
+// NewDeviceConfigurationRequest factory function for _DeviceConfigurationRequest
+func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI, totalLength uint16) *_DeviceConfigurationRequest {
+	if deviceConfigurationRequestDataBlock == nil {
+		panic("deviceConfigurationRequestDataBlock of type DeviceConfigurationRequestDataBlock for DeviceConfigurationRequest must not be nil")
+	}
+	if cemi == nil {
+		panic("cemi of type CEMI for DeviceConfigurationRequest must not be nil")
+	}
+	_result := &_DeviceConfigurationRequest{
+		KnxNetIpMessageContract:             NewKnxNetIpMessage(),
+		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
+		Cemi:                                cemi,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,23 +115,6 @@ func (m *_DeviceConfigurationRequest) GetCemi() CEMI {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceConfigurationRequest factory function for _DeviceConfigurationRequest
-func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI, totalLength uint16) *_DeviceConfigurationRequest {
-	if deviceConfigurationRequestDataBlock == nil {
-		panic("deviceConfigurationRequestDataBlock of type DeviceConfigurationRequestDataBlock for DeviceConfigurationRequest must not be nil")
-	}
-	if cemi == nil {
-		panic("cemi of type CEMI for DeviceConfigurationRequest must not be nil")
-	}
-	_result := &_DeviceConfigurationRequest{
-		KnxNetIpMessageContract:             NewKnxNetIpMessage(),
-		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
-		Cemi:                                cemi,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceConfigurationRequest(structType any) DeviceConfigurationRequest {
@@ -221,6 +222,24 @@ func (m *_DeviceConfigurationRequest) GetTotalLength() uint16 {
 ////
 
 func (m *_DeviceConfigurationRequest) IsDeviceConfigurationRequest() {}
+
+func (m *_DeviceConfigurationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationRequest) deepCopy() *_DeviceConfigurationRequest {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationRequestCopy := &_DeviceConfigurationRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.DeviceConfigurationRequestDataBlock.DeepCopy().(DeviceConfigurationRequestDataBlock),
+		m.Cemi.DeepCopy().(CEMI),
+		m.TotalLength,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DeviceConfigurationRequestCopy
+}
 
 func (m *_DeviceConfigurationRequest) String() string {
 	if m == nil {

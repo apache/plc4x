@@ -38,6 +38,7 @@ type RelativePathElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReferenceTypeId returns ReferenceTypeId (property field)
 	GetReferenceTypeId() NodeId
@@ -64,6 +65,25 @@ type _RelativePathElement struct {
 
 var _ RelativePathElement = (*_RelativePathElement)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RelativePathElement)(nil)
+
+// NewRelativePathElement factory function for _RelativePathElement
+func NewRelativePathElement(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) *_RelativePathElement {
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for RelativePathElement must not be nil")
+	}
+	if targetName == nil {
+		panic("targetName of type QualifiedName for RelativePathElement must not be nil")
+	}
+	_result := &_RelativePathElement{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ReferenceTypeId:                   referenceTypeId,
+		IncludeSubtypes:                   includeSubtypes,
+		IsInverse:                         isInverse,
+		TargetName:                        targetName,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,25 +128,6 @@ func (m *_RelativePathElement) GetTargetName() QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRelativePathElement factory function for _RelativePathElement
-func NewRelativePathElement(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) *_RelativePathElement {
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for RelativePathElement must not be nil")
-	}
-	if targetName == nil {
-		panic("targetName of type QualifiedName for RelativePathElement must not be nil")
-	}
-	_result := &_RelativePathElement{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ReferenceTypeId:                   referenceTypeId,
-		IncludeSubtypes:                   includeSubtypes,
-		IsInverse:                         isInverse,
-		TargetName:                        targetName,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRelativePathElement(structType any) RelativePathElement {
@@ -263,6 +264,26 @@ func (m *_RelativePathElement) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_RelativePathElement) IsRelativePathElement() {}
+
+func (m *_RelativePathElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RelativePathElement) deepCopy() *_RelativePathElement {
+	if m == nil {
+		return nil
+	}
+	_RelativePathElementCopy := &_RelativePathElement{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IncludeSubtypes,
+		m.IsInverse,
+		m.TargetName.DeepCopy().(QualifiedName),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RelativePathElementCopy
+}
 
 func (m *_RelativePathElement) String() string {
 	if m == nil {

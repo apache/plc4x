@@ -38,6 +38,7 @@ type BACnetPriorityValueEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
@@ -53,6 +54,19 @@ type _BACnetPriorityValueEnumerated struct {
 
 var _ BACnetPriorityValueEnumerated = (*_BACnetPriorityValueEnumerated)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueEnumerated)(nil)
+
+// NewBACnetPriorityValueEnumerated factory function for _BACnetPriorityValueEnumerated
+func NewBACnetPriorityValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetPriorityValueEnumerated must not be nil")
+	}
+	_result := &_BACnetPriorityValueEnumerated{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		EnumeratedValue:             enumeratedValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueEnumerated) GetEnumeratedValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueEnumerated factory function for _BACnetPriorityValueEnumerated
-func NewBACnetPriorityValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueEnumerated {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetPriorityValueEnumerated must not be nil")
-	}
-	_result := &_BACnetPriorityValueEnumerated{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		EnumeratedValue:             enumeratedValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueEnumerated(structType any) BACnetPriorityValueEnumerated {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueEnumerated) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetPriorityValueEnumerated) IsBACnetPriorityValueEnumerated() {}
+
+func (m *_BACnetPriorityValueEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueEnumerated) deepCopy() *_BACnetPriorityValueEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueEnumeratedCopy := &_BACnetPriorityValueEnumerated{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueEnumeratedCopy
+}
 
 func (m *_BACnetPriorityValueEnumerated) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type ClockAndTimekeepingData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsClockAndTimekeepingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsClockAndTimekeepingData()
 }
@@ -75,6 +76,11 @@ type _ClockAndTimekeepingData struct {
 
 var _ ClockAndTimekeepingDataContract = (*_ClockAndTimekeepingData)(nil)
 
+// NewClockAndTimekeepingData factory function for _ClockAndTimekeepingData
+func NewClockAndTimekeepingData(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingData {
+	return &_ClockAndTimekeepingData{CommandTypeContainer: commandTypeContainer, Argument: argument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,11 +114,6 @@ func (pm *_ClockAndTimekeepingData) GetCommandType() ClockAndTimekeepingCommandT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewClockAndTimekeepingData factory function for _ClockAndTimekeepingData
-func NewClockAndTimekeepingData(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingData {
-	return &_ClockAndTimekeepingData{CommandTypeContainer: commandTypeContainer, Argument: argument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastClockAndTimekeepingData(structType any) ClockAndTimekeepingData {
@@ -212,15 +213,15 @@ func (m *_ClockAndTimekeepingData) parse(ctx context.Context, readBuffer utils.R
 	var _child ClockAndTimekeepingData
 	switch {
 	case commandType == ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE && argument == 0x01: // ClockAndTimekeepingDataUpdateTime
-		if _child, err = (&_ClockAndTimekeepingDataUpdateTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ClockAndTimekeepingDataUpdateTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ClockAndTimekeepingDataUpdateTime for type-switch of ClockAndTimekeepingData")
 		}
 	case commandType == ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE && argument == 0x02: // ClockAndTimekeepingDataUpdateDate
-		if _child, err = (&_ClockAndTimekeepingDataUpdateDate{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ClockAndTimekeepingDataUpdateDate).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ClockAndTimekeepingDataUpdateDate for type-switch of ClockAndTimekeepingData")
 		}
 	case commandType == ClockAndTimekeepingCommandType_REQUEST_REFRESH && argument == 0x03: // ClockAndTimekeepingDataRequestRefresh
-		if _child, err = (&_ClockAndTimekeepingDataRequestRefresh{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ClockAndTimekeepingDataRequestRefresh).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ClockAndTimekeepingDataRequestRefresh for type-switch of ClockAndTimekeepingData")
 		}
 	default:
@@ -272,3 +273,19 @@ func (pm *_ClockAndTimekeepingData) serializeParent(ctx context.Context, writeBu
 }
 
 func (m *_ClockAndTimekeepingData) IsClockAndTimekeepingData() {}
+
+func (m *_ClockAndTimekeepingData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ClockAndTimekeepingData) deepCopy() *_ClockAndTimekeepingData {
+	if m == nil {
+		return nil
+	}
+	_ClockAndTimekeepingDataCopy := &_ClockAndTimekeepingData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.Argument,
+	}
+	return _ClockAndTimekeepingDataCopy
+}

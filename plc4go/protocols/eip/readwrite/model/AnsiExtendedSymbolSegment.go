@@ -38,6 +38,7 @@ type AnsiExtendedSymbolSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DataSegmentType
 	// GetSymbol returns Symbol (property field)
 	GetSymbol() string
@@ -56,6 +57,17 @@ type _AnsiExtendedSymbolSegment struct {
 
 var _ AnsiExtendedSymbolSegment = (*_AnsiExtendedSymbolSegment)(nil)
 var _ DataSegmentTypeRequirements = (*_AnsiExtendedSymbolSegment)(nil)
+
+// NewAnsiExtendedSymbolSegment factory function for _AnsiExtendedSymbolSegment
+func NewAnsiExtendedSymbolSegment(symbol string, pad *uint8) *_AnsiExtendedSymbolSegment {
+	_result := &_AnsiExtendedSymbolSegment{
+		DataSegmentTypeContract: NewDataSegmentType(),
+		Symbol:                  symbol,
+		Pad:                     pad,
+	}
+	_result.DataSegmentTypeContract.(*_DataSegmentType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_AnsiExtendedSymbolSegment) GetPad() *uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAnsiExtendedSymbolSegment factory function for _AnsiExtendedSymbolSegment
-func NewAnsiExtendedSymbolSegment(symbol string, pad *uint8) *_AnsiExtendedSymbolSegment {
-	_result := &_AnsiExtendedSymbolSegment{
-		DataSegmentTypeContract: NewDataSegmentType(),
-		Symbol:                  symbol,
-		Pad:                     pad,
-	}
-	_result.DataSegmentTypeContract.(*_DataSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAnsiExtendedSymbolSegment(structType any) AnsiExtendedSymbolSegment {
@@ -216,6 +217,23 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AnsiExtendedSymbolSegment) IsAnsiExtendedSymbolSegment() {}
+
+func (m *_AnsiExtendedSymbolSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AnsiExtendedSymbolSegment) deepCopy() *_AnsiExtendedSymbolSegment {
+	if m == nil {
+		return nil
+	}
+	_AnsiExtendedSymbolSegmentCopy := &_AnsiExtendedSymbolSegment{
+		m.DataSegmentTypeContract.(*_DataSegmentType).deepCopy(),
+		m.Symbol,
+		utils.CopyPtr[uint8](m.Pad),
+	}
+	m.DataSegmentTypeContract.(*_DataSegmentType)._SubType = m
+	return _AnsiExtendedSymbolSegmentCopy
+}
 
 func (m *_AnsiExtendedSymbolSegment) String() string {
 	if m == nil {

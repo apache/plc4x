@@ -40,6 +40,7 @@ type TunnelingResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetTunnelingResponseDataBlock returns TunnelingResponseDataBlock (property field)
 	GetTunnelingResponseDataBlock() TunnelingResponseDataBlock
@@ -55,6 +56,19 @@ type _TunnelingResponse struct {
 
 var _ TunnelingResponse = (*_TunnelingResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_TunnelingResponse)(nil)
+
+// NewTunnelingResponse factory function for _TunnelingResponse
+func NewTunnelingResponse(tunnelingResponseDataBlock TunnelingResponseDataBlock) *_TunnelingResponse {
+	if tunnelingResponseDataBlock == nil {
+		panic("tunnelingResponseDataBlock of type TunnelingResponseDataBlock for TunnelingResponse must not be nil")
+	}
+	_result := &_TunnelingResponse{
+		KnxNetIpMessageContract:    NewKnxNetIpMessage(),
+		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +101,6 @@ func (m *_TunnelingResponse) GetTunnelingResponseDataBlock() TunnelingResponseDa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingResponse factory function for _TunnelingResponse
-func NewTunnelingResponse(tunnelingResponseDataBlock TunnelingResponseDataBlock) *_TunnelingResponse {
-	if tunnelingResponseDataBlock == nil {
-		panic("tunnelingResponseDataBlock of type TunnelingResponseDataBlock for TunnelingResponse must not be nil")
-	}
-	_result := &_TunnelingResponse{
-		KnxNetIpMessageContract:    NewKnxNetIpMessage(),
-		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingResponse(structType any) TunnelingResponse {
@@ -184,6 +185,22 @@ func (m *_TunnelingResponse) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_TunnelingResponse) IsTunnelingResponse() {}
+
+func (m *_TunnelingResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TunnelingResponse) deepCopy() *_TunnelingResponse {
+	if m == nil {
+		return nil
+	}
+	_TunnelingResponseCopy := &_TunnelingResponse{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.TunnelingResponseDataBlock.DeepCopy().(TunnelingResponseDataBlock),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _TunnelingResponseCopy
+}
 
 func (m *_TunnelingResponse) String() string {
 	if m == nil {

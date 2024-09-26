@@ -38,6 +38,7 @@ type VariantDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantDouble struct {
 
 var _ VariantDouble = (*_VariantDouble)(nil)
 var _ VariantRequirements = (*_VariantDouble)(nil)
+
+// NewVariantDouble factory function for _VariantDouble
+func NewVariantDouble(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []float64) *_VariantDouble {
+	_result := &_VariantDouble{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantDouble) GetValue() []float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantDouble factory function for _VariantDouble
-func NewVariantDouble(arrayLength *int32, value []float64, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantDouble {
-	_result := &_VariantDouble{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantDouble(structType any) VariantDouble {
@@ -205,6 +206,23 @@ func (m *_VariantDouble) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_VariantDouble) IsVariantDouble() {}
+
+func (m *_VariantDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantDouble) deepCopy() *_VariantDouble {
+	if m == nil {
+		return nil
+	}
+	_VariantDoubleCopy := &_VariantDouble{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[float64, float64](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantDoubleCopy
+}
 
 func (m *_VariantDouble) String() string {
 	if m == nil {

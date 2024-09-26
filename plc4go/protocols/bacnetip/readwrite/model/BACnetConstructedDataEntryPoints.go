@@ -38,6 +38,7 @@ type BACnetConstructedDataEntryPoints interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEntryPoints returns EntryPoints (property field)
 	GetEntryPoints() []BACnetDeviceObjectReference
@@ -53,6 +54,16 @@ type _BACnetConstructedDataEntryPoints struct {
 
 var _ BACnetConstructedDataEntryPoints = (*_BACnetConstructedDataEntryPoints)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEntryPoints)(nil)
+
+// NewBACnetConstructedDataEntryPoints factory function for _BACnetConstructedDataEntryPoints
+func NewBACnetConstructedDataEntryPoints(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, entryPoints []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEntryPoints {
+	_result := &_BACnetConstructedDataEntryPoints{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EntryPoints:                   entryPoints,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataEntryPoints) GetEntryPoints() []BACnetDeviceObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEntryPoints factory function for _BACnetConstructedDataEntryPoints
-func NewBACnetConstructedDataEntryPoints(entryPoints []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEntryPoints {
-	_result := &_BACnetConstructedDataEntryPoints{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EntryPoints:                   entryPoints,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEntryPoints(structType any) BACnetConstructedDataEntryPoints {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataEntryPoints) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataEntryPoints) IsBACnetConstructedDataEntryPoints() {}
+
+func (m *_BACnetConstructedDataEntryPoints) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEntryPoints) deepCopy() *_BACnetConstructedDataEntryPoints {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEntryPointsCopy := &_BACnetConstructedDataEntryPoints{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.EntryPoints),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEntryPointsCopy
+}
 
 func (m *_BACnetConstructedDataEntryPoints) String() string {
 	if m == nil {

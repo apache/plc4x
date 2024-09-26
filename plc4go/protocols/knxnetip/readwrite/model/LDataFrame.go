@@ -40,6 +40,7 @@ type LDataFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLDataFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataFrame()
 }
@@ -82,6 +83,11 @@ type _LDataFrame struct {
 
 var _ LDataFrameContract = (*_LDataFrame)(nil)
 
+// NewLDataFrame factory function for _LDataFrame
+func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrame {
+	return &_LDataFrame{FrameType: frameType, NotRepeated: notRepeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -111,11 +117,6 @@ func (m *_LDataFrame) GetErrorFlag() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataFrame factory function for _LDataFrame
-func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrame {
-	return &_LDataFrame{FrameType: frameType, NotRepeated: notRepeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataFrame(structType any) LDataFrame {
@@ -243,15 +244,15 @@ func (m *_LDataFrame) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 	var _child LDataFrame
 	switch {
 	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
-		if _child, err = (&_LDataExtended{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LDataExtended).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataExtended for type-switch of LDataFrame")
 		}
 	case notAckFrame == bool(true) && polling == bool(true): // LPollData
-		if _child, err = (&_LPollData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LPollData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LPollData for type-switch of LDataFrame")
 		}
 	case notAckFrame == bool(false): // LDataFrameACK
-		if _child, err = (&_LDataFrameACK{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LDataFrameACK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataFrameACK for type-switch of LDataFrame")
 		}
 	default:
@@ -317,3 +318,22 @@ func (pm *_LDataFrame) serializeParent(ctx context.Context, writeBuffer utils.Wr
 }
 
 func (m *_LDataFrame) IsLDataFrame() {}
+
+func (m *_LDataFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataFrame) deepCopy() *_LDataFrame {
+	if m == nil {
+		return nil
+	}
+	_LDataFrameCopy := &_LDataFrame{
+		nil, // will be set by child
+		m.FrameType,
+		m.NotRepeated,
+		m.Priority,
+		m.AcknowledgeRequested,
+		m.ErrorFlag,
+	}
+	return _LDataFrameCopy
+}

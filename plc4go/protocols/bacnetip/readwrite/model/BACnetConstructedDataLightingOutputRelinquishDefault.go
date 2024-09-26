@@ -38,6 +38,7 @@ type BACnetConstructedDataLightingOutputRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLightingOutputRelinquishDefault struct {
 
 var _ BACnetConstructedDataLightingOutputRelinquishDefault = (*_BACnetConstructedDataLightingOutputRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputRelinquishDefault)(nil)
+
+// NewBACnetConstructedDataLightingOutputRelinquishDefault factory function for _BACnetConstructedDataLightingOutputRelinquishDefault
+func NewBACnetConstructedDataLightingOutputRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataLightingOutputRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLightingOutputRelinquishDefault) GetActualValue()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLightingOutputRelinquishDefault factory function for _BACnetConstructedDataLightingOutputRelinquishDefault
-func NewBACnetConstructedDataLightingOutputRelinquishDefault(relinquishDefault BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataLightingOutputRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLightingOutputRelinquishDefault(structType any) BACnetConstructedDataLightingOutputRelinquishDefault {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLightingOutputRelinquishDefault) SerializeWithWri
 }
 
 func (m *_BACnetConstructedDataLightingOutputRelinquishDefault) IsBACnetConstructedDataLightingOutputRelinquishDefault() {
+}
+
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefault) deepCopy() *_BACnetConstructedDataLightingOutputRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLightingOutputRelinquishDefaultCopy := &_BACnetConstructedDataLightingOutputRelinquishDefault{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RelinquishDefault.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLightingOutputRelinquishDefaultCopy
 }
 
 func (m *_BACnetConstructedDataLightingOutputRelinquishDefault) String() string {

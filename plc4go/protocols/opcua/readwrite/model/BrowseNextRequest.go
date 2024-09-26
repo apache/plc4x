@@ -38,6 +38,7 @@ type BrowseNextRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -64,6 +65,22 @@ type _BrowseNextRequest struct {
 
 var _ BrowseNextRequest = (*_BrowseNextRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseNextRequest)(nil)
+
+// NewBrowseNextRequest factory function for _BrowseNextRequest
+func NewBrowseNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) *_BrowseNextRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for BrowseNextRequest must not be nil")
+	}
+	_result := &_BrowseNextRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ReleaseContinuationPoints:         releaseContinuationPoints,
+		NoOfContinuationPoints:            noOfContinuationPoints,
+		ContinuationPoints:                continuationPoints,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,22 +125,6 @@ func (m *_BrowseNextRequest) GetContinuationPoints() []PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseNextRequest factory function for _BrowseNextRequest
-func NewBrowseNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) *_BrowseNextRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for BrowseNextRequest must not be nil")
-	}
-	_result := &_BrowseNextRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		ReleaseContinuationPoints:         releaseContinuationPoints,
-		NoOfContinuationPoints:            noOfContinuationPoints,
-		ContinuationPoints:                continuationPoints,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseNextRequest(structType any) BrowseNextRequest {
@@ -267,6 +268,26 @@ func (m *_BrowseNextRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_BrowseNextRequest) IsBrowseNextRequest() {}
+
+func (m *_BrowseNextRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseNextRequest) deepCopy() *_BrowseNextRequest {
+	if m == nil {
+		return nil
+	}
+	_BrowseNextRequestCopy := &_BrowseNextRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ReleaseContinuationPoints,
+		m.NoOfContinuationPoints,
+		utils.DeepCopySlice[PascalByteString, PascalByteString](m.ContinuationPoints),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseNextRequestCopy
+}
 
 func (m *_BrowseNextRequest) String() string {
 	if m == nil {

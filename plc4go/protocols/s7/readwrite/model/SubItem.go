@@ -38,6 +38,7 @@ type SubItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetBytesToRead returns BytesToRead (property field)
 	GetBytesToRead() uint8
 	// GetDbNumber returns DbNumber (property field)
@@ -56,6 +57,11 @@ type _SubItem struct {
 }
 
 var _ SubItem = (*_SubItem)(nil)
+
+// NewSubItem factory function for _SubItem
+func NewSubItem(bytesToRead uint8, dbNumber uint16, startAddress uint16) *_SubItem {
+	return &_SubItem{BytesToRead: bytesToRead, DbNumber: dbNumber, StartAddress: startAddress}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +84,6 @@ func (m *_SubItem) GetStartAddress() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSubItem factory function for _SubItem
-func NewSubItem(bytesToRead uint8, dbNumber uint16, startAddress uint16) *_SubItem {
-	return &_SubItem{BytesToRead: bytesToRead, DbNumber: dbNumber, StartAddress: startAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSubItem(structType any) SubItem {
@@ -206,6 +207,22 @@ func (m *_SubItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_SubItem) IsSubItem() {}
+
+func (m *_SubItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubItem) deepCopy() *_SubItem {
+	if m == nil {
+		return nil
+	}
+	_SubItemCopy := &_SubItem{
+		m.BytesToRead,
+		m.DbNumber,
+		m.StartAddress,
+	}
+	return _SubItemCopy
+}
 
 func (m *_SubItem) String() string {
 	if m == nil {

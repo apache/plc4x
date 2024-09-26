@@ -38,6 +38,7 @@ type BACnetClosingTag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// IsBACnetClosingTag is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -54,6 +55,14 @@ type _BACnetClosingTag struct {
 
 var _ BACnetClosingTag = (*_BACnetClosingTag)(nil)
 
+// NewBACnetClosingTag factory function for _BACnetClosingTag
+func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetClosingTag {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetClosingTag must not be nil")
+	}
+	return &_BACnetClosingTag{Header: header, TagNumberArgument: tagNumberArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -67,14 +76,6 @@ func (m *_BACnetClosingTag) GetHeader() BACnetTagHeader {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClosingTag factory function for _BACnetClosingTag
-func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetClosingTag {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetClosingTag must not be nil")
-	}
-	return &_BACnetClosingTag{Header: header, TagNumberArgument: tagNumberArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClosingTag(structType any) BACnetClosingTag {
@@ -197,6 +198,21 @@ func (m *_BACnetClosingTag) GetTagNumberArgument() uint8 {
 ////
 
 func (m *_BACnetClosingTag) IsBACnetClosingTag() {}
+
+func (m *_BACnetClosingTag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetClosingTag) deepCopy() *_BACnetClosingTag {
+	if m == nil {
+		return nil
+	}
+	_BACnetClosingTagCopy := &_BACnetClosingTag{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.TagNumberArgument,
+	}
+	return _BACnetClosingTagCopy
+}
 
 func (m *_BACnetClosingTag) String() string {
 	if m == nil {

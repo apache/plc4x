@@ -38,6 +38,7 @@ type SecurityDataSystemArmedDisarmed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetArmCodeType returns ArmCodeType (property field)
 	GetArmCodeType() SecurityArmCode
@@ -53,6 +54,19 @@ type _SecurityDataSystemArmedDisarmed struct {
 
 var _ SecurityDataSystemArmedDisarmed = (*_SecurityDataSystemArmedDisarmed)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataSystemArmedDisarmed)(nil)
+
+// NewSecurityDataSystemArmedDisarmed factory function for _SecurityDataSystemArmedDisarmed
+func NewSecurityDataSystemArmedDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte, armCodeType SecurityArmCode) *_SecurityDataSystemArmedDisarmed {
+	if armCodeType == nil {
+		panic("armCodeType of type SecurityArmCode for SecurityDataSystemArmedDisarmed must not be nil")
+	}
+	_result := &_SecurityDataSystemArmedDisarmed{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ArmCodeType:          armCodeType,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_SecurityDataSystemArmedDisarmed) GetArmCodeType() SecurityArmCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataSystemArmedDisarmed factory function for _SecurityDataSystemArmedDisarmed
-func NewSecurityDataSystemArmedDisarmed(armCodeType SecurityArmCode, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataSystemArmedDisarmed {
-	if armCodeType == nil {
-		panic("armCodeType of type SecurityArmCode for SecurityDataSystemArmedDisarmed must not be nil")
-	}
-	_result := &_SecurityDataSystemArmedDisarmed{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ArmCodeType:          armCodeType,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataSystemArmedDisarmed(structType any) SecurityDataSystemArmedDisarmed {
@@ -178,6 +179,22 @@ func (m *_SecurityDataSystemArmedDisarmed) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_SecurityDataSystemArmedDisarmed) IsSecurityDataSystemArmedDisarmed() {}
+
+func (m *_SecurityDataSystemArmedDisarmed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataSystemArmedDisarmed) deepCopy() *_SecurityDataSystemArmedDisarmed {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataSystemArmedDisarmedCopy := &_SecurityDataSystemArmedDisarmed{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ArmCodeType.DeepCopy().(SecurityArmCode),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataSystemArmedDisarmedCopy
+}
 
 func (m *_SecurityDataSystemArmedDisarmed) String() string {
 	if m == nil {

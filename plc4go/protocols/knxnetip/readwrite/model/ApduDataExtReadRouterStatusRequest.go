@@ -36,6 +36,7 @@ type ApduDataExtReadRouterStatusRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtReadRouterStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtReadRouterStatusRequest()
@@ -48,6 +49,15 @@ type _ApduDataExtReadRouterStatusRequest struct {
 
 var _ ApduDataExtReadRouterStatusRequest = (*_ApduDataExtReadRouterStatusRequest)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtReadRouterStatusRequest)(nil)
+
+// NewApduDataExtReadRouterStatusRequest factory function for _ApduDataExtReadRouterStatusRequest
+func NewApduDataExtReadRouterStatusRequest(length uint8) *_ApduDataExtReadRouterStatusRequest {
+	_result := &_ApduDataExtReadRouterStatusRequest{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtReadRouterStatusRequest) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtReadRouterStatusRequest) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtReadRouterStatusRequest factory function for _ApduDataExtReadRouterStatusRequest
-func NewApduDataExtReadRouterStatusRequest(length uint8) *_ApduDataExtReadRouterStatusRequest {
-	_result := &_ApduDataExtReadRouterStatusRequest{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtReadRouterStatusRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ApduDataExtReadRouterStatusRequest) IsApduDataExtReadRouterStatusRequest() {}
+
+func (m *_ApduDataExtReadRouterStatusRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtReadRouterStatusRequest) deepCopy() *_ApduDataExtReadRouterStatusRequest {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtReadRouterStatusRequestCopy := &_ApduDataExtReadRouterStatusRequest{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtReadRouterStatusRequestCopy
+}
 
 func (m *_ApduDataExtReadRouterStatusRequest) String() string {
 	if m == nil {

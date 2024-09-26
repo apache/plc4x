@@ -38,6 +38,7 @@ type RationalNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNumerator returns Numerator (property field)
 	GetNumerator() int32
@@ -56,6 +57,17 @@ type _RationalNumber struct {
 
 var _ RationalNumber = (*_RationalNumber)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RationalNumber)(nil)
+
+// NewRationalNumber factory function for _RationalNumber
+func NewRationalNumber(numerator int32, denominator uint32) *_RationalNumber {
+	_result := &_RationalNumber{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Numerator:                         numerator,
+		Denominator:                       denominator,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_RationalNumber) GetDenominator() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRationalNumber factory function for _RationalNumber
-func NewRationalNumber(numerator int32, denominator uint32) *_RationalNumber {
-	_result := &_RationalNumber{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Numerator:                         numerator,
-		Denominator:                       denominator,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRationalNumber(structType any) RationalNumber {
@@ -200,6 +201,23 @@ func (m *_RationalNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_RationalNumber) IsRationalNumber() {}
+
+func (m *_RationalNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RationalNumber) deepCopy() *_RationalNumber {
+	if m == nil {
+		return nil
+	}
+	_RationalNumberCopy := &_RationalNumber{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Numerator,
+		m.Denominator,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RationalNumberCopy
+}
 
 func (m *_RationalNumber) String() string {
 	if m == nil {

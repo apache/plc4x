@@ -17,7 +17,8 @@
  * under the License.
  */
 
-package device
+package utils
 
-type CurrentPropertyListMixIn struct {
+type Copyable interface {
+	DeepCopy() any
 }

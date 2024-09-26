@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPv6UDPPort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6UdpPort returns Ipv6UdpPort (property field)
 	GetIpv6UdpPort() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBACnetIPv6UDPPort struct {
 
 var _ BACnetConstructedDataBACnetIPv6UDPPort = (*_BACnetConstructedDataBACnetIPv6UDPPort)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPv6UDPPort)(nil)
+
+// NewBACnetConstructedDataBACnetIPv6UDPPort factory function for _BACnetConstructedDataBACnetIPv6UDPPort
+func NewBACnetConstructedDataBACnetIPv6UDPPort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6UdpPort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6UDPPort {
+	if ipv6UdpPort == nil {
+		panic("ipv6UdpPort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBACnetIPv6UDPPort must not be nil")
+	}
+	_result := &_BACnetConstructedDataBACnetIPv6UDPPort{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Ipv6UdpPort:                   ipv6UdpPort,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBACnetIPv6UDPPort factory function for _BACnetConstructedDataBACnetIPv6UDPPort
-func NewBACnetConstructedDataBACnetIPv6UDPPort(ipv6UdpPort BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6UDPPort {
-	if ipv6UdpPort == nil {
-		panic("ipv6UdpPort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBACnetIPv6UDPPort must not be nil")
-	}
-	_result := &_BACnetConstructedDataBACnetIPv6UDPPort{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Ipv6UdpPort:                   ipv6UdpPort,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBACnetIPv6UDPPort(structType any) BACnetConstructedDataBACnetIPv6UDPPort {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataBACnetIPv6UDPPort) IsBACnetConstructedDataBACnetIPv6UDPPort() {}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPort) deepCopy() *_BACnetConstructedDataBACnetIPv6UDPPort {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPv6UDPPortCopy := &_BACnetConstructedDataBACnetIPv6UDPPort{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Ipv6UdpPort.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPv6UDPPortCopy
+}
 
 func (m *_BACnetConstructedDataBACnetIPv6UDPPort) String() string {
 	if m == nil {

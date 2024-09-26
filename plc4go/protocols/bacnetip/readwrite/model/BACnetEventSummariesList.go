@@ -38,6 +38,7 @@ type BACnetEventSummariesList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
@@ -60,6 +61,17 @@ type _BACnetEventSummariesList struct {
 
 var _ BACnetEventSummariesList = (*_BACnetEventSummariesList)(nil)
 
+// NewBACnetEventSummariesList factory function for _BACnetEventSummariesList
+func NewBACnetEventSummariesList(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventSummariesList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventSummariesList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventSummariesList must not be nil")
+	}
+	return &_BACnetEventSummariesList{OpeningTag: openingTag, ListOfEventSummaries: listOfEventSummaries, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_BACnetEventSummariesList) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventSummariesList factory function for _BACnetEventSummariesList
-func NewBACnetEventSummariesList(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventSummariesList {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventSummariesList must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventSummariesList must not be nil")
-	}
-	return &_BACnetEventSummariesList{OpeningTag: openingTag, ListOfEventSummaries: listOfEventSummaries, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventSummariesList(structType any) BACnetEventSummariesList {
@@ -229,6 +230,23 @@ func (m *_BACnetEventSummariesList) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventSummariesList) IsBACnetEventSummariesList() {}
+
+func (m *_BACnetEventSummariesList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventSummariesList) deepCopy() *_BACnetEventSummariesList {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventSummariesListCopy := &_BACnetEventSummariesList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetEventSummary, BACnetEventSummary](m.ListOfEventSummaries),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventSummariesListCopy
+}
 
 func (m *_BACnetEventSummariesList) String() string {
 	if m == nil {

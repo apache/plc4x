@@ -38,6 +38,7 @@ type BACnetConstructedDataScaleFactor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetScaleFactor returns ScaleFactor (property field)
 	GetScaleFactor() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataScaleFactor struct {
 
 var _ BACnetConstructedDataScaleFactor = (*_BACnetConstructedDataScaleFactor)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScaleFactor)(nil)
+
+// NewBACnetConstructedDataScaleFactor factory function for _BACnetConstructedDataScaleFactor
+func NewBACnetConstructedDataScaleFactor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scaleFactor BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScaleFactor {
+	if scaleFactor == nil {
+		panic("scaleFactor of type BACnetApplicationTagReal for BACnetConstructedDataScaleFactor must not be nil")
+	}
+	_result := &_BACnetConstructedDataScaleFactor{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ScaleFactor:                   scaleFactor,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataScaleFactor) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataScaleFactor factory function for _BACnetConstructedDataScaleFactor
-func NewBACnetConstructedDataScaleFactor(scaleFactor BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScaleFactor {
-	if scaleFactor == nil {
-		panic("scaleFactor of type BACnetApplicationTagReal for BACnetConstructedDataScaleFactor must not be nil")
-	}
-	_result := &_BACnetConstructedDataScaleFactor{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ScaleFactor:                   scaleFactor,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataScaleFactor(structType any) BACnetConstructedDataScaleFactor {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataScaleFactor) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataScaleFactor) IsBACnetConstructedDataScaleFactor() {}
+
+func (m *_BACnetConstructedDataScaleFactor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataScaleFactor) deepCopy() *_BACnetConstructedDataScaleFactor {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataScaleFactorCopy := &_BACnetConstructedDataScaleFactor{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ScaleFactor.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataScaleFactorCopy
+}
 
 func (m *_BACnetConstructedDataScaleFactor) String() string {
 	if m == nil {

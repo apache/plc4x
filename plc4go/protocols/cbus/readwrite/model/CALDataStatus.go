@@ -38,6 +38,7 @@ type CALDataStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -59,6 +60,18 @@ type _CALDataStatus struct {
 
 var _ CALDataStatus = (*_CALDataStatus)(nil)
 var _ CALDataRequirements = (*_CALDataStatus)(nil)
+
+// NewCALDataStatus factory function for _CALDataStatus
+func NewCALDataStatus(commandTypeContainer CALCommandTypeContainer, additionalData CALData, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, requestContext RequestContext) *_CALDataStatus {
+	_result := &_CALDataStatus{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		Application:     application,
+		BlockStart:      blockStart,
+		StatusBytes:     statusBytes,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,18 +108,6 @@ func (m *_CALDataStatus) GetStatusBytes() []StatusByte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataStatus factory function for _CALDataStatus
-func NewCALDataStatus(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatus {
-	_result := &_CALDataStatus{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		Application:     application,
-		BlockStart:      blockStart,
-		StatusBytes:     statusBytes,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataStatus(structType any) CALDataStatus {
@@ -224,6 +225,24 @@ func (m *_CALDataStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_CALDataStatus) IsCALDataStatus() {}
+
+func (m *_CALDataStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataStatus) deepCopy() *_CALDataStatus {
+	if m == nil {
+		return nil
+	}
+	_CALDataStatusCopy := &_CALDataStatus{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.Application,
+		m.BlockStart,
+		utils.DeepCopySlice[StatusByte, StatusByte](m.StatusBytes),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataStatusCopy
+}
 
 func (m *_CALDataStatus) String() string {
 	if m == nil {

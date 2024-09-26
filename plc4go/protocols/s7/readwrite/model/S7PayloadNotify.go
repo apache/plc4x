@@ -38,6 +38,7 @@ type S7PayloadNotify interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() AlarmMessagePushType
@@ -53,6 +54,19 @@ type _S7PayloadNotify struct {
 
 var _ S7PayloadNotify = (*_S7PayloadNotify)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadNotify)(nil)
+
+// NewS7PayloadNotify factory function for _S7PayloadNotify
+func NewS7PayloadNotify(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, alarmMessage AlarmMessagePushType) *_S7PayloadNotify {
+	if alarmMessage == nil {
+		panic("alarmMessage of type AlarmMessagePushType for S7PayloadNotify must not be nil")
+	}
+	_result := &_S7PayloadNotify{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		AlarmMessage:                  alarmMessage,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,19 +107,6 @@ func (m *_S7PayloadNotify) GetAlarmMessage() AlarmMessagePushType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadNotify factory function for _S7PayloadNotify
-func NewS7PayloadNotify(alarmMessage AlarmMessagePushType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadNotify {
-	if alarmMessage == nil {
-		panic("alarmMessage of type AlarmMessagePushType for S7PayloadNotify must not be nil")
-	}
-	_result := &_S7PayloadNotify{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		AlarmMessage:                  alarmMessage,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadNotify(structType any) S7PayloadNotify {
@@ -190,6 +191,22 @@ func (m *_S7PayloadNotify) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_S7PayloadNotify) IsS7PayloadNotify() {}
+
+func (m *_S7PayloadNotify) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadNotify) deepCopy() *_S7PayloadNotify {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadNotifyCopy := &_S7PayloadNotify{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.AlarmMessage.DeepCopy().(AlarmMessagePushType),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadNotifyCopy
+}
 
 func (m *_S7PayloadNotify) String() string {
 	if m == nil {

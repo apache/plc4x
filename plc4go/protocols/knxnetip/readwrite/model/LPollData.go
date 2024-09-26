@@ -38,6 +38,7 @@ type LPollData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LDataFrame
 	// GetSourceAddress returns SourceAddress (property field)
 	GetSourceAddress() KnxAddress
@@ -61,6 +62,21 @@ type _LPollData struct {
 
 var _ LPollData = (*_LPollData)(nil)
 var _ LDataFrameRequirements = (*_LPollData)(nil)
+
+// NewLPollData factory function for _LPollData
+func NewLPollData(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool, sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8) *_LPollData {
+	if sourceAddress == nil {
+		panic("sourceAddress of type KnxAddress for LPollData must not be nil")
+	}
+	_result := &_LPollData{
+		LDataFrameContract:     NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
+		SourceAddress:          sourceAddress,
+		TargetAddress:          targetAddress,
+		NumberExpectedPollData: numberExpectedPollData,
+	}
+	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -105,21 +121,6 @@ func (m *_LPollData) GetNumberExpectedPollData() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLPollData factory function for _LPollData
-func NewLPollData(sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LPollData {
-	if sourceAddress == nil {
-		panic("sourceAddress of type KnxAddress for LPollData must not be nil")
-	}
-	_result := &_LPollData{
-		LDataFrameContract:     NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
-		SourceAddress:          sourceAddress,
-		TargetAddress:          targetAddress,
-		NumberExpectedPollData: numberExpectedPollData,
-	}
-	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLPollData(structType any) LPollData {
@@ -245,6 +246,25 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_LPollData) IsLPollData() {}
+
+func (m *_LPollData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LPollData) deepCopy() *_LPollData {
+	if m == nil {
+		return nil
+	}
+	_LPollDataCopy := &_LPollData{
+		m.LDataFrameContract.(*_LDataFrame).deepCopy(),
+		m.SourceAddress.DeepCopy().(KnxAddress),
+		utils.DeepCopySlice[byte, byte](m.TargetAddress),
+		m.NumberExpectedPollData,
+		m.reservedField0,
+	}
+	m.LDataFrameContract.(*_LDataFrame)._SubType = m
+	return _LPollDataCopy
+}
 
 func (m *_LPollData) String() string {
 	if m == nil {

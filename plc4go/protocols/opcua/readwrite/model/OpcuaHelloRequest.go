@@ -38,6 +38,7 @@ type OpcuaHelloRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetVersion returns Version (property field)
 	GetVersion() uint32
@@ -59,6 +60,24 @@ type _OpcuaHelloRequest struct {
 
 var _ OpcuaHelloRequest = (*_OpcuaHelloRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaHelloRequest)(nil)
+
+// NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
+func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, endpoint PascalString) *_OpcuaHelloRequest {
+	if limits == nil {
+		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
+	}
+	if endpoint == nil {
+		panic("endpoint of type PascalString for OpcuaHelloRequest must not be nil")
+	}
+	_result := &_OpcuaHelloRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Version:            version,
+		Limits:             limits,
+		Endpoint:           endpoint,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,24 +122,6 @@ func (m *_OpcuaHelloRequest) GetEndpoint() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
-func NewOpcuaHelloRequest(version uint32, limits OpcuaProtocolLimits, endpoint PascalString, chunk ChunkType) *_OpcuaHelloRequest {
-	if limits == nil {
-		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
-	}
-	if endpoint == nil {
-		panic("endpoint of type PascalString for OpcuaHelloRequest must not be nil")
-	}
-	_result := &_OpcuaHelloRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		Version:            version,
-		Limits:             limits,
-		Endpoint:           endpoint,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaHelloRequest(structType any) OpcuaHelloRequest {
@@ -231,6 +232,24 @@ func (m *_OpcuaHelloRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_OpcuaHelloRequest) IsOpcuaHelloRequest() {}
+
+func (m *_OpcuaHelloRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaHelloRequest) deepCopy() *_OpcuaHelloRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaHelloRequestCopy := &_OpcuaHelloRequest{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.Version,
+		m.Limits.DeepCopy().(OpcuaProtocolLimits),
+		m.Endpoint.DeepCopy().(PascalString),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaHelloRequestCopy
+}
 
 func (m *_OpcuaHelloRequest) String() string {
 	if m == nil {

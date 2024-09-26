@@ -41,6 +41,7 @@ type RequestNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// IsRequestNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestNull()
@@ -53,6 +54,15 @@ type _RequestNull struct {
 
 var _ RequestNull = (*_RequestNull)(nil)
 var _ RequestRequirements = (*_RequestNull)(nil)
+
+// NewRequestNull factory function for _RequestNull
+func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestNull {
+	_result := &_RequestNull{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,15 +91,6 @@ func (m *_RequestNull) GetNullIndicator() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestNull factory function for _RequestNull
-func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestNull {
-	_result := &_RequestNull{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestNull(structType any) RequestNull {
@@ -174,6 +175,21 @@ func (m *_RequestNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_RequestNull) IsRequestNull() {}
+
+func (m *_RequestNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestNull) deepCopy() *_RequestNull {
+	if m == nil {
+		return nil
+	}
+	_RequestNullCopy := &_RequestNull{
+		m.RequestContract.(*_Request).deepCopy(),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestNullCopy
+}
 
 func (m *_RequestNull) String() string {
 	if m == nil {

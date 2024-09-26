@@ -38,6 +38,7 @@ type DeviceConfigurationRequestDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
@@ -56,6 +57,11 @@ type _DeviceConfigurationRequestDataBlock struct {
 
 var _ DeviceConfigurationRequestDataBlock = (*_DeviceConfigurationRequestDataBlock)(nil)
 
+// NewDeviceConfigurationRequestDataBlock factory function for _DeviceConfigurationRequestDataBlock
+func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_DeviceConfigurationRequestDataBlock {
+	return &_DeviceConfigurationRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -73,11 +79,6 @@ func (m *_DeviceConfigurationRequestDataBlock) GetSequenceCounter() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceConfigurationRequestDataBlock factory function for _DeviceConfigurationRequestDataBlock
-func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_DeviceConfigurationRequestDataBlock {
-	return &_DeviceConfigurationRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceConfigurationRequestDataBlock(structType any) DeviceConfigurationRequestDataBlock {
@@ -214,6 +215,22 @@ func (m *_DeviceConfigurationRequestDataBlock) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_DeviceConfigurationRequestDataBlock) IsDeviceConfigurationRequestDataBlock() {}
+
+func (m *_DeviceConfigurationRequestDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationRequestDataBlock) deepCopy() *_DeviceConfigurationRequestDataBlock {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationRequestDataBlockCopy := &_DeviceConfigurationRequestDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.reservedField0,
+	}
+	return _DeviceConfigurationRequestDataBlockCopy
+}
 
 func (m *_DeviceConfigurationRequestDataBlock) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type SequenceHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() int32
 	// GetRequestId returns RequestId (property field)
@@ -53,6 +54,11 @@ type _SequenceHeader struct {
 }
 
 var _ SequenceHeader = (*_SequenceHeader)(nil)
+
+// NewSequenceHeader factory function for _SequenceHeader
+func NewSequenceHeader(sequenceNumber int32, requestId int32) *_SequenceHeader {
+	return &_SequenceHeader{SequenceNumber: sequenceNumber, RequestId: requestId}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +77,6 @@ func (m *_SequenceHeader) GetRequestId() int32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSequenceHeader factory function for _SequenceHeader
-func NewSequenceHeader(sequenceNumber int32, requestId int32) *_SequenceHeader {
-	return &_SequenceHeader{SequenceNumber: sequenceNumber, RequestId: requestId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSequenceHeader(structType any) SequenceHeader {
@@ -186,6 +187,21 @@ func (m *_SequenceHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SequenceHeader) IsSequenceHeader() {}
+
+func (m *_SequenceHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SequenceHeader) deepCopy() *_SequenceHeader {
+	if m == nil {
+		return nil
+	}
+	_SequenceHeaderCopy := &_SequenceHeader{
+		m.SequenceNumber,
+		m.RequestId,
+	}
+	return _SequenceHeaderCopy
+}
 
 func (m *_SequenceHeader) String() string {
 	if m == nil {

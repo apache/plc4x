@@ -38,6 +38,7 @@ type StructureField interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -76,6 +77,32 @@ type _StructureField struct {
 
 var _ StructureField = (*_StructureField)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_StructureField)(nil)
+
+// NewStructureField factory function for _StructureField
+func NewStructureField(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) *_StructureField {
+	if name == nil {
+		panic("name of type PascalString for StructureField must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for StructureField must not be nil")
+	}
+	if dataType == nil {
+		panic("dataType of type NodeId for StructureField must not be nil")
+	}
+	_result := &_StructureField{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Description:                       description,
+		DataType:                          dataType,
+		ValueRank:                         valueRank,
+		NoOfArrayDimensions:               noOfArrayDimensions,
+		ArrayDimensions:                   arrayDimensions,
+		MaxStringLength:                   maxStringLength,
+		IsOptional:                        isOptional,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,32 +163,6 @@ func (m *_StructureField) GetIsOptional() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStructureField factory function for _StructureField
-func NewStructureField(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) *_StructureField {
-	if name == nil {
-		panic("name of type PascalString for StructureField must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for StructureField must not be nil")
-	}
-	if dataType == nil {
-		panic("dataType of type NodeId for StructureField must not be nil")
-	}
-	_result := &_StructureField{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Description:                       description,
-		DataType:                          dataType,
-		ValueRank:                         valueRank,
-		NoOfArrayDimensions:               noOfArrayDimensions,
-		ArrayDimensions:                   arrayDimensions,
-		MaxStringLength:                   maxStringLength,
-		IsOptional:                        isOptional,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStructureField(structType any) StructureField {
@@ -352,6 +353,30 @@ func (m *_StructureField) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_StructureField) IsStructureField() {}
+
+func (m *_StructureField) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StructureField) deepCopy() *_StructureField {
+	if m == nil {
+		return nil
+	}
+	_StructureFieldCopy := &_StructureField{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.Description.DeepCopy().(LocalizedText),
+		m.DataType.DeepCopy().(NodeId),
+		m.ValueRank,
+		m.NoOfArrayDimensions,
+		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
+		m.MaxStringLength,
+		m.IsOptional,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _StructureFieldCopy
+}
 
 func (m *_StructureField) String() string {
 	if m == nil {

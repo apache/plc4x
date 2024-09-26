@@ -38,6 +38,7 @@ type BACnetConstructedDataValueSource interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetValueSource returns ValueSource (property field)
 	GetValueSource() BACnetValueSource
@@ -55,6 +56,19 @@ type _BACnetConstructedDataValueSource struct {
 
 var _ BACnetConstructedDataValueSource = (*_BACnetConstructedDataValueSource)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSource)(nil)
+
+// NewBACnetConstructedDataValueSource factory function for _BACnetConstructedDataValueSource
+func NewBACnetConstructedDataValueSource(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueSource BACnetValueSource, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSource {
+	if valueSource == nil {
+		panic("valueSource of type BACnetValueSource for BACnetConstructedDataValueSource must not be nil")
+	}
+	_result := &_BACnetConstructedDataValueSource{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ValueSource:                   valueSource,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataValueSource) GetActualValue() BACnetValueSource {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataValueSource factory function for _BACnetConstructedDataValueSource
-func NewBACnetConstructedDataValueSource(valueSource BACnetValueSource, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSource {
-	if valueSource == nil {
-		panic("valueSource of type BACnetValueSource for BACnetConstructedDataValueSource must not be nil")
-	}
-	_result := &_BACnetConstructedDataValueSource{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ValueSource:                   valueSource,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataValueSource(structType any) BACnetConstructedDataValueSource {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataValueSource) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataValueSource) IsBACnetConstructedDataValueSource() {}
+
+func (m *_BACnetConstructedDataValueSource) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataValueSource) deepCopy() *_BACnetConstructedDataValueSource {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataValueSourceCopy := &_BACnetConstructedDataValueSource{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ValueSource.DeepCopy().(BACnetValueSource),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataValueSourceCopy
+}
 
 func (m *_BACnetConstructedDataValueSource) String() string {
 	if m == nil {

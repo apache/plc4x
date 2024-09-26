@@ -38,6 +38,7 @@ type DiagnosticInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetInnerDiagnosticInfoSpecified returns InnerDiagnosticInfoSpecified (property field)
 	GetInnerDiagnosticInfoSpecified() bool
 	// GetInnerStatusCodeSpecified returns InnerStatusCodeSpecified (property field)
@@ -91,6 +92,11 @@ type _DiagnosticInfo struct {
 }
 
 var _ DiagnosticInfo = (*_DiagnosticInfo)(nil)
+
+// NewDiagnosticInfo factory function for _DiagnosticInfo
+func NewDiagnosticInfo(innerDiagnosticInfoSpecified bool, innerStatusCodeSpecified bool, additionalInfoSpecified bool, localeSpecified bool, localizedTextSpecified bool, namespaceURISpecified bool, symbolicIdSpecified bool, symbolicId *int32, namespaceURI *int32, locale *int32, localizedText *int32, additionalInfo PascalString, innerStatusCode StatusCode, innerDiagnosticInfo DiagnosticInfo) *_DiagnosticInfo {
+	return &_DiagnosticInfo{InnerDiagnosticInfoSpecified: innerDiagnosticInfoSpecified, InnerStatusCodeSpecified: innerStatusCodeSpecified, AdditionalInfoSpecified: additionalInfoSpecified, LocaleSpecified: localeSpecified, LocalizedTextSpecified: localizedTextSpecified, NamespaceURISpecified: namespaceURISpecified, SymbolicIdSpecified: symbolicIdSpecified, SymbolicId: symbolicId, NamespaceURI: namespaceURI, Locale: locale, LocalizedText: localizedText, AdditionalInfo: additionalInfo, InnerStatusCode: innerStatusCode, InnerDiagnosticInfo: innerDiagnosticInfo}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -157,11 +163,6 @@ func (m *_DiagnosticInfo) GetInnerDiagnosticInfo() DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDiagnosticInfo factory function for _DiagnosticInfo
-func NewDiagnosticInfo(innerDiagnosticInfoSpecified bool, innerStatusCodeSpecified bool, additionalInfoSpecified bool, localeSpecified bool, localizedTextSpecified bool, namespaceURISpecified bool, symbolicIdSpecified bool, symbolicId *int32, namespaceURI *int32, locale *int32, localizedText *int32, additionalInfo PascalString, innerStatusCode StatusCode, innerDiagnosticInfo DiagnosticInfo) *_DiagnosticInfo {
-	return &_DiagnosticInfo{InnerDiagnosticInfoSpecified: innerDiagnosticInfoSpecified, InnerStatusCodeSpecified: innerStatusCodeSpecified, AdditionalInfoSpecified: additionalInfoSpecified, LocaleSpecified: localeSpecified, LocalizedTextSpecified: localizedTextSpecified, NamespaceURISpecified: namespaceURISpecified, SymbolicIdSpecified: symbolicIdSpecified, SymbolicId: symbolicId, NamespaceURI: namespaceURI, Locale: locale, LocalizedText: localizedText, AdditionalInfo: additionalInfo, InnerStatusCode: innerStatusCode, InnerDiagnosticInfo: innerDiagnosticInfo}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDiagnosticInfo(structType any) DiagnosticInfo {
@@ -471,6 +472,34 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_DiagnosticInfo) IsDiagnosticInfo() {}
+
+func (m *_DiagnosticInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DiagnosticInfo) deepCopy() *_DiagnosticInfo {
+	if m == nil {
+		return nil
+	}
+	_DiagnosticInfoCopy := &_DiagnosticInfo{
+		m.InnerDiagnosticInfoSpecified,
+		m.InnerStatusCodeSpecified,
+		m.AdditionalInfoSpecified,
+		m.LocaleSpecified,
+		m.LocalizedTextSpecified,
+		m.NamespaceURISpecified,
+		m.SymbolicIdSpecified,
+		utils.CopyPtr[int32](m.SymbolicId),
+		utils.CopyPtr[int32](m.NamespaceURI),
+		utils.CopyPtr[int32](m.Locale),
+		utils.CopyPtr[int32](m.LocalizedText),
+		m.AdditionalInfo.DeepCopy().(PascalString),
+		m.InnerStatusCode.DeepCopy().(StatusCode),
+		m.InnerDiagnosticInfo.DeepCopy().(DiagnosticInfo),
+		m.reservedField0,
+	}
+	return _DiagnosticInfoCopy
+}
 
 func (m *_DiagnosticInfo) String() string {
 	if m == nil {

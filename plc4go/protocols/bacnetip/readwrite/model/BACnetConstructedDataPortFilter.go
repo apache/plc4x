@@ -38,6 +38,7 @@ type BACnetConstructedDataPortFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataPortFilter struct {
 
 var _ BACnetConstructedDataPortFilter = (*_BACnetConstructedDataPortFilter)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPortFilter)(nil)
+
+// NewBACnetConstructedDataPortFilter factory function for _BACnetConstructedDataPortFilter
+func NewBACnetConstructedDataPortFilter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, portFilter []BACnetPortPermission, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPortFilter {
+	_result := &_BACnetConstructedDataPortFilter{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		PortFilter:                    portFilter,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataPortFilter) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPortFilter factory function for _BACnetConstructedDataPortFilter
-func NewBACnetConstructedDataPortFilter(numberOfDataElements BACnetApplicationTagUnsignedInteger, portFilter []BACnetPortPermission, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPortFilter {
-	_result := &_BACnetConstructedDataPortFilter{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		PortFilter:                    portFilter,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPortFilter(structType any) BACnetConstructedDataPortFilter {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataPortFilter) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataPortFilter) IsBACnetConstructedDataPortFilter() {}
+
+func (m *_BACnetConstructedDataPortFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPortFilter) deepCopy() *_BACnetConstructedDataPortFilter {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPortFilterCopy := &_BACnetConstructedDataPortFilter{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetPortPermission, BACnetPortPermission](m.PortFilter),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPortFilterCopy
+}
 
 func (m *_BACnetConstructedDataPortFilter) String() string {
 	if m == nil {

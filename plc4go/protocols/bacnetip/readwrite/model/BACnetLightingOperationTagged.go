@@ -38,6 +38,7 @@ type BACnetLightingOperationTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetLightingOperationTagged struct {
 }
 
 var _ BACnetLightingOperationTagged = (*_BACnetLightingOperationTagged)(nil)
+
+// NewBACnetLightingOperationTagged factory function for _BACnetLightingOperationTagged
+func NewBACnetLightingOperationTagged(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingOperationTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLightingOperationTagged must not be nil")
+	}
+	return &_BACnetLightingOperationTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetLightingOperationTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLightingOperationTagged factory function for _BACnetLightingOperationTagged
-func NewBACnetLightingOperationTagged(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingOperationTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLightingOperationTagged must not be nil")
-	}
-	return &_BACnetLightingOperationTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLightingOperationTagged(structType any) BACnetLightingOperationTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetLightingOperationTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLightingOperationTagged) IsBACnetLightingOperationTagged() {}
+
+func (m *_BACnetLightingOperationTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingOperationTagged) deepCopy() *_BACnetLightingOperationTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingOperationTaggedCopy := &_BACnetLightingOperationTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLightingOperationTaggedCopy
+}
 
 func (m *_BACnetLightingOperationTagged) String() string {
 	if m == nil {

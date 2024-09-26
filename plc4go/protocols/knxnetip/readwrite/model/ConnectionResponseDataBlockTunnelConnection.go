@@ -38,6 +38,7 @@ type ConnectionResponseDataBlockTunnelConnection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ConnectionResponseDataBlock
 	// GetKnxAddress returns KnxAddress (property field)
 	GetKnxAddress() KnxAddress
@@ -53,6 +54,19 @@ type _ConnectionResponseDataBlockTunnelConnection struct {
 
 var _ ConnectionResponseDataBlockTunnelConnection = (*_ConnectionResponseDataBlockTunnelConnection)(nil)
 var _ ConnectionResponseDataBlockRequirements = (*_ConnectionResponseDataBlockTunnelConnection)(nil)
+
+// NewConnectionResponseDataBlockTunnelConnection factory function for _ConnectionResponseDataBlockTunnelConnection
+func NewConnectionResponseDataBlockTunnelConnection(knxAddress KnxAddress) *_ConnectionResponseDataBlockTunnelConnection {
+	if knxAddress == nil {
+		panic("knxAddress of type KnxAddress for ConnectionResponseDataBlockTunnelConnection must not be nil")
+	}
+	_result := &_ConnectionResponseDataBlockTunnelConnection{
+		ConnectionResponseDataBlockContract: NewConnectionResponseDataBlock(),
+		KnxAddress:                          knxAddress,
+	}
+	_result.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) GetKnxAddress() KnxAddres
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionResponseDataBlockTunnelConnection factory function for _ConnectionResponseDataBlockTunnelConnection
-func NewConnectionResponseDataBlockTunnelConnection(knxAddress KnxAddress) *_ConnectionResponseDataBlockTunnelConnection {
-	if knxAddress == nil {
-		panic("knxAddress of type KnxAddress for ConnectionResponseDataBlockTunnelConnection must not be nil")
-	}
-	_result := &_ConnectionResponseDataBlockTunnelConnection{
-		ConnectionResponseDataBlockContract: NewConnectionResponseDataBlock(),
-		KnxAddress:                          knxAddress,
-	}
-	_result.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionResponseDataBlockTunnelConnection(structType any) ConnectionResponseDataBlockTunnelConnection {
@@ -182,6 +183,22 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) SerializeWithWriteBuffer(
 }
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) IsConnectionResponseDataBlockTunnelConnection() {
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnection) deepCopy() *_ConnectionResponseDataBlockTunnelConnection {
+	if m == nil {
+		return nil
+	}
+	_ConnectionResponseDataBlockTunnelConnectionCopy := &_ConnectionResponseDataBlockTunnelConnection{
+		m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock).deepCopy(),
+		m.KnxAddress.DeepCopy().(KnxAddress),
+	}
+	m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = m
+	return _ConnectionResponseDataBlockTunnelConnectionCopy
 }
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) String() string {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesReliability interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetReliability returns Reliability (property field)
 	GetReliability() BACnetReliabilityTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesReliability struct {
 
 var _ BACnetPropertyStatesReliability = (*_BACnetPropertyStatesReliability)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesReliability)(nil)
+
+// NewBACnetPropertyStatesReliability factory function for _BACnetPropertyStatesReliability
+func NewBACnetPropertyStatesReliability(peekedTagHeader BACnetTagHeader, reliability BACnetReliabilityTagged) *_BACnetPropertyStatesReliability {
+	if reliability == nil {
+		panic("reliability of type BACnetReliabilityTagged for BACnetPropertyStatesReliability must not be nil")
+	}
+	_result := &_BACnetPropertyStatesReliability{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Reliability:                  reliability,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesReliability) GetReliability() BACnetReliabilityTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesReliability factory function for _BACnetPropertyStatesReliability
-func NewBACnetPropertyStatesReliability(reliability BACnetReliabilityTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesReliability {
-	if reliability == nil {
-		panic("reliability of type BACnetReliabilityTagged for BACnetPropertyStatesReliability must not be nil")
-	}
-	_result := &_BACnetPropertyStatesReliability{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Reliability:                  reliability,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesReliability(structType any) BACnetPropertyStatesReliability {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesReliability) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesReliability) IsBACnetPropertyStatesReliability() {}
+
+func (m *_BACnetPropertyStatesReliability) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesReliability) deepCopy() *_BACnetPropertyStatesReliability {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesReliabilityCopy := &_BACnetPropertyStatesReliability{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.Reliability.DeepCopy().(BACnetReliabilityTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesReliabilityCopy
+}
 
 func (m *_BACnetPropertyStatesReliability) String() string {
 	if m == nil {

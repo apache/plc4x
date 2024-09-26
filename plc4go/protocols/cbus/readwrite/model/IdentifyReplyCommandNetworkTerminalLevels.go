@@ -38,6 +38,7 @@ type IdentifyReplyCommandNetworkTerminalLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetNetworkTerminalLevels returns NetworkTerminalLevels (property field)
 	GetNetworkTerminalLevels() []byte
@@ -53,6 +54,16 @@ type _IdentifyReplyCommandNetworkTerminalLevels struct {
 
 var _ IdentifyReplyCommandNetworkTerminalLevels = (*_IdentifyReplyCommandNetworkTerminalLevels)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandNetworkTerminalLevels)(nil)
+
+// NewIdentifyReplyCommandNetworkTerminalLevels factory function for _IdentifyReplyCommandNetworkTerminalLevels
+func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandNetworkTerminalLevels {
+	_result := &_IdentifyReplyCommandNetworkTerminalLevels{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		NetworkTerminalLevels:        networkTerminalLevels,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) GetNetworkTerminalLevels() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandNetworkTerminalLevels factory function for _IdentifyReplyCommandNetworkTerminalLevels
-func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandNetworkTerminalLevels {
-	_result := &_IdentifyReplyCommandNetworkTerminalLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		NetworkTerminalLevels:        networkTerminalLevels,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandNetworkTerminalLevels(structType any) IdentifyReplyCommandNetworkTerminalLevels {
@@ -181,6 +182,22 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) SerializeWithWriteBuffer(ct
 }
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) IsIdentifyReplyCommandNetworkTerminalLevels() {}
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) deepCopy() *_IdentifyReplyCommandNetworkTerminalLevels {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandNetworkTerminalLevelsCopy := &_IdentifyReplyCommandNetworkTerminalLevels{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.NetworkTerminalLevels),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandNetworkTerminalLevelsCopy
+}
 
 func (m *_IdentifyReplyCommandNetworkTerminalLevels) String() string {
 	if m == nil {

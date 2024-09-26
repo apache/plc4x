@@ -38,6 +38,7 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventLogRecordLogDatum
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -59,6 +60,27 @@ type _BACnetEventLogRecordLogDatumNotification struct {
 
 var _ BACnetEventLogRecordLogDatumNotification = (*_BACnetEventLogRecordLogDatumNotification)(nil)
 var _ BACnetEventLogRecordLogDatumRequirements = (*_BACnetEventLogRecordLogDatumNotification)(nil)
+
+// NewBACnetEventLogRecordLogDatumNotification factory function for _BACnetEventLogRecordLogDatumNotification
+func NewBACnetEventLogRecordLogDatumNotification(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatumNotification {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatumNotification must not be nil")
+	}
+	if notification == nil {
+		panic("notification of type ConfirmedEventNotificationRequest for BACnetEventLogRecordLogDatumNotification must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatumNotification must not be nil")
+	}
+	_result := &_BACnetEventLogRecordLogDatumNotification{
+		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		InnerOpeningTag:                      innerOpeningTag,
+		Notification:                         notification,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,27 +117,6 @@ func (m *_BACnetEventLogRecordLogDatumNotification) GetInnerClosingTag() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventLogRecordLogDatumNotification factory function for _BACnetEventLogRecordLogDatumNotification
-func NewBACnetEventLogRecordLogDatumNotification(innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatumNotification {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatumNotification must not be nil")
-	}
-	if notification == nil {
-		panic("notification of type ConfirmedEventNotificationRequest for BACnetEventLogRecordLogDatumNotification must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatumNotification must not be nil")
-	}
-	_result := &_BACnetEventLogRecordLogDatumNotification{
-		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		InnerOpeningTag:                      innerOpeningTag,
-		Notification:                         notification,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventLogRecordLogDatumNotification(structType any) BACnetEventLogRecordLogDatumNotification {
@@ -226,6 +227,24 @@ func (m *_BACnetEventLogRecordLogDatumNotification) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetEventLogRecordLogDatumNotification) IsBACnetEventLogRecordLogDatumNotification() {}
+
+func (m *_BACnetEventLogRecordLogDatumNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotification) deepCopy() *_BACnetEventLogRecordLogDatumNotification {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventLogRecordLogDatumNotificationCopy := &_BACnetEventLogRecordLogDatumNotification{
+		m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.Notification.DeepCopy().(ConfirmedEventNotificationRequest),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = m
+	return _BACnetEventLogRecordLogDatumNotificationCopy
+}
 
 func (m *_BACnetEventLogRecordLogDatumNotification) String() string {
 	if m == nil {

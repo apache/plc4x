@@ -36,6 +36,7 @@ type CALDataReset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// IsCALDataReset is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataReset()
@@ -49,6 +50,15 @@ type _CALDataReset struct {
 var _ CALDataReset = (*_CALDataReset)(nil)
 var _ CALDataRequirements = (*_CALDataReset)(nil)
 
+// NewCALDataReset factory function for _CALDataReset
+func NewCALDataReset(commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReset {
+	_result := &_CALDataReset{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ CALDataRequirements = (*_CALDataReset)(nil)
 
 func (m *_CALDataReset) GetParent() CALDataContract {
 	return m.CALDataContract
-}
-
-// NewCALDataReset factory function for _CALDataReset
-func NewCALDataReset(commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReset {
-	_result := &_CALDataReset{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_CALDataReset) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_CALDataReset) IsCALDataReset() {}
+
+func (m *_CALDataReset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataReset) deepCopy() *_CALDataReset {
+	if m == nil {
+		return nil
+	}
+	_CALDataResetCopy := &_CALDataReset{
+		m.CALDataContract.(*_CALData).deepCopy(),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataResetCopy
+}
 
 func (m *_CALDataReset) String() string {
 	if m == nil {

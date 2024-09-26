@@ -38,6 +38,7 @@ type AdditionalParametersType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfParameters returns NoOfParameters (property field)
 	GetNoOfParameters() int32
@@ -56,6 +57,17 @@ type _AdditionalParametersType struct {
 
 var _ AdditionalParametersType = (*_AdditionalParametersType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AdditionalParametersType)(nil)
+
+// NewAdditionalParametersType factory function for _AdditionalParametersType
+func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObjectDefinition) *_AdditionalParametersType {
+	_result := &_AdditionalParametersType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfParameters:                    noOfParameters,
+		Parameters:                        parameters,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_AdditionalParametersType) GetParameters() []ExtensionObjectDefinition 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdditionalParametersType factory function for _AdditionalParametersType
-func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObjectDefinition) *_AdditionalParametersType {
-	_result := &_AdditionalParametersType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfParameters:                    noOfParameters,
-		Parameters:                        parameters,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdditionalParametersType(structType any) AdditionalParametersType {
@@ -207,6 +208,23 @@ func (m *_AdditionalParametersType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_AdditionalParametersType) IsAdditionalParametersType() {}
+
+func (m *_AdditionalParametersType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdditionalParametersType) deepCopy() *_AdditionalParametersType {
+	if m == nil {
+		return nil
+	}
+	_AdditionalParametersTypeCopy := &_AdditionalParametersType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfParameters,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Parameters),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AdditionalParametersTypeCopy
+}
 
 func (m *_AdditionalParametersType) String() string {
 	if m == nil {

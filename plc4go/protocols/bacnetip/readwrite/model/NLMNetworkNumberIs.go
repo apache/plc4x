@@ -38,6 +38,7 @@ type NLMNetworkNumberIs interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() uint16
@@ -58,6 +59,17 @@ type _NLMNetworkNumberIs struct {
 
 var _ NLMNetworkNumberIs = (*_NLMNetworkNumberIs)(nil)
 var _ NLMRequirements = (*_NLMNetworkNumberIs)(nil)
+
+// NewNLMNetworkNumberIs factory function for _NLMNetworkNumberIs
+func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool, apduLength uint16) *_NLMNetworkNumberIs {
+	_result := &_NLMNetworkNumberIs{
+		NLMContract:             NewNLM(apduLength),
+		NetworkNumber:           networkNumber,
+		NetworkNumberConfigured: networkNumberConfigured,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +106,6 @@ func (m *_NLMNetworkNumberIs) GetNetworkNumberConfigured() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMNetworkNumberIs factory function for _NLMNetworkNumberIs
-func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool, apduLength uint16) *_NLMNetworkNumberIs {
-	_result := &_NLMNetworkNumberIs{
-		NLMContract:             NewNLM(apduLength),
-		NetworkNumber:           networkNumber,
-		NetworkNumberConfigured: networkNumberConfigured,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMNetworkNumberIs(structType any) NLMNetworkNumberIs {
@@ -215,6 +216,24 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_NLMNetworkNumberIs) IsNLMNetworkNumberIs() {}
+
+func (m *_NLMNetworkNumberIs) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMNetworkNumberIs) deepCopy() *_NLMNetworkNumberIs {
+	if m == nil {
+		return nil
+	}
+	_NLMNetworkNumberIsCopy := &_NLMNetworkNumberIs{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.NetworkNumber,
+		m.NetworkNumberConfigured,
+		m.reservedField0,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMNetworkNumberIsCopy
+}
 
 func (m *_NLMNetworkNumberIs) String() string {
 	if m == nil {

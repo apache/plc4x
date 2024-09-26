@@ -38,6 +38,7 @@ type CBusPointToPointCommandIndirect interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToPointCommand
 	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() BridgeAddress
@@ -59,6 +60,27 @@ type _CBusPointToPointCommandIndirect struct {
 
 var _ CBusPointToPointCommandIndirect = (*_CBusPointToPointCommandIndirect)(nil)
 var _ CBusPointToPointCommandRequirements = (*_CBusPointToPointCommandIndirect)(nil)
+
+// NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
+func NewCBusPointToPointCommandIndirect(bridgeAddressCountPeek uint16, calData CALData, bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
+	if bridgeAddress == nil {
+		panic("bridgeAddress of type BridgeAddress for CBusPointToPointCommandIndirect must not be nil")
+	}
+	if networkRoute == nil {
+		panic("networkRoute of type NetworkRoute for CBusPointToPointCommandIndirect must not be nil")
+	}
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for CBusPointToPointCommandIndirect must not be nil")
+	}
+	_result := &_CBusPointToPointCommandIndirect{
+		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+		BridgeAddress:                   bridgeAddress,
+		NetworkRoute:                    networkRoute,
+		UnitAddress:                     unitAddress,
+	}
+	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,27 +117,6 @@ func (m *_CBusPointToPointCommandIndirect) GetUnitAddress() UnitAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
-func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
-	if bridgeAddress == nil {
-		panic("bridgeAddress of type BridgeAddress for CBusPointToPointCommandIndirect must not be nil")
-	}
-	if networkRoute == nil {
-		panic("networkRoute of type NetworkRoute for CBusPointToPointCommandIndirect must not be nil")
-	}
-	if unitAddress == nil {
-		panic("unitAddress of type UnitAddress for CBusPointToPointCommandIndirect must not be nil")
-	}
-	_result := &_CBusPointToPointCommandIndirect{
-		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
-		BridgeAddress:                   bridgeAddress,
-		NetworkRoute:                    networkRoute,
-		UnitAddress:                     unitAddress,
-	}
-	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToPointCommandIndirect(structType any) CBusPointToPointCommandIndirect {
@@ -226,6 +227,24 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_CBusPointToPointCommandIndirect) IsCBusPointToPointCommandIndirect() {}
+
+func (m *_CBusPointToPointCommandIndirect) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointCommandIndirect) deepCopy() *_CBusPointToPointCommandIndirect {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointCommandIndirectCopy := &_CBusPointToPointCommandIndirect{
+		m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).deepCopy(),
+		m.BridgeAddress.DeepCopy().(BridgeAddress),
+		m.NetworkRoute.DeepCopy().(NetworkRoute),
+		m.UnitAddress.DeepCopy().(UnitAddress),
+	}
+	m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = m
+	return _CBusPointToPointCommandIndirectCopy
+}
 
 func (m *_CBusPointToPointCommandIndirect) String() string {
 	if m == nil {

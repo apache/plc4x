@@ -38,6 +38,7 @@ type BACnetConstructedDataModelName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetModelName returns ModelName (property field)
 	GetModelName() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataModelName struct {
 
 var _ BACnetConstructedDataModelName = (*_BACnetConstructedDataModelName)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataModelName)(nil)
+
+// NewBACnetConstructedDataModelName factory function for _BACnetConstructedDataModelName
+func NewBACnetConstructedDataModelName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, modelName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataModelName {
+	if modelName == nil {
+		panic("modelName of type BACnetApplicationTagCharacterString for BACnetConstructedDataModelName must not be nil")
+	}
+	_result := &_BACnetConstructedDataModelName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ModelName:                     modelName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataModelName) GetActualValue() BACnetApplicationTagC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataModelName factory function for _BACnetConstructedDataModelName
-func NewBACnetConstructedDataModelName(modelName BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataModelName {
-	if modelName == nil {
-		panic("modelName of type BACnetApplicationTagCharacterString for BACnetConstructedDataModelName must not be nil")
-	}
-	_result := &_BACnetConstructedDataModelName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ModelName:                     modelName,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataModelName(structType any) BACnetConstructedDataModelName {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataModelName) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataModelName) IsBACnetConstructedDataModelName() {}
+
+func (m *_BACnetConstructedDataModelName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataModelName) deepCopy() *_BACnetConstructedDataModelName {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataModelNameCopy := &_BACnetConstructedDataModelName{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ModelName.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataModelNameCopy
+}
 
 func (m *_BACnetConstructedDataModelName) String() string {
 	if m == nil {

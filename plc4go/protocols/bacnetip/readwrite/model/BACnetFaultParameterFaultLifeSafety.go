@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultLifeSafety interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -62,6 +63,31 @@ type _BACnetFaultParameterFaultLifeSafety struct {
 
 var _ BACnetFaultParameterFaultLifeSafety = (*_BACnetFaultParameterFaultLifeSafety)(nil)
 var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultLifeSafety)(nil)
+
+// NewBACnetFaultParameterFaultLifeSafety factory function for _BACnetFaultParameterFaultLifeSafety
+func NewBACnetFaultParameterFaultLifeSafety(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultLifeSafetyListOfFaultValues, modePropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultLifeSafety {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	if listOfFaultValues == nil {
+		panic("listOfFaultValues of type BACnetFaultParameterFaultLifeSafetyListOfFaultValues for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	if modePropertyReference == nil {
+		panic("modePropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultLifeSafety{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		ListOfFaultValues:            listOfFaultValues,
+		ModePropertyReference:        modePropertyReference,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,31 +128,6 @@ func (m *_BACnetFaultParameterFaultLifeSafety) GetClosingTag() BACnetClosingTag 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultLifeSafety factory function for _BACnetFaultParameterFaultLifeSafety
-func NewBACnetFaultParameterFaultLifeSafety(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultLifeSafetyListOfFaultValues, modePropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultLifeSafety {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultLifeSafety must not be nil")
-	}
-	if listOfFaultValues == nil {
-		panic("listOfFaultValues of type BACnetFaultParameterFaultLifeSafetyListOfFaultValues for BACnetFaultParameterFaultLifeSafety must not be nil")
-	}
-	if modePropertyReference == nil {
-		panic("modePropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultLifeSafety must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultLifeSafety must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultLifeSafety{
-		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		ListOfFaultValues:            listOfFaultValues,
-		ModePropertyReference:        modePropertyReference,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultLifeSafety(structType any) BACnetFaultParameterFaultLifeSafety {
@@ -250,6 +251,25 @@ func (m *_BACnetFaultParameterFaultLifeSafety) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetFaultParameterFaultLifeSafety) IsBACnetFaultParameterFaultLifeSafety() {}
+
+func (m *_BACnetFaultParameterFaultLifeSafety) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultLifeSafety) deepCopy() *_BACnetFaultParameterFaultLifeSafety {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultLifeSafetyCopy := &_BACnetFaultParameterFaultLifeSafety{
+		m.BACnetFaultParameterContract.(*_BACnetFaultParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ListOfFaultValues.DeepCopy().(BACnetFaultParameterFaultLifeSafetyListOfFaultValues),
+		m.ModePropertyReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
+	return _BACnetFaultParameterFaultLifeSafetyCopy
+}
 
 func (m *_BACnetFaultParameterFaultLifeSafety) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataInputReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInputReference returns InputReference (property field)
 	GetInputReference() BACnetObjectPropertyReference
@@ -55,6 +56,19 @@ type _BACnetConstructedDataInputReference struct {
 
 var _ BACnetConstructedDataInputReference = (*_BACnetConstructedDataInputReference)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInputReference)(nil)
+
+// NewBACnetConstructedDataInputReference factory function for _BACnetConstructedDataInputReference
+func NewBACnetConstructedDataInputReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inputReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInputReference {
+	if inputReference == nil {
+		panic("inputReference of type BACnetObjectPropertyReference for BACnetConstructedDataInputReference must not be nil")
+	}
+	_result := &_BACnetConstructedDataInputReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InputReference:                inputReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataInputReference) GetActualValue() BACnetObjectProp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInputReference factory function for _BACnetConstructedDataInputReference
-func NewBACnetConstructedDataInputReference(inputReference BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInputReference {
-	if inputReference == nil {
-		panic("inputReference of type BACnetObjectPropertyReference for BACnetConstructedDataInputReference must not be nil")
-	}
-	_result := &_BACnetConstructedDataInputReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InputReference:                inputReference,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInputReference(structType any) BACnetConstructedDataInputReference {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataInputReference) IsBACnetConstructedDataInputReference() {}
+
+func (m *_BACnetConstructedDataInputReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInputReference) deepCopy() *_BACnetConstructedDataInputReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInputReferenceCopy := &_BACnetConstructedDataInputReference{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.InputReference.DeepCopy().(BACnetObjectPropertyReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInputReferenceCopy
+}
 
 func (m *_BACnetConstructedDataInputReference) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetServiceAckReadPropertyConditional interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
@@ -56,6 +57,16 @@ type _BACnetServiceAckReadPropertyConditional struct {
 
 var _ BACnetServiceAckReadPropertyConditional = (*_BACnetServiceAckReadPropertyConditional)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadPropertyConditional)(nil)
+
+// NewBACnetServiceAckReadPropertyConditional factory function for _BACnetServiceAckReadPropertyConditional
+func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckReadPropertyConditional {
+	_result := &_BACnetServiceAckReadPropertyConditional{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		BytesOfRemovedService:    bytesOfRemovedService,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,16 +99,6 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetBytesOfRemovedService() []
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckReadPropertyConditional factory function for _BACnetServiceAckReadPropertyConditional
-func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckReadPropertyConditional {
-	_result := &_BACnetServiceAckReadPropertyConditional{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		BytesOfRemovedService:    bytesOfRemovedService,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckReadPropertyConditional(structType any) BACnetServiceAckReadPropertyConditional {
@@ -194,6 +195,23 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetServiceAckPayloadLength() 
 ////
 
 func (m *_BACnetServiceAckReadPropertyConditional) IsBACnetServiceAckReadPropertyConditional() {}
+
+func (m *_BACnetServiceAckReadPropertyConditional) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckReadPropertyConditional) deepCopy() *_BACnetServiceAckReadPropertyConditional {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckReadPropertyConditionalCopy := &_BACnetServiceAckReadPropertyConditional{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
+		m.ServiceAckPayloadLength,
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckReadPropertyConditionalCopy
+}
 
 func (m *_BACnetServiceAckReadPropertyConditional) String() string {
 	if m == nil {

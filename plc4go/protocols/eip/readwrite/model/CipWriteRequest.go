@@ -38,6 +38,7 @@ type CipWriteRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetTag returns Tag (property field)
 	GetTag() []byte
@@ -62,6 +63,19 @@ type _CipWriteRequest struct {
 
 var _ CipWriteRequest = (*_CipWriteRequest)(nil)
 var _ CipServiceRequirements = (*_CipWriteRequest)(nil)
+
+// NewCipWriteRequest factory function for _CipWriteRequest
+func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *_CipWriteRequest {
+	_result := &_CipWriteRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		Tag:                tag,
+		DataType:           dataType,
+		ElementNb:          elementNb,
+		Data:               data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,19 +128,6 @@ func (m *_CipWriteRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipWriteRequest factory function for _CipWriteRequest
-func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *_CipWriteRequest {
-	_result := &_CipWriteRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		Tag:                tag,
-		DataType:           dataType,
-		ElementNb:          elementNb,
-		Data:               data,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipWriteRequest(structType any) CipWriteRequest {
@@ -267,6 +268,25 @@ func (m *_CipWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_CipWriteRequest) IsCipWriteRequest() {}
+
+func (m *_CipWriteRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipWriteRequest) deepCopy() *_CipWriteRequest {
+	if m == nil {
+		return nil
+	}
+	_CipWriteRequestCopy := &_CipWriteRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Tag),
+		m.DataType,
+		m.ElementNb,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipWriteRequestCopy
+}
 
 func (m *_CipWriteRequest) String() string {
 	if m == nil {

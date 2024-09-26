@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfAlarmValues returns ListOfAlarmValues (property field)
@@ -60,6 +61,17 @@ type _BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues struct {
 
 var _ BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues = (*_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues)(nil)
 
+// NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues factory function for _BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues
+func NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(openingTag BACnetOpeningTag, listOfAlarmValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues must not be nil")
+	}
+	return &_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues{OpeningTag: openingTag, ListOfAlarmValues: listOfAlarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetClosingTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues factory function for _BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues
-func NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(openingTag BACnetOpeningTag, listOfAlarmValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues must not be nil")
-	}
-	return &_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues{OpeningTag: openingTag, ListOfAlarmValues: listOfAlarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(structType any) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
@@ -229,6 +230,23 @@ func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) GetTagNumber(
 ////
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) IsBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues() {
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) deepCopy() *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesCopy := &_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.ListOfAlarmValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterChangeOfLifeSavetyListOfAlarmValuesCopy
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues) String() string {

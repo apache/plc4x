@@ -38,6 +38,7 @@ type SALDataErrorReporting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetErrorReportingData returns ErrorReportingData (property field)
 	GetErrorReportingData() ErrorReportingData
@@ -53,6 +54,19 @@ type _SALDataErrorReporting struct {
 
 var _ SALDataErrorReporting = (*_SALDataErrorReporting)(nil)
 var _ SALDataRequirements = (*_SALDataErrorReporting)(nil)
+
+// NewSALDataErrorReporting factory function for _SALDataErrorReporting
+func NewSALDataErrorReporting(salData SALData, errorReportingData ErrorReportingData) *_SALDataErrorReporting {
+	if errorReportingData == nil {
+		panic("errorReportingData of type ErrorReportingData for SALDataErrorReporting must not be nil")
+	}
+	_result := &_SALDataErrorReporting{
+		SALDataContract:    NewSALData(salData),
+		ErrorReportingData: errorReportingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataErrorReporting) GetErrorReportingData() ErrorReportingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataErrorReporting factory function for _SALDataErrorReporting
-func NewSALDataErrorReporting(errorReportingData ErrorReportingData, salData SALData) *_SALDataErrorReporting {
-	if errorReportingData == nil {
-		panic("errorReportingData of type ErrorReportingData for SALDataErrorReporting must not be nil")
-	}
-	_result := &_SALDataErrorReporting{
-		SALDataContract:    NewSALData(salData),
-		ErrorReportingData: errorReportingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataErrorReporting(structType any) SALDataErrorReporting {
@@ -182,6 +183,22 @@ func (m *_SALDataErrorReporting) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SALDataErrorReporting) IsSALDataErrorReporting() {}
+
+func (m *_SALDataErrorReporting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataErrorReporting) deepCopy() *_SALDataErrorReporting {
+	if m == nil {
+		return nil
+	}
+	_SALDataErrorReportingCopy := &_SALDataErrorReporting{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.ErrorReportingData.DeepCopy().(ErrorReportingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataErrorReportingCopy
+}
 
 func (m *_SALDataErrorReporting) String() string {
 	if m == nil {

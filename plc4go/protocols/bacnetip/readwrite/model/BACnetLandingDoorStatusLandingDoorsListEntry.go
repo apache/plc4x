@@ -38,6 +38,7 @@ type BACnetLandingDoorStatusLandingDoorsListEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFloorNumber returns FloorNumber (property field)
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetDoorStatus returns DoorStatus (property field)
@@ -53,6 +54,17 @@ type _BACnetLandingDoorStatusLandingDoorsListEntry struct {
 }
 
 var _ BACnetLandingDoorStatusLandingDoorsListEntry = (*_BACnetLandingDoorStatusLandingDoorsListEntry)(nil)
+
+// NewBACnetLandingDoorStatusLandingDoorsListEntry factory function for _BACnetLandingDoorStatusLandingDoorsListEntry
+func NewBACnetLandingDoorStatusLandingDoorsListEntry(floorNumber BACnetContextTagUnsignedInteger, doorStatus BACnetDoorStatusTagged) *_BACnetLandingDoorStatusLandingDoorsListEntry {
+	if floorNumber == nil {
+		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetLandingDoorStatusLandingDoorsListEntry must not be nil")
+	}
+	if doorStatus == nil {
+		panic("doorStatus of type BACnetDoorStatusTagged for BACnetLandingDoorStatusLandingDoorsListEntry must not be nil")
+	}
+	return &_BACnetLandingDoorStatusLandingDoorsListEntry{FloorNumber: floorNumber, DoorStatus: doorStatus}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetDoorStatus() BACnetDo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingDoorStatusLandingDoorsListEntry factory function for _BACnetLandingDoorStatusLandingDoorsListEntry
-func NewBACnetLandingDoorStatusLandingDoorsListEntry(floorNumber BACnetContextTagUnsignedInteger, doorStatus BACnetDoorStatusTagged) *_BACnetLandingDoorStatusLandingDoorsListEntry {
-	if floorNumber == nil {
-		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetLandingDoorStatusLandingDoorsListEntry must not be nil")
-	}
-	if doorStatus == nil {
-		panic("doorStatus of type BACnetDoorStatusTagged for BACnetLandingDoorStatusLandingDoorsListEntry must not be nil")
-	}
-	return &_BACnetLandingDoorStatusLandingDoorsListEntry{FloorNumber: floorNumber, DoorStatus: doorStatus}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingDoorStatusLandingDoorsListEntry(structType any) BACnetLandingDoorStatusLandingDoorsListEntry {
@@ -192,6 +193,21 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) IsBACnetLandingDoorStatusLandingDoorsListEntry() {
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) deepCopy() *_BACnetLandingDoorStatusLandingDoorsListEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingDoorStatusLandingDoorsListEntryCopy := &_BACnetLandingDoorStatusLandingDoorsListEntry{
+		m.FloorNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.DoorStatus.DeepCopy().(BACnetDoorStatusTagged),
+	}
+	return _BACnetLandingDoorStatusLandingDoorsListEntryCopy
 }
 
 func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) String() string {

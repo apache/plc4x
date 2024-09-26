@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetResult returns Result (property field)
 	GetResult() uint8
@@ -65,6 +66,20 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse struct {
 
 var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, result uint8, reserved01 uint8, alarmType AlarmType, reserved02 uint8, reserved03 uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Result:                        result,
+		Reserved01:                    reserved01,
+		AlarmType:                     alarmType,
+		Reserved02:                    reserved02,
+		Reserved03:                    reserved03,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -121,20 +136,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) GetReser
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(result uint8, reserved01 uint8, alarmType AlarmType, reserved02 uint8, reserved03 uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Result:                        result,
-		Reserved01:                    reserved01,
-		AlarmType:                     alarmType,
-		Reserved02:                    reserved02,
-		Reserved03:                    reserved03,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(structType any) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse {
@@ -271,6 +272,26 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serializ
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseCopy := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.Result,
+		m.Reserved01,
+		m.AlarmType,
+		m.Reserved02,
+		m.Reserved03,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) String() string {

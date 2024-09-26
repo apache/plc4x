@@ -38,6 +38,7 @@ type BACnetChannelValueTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
@@ -53,6 +54,19 @@ type _BACnetChannelValueTime struct {
 
 var _ BACnetChannelValueTime = (*_BACnetChannelValueTime)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueTime)(nil)
+
+// NewBACnetChannelValueTime factory function for _BACnetChannelValueTime
+func NewBACnetChannelValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime) *_BACnetChannelValueTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetChannelValueTime must not be nil")
+	}
+	_result := &_BACnetChannelValueTime{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		TimeValue:                  timeValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueTime) GetTimeValue() BACnetApplicationTagTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueTime factory function for _BACnetChannelValueTime
-func NewBACnetChannelValueTime(timeValue BACnetApplicationTagTime, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueTime {
-	if timeValue == nil {
-		panic("timeValue of type BACnetApplicationTagTime for BACnetChannelValueTime must not be nil")
-	}
-	_result := &_BACnetChannelValueTime{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		TimeValue:                  timeValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueTime(structType any) BACnetChannelValueTime {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueTime) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetChannelValueTime) IsBACnetChannelValueTime() {}
+
+func (m *_BACnetChannelValueTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueTime) deepCopy() *_BACnetChannelValueTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueTimeCopy := &_BACnetChannelValueTime{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueTimeCopy
+}
 
 func (m *_BACnetChannelValueTime) String() string {
 	if m == nil {

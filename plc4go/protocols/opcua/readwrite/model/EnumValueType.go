@@ -38,6 +38,7 @@ type EnumValueType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetValue returns Value (property field)
 	GetValue() int64
@@ -59,6 +60,24 @@ type _EnumValueType struct {
 
 var _ EnumValueType = (*_EnumValueType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EnumValueType)(nil)
+
+// NewEnumValueType factory function for _EnumValueType
+func NewEnumValueType(value int64, displayName LocalizedText, description LocalizedText) *_EnumValueType {
+	if displayName == nil {
+		panic("displayName of type LocalizedText for EnumValueType must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for EnumValueType must not be nil")
+	}
+	_result := &_EnumValueType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Value:                             value,
+		DisplayName:                       displayName,
+		Description:                       description,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,24 +118,6 @@ func (m *_EnumValueType) GetDescription() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEnumValueType factory function for _EnumValueType
-func NewEnumValueType(value int64, displayName LocalizedText, description LocalizedText) *_EnumValueType {
-	if displayName == nil {
-		panic("displayName of type LocalizedText for EnumValueType must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for EnumValueType must not be nil")
-	}
-	_result := &_EnumValueType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Value:                             value,
-		DisplayName:                       displayName,
-		Description:                       description,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEnumValueType(structType any) EnumValueType {
@@ -227,6 +228,24 @@ func (m *_EnumValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_EnumValueType) IsEnumValueType() {}
+
+func (m *_EnumValueType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EnumValueType) deepCopy() *_EnumValueType {
+	if m == nil {
+		return nil
+	}
+	_EnumValueTypeCopy := &_EnumValueType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Value,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EnumValueTypeCopy
+}
 
 func (m *_EnumValueType) String() string {
 	if m == nil {

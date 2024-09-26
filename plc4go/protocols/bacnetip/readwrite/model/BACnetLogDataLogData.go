@@ -38,6 +38,7 @@ type BACnetLogDataLogData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogData
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -59,6 +60,24 @@ type _BACnetLogDataLogData struct {
 
 var _ BACnetLogDataLogData = (*_BACnetLogDataLogData)(nil)
 var _ BACnetLogDataRequirements = (*_BACnetLogDataLogData)(nil)
+
+// NewBACnetLogDataLogData factory function for _BACnetLogDataLogData
+func NewBACnetLogDataLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogData {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetLogDataLogData must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetLogDataLogData must not be nil")
+	}
+	_result := &_BACnetLogDataLogData{
+		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		InnerOpeningTag:       innerOpeningTag,
+		LogData:               logData,
+		InnerClosingTag:       innerClosingTag,
+	}
+	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,24 +114,6 @@ func (m *_BACnetLogDataLogData) GetInnerClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogData factory function for _BACnetLogDataLogData
-func NewBACnetLogDataLogData(innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogData {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetLogDataLogData must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetLogDataLogData must not be nil")
-	}
-	_result := &_BACnetLogDataLogData{
-		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
-		InnerOpeningTag:       innerOpeningTag,
-		LogData:               logData,
-		InnerClosingTag:       innerClosingTag,
-	}
-	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogData(structType any) BACnetLogDataLogData {
@@ -227,6 +228,24 @@ func (m *_BACnetLogDataLogData) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetLogDataLogData) IsBACnetLogDataLogData() {}
+
+func (m *_BACnetLogDataLogData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogData) deepCopy() *_BACnetLogDataLogData {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataCopy := &_BACnetLogDataLogData{
+		m.BACnetLogDataContract.(*_BACnetLogData).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetLogDataLogDataEntry, BACnetLogDataLogDataEntry](m.LogData),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
+	return _BACnetLogDataLogDataCopy
+}
 
 func (m *_BACnetLogDataLogData) String() string {
 	if m == nil {

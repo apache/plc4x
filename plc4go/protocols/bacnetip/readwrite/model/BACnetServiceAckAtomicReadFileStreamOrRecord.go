@@ -40,6 +40,7 @@ type BACnetServiceAckAtomicReadFileStreamOrRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetServiceAckAtomicReadFileStreamOrRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckAtomicReadFileStreamOrRecord()
 }
@@ -75,6 +76,20 @@ type _BACnetServiceAckAtomicReadFileStreamOrRecord struct {
 }
 
 var _ BACnetServiceAckAtomicReadFileStreamOrRecordContract = (*_BACnetServiceAckAtomicReadFileStreamOrRecord)(nil)
+
+// NewBACnetServiceAckAtomicReadFileStreamOrRecord factory function for _BACnetServiceAckAtomicReadFileStreamOrRecord
+func NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetServiceAckAtomicReadFileStreamOrRecord {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetServiceAckAtomicReadFileStreamOrRecord must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetServiceAckAtomicReadFileStreamOrRecord must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetServiceAckAtomicReadFileStreamOrRecord must not be nil")
+	}
+	return &_BACnetServiceAckAtomicReadFileStreamOrRecord{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,20 +128,6 @@ func (pm *_BACnetServiceAckAtomicReadFileStreamOrRecord) GetPeekedTagNumber() ui
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckAtomicReadFileStreamOrRecord factory function for _BACnetServiceAckAtomicReadFileStreamOrRecord
-func NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetServiceAckAtomicReadFileStreamOrRecord {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetServiceAckAtomicReadFileStreamOrRecord must not be nil")
-	}
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetServiceAckAtomicReadFileStreamOrRecord must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetServiceAckAtomicReadFileStreamOrRecord must not be nil")
-	}
-	return &_BACnetServiceAckAtomicReadFileStreamOrRecord{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckAtomicReadFileStreamOrRecord(structType any) BACnetServiceAckAtomicReadFileStreamOrRecord {
@@ -221,11 +222,11 @@ func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) parse(ctx context.Contex
 	var _child BACnetServiceAckAtomicReadFileStreamOrRecord
 	switch {
 	case peekedTagNumber == 0x0: // BACnetServiceAckAtomicReadFileStream
-		if _child, err = (&_BACnetServiceAckAtomicReadFileStream{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetServiceAckAtomicReadFileStream).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAtomicReadFileStream for type-switch of BACnetServiceAckAtomicReadFileStreamOrRecord")
 		}
 	case peekedTagNumber == 0x1: // BACnetServiceAckAtomicReadFileRecord
-		if _child, err = (&_BACnetServiceAckAtomicReadFileRecord{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetServiceAckAtomicReadFileRecord).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetServiceAckAtomicReadFileRecord for type-switch of BACnetServiceAckAtomicReadFileStreamOrRecord")
 		}
 	default:
@@ -283,4 +284,21 @@ func (pm *_BACnetServiceAckAtomicReadFileStreamOrRecord) serializeParent(ctx con
 }
 
 func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) IsBACnetServiceAckAtomicReadFileStreamOrRecord() {
+}
+
+func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) deepCopy() *_BACnetServiceAckAtomicReadFileStreamOrRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAtomicReadFileStreamOrRecordCopy := &_BACnetServiceAckAtomicReadFileStreamOrRecord{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetServiceAckAtomicReadFileStreamOrRecordCopy
 }

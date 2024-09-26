@@ -38,6 +38,7 @@ type Range interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetLow returns Low (property field)
 	GetLow() float64
@@ -56,6 +57,17 @@ type _Range struct {
 
 var _ Range = (*_Range)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Range)(nil)
+
+// NewRange factory function for _Range
+func NewRange(low float64, high float64) *_Range {
+	_result := &_Range{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Low:                               low,
+		High:                              high,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_Range) GetHigh() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRange factory function for _Range
-func NewRange(low float64, high float64) *_Range {
-	_result := &_Range{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Low:                               low,
-		High:                              high,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRange(structType any) Range {
@@ -200,6 +201,23 @@ func (m *_Range) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Range) IsRange() {}
+
+func (m *_Range) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Range) deepCopy() *_Range {
+	if m == nil {
+		return nil
+	}
+	_RangeCopy := &_Range{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Low,
+		m.High,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RangeCopy
+}
 
 func (m *_Range) String() string {
 	if m == nil {

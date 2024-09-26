@@ -38,6 +38,7 @@ type VariantDateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantDateTime struct {
 
 var _ VariantDateTime = (*_VariantDateTime)(nil)
 var _ VariantRequirements = (*_VariantDateTime)(nil)
+
+// NewVariantDateTime factory function for _VariantDateTime
+func NewVariantDateTime(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []int64) *_VariantDateTime {
+	_result := &_VariantDateTime{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantDateTime) GetValue() []int64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantDateTime factory function for _VariantDateTime
-func NewVariantDateTime(arrayLength *int32, value []int64, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantDateTime {
-	_result := &_VariantDateTime{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantDateTime(structType any) VariantDateTime {
@@ -205,6 +206,23 @@ func (m *_VariantDateTime) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_VariantDateTime) IsVariantDateTime() {}
+
+func (m *_VariantDateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantDateTime) deepCopy() *_VariantDateTime {
+	if m == nil {
+		return nil
+	}
+	_VariantDateTimeCopy := &_VariantDateTime{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[int64, int64](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantDateTimeCopy
+}
 
 func (m *_VariantDateTime) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type SecurityDataStatus1Request interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataStatus1Request is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataStatus1Request()
@@ -49,6 +50,15 @@ type _SecurityDataStatus1Request struct {
 var _ SecurityDataStatus1Request = (*_SecurityDataStatus1Request)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataStatus1Request)(nil)
 
+// NewSecurityDataStatus1Request factory function for _SecurityDataStatus1Request
+func NewSecurityDataStatus1Request(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatus1Request {
+	_result := &_SecurityDataStatus1Request{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataStatus1Request)(nil)
 
 func (m *_SecurityDataStatus1Request) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataStatus1Request factory function for _SecurityDataStatus1Request
-func NewSecurityDataStatus1Request(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatus1Request {
-	_result := &_SecurityDataStatus1Request{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataStatus1Request) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataStatus1Request) IsSecurityDataStatus1Request() {}
+
+func (m *_SecurityDataStatus1Request) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataStatus1Request) deepCopy() *_SecurityDataStatus1Request {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataStatus1RequestCopy := &_SecurityDataStatus1Request{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataStatus1RequestCopy
+}
 
 func (m *_SecurityDataStatus1Request) String() string {
 	if m == nil {

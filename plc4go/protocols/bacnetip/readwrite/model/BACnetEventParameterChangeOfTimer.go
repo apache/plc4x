@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfTimer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -65,6 +66,35 @@ type _BACnetEventParameterChangeOfTimer struct {
 
 var _ BACnetEventParameterChangeOfTimer = (*_BACnetEventParameterChangeOfTimer)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfTimer)(nil)
+
+// NewBACnetEventParameterChangeOfTimer factory function for _BACnetEventParameterChangeOfTimer
+func NewBACnetEventParameterChangeOfTimer(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, alarmValues BACnetEventParameterChangeOfTimerAlarmValue, updateTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfTimer {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if alarmValues == nil {
+		panic("alarmValues of type BACnetEventParameterChangeOfTimerAlarmValue for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if updateTimeReference == nil {
+		panic("updateTimeReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfTimer{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		AlarmValues:                  alarmValues,
+		UpdateTimeReference:          updateTimeReference,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,35 +139,6 @@ func (m *_BACnetEventParameterChangeOfTimer) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfTimer factory function for _BACnetEventParameterChangeOfTimer
-func NewBACnetEventParameterChangeOfTimer(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, alarmValues BACnetEventParameterChangeOfTimerAlarmValue, updateTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfTimer {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	if alarmValues == nil {
-		panic("alarmValues of type BACnetEventParameterChangeOfTimerAlarmValue for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	if updateTimeReference == nil {
-		panic("updateTimeReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfTimer{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		AlarmValues:                  alarmValues,
-		UpdateTimeReference:          updateTimeReference,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfTimer(structType any) BACnetEventParameterChangeOfTimer {
@@ -274,6 +275,26 @@ func (m *_BACnetEventParameterChangeOfTimer) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetEventParameterChangeOfTimer) IsBACnetEventParameterChangeOfTimer() {}
+
+func (m *_BACnetEventParameterChangeOfTimer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfTimer) deepCopy() *_BACnetEventParameterChangeOfTimer {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfTimerCopy := &_BACnetEventParameterChangeOfTimer{
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.AlarmValues.DeepCopy().(BACnetEventParameterChangeOfTimerAlarmValue),
+		m.UpdateTimeReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterChangeOfTimerCopy
+}
 
 func (m *_BACnetEventParameterChangeOfTimer) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type MeteringDataGasConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetMJ returns MJ (property field)
 	GetMJ() uint32
@@ -53,6 +54,16 @@ type _MeteringDataGasConsumption struct {
 
 var _ MeteringDataGasConsumption = (*_MeteringDataGasConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataGasConsumption)(nil)
+
+// NewMeteringDataGasConsumption factory function for _MeteringDataGasConsumption
+func NewMeteringDataGasConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, mJ uint32) *_MeteringDataGasConsumption {
+	_result := &_MeteringDataGasConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		MJ:                   mJ,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_MeteringDataGasConsumption) GetMJ() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataGasConsumption factory function for _MeteringDataGasConsumption
-func NewMeteringDataGasConsumption(mJ uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataGasConsumption {
-	_result := &_MeteringDataGasConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		MJ:                   mJ,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataGasConsumption(structType any) MeteringDataGasConsumption {
@@ -175,6 +176,22 @@ func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_MeteringDataGasConsumption) IsMeteringDataGasConsumption() {}
+
+func (m *_MeteringDataGasConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataGasConsumption) deepCopy() *_MeteringDataGasConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataGasConsumptionCopy := &_MeteringDataGasConsumption{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+		m.MJ,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataGasConsumptionCopy
+}
 
 func (m *_MeteringDataGasConsumption) String() string {
 	if m == nil {

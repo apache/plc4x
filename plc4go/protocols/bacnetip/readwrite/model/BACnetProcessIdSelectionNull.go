@@ -38,6 +38,7 @@ type BACnetProcessIdSelectionNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetProcessIdSelection
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -53,6 +54,19 @@ type _BACnetProcessIdSelectionNull struct {
 
 var _ BACnetProcessIdSelectionNull = (*_BACnetProcessIdSelectionNull)(nil)
 var _ BACnetProcessIdSelectionRequirements = (*_BACnetProcessIdSelectionNull)(nil)
+
+// NewBACnetProcessIdSelectionNull factory function for _BACnetProcessIdSelectionNull
+func NewBACnetProcessIdSelectionNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetProcessIdSelectionNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetProcessIdSelectionNull must not be nil")
+	}
+	_result := &_BACnetProcessIdSelectionNull{
+		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
+		NullValue:                        nullValue,
+	}
+	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetProcessIdSelectionNull) GetNullValue() BACnetApplicationTagNull 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProcessIdSelectionNull factory function for _BACnetProcessIdSelectionNull
-func NewBACnetProcessIdSelectionNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelectionNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetProcessIdSelectionNull must not be nil")
-	}
-	_result := &_BACnetProcessIdSelectionNull{
-		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
-		NullValue:                        nullValue,
-	}
-	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProcessIdSelectionNull(structType any) BACnetProcessIdSelectionNull {
@@ -178,6 +179,22 @@ func (m *_BACnetProcessIdSelectionNull) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetProcessIdSelectionNull) IsBACnetProcessIdSelectionNull() {}
+
+func (m *_BACnetProcessIdSelectionNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProcessIdSelectionNull) deepCopy() *_BACnetProcessIdSelectionNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetProcessIdSelectionNullCopy := &_BACnetProcessIdSelectionNull{
+		m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection).deepCopy(),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = m
+	return _BACnetProcessIdSelectionNullCopy
+}
 
 func (m *_BACnetProcessIdSelectionNull) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type SecurityDataZoneName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
@@ -56,6 +57,17 @@ type _SecurityDataZoneName struct {
 
 var _ SecurityDataZoneName = (*_SecurityDataZoneName)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataZoneName)(nil)
+
+// NewSecurityDataZoneName factory function for _SecurityDataZoneName
+func NewSecurityDataZoneName(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8, zoneName string) *_SecurityDataZoneName {
+	_result := &_SecurityDataZoneName{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+		ZoneName:             zoneName,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +100,6 @@ func (m *_SecurityDataZoneName) GetZoneName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataZoneName factory function for _SecurityDataZoneName
-func NewSecurityDataZoneName(zoneNumber uint8, zoneName string, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataZoneName {
-	_result := &_SecurityDataZoneName{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-		ZoneName:             zoneName,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataZoneName(structType any) SecurityDataZoneName {
@@ -196,6 +197,23 @@ func (m *_SecurityDataZoneName) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SecurityDataZoneName) IsSecurityDataZoneName() {}
+
+func (m *_SecurityDataZoneName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataZoneName) deepCopy() *_SecurityDataZoneName {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataZoneNameCopy := &_SecurityDataZoneName{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ZoneNumber,
+		m.ZoneName,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataZoneNameCopy
+}
 
 func (m *_SecurityDataZoneName) String() string {
 	if m == nil {

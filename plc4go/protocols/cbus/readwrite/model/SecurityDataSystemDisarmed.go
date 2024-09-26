@@ -36,6 +36,7 @@ type SecurityDataSystemDisarmed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataSystemDisarmed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataSystemDisarmed()
@@ -49,6 +50,15 @@ type _SecurityDataSystemDisarmed struct {
 var _ SecurityDataSystemDisarmed = (*_SecurityDataSystemDisarmed)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataSystemDisarmed)(nil)
 
+// NewSecurityDataSystemDisarmed factory function for _SecurityDataSystemDisarmed
+func NewSecurityDataSystemDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataSystemDisarmed {
+	_result := &_SecurityDataSystemDisarmed{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataSystemDisarmed)(nil)
 
 func (m *_SecurityDataSystemDisarmed) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataSystemDisarmed factory function for _SecurityDataSystemDisarmed
-func NewSecurityDataSystemDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataSystemDisarmed {
-	_result := &_SecurityDataSystemDisarmed{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataSystemDisarmed) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataSystemDisarmed) IsSecurityDataSystemDisarmed() {}
+
+func (m *_SecurityDataSystemDisarmed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataSystemDisarmed) deepCopy() *_SecurityDataSystemDisarmed {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataSystemDisarmedCopy := &_SecurityDataSystemDisarmed{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataSystemDisarmedCopy
+}
 
 func (m *_SecurityDataSystemDisarmed) String() string {
 	if m == nil {

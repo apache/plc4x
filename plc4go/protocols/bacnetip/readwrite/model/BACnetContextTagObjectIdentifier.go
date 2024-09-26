@@ -38,6 +38,7 @@ type BACnetContextTagObjectIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadObjectIdentifier
@@ -57,6 +58,19 @@ type _BACnetContextTagObjectIdentifier struct {
 
 var _ BACnetContextTagObjectIdentifier = (*_BACnetContextTagObjectIdentifier)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagObjectIdentifier)(nil)
+
+// NewBACnetContextTagObjectIdentifier factory function for _BACnetContextTagObjectIdentifier
+func NewBACnetContextTagObjectIdentifier(header BACnetTagHeader, payload BACnetTagPayloadObjectIdentifier, tagNumberArgument uint8) *_BACnetContextTagObjectIdentifier {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadObjectIdentifier for BACnetContextTagObjectIdentifier must not be nil")
+	}
+	_result := &_BACnetContextTagObjectIdentifier{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,19 +124,6 @@ func (m *_BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagObjectIdentifier factory function for _BACnetContextTagObjectIdentifier
-func NewBACnetContextTagObjectIdentifier(payload BACnetTagPayloadObjectIdentifier, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagObjectIdentifier {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadObjectIdentifier for BACnetContextTagObjectIdentifier must not be nil")
-	}
-	_result := &_BACnetContextTagObjectIdentifier{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagObjectIdentifier(structType any) BACnetContextTagObjectIdentifier {
@@ -235,6 +236,22 @@ func (m *_BACnetContextTagObjectIdentifier) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetContextTagObjectIdentifier) IsBACnetContextTagObjectIdentifier() {}
+
+func (m *_BACnetContextTagObjectIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagObjectIdentifier) deepCopy() *_BACnetContextTagObjectIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagObjectIdentifierCopy := &_BACnetContextTagObjectIdentifier{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadObjectIdentifier),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagObjectIdentifierCopy
+}
 
 func (m *_BACnetContextTagObjectIdentifier) String() string {
 	if m == nil {

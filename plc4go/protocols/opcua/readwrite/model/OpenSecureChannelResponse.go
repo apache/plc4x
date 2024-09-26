@@ -38,6 +38,7 @@ type OpenSecureChannelResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -62,6 +63,28 @@ type _OpenSecureChannelResponse struct {
 
 var _ OpenSecureChannelResponse = (*_OpenSecureChannelResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_OpenSecureChannelResponse)(nil)
+
+// NewOpenSecureChannelResponse factory function for _OpenSecureChannelResponse
+func NewOpenSecureChannelResponse(responseHeader ExtensionObjectDefinition, serverProtocolVersion uint32, securityToken ExtensionObjectDefinition, serverNonce PascalByteString) *_OpenSecureChannelResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
+	}
+	if securityToken == nil {
+		panic("securityToken of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
+	}
+	if serverNonce == nil {
+		panic("serverNonce of type PascalByteString for OpenSecureChannelResponse must not be nil")
+	}
+	_result := &_OpenSecureChannelResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		ServerProtocolVersion:             serverProtocolVersion,
+		SecurityToken:                     securityToken,
+		ServerNonce:                       serverNonce,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +129,6 @@ func (m *_OpenSecureChannelResponse) GetServerNonce() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpenSecureChannelResponse factory function for _OpenSecureChannelResponse
-func NewOpenSecureChannelResponse(responseHeader ExtensionObjectDefinition, serverProtocolVersion uint32, securityToken ExtensionObjectDefinition, serverNonce PascalByteString) *_OpenSecureChannelResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
-	}
-	if securityToken == nil {
-		panic("securityToken of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
-	}
-	if serverNonce == nil {
-		panic("serverNonce of type PascalByteString for OpenSecureChannelResponse must not be nil")
-	}
-	_result := &_OpenSecureChannelResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		ServerProtocolVersion:             serverProtocolVersion,
-		SecurityToken:                     securityToken,
-		ServerNonce:                       serverNonce,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpenSecureChannelResponse(structType any) OpenSecureChannelResponse {
@@ -251,6 +252,25 @@ func (m *_OpenSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_OpenSecureChannelResponse) IsOpenSecureChannelResponse() {}
+
+func (m *_OpenSecureChannelResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpenSecureChannelResponse) deepCopy() *_OpenSecureChannelResponse {
+	if m == nil {
+		return nil
+	}
+	_OpenSecureChannelResponseCopy := &_OpenSecureChannelResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerProtocolVersion,
+		m.SecurityToken.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerNonce.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _OpenSecureChannelResponseCopy
+}
 
 func (m *_OpenSecureChannelResponse) String() string {
 	if m == nil {

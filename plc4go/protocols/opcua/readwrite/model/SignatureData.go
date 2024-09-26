@@ -38,6 +38,7 @@ type SignatureData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAlgorithm returns Algorithm (property field)
 	GetAlgorithm() PascalString
@@ -56,6 +57,23 @@ type _SignatureData struct {
 
 var _ SignatureData = (*_SignatureData)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SignatureData)(nil)
+
+// NewSignatureData factory function for _SignatureData
+func NewSignatureData(algorithm PascalString, signature PascalByteString) *_SignatureData {
+	if algorithm == nil {
+		panic("algorithm of type PascalString for SignatureData must not be nil")
+	}
+	if signature == nil {
+		panic("signature of type PascalByteString for SignatureData must not be nil")
+	}
+	_result := &_SignatureData{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Algorithm:                         algorithm,
+		Signature:                         signature,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_SignatureData) GetSignature() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSignatureData factory function for _SignatureData
-func NewSignatureData(algorithm PascalString, signature PascalByteString) *_SignatureData {
-	if algorithm == nil {
-		panic("algorithm of type PascalString for SignatureData must not be nil")
-	}
-	if signature == nil {
-		panic("signature of type PascalByteString for SignatureData must not be nil")
-	}
-	_result := &_SignatureData{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Algorithm:                         algorithm,
-		Signature:                         signature,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSignatureData(structType any) SignatureData {
@@ -206,6 +207,23 @@ func (m *_SignatureData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_SignatureData) IsSignatureData() {}
+
+func (m *_SignatureData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SignatureData) deepCopy() *_SignatureData {
+	if m == nil {
+		return nil
+	}
+	_SignatureDataCopy := &_SignatureData{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Algorithm.DeepCopy().(PascalString),
+		m.Signature.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SignatureDataCopy
+}
 
 func (m *_SignatureData) String() string {
 	if m == nil {

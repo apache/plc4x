@@ -38,6 +38,7 @@ type IdentifyReplyCommandDelays interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetTerminalLevels returns TerminalLevels (property field)
 	GetTerminalLevels() []byte
@@ -56,6 +57,17 @@ type _IdentifyReplyCommandDelays struct {
 
 var _ IdentifyReplyCommandDelays = (*_IdentifyReplyCommandDelays)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandDelays)(nil)
+
+// NewIdentifyReplyCommandDelays factory function for _IdentifyReplyCommandDelays
+func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte, numBytes uint8) *_IdentifyReplyCommandDelays {
+	_result := &_IdentifyReplyCommandDelays{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		TerminalLevels:               terminalLevels,
+		ReStrikeDelay:                reStrikeDelay,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_IdentifyReplyCommandDelays) GetReStrikeDelay() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandDelays factory function for _IdentifyReplyCommandDelays
-func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte, numBytes uint8) *_IdentifyReplyCommandDelays {
-	_result := &_IdentifyReplyCommandDelays{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		TerminalLevels:               terminalLevels,
-		ReStrikeDelay:                reStrikeDelay,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandDelays(structType any) IdentifyReplyCommandDelays {
@@ -202,6 +203,23 @@ func (m *_IdentifyReplyCommandDelays) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_IdentifyReplyCommandDelays) IsIdentifyReplyCommandDelays() {}
+
+func (m *_IdentifyReplyCommandDelays) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandDelays) deepCopy() *_IdentifyReplyCommandDelays {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandDelaysCopy := &_IdentifyReplyCommandDelays{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.TerminalLevels),
+		m.ReStrikeDelay,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandDelaysCopy
+}
 
 func (m *_IdentifyReplyCommandDelays) String() string {
 	if m == nil {

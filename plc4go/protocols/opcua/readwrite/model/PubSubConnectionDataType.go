@@ -38,6 +38,7 @@ type PubSubConnectionDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -88,6 +89,42 @@ type _PubSubConnectionDataType struct {
 
 var _ PubSubConnectionDataType = (*_PubSubConnectionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubConnectionDataType)(nil)
+
+// NewPubSubConnectionDataType factory function for _PubSubConnectionDataType
+func NewPubSubConnectionDataType(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, noOfConnectionProperties int32, connectionProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, noOfWriterGroups int32, writerGroups []PubSubGroupDataType, noOfReaderGroups int32, readerGroups []PubSubGroupDataType) *_PubSubConnectionDataType {
+	if name == nil {
+		panic("name of type PascalString for PubSubConnectionDataType must not be nil")
+	}
+	if publisherId == nil {
+		panic("publisherId of type Variant for PubSubConnectionDataType must not be nil")
+	}
+	if transportProfileUri == nil {
+		panic("transportProfileUri of type PascalString for PubSubConnectionDataType must not be nil")
+	}
+	if address == nil {
+		panic("address of type ExtensionObject for PubSubConnectionDataType must not be nil")
+	}
+	if transportSettings == nil {
+		panic("transportSettings of type ExtensionObject for PubSubConnectionDataType must not be nil")
+	}
+	_result := &_PubSubConnectionDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Enabled:                           enabled,
+		PublisherId:                       publisherId,
+		TransportProfileUri:               transportProfileUri,
+		Address:                           address,
+		NoOfConnectionProperties:          noOfConnectionProperties,
+		ConnectionProperties:              connectionProperties,
+		TransportSettings:                 transportSettings,
+		NoOfWriterGroups:                  noOfWriterGroups,
+		WriterGroups:                      writerGroups,
+		NoOfReaderGroups:                  noOfReaderGroups,
+		ReaderGroups:                      readerGroups,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,42 +201,6 @@ func (m *_PubSubConnectionDataType) GetReaderGroups() []PubSubGroupDataType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPubSubConnectionDataType factory function for _PubSubConnectionDataType
-func NewPubSubConnectionDataType(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, noOfConnectionProperties int32, connectionProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, noOfWriterGroups int32, writerGroups []PubSubGroupDataType, noOfReaderGroups int32, readerGroups []PubSubGroupDataType) *_PubSubConnectionDataType {
-	if name == nil {
-		panic("name of type PascalString for PubSubConnectionDataType must not be nil")
-	}
-	if publisherId == nil {
-		panic("publisherId of type Variant for PubSubConnectionDataType must not be nil")
-	}
-	if transportProfileUri == nil {
-		panic("transportProfileUri of type PascalString for PubSubConnectionDataType must not be nil")
-	}
-	if address == nil {
-		panic("address of type ExtensionObject for PubSubConnectionDataType must not be nil")
-	}
-	if transportSettings == nil {
-		panic("transportSettings of type ExtensionObject for PubSubConnectionDataType must not be nil")
-	}
-	_result := &_PubSubConnectionDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Enabled:                           enabled,
-		PublisherId:                       publisherId,
-		TransportProfileUri:               transportProfileUri,
-		Address:                           address,
-		NoOfConnectionProperties:          noOfConnectionProperties,
-		ConnectionProperties:              connectionProperties,
-		TransportSettings:                 transportSettings,
-		NoOfWriterGroups:                  noOfWriterGroups,
-		WriterGroups:                      writerGroups,
-		NoOfReaderGroups:                  noOfReaderGroups,
-		ReaderGroups:                      readerGroups,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPubSubConnectionDataType(structType any) PubSubConnectionDataType {
@@ -461,6 +462,34 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_PubSubConnectionDataType) IsPubSubConnectionDataType() {}
+
+func (m *_PubSubConnectionDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubConnectionDataType) deepCopy() *_PubSubConnectionDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubConnectionDataTypeCopy := &_PubSubConnectionDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.Enabled,
+		m.PublisherId.DeepCopy().(Variant),
+		m.TransportProfileUri.DeepCopy().(PascalString),
+		m.Address.DeepCopy().(ExtensionObject),
+		m.NoOfConnectionProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ConnectionProperties),
+		m.TransportSettings.DeepCopy().(ExtensionObject),
+		m.NoOfWriterGroups,
+		utils.DeepCopySlice[PubSubGroupDataType, PubSubGroupDataType](m.WriterGroups),
+		m.NoOfReaderGroups,
+		utils.DeepCopySlice[PubSubGroupDataType, PubSubGroupDataType](m.ReaderGroups),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubConnectionDataTypeCopy
+}
 
 func (m *_PubSubConnectionDataType) String() string {
 	if m == nil {

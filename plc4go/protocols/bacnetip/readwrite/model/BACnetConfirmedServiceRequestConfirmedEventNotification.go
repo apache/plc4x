@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestConfirmedEventNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -89,6 +90,55 @@ type _BACnetConfirmedServiceRequestConfirmedEventNotification struct {
 
 var _ BACnetConfirmedServiceRequestConfirmedEventNotification = (*_BACnetConfirmedServiceRequestConfirmedEventNotification)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedEventNotification)(nil)
+
+// NewBACnetConfirmedServiceRequestConfirmedEventNotification factory function for _BACnetConfirmedServiceRequestConfirmedEventNotification
+func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, eventObjectIdentifier BACnetContextTagObjectIdentifier, timestamp BACnetTimeStampEnclosed, notificationClass BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger, eventType BACnetEventTypeTagged, messageText BACnetContextTagCharacterString, notifyType BACnetNotifyTypeTagged, ackRequired BACnetContextTagBoolean, fromState BACnetEventStateTagged, toState BACnetEventStateTagged, eventValues BACnetNotificationParameters, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedEventNotification {
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if initiatingDeviceIdentifier == nil {
+		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if eventObjectIdentifier == nil {
+		panic("eventObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if timestamp == nil {
+		panic("timestamp of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if notificationClass == nil {
+		panic("notificationClass of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if priority == nil {
+		panic("priority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if eventType == nil {
+		panic("eventType of type BACnetEventTypeTagged for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if notifyType == nil {
+		panic("notifyType of type BACnetNotifyTypeTagged for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	if toState == nil {
+		panic("toState of type BACnetEventStateTagged for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestConfirmedEventNotification{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ProcessIdentifier:                     processIdentifier,
+		InitiatingDeviceIdentifier:            initiatingDeviceIdentifier,
+		EventObjectIdentifier:                 eventObjectIdentifier,
+		Timestamp:                             timestamp,
+		NotificationClass:                     notificationClass,
+		Priority:                              priority,
+		EventType:                             eventType,
+		MessageText:                           messageText,
+		NotifyType:                            notifyType,
+		AckRequired:                           ackRequired,
+		FromState:                             fromState,
+		ToState:                               toState,
+		EventValues:                           eventValues,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -169,55 +219,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) GetEventValue
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestConfirmedEventNotification factory function for _BACnetConfirmedServiceRequestConfirmedEventNotification
-func NewBACnetConfirmedServiceRequestConfirmedEventNotification(processIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, eventObjectIdentifier BACnetContextTagObjectIdentifier, timestamp BACnetTimeStampEnclosed, notificationClass BACnetContextTagUnsignedInteger, priority BACnetContextTagUnsignedInteger, eventType BACnetEventTypeTagged, messageText BACnetContextTagCharacterString, notifyType BACnetNotifyTypeTagged, ackRequired BACnetContextTagBoolean, fromState BACnetEventStateTagged, toState BACnetEventStateTagged, eventValues BACnetNotificationParameters, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedEventNotification {
-	if processIdentifier == nil {
-		panic("processIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
-	}
-	if initiatingDeviceIdentifier == nil {
-		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
-	}
-	if eventObjectIdentifier == nil {
-		panic("eventObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
-	}
-	if timestamp == nil {
-		panic("timestamp of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
-	}
-	if notificationClass == nil {
-		panic("notificationClass of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
-	}
-	if priority == nil {
-		panic("priority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
-	}
-	if eventType == nil {
-		panic("eventType of type BACnetEventTypeTagged for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
-	}
-	if notifyType == nil {
-		panic("notifyType of type BACnetNotifyTypeTagged for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
-	}
-	if toState == nil {
-		panic("toState of type BACnetEventStateTagged for BACnetConfirmedServiceRequestConfirmedEventNotification must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestConfirmedEventNotification{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		ProcessIdentifier:                     processIdentifier,
-		InitiatingDeviceIdentifier:            initiatingDeviceIdentifier,
-		EventObjectIdentifier:                 eventObjectIdentifier,
-		Timestamp:                             timestamp,
-		NotificationClass:                     notificationClass,
-		Priority:                              priority,
-		EventType:                             eventType,
-		MessageText:                           messageText,
-		NotifyType:                            notifyType,
-		AckRequired:                           ackRequired,
-		FromState:                             fromState,
-		ToState:                               toState,
-		EventValues:                           eventValues,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestConfirmedEventNotification(structType any) BACnetConfirmedServiceRequestConfirmedEventNotification {
@@ -482,6 +483,34 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) SerializeWith
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) IsBACnetConfirmedServiceRequestConfirmedEventNotification() {
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) deepCopy() *_BACnetConfirmedServiceRequestConfirmedEventNotification {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestConfirmedEventNotificationCopy := &_BACnetConfirmedServiceRequestConfirmedEventNotification{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
+		m.NotificationClass.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.EventType.DeepCopy().(BACnetEventTypeTagged),
+		m.MessageText.DeepCopy().(BACnetContextTagCharacterString),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+		m.AckRequired.DeepCopy().(BACnetContextTagBoolean),
+		m.FromState.DeepCopy().(BACnetEventStateTagged),
+		m.ToState.DeepCopy().(BACnetEventStateTagged),
+		m.EventValues.DeepCopy().(BACnetNotificationParameters),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestConfirmedEventNotificationCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) String() string {

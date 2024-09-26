@@ -38,6 +38,7 @@ type BACnetConstructedDataDatabaseRevision interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDatabaseRevision returns DatabaseRevision (property field)
 	GetDatabaseRevision() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDatabaseRevision struct {
 
 var _ BACnetConstructedDataDatabaseRevision = (*_BACnetConstructedDataDatabaseRevision)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDatabaseRevision)(nil)
+
+// NewBACnetConstructedDataDatabaseRevision factory function for _BACnetConstructedDataDatabaseRevision
+func NewBACnetConstructedDataDatabaseRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, databaseRevision BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
+	if databaseRevision == nil {
+		panic("databaseRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDatabaseRevision must not be nil")
+	}
+	_result := &_BACnetConstructedDataDatabaseRevision{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DatabaseRevision:              databaseRevision,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDatabaseRevision) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDatabaseRevision factory function for _BACnetConstructedDataDatabaseRevision
-func NewBACnetConstructedDataDatabaseRevision(databaseRevision BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
-	if databaseRevision == nil {
-		panic("databaseRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDatabaseRevision must not be nil")
-	}
-	_result := &_BACnetConstructedDataDatabaseRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DatabaseRevision:              databaseRevision,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDatabaseRevision(structType any) BACnetConstructedDataDatabaseRevision {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDatabaseRevision) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataDatabaseRevision) IsBACnetConstructedDataDatabaseRevision() {}
+
+func (m *_BACnetConstructedDataDatabaseRevision) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDatabaseRevision) deepCopy() *_BACnetConstructedDataDatabaseRevision {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDatabaseRevisionCopy := &_BACnetConstructedDataDatabaseRevision{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DatabaseRevision.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDatabaseRevisionCopy
+}
 
 func (m *_BACnetConstructedDataDatabaseRevision) String() string {
 	if m == nil {

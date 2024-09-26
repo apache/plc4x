@@ -38,6 +38,7 @@ type NodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeIdTypeDefinition
 	// GetId returns Id (virtual field)
@@ -54,6 +55,14 @@ type _NodeId struct {
 }
 
 var _ NodeId = (*_NodeId)(nil)
+
+// NewNodeId factory function for _NodeId
+func NewNodeId(nodeId NodeIdTypeDefinition) *_NodeId {
+	if nodeId == nil {
+		panic("nodeId of type NodeIdTypeDefinition for NodeId must not be nil")
+	}
+	return &_NodeId{NodeId: nodeId}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,14 +92,6 @@ func (m *_NodeId) GetId() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeId factory function for _NodeId
-func NewNodeId(nodeId NodeIdTypeDefinition) *_NodeId {
-	if nodeId == nil {
-		panic("nodeId of type NodeIdTypeDefinition for NodeId must not be nil")
-	}
-	return &_NodeId{NodeId: nodeId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeId(structType any) NodeId {
@@ -215,6 +216,21 @@ func (m *_NodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 }
 
 func (m *_NodeId) IsNodeId() {}
+
+func (m *_NodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeId) deepCopy() *_NodeId {
+	if m == nil {
+		return nil
+	}
+	_NodeIdCopy := &_NodeId{
+		m.NodeId.DeepCopy().(NodeIdTypeDefinition),
+		m.reservedField0,
+	}
+	return _NodeIdCopy
+}
 
 func (m *_NodeId) String() string {
 	if m == nil {

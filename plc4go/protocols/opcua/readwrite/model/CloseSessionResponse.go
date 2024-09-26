@@ -38,6 +38,7 @@ type CloseSessionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -53,6 +54,19 @@ type _CloseSessionResponse struct {
 
 var _ CloseSessionResponse = (*_CloseSessionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionResponse)(nil)
+
+// NewCloseSessionResponse factory function for _CloseSessionResponse
+func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSessionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CloseSessionResponse must not be nil")
+	}
+	_result := &_CloseSessionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_CloseSessionResponse) GetResponseHeader() ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCloseSessionResponse factory function for _CloseSessionResponse
-func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSessionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CloseSessionResponse must not be nil")
-	}
-	_result := &_CloseSessionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCloseSessionResponse(structType any) CloseSessionResponse {
@@ -182,6 +183,22 @@ func (m *_CloseSessionResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_CloseSessionResponse) IsCloseSessionResponse() {}
+
+func (m *_CloseSessionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CloseSessionResponse) deepCopy() *_CloseSessionResponse {
+	if m == nil {
+		return nil
+	}
+	_CloseSessionResponseCopy := &_CloseSessionResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CloseSessionResponseCopy
+}
 
 func (m *_CloseSessionResponse) String() string {
 	if m == nil {

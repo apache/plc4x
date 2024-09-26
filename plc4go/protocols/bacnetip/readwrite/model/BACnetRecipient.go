@@ -40,6 +40,7 @@ type BACnetRecipient interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetRecipient is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipient()
 }
@@ -70,6 +71,14 @@ type _BACnetRecipient struct {
 
 var _ BACnetRecipientContract = (*_BACnetRecipient)(nil)
 
+// NewBACnetRecipient factory function for _BACnetRecipient
+func NewBACnetRecipient(peekedTagHeader BACnetTagHeader) *_BACnetRecipient {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetRecipient must not be nil")
+	}
+	return &_BACnetRecipient{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetRecipient) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipient factory function for _BACnetRecipient
-func NewBACnetRecipient(peekedTagHeader BACnetTagHeader) *_BACnetRecipient {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetRecipient must not be nil")
-	}
-	return &_BACnetRecipient{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipient(structType any) BACnetRecipient {
@@ -189,11 +190,11 @@ func (m *_BACnetRecipient) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetRecipient
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetRecipientDevice
-		if _child, err = (&_BACnetRecipientDevice{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetRecipientDevice).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetRecipientDevice for type-switch of BACnetRecipient")
 		}
 	case peekedTagNumber == uint8(1): // BACnetRecipientAddress
-		if _child, err = (&_BACnetRecipientAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetRecipientAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetRecipientAddress for type-switch of BACnetRecipient")
 		}
 	default:
@@ -237,3 +238,18 @@ func (pm *_BACnetRecipient) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetRecipient) IsBACnetRecipient() {}
+
+func (m *_BACnetRecipient) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipient) deepCopy() *_BACnetRecipient {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientCopy := &_BACnetRecipient{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetRecipientCopy
+}

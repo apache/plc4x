@@ -36,6 +36,7 @@ type HistoryUpdateDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsHistoryUpdateDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryUpdateDetails()
@@ -48,6 +49,15 @@ type _HistoryUpdateDetails struct {
 
 var _ HistoryUpdateDetails = (*_HistoryUpdateDetails)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateDetails)(nil)
+
+// NewHistoryUpdateDetails factory function for _HistoryUpdateDetails
+func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
+	_result := &_HistoryUpdateDetails{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_HistoryUpdateDetails) GetIdentifier() string {
 
 func (m *_HistoryUpdateDetails) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewHistoryUpdateDetails factory function for _HistoryUpdateDetails
-func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
-	_result := &_HistoryUpdateDetails{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_HistoryUpdateDetails) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_HistoryUpdateDetails) IsHistoryUpdateDetails() {}
+
+func (m *_HistoryUpdateDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryUpdateDetails) deepCopy() *_HistoryUpdateDetails {
+	if m == nil {
+		return nil
+	}
+	_HistoryUpdateDetailsCopy := &_HistoryUpdateDetails{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryUpdateDetailsCopy
+}
 
 func (m *_HistoryUpdateDetails) String() string {
 	if m == nil {

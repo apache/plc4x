@@ -41,6 +41,7 @@ type ModbusConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsModbusConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusConstants()
 }
@@ -50,6 +51,11 @@ type _ModbusConstants struct {
 }
 
 var _ ModbusConstants = (*_ModbusConstants)(nil)
+
+// NewModbusConstants factory function for _ModbusConstants
+func NewModbusConstants() *_ModbusConstants {
+	return &_ModbusConstants{}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_ModbusConstants) GetModbusTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusConstants factory function for _ModbusConstants
-func NewModbusConstants() *_ModbusConstants {
-	return &_ModbusConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusConstants(structType any) ModbusConstants {
@@ -166,6 +167,18 @@ func (m *_ModbusConstants) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ModbusConstants) IsModbusConstants() {}
+
+func (m *_ModbusConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusConstants) deepCopy() *_ModbusConstants {
+	if m == nil {
+		return nil
+	}
+	_ModbusConstantsCopy := &_ModbusConstants{}
+	return _ModbusConstantsCopy
+}
 
 func (m *_ModbusConstants) String() string {
 	if m == nil {

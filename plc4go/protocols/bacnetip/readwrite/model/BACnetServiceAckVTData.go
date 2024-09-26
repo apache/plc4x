@@ -38,6 +38,7 @@ type BACnetServiceAckVTData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetVtSessionIdentifier returns VtSessionIdentifier (property field)
 	GetVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
@@ -59,6 +60,27 @@ type _BACnetServiceAckVTData struct {
 
 var _ BACnetServiceAckVTData = (*_BACnetServiceAckVTData)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckVTData)(nil)
+
+// NewBACnetServiceAckVTData factory function for _BACnetServiceAckVTData
+func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTData {
+	if vtSessionIdentifier == nil {
+		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
+	}
+	if vtNewData == nil {
+		panic("vtNewData of type BACnetApplicationTagOctetString for BACnetServiceAckVTData must not be nil")
+	}
+	if vtDataFlag == nil {
+		panic("vtDataFlag of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
+	}
+	_result := &_BACnetServiceAckVTData{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		VtSessionIdentifier:      vtSessionIdentifier,
+		VtNewData:                vtNewData,
+		VtDataFlag:               vtDataFlag,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,27 +121,6 @@ func (m *_BACnetServiceAckVTData) GetVtDataFlag() BACnetApplicationTagUnsignedIn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckVTData factory function for _BACnetServiceAckVTData
-func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTData {
-	if vtSessionIdentifier == nil {
-		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
-	}
-	if vtNewData == nil {
-		panic("vtNewData of type BACnetApplicationTagOctetString for BACnetServiceAckVTData must not be nil")
-	}
-	if vtDataFlag == nil {
-		panic("vtDataFlag of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
-	}
-	_result := &_BACnetServiceAckVTData{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		VtSessionIdentifier:      vtSessionIdentifier,
-		VtNewData:                vtNewData,
-		VtDataFlag:               vtDataFlag,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckVTData(structType any) BACnetServiceAckVTData {
@@ -230,6 +231,24 @@ func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetServiceAckVTData) IsBACnetServiceAckVTData() {}
+
+func (m *_BACnetServiceAckVTData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckVTData) deepCopy() *_BACnetServiceAckVTData {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckVTDataCopy := &_BACnetServiceAckVTData{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.VtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.VtNewData.DeepCopy().(BACnetApplicationTagOctetString),
+		m.VtDataFlag.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckVTDataCopy
+}
 
 func (m *_BACnetServiceAckVTData) String() string {
 	if m == nil {

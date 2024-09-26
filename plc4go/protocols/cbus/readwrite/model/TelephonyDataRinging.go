@@ -38,6 +38,7 @@ type TelephonyDataRinging interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetNumber returns Number (property field)
 	GetNumber() string
@@ -55,6 +56,16 @@ type _TelephonyDataRinging struct {
 
 var _ TelephonyDataRinging = (*_TelephonyDataRinging)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataRinging)(nil)
+
+// NewTelephonyDataRinging factory function for _TelephonyDataRinging
+func NewTelephonyDataRinging(commandTypeContainer TelephonyCommandTypeContainer, argument byte, number string) *_TelephonyDataRinging {
+	_result := &_TelephonyDataRinging{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Number:                number,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,16 +94,6 @@ func (m *_TelephonyDataRinging) GetNumber() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataRinging factory function for _TelephonyDataRinging
-func NewTelephonyDataRinging(number string, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataRinging {
-	_result := &_TelephonyDataRinging{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		Number:                number,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataRinging(structType any) TelephonyDataRinging {
@@ -190,6 +191,23 @@ func (m *_TelephonyDataRinging) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_TelephonyDataRinging) IsTelephonyDataRinging() {}
+
+func (m *_TelephonyDataRinging) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataRinging) deepCopy() *_TelephonyDataRinging {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataRingingCopy := &_TelephonyDataRinging{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+		m.Number,
+		m.reservedField0,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataRingingCopy
+}
 
 func (m *_TelephonyDataRinging) String() string {
 	if m == nil {

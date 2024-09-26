@@ -38,6 +38,7 @@ type SzlId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTypeClass returns TypeClass (property field)
 	GetTypeClass() SzlModuleTypeClass
 	// GetSublistExtract returns SublistExtract (property field)
@@ -56,6 +57,11 @@ type _SzlId struct {
 }
 
 var _ SzlId = (*_SzlId)(nil)
+
+// NewSzlId factory function for _SzlId
+func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *_SzlId {
+	return &_SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +84,6 @@ func (m *_SzlId) GetSublistList() SzlSublist {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSzlId factory function for _SzlId
-func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *_SzlId {
-	return &_SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSzlId(structType any) SzlId {
@@ -206,6 +207,22 @@ func (m *_SzlId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_SzlId) IsSzlId() {}
+
+func (m *_SzlId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SzlId) deepCopy() *_SzlId {
+	if m == nil {
+		return nil
+	}
+	_SzlIdCopy := &_SzlId{
+		m.TypeClass,
+		m.SublistExtract,
+		m.SublistList,
+	}
+	return _SzlIdCopy
+}
 
 func (m *_SzlId) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesLifeSafetyMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLifeSafetyMode returns LifeSafetyMode (property field)
 	GetLifeSafetyMode() BACnetLifeSafetyModeTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesLifeSafetyMode struct {
 
 var _ BACnetPropertyStatesLifeSafetyMode = (*_BACnetPropertyStatesLifeSafetyMode)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLifeSafetyMode)(nil)
+
+// NewBACnetPropertyStatesLifeSafetyMode factory function for _BACnetPropertyStatesLifeSafetyMode
+func NewBACnetPropertyStatesLifeSafetyMode(peekedTagHeader BACnetTagHeader, lifeSafetyMode BACnetLifeSafetyModeTagged) *_BACnetPropertyStatesLifeSafetyMode {
+	if lifeSafetyMode == nil {
+		panic("lifeSafetyMode of type BACnetLifeSafetyModeTagged for BACnetPropertyStatesLifeSafetyMode must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLifeSafetyMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LifeSafetyMode:               lifeSafetyMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesLifeSafetyMode) GetLifeSafetyMode() BACnetLifeSafe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLifeSafetyMode factory function for _BACnetPropertyStatesLifeSafetyMode
-func NewBACnetPropertyStatesLifeSafetyMode(lifeSafetyMode BACnetLifeSafetyModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLifeSafetyMode {
-	if lifeSafetyMode == nil {
-		panic("lifeSafetyMode of type BACnetLifeSafetyModeTagged for BACnetPropertyStatesLifeSafetyMode must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLifeSafetyMode{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LifeSafetyMode:               lifeSafetyMode,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLifeSafetyMode(structType any) BACnetPropertyStatesLifeSafetyMode {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLifeSafetyMode) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetPropertyStatesLifeSafetyMode) IsBACnetPropertyStatesLifeSafetyMode() {}
+
+func (m *_BACnetPropertyStatesLifeSafetyMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyMode) deepCopy() *_BACnetPropertyStatesLifeSafetyMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLifeSafetyModeCopy := &_BACnetPropertyStatesLifeSafetyMode{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LifeSafetyMode.DeepCopy().(BACnetLifeSafetyModeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLifeSafetyModeCopy
+}
 
 func (m *_BACnetPropertyStatesLifeSafetyMode) String() string {
 	if m == nil {

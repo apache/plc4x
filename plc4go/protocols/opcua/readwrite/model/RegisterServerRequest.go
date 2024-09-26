@@ -38,6 +38,7 @@ type RegisterServerRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -56,6 +57,23 @@ type _RegisterServerRequest struct {
 
 var _ RegisterServerRequest = (*_RegisterServerRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServerRequest)(nil)
+
+// NewRegisterServerRequest factory function for _RegisterServerRequest
+func NewRegisterServerRequest(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) *_RegisterServerRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
+	}
+	if server == nil {
+		panic("server of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
+	}
+	_result := &_RegisterServerRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		Server:                            server,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_RegisterServerRequest) GetServer() ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterServerRequest factory function for _RegisterServerRequest
-func NewRegisterServerRequest(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) *_RegisterServerRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
-	}
-	if server == nil {
-		panic("server of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
-	}
-	_result := &_RegisterServerRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		Server:                            server,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterServerRequest(structType any) RegisterServerRequest {
@@ -206,6 +207,23 @@ func (m *_RegisterServerRequest) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_RegisterServerRequest) IsRegisterServerRequest() {}
+
+func (m *_RegisterServerRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterServerRequest) deepCopy() *_RegisterServerRequest {
+	if m == nil {
+		return nil
+	}
+	_RegisterServerRequestCopy := &_RegisterServerRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.Server.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterServerRequestCopy
+}
 
 func (m *_RegisterServerRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataIsUTC interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIsUtc returns IsUtc (property field)
 	GetIsUtc() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataIsUTC struct {
 
 var _ BACnetConstructedDataIsUTC = (*_BACnetConstructedDataIsUTC)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIsUTC)(nil)
+
+// NewBACnetConstructedDataIsUTC factory function for _BACnetConstructedDataIsUTC
+func NewBACnetConstructedDataIsUTC(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, isUtc BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIsUTC {
+	if isUtc == nil {
+		panic("isUtc of type BACnetApplicationTagBoolean for BACnetConstructedDataIsUTC must not be nil")
+	}
+	_result := &_BACnetConstructedDataIsUTC{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IsUtc:                         isUtc,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataIsUTC) GetActualValue() BACnetApplicationTagBoole
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIsUTC factory function for _BACnetConstructedDataIsUTC
-func NewBACnetConstructedDataIsUTC(isUtc BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIsUTC {
-	if isUtc == nil {
-		panic("isUtc of type BACnetApplicationTagBoolean for BACnetConstructedDataIsUTC must not be nil")
-	}
-	_result := &_BACnetConstructedDataIsUTC{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IsUtc:                         isUtc,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIsUTC(structType any) BACnetConstructedDataIsUTC {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIsUTC) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetConstructedDataIsUTC) IsBACnetConstructedDataIsUTC() {}
+
+func (m *_BACnetConstructedDataIsUTC) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIsUTC) deepCopy() *_BACnetConstructedDataIsUTC {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIsUTCCopy := &_BACnetConstructedDataIsUTC{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.IsUtc.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIsUTCCopy
+}
 
 func (m *_BACnetConstructedDataIsUTC) String() string {
 	if m == nil {

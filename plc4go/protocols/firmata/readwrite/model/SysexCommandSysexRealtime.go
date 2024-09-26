@@ -36,6 +36,7 @@ type SysexCommandSysexRealtime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandSysexRealtime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandSysexRealtime()
@@ -48,6 +49,15 @@ type _SysexCommandSysexRealtime struct {
 
 var _ SysexCommandSysexRealtime = (*_SysexCommandSysexRealtime)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandSysexRealtime)(nil)
+
+// NewSysexCommandSysexRealtime factory function for _SysexCommandSysexRealtime
+func NewSysexCommandSysexRealtime() *_SysexCommandSysexRealtime {
+	_result := &_SysexCommandSysexRealtime{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_SysexCommandSysexRealtime) GetResponse() bool {
 
 func (m *_SysexCommandSysexRealtime) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandSysexRealtime factory function for _SysexCommandSysexRealtime
-func NewSysexCommandSysexRealtime() *_SysexCommandSysexRealtime {
-	_result := &_SysexCommandSysexRealtime{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_SysexCommandSysexRealtime) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SysexCommandSysexRealtime) IsSysexCommandSysexRealtime() {}
+
+func (m *_SysexCommandSysexRealtime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandSysexRealtime) deepCopy() *_SysexCommandSysexRealtime {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandSysexRealtimeCopy := &_SysexCommandSysexRealtime{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandSysexRealtimeCopy
+}
 
 func (m *_SysexCommandSysexRealtime) String() string {
 	if m == nil {

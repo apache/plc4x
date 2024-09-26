@@ -38,6 +38,7 @@ type CIPDataConnected interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() uint32
 	// GetTagStatus returns TagStatus (property field)
@@ -53,6 +54,11 @@ type _CIPDataConnected struct {
 }
 
 var _ CIPDataConnected = (*_CIPDataConnected)(nil)
+
+// NewCIPDataConnected factory function for _CIPDataConnected
+func NewCIPDataConnected(value uint32, tagStatus uint16) *_CIPDataConnected {
+	return &_CIPDataConnected{Value: value, TagStatus: tagStatus}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +77,6 @@ func (m *_CIPDataConnected) GetTagStatus() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPDataConnected factory function for _CIPDataConnected
-func NewCIPDataConnected(value uint32, tagStatus uint16) *_CIPDataConnected {
-	return &_CIPDataConnected{Value: value, TagStatus: tagStatus}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPDataConnected(structType any) CIPDataConnected {
@@ -186,6 +187,21 @@ func (m *_CIPDataConnected) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_CIPDataConnected) IsCIPDataConnected() {}
+
+func (m *_CIPDataConnected) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPDataConnected) deepCopy() *_CIPDataConnected {
+	if m == nil {
+		return nil
+	}
+	_CIPDataConnectedCopy := &_CIPDataConnected{
+		m.Value,
+		m.TagStatus,
+	}
+	return _CIPDataConnectedCopy
+}
 
 func (m *_CIPDataConnected) String() string {
 	if m == nil {

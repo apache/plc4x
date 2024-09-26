@@ -36,6 +36,7 @@ type BACnetConstructedDataTrendLogMultipleAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataTrendLogMultipleAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTrendLogMultipleAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataTrendLogMultipleAll struct {
 
 var _ BACnetConstructedDataTrendLogMultipleAll = (*_BACnetConstructedDataTrendLogMultipleAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogMultipleAll)(nil)
+
+// NewBACnetConstructedDataTrendLogMultipleAll factory function for _BACnetConstructedDataTrendLogMultipleAll
+func NewBACnetConstructedDataTrendLogMultipleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleAll {
+	_result := &_BACnetConstructedDataTrendLogMultipleAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataTrendLogMultipleAll) GetPropertyIdentifierArgumen
 
 func (m *_BACnetConstructedDataTrendLogMultipleAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataTrendLogMultipleAll factory function for _BACnetConstructedDataTrendLogMultipleAll
-func NewBACnetConstructedDataTrendLogMultipleAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleAll {
-	_result := &_BACnetConstructedDataTrendLogMultipleAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataTrendLogMultipleAll) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataTrendLogMultipleAll) IsBACnetConstructedDataTrendLogMultipleAll() {}
+
+func (m *_BACnetConstructedDataTrendLogMultipleAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleAll) deepCopy() *_BACnetConstructedDataTrendLogMultipleAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTrendLogMultipleAllCopy := &_BACnetConstructedDataTrendLogMultipleAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTrendLogMultipleAllCopy
+}
 
 func (m *_BACnetConstructedDataTrendLogMultipleAll) String() string {
 	if m == nil {

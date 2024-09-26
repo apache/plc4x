@@ -44,13 +44,13 @@ func TestDF1UtilsCrcCheck(t *testing.T) {
 				0x07,
 				func() DF1Command {
 					return NewDF1UnprotectedReadResponse(
+						0,
+						0xAFFE,
 						[]uint8{
 							0x00, 0x00, 0x00, 0x00,
 							0x00, 0x00, 0x00, 0x00,
 							0x00, 0x00, 0x00, 0x00,
 						},
-						0,
-						0xAFFE,
 					)
 				}(),
 			},

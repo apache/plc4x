@@ -38,6 +38,7 @@ type TransportType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDirection returns Direction (property field)
 	GetDirection() bool
 	// GetTrigger returns Trigger (property field)
@@ -56,6 +57,11 @@ type _TransportType struct {
 }
 
 var _ TransportType = (*_TransportType)(nil)
+
+// NewTransportType factory function for _TransportType
+func NewTransportType(direction bool, trigger uint8, classTransport uint8) *_TransportType {
+	return &_TransportType{Direction: direction, Trigger: trigger, ClassTransport: classTransport}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +84,6 @@ func (m *_TransportType) GetClassTransport() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransportType factory function for _TransportType
-func NewTransportType(direction bool, trigger uint8, classTransport uint8) *_TransportType {
-	return &_TransportType{Direction: direction, Trigger: trigger, ClassTransport: classTransport}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransportType(structType any) TransportType {
@@ -206,6 +207,22 @@ func (m *_TransportType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_TransportType) IsTransportType() {}
+
+func (m *_TransportType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransportType) deepCopy() *_TransportType {
+	if m == nil {
+		return nil
+	}
+	_TransportTypeCopy := &_TransportType{
+		m.Direction,
+		m.Trigger,
+		m.ClassTransport,
+	}
+	return _TransportTypeCopy
+}
 
 func (m *_TransportType) String() string {
 	if m == nil {

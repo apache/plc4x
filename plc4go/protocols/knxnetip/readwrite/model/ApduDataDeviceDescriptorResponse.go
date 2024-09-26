@@ -38,6 +38,7 @@ type ApduDataDeviceDescriptorResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetDescriptorType returns DescriptorType (property field)
 	GetDescriptorType() uint8
@@ -56,6 +57,17 @@ type _ApduDataDeviceDescriptorResponse struct {
 
 var _ ApduDataDeviceDescriptorResponse = (*_ApduDataDeviceDescriptorResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorResponse)(nil)
+
+// NewApduDataDeviceDescriptorResponse factory function for _ApduDataDeviceDescriptorResponse
+func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *_ApduDataDeviceDescriptorResponse {
+	_result := &_ApduDataDeviceDescriptorResponse{
+		ApduDataContract: NewApduData(dataLength),
+		DescriptorType:   descriptorType,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ApduDataDeviceDescriptorResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataDeviceDescriptorResponse factory function for _ApduDataDeviceDescriptorResponse
-func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *_ApduDataDeviceDescriptorResponse {
-	_result := &_ApduDataDeviceDescriptorResponse{
-		ApduDataContract: NewApduData(dataLength),
-		DescriptorType:   descriptorType,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataDeviceDescriptorResponse(structType any) ApduDataDeviceDescriptorResponse {
@@ -202,6 +203,23 @@ func (m *_ApduDataDeviceDescriptorResponse) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_ApduDataDeviceDescriptorResponse) IsApduDataDeviceDescriptorResponse() {}
+
+func (m *_ApduDataDeviceDescriptorResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataDeviceDescriptorResponse) deepCopy() *_ApduDataDeviceDescriptorResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataDeviceDescriptorResponseCopy := &_ApduDataDeviceDescriptorResponse{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.DescriptorType,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataDeviceDescriptorResponseCopy
+}
 
 func (m *_ApduDataDeviceDescriptorResponse) String() string {
 	if m == nil {

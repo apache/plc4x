@@ -38,6 +38,7 @@ type BACnetDateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
 	// GetTimeValue returns TimeValue (property field)
@@ -53,6 +54,17 @@ type _BACnetDateTime struct {
 }
 
 var _ BACnetDateTime = (*_BACnetDateTime)(nil)
+
+// NewBACnetDateTime factory function for _BACnetDateTime
+func NewBACnetDateTime(dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime) *_BACnetDateTime {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetDateTime must not be nil")
+	}
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetDateTime must not be nil")
+	}
+	return &_BACnetDateTime{DateValue: dateValue, TimeValue: timeValue}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetDateTime) GetTimeValue() BACnetApplicationTagTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDateTime factory function for _BACnetDateTime
-func NewBACnetDateTime(dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime) *_BACnetDateTime {
-	if dateValue == nil {
-		panic("dateValue of type BACnetApplicationTagDate for BACnetDateTime must not be nil")
-	}
-	if timeValue == nil {
-		panic("timeValue of type BACnetApplicationTagTime for BACnetDateTime must not be nil")
-	}
-	return &_BACnetDateTime{DateValue: dateValue, TimeValue: timeValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDateTime(structType any) BACnetDateTime {
@@ -192,6 +193,21 @@ func (m *_BACnetDateTime) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetDateTime) IsBACnetDateTime() {}
+
+func (m *_BACnetDateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDateTime) deepCopy() *_BACnetDateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetDateTimeCopy := &_BACnetDateTime{
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	return _BACnetDateTimeCopy
+}
 
 func (m *_BACnetDateTime) String() string {
 	if m == nil {

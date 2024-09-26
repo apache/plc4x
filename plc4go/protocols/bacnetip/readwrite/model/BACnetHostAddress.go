@@ -40,6 +40,7 @@ type BACnetHostAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetHostAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostAddress()
 }
@@ -70,6 +71,14 @@ type _BACnetHostAddress struct {
 
 var _ BACnetHostAddressContract = (*_BACnetHostAddress)(nil)
 
+// NewBACnetHostAddress factory function for _BACnetHostAddress
+func NewBACnetHostAddress(peekedTagHeader BACnetTagHeader) *_BACnetHostAddress {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetHostAddress must not be nil")
+	}
+	return &_BACnetHostAddress{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetHostAddress) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddress factory function for _BACnetHostAddress
-func NewBACnetHostAddress(peekedTagHeader BACnetTagHeader) *_BACnetHostAddress {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetHostAddress must not be nil")
-	}
-	return &_BACnetHostAddress{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddress(structType any) BACnetHostAddress {
@@ -189,15 +190,15 @@ func (m *_BACnetHostAddress) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child BACnetHostAddress
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetHostAddressNull
-		if _child, err = (&_BACnetHostAddressNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetHostAddressNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetHostAddressNull for type-switch of BACnetHostAddress")
 		}
 	case peekedTagNumber == uint8(1): // BACnetHostAddressIpAddress
-		if _child, err = (&_BACnetHostAddressIpAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetHostAddressIpAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetHostAddressIpAddress for type-switch of BACnetHostAddress")
 		}
 	case peekedTagNumber == uint8(2): // BACnetHostAddressName
-		if _child, err = (&_BACnetHostAddressName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetHostAddressName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetHostAddressName for type-switch of BACnetHostAddress")
 		}
 	default:
@@ -241,3 +242,18 @@ func (pm *_BACnetHostAddress) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_BACnetHostAddress) IsBACnetHostAddress() {}
+
+func (m *_BACnetHostAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddress) deepCopy() *_BACnetHostAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressCopy := &_BACnetHostAddress{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetHostAddressCopy
+}

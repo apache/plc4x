@@ -38,6 +38,7 @@ type BACnetNetworkNumberQualityTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetNetworkNumberQualityTagged struct {
 
 var _ BACnetNetworkNumberQualityTagged = (*_BACnetNetworkNumberQualityTagged)(nil)
 
+// NewBACnetNetworkNumberQualityTagged factory function for _BACnetNetworkNumberQualityTagged
+func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNetworkNumberQuality, tagNumber uint8, tagClass TagClass) *_BACnetNetworkNumberQualityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNetworkNumberQualityTagged must not be nil")
+	}
+	return &_BACnetNetworkNumberQualityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetNetworkNumberQualityTagged) GetValue() BACnetNetworkNumberQualit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNetworkNumberQualityTagged factory function for _BACnetNetworkNumberQualityTagged
-func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNetworkNumberQuality, tagNumber uint8, tagClass TagClass) *_BACnetNetworkNumberQualityTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetNetworkNumberQualityTagged must not be nil")
-	}
-	return &_BACnetNetworkNumberQualityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNetworkNumberQualityTagged(structType any) BACnetNetworkNumberQualityTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetNetworkNumberQualityTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetNetworkNumberQualityTagged) IsBACnetNetworkNumberQualityTagged() {}
+
+func (m *_BACnetNetworkNumberQualityTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNetworkNumberQualityTagged) deepCopy() *_BACnetNetworkNumberQualityTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetNetworkNumberQualityTaggedCopy := &_BACnetNetworkNumberQualityTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetNetworkNumberQualityTaggedCopy
+}
 
 func (m *_BACnetNetworkNumberQualityTagged) String() string {
 	if m == nil {

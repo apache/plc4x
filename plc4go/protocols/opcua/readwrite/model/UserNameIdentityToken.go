@@ -38,6 +38,7 @@ type UserNameIdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	UserIdentityTokenDefinition
 	// GetUserName returns UserName (property field)
 	GetUserName() PascalString
@@ -59,6 +60,27 @@ type _UserNameIdentityToken struct {
 
 var _ UserNameIdentityToken = (*_UserNameIdentityToken)(nil)
 var _ UserIdentityTokenDefinitionRequirements = (*_UserNameIdentityToken)(nil)
+
+// NewUserNameIdentityToken factory function for _UserNameIdentityToken
+func NewUserNameIdentityToken(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) *_UserNameIdentityToken {
+	if userName == nil {
+		panic("userName of type PascalString for UserNameIdentityToken must not be nil")
+	}
+	if password == nil {
+		panic("password of type PascalByteString for UserNameIdentityToken must not be nil")
+	}
+	if encryptionAlgorithm == nil {
+		panic("encryptionAlgorithm of type PascalString for UserNameIdentityToken must not be nil")
+	}
+	_result := &_UserNameIdentityToken{
+		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+		UserName:                            userName,
+		Password:                            password,
+		EncryptionAlgorithm:                 encryptionAlgorithm,
+	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,27 +121,6 @@ func (m *_UserNameIdentityToken) GetEncryptionAlgorithm() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUserNameIdentityToken factory function for _UserNameIdentityToken
-func NewUserNameIdentityToken(userName PascalString, password PascalByteString, encryptionAlgorithm PascalString) *_UserNameIdentityToken {
-	if userName == nil {
-		panic("userName of type PascalString for UserNameIdentityToken must not be nil")
-	}
-	if password == nil {
-		panic("password of type PascalByteString for UserNameIdentityToken must not be nil")
-	}
-	if encryptionAlgorithm == nil {
-		panic("encryptionAlgorithm of type PascalString for UserNameIdentityToken must not be nil")
-	}
-	_result := &_UserNameIdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-		UserName:                            userName,
-		Password:                            password,
-		EncryptionAlgorithm:                 encryptionAlgorithm,
-	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUserNameIdentityToken(structType any) UserNameIdentityToken {
@@ -230,6 +231,24 @@ func (m *_UserNameIdentityToken) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_UserNameIdentityToken) IsUserNameIdentityToken() {}
+
+func (m *_UserNameIdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UserNameIdentityToken) deepCopy() *_UserNameIdentityToken {
+	if m == nil {
+		return nil
+	}
+	_UserNameIdentityTokenCopy := &_UserNameIdentityToken{
+		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
+		m.UserName.DeepCopy().(PascalString),
+		m.Password.DeepCopy().(PascalByteString),
+		m.EncryptionAlgorithm.DeepCopy().(PascalString),
+	}
+	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	return _UserNameIdentityTokenCopy
+}
 
 func (m *_UserNameIdentityToken) String() string {
 	if m == nil {

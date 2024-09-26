@@ -36,6 +36,7 @@ type MediaTransportControlDataPlay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// IsMediaTransportControlDataPlay is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataPlay()
@@ -49,6 +50,15 @@ type _MediaTransportControlDataPlay struct {
 var _ MediaTransportControlDataPlay = (*_MediaTransportControlDataPlay)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataPlay)(nil)
 
+// NewMediaTransportControlDataPlay factory function for _MediaTransportControlDataPlay
+func NewMediaTransportControlDataPlay(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataPlay {
+	_result := &_MediaTransportControlDataPlay{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataPlay)(
 
 func (m *_MediaTransportControlDataPlay) GetParent() MediaTransportControlDataContract {
 	return m.MediaTransportControlDataContract
-}
-
-// NewMediaTransportControlDataPlay factory function for _MediaTransportControlDataPlay
-func NewMediaTransportControlDataPlay(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataPlay {
-	_result := &_MediaTransportControlDataPlay{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_MediaTransportControlDataPlay) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_MediaTransportControlDataPlay) IsMediaTransportControlDataPlay() {}
+
+func (m *_MediaTransportControlDataPlay) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataPlay) deepCopy() *_MediaTransportControlDataPlay {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataPlayCopy := &_MediaTransportControlDataPlay{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataPlayCopy
+}
 
 func (m *_MediaTransportControlDataPlay) String() string {
 	if m == nil {

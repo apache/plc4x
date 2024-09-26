@@ -38,6 +38,7 @@ type PanicStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetIsNoPanic returns IsNoPanic (virtual field)
@@ -56,6 +57,11 @@ type _PanicStatus struct {
 }
 
 var _ PanicStatus = (*_PanicStatus)(nil)
+
+// NewPanicStatus factory function for _PanicStatus
+func NewPanicStatus(status uint8) *_PanicStatus {
+	return &_PanicStatus{Status: status}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,11 +103,6 @@ func (m *_PanicStatus) GetIsPanicCurrentlyActive() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPanicStatus factory function for _PanicStatus
-func NewPanicStatus(status uint8) *_PanicStatus {
-	return &_PanicStatus{Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPanicStatus(structType any) PanicStatus {
@@ -241,6 +242,20 @@ func (m *_PanicStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_PanicStatus) IsPanicStatus() {}
+
+func (m *_PanicStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PanicStatus) deepCopy() *_PanicStatus {
+	if m == nil {
+		return nil
+	}
+	_PanicStatusCopy := &_PanicStatus{
+		m.Status,
+	}
+	return _PanicStatusCopy
+}
 
 func (m *_PanicStatus) String() string {
 	if m == nil {

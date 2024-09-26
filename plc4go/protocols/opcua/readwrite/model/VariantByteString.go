@@ -38,6 +38,7 @@ type VariantByteString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantByteString struct {
 
 var _ VariantByteString = (*_VariantByteString)(nil)
 var _ VariantRequirements = (*_VariantByteString)(nil)
+
+// NewVariantByteString factory function for _VariantByteString
+func NewVariantByteString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ByteStringArray) *_VariantByteString {
+	_result := &_VariantByteString{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantByteString) GetValue() []ByteStringArray {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantByteString factory function for _VariantByteString
-func NewVariantByteString(arrayLength *int32, value []ByteStringArray, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantByteString {
-	_result := &_VariantByteString{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantByteString(structType any) VariantByteString {
@@ -210,6 +211,23 @@ func (m *_VariantByteString) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_VariantByteString) IsVariantByteString() {}
+
+func (m *_VariantByteString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantByteString) deepCopy() *_VariantByteString {
+	if m == nil {
+		return nil
+	}
+	_VariantByteStringCopy := &_VariantByteString{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[ByteStringArray, ByteStringArray](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantByteStringCopy
+}
 
 func (m *_VariantByteString) String() string {
 	if m == nil {

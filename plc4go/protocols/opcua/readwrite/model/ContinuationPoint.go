@@ -36,6 +36,7 @@ type ContinuationPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsContinuationPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsContinuationPoint()
 }
@@ -134,6 +135,18 @@ func (m *_ContinuationPoint) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ContinuationPoint) IsContinuationPoint() {}
+
+func (m *_ContinuationPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ContinuationPoint) deepCopy() *_ContinuationPoint {
+	if m == nil {
+		return nil
+	}
+	_ContinuationPointCopy := &_ContinuationPoint{}
+	return _ContinuationPointCopy
+}
 
 func (m *_ContinuationPoint) String() string {
 	if m == nil {

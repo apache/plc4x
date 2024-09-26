@@ -36,6 +36,7 @@ type SecurityDataDropTamper interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataDropTamper is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataDropTamper()
@@ -49,6 +50,15 @@ type _SecurityDataDropTamper struct {
 var _ SecurityDataDropTamper = (*_SecurityDataDropTamper)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataDropTamper)(nil)
 
+// NewSecurityDataDropTamper factory function for _SecurityDataDropTamper
+func NewSecurityDataDropTamper(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDropTamper {
+	_result := &_SecurityDataDropTamper{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataDropTamper)(nil)
 
 func (m *_SecurityDataDropTamper) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataDropTamper factory function for _SecurityDataDropTamper
-func NewSecurityDataDropTamper(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDropTamper {
-	_result := &_SecurityDataDropTamper{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataDropTamper) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SecurityDataDropTamper) IsSecurityDataDropTamper() {}
+
+func (m *_SecurityDataDropTamper) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataDropTamper) deepCopy() *_SecurityDataDropTamper {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataDropTamperCopy := &_SecurityDataDropTamper{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataDropTamperCopy
+}
 
 func (m *_SecurityDataDropTamper) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataPrescale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPrescale returns Prescale (property field)
 	GetPrescale() BACnetPrescale
@@ -55,6 +56,19 @@ type _BACnetConstructedDataPrescale struct {
 
 var _ BACnetConstructedDataPrescale = (*_BACnetConstructedDataPrescale)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPrescale)(nil)
+
+// NewBACnetConstructedDataPrescale factory function for _BACnetConstructedDataPrescale
+func NewBACnetConstructedDataPrescale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, prescale BACnetPrescale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPrescale {
+	if prescale == nil {
+		panic("prescale of type BACnetPrescale for BACnetConstructedDataPrescale must not be nil")
+	}
+	_result := &_BACnetConstructedDataPrescale{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Prescale:                      prescale,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataPrescale) GetActualValue() BACnetPrescale {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPrescale factory function for _BACnetConstructedDataPrescale
-func NewBACnetConstructedDataPrescale(prescale BACnetPrescale, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPrescale {
-	if prescale == nil {
-		panic("prescale of type BACnetPrescale for BACnetConstructedDataPrescale must not be nil")
-	}
-	_result := &_BACnetConstructedDataPrescale{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Prescale:                      prescale,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPrescale(structType any) BACnetConstructedDataPrescale {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPrescale) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataPrescale) IsBACnetConstructedDataPrescale() {}
+
+func (m *_BACnetConstructedDataPrescale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPrescale) deepCopy() *_BACnetConstructedDataPrescale {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPrescaleCopy := &_BACnetConstructedDataPrescale{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Prescale.DeepCopy().(BACnetPrescale),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPrescaleCopy
+}
 
 func (m *_BACnetConstructedDataPrescale) String() string {
 	if m == nil {

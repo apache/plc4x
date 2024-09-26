@@ -38,6 +38,7 @@ type BACnetConstructedDataAnalogInputFaultHighLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultHighLimit returns FaultHighLimit (property field)
 	GetFaultHighLimit() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAnalogInputFaultHighLimit struct {
 
 var _ BACnetConstructedDataAnalogInputFaultHighLimit = (*_BACnetConstructedDataAnalogInputFaultHighLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogInputFaultHighLimit)(nil)
+
+// NewBACnetConstructedDataAnalogInputFaultHighLimit factory function for _BACnetConstructedDataAnalogInputFaultHighLimit
+func NewBACnetConstructedDataAnalogInputFaultHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultHighLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogInputFaultHighLimit {
+	if faultHighLimit == nil {
+		panic("faultHighLimit of type BACnetApplicationTagReal for BACnetConstructedDataAnalogInputFaultHighLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataAnalogInputFaultHighLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultHighLimit:                faultHighLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAnalogInputFaultHighLimit) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAnalogInputFaultHighLimit factory function for _BACnetConstructedDataAnalogInputFaultHighLimit
-func NewBACnetConstructedDataAnalogInputFaultHighLimit(faultHighLimit BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogInputFaultHighLimit {
-	if faultHighLimit == nil {
-		panic("faultHighLimit of type BACnetApplicationTagReal for BACnetConstructedDataAnalogInputFaultHighLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataAnalogInputFaultHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultHighLimit:                faultHighLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAnalogInputFaultHighLimit(structType any) BACnetConstructedDataAnalogInputFaultHighLimit {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAnalogInputFaultHighLimit) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataAnalogInputFaultHighLimit) IsBACnetConstructedDataAnalogInputFaultHighLimit() {
+}
+
+func (m *_BACnetConstructedDataAnalogInputFaultHighLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAnalogInputFaultHighLimit) deepCopy() *_BACnetConstructedDataAnalogInputFaultHighLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAnalogInputFaultHighLimitCopy := &_BACnetConstructedDataAnalogInputFaultHighLimit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FaultHighLimit.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAnalogInputFaultHighLimitCopy
 }
 
 func (m *_BACnetConstructedDataAnalogInputFaultHighLimit) String() string {

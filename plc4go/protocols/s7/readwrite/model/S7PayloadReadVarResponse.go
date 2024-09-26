@@ -38,6 +38,7 @@ type S7PayloadReadVarResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7VarPayloadDataItem
@@ -53,6 +54,16 @@ type _S7PayloadReadVarResponse struct {
 
 var _ S7PayloadReadVarResponse = (*_S7PayloadReadVarResponse)(nil)
 var _ S7PayloadRequirements = (*_S7PayloadReadVarResponse)(nil)
+
+// NewS7PayloadReadVarResponse factory function for _S7PayloadReadVarResponse
+func NewS7PayloadReadVarResponse(items []S7VarPayloadDataItem, parameter S7Parameter) *_S7PayloadReadVarResponse {
+	_result := &_S7PayloadReadVarResponse{
+		S7PayloadContract: NewS7Payload(parameter),
+		Items:             items,
+	}
+	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_S7PayloadReadVarResponse) GetItems() []S7VarPayloadDataItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadReadVarResponse factory function for _S7PayloadReadVarResponse
-func NewS7PayloadReadVarResponse(items []S7VarPayloadDataItem, parameter S7Parameter) *_S7PayloadReadVarResponse {
-	_result := &_S7PayloadReadVarResponse{
-		S7PayloadContract: NewS7Payload(parameter),
-		Items:             items,
-	}
-	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadReadVarResponse(structType any) S7PayloadReadVarResponse {
@@ -190,6 +191,22 @@ func (m *_S7PayloadReadVarResponse) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_S7PayloadReadVarResponse) IsS7PayloadReadVarResponse() {}
+
+func (m *_S7PayloadReadVarResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadReadVarResponse) deepCopy() *_S7PayloadReadVarResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadReadVarResponseCopy := &_S7PayloadReadVarResponse{
+		m.S7PayloadContract.(*_S7Payload).deepCopy(),
+		utils.DeepCopySlice[S7VarPayloadDataItem, S7VarPayloadDataItem](m.Items),
+	}
+	m.S7PayloadContract.(*_S7Payload)._SubType = m
+	return _S7PayloadReadVarResponseCopy
+}
 
 func (m *_S7PayloadReadVarResponse) String() string {
 	if m == nil {

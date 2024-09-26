@@ -38,6 +38,7 @@ type ServerStatusDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStartTime returns StartTime (property field)
 	GetStartTime() int64
@@ -68,6 +69,27 @@ type _ServerStatusDataType struct {
 
 var _ ServerStatusDataType = (*_ServerStatusDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServerStatusDataType)(nil)
+
+// NewServerStatusDataType factory function for _ServerStatusDataType
+func NewServerStatusDataType(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) *_ServerStatusDataType {
+	if buildInfo == nil {
+		panic("buildInfo of type ExtensionObjectDefinition for ServerStatusDataType must not be nil")
+	}
+	if shutdownReason == nil {
+		panic("shutdownReason of type LocalizedText for ServerStatusDataType must not be nil")
+	}
+	_result := &_ServerStatusDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StartTime:                         startTime,
+		CurrentTime:                       currentTime,
+		State:                             state,
+		BuildInfo:                         buildInfo,
+		SecondsTillShutdown:               secondsTillShutdown,
+		ShutdownReason:                    shutdownReason,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,27 +142,6 @@ func (m *_ServerStatusDataType) GetShutdownReason() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServerStatusDataType factory function for _ServerStatusDataType
-func NewServerStatusDataType(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) *_ServerStatusDataType {
-	if buildInfo == nil {
-		panic("buildInfo of type ExtensionObjectDefinition for ServerStatusDataType must not be nil")
-	}
-	if shutdownReason == nil {
-		panic("shutdownReason of type LocalizedText for ServerStatusDataType must not be nil")
-	}
-	_result := &_ServerStatusDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StartTime:                         startTime,
-		CurrentTime:                       currentTime,
-		State:                             state,
-		BuildInfo:                         buildInfo,
-		SecondsTillShutdown:               secondsTillShutdown,
-		ShutdownReason:                    shutdownReason,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServerStatusDataType(structType any) ServerStatusDataType {
@@ -290,6 +291,27 @@ func (m *_ServerStatusDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ServerStatusDataType) IsServerStatusDataType() {}
+
+func (m *_ServerStatusDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServerStatusDataType) deepCopy() *_ServerStatusDataType {
+	if m == nil {
+		return nil
+	}
+	_ServerStatusDataTypeCopy := &_ServerStatusDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StartTime,
+		m.CurrentTime,
+		m.State,
+		m.BuildInfo.DeepCopy().(ExtensionObjectDefinition),
+		m.SecondsTillShutdown,
+		m.ShutdownReason.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServerStatusDataTypeCopy
+}
 
 func (m *_ServerStatusDataType) String() string {
 	if m == nil {

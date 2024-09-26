@@ -38,6 +38,7 @@ type NullAddressItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// IsNullAddressItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullAddressItem()
@@ -52,6 +53,15 @@ type _NullAddressItem struct {
 
 var _ NullAddressItem = (*_NullAddressItem)(nil)
 var _ TypeIdRequirements = (*_NullAddressItem)(nil)
+
+// NewNullAddressItem factory function for _NullAddressItem
+func NewNullAddressItem() *_NullAddressItem {
+	_result := &_NullAddressItem{
+		TypeIdContract: NewTypeId(),
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_NullAddressItem) GetId() uint16 {
 
 func (m *_NullAddressItem) GetParent() TypeIdContract {
 	return m.TypeIdContract
-}
-
-// NewNullAddressItem factory function for _NullAddressItem
-func NewNullAddressItem() *_NullAddressItem {
-	_result := &_NullAddressItem{
-		TypeIdContract: NewTypeId(),
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -163,6 +164,22 @@ func (m *_NullAddressItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_NullAddressItem) IsNullAddressItem() {}
+
+func (m *_NullAddressItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullAddressItem) deepCopy() *_NullAddressItem {
+	if m == nil {
+		return nil
+	}
+	_NullAddressItemCopy := &_NullAddressItem{
+		m.TypeIdContract.(*_TypeId).deepCopy(),
+		m.reservedField0,
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _NullAddressItemCopy
+}
 
 func (m *_NullAddressItem) String() string {
 	if m == nil {

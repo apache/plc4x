@@ -38,6 +38,7 @@ type AdsReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -56,6 +57,17 @@ type _AdsReadResponse struct {
 
 var _ AdsReadResponse = (*_AdsReadResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsReadResponse)(nil)
+
+// NewAdsReadResponse factory function for _AdsReadResponse
+func NewAdsReadResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, data []byte) *_AdsReadResponse {
+	_result := &_AdsReadResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:            result,
+		Data:              data,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,17 +108,6 @@ func (m *_AdsReadResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsReadResponse factory function for _AdsReadResponse
-func NewAdsReadResponse(result ReturnCode, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadResponse {
-	_result := &_AdsReadResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:            result,
-		Data:              data,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsReadResponse(structType any) AdsReadResponse {
@@ -219,6 +220,23 @@ func (m *_AdsReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_AdsReadResponse) IsAdsReadResponse() {}
+
+func (m *_AdsReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadResponse) deepCopy() *_AdsReadResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsReadResponseCopy := &_AdsReadResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Result,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadResponseCopy
+}
 
 func (m *_AdsReadResponse) String() string {
 	if m == nil {

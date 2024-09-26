@@ -36,6 +36,7 @@ type ApduDataAdcRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataAdcRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataAdcRead()
@@ -48,6 +49,15 @@ type _ApduDataAdcRead struct {
 
 var _ ApduDataAdcRead = (*_ApduDataAdcRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataAdcRead)(nil)
+
+// NewApduDataAdcRead factory function for _ApduDataAdcRead
+func NewApduDataAdcRead(dataLength uint8) *_ApduDataAdcRead {
+	_result := &_ApduDataAdcRead{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataAdcRead) GetApciType() uint8 {
 
 func (m *_ApduDataAdcRead) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataAdcRead factory function for _ApduDataAdcRead
-func NewApduDataAdcRead(dataLength uint8) *_ApduDataAdcRead {
-	_result := &_ApduDataAdcRead{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataAdcRead) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ApduDataAdcRead) IsApduDataAdcRead() {}
+
+func (m *_ApduDataAdcRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataAdcRead) deepCopy() *_ApduDataAdcRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataAdcReadCopy := &_ApduDataAdcRead{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataAdcReadCopy
+}
 
 func (m *_ApduDataAdcRead) String() string {
 	if m == nil {

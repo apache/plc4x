@@ -38,6 +38,7 @@ type BACnetHostNPort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHost returns Host (property field)
 	GetHost() BACnetHostAddressEnclosed
 	// GetPort returns Port (property field)
@@ -53,6 +54,17 @@ type _BACnetHostNPort struct {
 }
 
 var _ BACnetHostNPort = (*_BACnetHostNPort)(nil)
+
+// NewBACnetHostNPort factory function for _BACnetHostNPort
+func NewBACnetHostNPort(host BACnetHostAddressEnclosed, port BACnetContextTagUnsignedInteger) *_BACnetHostNPort {
+	if host == nil {
+		panic("host of type BACnetHostAddressEnclosed for BACnetHostNPort must not be nil")
+	}
+	if port == nil {
+		panic("port of type BACnetContextTagUnsignedInteger for BACnetHostNPort must not be nil")
+	}
+	return &_BACnetHostNPort{Host: host, Port: port}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetHostNPort) GetPort() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostNPort factory function for _BACnetHostNPort
-func NewBACnetHostNPort(host BACnetHostAddressEnclosed, port BACnetContextTagUnsignedInteger) *_BACnetHostNPort {
-	if host == nil {
-		panic("host of type BACnetHostAddressEnclosed for BACnetHostNPort must not be nil")
-	}
-	if port == nil {
-		panic("port of type BACnetContextTagUnsignedInteger for BACnetHostNPort must not be nil")
-	}
-	return &_BACnetHostNPort{Host: host, Port: port}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostNPort(structType any) BACnetHostNPort {
@@ -192,6 +193,21 @@ func (m *_BACnetHostNPort) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetHostNPort) IsBACnetHostNPort() {}
+
+func (m *_BACnetHostNPort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostNPort) deepCopy() *_BACnetHostNPort {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostNPortCopy := &_BACnetHostNPort{
+		m.Host.DeepCopy().(BACnetHostAddressEnclosed),
+		m.Port.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetHostNPortCopy
+}
 
 func (m *_BACnetHostNPort) String() string {
 	if m == nil {

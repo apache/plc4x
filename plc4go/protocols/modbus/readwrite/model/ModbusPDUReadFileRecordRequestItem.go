@@ -38,6 +38,7 @@ type ModbusPDUReadFileRecordRequestItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() uint8
 	// GetFileNumber returns FileNumber (property field)
@@ -59,6 +60,11 @@ type _ModbusPDUReadFileRecordRequestItem struct {
 }
 
 var _ ModbusPDUReadFileRecordRequestItem = (*_ModbusPDUReadFileRecordRequestItem)(nil)
+
+// NewModbusPDUReadFileRecordRequestItem factory function for _ModbusPDUReadFileRecordRequestItem
+func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) *_ModbusPDUReadFileRecordRequestItem {
+	return &_ModbusPDUReadFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordLength: recordLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +91,6 @@ func (m *_ModbusPDUReadFileRecordRequestItem) GetRecordLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadFileRecordRequestItem factory function for _ModbusPDUReadFileRecordRequestItem
-func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) *_ModbusPDUReadFileRecordRequestItem {
-	return &_ModbusPDUReadFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordLength: recordLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadFileRecordRequestItem(structType any) ModbusPDUReadFileRecordRequestItem {
@@ -226,6 +227,23 @@ func (m *_ModbusPDUReadFileRecordRequestItem) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ModbusPDUReadFileRecordRequestItem) IsModbusPDUReadFileRecordRequestItem() {}
+
+func (m *_ModbusPDUReadFileRecordRequestItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItem) deepCopy() *_ModbusPDUReadFileRecordRequestItem {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFileRecordRequestItemCopy := &_ModbusPDUReadFileRecordRequestItem{
+		m.ReferenceType,
+		m.FileNumber,
+		m.RecordNumber,
+		m.RecordLength,
+	}
+	return _ModbusPDUReadFileRecordRequestItemCopy
+}
 
 func (m *_ModbusPDUReadFileRecordRequestItem) String() string {
 	if m == nil {

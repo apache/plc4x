@@ -38,6 +38,7 @@ type BACnetConstructedDataMACAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMacAddress returns MacAddress (property field)
 	GetMacAddress() BACnetApplicationTagOctetString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataMACAddress struct {
 
 var _ BACnetConstructedDataMACAddress = (*_BACnetConstructedDataMACAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMACAddress)(nil)
+
+// NewBACnetConstructedDataMACAddress factory function for _BACnetConstructedDataMACAddress
+func NewBACnetConstructedDataMACAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, macAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMACAddress {
+	if macAddress == nil {
+		panic("macAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataMACAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataMACAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MacAddress:                    macAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataMACAddress) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMACAddress factory function for _BACnetConstructedDataMACAddress
-func NewBACnetConstructedDataMACAddress(macAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMACAddress {
-	if macAddress == nil {
-		panic("macAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataMACAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataMACAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MacAddress:                    macAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMACAddress(structType any) BACnetConstructedDataMACAddress {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMACAddress) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataMACAddress) IsBACnetConstructedDataMACAddress() {}
+
+func (m *_BACnetConstructedDataMACAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMACAddress) deepCopy() *_BACnetConstructedDataMACAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMACAddressCopy := &_BACnetConstructedDataMACAddress{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MacAddress.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMACAddressCopy
+}
 
 func (m *_BACnetConstructedDataMACAddress) String() string {
 	if m == nil {

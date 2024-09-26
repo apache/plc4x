@@ -36,6 +36,7 @@ type TimeString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTimeString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTimeString()
 }
@@ -134,6 +135,18 @@ func (m *_TimeString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_TimeString) IsTimeString() {}
+
+func (m *_TimeString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TimeString) deepCopy() *_TimeString {
+	if m == nil {
+		return nil
+	}
+	_TimeStringCopy := &_TimeString{}
+	return _TimeStringCopy
+}
 
 func (m *_TimeString) String() string {
 	if m == nil {

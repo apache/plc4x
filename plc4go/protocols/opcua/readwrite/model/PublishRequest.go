@@ -38,6 +38,7 @@ type PublishRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _PublishRequest struct {
 
 var _ PublishRequest = (*_PublishRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishRequest)(nil)
+
+// NewPublishRequest factory function for _PublishRequest
+func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) *_PublishRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for PublishRequest must not be nil")
+	}
+	_result := &_PublishRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfSubscriptionAcknowledgements:  noOfSubscriptionAcknowledgements,
+		SubscriptionAcknowledgements:      subscriptionAcknowledgements,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_PublishRequest) GetSubscriptionAcknowledgements() []ExtensionObjectDef
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPublishRequest factory function for _PublishRequest
-func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) *_PublishRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for PublishRequest must not be nil")
-	}
-	_result := &_PublishRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfSubscriptionAcknowledgements:  noOfSubscriptionAcknowledgements,
-		SubscriptionAcknowledgements:      subscriptionAcknowledgements,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPublishRequest(structType any) PublishRequest {
@@ -231,6 +232,24 @@ func (m *_PublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_PublishRequest) IsPublishRequest() {}
+
+func (m *_PublishRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishRequest) deepCopy() *_PublishRequest {
+	if m == nil {
+		return nil
+	}
+	_PublishRequestCopy := &_PublishRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfSubscriptionAcknowledgements,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.SubscriptionAcknowledgements),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishRequestCopy
+}
 
 func (m *_PublishRequest) String() string {
 	if m == nil {

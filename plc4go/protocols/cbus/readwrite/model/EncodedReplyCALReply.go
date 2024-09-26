@@ -38,6 +38,7 @@ type EncodedReplyCALReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EncodedReply
 	// GetCalReply returns CalReply (property field)
 	GetCalReply() CALReply
@@ -53,6 +54,19 @@ type _EncodedReplyCALReply struct {
 
 var _ EncodedReplyCALReply = (*_EncodedReplyCALReply)(nil)
 var _ EncodedReplyRequirements = (*_EncodedReplyCALReply)(nil)
+
+// NewEncodedReplyCALReply factory function for _EncodedReplyCALReply
+func NewEncodedReplyCALReply(peekedByte byte, calReply CALReply, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReplyCALReply {
+	if calReply == nil {
+		panic("calReply of type CALReply for EncodedReplyCALReply must not be nil")
+	}
+	_result := &_EncodedReplyCALReply{
+		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+		CalReply:             calReply,
+	}
+	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_EncodedReplyCALReply) GetCalReply() CALReply {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEncodedReplyCALReply factory function for _EncodedReplyCALReply
-func NewEncodedReplyCALReply(calReply CALReply, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReplyCALReply {
-	if calReply == nil {
-		panic("calReply of type CALReply for EncodedReplyCALReply must not be nil")
-	}
-	_result := &_EncodedReplyCALReply{
-		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
-		CalReply:             calReply,
-	}
-	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEncodedReplyCALReply(structType any) EncodedReplyCALReply {
@@ -178,6 +179,22 @@ func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_EncodedReplyCALReply) IsEncodedReplyCALReply() {}
+
+func (m *_EncodedReplyCALReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EncodedReplyCALReply) deepCopy() *_EncodedReplyCALReply {
+	if m == nil {
+		return nil
+	}
+	_EncodedReplyCALReplyCopy := &_EncodedReplyCALReply{
+		m.EncodedReplyContract.(*_EncodedReply).deepCopy(),
+		m.CalReply.DeepCopy().(CALReply),
+	}
+	m.EncodedReplyContract.(*_EncodedReply)._SubType = m
+	return _EncodedReplyCALReplyCopy
+}
 
 func (m *_EncodedReplyCALReply) String() string {
 	if m == nil {

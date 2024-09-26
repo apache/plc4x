@@ -38,6 +38,7 @@ type ExpandedNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceURISpecified returns NamespaceURISpecified (property field)
 	GetNamespaceURISpecified() bool
 	// GetServerIndexSpecified returns ServerIndexSpecified (property field)
@@ -64,6 +65,14 @@ type _ExpandedNodeId struct {
 }
 
 var _ ExpandedNodeId = (*_ExpandedNodeId)(nil)
+
+// NewExpandedNodeId factory function for _ExpandedNodeId
+func NewExpandedNodeId(namespaceURISpecified bool, serverIndexSpecified bool, nodeId NodeIdTypeDefinition, namespaceURI PascalString, serverIndex *uint32) *_ExpandedNodeId {
+	if nodeId == nil {
+		panic("nodeId of type NodeIdTypeDefinition for ExpandedNodeId must not be nil")
+	}
+	return &_ExpandedNodeId{NamespaceURISpecified: namespaceURISpecified, ServerIndexSpecified: serverIndexSpecified, NodeId: nodeId, NamespaceURI: namespaceURI, ServerIndex: serverIndex}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,14 +122,6 @@ func (m *_ExpandedNodeId) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExpandedNodeId factory function for _ExpandedNodeId
-func NewExpandedNodeId(namespaceURISpecified bool, serverIndexSpecified bool, nodeId NodeIdTypeDefinition, namespaceURI PascalString, serverIndex *uint32) *_ExpandedNodeId {
-	if nodeId == nil {
-		panic("nodeId of type NodeIdTypeDefinition for ExpandedNodeId must not be nil")
-	}
-	return &_ExpandedNodeId{NamespaceURISpecified: namespaceURISpecified, ServerIndexSpecified: serverIndexSpecified, NodeId: nodeId, NamespaceURI: namespaceURI, ServerIndex: serverIndex}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExpandedNodeId(structType any) ExpandedNodeId {
@@ -293,6 +294,24 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ExpandedNodeId) IsExpandedNodeId() {}
+
+func (m *_ExpandedNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExpandedNodeId) deepCopy() *_ExpandedNodeId {
+	if m == nil {
+		return nil
+	}
+	_ExpandedNodeIdCopy := &_ExpandedNodeId{
+		m.NamespaceURISpecified,
+		m.ServerIndexSpecified,
+		m.NodeId.DeepCopy().(NodeIdTypeDefinition),
+		m.NamespaceURI.DeepCopy().(PascalString),
+		utils.CopyPtr[uint32](m.ServerIndex),
+	}
+	return _ExpandedNodeIdCopy
+}
 
 func (m *_ExpandedNodeId) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type BVLCDeleteForeignDeviceTableEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
@@ -58,6 +59,17 @@ type _BVLCDeleteForeignDeviceTableEntry struct {
 
 var _ BVLCDeleteForeignDeviceTableEntry = (*_BVLCDeleteForeignDeviceTableEntry)(nil)
 var _ BVLCRequirements = (*_BVLCDeleteForeignDeviceTableEntry)(nil)
+
+// NewBVLCDeleteForeignDeviceTableEntry factory function for _BVLCDeleteForeignDeviceTableEntry
+func NewBVLCDeleteForeignDeviceTableEntry(ip []uint8, port uint16) *_BVLCDeleteForeignDeviceTableEntry {
+	_result := &_BVLCDeleteForeignDeviceTableEntry{
+		BVLCContract: NewBVLC(),
+		Ip:           ip,
+		Port:         port,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +106,6 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCDeleteForeignDeviceTableEntry factory function for _BVLCDeleteForeignDeviceTableEntry
-func NewBVLCDeleteForeignDeviceTableEntry(ip []uint8, port uint16) *_BVLCDeleteForeignDeviceTableEntry {
-	_result := &_BVLCDeleteForeignDeviceTableEntry{
-		BVLCContract: NewBVLC(),
-		Ip:           ip,
-		Port:         port,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCDeleteForeignDeviceTableEntry(structType any) BVLCDeleteForeignDeviceTableEntry {
@@ -204,6 +205,23 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) IsBVLCDeleteForeignDeviceTableEntry() {}
+
+func (m *_BVLCDeleteForeignDeviceTableEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCDeleteForeignDeviceTableEntry) deepCopy() *_BVLCDeleteForeignDeviceTableEntry {
+	if m == nil {
+		return nil
+	}
+	_BVLCDeleteForeignDeviceTableEntryCopy := &_BVLCDeleteForeignDeviceTableEntry{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		utils.DeepCopySlice[uint8, uint8](m.Ip),
+		m.Port,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCDeleteForeignDeviceTableEntryCopy
+}
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CBusMessageToClient interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusMessage
 	// GetReply returns Reply (property field)
 	GetReply() ReplyOrConfirmation
@@ -53,6 +54,19 @@ type _CBusMessageToClient struct {
 
 var _ CBusMessageToClient = (*_CBusMessageToClient)(nil)
 var _ CBusMessageRequirements = (*_CBusMessageToClient)(nil)
+
+// NewCBusMessageToClient factory function for _CBusMessageToClient
+func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToClient {
+	if reply == nil {
+		panic("reply of type ReplyOrConfirmation for CBusMessageToClient must not be nil")
+	}
+	_result := &_CBusMessageToClient{
+		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
+		Reply:               reply,
+	}
+	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_CBusMessageToClient) GetReply() ReplyOrConfirmation {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusMessageToClient factory function for _CBusMessageToClient
-func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToClient {
-	if reply == nil {
-		panic("reply of type ReplyOrConfirmation for CBusMessageToClient must not be nil")
-	}
-	_result := &_CBusMessageToClient{
-		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
-		Reply:               reply,
-	}
-	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusMessageToClient(structType any) CBusMessageToClient {
@@ -182,6 +183,22 @@ func (m *_CBusMessageToClient) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_CBusMessageToClient) IsCBusMessageToClient() {}
+
+func (m *_CBusMessageToClient) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusMessageToClient) deepCopy() *_CBusMessageToClient {
+	if m == nil {
+		return nil
+	}
+	_CBusMessageToClientCopy := &_CBusMessageToClient{
+		m.CBusMessageContract.(*_CBusMessage).deepCopy(),
+		m.Reply.DeepCopy().(ReplyOrConfirmation),
+	}
+	m.CBusMessageContract.(*_CBusMessage)._SubType = m
+	return _CBusMessageToClientCopy
+}
 
 func (m *_CBusMessageToClient) String() string {
 	if m == nil {

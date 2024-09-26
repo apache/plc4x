@@ -49,10 +49,32 @@ func NewKWArgs(kw ...any) KWArgs {
 // NKW is a shortcut for NewKWArgs
 var NKW = NewKWArgs
 
-func (k KWArgs) Format(f fmt.State, verb rune) {
+func (k KWArgs) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 'r':
-		_, _ = fmt.Fprint(f, k.String())
+		_, _ = fmt.Fprint(s, "{")
+		currentE := 0
+		nElements := len(k)
+		for kk, element := range k {
+			currentE++
+			_, _ = fmt.Fprintf(s, "'%s': ", kk)
+			switch element := element.(type) {
+			case interface{ StructHeader() []byte }:
+				_, _ = s.Write(element.StructHeader())
+			case fmt.Formatter:
+				element.Format(s, verb)
+			case fmt.Stringer:
+				_, _ = fmt.Fprint(s, element.String())
+			default:
+				_, _ = fmt.Fprintf(s, "%v", element)
+			}
+			if currentE < nElements {
+				_, _ = fmt.Fprint(s, ", ")
+			}
+		}
+		_, _ = fmt.Fprint(s, "}")
+	case 's', 'v':
+		_, _ = fmt.Fprint(s, k.String())
 	}
 }
 

@@ -40,6 +40,7 @@ type CIPEncapsulationReadRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CIPEncapsulationPacket
 	// GetRequest returns Request (property field)
 	GetRequest() DF1RequestMessage
@@ -55,6 +56,19 @@ type _CIPEncapsulationReadRequest struct {
 
 var _ CIPEncapsulationReadRequest = (*_CIPEncapsulationReadRequest)(nil)
 var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationReadRequest)(nil)
+
+// NewCIPEncapsulationReadRequest factory function for _CIPEncapsulationReadRequest
+func NewCIPEncapsulationReadRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, request DF1RequestMessage) *_CIPEncapsulationReadRequest {
+	if request == nil {
+		panic("request of type DF1RequestMessage for CIPEncapsulationReadRequest must not be nil")
+	}
+	_result := &_CIPEncapsulationReadRequest{
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+		Request:                        request,
+	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +101,6 @@ func (m *_CIPEncapsulationReadRequest) GetRequest() DF1RequestMessage {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPEncapsulationReadRequest factory function for _CIPEncapsulationReadRequest
-func NewCIPEncapsulationReadRequest(request DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationReadRequest {
-	if request == nil {
-		panic("request of type DF1RequestMessage for CIPEncapsulationReadRequest must not be nil")
-	}
-	_result := &_CIPEncapsulationReadRequest{
-		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
-		Request:                        request,
-	}
-	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPEncapsulationReadRequest(structType any) CIPEncapsulationReadRequest {
@@ -184,6 +185,22 @@ func (m *_CIPEncapsulationReadRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_CIPEncapsulationReadRequest) IsCIPEncapsulationReadRequest() {}
+
+func (m *_CIPEncapsulationReadRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationReadRequest) deepCopy() *_CIPEncapsulationReadRequest {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationReadRequestCopy := &_CIPEncapsulationReadRequest{
+		m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).deepCopy(),
+		m.Request.DeepCopy().(DF1RequestMessage),
+	}
+	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	return _CIPEncapsulationReadRequestCopy
+}
 
 func (m *_CIPEncapsulationReadRequest) String() string {
 	if m == nil {

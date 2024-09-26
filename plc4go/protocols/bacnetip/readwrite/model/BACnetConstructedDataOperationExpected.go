@@ -38,6 +38,7 @@ type BACnetConstructedDataOperationExpected interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLifeSafetyOperations returns LifeSafetyOperations (property field)
 	GetLifeSafetyOperations() BACnetLifeSafetyOperationTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataOperationExpected struct {
 
 var _ BACnetConstructedDataOperationExpected = (*_BACnetConstructedDataOperationExpected)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOperationExpected)(nil)
+
+// NewBACnetConstructedDataOperationExpected factory function for _BACnetConstructedDataOperationExpected
+func NewBACnetConstructedDataOperationExpected(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lifeSafetyOperations BACnetLifeSafetyOperationTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationExpected {
+	if lifeSafetyOperations == nil {
+		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetConstructedDataOperationExpected must not be nil")
+	}
+	_result := &_BACnetConstructedDataOperationExpected{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LifeSafetyOperations:          lifeSafetyOperations,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataOperationExpected) GetActualValue() BACnetLifeSaf
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOperationExpected factory function for _BACnetConstructedDataOperationExpected
-func NewBACnetConstructedDataOperationExpected(lifeSafetyOperations BACnetLifeSafetyOperationTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationExpected {
-	if lifeSafetyOperations == nil {
-		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetConstructedDataOperationExpected must not be nil")
-	}
-	_result := &_BACnetConstructedDataOperationExpected{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LifeSafetyOperations:          lifeSafetyOperations,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOperationExpected(structType any) BACnetConstructedDataOperationExpected {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOperationExpected) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataOperationExpected) IsBACnetConstructedDataOperationExpected() {}
+
+func (m *_BACnetConstructedDataOperationExpected) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOperationExpected) deepCopy() *_BACnetConstructedDataOperationExpected {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOperationExpectedCopy := &_BACnetConstructedDataOperationExpected{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LifeSafetyOperations.DeepCopy().(BACnetLifeSafetyOperationTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOperationExpectedCopy
+}
 
 func (m *_BACnetConstructedDataOperationExpected) String() string {
 	if m == nil {

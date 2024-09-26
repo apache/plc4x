@@ -38,6 +38,7 @@ type BACnetServiceAckCreateObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
@@ -53,6 +54,19 @@ type _BACnetServiceAckCreateObject struct {
 
 var _ BACnetServiceAckCreateObject = (*_BACnetServiceAckCreateObject)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckCreateObject)(nil)
+
+// NewBACnetServiceAckCreateObject factory function for _BACnetServiceAckCreateObject
+func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint32) *_BACnetServiceAckCreateObject {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckCreateObject must not be nil")
+	}
+	_result := &_BACnetServiceAckCreateObject{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ObjectIdentifier:         objectIdentifier,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_BACnetServiceAckCreateObject) GetObjectIdentifier() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckCreateObject factory function for _BACnetServiceAckCreateObject
-func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceAckLength uint32) *_BACnetServiceAckCreateObject {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckCreateObject must not be nil")
-	}
-	_result := &_BACnetServiceAckCreateObject{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		ObjectIdentifier:         objectIdentifier,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckCreateObject(structType any) BACnetServiceAckCreateObject {
@@ -182,6 +183,22 @@ func (m *_BACnetServiceAckCreateObject) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetServiceAckCreateObject) IsBACnetServiceAckCreateObject() {}
+
+func (m *_BACnetServiceAckCreateObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckCreateObject) deepCopy() *_BACnetServiceAckCreateObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckCreateObjectCopy := &_BACnetServiceAckCreateObject{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckCreateObjectCopy
+}
 
 func (m *_BACnetServiceAckCreateObject) String() string {
 	if m == nil {

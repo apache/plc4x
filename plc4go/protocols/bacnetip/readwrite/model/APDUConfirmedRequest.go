@@ -38,6 +38,7 @@ type APDUConfirmedRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
@@ -89,6 +90,26 @@ type _APDUConfirmedRequest struct {
 
 var _ APDUConfirmedRequest = (*_APDUConfirmedRequest)(nil)
 var _ APDURequirements = (*_APDUConfirmedRequest)(nil)
+
+// NewAPDUConfirmedRequest factory function for _APDUConfirmedRequest
+func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted MaxSegmentsAccepted, maxApduLengthAccepted MaxApduLengthAccepted, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest BACnetConfirmedServiceRequest, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte, apduLength uint16) *_APDUConfirmedRequest {
+	_result := &_APDUConfirmedRequest{
+		APDUContract:              NewAPDU(apduLength),
+		SegmentedMessage:          segmentedMessage,
+		MoreFollows:               moreFollows,
+		SegmentedResponseAccepted: segmentedResponseAccepted,
+		MaxSegmentsAccepted:       maxSegmentsAccepted,
+		MaxApduLengthAccepted:     maxApduLengthAccepted,
+		InvokeId:                  invokeId,
+		SequenceNumber:            sequenceNumber,
+		ProposedWindowSize:        proposedWindowSize,
+		ServiceRequest:            serviceRequest,
+		SegmentServiceChoice:      segmentServiceChoice,
+		Segment:                   segment,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -198,26 +219,6 @@ func (m *_APDUConfirmedRequest) GetSegmentReduction() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUConfirmedRequest factory function for _APDUConfirmedRequest
-func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted MaxSegmentsAccepted, maxApduLengthAccepted MaxApduLengthAccepted, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest BACnetConfirmedServiceRequest, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte, apduLength uint16) *_APDUConfirmedRequest {
-	_result := &_APDUConfirmedRequest{
-		APDUContract:              NewAPDU(apduLength),
-		SegmentedMessage:          segmentedMessage,
-		MoreFollows:               moreFollows,
-		SegmentedResponseAccepted: segmentedResponseAccepted,
-		MaxSegmentsAccepted:       maxSegmentsAccepted,
-		MaxApduLengthAccepted:     maxApduLengthAccepted,
-		InvokeId:                  invokeId,
-		SequenceNumber:            sequenceNumber,
-		ProposedWindowSize:        proposedWindowSize,
-		ServiceRequest:            serviceRequest,
-		SegmentServiceChoice:      segmentServiceChoice,
-		Segment:                   segment,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUConfirmedRequest(structType any) APDUConfirmedRequest {
@@ -497,6 +498,33 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_APDUConfirmedRequest) IsAPDUConfirmedRequest() {}
+
+func (m *_APDUConfirmedRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUConfirmedRequest) deepCopy() *_APDUConfirmedRequest {
+	if m == nil {
+		return nil
+	}
+	_APDUConfirmedRequestCopy := &_APDUConfirmedRequest{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.SegmentedMessage,
+		m.MoreFollows,
+		m.SegmentedResponseAccepted,
+		m.MaxSegmentsAccepted,
+		m.MaxApduLengthAccepted,
+		m.InvokeId,
+		utils.CopyPtr[uint8](m.SequenceNumber),
+		utils.CopyPtr[uint8](m.ProposedWindowSize),
+		m.ServiceRequest.DeepCopy().(BACnetConfirmedServiceRequest),
+		utils.CopyPtr[BACnetConfirmedServiceChoice](m.SegmentServiceChoice),
+		utils.DeepCopySlice[byte, byte](m.Segment),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUConfirmedRequestCopy
+}
 
 func (m *_APDUConfirmedRequest) String() string {
 	if m == nil {

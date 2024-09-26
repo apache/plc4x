@@ -38,6 +38,7 @@ type EndpointConfiguration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetOperationTimeout returns OperationTimeout (property field)
 	GetOperationTimeout() int32
@@ -79,6 +80,24 @@ type _EndpointConfiguration struct {
 
 var _ EndpointConfiguration = (*_EndpointConfiguration)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointConfiguration)(nil)
+
+// NewEndpointConfiguration factory function for _EndpointConfiguration
+func NewEndpointConfiguration(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) *_EndpointConfiguration {
+	_result := &_EndpointConfiguration{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		OperationTimeout:                  operationTimeout,
+		UseBinaryEncoding:                 useBinaryEncoding,
+		MaxStringLength:                   maxStringLength,
+		MaxByteStringLength:               maxByteStringLength,
+		MaxArrayLength:                    maxArrayLength,
+		MaxMessageSize:                    maxMessageSize,
+		MaxBufferSize:                     maxBufferSize,
+		ChannelLifetime:                   channelLifetime,
+		SecurityTokenLifetime:             securityTokenLifetime,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -143,24 +162,6 @@ func (m *_EndpointConfiguration) GetSecurityTokenLifetime() int32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEndpointConfiguration factory function for _EndpointConfiguration
-func NewEndpointConfiguration(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) *_EndpointConfiguration {
-	_result := &_EndpointConfiguration{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		OperationTimeout:                  operationTimeout,
-		UseBinaryEncoding:                 useBinaryEncoding,
-		MaxStringLength:                   maxStringLength,
-		MaxByteStringLength:               maxByteStringLength,
-		MaxArrayLength:                    maxArrayLength,
-		MaxMessageSize:                    maxMessageSize,
-		MaxBufferSize:                     maxBufferSize,
-		ChannelLifetime:                   channelLifetime,
-		SecurityTokenLifetime:             securityTokenLifetime,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEndpointConfiguration(structType any) EndpointConfiguration {
@@ -362,6 +363,31 @@ func (m *_EndpointConfiguration) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_EndpointConfiguration) IsEndpointConfiguration() {}
+
+func (m *_EndpointConfiguration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EndpointConfiguration) deepCopy() *_EndpointConfiguration {
+	if m == nil {
+		return nil
+	}
+	_EndpointConfigurationCopy := &_EndpointConfiguration{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.OperationTimeout,
+		m.UseBinaryEncoding,
+		m.MaxStringLength,
+		m.MaxByteStringLength,
+		m.MaxArrayLength,
+		m.MaxMessageSize,
+		m.MaxBufferSize,
+		m.ChannelLifetime,
+		m.SecurityTokenLifetime,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EndpointConfigurationCopy
+}
 
 func (m *_EndpointConfiguration) String() string {
 	if m == nil {

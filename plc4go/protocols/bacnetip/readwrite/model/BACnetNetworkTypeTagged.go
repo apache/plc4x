@@ -38,6 +38,7 @@ type BACnetNetworkTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetNetworkTypeTagged struct {
 }
 
 var _ BACnetNetworkTypeTagged = (*_BACnetNetworkTypeTagged)(nil)
+
+// NewBACnetNetworkTypeTagged factory function for _BACnetNetworkTypeTagged
+func NewBACnetNetworkTypeTagged(header BACnetTagHeader, value BACnetNetworkType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetNetworkTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNetworkTypeTagged must not be nil")
+	}
+	return &_BACnetNetworkTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetNetworkTypeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNetworkTypeTagged factory function for _BACnetNetworkTypeTagged
-func NewBACnetNetworkTypeTagged(header BACnetTagHeader, value BACnetNetworkType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetNetworkTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetNetworkTypeTagged must not be nil")
-	}
-	return &_BACnetNetworkTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNetworkTypeTagged(structType any) BACnetNetworkTypeTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetNetworkTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetNetworkTypeTagged) IsBACnetNetworkTypeTagged() {}
+
+func (m *_BACnetNetworkTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNetworkTypeTagged) deepCopy() *_BACnetNetworkTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetNetworkTypeTaggedCopy := &_BACnetNetworkTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetNetworkTypeTaggedCopy
+}
 
 func (m *_BACnetNetworkTypeTagged) String() string {
 	if m == nil {

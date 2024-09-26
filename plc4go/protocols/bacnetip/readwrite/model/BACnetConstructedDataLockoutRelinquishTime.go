@@ -38,6 +38,7 @@ type BACnetConstructedDataLockoutRelinquishTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLockoutRelinquishTime returns LockoutRelinquishTime (property field)
 	GetLockoutRelinquishTime() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLockoutRelinquishTime struct {
 
 var _ BACnetConstructedDataLockoutRelinquishTime = (*_BACnetConstructedDataLockoutRelinquishTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLockoutRelinquishTime)(nil)
+
+// NewBACnetConstructedDataLockoutRelinquishTime factory function for _BACnetConstructedDataLockoutRelinquishTime
+func NewBACnetConstructedDataLockoutRelinquishTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockoutRelinquishTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockoutRelinquishTime {
+	if lockoutRelinquishTime == nil {
+		panic("lockoutRelinquishTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLockoutRelinquishTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataLockoutRelinquishTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LockoutRelinquishTime:         lockoutRelinquishTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLockoutRelinquishTime factory function for _BACnetConstructedDataLockoutRelinquishTime
-func NewBACnetConstructedDataLockoutRelinquishTime(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockoutRelinquishTime {
-	if lockoutRelinquishTime == nil {
-		panic("lockoutRelinquishTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLockoutRelinquishTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataLockoutRelinquishTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LockoutRelinquishTime:         lockoutRelinquishTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLockoutRelinquishTime(structType any) BACnetConstructedDataLockoutRelinquishTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataLockoutRelinquishTime) IsBACnetConstructedDataLockoutRelinquishTime() {
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTime) deepCopy() *_BACnetConstructedDataLockoutRelinquishTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLockoutRelinquishTimeCopy := &_BACnetConstructedDataLockoutRelinquishTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LockoutRelinquishTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLockoutRelinquishTimeCopy
 }
 
 func (m *_BACnetConstructedDataLockoutRelinquishTime) String() string {

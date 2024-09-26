@@ -38,6 +38,7 @@ type SALDataVentilation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetVentilationData returns VentilationData (property field)
 	GetVentilationData() LightingData
@@ -53,6 +54,19 @@ type _SALDataVentilation struct {
 
 var _ SALDataVentilation = (*_SALDataVentilation)(nil)
 var _ SALDataRequirements = (*_SALDataVentilation)(nil)
+
+// NewSALDataVentilation factory function for _SALDataVentilation
+func NewSALDataVentilation(salData SALData, ventilationData LightingData) *_SALDataVentilation {
+	if ventilationData == nil {
+		panic("ventilationData of type LightingData for SALDataVentilation must not be nil")
+	}
+	_result := &_SALDataVentilation{
+		SALDataContract: NewSALData(salData),
+		VentilationData: ventilationData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataVentilation) GetVentilationData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataVentilation factory function for _SALDataVentilation
-func NewSALDataVentilation(ventilationData LightingData, salData SALData) *_SALDataVentilation {
-	if ventilationData == nil {
-		panic("ventilationData of type LightingData for SALDataVentilation must not be nil")
-	}
-	_result := &_SALDataVentilation{
-		SALDataContract: NewSALData(salData),
-		VentilationData: ventilationData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataVentilation(structType any) SALDataVentilation {
@@ -182,6 +183,22 @@ func (m *_SALDataVentilation) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_SALDataVentilation) IsSALDataVentilation() {}
+
+func (m *_SALDataVentilation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataVentilation) deepCopy() *_SALDataVentilation {
+	if m == nil {
+		return nil
+	}
+	_SALDataVentilationCopy := &_SALDataVentilation{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.VentilationData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataVentilationCopy
+}
 
 func (m *_SALDataVentilation) String() string {
 	if m == nil {

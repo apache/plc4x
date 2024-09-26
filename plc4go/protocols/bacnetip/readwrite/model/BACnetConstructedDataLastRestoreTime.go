@@ -38,6 +38,7 @@ type BACnetConstructedDataLastRestoreTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastRestoreTime returns LastRestoreTime (property field)
 	GetLastRestoreTime() BACnetTimeStamp
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLastRestoreTime struct {
 
 var _ BACnetConstructedDataLastRestoreTime = (*_BACnetConstructedDataLastRestoreTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastRestoreTime)(nil)
+
+// NewBACnetConstructedDataLastRestoreTime factory function for _BACnetConstructedDataLastRestoreTime
+func NewBACnetConstructedDataLastRestoreTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastRestoreTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestoreTime {
+	if lastRestoreTime == nil {
+		panic("lastRestoreTime of type BACnetTimeStamp for BACnetConstructedDataLastRestoreTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastRestoreTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastRestoreTime:               lastRestoreTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLastRestoreTime) GetActualValue() BACnetTimeStamp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastRestoreTime factory function for _BACnetConstructedDataLastRestoreTime
-func NewBACnetConstructedDataLastRestoreTime(lastRestoreTime BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestoreTime {
-	if lastRestoreTime == nil {
-		panic("lastRestoreTime of type BACnetTimeStamp for BACnetConstructedDataLastRestoreTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastRestoreTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastRestoreTime:               lastRestoreTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastRestoreTime(structType any) BACnetConstructedDataLastRestoreTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastRestoreTime) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataLastRestoreTime) IsBACnetConstructedDataLastRestoreTime() {}
+
+func (m *_BACnetConstructedDataLastRestoreTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastRestoreTime) deepCopy() *_BACnetConstructedDataLastRestoreTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastRestoreTimeCopy := &_BACnetConstructedDataLastRestoreTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LastRestoreTime.DeepCopy().(BACnetTimeStamp),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastRestoreTimeCopy
+}
 
 func (m *_BACnetConstructedDataLastRestoreTime) String() string {
 	if m == nil {

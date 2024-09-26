@@ -38,6 +38,7 @@ type ByteStringNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
@@ -53,6 +54,14 @@ type _ByteStringNodeId struct {
 }
 
 var _ ByteStringNodeId = (*_ByteStringNodeId)(nil)
+
+// NewByteStringNodeId factory function for _ByteStringNodeId
+func NewByteStringNodeId(namespaceIndex uint16, identifier PascalByteString) *_ByteStringNodeId {
+	if identifier == nil {
+		panic("identifier of type PascalByteString for ByteStringNodeId must not be nil")
+	}
+	return &_ByteStringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_ByteStringNodeId) GetIdentifier() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewByteStringNodeId factory function for _ByteStringNodeId
-func NewByteStringNodeId(namespaceIndex uint16, identifier PascalByteString) *_ByteStringNodeId {
-	if identifier == nil {
-		panic("identifier of type PascalByteString for ByteStringNodeId must not be nil")
-	}
-	return &_ByteStringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastByteStringNodeId(structType any) ByteStringNodeId {
@@ -189,6 +190,21 @@ func (m *_ByteStringNodeId) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_ByteStringNodeId) IsByteStringNodeId() {}
+
+func (m *_ByteStringNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ByteStringNodeId) deepCopy() *_ByteStringNodeId {
+	if m == nil {
+		return nil
+	}
+	_ByteStringNodeIdCopy := &_ByteStringNodeId{
+		m.NamespaceIndex,
+		m.Identifier.DeepCopy().(PascalByteString),
+	}
+	return _ByteStringNodeIdCopy
+}
 
 func (m *_ByteStringNodeId) String() string {
 	if m == nil {

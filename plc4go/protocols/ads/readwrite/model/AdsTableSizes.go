@@ -40,6 +40,7 @@ type AdsTableSizes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSymbolCount returns SymbolCount (property field)
 	GetSymbolCount() uint32
 	// GetSymbolLength returns SymbolLength (property field)
@@ -67,6 +68,11 @@ type _AdsTableSizes struct {
 }
 
 var _ AdsTableSizes = (*_AdsTableSizes)(nil)
+
+// NewAdsTableSizes factory function for _AdsTableSizes
+func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) *_AdsTableSizes {
+	return &_AdsTableSizes{SymbolCount: symbolCount, SymbolLength: symbolLength, DataTypeCount: dataTypeCount, DataTypeLength: dataTypeLength, ExtraCount: extraCount, ExtraLength: extraLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,11 +107,6 @@ func (m *_AdsTableSizes) GetExtraLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsTableSizes factory function for _AdsTableSizes
-func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) *_AdsTableSizes {
-	return &_AdsTableSizes{SymbolCount: symbolCount, SymbolLength: symbolLength, DataTypeCount: dataTypeCount, DataTypeLength: dataTypeLength, ExtraCount: extraCount, ExtraLength: extraLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsTableSizes(structType any) AdsTableSizes {
@@ -268,6 +269,25 @@ func (m *_AdsTableSizes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_AdsTableSizes) IsAdsTableSizes() {}
+
+func (m *_AdsTableSizes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsTableSizes) deepCopy() *_AdsTableSizes {
+	if m == nil {
+		return nil
+	}
+	_AdsTableSizesCopy := &_AdsTableSizes{
+		m.SymbolCount,
+		m.SymbolLength,
+		m.DataTypeCount,
+		m.DataTypeLength,
+		m.ExtraCount,
+		m.ExtraLength,
+	}
+	return _AdsTableSizesCopy
+}
 
 func (m *_AdsTableSizes) String() string {
 	if m == nil {

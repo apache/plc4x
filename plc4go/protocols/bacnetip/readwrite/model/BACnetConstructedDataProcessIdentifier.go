@@ -38,6 +38,7 @@ type BACnetConstructedDataProcessIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProcessIdentifier struct {
 
 var _ BACnetConstructedDataProcessIdentifier = (*_BACnetConstructedDataProcessIdentifier)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProcessIdentifier)(nil)
+
+// NewBACnetConstructedDataProcessIdentifier factory function for _BACnetConstructedDataProcessIdentifier
+func NewBACnetConstructedDataProcessIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, processIdentifier BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifier {
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProcessIdentifier must not be nil")
+	}
+	_result := &_BACnetConstructedDataProcessIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProcessIdentifier:             processIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProcessIdentifier) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProcessIdentifier factory function for _BACnetConstructedDataProcessIdentifier
-func NewBACnetConstructedDataProcessIdentifier(processIdentifier BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifier {
-	if processIdentifier == nil {
-		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProcessIdentifier must not be nil")
-	}
-	_result := &_BACnetConstructedDataProcessIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProcessIdentifier:             processIdentifier,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProcessIdentifier(structType any) BACnetConstructedDataProcessIdentifier {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProcessIdentifier) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataProcessIdentifier) IsBACnetConstructedDataProcessIdentifier() {}
+
+func (m *_BACnetConstructedDataProcessIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProcessIdentifier) deepCopy() *_BACnetConstructedDataProcessIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProcessIdentifierCopy := &_BACnetConstructedDataProcessIdentifier{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProcessIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProcessIdentifierCopy
+}
 
 func (m *_BACnetConstructedDataProcessIdentifier) String() string {
 	if m == nil {

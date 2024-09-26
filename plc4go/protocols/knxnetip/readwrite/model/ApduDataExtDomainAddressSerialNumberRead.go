@@ -36,6 +36,7 @@ type ApduDataExtDomainAddressSerialNumberRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtDomainAddressSerialNumberRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressSerialNumberRead()
@@ -48,6 +49,15 @@ type _ApduDataExtDomainAddressSerialNumberRead struct {
 
 var _ ApduDataExtDomainAddressSerialNumberRead = (*_ApduDataExtDomainAddressSerialNumberRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressSerialNumberRead)(nil)
+
+// NewApduDataExtDomainAddressSerialNumberRead factory function for _ApduDataExtDomainAddressSerialNumberRead
+func NewApduDataExtDomainAddressSerialNumberRead(length uint8) *_ApduDataExtDomainAddressSerialNumberRead {
+	_result := &_ApduDataExtDomainAddressSerialNumberRead{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtDomainAddressSerialNumberRead factory function for _ApduDataExtDomainAddressSerialNumberRead
-func NewApduDataExtDomainAddressSerialNumberRead(length uint8) *_ApduDataExtDomainAddressSerialNumberRead {
-	_result := &_ApduDataExtDomainAddressSerialNumberRead{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtDomainAddressSerialNumberRead) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) IsApduDataExtDomainAddressSerialNumberRead() {}
+
+func (m *_ApduDataExtDomainAddressSerialNumberRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberRead) deepCopy() *_ApduDataExtDomainAddressSerialNumberRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtDomainAddressSerialNumberReadCopy := &_ApduDataExtDomainAddressSerialNumberRead{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtDomainAddressSerialNumberReadCopy
+}
 
 func (m *_ApduDataExtDomainAddressSerialNumberRead) String() string {
 	if m == nil {

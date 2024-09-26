@@ -38,6 +38,7 @@ type BACnetAuthenticationFactorTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetAuthenticationFactorTypeTagged struct {
 
 var _ BACnetAuthenticationFactorTypeTagged = (*_BACnetAuthenticationFactorTypeTagged)(nil)
 
+// NewBACnetAuthenticationFactorTypeTagged factory function for _BACnetAuthenticationFactorTypeTagged
+func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACnetAuthenticationFactorType, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationFactorTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthenticationFactorTypeTagged must not be nil")
+	}
+	return &_BACnetAuthenticationFactorTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetAuthenticationFactorTypeTagged) GetValue() BACnetAuthenticationF
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationFactorTypeTagged factory function for _BACnetAuthenticationFactorTypeTagged
-func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACnetAuthenticationFactorType, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationFactorTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAuthenticationFactorTypeTagged must not be nil")
-	}
-	return &_BACnetAuthenticationFactorTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationFactorTypeTagged(structType any) BACnetAuthenticationFactorTypeTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetAuthenticationFactorTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAuthenticationFactorTypeTagged) IsBACnetAuthenticationFactorTypeTagged() {}
+
+func (m *_BACnetAuthenticationFactorTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationFactorTypeTagged) deepCopy() *_BACnetAuthenticationFactorTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationFactorTypeTaggedCopy := &_BACnetAuthenticationFactorTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAuthenticationFactorTypeTaggedCopy
+}
 
 func (m *_BACnetAuthenticationFactorTypeTagged) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetCalendarEntryWeekNDay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetCalendarEntry
 	// GetWeekNDay returns WeekNDay (property field)
 	GetWeekNDay() BACnetWeekNDayTagged
@@ -53,6 +54,19 @@ type _BACnetCalendarEntryWeekNDay struct {
 
 var _ BACnetCalendarEntryWeekNDay = (*_BACnetCalendarEntryWeekNDay)(nil)
 var _ BACnetCalendarEntryRequirements = (*_BACnetCalendarEntryWeekNDay)(nil)
+
+// NewBACnetCalendarEntryWeekNDay factory function for _BACnetCalendarEntryWeekNDay
+func NewBACnetCalendarEntryWeekNDay(peekedTagHeader BACnetTagHeader, weekNDay BACnetWeekNDayTagged) *_BACnetCalendarEntryWeekNDay {
+	if weekNDay == nil {
+		panic("weekNDay of type BACnetWeekNDayTagged for BACnetCalendarEntryWeekNDay must not be nil")
+	}
+	_result := &_BACnetCalendarEntryWeekNDay{
+		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
+		WeekNDay:                    weekNDay,
+	}
+	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetCalendarEntryWeekNDay) GetWeekNDay() BACnetWeekNDayTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCalendarEntryWeekNDay factory function for _BACnetCalendarEntryWeekNDay
-func NewBACnetCalendarEntryWeekNDay(weekNDay BACnetWeekNDayTagged, peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntryWeekNDay {
-	if weekNDay == nil {
-		panic("weekNDay of type BACnetWeekNDayTagged for BACnetCalendarEntryWeekNDay must not be nil")
-	}
-	_result := &_BACnetCalendarEntryWeekNDay{
-		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
-		WeekNDay:                    weekNDay,
-	}
-	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCalendarEntryWeekNDay(structType any) BACnetCalendarEntryWeekNDay {
@@ -178,6 +179,22 @@ func (m *_BACnetCalendarEntryWeekNDay) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetCalendarEntryWeekNDay) IsBACnetCalendarEntryWeekNDay() {}
+
+func (m *_BACnetCalendarEntryWeekNDay) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCalendarEntryWeekNDay) deepCopy() *_BACnetCalendarEntryWeekNDay {
+	if m == nil {
+		return nil
+	}
+	_BACnetCalendarEntryWeekNDayCopy := &_BACnetCalendarEntryWeekNDay{
+		m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).deepCopy(),
+		m.WeekNDay.DeepCopy().(BACnetWeekNDayTagged),
+	}
+	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
+	return _BACnetCalendarEntryWeekNDayCopy
+}
 
 func (m *_BACnetCalendarEntryWeekNDay) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetSecurityKeySetKeyIds interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetKeyIds returns KeyIds (property field)
@@ -60,6 +61,17 @@ type _BACnetSecurityKeySetKeyIds struct {
 
 var _ BACnetSecurityKeySetKeyIds = (*_BACnetSecurityKeySetKeyIds)(nil)
 
+// NewBACnetSecurityKeySetKeyIds factory function for _BACnetSecurityKeySetKeyIds
+func NewBACnetSecurityKeySetKeyIds(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSecurityKeySetKeyIds {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetSecurityKeySetKeyIds must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetSecurityKeySetKeyIds must not be nil")
+	}
+	return &_BACnetSecurityKeySetKeyIds{OpeningTag: openingTag, KeyIds: keyIds, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_BACnetSecurityKeySetKeyIds) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSecurityKeySetKeyIds factory function for _BACnetSecurityKeySetKeyIds
-func NewBACnetSecurityKeySetKeyIds(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSecurityKeySetKeyIds {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetSecurityKeySetKeyIds must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetSecurityKeySetKeyIds must not be nil")
-	}
-	return &_BACnetSecurityKeySetKeyIds{OpeningTag: openingTag, KeyIds: keyIds, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSecurityKeySetKeyIds(structType any) BACnetSecurityKeySetKeyIds {
@@ -229,6 +230,23 @@ func (m *_BACnetSecurityKeySetKeyIds) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetSecurityKeySetKeyIds) IsBACnetSecurityKeySetKeyIds() {}
+
+func (m *_BACnetSecurityKeySetKeyIds) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSecurityKeySetKeyIds) deepCopy() *_BACnetSecurityKeySetKeyIds {
+	if m == nil {
+		return nil
+	}
+	_BACnetSecurityKeySetKeyIdsCopy := &_BACnetSecurityKeySetKeyIds{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetKeyIdentifier, BACnetKeyIdentifier](m.KeyIds),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetSecurityKeySetKeyIdsCopy
+}
 
 func (m *_BACnetSecurityKeySetKeyIds) String() string {
 	if m == nil {

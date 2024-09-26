@@ -38,6 +38,7 @@ type BACnetConstructedDataUserName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUserName returns UserName (property field)
 	GetUserName() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataUserName struct {
 
 var _ BACnetConstructedDataUserName = (*_BACnetConstructedDataUserName)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserName)(nil)
+
+// NewBACnetConstructedDataUserName factory function for _BACnetConstructedDataUserName
+func NewBACnetConstructedDataUserName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserName {
+	if userName == nil {
+		panic("userName of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserName must not be nil")
+	}
+	_result := &_BACnetConstructedDataUserName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UserName:                      userName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataUserName) GetActualValue() BACnetApplicationTagCh
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUserName factory function for _BACnetConstructedDataUserName
-func NewBACnetConstructedDataUserName(userName BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserName {
-	if userName == nil {
-		panic("userName of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserName must not be nil")
-	}
-	_result := &_BACnetConstructedDataUserName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UserName:                      userName,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUserName(structType any) BACnetConstructedDataUserName {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUserName) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataUserName) IsBACnetConstructedDataUserName() {}
+
+func (m *_BACnetConstructedDataUserName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUserName) deepCopy() *_BACnetConstructedDataUserName {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUserNameCopy := &_BACnetConstructedDataUserName{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.UserName.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUserNameCopy
+}
 
 func (m *_BACnetConstructedDataUserName) String() string {
 	if m == nil {

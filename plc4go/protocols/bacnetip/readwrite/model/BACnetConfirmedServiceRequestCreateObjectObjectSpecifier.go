@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetRawObjectType returns RawObjectType (property field)
@@ -68,6 +69,17 @@ type _BACnetConfirmedServiceRequestCreateObjectObjectSpecifier struct {
 }
 
 var _ BACnetConfirmedServiceRequestCreateObjectObjectSpecifier = (*_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier)(nil)
+
+// NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier factory function for _BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
+func NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(openingTag BACnetOpeningTag, rawObjectType BACnetContextTagEnumerated, objectIdentifier BACnetContextTagObjectIdentifier, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestCreateObjectObjectSpecifier must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestCreateObjectObjectSpecifier must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{OpeningTag: openingTag, RawObjectType: rawObjectType, ObjectIdentifier: objectIdentifier, ClosingTag: closingTag, TagNumber: tagNumber}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -133,17 +145,6 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetIsObjectI
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier factory function for _BACnetConfirmedServiceRequestCreateObjectObjectSpecifier
-func NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(openingTag BACnetOpeningTag, rawObjectType BACnetContextTagEnumerated, objectIdentifier BACnetContextTagObjectIdentifier, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestCreateObjectObjectSpecifier must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestCreateObjectObjectSpecifier must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{OpeningTag: openingTag, RawObjectType: rawObjectType, ObjectIdentifier: objectIdentifier, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(structType any) BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
@@ -349,6 +350,24 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetTagNumber
 ////
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) IsBACnetConfirmedServiceRequestCreateObjectObjectSpecifier() {
+}
+
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) deepCopy() *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestCreateObjectObjectSpecifierCopy := &_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.RawObjectType.DeepCopy().(BACnetContextTagEnumerated),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetConfirmedServiceRequestCreateObjectObjectSpecifierCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) String() string {

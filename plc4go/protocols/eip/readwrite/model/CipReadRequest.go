@@ -38,6 +38,7 @@ type CipReadRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetTag returns Tag (property field)
 	GetTag() []byte
@@ -56,6 +57,17 @@ type _CipReadRequest struct {
 
 var _ CipReadRequest = (*_CipReadRequest)(nil)
 var _ CipServiceRequirements = (*_CipReadRequest)(nil)
+
+// NewCipReadRequest factory function for _CipReadRequest
+func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16) *_CipReadRequest {
+	_result := &_CipReadRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		Tag:                tag,
+		ElementNb:          elementNb,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_CipReadRequest) GetElementNb() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipReadRequest factory function for _CipReadRequest
-func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16) *_CipReadRequest {
-	_result := &_CipReadRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		Tag:                tag,
-		ElementNb:          elementNb,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipReadRequest(structType any) CipReadRequest {
@@ -223,6 +224,23 @@ func (m *_CipReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_CipReadRequest) IsCipReadRequest() {}
+
+func (m *_CipReadRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipReadRequest) deepCopy() *_CipReadRequest {
+	if m == nil {
+		return nil
+	}
+	_CipReadRequestCopy := &_CipReadRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Tag),
+		m.ElementNb,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipReadRequestCopy
+}
 
 func (m *_CipReadRequest) String() string {
 	if m == nil {

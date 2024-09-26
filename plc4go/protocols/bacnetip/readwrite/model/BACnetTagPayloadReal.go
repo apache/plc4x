@@ -38,6 +38,7 @@ type BACnetTagPayloadReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() float32
 	// IsBACnetTagPayloadReal is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _BACnetTagPayloadReal struct {
 }
 
 var _ BACnetTagPayloadReal = (*_BACnetTagPayloadReal)(nil)
+
+// NewBACnetTagPayloadReal factory function for _BACnetTagPayloadReal
+func NewBACnetTagPayloadReal(value float32) *_BACnetTagPayloadReal {
+	return &_BACnetTagPayloadReal{Value: value}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_BACnetTagPayloadReal) GetValue() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadReal factory function for _BACnetTagPayloadReal
-func NewBACnetTagPayloadReal(value float32) *_BACnetTagPayloadReal {
-	return &_BACnetTagPayloadReal{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadReal(structType any) BACnetTagPayloadReal {
@@ -166,6 +167,20 @@ func (m *_BACnetTagPayloadReal) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetTagPayloadReal) IsBACnetTagPayloadReal() {}
+
+func (m *_BACnetTagPayloadReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadReal) deepCopy() *_BACnetTagPayloadReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadRealCopy := &_BACnetTagPayloadReal{
+		m.Value,
+	}
+	return _BACnetTagPayloadRealCopy
+}
 
 func (m *_BACnetTagPayloadReal) String() string {
 	if m == nil {

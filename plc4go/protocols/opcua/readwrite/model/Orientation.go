@@ -36,6 +36,7 @@ type Orientation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsOrientation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOrientation()
@@ -48,6 +49,15 @@ type _Orientation struct {
 
 var _ Orientation = (*_Orientation)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Orientation)(nil)
+
+// NewOrientation factory function for _Orientation
+func NewOrientation() *_Orientation {
+	_result := &_Orientation{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_Orientation) GetIdentifier() string {
 
 func (m *_Orientation) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewOrientation factory function for _Orientation
-func NewOrientation() *_Orientation {
-	_result := &_Orientation{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_Orientation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_Orientation) IsOrientation() {}
+
+func (m *_Orientation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Orientation) deepCopy() *_Orientation {
+	if m == nil {
+		return nil
+	}
+	_OrientationCopy := &_Orientation{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _OrientationCopy
+}
 
 func (m *_Orientation) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type Apdu interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApdu is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApdu()
 }
@@ -76,6 +77,11 @@ type _Apdu struct {
 
 var _ ApduContract = (*_Apdu)(nil)
 
+// NewApdu factory function for _Apdu
+func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
+	return &_Apdu{Numbered: numbered, Counter: counter, DataLength: dataLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -93,11 +99,6 @@ func (m *_Apdu) GetCounter() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApdu factory function for _Apdu
-func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
-	return &_Apdu{Numbered: numbered, Counter: counter, DataLength: dataLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastApdu(structType any) Apdu {
@@ -191,11 +192,11 @@ func (m *_Apdu) parse(ctx context.Context, readBuffer utils.ReadBuffer, dataLeng
 	var _child Apdu
 	switch {
 	case control == uint8(1): // ApduControlContainer
-		if _child, err = (&_ApduControlContainer{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduControlContainer).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlContainer for type-switch of Apdu")
 		}
 	case control == uint8(0): // ApduDataContainer
-		if _child, err = (&_ApduDataContainer{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataContainer).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataContainer for type-switch of Apdu")
 		}
 	default:
@@ -255,3 +256,20 @@ func (m *_Apdu) GetDataLength() uint8 {
 ////
 
 func (m *_Apdu) IsApdu() {}
+
+func (m *_Apdu) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Apdu) deepCopy() *_Apdu {
+	if m == nil {
+		return nil
+	}
+	_ApduCopy := &_Apdu{
+		nil, // will be set by child
+		m.Numbered,
+		m.Counter,
+		m.DataLength,
+	}
+	return _ApduCopy
+}

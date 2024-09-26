@@ -38,6 +38,7 @@ type BACnetConstructedDataAckedTransitions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAckedTransitions returns AckedTransitions (property field)
 	GetAckedTransitions() BACnetEventTransitionBitsTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAckedTransitions struct {
 
 var _ BACnetConstructedDataAckedTransitions = (*_BACnetConstructedDataAckedTransitions)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAckedTransitions)(nil)
+
+// NewBACnetConstructedDataAckedTransitions factory function for _BACnetConstructedDataAckedTransitions
+func NewBACnetConstructedDataAckedTransitions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ackedTransitions BACnetEventTransitionBitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAckedTransitions {
+	if ackedTransitions == nil {
+		panic("ackedTransitions of type BACnetEventTransitionBitsTagged for BACnetConstructedDataAckedTransitions must not be nil")
+	}
+	_result := &_BACnetConstructedDataAckedTransitions{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AckedTransitions:              ackedTransitions,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAckedTransitions) GetActualValue() BACnetEventTra
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAckedTransitions factory function for _BACnetConstructedDataAckedTransitions
-func NewBACnetConstructedDataAckedTransitions(ackedTransitions BACnetEventTransitionBitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAckedTransitions {
-	if ackedTransitions == nil {
-		panic("ackedTransitions of type BACnetEventTransitionBitsTagged for BACnetConstructedDataAckedTransitions must not be nil")
-	}
-	_result := &_BACnetConstructedDataAckedTransitions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AckedTransitions:              ackedTransitions,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAckedTransitions(structType any) BACnetConstructedDataAckedTransitions {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAckedTransitions) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataAckedTransitions) IsBACnetConstructedDataAckedTransitions() {}
+
+func (m *_BACnetConstructedDataAckedTransitions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAckedTransitions) deepCopy() *_BACnetConstructedDataAckedTransitions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAckedTransitionsCopy := &_BACnetConstructedDataAckedTransitions{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AckedTransitions.DeepCopy().(BACnetEventTransitionBitsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAckedTransitionsCopy
+}
 
 func (m *_BACnetConstructedDataAckedTransitions) String() string {
 	if m == nil {

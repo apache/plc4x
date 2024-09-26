@@ -38,6 +38,7 @@ type SubscriptionDiagnosticsDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSessionId returns SessionId (property field)
 	GetSessionId() NodeId
@@ -145,6 +146,49 @@ type _SubscriptionDiagnosticsDataType struct {
 
 var _ SubscriptionDiagnosticsDataType = (*_SubscriptionDiagnosticsDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SubscriptionDiagnosticsDataType)(nil)
+
+// NewSubscriptionDiagnosticsDataType factory function for _SubscriptionDiagnosticsDataType
+func NewSubscriptionDiagnosticsDataType(sessionId NodeId, subscriptionId uint32, priority uint8, publishingInterval float64, maxKeepAliveCount uint32, maxLifetimeCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, modifyCount uint32, enableCount uint32, disableCount uint32, republishRequestCount uint32, republishMessageRequestCount uint32, republishMessageCount uint32, transferRequestCount uint32, transferredToAltClientCount uint32, transferredToSameClientCount uint32, publishRequestCount uint32, dataChangeNotificationsCount uint32, eventNotificationsCount uint32, notificationsCount uint32, latePublishRequestCount uint32, currentKeepAliveCount uint32, currentLifetimeCount uint32, unacknowledgedMessageCount uint32, discardedMessageCount uint32, monitoredItemCount uint32, disabledMonitoredItemCount uint32, monitoringQueueOverflowCount uint32, nextSequenceNumber uint32, eventQueueOverFlowCount uint32) *_SubscriptionDiagnosticsDataType {
+	if sessionId == nil {
+		panic("sessionId of type NodeId for SubscriptionDiagnosticsDataType must not be nil")
+	}
+	_result := &_SubscriptionDiagnosticsDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SessionId:                         sessionId,
+		SubscriptionId:                    subscriptionId,
+		Priority:                          priority,
+		PublishingInterval:                publishingInterval,
+		MaxKeepAliveCount:                 maxKeepAliveCount,
+		MaxLifetimeCount:                  maxLifetimeCount,
+		MaxNotificationsPerPublish:        maxNotificationsPerPublish,
+		PublishingEnabled:                 publishingEnabled,
+		ModifyCount:                       modifyCount,
+		EnableCount:                       enableCount,
+		DisableCount:                      disableCount,
+		RepublishRequestCount:             republishRequestCount,
+		RepublishMessageRequestCount:      republishMessageRequestCount,
+		RepublishMessageCount:             republishMessageCount,
+		TransferRequestCount:              transferRequestCount,
+		TransferredToAltClientCount:       transferredToAltClientCount,
+		TransferredToSameClientCount:      transferredToSameClientCount,
+		PublishRequestCount:               publishRequestCount,
+		DataChangeNotificationsCount:      dataChangeNotificationsCount,
+		EventNotificationsCount:           eventNotificationsCount,
+		NotificationsCount:                notificationsCount,
+		LatePublishRequestCount:           latePublishRequestCount,
+		CurrentKeepAliveCount:             currentKeepAliveCount,
+		CurrentLifetimeCount:              currentLifetimeCount,
+		UnacknowledgedMessageCount:        unacknowledgedMessageCount,
+		DiscardedMessageCount:             discardedMessageCount,
+		MonitoredItemCount:                monitoredItemCount,
+		DisabledMonitoredItemCount:        disabledMonitoredItemCount,
+		MonitoringQueueOverflowCount:      monitoringQueueOverflowCount,
+		NextSequenceNumber:                nextSequenceNumber,
+		EventQueueOverFlowCount:           eventQueueOverFlowCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -297,49 +341,6 @@ func (m *_SubscriptionDiagnosticsDataType) GetEventQueueOverFlowCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSubscriptionDiagnosticsDataType factory function for _SubscriptionDiagnosticsDataType
-func NewSubscriptionDiagnosticsDataType(sessionId NodeId, subscriptionId uint32, priority uint8, publishingInterval float64, maxKeepAliveCount uint32, maxLifetimeCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, modifyCount uint32, enableCount uint32, disableCount uint32, republishRequestCount uint32, republishMessageRequestCount uint32, republishMessageCount uint32, transferRequestCount uint32, transferredToAltClientCount uint32, transferredToSameClientCount uint32, publishRequestCount uint32, dataChangeNotificationsCount uint32, eventNotificationsCount uint32, notificationsCount uint32, latePublishRequestCount uint32, currentKeepAliveCount uint32, currentLifetimeCount uint32, unacknowledgedMessageCount uint32, discardedMessageCount uint32, monitoredItemCount uint32, disabledMonitoredItemCount uint32, monitoringQueueOverflowCount uint32, nextSequenceNumber uint32, eventQueueOverFlowCount uint32) *_SubscriptionDiagnosticsDataType {
-	if sessionId == nil {
-		panic("sessionId of type NodeId for SubscriptionDiagnosticsDataType must not be nil")
-	}
-	_result := &_SubscriptionDiagnosticsDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SessionId:                         sessionId,
-		SubscriptionId:                    subscriptionId,
-		Priority:                          priority,
-		PublishingInterval:                publishingInterval,
-		MaxKeepAliveCount:                 maxKeepAliveCount,
-		MaxLifetimeCount:                  maxLifetimeCount,
-		MaxNotificationsPerPublish:        maxNotificationsPerPublish,
-		PublishingEnabled:                 publishingEnabled,
-		ModifyCount:                       modifyCount,
-		EnableCount:                       enableCount,
-		DisableCount:                      disableCount,
-		RepublishRequestCount:             republishRequestCount,
-		RepublishMessageRequestCount:      republishMessageRequestCount,
-		RepublishMessageCount:             republishMessageCount,
-		TransferRequestCount:              transferRequestCount,
-		TransferredToAltClientCount:       transferredToAltClientCount,
-		TransferredToSameClientCount:      transferredToSameClientCount,
-		PublishRequestCount:               publishRequestCount,
-		DataChangeNotificationsCount:      dataChangeNotificationsCount,
-		EventNotificationsCount:           eventNotificationsCount,
-		NotificationsCount:                notificationsCount,
-		LatePublishRequestCount:           latePublishRequestCount,
-		CurrentKeepAliveCount:             currentKeepAliveCount,
-		CurrentLifetimeCount:              currentLifetimeCount,
-		UnacknowledgedMessageCount:        unacknowledgedMessageCount,
-		DiscardedMessageCount:             discardedMessageCount,
-		MonitoredItemCount:                monitoredItemCount,
-		DisabledMonitoredItemCount:        disabledMonitoredItemCount,
-		MonitoringQueueOverflowCount:      monitoringQueueOverflowCount,
-		NextSequenceNumber:                nextSequenceNumber,
-		EventQueueOverFlowCount:           eventQueueOverFlowCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSubscriptionDiagnosticsDataType(structType any) SubscriptionDiagnosticsDataType {
@@ -827,6 +828,53 @@ func (m *_SubscriptionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_SubscriptionDiagnosticsDataType) IsSubscriptionDiagnosticsDataType() {}
+
+func (m *_SubscriptionDiagnosticsDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscriptionDiagnosticsDataType) deepCopy() *_SubscriptionDiagnosticsDataType {
+	if m == nil {
+		return nil
+	}
+	_SubscriptionDiagnosticsDataTypeCopy := &_SubscriptionDiagnosticsDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SessionId.DeepCopy().(NodeId),
+		m.SubscriptionId,
+		m.Priority,
+		m.PublishingInterval,
+		m.MaxKeepAliveCount,
+		m.MaxLifetimeCount,
+		m.MaxNotificationsPerPublish,
+		m.PublishingEnabled,
+		m.ModifyCount,
+		m.EnableCount,
+		m.DisableCount,
+		m.RepublishRequestCount,
+		m.RepublishMessageRequestCount,
+		m.RepublishMessageCount,
+		m.TransferRequestCount,
+		m.TransferredToAltClientCount,
+		m.TransferredToSameClientCount,
+		m.PublishRequestCount,
+		m.DataChangeNotificationsCount,
+		m.EventNotificationsCount,
+		m.NotificationsCount,
+		m.LatePublishRequestCount,
+		m.CurrentKeepAliveCount,
+		m.CurrentLifetimeCount,
+		m.UnacknowledgedMessageCount,
+		m.DiscardedMessageCount,
+		m.MonitoredItemCount,
+		m.DisabledMonitoredItemCount,
+		m.MonitoringQueueOverflowCount,
+		m.NextSequenceNumber,
+		m.EventQueueOverFlowCount,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SubscriptionDiagnosticsDataTypeCopy
+}
 
 func (m *_SubscriptionDiagnosticsDataType) String() string {
 	if m == nil {

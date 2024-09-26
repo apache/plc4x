@@ -38,6 +38,7 @@ type BACnetConstructedDataOccupancyUpperLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOccupancyUpperLimit returns OccupancyUpperLimit (property field)
 	GetOccupancyUpperLimit() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataOccupancyUpperLimit struct {
 
 var _ BACnetConstructedDataOccupancyUpperLimit = (*_BACnetConstructedDataOccupancyUpperLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyUpperLimit)(nil)
+
+// NewBACnetConstructedDataOccupancyUpperLimit factory function for _BACnetConstructedDataOccupancyUpperLimit
+func NewBACnetConstructedDataOccupancyUpperLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyUpperLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyUpperLimit {
+	if occupancyUpperLimit == nil {
+		panic("occupancyUpperLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataOccupancyUpperLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataOccupancyUpperLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OccupancyUpperLimit:           occupancyUpperLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataOccupancyUpperLimit) GetActualValue() BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOccupancyUpperLimit factory function for _BACnetConstructedDataOccupancyUpperLimit
-func NewBACnetConstructedDataOccupancyUpperLimit(occupancyUpperLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyUpperLimit {
-	if occupancyUpperLimit == nil {
-		panic("occupancyUpperLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataOccupancyUpperLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataOccupancyUpperLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OccupancyUpperLimit:           occupancyUpperLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOccupancyUpperLimit(structType any) BACnetConstructedDataOccupancyUpperLimit {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOccupancyUpperLimit) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataOccupancyUpperLimit) IsBACnetConstructedDataOccupancyUpperLimit() {}
+
+func (m *_BACnetConstructedDataOccupancyUpperLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOccupancyUpperLimit) deepCopy() *_BACnetConstructedDataOccupancyUpperLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOccupancyUpperLimitCopy := &_BACnetConstructedDataOccupancyUpperLimit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.OccupancyUpperLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOccupancyUpperLimitCopy
+}
 
 func (m *_BACnetConstructedDataOccupancyUpperLimit) String() string {
 	if m == nil {

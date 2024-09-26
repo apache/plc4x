@@ -20,6 +20,9 @@
 package test_bvll
 
 import (
+	"github.com/pkg/errors"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 )
@@ -28,4 +31,14 @@ var _debug = CreateDebugPrinter()
 
 type TestDeviceObject struct {
 	LocalDeviceObject
+}
+
+func NewTestDeviceObject(args Args, kwArgs KWArgs, options ...Option) (*TestDeviceObject, error) {
+	t := &TestDeviceObject{}
+	var err error
+	t.LocalDeviceObject, err = NewLocalDeviceObject(args, kwArgs, options...)
+	if err != nil {
+		return nil, errors.Wrap(err, "NewLocalDeviceObject")
+	}
+	return t, nil
 }

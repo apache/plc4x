@@ -38,6 +38,7 @@ type HistoryEventFieldList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfEventFields returns NoOfEventFields (property field)
 	GetNoOfEventFields() int32
@@ -56,6 +57,17 @@ type _HistoryEventFieldList struct {
 
 var _ HistoryEventFieldList = (*_HistoryEventFieldList)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryEventFieldList)(nil)
+
+// NewHistoryEventFieldList factory function for _HistoryEventFieldList
+func NewHistoryEventFieldList(noOfEventFields int32, eventFields []Variant) *_HistoryEventFieldList {
+	_result := &_HistoryEventFieldList{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEventFields:                   noOfEventFields,
+		EventFields:                       eventFields,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_HistoryEventFieldList) GetEventFields() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryEventFieldList factory function for _HistoryEventFieldList
-func NewHistoryEventFieldList(noOfEventFields int32, eventFields []Variant) *_HistoryEventFieldList {
-	_result := &_HistoryEventFieldList{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEventFields:                   noOfEventFields,
-		EventFields:                       eventFields,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryEventFieldList(structType any) HistoryEventFieldList {
@@ -207,6 +208,23 @@ func (m *_HistoryEventFieldList) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_HistoryEventFieldList) IsHistoryEventFieldList() {}
+
+func (m *_HistoryEventFieldList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryEventFieldList) deepCopy() *_HistoryEventFieldList {
+	if m == nil {
+		return nil
+	}
+	_HistoryEventFieldListCopy := &_HistoryEventFieldList{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfEventFields,
+		utils.DeepCopySlice[Variant, Variant](m.EventFields),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryEventFieldListCopy
+}
 
 func (m *_HistoryEventFieldList) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataAlertEnrollmentPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetApplicationTagObjectIdentifier
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAlertEnrollmentPresentValue struct {
 
 var _ BACnetConstructedDataAlertEnrollmentPresentValue = (*_BACnetConstructedDataAlertEnrollmentPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlertEnrollmentPresentValue)(nil)
+
+// NewBACnetConstructedDataAlertEnrollmentPresentValue factory function for _BACnetConstructedDataAlertEnrollmentPresentValue
+func NewBACnetConstructedDataAlertEnrollmentPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlertEnrollmentPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataAlertEnrollmentPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAlertEnrollmentPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAlertEnrollmentPresentValue factory function for _BACnetConstructedDataAlertEnrollmentPresentValue
-func NewBACnetConstructedDataAlertEnrollmentPresentValue(presentValue BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlertEnrollmentPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataAlertEnrollmentPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAlertEnrollmentPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAlertEnrollmentPresentValue(structType any) BACnetConstructedDataAlertEnrollmentPresentValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) IsBACnetConstructedDataAlertEnrollmentPresentValue() {
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) deepCopy() *_BACnetConstructedDataAlertEnrollmentPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAlertEnrollmentPresentValueCopy := &_BACnetConstructedDataAlertEnrollmentPresentValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PresentValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAlertEnrollmentPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) String() string {

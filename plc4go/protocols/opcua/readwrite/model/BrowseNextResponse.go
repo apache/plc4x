@@ -38,6 +38,7 @@ type BrowseNextResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _BrowseNextResponse struct {
 
 var _ BrowseNextResponse = (*_BrowseNextResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseNextResponse)(nil)
+
+// NewBrowseNextResponse factory function for _BrowseNextResponse
+func NewBrowseNextResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_BrowseNextResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for BrowseNextResponse must not be nil")
+	}
+	_result := &_BrowseNextResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_BrowseNextResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseNextResponse factory function for _BrowseNextResponse
-func NewBrowseNextResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_BrowseNextResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for BrowseNextResponse must not be nil")
-	}
-	_result := &_BrowseNextResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseNextResponse(structType any) BrowseNextResponse {
@@ -280,6 +281,26 @@ func (m *_BrowseNextResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_BrowseNextResponse) IsBrowseNextResponse() {}
+
+func (m *_BrowseNextResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseNextResponse) deepCopy() *_BrowseNextResponse {
+	if m == nil {
+		return nil
+	}
+	_BrowseNextResponseCopy := &_BrowseNextResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseNextResponseCopy
+}
 
 func (m *_BrowseNextResponse) String() string {
 	if m == nil {

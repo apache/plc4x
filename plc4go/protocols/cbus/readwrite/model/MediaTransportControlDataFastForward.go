@@ -38,6 +38,7 @@ type MediaTransportControlDataFastForward interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetOperation returns Operation (property field)
 	GetOperation() byte
@@ -69,6 +70,16 @@ type _MediaTransportControlDataFastForward struct {
 
 var _ MediaTransportControlDataFastForward = (*_MediaTransportControlDataFastForward)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataFastForward)(nil)
+
+// NewMediaTransportControlDataFastForward factory function for _MediaTransportControlDataFastForward
+func NewMediaTransportControlDataFastForward(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataFastForward {
+	_result := &_MediaTransportControlDataFastForward{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -154,16 +165,6 @@ func (m *_MediaTransportControlDataFastForward) GetIsReserved() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataFastForward factory function for _MediaTransportControlDataFastForward
-func NewMediaTransportControlDataFastForward(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataFastForward {
-	_result := &_MediaTransportControlDataFastForward{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		Operation:                         operation,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataFastForward(structType any) MediaTransportControlDataFastForward {
@@ -360,6 +361,22 @@ func (m *_MediaTransportControlDataFastForward) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataFastForward) IsMediaTransportControlDataFastForward() {}
+
+func (m *_MediaTransportControlDataFastForward) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataFastForward) deepCopy() *_MediaTransportControlDataFastForward {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataFastForwardCopy := &_MediaTransportControlDataFastForward{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.Operation,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataFastForwardCopy
+}
 
 func (m *_MediaTransportControlDataFastForward) String() string {
 	if m == nil {

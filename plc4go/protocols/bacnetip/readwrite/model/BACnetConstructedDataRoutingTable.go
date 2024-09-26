@@ -38,6 +38,7 @@ type BACnetConstructedDataRoutingTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRoutingTable returns RoutingTable (property field)
 	GetRoutingTable() []BACnetRouterEntry
@@ -53,6 +54,16 @@ type _BACnetConstructedDataRoutingTable struct {
 
 var _ BACnetConstructedDataRoutingTable = (*_BACnetConstructedDataRoutingTable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRoutingTable)(nil)
+
+// NewBACnetConstructedDataRoutingTable factory function for _BACnetConstructedDataRoutingTable
+func NewBACnetConstructedDataRoutingTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, routingTable []BACnetRouterEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRoutingTable {
+	_result := &_BACnetConstructedDataRoutingTable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RoutingTable:                  routingTable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataRoutingTable) GetRoutingTable() []BACnetRouterEnt
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRoutingTable factory function for _BACnetConstructedDataRoutingTable
-func NewBACnetConstructedDataRoutingTable(routingTable []BACnetRouterEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRoutingTable {
-	_result := &_BACnetConstructedDataRoutingTable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RoutingTable:                  routingTable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRoutingTable(structType any) BACnetConstructedDataRoutingTable {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataRoutingTable) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataRoutingTable) IsBACnetConstructedDataRoutingTable() {}
+
+func (m *_BACnetConstructedDataRoutingTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRoutingTable) deepCopy() *_BACnetConstructedDataRoutingTable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRoutingTableCopy := &_BACnetConstructedDataRoutingTable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetRouterEntry, BACnetRouterEntry](m.RoutingTable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRoutingTableCopy
+}
 
 func (m *_BACnetConstructedDataRoutingTable) String() string {
 	if m == nil {

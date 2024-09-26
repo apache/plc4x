@@ -38,6 +38,7 @@ type NLMSecurityPayload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetPayloadLength returns PayloadLength (property field)
 	GetPayloadLength() uint16
@@ -56,6 +57,17 @@ type _NLMSecurityPayload struct {
 
 var _ NLMSecurityPayload = (*_NLMSecurityPayload)(nil)
 var _ NLMRequirements = (*_NLMSecurityPayload)(nil)
+
+// NewNLMSecurityPayload factory function for _NLMSecurityPayload
+func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint16) *_NLMSecurityPayload {
+	_result := &_NLMSecurityPayload{
+		NLMContract:   NewNLM(apduLength),
+		PayloadLength: payloadLength,
+		Payload:       payload,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_NLMSecurityPayload) GetPayload() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMSecurityPayload factory function for _NLMSecurityPayload
-func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint16) *_NLMSecurityPayload {
-	_result := &_NLMSecurityPayload{
-		NLMContract:   NewNLM(apduLength),
-		PayloadLength: payloadLength,
-		Payload:       payload,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMSecurityPayload(structType any) NLMSecurityPayload {
@@ -202,6 +203,23 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_NLMSecurityPayload) IsNLMSecurityPayload() {}
+
+func (m *_NLMSecurityPayload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMSecurityPayload) deepCopy() *_NLMSecurityPayload {
+	if m == nil {
+		return nil
+	}
+	_NLMSecurityPayloadCopy := &_NLMSecurityPayload{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.PayloadLength,
+		utils.DeepCopySlice[byte, byte](m.Payload),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMSecurityPayloadCopy
+}
 
 func (m *_NLMSecurityPayload) String() string {
 	if m == nil {

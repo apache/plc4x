@@ -38,6 +38,7 @@ type RegisterNodesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _RegisterNodesResponse struct {
 
 var _ RegisterNodesResponse = (*_RegisterNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterNodesResponse)(nil)
+
+// NewRegisterNodesResponse factory function for _RegisterNodesResponse
+func NewRegisterNodesResponse(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) *_RegisterNodesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterNodesResponse must not be nil")
+	}
+	_result := &_RegisterNodesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfRegisteredNodeIds:             noOfRegisteredNodeIds,
+		RegisteredNodeIds:                 registeredNodeIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_RegisterNodesResponse) GetRegisteredNodeIds() []NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterNodesResponse factory function for _RegisterNodesResponse
-func NewRegisterNodesResponse(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) *_RegisterNodesResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterNodesResponse must not be nil")
-	}
-	_result := &_RegisterNodesResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfRegisteredNodeIds:             noOfRegisteredNodeIds,
-		RegisteredNodeIds:                 registeredNodeIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterNodesResponse(structType any) RegisterNodesResponse {
@@ -231,6 +232,24 @@ func (m *_RegisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_RegisterNodesResponse) IsRegisterNodesResponse() {}
+
+func (m *_RegisterNodesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterNodesResponse) deepCopy() *_RegisterNodesResponse {
+	if m == nil {
+		return nil
+	}
+	_RegisterNodesResponseCopy := &_RegisterNodesResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfRegisteredNodeIds,
+		utils.DeepCopySlice[NodeId, NodeId](m.RegisteredNodeIds),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterNodesResponseCopy
+}
 
 func (m *_RegisterNodesResponse) String() string {
 	if m == nil {

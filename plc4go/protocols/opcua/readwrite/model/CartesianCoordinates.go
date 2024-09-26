@@ -36,6 +36,7 @@ type CartesianCoordinates interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsCartesianCoordinates is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCartesianCoordinates()
@@ -48,6 +49,15 @@ type _CartesianCoordinates struct {
 
 var _ CartesianCoordinates = (*_CartesianCoordinates)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CartesianCoordinates)(nil)
+
+// NewCartesianCoordinates factory function for _CartesianCoordinates
+func NewCartesianCoordinates() *_CartesianCoordinates {
+	_result := &_CartesianCoordinates{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_CartesianCoordinates) GetIdentifier() string {
 
 func (m *_CartesianCoordinates) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewCartesianCoordinates factory function for _CartesianCoordinates
-func NewCartesianCoordinates() *_CartesianCoordinates {
-	_result := &_CartesianCoordinates{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_CartesianCoordinates) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_CartesianCoordinates) IsCartesianCoordinates() {}
+
+func (m *_CartesianCoordinates) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CartesianCoordinates) deepCopy() *_CartesianCoordinates {
+	if m == nil {
+		return nil
+	}
+	_CartesianCoordinatesCopy := &_CartesianCoordinates{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CartesianCoordinatesCopy
+}
 
 func (m *_CartesianCoordinates) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type SetPublishingModeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -64,6 +65,22 @@ type _SetPublishingModeRequest struct {
 
 var _ SetPublishingModeRequest = (*_SetPublishingModeRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetPublishingModeRequest)(nil)
+
+// NewSetPublishingModeRequest factory function for _SetPublishingModeRequest
+func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) *_SetPublishingModeRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetPublishingModeRequest must not be nil")
+	}
+	_result := &_SetPublishingModeRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		PublishingEnabled:                 publishingEnabled,
+		NoOfSubscriptionIds:               noOfSubscriptionIds,
+		SubscriptionIds:                   subscriptionIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,22 +125,6 @@ func (m *_SetPublishingModeRequest) GetSubscriptionIds() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetPublishingModeRequest factory function for _SetPublishingModeRequest
-func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) *_SetPublishingModeRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for SetPublishingModeRequest must not be nil")
-	}
-	_result := &_SetPublishingModeRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		PublishingEnabled:                 publishingEnabled,
-		NoOfSubscriptionIds:               noOfSubscriptionIds,
-		SubscriptionIds:                   subscriptionIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetPublishingModeRequest(structType any) SetPublishingModeRequest {
@@ -262,6 +263,26 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SetPublishingModeRequest) IsSetPublishingModeRequest() {}
+
+func (m *_SetPublishingModeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetPublishingModeRequest) deepCopy() *_SetPublishingModeRequest {
+	if m == nil {
+		return nil
+	}
+	_SetPublishingModeRequestCopy := &_SetPublishingModeRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.PublishingEnabled,
+		m.NoOfSubscriptionIds,
+		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetPublishingModeRequestCopy
+}
 
 func (m *_SetPublishingModeRequest) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type DF1ResponseMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1ResponseMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1ResponseMessage()
 }
@@ -85,6 +86,11 @@ type _DF1ResponseMessage struct {
 
 var _ DF1ResponseMessageContract = (*_DF1ResponseMessage)(nil)
 
+// NewDF1ResponseMessage factory function for _DF1ResponseMessage
+func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1ResponseMessage {
+	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter, PayloadLength: payloadLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -110,11 +116,6 @@ func (m *_DF1ResponseMessage) GetTransactionCounter() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1ResponseMessage factory function for _DF1ResponseMessage
-func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1ResponseMessage {
-	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter, PayloadLength: payloadLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1ResponseMessage(structType any) DF1ResponseMessage {
@@ -244,7 +245,7 @@ func (m *_DF1ResponseMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child DF1ResponseMessage
 	switch {
 	case commandCode == 0x4F: // DF1CommandResponseMessageProtectedTypedLogicalRead
-		if _child, err = (&_DF1CommandResponseMessageProtectedTypedLogicalRead{}).parse(ctx, readBuffer, m, payloadLength); err != nil {
+		if _child, err = new(_DF1CommandResponseMessageProtectedTypedLogicalRead).parse(ctx, readBuffer, m, payloadLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1CommandResponseMessageProtectedTypedLogicalRead for type-switch of DF1ResponseMessage")
 		}
 	default:
@@ -320,3 +321,24 @@ func (m *_DF1ResponseMessage) GetPayloadLength() uint16 {
 ////
 
 func (m *_DF1ResponseMessage) IsDF1ResponseMessage() {}
+
+func (m *_DF1ResponseMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1ResponseMessage) deepCopy() *_DF1ResponseMessage {
+	if m == nil {
+		return nil
+	}
+	_DF1ResponseMessageCopy := &_DF1ResponseMessage{
+		nil, // will be set by child
+		m.DestinationAddress,
+		m.SourceAddress,
+		m.Status,
+		m.TransactionCounter,
+		m.PayloadLength,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _DF1ResponseMessageCopy
+}

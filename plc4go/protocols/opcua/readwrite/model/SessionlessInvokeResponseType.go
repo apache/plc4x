@@ -38,6 +38,7 @@ type SessionlessInvokeResponseType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfNamespaceUris returns NoOfNamespaceUris (property field)
 	GetNoOfNamespaceUris() int32
@@ -65,6 +66,20 @@ type _SessionlessInvokeResponseType struct {
 
 var _ SessionlessInvokeResponseType = (*_SessionlessInvokeResponseType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SessionlessInvokeResponseType)(nil)
+
+// NewSessionlessInvokeResponseType factory function for _SessionlessInvokeResponseType
+func NewSessionlessInvokeResponseType(noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, serviceId uint32) *_SessionlessInvokeResponseType {
+	_result := &_SessionlessInvokeResponseType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfNamespaceUris:                 noOfNamespaceUris,
+		NamespaceUris:                     namespaceUris,
+		NoOfServerUris:                    noOfServerUris,
+		ServerUris:                        serverUris,
+		ServiceId:                         serviceId,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,20 +128,6 @@ func (m *_SessionlessInvokeResponseType) GetServiceId() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSessionlessInvokeResponseType factory function for _SessionlessInvokeResponseType
-func NewSessionlessInvokeResponseType(noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, serviceId uint32) *_SessionlessInvokeResponseType {
-	_result := &_SessionlessInvokeResponseType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfNamespaceUris:                 noOfNamespaceUris,
-		NamespaceUris:                     namespaceUris,
-		NoOfServerUris:                    noOfServerUris,
-		ServerUris:                        serverUris,
-		ServiceId:                         serviceId,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSessionlessInvokeResponseType(structType any) SessionlessInvokeResponseType {
@@ -277,6 +278,26 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_SessionlessInvokeResponseType) IsSessionlessInvokeResponseType() {}
+
+func (m *_SessionlessInvokeResponseType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SessionlessInvokeResponseType) deepCopy() *_SessionlessInvokeResponseType {
+	if m == nil {
+		return nil
+	}
+	_SessionlessInvokeResponseTypeCopy := &_SessionlessInvokeResponseType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfNamespaceUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.NamespaceUris),
+		m.NoOfServerUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
+		m.ServiceId,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SessionlessInvokeResponseTypeCopy
+}
 
 func (m *_SessionlessInvokeResponseType) String() string {
 	if m == nil {

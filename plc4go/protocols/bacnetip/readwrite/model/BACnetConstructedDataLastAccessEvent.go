@@ -38,6 +38,7 @@ type BACnetConstructedDataLastAccessEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastAccessEvent returns LastAccessEvent (property field)
 	GetLastAccessEvent() BACnetAccessEventTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLastAccessEvent struct {
 
 var _ BACnetConstructedDataLastAccessEvent = (*_BACnetConstructedDataLastAccessEvent)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastAccessEvent)(nil)
+
+// NewBACnetConstructedDataLastAccessEvent factory function for _BACnetConstructedDataLastAccessEvent
+func NewBACnetConstructedDataLastAccessEvent(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastAccessEvent BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastAccessEvent {
+	if lastAccessEvent == nil {
+		panic("lastAccessEvent of type BACnetAccessEventTagged for BACnetConstructedDataLastAccessEvent must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastAccessEvent{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastAccessEvent:               lastAccessEvent,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLastAccessEvent) GetActualValue() BACnetAccessEve
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastAccessEvent factory function for _BACnetConstructedDataLastAccessEvent
-func NewBACnetConstructedDataLastAccessEvent(lastAccessEvent BACnetAccessEventTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastAccessEvent {
-	if lastAccessEvent == nil {
-		panic("lastAccessEvent of type BACnetAccessEventTagged for BACnetConstructedDataLastAccessEvent must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastAccessEvent{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastAccessEvent:               lastAccessEvent,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastAccessEvent(structType any) BACnetConstructedDataLastAccessEvent {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastAccessEvent) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataLastAccessEvent) IsBACnetConstructedDataLastAccessEvent() {}
+
+func (m *_BACnetConstructedDataLastAccessEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastAccessEvent) deepCopy() *_BACnetConstructedDataLastAccessEvent {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastAccessEventCopy := &_BACnetConstructedDataLastAccessEvent{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LastAccessEvent.DeepCopy().(BACnetAccessEventTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastAccessEventCopy
+}
 
 func (m *_BACnetConstructedDataLastAccessEvent) String() string {
 	if m == nil {

@@ -341,7 +341,18 @@ func (c *Connection) startSubscriptionHandler() {
 func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, cbusOptions *readWriteModel.CBusOptions, requestContext *readWriteModel.RequestContext, sendOutErrorNotification bool) (ok bool) {
 	c.log.Debug().Bool("sendOutErrorNotification", sendOutErrorNotification).Msg("Send a reset")
 	requestTypeReset := readWriteModel.RequestType_RESET
-	requestReset := readWriteModel.NewRequestReset(requestTypeReset, &requestTypeReset, requestTypeReset, &requestTypeReset, requestTypeReset, nil, &requestTypeReset, requestTypeReset, readWriteModel.NewRequestTermination(), *cbusOptions)
+	requestReset := readWriteModel.NewRequestReset(
+		requestTypeReset,
+		nil,
+		&requestTypeReset,
+		requestTypeReset,
+		readWriteModel.NewRequestTermination(),
+		requestTypeReset,
+		&requestTypeReset,
+		requestTypeReset,
+		&requestTypeReset,
+		*cbusOptions,
+	)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(requestReset, *requestContext, *cbusOptions)
 
 	receivedResetEchoChan := make(chan bool, 1)
@@ -497,8 +508,24 @@ func (c *Connection) setInterfaceOptions1(ctx context.Context, ch chan plc4go.Pl
 // This is used for connection setup
 func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, paramNo readWriteModel.Parameter, parameterValue readWriteModel.ParameterValue, requestContext *readWriteModel.RequestContext, cbusOptions *readWriteModel.CBusOptions) bool {
 	calCommandTypeContainer := readWriteModel.CALCommandTypeContainer_CALCommandWrite_2Bytes + readWriteModel.CALCommandTypeContainer(parameterValue.GetLengthInBytes(ctx))
-	calData := readWriteModel.NewCALDataWrite(paramNo, 0x0, parameterValue, calCommandTypeContainer, nil, *requestContext)
-	directCommand := readWriteModel.NewRequestDirectCommandAccess(calData /*we don't want an alpha otherwise the PCI will auto-switch*/, nil, 0x40, nil, nil, 0x0, readWriteModel.NewRequestTermination(), *cbusOptions)
+	calData := readWriteModel.NewCALDataWrite(
+		calCommandTypeContainer,
+		nil,
+		paramNo,
+		0x0,
+		parameterValue,
+		*requestContext,
+	)
+	directCommand := readWriteModel.NewRequestDirectCommandAccess(
+		0x40,
+		nil,
+		nil,
+		0x0,
+		readWriteModel.NewRequestTermination(),
+		calData,
+		/*we don't want an alpha otherwise the PCI will auto-switch*/ nil,
+		*cbusOptions,
+	)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(directCommand, *requestContext, *cbusOptions)
 
 	directCommandAckChan := make(chan bool, 1)

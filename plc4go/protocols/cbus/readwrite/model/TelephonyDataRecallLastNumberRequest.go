@@ -38,6 +38,7 @@ type TelephonyDataRecallLastNumberRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetRecallLastNumberType returns RecallLastNumberType (property field)
 	GetRecallLastNumberType() byte
@@ -57,6 +58,16 @@ type _TelephonyDataRecallLastNumberRequest struct {
 
 var _ TelephonyDataRecallLastNumberRequest = (*_TelephonyDataRecallLastNumberRequest)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataRecallLastNumberRequest)(nil)
+
+// NewTelephonyDataRecallLastNumberRequest factory function for _TelephonyDataRecallLastNumberRequest
+func NewTelephonyDataRecallLastNumberRequest(commandTypeContainer TelephonyCommandTypeContainer, argument byte, recallLastNumberType byte) *_TelephonyDataRecallLastNumberRequest {
+	_result := &_TelephonyDataRecallLastNumberRequest{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		RecallLastNumberType:  recallLastNumberType,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +117,6 @@ func (m *_TelephonyDataRecallLastNumberRequest) GetIsNumberOfLastIncomingCall() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataRecallLastNumberRequest factory function for _TelephonyDataRecallLastNumberRequest
-func NewTelephonyDataRecallLastNumberRequest(recallLastNumberType byte, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataRecallLastNumberRequest {
-	_result := &_TelephonyDataRecallLastNumberRequest{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		RecallLastNumberType:  recallLastNumberType,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataRecallLastNumberRequest(structType any) TelephonyDataRecallLastNumberRequest {
@@ -228,6 +229,22 @@ func (m *_TelephonyDataRecallLastNumberRequest) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_TelephonyDataRecallLastNumberRequest) IsTelephonyDataRecallLastNumberRequest() {}
+
+func (m *_TelephonyDataRecallLastNumberRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataRecallLastNumberRequest) deepCopy() *_TelephonyDataRecallLastNumberRequest {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataRecallLastNumberRequestCopy := &_TelephonyDataRecallLastNumberRequest{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+		m.RecallLastNumberType,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataRecallLastNumberRequestCopy
+}
 
 func (m *_TelephonyDataRecallLastNumberRequest) String() string {
 	if m == nil {

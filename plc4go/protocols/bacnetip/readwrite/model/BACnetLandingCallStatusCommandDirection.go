@@ -38,6 +38,7 @@ type BACnetLandingCallStatusCommandDirection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLandingCallStatusCommand
 	// GetDirection returns Direction (property field)
 	GetDirection() BACnetLiftCarDirectionTagged
@@ -53,6 +54,19 @@ type _BACnetLandingCallStatusCommandDirection struct {
 
 var _ BACnetLandingCallStatusCommandDirection = (*_BACnetLandingCallStatusCommandDirection)(nil)
 var _ BACnetLandingCallStatusCommandRequirements = (*_BACnetLandingCallStatusCommandDirection)(nil)
+
+// NewBACnetLandingCallStatusCommandDirection factory function for _BACnetLandingCallStatusCommandDirection
+func NewBACnetLandingCallStatusCommandDirection(peekedTagHeader BACnetTagHeader, direction BACnetLiftCarDirectionTagged) *_BACnetLandingCallStatusCommandDirection {
+	if direction == nil {
+		panic("direction of type BACnetLiftCarDirectionTagged for BACnetLandingCallStatusCommandDirection must not be nil")
+	}
+	_result := &_BACnetLandingCallStatusCommandDirection{
+		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
+		Direction:                              direction,
+	}
+	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLandingCallStatusCommandDirection) GetDirection() BACnetLiftCarD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingCallStatusCommandDirection factory function for _BACnetLandingCallStatusCommandDirection
-func NewBACnetLandingCallStatusCommandDirection(direction BACnetLiftCarDirectionTagged, peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommandDirection {
-	if direction == nil {
-		panic("direction of type BACnetLiftCarDirectionTagged for BACnetLandingCallStatusCommandDirection must not be nil")
-	}
-	_result := &_BACnetLandingCallStatusCommandDirection{
-		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
-		Direction:                              direction,
-	}
-	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingCallStatusCommandDirection(structType any) BACnetLandingCallStatusCommandDirection {
@@ -178,6 +179,22 @@ func (m *_BACnetLandingCallStatusCommandDirection) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetLandingCallStatusCommandDirection) IsBACnetLandingCallStatusCommandDirection() {}
+
+func (m *_BACnetLandingCallStatusCommandDirection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingCallStatusCommandDirection) deepCopy() *_BACnetLandingCallStatusCommandDirection {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingCallStatusCommandDirectionCopy := &_BACnetLandingCallStatusCommandDirection{
+		m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).deepCopy(),
+		m.Direction.DeepCopy().(BACnetLiftCarDirectionTagged),
+	}
+	m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = m
+	return _BACnetLandingCallStatusCommandDirectionCopy
+}
 
 func (m *_BACnetLandingCallStatusCommandDirection) String() string {
 	if m == nil {

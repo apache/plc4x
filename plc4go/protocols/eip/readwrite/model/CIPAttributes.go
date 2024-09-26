@@ -38,6 +38,7 @@ type CIPAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetClassId returns ClassId (property field)
 	GetClassId() []uint16
 	// GetNumberAvailable returns NumberAvailable (property field)
@@ -62,6 +63,11 @@ type _CIPAttributes struct {
 }
 
 var _ CIPAttributes = (*_CIPAttributes)(nil)
+
+// NewCIPAttributes factory function for _CIPAttributes
+func NewCIPAttributes(classId []uint16, numberAvailable *uint16, numberActive *uint16, data []byte, packetLength uint16) *_CIPAttributes {
+	return &_CIPAttributes{ClassId: classId, NumberAvailable: numberAvailable, NumberActive: numberActive, Data: data, PacketLength: packetLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,11 +94,6 @@ func (m *_CIPAttributes) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPAttributes factory function for _CIPAttributes
-func NewCIPAttributes(classId []uint16, numberAvailable *uint16, numberActive *uint16, data []byte, packetLength uint16) *_CIPAttributes {
-	return &_CIPAttributes{ClassId: classId, NumberAvailable: numberAvailable, NumberActive: numberActive, Data: data, PacketLength: packetLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPAttributes(structType any) CIPAttributes {
@@ -264,6 +265,24 @@ func (m *_CIPAttributes) GetPacketLength() uint16 {
 ////
 
 func (m *_CIPAttributes) IsCIPAttributes() {}
+
+func (m *_CIPAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPAttributes) deepCopy() *_CIPAttributes {
+	if m == nil {
+		return nil
+	}
+	_CIPAttributesCopy := &_CIPAttributes{
+		utils.DeepCopySlice[uint16, uint16](m.ClassId),
+		utils.CopyPtr[uint16](m.NumberAvailable),
+		utils.CopyPtr[uint16](m.NumberActive),
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.PacketLength,
+	}
+	return _CIPAttributesCopy
+}
 
 func (m *_CIPAttributes) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CBusPointToPointToMultiPointCommandStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToPointToMultiPointCommand
 	// GetStatusRequest returns StatusRequest (property field)
 	GetStatusRequest() StatusRequest
@@ -55,6 +56,19 @@ type _CBusPointToPointToMultiPointCommandStatus struct {
 
 var _ CBusPointToPointToMultiPointCommandStatus = (*_CBusPointToPointToMultiPointCommandStatus)(nil)
 var _ CBusPointToPointToMultiPointCommandRequirements = (*_CBusPointToPointToMultiPointCommandStatus)(nil)
+
+// NewCBusPointToPointToMultiPointCommandStatus factory function for _CBusPointToPointToMultiPointCommandStatus
+func NewCBusPointToPointToMultiPointCommandStatus(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, statusRequest StatusRequest, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandStatus {
+	if statusRequest == nil {
+		panic("statusRequest of type StatusRequest for CBusPointToPointToMultiPointCommandStatus must not be nil")
+	}
+	_result := &_CBusPointToPointToMultiPointCommandStatus{
+		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
+		StatusRequest: statusRequest,
+	}
+	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,19 +97,6 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) GetStatusRequest() StatusRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToPointToMultiPointCommandStatus factory function for _CBusPointToPointToMultiPointCommandStatus
-func NewCBusPointToPointToMultiPointCommandStatus(statusRequest StatusRequest, bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandStatus {
-	if statusRequest == nil {
-		panic("statusRequest of type StatusRequest for CBusPointToPointToMultiPointCommandStatus must not be nil")
-	}
-	_result := &_CBusPointToPointToMultiPointCommandStatus{
-		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
-		StatusRequest: statusRequest,
-	}
-	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToPointToMultiPointCommandStatus(structType any) CBusPointToPointToMultiPointCommandStatus {
@@ -193,6 +194,23 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ct
 }
 
 func (m *_CBusPointToPointToMultiPointCommandStatus) IsCBusPointToPointToMultiPointCommandStatus() {}
+
+func (m *_CBusPointToPointToMultiPointCommandStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointToMultiPointCommandStatus) deepCopy() *_CBusPointToPointToMultiPointCommandStatus {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointToMultiPointCommandStatusCopy := &_CBusPointToPointToMultiPointCommandStatus{
+		m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).deepCopy(),
+		m.StatusRequest.DeepCopy().(StatusRequest),
+		m.reservedField0,
+	}
+	m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = m
+	return _CBusPointToPointToMultiPointCommandStatusCopy
+}
 
 func (m *_CBusPointToPointToMultiPointCommandStatus) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetSetpointReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSetPointReference returns SetPointReference (property field)
 	GetSetPointReference() BACnetObjectPropertyReferenceEnclosed
 	// IsBACnetSetpointReference is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _BACnetSetpointReference struct {
 }
 
 var _ BACnetSetpointReference = (*_BACnetSetpointReference)(nil)
+
+// NewBACnetSetpointReference factory function for _BACnetSetpointReference
+func NewBACnetSetpointReference(setPointReference BACnetObjectPropertyReferenceEnclosed) *_BACnetSetpointReference {
+	return &_BACnetSetpointReference{SetPointReference: setPointReference}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_BACnetSetpointReference) GetSetPointReference() BACnetObjectPropertyRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSetpointReference factory function for _BACnetSetpointReference
-func NewBACnetSetpointReference(setPointReference BACnetObjectPropertyReferenceEnclosed) *_BACnetSetpointReference {
-	return &_BACnetSetpointReference{SetPointReference: setPointReference}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSetpointReference(structType any) BACnetSetpointReference {
@@ -172,6 +173,20 @@ func (m *_BACnetSetpointReference) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetSetpointReference) IsBACnetSetpointReference() {}
+
+func (m *_BACnetSetpointReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSetpointReference) deepCopy() *_BACnetSetpointReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetSetpointReferenceCopy := &_BACnetSetpointReference{
+		m.SetPointReference.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+	}
+	return _BACnetSetpointReferenceCopy
+}
 
 func (m *_BACnetSetpointReference) String() string {
 	if m == nil {

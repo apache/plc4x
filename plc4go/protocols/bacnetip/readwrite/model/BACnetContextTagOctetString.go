@@ -38,6 +38,7 @@ type BACnetContextTagOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadOctetString
@@ -53,6 +54,19 @@ type _BACnetContextTagOctetString struct {
 
 var _ BACnetContextTagOctetString = (*_BACnetContextTagOctetString)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagOctetString)(nil)
+
+// NewBACnetContextTagOctetString factory function for _BACnetContextTagOctetString
+func NewBACnetContextTagOctetString(header BACnetTagHeader, payload BACnetTagPayloadOctetString, tagNumberArgument uint8) *_BACnetContextTagOctetString {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadOctetString for BACnetContextTagOctetString must not be nil")
+	}
+	_result := &_BACnetContextTagOctetString{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_BACnetContextTagOctetString) GetPayload() BACnetTagPayloadOctetString 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagOctetString factory function for _BACnetContextTagOctetString
-func NewBACnetContextTagOctetString(payload BACnetTagPayloadOctetString, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagOctetString {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadOctetString for BACnetContextTagOctetString must not be nil")
-	}
-	_result := &_BACnetContextTagOctetString{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagOctetString(structType any) BACnetContextTagOctetString {
@@ -182,6 +183,22 @@ func (m *_BACnetContextTagOctetString) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetContextTagOctetString) IsBACnetContextTagOctetString() {}
+
+func (m *_BACnetContextTagOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagOctetString) deepCopy() *_BACnetContextTagOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagOctetStringCopy := &_BACnetContextTagOctetString{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadOctetString),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagOctetStringCopy
+}
 
 func (m *_BACnetContextTagOctetString) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type VariantNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantNodeId struct {
 
 var _ VariantNodeId = (*_VariantNodeId)(nil)
 var _ VariantRequirements = (*_VariantNodeId)(nil)
+
+// NewVariantNodeId factory function for _VariantNodeId
+func NewVariantNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []NodeId) *_VariantNodeId {
+	_result := &_VariantNodeId{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantNodeId) GetValue() []NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantNodeId factory function for _VariantNodeId
-func NewVariantNodeId(arrayLength *int32, value []NodeId, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantNodeId {
-	_result := &_VariantNodeId{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantNodeId(structType any) VariantNodeId {
@@ -210,6 +211,23 @@ func (m *_VariantNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_VariantNodeId) IsVariantNodeId() {}
+
+func (m *_VariantNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantNodeId) deepCopy() *_VariantNodeId {
+	if m == nil {
+		return nil
+	}
+	_VariantNodeIdCopy := &_VariantNodeId{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[NodeId, NodeId](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantNodeIdCopy
+}
 
 func (m *_VariantNodeId) String() string {
 	if m == nil {

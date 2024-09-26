@@ -40,6 +40,7 @@ type DF1RequestMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestMessage()
 }
@@ -79,6 +80,11 @@ type _DF1RequestMessage struct {
 
 var _ DF1RequestMessageContract = (*_DF1RequestMessage)(nil)
 
+// NewDF1RequestMessage factory function for _DF1RequestMessage
+func NewDF1RequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *_DF1RequestMessage {
+	return &_DF1RequestMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -104,11 +110,6 @@ func (m *_DF1RequestMessage) GetTransactionCounter() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1RequestMessage factory function for _DF1RequestMessage
-func NewDF1RequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *_DF1RequestMessage {
-	return &_DF1RequestMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1RequestMessage(structType any) DF1RequestMessage {
@@ -229,7 +230,7 @@ func (m *_DF1RequestMessage) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child DF1RequestMessage
 	switch {
 	case commandCode == 0x0F: // DF1CommandRequestMessage
-		if _child, err = (&_DF1CommandRequestMessage{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1CommandRequestMessage).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1CommandRequestMessage for type-switch of DF1RequestMessage")
 		}
 	default:
@@ -291,3 +292,22 @@ func (pm *_DF1RequestMessage) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_DF1RequestMessage) IsDF1RequestMessage() {}
+
+func (m *_DF1RequestMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1RequestMessage) deepCopy() *_DF1RequestMessage {
+	if m == nil {
+		return nil
+	}
+	_DF1RequestMessageCopy := &_DF1RequestMessage{
+		nil, // will be set by child
+		m.DestinationAddress,
+		m.SourceAddress,
+		m.Status,
+		m.TransactionCounter,
+		m.reservedField0,
+	}
+	return _DF1RequestMessageCopy
+}

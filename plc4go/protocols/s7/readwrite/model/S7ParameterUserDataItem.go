@@ -40,6 +40,7 @@ type S7ParameterUserDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7ParameterUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7ParameterUserDataItem()
 }
@@ -144,7 +145,7 @@ func (m *_S7ParameterUserDataItem) parse(ctx context.Context, readBuffer utils.R
 	var _child S7ParameterUserDataItem
 	switch {
 	case itemType == 0x12: // S7ParameterUserDataItemCPUFunctions
-		if _child, err = (&_S7ParameterUserDataItemCPUFunctions{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7ParameterUserDataItemCPUFunctions).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7ParameterUserDataItemCPUFunctions for type-switch of S7ParameterUserDataItem")
 		}
 	default:
@@ -186,3 +187,17 @@ func (pm *_S7ParameterUserDataItem) serializeParent(ctx context.Context, writeBu
 }
 
 func (m *_S7ParameterUserDataItem) IsS7ParameterUserDataItem() {}
+
+func (m *_S7ParameterUserDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterUserDataItem) deepCopy() *_S7ParameterUserDataItem {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterUserDataItemCopy := &_S7ParameterUserDataItem{
+		nil, // will be set by child
+	}
+	return _S7ParameterUserDataItemCopy
+}

@@ -38,6 +38,7 @@ type AmsSerialFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMagicCookie returns MagicCookie (property field)
 	GetMagicCookie() uint16
 	// GetTransmitterAddress returns TransmitterAddress (property field)
@@ -68,6 +69,14 @@ type _AmsSerialFrame struct {
 }
 
 var _ AmsSerialFrame = (*_AmsSerialFrame)(nil)
+
+// NewAmsSerialFrame factory function for _AmsSerialFrame
+func NewAmsSerialFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata AmsPacket, crc uint16) *_AmsSerialFrame {
+	if userdata == nil {
+		panic("userdata of type AmsPacket for AmsSerialFrame must not be nil")
+	}
+	return &_AmsSerialFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Userdata: userdata, Crc: crc}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,14 +115,6 @@ func (m *_AmsSerialFrame) GetCrc() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsSerialFrame factory function for _AmsSerialFrame
-func NewAmsSerialFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata AmsPacket, crc uint16) *_AmsSerialFrame {
-	if userdata == nil {
-		panic("userdata of type AmsPacket for AmsSerialFrame must not be nil")
-	}
-	return &_AmsSerialFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Userdata: userdata, Crc: crc}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsSerialFrame(structType any) AmsSerialFrame {
@@ -289,6 +290,26 @@ func (m *_AmsSerialFrame) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_AmsSerialFrame) IsAmsSerialFrame() {}
+
+func (m *_AmsSerialFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsSerialFrame) deepCopy() *_AmsSerialFrame {
+	if m == nil {
+		return nil
+	}
+	_AmsSerialFrameCopy := &_AmsSerialFrame{
+		m.MagicCookie,
+		m.TransmitterAddress,
+		m.ReceiverAddress,
+		m.FragmentNumber,
+		m.Length,
+		m.Userdata.DeepCopy().(AmsPacket),
+		m.Crc,
+	}
+	return _AmsSerialFrameCopy
+}
 
 func (m *_AmsSerialFrame) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse interface 
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetItemsCount returns ItemsCount (property field)
 	GetItemsCount() uint16
@@ -56,6 +57,17 @@ type _S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse struct {
 
 var _ S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse)(nil)
+
+// NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse factory function for _S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
+func NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, itemsCount uint16, items []AssociatedQueryValueType) *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse {
+	_result := &_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		ItemsCount:                    itemsCount,
+		Items:                         items,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) GetI
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse factory function for _S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
-func NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse(itemsCount uint16, items []AssociatedQueryValueType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse {
-	_result := &_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		ItemsCount:                    itemsCount,
-		Items:                         items,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse(structType any) S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse {
@@ -215,6 +216,23 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) Seri
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) IsS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) deepCopy() *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseCopy := &_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.ItemsCount,
+		utils.DeepCopySlice[AssociatedQueryValueType, AssociatedQueryValueType](m.Items),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) String() string {

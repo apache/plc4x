@@ -38,6 +38,7 @@ type BACnetChannelValueEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
@@ -53,6 +54,19 @@ type _BACnetChannelValueEnumerated struct {
 
 var _ BACnetChannelValueEnumerated = (*_BACnetChannelValueEnumerated)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueEnumerated)(nil)
+
+// NewBACnetChannelValueEnumerated factory function for _BACnetChannelValueEnumerated
+func NewBACnetChannelValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated) *_BACnetChannelValueEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetChannelValueEnumerated must not be nil")
+	}
+	_result := &_BACnetChannelValueEnumerated{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		EnumeratedValue:            enumeratedValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueEnumerated) GetEnumeratedValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueEnumerated factory function for _BACnetChannelValueEnumerated
-func NewBACnetChannelValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueEnumerated {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetChannelValueEnumerated must not be nil")
-	}
-	_result := &_BACnetChannelValueEnumerated{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		EnumeratedValue:            enumeratedValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueEnumerated(structType any) BACnetChannelValueEnumerated {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueEnumerated) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetChannelValueEnumerated) IsBACnetChannelValueEnumerated() {}
+
+func (m *_BACnetChannelValueEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueEnumerated) deepCopy() *_BACnetChannelValueEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueEnumeratedCopy := &_BACnetChannelValueEnumerated{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueEnumeratedCopy
+}
 
 func (m *_BACnetChannelValueEnumerated) String() string {
 	if m == nil {

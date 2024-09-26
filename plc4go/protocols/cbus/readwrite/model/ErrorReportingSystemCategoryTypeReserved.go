@@ -38,6 +38,7 @@ type ErrorReportingSystemCategoryTypeReserved interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingSystemCategoryType
 	// GetReservedValue returns ReservedValue (property field)
 	GetReservedValue() uint8
@@ -53,6 +54,16 @@ type _ErrorReportingSystemCategoryTypeReserved struct {
 
 var _ ErrorReportingSystemCategoryTypeReserved = (*_ErrorReportingSystemCategoryTypeReserved)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeReserved)(nil)
+
+// NewErrorReportingSystemCategoryTypeReserved factory function for _ErrorReportingSystemCategoryTypeReserved
+func NewErrorReportingSystemCategoryTypeReserved(reservedValue uint8) *_ErrorReportingSystemCategoryTypeReserved {
+	_result := &_ErrorReportingSystemCategoryTypeReserved{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		ReservedValue:                            reservedValue,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetReservedValue() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeReserved factory function for _ErrorReportingSystemCategoryTypeReserved
-func NewErrorReportingSystemCategoryTypeReserved(reservedValue uint8) *_ErrorReportingSystemCategoryTypeReserved {
-	_result := &_ErrorReportingSystemCategoryTypeReserved{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		ReservedValue:                            reservedValue,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeReserved(structType any) ErrorReportingSystemCategoryTypeReserved {
@@ -179,6 +180,22 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_ErrorReportingSystemCategoryTypeReserved) IsErrorReportingSystemCategoryTypeReserved() {}
+
+func (m *_ErrorReportingSystemCategoryTypeReserved) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryTypeReserved) deepCopy() *_ErrorReportingSystemCategoryTypeReserved {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeReservedCopy := &_ErrorReportingSystemCategoryTypeReserved{
+		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
+		m.ReservedValue,
+	}
+	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	return _ErrorReportingSystemCategoryTypeReservedCopy
+}
 
 func (m *_ErrorReportingSystemCategoryTypeReserved) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetHostAddressIpAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetHostAddress
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() BACnetContextTagOctetString
@@ -53,6 +54,19 @@ type _BACnetHostAddressIpAddress struct {
 
 var _ BACnetHostAddressIpAddress = (*_BACnetHostAddressIpAddress)(nil)
 var _ BACnetHostAddressRequirements = (*_BACnetHostAddressIpAddress)(nil)
+
+// NewBACnetHostAddressIpAddress factory function for _BACnetHostAddressIpAddress
+func NewBACnetHostAddressIpAddress(peekedTagHeader BACnetTagHeader, ipAddress BACnetContextTagOctetString) *_BACnetHostAddressIpAddress {
+	if ipAddress == nil {
+		panic("ipAddress of type BACnetContextTagOctetString for BACnetHostAddressIpAddress must not be nil")
+	}
+	_result := &_BACnetHostAddressIpAddress{
+		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
+		IpAddress:                 ipAddress,
+	}
+	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetHostAddressIpAddress) GetIpAddress() BACnetContextTagOctetString
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddressIpAddress factory function for _BACnetHostAddressIpAddress
-func NewBACnetHostAddressIpAddress(ipAddress BACnetContextTagOctetString, peekedTagHeader BACnetTagHeader) *_BACnetHostAddressIpAddress {
-	if ipAddress == nil {
-		panic("ipAddress of type BACnetContextTagOctetString for BACnetHostAddressIpAddress must not be nil")
-	}
-	_result := &_BACnetHostAddressIpAddress{
-		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
-		IpAddress:                 ipAddress,
-	}
-	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddressIpAddress(structType any) BACnetHostAddressIpAddress {
@@ -178,6 +179,22 @@ func (m *_BACnetHostAddressIpAddress) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetHostAddressIpAddress) IsBACnetHostAddressIpAddress() {}
+
+func (m *_BACnetHostAddressIpAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddressIpAddress) deepCopy() *_BACnetHostAddressIpAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressIpAddressCopy := &_BACnetHostAddressIpAddress{
+		m.BACnetHostAddressContract.(*_BACnetHostAddress).deepCopy(),
+		m.IpAddress.DeepCopy().(BACnetContextTagOctetString),
+	}
+	m.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
+	return _BACnetHostAddressIpAddressCopy
+}
 
 func (m *_BACnetHostAddressIpAddress) String() string {
 	if m == nil {

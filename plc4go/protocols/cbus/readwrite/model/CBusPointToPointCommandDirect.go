@@ -38,6 +38,7 @@ type CBusPointToPointCommandDirect interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToPointCommand
 	// GetUnitAddress returns UnitAddress (property field)
 	GetUnitAddress() UnitAddress
@@ -55,6 +56,19 @@ type _CBusPointToPointCommandDirect struct {
 
 var _ CBusPointToPointCommandDirect = (*_CBusPointToPointCommandDirect)(nil)
 var _ CBusPointToPointCommandRequirements = (*_CBusPointToPointCommandDirect)(nil)
+
+// NewCBusPointToPointCommandDirect factory function for _CBusPointToPointCommandDirect
+func NewCBusPointToPointCommandDirect(bridgeAddressCountPeek uint16, calData CALData, unitAddress UnitAddress, cBusOptions CBusOptions) *_CBusPointToPointCommandDirect {
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for CBusPointToPointCommandDirect must not be nil")
+	}
+	_result := &_CBusPointToPointCommandDirect{
+		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+		UnitAddress:                     unitAddress,
+	}
+	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,19 +97,6 @@ func (m *_CBusPointToPointCommandDirect) GetUnitAddress() UnitAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToPointCommandDirect factory function for _CBusPointToPointCommandDirect
-func NewCBusPointToPointCommandDirect(unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommandDirect {
-	if unitAddress == nil {
-		panic("unitAddress of type UnitAddress for CBusPointToPointCommandDirect must not be nil")
-	}
-	_result := &_CBusPointToPointCommandDirect{
-		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
-		UnitAddress:                     unitAddress,
-	}
-	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToPointCommandDirect(structType any) CBusPointToPointCommandDirect {
@@ -193,6 +194,23 @@ func (m *_CBusPointToPointCommandDirect) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_CBusPointToPointCommandDirect) IsCBusPointToPointCommandDirect() {}
+
+func (m *_CBusPointToPointCommandDirect) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointCommandDirect) deepCopy() *_CBusPointToPointCommandDirect {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointCommandDirectCopy := &_CBusPointToPointCommandDirect{
+		m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).deepCopy(),
+		m.UnitAddress.DeepCopy().(UnitAddress),
+		m.reservedField0,
+	}
+	m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = m
+	return _CBusPointToPointCommandDirectCopy
+}
 
 func (m *_CBusPointToPointCommandDirect) String() string {
 	if m == nil {

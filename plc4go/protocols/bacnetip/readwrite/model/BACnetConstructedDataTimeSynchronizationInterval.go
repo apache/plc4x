@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeSynchronizationInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeSynchronization returns TimeSynchronization (property field)
 	GetTimeSynchronization() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTimeSynchronizationInterval struct {
 
 var _ BACnetConstructedDataTimeSynchronizationInterval = (*_BACnetConstructedDataTimeSynchronizationInterval)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeSynchronizationInterval)(nil)
+
+// NewBACnetConstructedDataTimeSynchronizationInterval factory function for _BACnetConstructedDataTimeSynchronizationInterval
+func NewBACnetConstructedDataTimeSynchronizationInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronization BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationInterval {
+	if timeSynchronization == nil {
+		panic("timeSynchronization of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeSynchronizationInterval must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimeSynchronizationInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeSynchronization:           timeSynchronization,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimeSynchronizationInterval factory function for _BACnetConstructedDataTimeSynchronizationInterval
-func NewBACnetConstructedDataTimeSynchronizationInterval(timeSynchronization BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationInterval {
-	if timeSynchronization == nil {
-		panic("timeSynchronization of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeSynchronizationInterval must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimeSynchronizationInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimeSynchronization:           timeSynchronization,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimeSynchronizationInterval(structType any) BACnetConstructedDataTimeSynchronizationInterval {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationInterval) IsBACnetConstructedDataTimeSynchronizationInterval() {
+}
+
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeSynchronizationInterval) deepCopy() *_BACnetConstructedDataTimeSynchronizationInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeSynchronizationIntervalCopy := &_BACnetConstructedDataTimeSynchronizationInterval{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TimeSynchronization.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeSynchronizationIntervalCopy
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationInterval) String() string {

@@ -38,6 +38,7 @@ type BACnetDoorAlarmStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetDoorAlarmStateTagged struct {
 }
 
 var _ BACnetDoorAlarmStateTagged = (*_BACnetDoorAlarmStateTagged)(nil)
+
+// NewBACnetDoorAlarmStateTagged factory function for _BACnetDoorAlarmStateTagged
+func NewBACnetDoorAlarmStateTagged(header BACnetTagHeader, value BACnetDoorAlarmState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDoorAlarmStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDoorAlarmStateTagged must not be nil")
+	}
+	return &_BACnetDoorAlarmStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetDoorAlarmStateTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDoorAlarmStateTagged factory function for _BACnetDoorAlarmStateTagged
-func NewBACnetDoorAlarmStateTagged(header BACnetTagHeader, value BACnetDoorAlarmState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDoorAlarmStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDoorAlarmStateTagged must not be nil")
-	}
-	return &_BACnetDoorAlarmStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDoorAlarmStateTagged(structType any) BACnetDoorAlarmStateTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetDoorAlarmStateTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetDoorAlarmStateTagged) IsBACnetDoorAlarmStateTagged() {}
+
+func (m *_BACnetDoorAlarmStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDoorAlarmStateTagged) deepCopy() *_BACnetDoorAlarmStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDoorAlarmStateTaggedCopy := &_BACnetDoorAlarmStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDoorAlarmStateTaggedCopy
+}
 
 func (m *_BACnetDoorAlarmStateTagged) String() string {
 	if m == nil {

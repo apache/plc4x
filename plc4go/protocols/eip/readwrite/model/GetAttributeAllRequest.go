@@ -38,6 +38,7 @@ type GetAttributeAllRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
@@ -56,6 +57,23 @@ type _GetAttributeAllRequest struct {
 
 var _ GetAttributeAllRequest = (*_GetAttributeAllRequest)(nil)
 var _ CipServiceRequirements = (*_GetAttributeAllRequest)(nil)
+
+// NewGetAttributeAllRequest factory function for _GetAttributeAllRequest
+func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSegment, serviceLen uint16) *_GetAttributeAllRequest {
+	if classSegment == nil {
+		panic("classSegment of type PathSegment for GetAttributeAllRequest must not be nil")
+	}
+	if instanceSegment == nil {
+		panic("instanceSegment of type PathSegment for GetAttributeAllRequest must not be nil")
+	}
+	_result := &_GetAttributeAllRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		ClassSegment:       classSegment,
+		InstanceSegment:    instanceSegment,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,23 +118,6 @@ func (m *_GetAttributeAllRequest) GetInstanceSegment() PathSegment {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGetAttributeAllRequest factory function for _GetAttributeAllRequest
-func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSegment, serviceLen uint16) *_GetAttributeAllRequest {
-	if classSegment == nil {
-		panic("classSegment of type PathSegment for GetAttributeAllRequest must not be nil")
-	}
-	if instanceSegment == nil {
-		panic("instanceSegment of type PathSegment for GetAttributeAllRequest must not be nil")
-	}
-	_result := &_GetAttributeAllRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		ClassSegment:       classSegment,
-		InstanceSegment:    instanceSegment,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGetAttributeAllRequest(structType any) GetAttributeAllRequest {
@@ -227,6 +228,23 @@ func (m *_GetAttributeAllRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_GetAttributeAllRequest) IsGetAttributeAllRequest() {}
+
+func (m *_GetAttributeAllRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetAttributeAllRequest) deepCopy() *_GetAttributeAllRequest {
+	if m == nil {
+		return nil
+	}
+	_GetAttributeAllRequestCopy := &_GetAttributeAllRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.ClassSegment.DeepCopy().(PathSegment),
+		m.InstanceSegment.DeepCopy().(PathSegment),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _GetAttributeAllRequestCopy
+}
 
 func (m *_GetAttributeAllRequest) String() string {
 	if m == nil {

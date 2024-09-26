@@ -38,6 +38,7 @@ type BACnetError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetError()
 }
@@ -135,35 +136,35 @@ func (m *_BACnetError) parse(ctx context.Context, readBuffer utils.ReadBuffer, e
 	var _child BACnetError
 	switch {
 	case errorChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE: // SubscribeCOVPropertyMultipleError
-		if _child, err = (&_SubscribeCOVPropertyMultipleError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_SubscribeCOVPropertyMultipleError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SubscribeCOVPropertyMultipleError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT: // ChangeListAddError
-		if _child, err = (&_ChangeListAddError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_ChangeListAddError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ChangeListAddError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT: // ChangeListRemoveError
-		if _child, err = (&_ChangeListRemoveError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_ChangeListRemoveError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ChangeListRemoveError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // CreateObjectError
-		if _child, err = (&_CreateObjectError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_CreateObjectError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CreateObjectError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: // WritePropertyMultipleError
-		if _child, err = (&_WritePropertyMultipleError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_WritePropertyMultipleError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type WritePropertyMultipleError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // ConfirmedPrivateTransferError
-		if _child, err = (&_ConfirmedPrivateTransferError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_ConfirmedPrivateTransferError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConfirmedPrivateTransferError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // VTCloseError
-		if _child, err = (&_VTCloseError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_VTCloseError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VTCloseError for type-switch of BACnetError")
 		}
 	case 0 == 0: // BACnetErrorGeneral
-		if _child, err = (&_BACnetErrorGeneral{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_BACnetErrorGeneral).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetErrorGeneral for type-switch of BACnetError")
 		}
 	default:
@@ -201,3 +202,17 @@ func (pm *_BACnetError) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_BACnetError) IsBACnetError() {}
+
+func (m *_BACnetError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetError) deepCopy() *_BACnetError {
+	if m == nil {
+		return nil
+	}
+	_BACnetErrorCopy := &_BACnetError{
+		nil, // will be set by child
+	}
+	return _BACnetErrorCopy
+}

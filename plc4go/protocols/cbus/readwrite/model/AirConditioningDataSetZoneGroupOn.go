@@ -38,6 +38,7 @@ type AirConditioningDataSetZoneGroupOn interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -53,6 +54,16 @@ type _AirConditioningDataSetZoneGroupOn struct {
 
 var _ AirConditioningDataSetZoneGroupOn = (*_AirConditioningDataSetZoneGroupOn)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataSetZoneGroupOn)(nil)
+
+// NewAirConditioningDataSetZoneGroupOn factory function for _AirConditioningDataSetZoneGroupOn
+func NewAirConditioningDataSetZoneGroupOn(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte) *_AirConditioningDataSetZoneGroupOn {
+	_result := &_AirConditioningDataSetZoneGroupOn{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_AirConditioningDataSetZoneGroupOn) GetZoneGroup() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataSetZoneGroupOn factory function for _AirConditioningDataSetZoneGroupOn
-func NewAirConditioningDataSetZoneGroupOn(zoneGroup byte, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetZoneGroupOn {
-	_result := &_AirConditioningDataSetZoneGroupOn{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataSetZoneGroupOn(structType any) AirConditioningDataSetZoneGroupOn {
@@ -175,6 +176,22 @@ func (m *_AirConditioningDataSetZoneGroupOn) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_AirConditioningDataSetZoneGroupOn) IsAirConditioningDataSetZoneGroupOn() {}
+
+func (m *_AirConditioningDataSetZoneGroupOn) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataSetZoneGroupOn) deepCopy() *_AirConditioningDataSetZoneGroupOn {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataSetZoneGroupOnCopy := &_AirConditioningDataSetZoneGroupOn{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataSetZoneGroupOnCopy
+}
 
 func (m *_AirConditioningDataSetZoneGroupOn) String() string {
 	if m == nil {

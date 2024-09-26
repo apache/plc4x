@@ -38,6 +38,7 @@ type BACnetConstructedDataVendorIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVendorIdentifier returns VendorIdentifier (property field)
 	GetVendorIdentifier() BACnetVendorIdTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataVendorIdentifier struct {
 
 var _ BACnetConstructedDataVendorIdentifier = (*_BACnetConstructedDataVendorIdentifier)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVendorIdentifier)(nil)
+
+// NewBACnetConstructedDataVendorIdentifier factory function for _BACnetConstructedDataVendorIdentifier
+func NewBACnetConstructedDataVendorIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vendorIdentifier BACnetVendorIdTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorIdentifier {
+	if vendorIdentifier == nil {
+		panic("vendorIdentifier of type BACnetVendorIdTagged for BACnetConstructedDataVendorIdentifier must not be nil")
+	}
+	_result := &_BACnetConstructedDataVendorIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VendorIdentifier:              vendorIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataVendorIdentifier) GetActualValue() BACnetVendorId
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVendorIdentifier factory function for _BACnetConstructedDataVendorIdentifier
-func NewBACnetConstructedDataVendorIdentifier(vendorIdentifier BACnetVendorIdTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorIdentifier {
-	if vendorIdentifier == nil {
-		panic("vendorIdentifier of type BACnetVendorIdTagged for BACnetConstructedDataVendorIdentifier must not be nil")
-	}
-	_result := &_BACnetConstructedDataVendorIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VendorIdentifier:              vendorIdentifier,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVendorIdentifier(structType any) BACnetConstructedDataVendorIdentifier {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataVendorIdentifier) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataVendorIdentifier) IsBACnetConstructedDataVendorIdentifier() {}
+
+func (m *_BACnetConstructedDataVendorIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVendorIdentifier) deepCopy() *_BACnetConstructedDataVendorIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVendorIdentifierCopy := &_BACnetConstructedDataVendorIdentifier{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.VendorIdentifier.DeepCopy().(BACnetVendorIdTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVendorIdentifierCopy
+}
 
 func (m *_BACnetConstructedDataVendorIdentifier) String() string {
 	if m == nil {

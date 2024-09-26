@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequestWhoHasObject
 	// GetObjectName returns ObjectName (property field)
 	GetObjectName() BACnetContextTagCharacterString
@@ -53,6 +54,19 @@ type _BACnetUnconfirmedServiceRequestWhoHasObjectName struct {
 
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectName = (*_BACnetUnconfirmedServiceRequestWhoHasObjectName)(nil)
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectRequirements = (*_BACnetUnconfirmedServiceRequestWhoHasObjectName)(nil)
+
+// NewBACnetUnconfirmedServiceRequestWhoHasObjectName factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectName
+func NewBACnetUnconfirmedServiceRequestWhoHasObjectName(peekedTagHeader BACnetTagHeader, objectName BACnetContextTagCharacterString) *_BACnetUnconfirmedServiceRequestWhoHasObjectName {
+	if objectName == nil {
+		panic("objectName of type BACnetContextTagCharacterString for BACnetUnconfirmedServiceRequestWhoHasObjectName must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestWhoHasObjectName{
+		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
+		ObjectName: objectName,
+	}
+	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetObjectName() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWhoHasObjectName factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectName
-func NewBACnetUnconfirmedServiceRequestWhoHasObjectName(objectName BACnetContextTagCharacterString, peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObjectName {
-	if objectName == nil {
-		panic("objectName of type BACnetContextTagCharacterString for BACnetUnconfirmedServiceRequestWhoHasObjectName must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestWhoHasObjectName{
-		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
-		ObjectName: objectName,
-	}
-	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWhoHasObjectName(structType any) BACnetUnconfirmedServiceRequestWhoHasObjectName {
@@ -178,6 +179,22 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) SerializeWithWriteBuf
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) IsBACnetUnconfirmedServiceRequestWhoHasObjectName() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) deepCopy() *_BACnetUnconfirmedServiceRequestWhoHasObjectName {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestWhoHasObjectNameCopy := &_BACnetUnconfirmedServiceRequestWhoHasObjectName{
+		m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).deepCopy(),
+		m.ObjectName.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = m
+	return _BACnetUnconfirmedServiceRequestWhoHasObjectNameCopy
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) String() string {

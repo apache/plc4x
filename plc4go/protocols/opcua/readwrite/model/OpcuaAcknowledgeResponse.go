@@ -38,6 +38,7 @@ type OpcuaAcknowledgeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetVersion returns Version (property field)
 	GetVersion() uint32
@@ -56,6 +57,20 @@ type _OpcuaAcknowledgeResponse struct {
 
 var _ OpcuaAcknowledgeResponse = (*_OpcuaAcknowledgeResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaAcknowledgeResponse)(nil)
+
+// NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
+func NewOpcuaAcknowledgeResponse(chunk ChunkType, version uint32, limits OpcuaProtocolLimits) *_OpcuaAcknowledgeResponse {
+	if limits == nil {
+		panic("limits of type OpcuaProtocolLimits for OpcuaAcknowledgeResponse must not be nil")
+	}
+	_result := &_OpcuaAcknowledgeResponse{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Version:            version,
+		Limits:             limits,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,20 +111,6 @@ func (m *_OpcuaAcknowledgeResponse) GetLimits() OpcuaProtocolLimits {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
-func NewOpcuaAcknowledgeResponse(version uint32, limits OpcuaProtocolLimits, chunk ChunkType) *_OpcuaAcknowledgeResponse {
-	if limits == nil {
-		panic("limits of type OpcuaProtocolLimits for OpcuaAcknowledgeResponse must not be nil")
-	}
-	_result := &_OpcuaAcknowledgeResponse{
-		MessagePDUContract: NewMessagePDU(chunk),
-		Version:            version,
-		Limits:             limits,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaAcknowledgeResponse(structType any) OpcuaAcknowledgeResponse {
@@ -207,6 +208,23 @@ func (m *_OpcuaAcknowledgeResponse) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_OpcuaAcknowledgeResponse) IsOpcuaAcknowledgeResponse() {}
+
+func (m *_OpcuaAcknowledgeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaAcknowledgeResponse) deepCopy() *_OpcuaAcknowledgeResponse {
+	if m == nil {
+		return nil
+	}
+	_OpcuaAcknowledgeResponseCopy := &_OpcuaAcknowledgeResponse{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.Version,
+		m.Limits.DeepCopy().(OpcuaProtocolLimits),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaAcknowledgeResponseCopy
+}
 
 func (m *_OpcuaAcknowledgeResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CBusCommandPointToPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusCommand
 	// GetCommand returns Command (property field)
 	GetCommand() CBusPointToPointCommand
@@ -53,6 +54,19 @@ type _CBusCommandPointToPoint struct {
 
 var _ CBusCommandPointToPoint = (*_CBusCommandPointToPoint)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandPointToPoint)(nil)
+
+// NewCBusCommandPointToPoint factory function for _CBusCommandPointToPoint
+func NewCBusCommandPointToPoint(header CBusHeader, command CBusPointToPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToPoint {
+	if command == nil {
+		panic("command of type CBusPointToPointCommand for CBusCommandPointToPoint must not be nil")
+	}
+	_result := &_CBusCommandPointToPoint{
+		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		Command:             command,
+	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_CBusCommandPointToPoint) GetCommand() CBusPointToPointCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommandPointToPoint factory function for _CBusCommandPointToPoint
-func NewCBusCommandPointToPoint(command CBusPointToPointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToPoint {
-	if command == nil {
-		panic("command of type CBusPointToPointCommand for CBusCommandPointToPoint must not be nil")
-	}
-	_result := &_CBusCommandPointToPoint{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
-		Command:             command,
-	}
-	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommandPointToPoint(structType any) CBusCommandPointToPoint {
@@ -178,6 +179,22 @@ func (m *_CBusCommandPointToPoint) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_CBusCommandPointToPoint) IsCBusCommandPointToPoint() {}
+
+func (m *_CBusCommandPointToPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusCommandPointToPoint) deepCopy() *_CBusCommandPointToPoint {
+	if m == nil {
+		return nil
+	}
+	_CBusCommandPointToPointCopy := &_CBusCommandPointToPoint{
+		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
+		m.Command.DeepCopy().(CBusPointToPointCommand),
+	}
+	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	return _CBusCommandPointToPointCopy
+}
 
 func (m *_CBusCommandPointToPoint) String() string {
 	if m == nil {

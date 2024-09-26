@@ -40,6 +40,7 @@ type BVLCRegisterForeignDevice interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetTtl returns Ttl (property field)
 	GetTtl() uint16
@@ -55,6 +56,16 @@ type _BVLCRegisterForeignDevice struct {
 
 var _ BVLCRegisterForeignDevice = (*_BVLCRegisterForeignDevice)(nil)
 var _ BVLCRequirements = (*_BVLCRegisterForeignDevice)(nil)
+
+// NewBVLCRegisterForeignDevice factory function for _BVLCRegisterForeignDevice
+func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
+	_result := &_BVLCRegisterForeignDevice{
+		BVLCContract: NewBVLC(),
+		Ttl:          ttl,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,16 +98,6 @@ func (m *_BVLCRegisterForeignDevice) GetTtl() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCRegisterForeignDevice factory function for _BVLCRegisterForeignDevice
-func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
-	_result := &_BVLCRegisterForeignDevice{
-		BVLCContract: NewBVLC(),
-		Ttl:          ttl,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCRegisterForeignDevice(structType any) BVLCRegisterForeignDevice {
@@ -181,6 +182,22 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BVLCRegisterForeignDevice) IsBVLCRegisterForeignDevice() {}
+
+func (m *_BVLCRegisterForeignDevice) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCRegisterForeignDevice) deepCopy() *_BVLCRegisterForeignDevice {
+	if m == nil {
+		return nil
+	}
+	_BVLCRegisterForeignDeviceCopy := &_BVLCRegisterForeignDevice{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		m.Ttl,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCRegisterForeignDeviceCopy
+}
 
 func (m *_BVLCRegisterForeignDevice) String() string {
 	if m == nil {

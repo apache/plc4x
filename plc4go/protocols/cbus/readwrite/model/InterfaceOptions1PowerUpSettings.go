@@ -38,6 +38,7 @@ type InterfaceOptions1PowerUpSettings interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetInterfaceOptions1 returns InterfaceOptions1 (property field)
 	GetInterfaceOptions1() InterfaceOptions1
 	// IsInterfaceOptions1PowerUpSettings is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,14 @@ type _InterfaceOptions1PowerUpSettings struct {
 }
 
 var _ InterfaceOptions1PowerUpSettings = (*_InterfaceOptions1PowerUpSettings)(nil)
+
+// NewInterfaceOptions1PowerUpSettings factory function for _InterfaceOptions1PowerUpSettings
+func NewInterfaceOptions1PowerUpSettings(interfaceOptions1 InterfaceOptions1) *_InterfaceOptions1PowerUpSettings {
+	if interfaceOptions1 == nil {
+		panic("interfaceOptions1 of type InterfaceOptions1 for InterfaceOptions1PowerUpSettings must not be nil")
+	}
+	return &_InterfaceOptions1PowerUpSettings{InterfaceOptions1: interfaceOptions1}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +73,6 @@ func (m *_InterfaceOptions1PowerUpSettings) GetInterfaceOptions1() InterfaceOpti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewInterfaceOptions1PowerUpSettings factory function for _InterfaceOptions1PowerUpSettings
-func NewInterfaceOptions1PowerUpSettings(interfaceOptions1 InterfaceOptions1) *_InterfaceOptions1PowerUpSettings {
-	if interfaceOptions1 == nil {
-		panic("interfaceOptions1 of type InterfaceOptions1 for InterfaceOptions1PowerUpSettings must not be nil")
-	}
-	return &_InterfaceOptions1PowerUpSettings{InterfaceOptions1: interfaceOptions1}
-}
 
 // Deprecated: use the interface for direct cast
 func CastInterfaceOptions1PowerUpSettings(structType any) InterfaceOptions1PowerUpSettings {
@@ -169,6 +170,20 @@ func (m *_InterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_InterfaceOptions1PowerUpSettings) IsInterfaceOptions1PowerUpSettings() {}
+
+func (m *_InterfaceOptions1PowerUpSettings) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InterfaceOptions1PowerUpSettings) deepCopy() *_InterfaceOptions1PowerUpSettings {
+	if m == nil {
+		return nil
+	}
+	_InterfaceOptions1PowerUpSettingsCopy := &_InterfaceOptions1PowerUpSettings{
+		m.InterfaceOptions1.DeepCopy().(InterfaceOptions1),
+	}
+	return _InterfaceOptions1PowerUpSettingsCopy
+}
 
 func (m *_InterfaceOptions1PowerUpSettings) String() string {
 	if m == nil {

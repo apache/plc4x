@@ -38,6 +38,7 @@ type BACnetOptionalCharacterStringValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalCharacterString
 	// GetCharacterstring returns Characterstring (property field)
 	GetCharacterstring() BACnetApplicationTagCharacterString
@@ -53,6 +54,19 @@ type _BACnetOptionalCharacterStringValue struct {
 
 var _ BACnetOptionalCharacterStringValue = (*_BACnetOptionalCharacterStringValue)(nil)
 var _ BACnetOptionalCharacterStringRequirements = (*_BACnetOptionalCharacterStringValue)(nil)
+
+// NewBACnetOptionalCharacterStringValue factory function for _BACnetOptionalCharacterStringValue
+func NewBACnetOptionalCharacterStringValue(peekedTagHeader BACnetTagHeader, characterstring BACnetApplicationTagCharacterString) *_BACnetOptionalCharacterStringValue {
+	if characterstring == nil {
+		panic("characterstring of type BACnetApplicationTagCharacterString for BACnetOptionalCharacterStringValue must not be nil")
+	}
+	_result := &_BACnetOptionalCharacterStringValue{
+		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
+		Characterstring:                       characterstring,
+	}
+	_result.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetOptionalCharacterStringValue) GetCharacterstring() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalCharacterStringValue factory function for _BACnetOptionalCharacterStringValue
-func NewBACnetOptionalCharacterStringValue(characterstring BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader) *_BACnetOptionalCharacterStringValue {
-	if characterstring == nil {
-		panic("characterstring of type BACnetApplicationTagCharacterString for BACnetOptionalCharacterStringValue must not be nil")
-	}
-	_result := &_BACnetOptionalCharacterStringValue{
-		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
-		Characterstring:                       characterstring,
-	}
-	_result.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalCharacterStringValue(structType any) BACnetOptionalCharacterStringValue {
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalCharacterStringValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetOptionalCharacterStringValue) IsBACnetOptionalCharacterStringValue() {}
+
+func (m *_BACnetOptionalCharacterStringValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalCharacterStringValue) deepCopy() *_BACnetOptionalCharacterStringValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalCharacterStringValueCopy := &_BACnetOptionalCharacterStringValue{
+		m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString).deepCopy(),
+		m.Characterstring.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = m
+	return _BACnetOptionalCharacterStringValueCopy
+}
 
 func (m *_BACnetOptionalCharacterStringValue) String() string {
 	if m == nil {

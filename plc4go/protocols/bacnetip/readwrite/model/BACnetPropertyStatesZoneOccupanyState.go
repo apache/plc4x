@@ -38,6 +38,7 @@ type BACnetPropertyStatesZoneOccupanyState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetZoneOccupanyState returns ZoneOccupanyState (property field)
 	GetZoneOccupanyState() BACnetAccessZoneOccupancyStateTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesZoneOccupanyState struct {
 
 var _ BACnetPropertyStatesZoneOccupanyState = (*_BACnetPropertyStatesZoneOccupanyState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesZoneOccupanyState)(nil)
+
+// NewBACnetPropertyStatesZoneOccupanyState factory function for _BACnetPropertyStatesZoneOccupanyState
+func NewBACnetPropertyStatesZoneOccupanyState(peekedTagHeader BACnetTagHeader, zoneOccupanyState BACnetAccessZoneOccupancyStateTagged) *_BACnetPropertyStatesZoneOccupanyState {
+	if zoneOccupanyState == nil {
+		panic("zoneOccupanyState of type BACnetAccessZoneOccupancyStateTagged for BACnetPropertyStatesZoneOccupanyState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesZoneOccupanyState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ZoneOccupanyState:            zoneOccupanyState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) GetZoneOccupanyState() BACnetAc
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesZoneOccupanyState factory function for _BACnetPropertyStatesZoneOccupanyState
-func NewBACnetPropertyStatesZoneOccupanyState(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesZoneOccupanyState {
-	if zoneOccupanyState == nil {
-		panic("zoneOccupanyState of type BACnetAccessZoneOccupancyStateTagged for BACnetPropertyStatesZoneOccupanyState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesZoneOccupanyState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ZoneOccupanyState:            zoneOccupanyState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesZoneOccupanyState(structType any) BACnetPropertyStatesZoneOccupanyState {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetPropertyStatesZoneOccupanyState) IsBACnetPropertyStatesZoneOccupanyState() {}
+
+func (m *_BACnetPropertyStatesZoneOccupanyState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesZoneOccupanyState) deepCopy() *_BACnetPropertyStatesZoneOccupanyState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesZoneOccupanyStateCopy := &_BACnetPropertyStatesZoneOccupanyState{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.ZoneOccupanyState.DeepCopy().(BACnetAccessZoneOccupancyStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesZoneOccupanyStateCopy
+}
 
 func (m *_BACnetPropertyStatesZoneOccupanyState) String() string {
 	if m == nil {

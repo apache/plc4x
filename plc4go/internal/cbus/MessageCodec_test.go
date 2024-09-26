@@ -32,6 +32,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestMessageCodec_Send(t *testing.T) {
@@ -60,8 +61,18 @@ func TestMessageCodec_Send(t *testing.T) {
 			name: "a cbus message",
 			args: args{message: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewReplyOrConfirmationConfirmation(
-					readWriteModel.NewConfirmation(readWriteModel.NewAlpha('!'), nil, readWriteModel.ConfirmationType_CHECKSUM_FAILURE), nil, 0x00, nil, nil,
-				), nil, nil,
+					0x00,
+					readWriteModel.NewConfirmation(
+						readWriteModel.NewAlpha('!'),
+						nil,
+						readWriteModel.ConfirmationType_CHECKSUM_FAILURE,
+					),
+					nil,
+					nil,
+					nil,
+				),
+				nil,
+				nil,
 			)},
 			setup: func(t *testing.T, fields *fields, args *args) {
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
@@ -257,19 +268,19 @@ func TestMessageCodec_Receive(t *testing.T) {
 			},
 			want: readWriteModel.NewCBusMessageToServer(
 				readWriteModel.NewRequestDirectCommandAccess(
+					64,
+					nil,
+					nil,
+					readWriteModel.RequestType_DIRECT_COMMAND,
+					readWriteModel.NewRequestTermination(),
 					readWriteModel.NewCALDataRecall(
-						readWriteModel.Parameter_UNKNOWN_33,
-						1,
 						readWriteModel.CALCommandTypeContainer_CALCommandRecall,
 						nil,
+						readWriteModel.Parameter_UNKNOWN_33,
+						1,
 						nil,
 					),
 					nil,
-					readWriteModel.RequestType_DIRECT_COMMAND,
-					nil,
-					nil,
-					64,
-					readWriteModel.NewRequestTermination(),
 					cbusOptions,
 				),
 				requestContext, cbusOptions,
@@ -316,20 +327,16 @@ func TestMessageCodec_Receive(t *testing.T) {
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewReplyOrConfirmationReply(
+					56,
 					readWriteModel.NewReplyEncodedReply(
+						56,
 						readWriteModel.NewEncodedReplyCALReply(
+							134,
 							readWriteModel.NewCALReplyLong(
-								262656,
-								readWriteModel.NewUnitAddress(4),
-								nil,
-								readWriteModel.NewSerialInterfaceAddress(2),
-								func() *byte {
-									var b byte = 0
-									return &b
-								}(),
-								nil,
 								134,
 								readWriteModel.NewCALDataStatusExtended(
+									249,
+									nil,
 									64,
 									56,
 									0,
@@ -468,24 +475,25 @@ func TestMessageCodec_Receive(t *testing.T) {
 										),
 									},
 									nil,
-									249,
-									nil,
 									requestContext,
 								),
+								262656,
+								readWriteModel.NewUnitAddress(4),
+								nil,
+								readWriteModel.NewSerialInterfaceAddress(2),
+								utils.ToPtr(byte(0)),
+								nil,
 								cbusOptions,
 								requestContext,
 							),
-							134,
 							cbusOptions,
 							requestContext,
 						),
 						nil,
-						56,
 						cbusOptions,
 						requestContext,
 					),
 					readWriteModel.NewResponseTermination(),
-					56,
 					cbusOptions,
 					requestContext,
 				),
@@ -520,25 +528,24 @@ func TestMessageCodec_Receive(t *testing.T) {
 			},
 			want: readWriteModel.NewCBusMessageToClient(
 				readWriteModel.NewReplyOrConfirmationReply(
+					48,
 					readWriteModel.NewReplyEncodedReply(
+						48,
 						readWriteModel.NewMonitoredSALReply(
+							5,
 							readWriteModel.NewMonitoredSALLongFormSmartMode(
+								5,
 								3255296,
 								readWriteModel.NewUnitAddress(49),
 								nil,
 								172,
-								func() *byte {
-									var b byte = 0
-									return &b
-								}(),
+								utils.ToPtr(byte(0)),
 								nil,
 								readWriteModel.NewSALDataAirConditioning(
-									readWriteModel.NewAirConditioningDataSetZoneGroupOn(
-										4,
-										readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOn,
-									),
 									readWriteModel.NewSALDataAirConditioning(
+										nil,
 										readWriteModel.NewAirConditioningDataSetZoneHvacMode(
+											readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHvacMode,
 											4,
 											readWriteModel.NewHVACZoneList(false, false, false, false, false, false, false, true),
 											readWriteModel.NewHVACModeAndFlags(true, false, false, false, readWriteModel.HVACModeAndFlagsMode_HEAT_AND_COOL),
@@ -546,25 +553,23 @@ func TestMessageCodec_Receive(t *testing.T) {
 											readWriteModel.NewHVACTemperature(5632),
 											nil,
 											readWriteModel.NewHVACAuxiliaryLevel(false, 0),
-											readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHvacMode,
 										),
-										nil,
+									),
+									readWriteModel.NewAirConditioningDataSetZoneGroupOn(
+										readWriteModel.AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOn,
+										4,
 									),
 								),
-								5,
 								cbusOptions,
 							),
-							5,
 							cbusOptions,
 							requestContext,
 						),
 						nil,
-						48,
 						cbusOptions,
 						requestContext,
 					),
 					readWriteModel.NewResponseTermination(),
-					48,
 					cbusOptions,
 					requestContext,
 				),
@@ -774,29 +779,29 @@ func Test_extractMMIAndSAL(t *testing.T) {
 			args: args{
 				message: readWriteModel.NewCBusMessageToClient(
 					readWriteModel.NewReplyOrConfirmationReply(
+						0,
 						readWriteModel.NewReplyEncodedReply(
+							0,
 							readWriteModel.NewMonitoredSALReply(
+								0,
 								readWriteModel.NewMonitoredSALShortFormBasicMode(
+									0,
 									0,
 									nil,
 									nil,
 									nil,
 									readWriteModel.ApplicationIdContainer_RESERVED_00,
 									nil,
-									0,
 									nil,
 								),
-								0,
 								nil,
 								nil,
 							),
 							nil,
-							0,
 							nil,
 							nil,
 						),
 						readWriteModel.NewResponseTermination(),
-						0,
 						nil,
 						nil,
 					),

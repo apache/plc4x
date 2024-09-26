@@ -40,6 +40,7 @@ type APDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDU()
 }
@@ -149,39 +150,39 @@ func (m *_APDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, apduLeng
 	var _child APDU
 	switch {
 	case apduType == ApduType_CONFIRMED_REQUEST_PDU: // APDUConfirmedRequest
-		if _child, err = (&_APDUConfirmedRequest{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUConfirmedRequest).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUConfirmedRequest for type-switch of APDU")
 		}
 	case apduType == ApduType_UNCONFIRMED_REQUEST_PDU: // APDUUnconfirmedRequest
-		if _child, err = (&_APDUUnconfirmedRequest{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUUnconfirmedRequest).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUUnconfirmedRequest for type-switch of APDU")
 		}
 	case apduType == ApduType_SIMPLE_ACK_PDU: // APDUSimpleAck
-		if _child, err = (&_APDUSimpleAck{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUSimpleAck).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUSimpleAck for type-switch of APDU")
 		}
 	case apduType == ApduType_COMPLEX_ACK_PDU: // APDUComplexAck
-		if _child, err = (&_APDUComplexAck{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUComplexAck).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUComplexAck for type-switch of APDU")
 		}
 	case apduType == ApduType_SEGMENT_ACK_PDU: // APDUSegmentAck
-		if _child, err = (&_APDUSegmentAck{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUSegmentAck).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUSegmentAck for type-switch of APDU")
 		}
 	case apduType == ApduType_ERROR_PDU: // APDUError
-		if _child, err = (&_APDUError{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUError).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUError for type-switch of APDU")
 		}
 	case apduType == ApduType_REJECT_PDU: // APDUReject
-		if _child, err = (&_APDUReject{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUReject).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUReject for type-switch of APDU")
 		}
 	case apduType == ApduType_ABORT_PDU: // APDUAbort
-		if _child, err = (&_APDUAbort{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUAbort).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUAbort for type-switch of APDU")
 		}
 	case 0 == 0: // APDUUnknown
-		if _child, err = (&_APDUUnknown{}).parse(ctx, readBuffer, m, apduLength); err != nil {
+		if _child, err = new(_APDUUnknown).parse(ctx, readBuffer, m, apduLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type APDUUnknown for type-switch of APDU")
 		}
 	default:
@@ -233,3 +234,18 @@ func (m *_APDU) GetApduLength() uint16 {
 ////
 
 func (m *_APDU) IsAPDU() {}
+
+func (m *_APDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDU) deepCopy() *_APDU {
+	if m == nil {
+		return nil
+	}
+	_APDUCopy := &_APDU{
+		nil, // will be set by child
+		m.ApduLength,
+	}
+	return _APDUCopy
+}

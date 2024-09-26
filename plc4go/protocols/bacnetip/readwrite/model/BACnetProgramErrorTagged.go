@@ -38,6 +38,7 @@ type BACnetProgramErrorTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetProgramErrorTagged struct {
 }
 
 var _ BACnetProgramErrorTagged = (*_BACnetProgramErrorTagged)(nil)
+
+// NewBACnetProgramErrorTagged factory function for _BACnetProgramErrorTagged
+func NewBACnetProgramErrorTagged(header BACnetTagHeader, value BACnetProgramError, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetProgramErrorTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProgramErrorTagged must not be nil")
+	}
+	return &_BACnetProgramErrorTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetProgramErrorTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProgramErrorTagged factory function for _BACnetProgramErrorTagged
-func NewBACnetProgramErrorTagged(header BACnetTagHeader, value BACnetProgramError, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetProgramErrorTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetProgramErrorTagged must not be nil")
-	}
-	return &_BACnetProgramErrorTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProgramErrorTagged(structType any) BACnetProgramErrorTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetProgramErrorTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetProgramErrorTagged) IsBACnetProgramErrorTagged() {}
+
+func (m *_BACnetProgramErrorTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProgramErrorTagged) deepCopy() *_BACnetProgramErrorTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetProgramErrorTaggedCopy := &_BACnetProgramErrorTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetProgramErrorTaggedCopy
+}
 
 func (m *_BACnetProgramErrorTagged) String() string {
 	if m == nil {

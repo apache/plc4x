@@ -38,6 +38,7 @@ type AdsMultiRequestItemWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsMultiRequestItem
 	// GetItemIndexGroup returns ItemIndexGroup (property field)
 	GetItemIndexGroup() uint32
@@ -59,6 +60,18 @@ type _AdsMultiRequestItemWrite struct {
 
 var _ AdsMultiRequestItemWrite = (*_AdsMultiRequestItemWrite)(nil)
 var _ AdsMultiRequestItemRequirements = (*_AdsMultiRequestItemWrite)(nil)
+
+// NewAdsMultiRequestItemWrite factory function for _AdsMultiRequestItemWrite
+func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) *_AdsMultiRequestItemWrite {
+	_result := &_AdsMultiRequestItemWrite{
+		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
+		ItemIndexGroup:              itemIndexGroup,
+		ItemIndexOffset:             itemIndexOffset,
+		ItemWriteLength:             itemWriteLength,
+	}
+	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +112,6 @@ func (m *_AdsMultiRequestItemWrite) GetItemWriteLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsMultiRequestItemWrite factory function for _AdsMultiRequestItemWrite
-func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) *_AdsMultiRequestItemWrite {
-	_result := &_AdsMultiRequestItemWrite{
-		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
-		ItemIndexGroup:              itemIndexGroup,
-		ItemIndexOffset:             itemIndexOffset,
-		ItemWriteLength:             itemWriteLength,
-	}
-	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsMultiRequestItemWrite(structType any) AdsMultiRequestItemWrite {
@@ -221,6 +222,24 @@ func (m *_AdsMultiRequestItemWrite) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_AdsMultiRequestItemWrite) IsAdsMultiRequestItemWrite() {}
+
+func (m *_AdsMultiRequestItemWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsMultiRequestItemWrite) deepCopy() *_AdsMultiRequestItemWrite {
+	if m == nil {
+		return nil
+	}
+	_AdsMultiRequestItemWriteCopy := &_AdsMultiRequestItemWrite{
+		m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).deepCopy(),
+		m.ItemIndexGroup,
+		m.ItemIndexOffset,
+		m.ItemWriteLength,
+	}
+	m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = m
+	return _AdsMultiRequestItemWriteCopy
+}
 
 func (m *_AdsMultiRequestItemWrite) String() string {
 	if m == nil {

@@ -49,7 +49,7 @@ func NewDefaultRFormatter(extraPrinters ...DebugContentPrinter) *DefaultRFormatt
 	} else {
 		qualifier = projectName + "." + qualifier
 	}
-	header := fmt.Sprintf("<%s at 0x%x>", qualifier+prefix, pc)
+	header := fmt.Sprintf("<%s object at 0x%x>", qualifier+prefix, pc)
 	if customProjectName != "" {
 		header = strings.ReplaceAll(header, projectName, customProjectName)
 	}
@@ -59,13 +59,17 @@ func NewDefaultRFormatter(extraPrinters ...DebugContentPrinter) *DefaultRFormatt
 	}
 }
 
+func (d *DefaultRFormatter) StructHeader() []byte {
+	return []byte(d.header)
+}
+
 func (d *DefaultRFormatter) Format(s fmt.State, v rune) {
 	if d.header == "" && len(d.extraPrinters) == 0 {
 		panic("misconfiguration")
 	}
 	switch v {
 	case 'r':
-		_, _ = s.Write([]byte(d.header))
+		_, _ = s.Write(d.StructHeader())
 		if len(d.extraPrinters) > 0 {
 			_, _ = s.Write([]byte("\n"))
 		}
@@ -73,7 +77,7 @@ func (d *DefaultRFormatter) Format(s fmt.State, v rune) {
 			printer.PrintDebugContents(1, s, nil)
 		}
 	case 'v', 's':
-		_, _ = s.Write([]byte(d.header))
+		_, _ = s.Write(d.StructHeader())
 	}
 }
 

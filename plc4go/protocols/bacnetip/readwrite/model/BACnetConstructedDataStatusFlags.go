@@ -38,6 +38,7 @@ type BACnetConstructedDataStatusFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStatusFlags returns StatusFlags (property field)
 	GetStatusFlags() BACnetStatusFlagsTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataStatusFlags struct {
 
 var _ BACnetConstructedDataStatusFlags = (*_BACnetConstructedDataStatusFlags)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStatusFlags)(nil)
+
+// NewBACnetConstructedDataStatusFlags factory function for _BACnetConstructedDataStatusFlags
+func NewBACnetConstructedDataStatusFlags(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, statusFlags BACnetStatusFlagsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStatusFlags {
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetConstructedDataStatusFlags must not be nil")
+	}
+	_result := &_BACnetConstructedDataStatusFlags{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		StatusFlags:                   statusFlags,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataStatusFlags) GetActualValue() BACnetStatusFlagsTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataStatusFlags factory function for _BACnetConstructedDataStatusFlags
-func NewBACnetConstructedDataStatusFlags(statusFlags BACnetStatusFlagsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStatusFlags {
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetConstructedDataStatusFlags must not be nil")
-	}
-	_result := &_BACnetConstructedDataStatusFlags{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		StatusFlags:                   statusFlags,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataStatusFlags(structType any) BACnetConstructedDataStatusFlags {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataStatusFlags) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataStatusFlags) IsBACnetConstructedDataStatusFlags() {}
+
+func (m *_BACnetConstructedDataStatusFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStatusFlags) deepCopy() *_BACnetConstructedDataStatusFlags {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStatusFlagsCopy := &_BACnetConstructedDataStatusFlags{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStatusFlagsCopy
+}
 
 func (m *_BACnetConstructedDataStatusFlags) String() string {
 	if m == nil {

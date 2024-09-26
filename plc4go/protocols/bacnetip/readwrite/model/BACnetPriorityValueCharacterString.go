@@ -38,6 +38,7 @@ type BACnetPriorityValueCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
@@ -53,6 +54,19 @@ type _BACnetPriorityValueCharacterString struct {
 
 var _ BACnetPriorityValueCharacterString = (*_BACnetPriorityValueCharacterString)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueCharacterString)(nil)
+
+// NewBACnetPriorityValueCharacterString factory function for _BACnetPriorityValueCharacterString
+func NewBACnetPriorityValueCharacterString(peekedTagHeader BACnetTagHeader, characterStringValue BACnetApplicationTagCharacterString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueCharacterString {
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetPriorityValueCharacterString must not be nil")
+	}
+	_result := &_BACnetPriorityValueCharacterString{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		CharacterStringValue:        characterStringValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueCharacterString) GetCharacterStringValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueCharacterString factory function for _BACnetPriorityValueCharacterString
-func NewBACnetPriorityValueCharacterString(characterStringValue BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueCharacterString {
-	if characterStringValue == nil {
-		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetPriorityValueCharacterString must not be nil")
-	}
-	_result := &_BACnetPriorityValueCharacterString{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		CharacterStringValue:        characterStringValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueCharacterString(structType any) BACnetPriorityValueCharacterString {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueCharacterString) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetPriorityValueCharacterString) IsBACnetPriorityValueCharacterString() {}
+
+func (m *_BACnetPriorityValueCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueCharacterString) deepCopy() *_BACnetPriorityValueCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueCharacterStringCopy := &_BACnetPriorityValueCharacterString{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueCharacterStringCopy
+}
 
 func (m *_BACnetPriorityValueCharacterString) String() string {
 	if m == nil {

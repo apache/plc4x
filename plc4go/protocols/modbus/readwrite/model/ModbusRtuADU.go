@@ -40,6 +40,7 @@ type ModbusRtuADU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusADU
 	// GetAddress returns Address (property field)
 	GetAddress() uint8
@@ -58,6 +59,20 @@ type _ModbusRtuADU struct {
 
 var _ ModbusRtuADU = (*_ModbusRtuADU)(nil)
 var _ ModbusADURequirements = (*_ModbusRtuADU)(nil)
+
+// NewModbusRtuADU factory function for _ModbusRtuADU
+func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU {
+	if pdu == nil {
+		panic("pdu of type ModbusPDU for ModbusRtuADU must not be nil")
+	}
+	_result := &_ModbusRtuADU{
+		ModbusADUContract: NewModbusADU(response),
+		Address:           address,
+		Pdu:               pdu,
+	}
+	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,20 +109,6 @@ func (m *_ModbusRtuADU) GetPdu() ModbusPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusRtuADU factory function for _ModbusRtuADU
-func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU {
-	if pdu == nil {
-		panic("pdu of type ModbusPDU for ModbusRtuADU must not be nil")
-	}
-	_result := &_ModbusRtuADU{
-		ModbusADUContract: NewModbusADU(response),
-		Address:           address,
-		Pdu:               pdu,
-	}
-	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusRtuADU(structType any) ModbusRtuADU {
@@ -218,6 +219,23 @@ func (m *_ModbusRtuADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_ModbusRtuADU) IsModbusRtuADU() {}
+
+func (m *_ModbusRtuADU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusRtuADU) deepCopy() *_ModbusRtuADU {
+	if m == nil {
+		return nil
+	}
+	_ModbusRtuADUCopy := &_ModbusRtuADU{
+		m.ModbusADUContract.(*_ModbusADU).deepCopy(),
+		m.Address,
+		m.Pdu.DeepCopy().(ModbusPDU),
+	}
+	m.ModbusADUContract.(*_ModbusADU)._SubType = m
+	return _ModbusRtuADUCopy
+}
 
 func (m *_ModbusRtuADU) String() string {
 	if m == nil {

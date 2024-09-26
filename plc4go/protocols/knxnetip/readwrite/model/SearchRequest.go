@@ -40,6 +40,7 @@ type SearchRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint (property field)
 	GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint
@@ -55,6 +56,19 @@ type _SearchRequest struct {
 
 var _ SearchRequest = (*_SearchRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_SearchRequest)(nil)
+
+// NewSearchRequest factory function for _SearchRequest
+func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequest {
+	if hpaiIDiscoveryEndpoint == nil {
+		panic("hpaiIDiscoveryEndpoint of type HPAIDiscoveryEndpoint for SearchRequest must not be nil")
+	}
+	_result := &_SearchRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		HpaiIDiscoveryEndpoint:  hpaiIDiscoveryEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +101,6 @@ func (m *_SearchRequest) GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSearchRequest factory function for _SearchRequest
-func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequest {
-	if hpaiIDiscoveryEndpoint == nil {
-		panic("hpaiIDiscoveryEndpoint of type HPAIDiscoveryEndpoint for SearchRequest must not be nil")
-	}
-	_result := &_SearchRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		HpaiIDiscoveryEndpoint:  hpaiIDiscoveryEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSearchRequest(structType any) SearchRequest {
@@ -184,6 +185,22 @@ func (m *_SearchRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_SearchRequest) IsSearchRequest() {}
+
+func (m *_SearchRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SearchRequest) deepCopy() *_SearchRequest {
+	if m == nil {
+		return nil
+	}
+	_SearchRequestCopy := &_SearchRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.HpaiIDiscoveryEndpoint.DeepCopy().(HPAIDiscoveryEndpoint),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _SearchRequestCopy
+}
 
 func (m *_SearchRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BrowsePath interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStartingNode returns StartingNode (property field)
 	GetStartingNode() NodeId
@@ -56,6 +57,23 @@ type _BrowsePath struct {
 
 var _ BrowsePath = (*_BrowsePath)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowsePath)(nil)
+
+// NewBrowsePath factory function for _BrowsePath
+func NewBrowsePath(startingNode NodeId, relativePath ExtensionObjectDefinition) *_BrowsePath {
+	if startingNode == nil {
+		panic("startingNode of type NodeId for BrowsePath must not be nil")
+	}
+	if relativePath == nil {
+		panic("relativePath of type ExtensionObjectDefinition for BrowsePath must not be nil")
+	}
+	_result := &_BrowsePath{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StartingNode:                      startingNode,
+		RelativePath:                      relativePath,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_BrowsePath) GetRelativePath() ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowsePath factory function for _BrowsePath
-func NewBrowsePath(startingNode NodeId, relativePath ExtensionObjectDefinition) *_BrowsePath {
-	if startingNode == nil {
-		panic("startingNode of type NodeId for BrowsePath must not be nil")
-	}
-	if relativePath == nil {
-		panic("relativePath of type ExtensionObjectDefinition for BrowsePath must not be nil")
-	}
-	_result := &_BrowsePath{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StartingNode:                      startingNode,
-		RelativePath:                      relativePath,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowsePath(structType any) BrowsePath {
@@ -206,6 +207,23 @@ func (m *_BrowsePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_BrowsePath) IsBrowsePath() {}
+
+func (m *_BrowsePath) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowsePath) deepCopy() *_BrowsePath {
+	if m == nil {
+		return nil
+	}
+	_BrowsePathCopy := &_BrowsePath{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StartingNode.DeepCopy().(NodeId),
+		m.RelativePath.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowsePathCopy
+}
 
 func (m *_BrowsePath) String() string {
 	if m == nil {

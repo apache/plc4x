@@ -40,6 +40,7 @@ type CBusPointToMultiPointCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusPointToMultiPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToMultiPointCommand()
 }
@@ -73,6 +74,11 @@ type _CBusPointToMultiPointCommand struct {
 
 var _ CBusPointToMultiPointCommandContract = (*_CBusPointToMultiPointCommand)(nil)
 
+// NewCBusPointToMultiPointCommand factory function for _CBusPointToMultiPointCommand
+func NewCBusPointToMultiPointCommand(peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommand {
+	return &_CBusPointToMultiPointCommand{PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -86,11 +92,6 @@ func (m *_CBusPointToMultiPointCommand) GetPeekedApplication() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToMultiPointCommand factory function for _CBusPointToMultiPointCommand
-func NewCBusPointToMultiPointCommand(peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommand {
-	return &_CBusPointToMultiPointCommand{PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToMultiPointCommand(structType any) CBusPointToMultiPointCommand {
@@ -165,11 +166,11 @@ func (m *_CBusPointToMultiPointCommand) parse(ctx context.Context, readBuffer ut
 	var _child CBusPointToMultiPointCommand
 	switch {
 	case peekedApplication == 0xFF: // CBusPointToMultiPointCommandStatus
-		if _child, err = (&_CBusPointToMultiPointCommandStatus{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToMultiPointCommandStatus).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToMultiPointCommandStatus for type-switch of CBusPointToMultiPointCommand")
 		}
 	case 0 == 0: // CBusPointToMultiPointCommandNormal
-		if _child, err = (&_CBusPointToMultiPointCommandNormal{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToMultiPointCommandNormal).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToMultiPointCommandNormal for type-switch of CBusPointToMultiPointCommand")
 		}
 	default:
@@ -217,3 +218,19 @@ func (m *_CBusPointToMultiPointCommand) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusPointToMultiPointCommand) IsCBusPointToMultiPointCommand() {}
+
+func (m *_CBusPointToMultiPointCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToMultiPointCommand) deepCopy() *_CBusPointToMultiPointCommand {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToMultiPointCommandCopy := &_CBusPointToMultiPointCommand{
+		nil, // will be set by child
+		m.PeekedApplication,
+		m.CBusOptions,
+	}
+	return _CBusPointToMultiPointCommandCopy
+}

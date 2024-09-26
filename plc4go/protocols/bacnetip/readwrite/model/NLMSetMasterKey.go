@@ -38,6 +38,7 @@ type NLMSetMasterKey interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetKey returns Key (property field)
 	GetKey() NLMUpdateKeyUpdateKeyEntry
@@ -53,6 +54,19 @@ type _NLMSetMasterKey struct {
 
 var _ NLMSetMasterKey = (*_NLMSetMasterKey)(nil)
 var _ NLMRequirements = (*_NLMSetMasterKey)(nil)
+
+// NewNLMSetMasterKey factory function for _NLMSetMasterKey
+func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMSetMasterKey {
+	if key == nil {
+		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMSetMasterKey must not be nil")
+	}
+	_result := &_NLMSetMasterKey{
+		NLMContract: NewNLM(apduLength),
+		Key:         key,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_NLMSetMasterKey) GetKey() NLMUpdateKeyUpdateKeyEntry {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMSetMasterKey factory function for _NLMSetMasterKey
-func NewNLMSetMasterKey(key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMSetMasterKey {
-	if key == nil {
-		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMSetMasterKey must not be nil")
-	}
-	_result := &_NLMSetMasterKey{
-		NLMContract: NewNLM(apduLength),
-		Key:         key,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMSetMasterKey(structType any) NLMSetMasterKey {
@@ -182,6 +183,22 @@ func (m *_NLMSetMasterKey) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_NLMSetMasterKey) IsNLMSetMasterKey() {}
+
+func (m *_NLMSetMasterKey) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMSetMasterKey) deepCopy() *_NLMSetMasterKey {
+	if m == nil {
+		return nil
+	}
+	_NLMSetMasterKeyCopy := &_NLMSetMasterKey{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.Key.DeepCopy().(NLMUpdateKeyUpdateKeyEntry),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMSetMasterKeyCopy
+}
 
 func (m *_NLMSetMasterKey) String() string {
 	if m == nil {

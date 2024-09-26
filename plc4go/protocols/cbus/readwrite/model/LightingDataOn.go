@@ -38,6 +38,7 @@ type LightingDataOn interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
@@ -53,6 +54,16 @@ type _LightingDataOn struct {
 
 var _ LightingDataOn = (*_LightingDataOn)(nil)
 var _ LightingDataRequirements = (*_LightingDataOn)(nil)
+
+// NewLightingDataOn factory function for _LightingDataOn
+func NewLightingDataOn(commandTypeContainer LightingCommandTypeContainer, group byte) *_LightingDataOn {
+	_result := &_LightingDataOn{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_LightingDataOn) GetGroup() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataOn factory function for _LightingDataOn
-func NewLightingDataOn(group byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataOn {
-	_result := &_LightingDataOn{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataOn(structType any) LightingDataOn {
@@ -175,6 +176,22 @@ func (m *_LightingDataOn) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_LightingDataOn) IsLightingDataOn() {}
+
+func (m *_LightingDataOn) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataOn) deepCopy() *_LightingDataOn {
+	if m == nil {
+		return nil
+	}
+	_LightingDataOnCopy := &_LightingDataOn{
+		m.LightingDataContract.(*_LightingData).deepCopy(),
+		m.Group,
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataOnCopy
+}
 
 func (m *_LightingDataOn) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type RequestContext interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (property field)
 	GetSendIdentifyRequestBefore() bool
 	// IsRequestContext is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _RequestContext struct {
 }
 
 var _ RequestContext = (*_RequestContext)(nil)
+
+// NewRequestContext factory function for _RequestContext
+func NewRequestContext(sendIdentifyRequestBefore bool) *_RequestContext {
+	return &_RequestContext{SendIdentifyRequestBefore: sendIdentifyRequestBefore}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_RequestContext) GetSendIdentifyRequestBefore() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestContext factory function for _RequestContext
-func NewRequestContext(sendIdentifyRequestBefore bool) *_RequestContext {
-	return &_RequestContext{SendIdentifyRequestBefore: sendIdentifyRequestBefore}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestContext(structType any) RequestContext {
@@ -166,6 +167,20 @@ func (m *_RequestContext) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_RequestContext) IsRequestContext() {}
+
+func (m *_RequestContext) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestContext) deepCopy() *_RequestContext {
+	if m == nil {
+		return nil
+	}
+	_RequestContextCopy := &_RequestContext{
+		m.SendIdentifyRequestBefore,
+	}
+	return _RequestContextCopy
+}
 
 func (m *_RequestContext) String() string {
 	if m == nil {

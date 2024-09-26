@@ -38,6 +38,7 @@ type BACnetChannelValueObjectidentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
@@ -53,6 +54,19 @@ type _BACnetChannelValueObjectidentifier struct {
 
 var _ BACnetChannelValueObjectidentifier = (*_BACnetChannelValueObjectidentifier)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueObjectidentifier)(nil)
+
+// NewBACnetChannelValueObjectidentifier factory function for _BACnetChannelValueObjectidentifier
+func NewBACnetChannelValueObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier) *_BACnetChannelValueObjectidentifier {
+	if objectidentifierValue == nil {
+		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetChannelValueObjectidentifier must not be nil")
+	}
+	_result := &_BACnetChannelValueObjectidentifier{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		ObjectidentifierValue:      objectidentifierValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueObjectidentifier) GetObjectidentifierValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueObjectidentifier factory function for _BACnetChannelValueObjectidentifier
-func NewBACnetChannelValueObjectidentifier(objectidentifierValue BACnetApplicationTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueObjectidentifier {
-	if objectidentifierValue == nil {
-		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetChannelValueObjectidentifier must not be nil")
-	}
-	_result := &_BACnetChannelValueObjectidentifier{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		ObjectidentifierValue:      objectidentifierValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueObjectidentifier(structType any) BACnetChannelValueObjectidentifier {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueObjectidentifier) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetChannelValueObjectidentifier) IsBACnetChannelValueObjectidentifier() {}
+
+func (m *_BACnetChannelValueObjectidentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueObjectidentifier) deepCopy() *_BACnetChannelValueObjectidentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueObjectidentifierCopy := &_BACnetChannelValueObjectidentifier{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueObjectidentifierCopy
+}
 
 func (m *_BACnetChannelValueObjectidentifier) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type BACnetContextTagNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// IsBACnetContextTagNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagNull()
@@ -48,6 +49,15 @@ type _BACnetContextTagNull struct {
 
 var _ BACnetContextTagNull = (*_BACnetContextTagNull)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagNull)(nil)
+
+// NewBACnetContextTagNull factory function for _BACnetContextTagNull
+func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagNull {
+	_result := &_BACnetContextTagNull{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_BACnetContextTagNull) GetDataType() BACnetDataType {
 
 func (m *_BACnetContextTagNull) GetParent() BACnetContextTagContract {
 	return m.BACnetContextTagContract
-}
-
-// NewBACnetContextTagNull factory function for _BACnetContextTagNull
-func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagNull {
-	_result := &_BACnetContextTagNull{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -151,6 +152,21 @@ func (m *_BACnetContextTagNull) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetContextTagNull) IsBACnetContextTagNull() {}
+
+func (m *_BACnetContextTagNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagNull) deepCopy() *_BACnetContextTagNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagNullCopy := &_BACnetContextTagNull{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagNullCopy
+}
 
 func (m *_BACnetContextTagNull) String() string {
 	if m == nil {

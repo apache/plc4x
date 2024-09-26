@@ -38,6 +38,7 @@ type AdsWriteControlRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetAdsState returns AdsState (property field)
 	GetAdsState() uint16
@@ -59,6 +60,18 @@ type _AdsWriteControlRequest struct {
 
 var _ AdsWriteControlRequest = (*_AdsWriteControlRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsWriteControlRequest)(nil)
+
+// NewAdsWriteControlRequest factory function for _AdsWriteControlRequest
+func NewAdsWriteControlRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, adsState uint16, deviceState uint16, data []byte) *_AdsWriteControlRequest {
+	_result := &_AdsWriteControlRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		AdsState:          adsState,
+		DeviceState:       deviceState,
+		Data:              data,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,18 +116,6 @@ func (m *_AdsWriteControlRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsWriteControlRequest factory function for _AdsWriteControlRequest
-func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteControlRequest {
-	_result := &_AdsWriteControlRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		AdsState:          adsState,
-		DeviceState:       deviceState,
-		Data:              data,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsWriteControlRequest(structType any) AdsWriteControlRequest {
@@ -240,6 +241,24 @@ func (m *_AdsWriteControlRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_AdsWriteControlRequest) IsAdsWriteControlRequest() {}
+
+func (m *_AdsWriteControlRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsWriteControlRequest) deepCopy() *_AdsWriteControlRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsWriteControlRequestCopy := &_AdsWriteControlRequest{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.AdsState,
+		m.DeviceState,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsWriteControlRequestCopy
+}
 
 func (m *_AdsWriteControlRequest) String() string {
 	if m == nil {

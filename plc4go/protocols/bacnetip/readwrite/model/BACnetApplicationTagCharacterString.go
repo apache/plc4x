@@ -38,6 +38,7 @@ type BACnetApplicationTagCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadCharacterString
@@ -55,6 +56,19 @@ type _BACnetApplicationTagCharacterString struct {
 
 var _ BACnetApplicationTagCharacterString = (*_BACnetApplicationTagCharacterString)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagCharacterString)(nil)
+
+// NewBACnetApplicationTagCharacterString factory function for _BACnetApplicationTagCharacterString
+func NewBACnetApplicationTagCharacterString(header BACnetTagHeader, payload BACnetTagPayloadCharacterString) *_BACnetApplicationTagCharacterString {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadCharacterString for BACnetApplicationTagCharacterString must not be nil")
+	}
+	_result := &_BACnetApplicationTagCharacterString{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -98,19 +112,6 @@ func (m *_BACnetApplicationTagCharacterString) GetValue() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagCharacterString factory function for _BACnetApplicationTagCharacterString
-func NewBACnetApplicationTagCharacterString(payload BACnetTagPayloadCharacterString, header BACnetTagHeader) *_BACnetApplicationTagCharacterString {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadCharacterString for BACnetApplicationTagCharacterString must not be nil")
-	}
-	_result := &_BACnetApplicationTagCharacterString{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagCharacterString(structType any) BACnetApplicationTagCharacterString {
@@ -209,6 +210,22 @@ func (m *_BACnetApplicationTagCharacterString) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetApplicationTagCharacterString) IsBACnetApplicationTagCharacterString() {}
+
+func (m *_BACnetApplicationTagCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagCharacterString) deepCopy() *_BACnetApplicationTagCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagCharacterStringCopy := &_BACnetApplicationTagCharacterString{
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadCharacterString),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagCharacterStringCopy
+}
 
 func (m *_BACnetApplicationTagCharacterString) String() string {
 	if m == nil {

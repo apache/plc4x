@@ -38,6 +38,7 @@ type DIBDeviceInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
 	// GetKnxMedium returns KnxMedium (property field)
@@ -74,6 +75,26 @@ type _DIBDeviceInfo struct {
 }
 
 var _ DIBDeviceInfo = (*_DIBDeviceInfo)(nil)
+
+// NewDIBDeviceInfo factory function for _DIBDeviceInfo
+func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus DeviceStatus, knxAddress KnxAddress, projectInstallationIdentifier ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress IPAddress, knxNetIpDeviceMacAddress MACAddress, deviceFriendlyName []byte) *_DIBDeviceInfo {
+	if deviceStatus == nil {
+		panic("deviceStatus of type DeviceStatus for DIBDeviceInfo must not be nil")
+	}
+	if knxAddress == nil {
+		panic("knxAddress of type KnxAddress for DIBDeviceInfo must not be nil")
+	}
+	if projectInstallationIdentifier == nil {
+		panic("projectInstallationIdentifier of type ProjectInstallationIdentifier for DIBDeviceInfo must not be nil")
+	}
+	if knxNetIpDeviceMulticastAddress == nil {
+		panic("knxNetIpDeviceMulticastAddress of type IPAddress for DIBDeviceInfo must not be nil")
+	}
+	if knxNetIpDeviceMacAddress == nil {
+		panic("knxNetIpDeviceMacAddress of type MACAddress for DIBDeviceInfo must not be nil")
+	}
+	return &_DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,26 +141,6 @@ func (m *_DIBDeviceInfo) GetDeviceFriendlyName() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDIBDeviceInfo factory function for _DIBDeviceInfo
-func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus DeviceStatus, knxAddress KnxAddress, projectInstallationIdentifier ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress IPAddress, knxNetIpDeviceMacAddress MACAddress, deviceFriendlyName []byte) *_DIBDeviceInfo {
-	if deviceStatus == nil {
-		panic("deviceStatus of type DeviceStatus for DIBDeviceInfo must not be nil")
-	}
-	if knxAddress == nil {
-		panic("knxAddress of type KnxAddress for DIBDeviceInfo must not be nil")
-	}
-	if projectInstallationIdentifier == nil {
-		panic("projectInstallationIdentifier of type ProjectInstallationIdentifier for DIBDeviceInfo must not be nil")
-	}
-	if knxNetIpDeviceMulticastAddress == nil {
-		panic("knxNetIpDeviceMulticastAddress of type IPAddress for DIBDeviceInfo must not be nil")
-	}
-	if knxNetIpDeviceMacAddress == nil {
-		panic("knxNetIpDeviceMacAddress of type MACAddress for DIBDeviceInfo must not be nil")
-	}
-	return &_DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDIBDeviceInfo(structType any) DIBDeviceInfo {
@@ -358,6 +359,28 @@ func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_DIBDeviceInfo) IsDIBDeviceInfo() {}
+
+func (m *_DIBDeviceInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DIBDeviceInfo) deepCopy() *_DIBDeviceInfo {
+	if m == nil {
+		return nil
+	}
+	_DIBDeviceInfoCopy := &_DIBDeviceInfo{
+		m.DescriptionType,
+		m.KnxMedium,
+		m.DeviceStatus.DeepCopy().(DeviceStatus),
+		m.KnxAddress.DeepCopy().(KnxAddress),
+		m.ProjectInstallationIdentifier.DeepCopy().(ProjectInstallationIdentifier),
+		utils.DeepCopySlice[byte, byte](m.KnxNetIpDeviceSerialNumber),
+		m.KnxNetIpDeviceMulticastAddress.DeepCopy().(IPAddress),
+		m.KnxNetIpDeviceMacAddress.DeepCopy().(MACAddress),
+		utils.DeepCopySlice[byte, byte](m.DeviceFriendlyName),
+	}
+	return _DIBDeviceInfoCopy
+}
 
 func (m *_DIBDeviceInfo) String() string {
 	if m == nil {

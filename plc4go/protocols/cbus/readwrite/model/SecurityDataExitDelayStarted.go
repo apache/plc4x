@@ -36,6 +36,7 @@ type SecurityDataExitDelayStarted interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataExitDelayStarted is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataExitDelayStarted()
@@ -49,6 +50,15 @@ type _SecurityDataExitDelayStarted struct {
 var _ SecurityDataExitDelayStarted = (*_SecurityDataExitDelayStarted)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataExitDelayStarted)(nil)
 
+// NewSecurityDataExitDelayStarted factory function for _SecurityDataExitDelayStarted
+func NewSecurityDataExitDelayStarted(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataExitDelayStarted {
+	_result := &_SecurityDataExitDelayStarted{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataExitDelayStarted)(nil)
 
 func (m *_SecurityDataExitDelayStarted) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataExitDelayStarted factory function for _SecurityDataExitDelayStarted
-func NewSecurityDataExitDelayStarted(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataExitDelayStarted {
-	_result := &_SecurityDataExitDelayStarted{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataExitDelayStarted) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SecurityDataExitDelayStarted) IsSecurityDataExitDelayStarted() {}
+
+func (m *_SecurityDataExitDelayStarted) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataExitDelayStarted) deepCopy() *_SecurityDataExitDelayStarted {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataExitDelayStartedCopy := &_SecurityDataExitDelayStarted{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataExitDelayStartedCopy
+}
 
 func (m *_SecurityDataExitDelayStarted) String() string {
 	if m == nil {

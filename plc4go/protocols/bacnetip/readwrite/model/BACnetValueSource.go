@@ -40,6 +40,7 @@ type BACnetValueSource interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetValueSource()
 }
@@ -70,6 +71,14 @@ type _BACnetValueSource struct {
 
 var _ BACnetValueSourceContract = (*_BACnetValueSource)(nil)
 
+// NewBACnetValueSource factory function for _BACnetValueSource
+func NewBACnetValueSource(peekedTagHeader BACnetTagHeader) *_BACnetValueSource {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetValueSource must not be nil")
+	}
+	return &_BACnetValueSource{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetValueSource) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSource factory function for _BACnetValueSource
-func NewBACnetValueSource(peekedTagHeader BACnetTagHeader) *_BACnetValueSource {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetValueSource must not be nil")
-	}
-	return &_BACnetValueSource{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSource(structType any) BACnetValueSource {
@@ -189,15 +190,15 @@ func (m *_BACnetValueSource) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child BACnetValueSource
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetValueSourceNone
-		if _child, err = (&_BACnetValueSourceNone{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetValueSourceNone).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetValueSourceNone for type-switch of BACnetValueSource")
 		}
 	case peekedTagNumber == uint8(1): // BACnetValueSourceObject
-		if _child, err = (&_BACnetValueSourceObject{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetValueSourceObject).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetValueSourceObject for type-switch of BACnetValueSource")
 		}
 	case peekedTagNumber == uint8(2): // BACnetValueSourceAddress
-		if _child, err = (&_BACnetValueSourceAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetValueSourceAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetValueSourceAddress for type-switch of BACnetValueSource")
 		}
 	default:
@@ -241,3 +242,18 @@ func (pm *_BACnetValueSource) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_BACnetValueSource) IsBACnetValueSource() {}
+
+func (m *_BACnetValueSource) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSource) deepCopy() *_BACnetValueSource {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceCopy := &_BACnetValueSource{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetValueSourceCopy
+}

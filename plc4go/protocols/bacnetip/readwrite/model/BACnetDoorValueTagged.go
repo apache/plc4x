@@ -38,6 +38,7 @@ type BACnetDoorValueTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetDoorValueTagged struct {
 
 var _ BACnetDoorValueTagged = (*_BACnetDoorValueTagged)(nil)
 
+// NewBACnetDoorValueTagged factory function for _BACnetDoorValueTagged
+func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue, tagNumber uint8, tagClass TagClass) *_BACnetDoorValueTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDoorValueTagged must not be nil")
+	}
+	return &_BACnetDoorValueTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetDoorValueTagged) GetValue() BACnetDoorValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDoorValueTagged factory function for _BACnetDoorValueTagged
-func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue, tagNumber uint8, tagClass TagClass) *_BACnetDoorValueTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDoorValueTagged must not be nil")
-	}
-	return &_BACnetDoorValueTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDoorValueTagged(structType any) BACnetDoorValueTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetDoorValueTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetDoorValueTagged) IsBACnetDoorValueTagged() {}
+
+func (m *_BACnetDoorValueTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDoorValueTagged) deepCopy() *_BACnetDoorValueTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDoorValueTaggedCopy := &_BACnetDoorValueTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDoorValueTaggedCopy
+}
 
 func (m *_BACnetDoorValueTagged) String() string {
 	if m == nil {

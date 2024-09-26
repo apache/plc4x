@@ -38,6 +38,7 @@ type ModbusPDUError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetExceptionCode returns ExceptionCode (property field)
 	GetExceptionCode() ModbusErrorCode
@@ -53,6 +54,16 @@ type _ModbusPDUError struct {
 
 var _ ModbusPDUError = (*_ModbusPDUError)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUError)(nil)
+
+// NewModbusPDUError factory function for _ModbusPDUError
+func NewModbusPDUError(exceptionCode ModbusErrorCode) *_ModbusPDUError {
+	_result := &_ModbusPDUError{
+		ModbusPDUContract: NewModbusPDU(),
+		ExceptionCode:     exceptionCode,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ModbusPDUError) GetExceptionCode() ModbusErrorCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUError factory function for _ModbusPDUError
-func NewModbusPDUError(exceptionCode ModbusErrorCode) *_ModbusPDUError {
-	_result := &_ModbusPDUError{
-		ModbusPDUContract: NewModbusPDU(),
-		ExceptionCode:     exceptionCode,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUError(structType any) ModbusPDUError {
@@ -187,6 +188,22 @@ func (m *_ModbusPDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ModbusPDUError) IsModbusPDUError() {}
+
+func (m *_ModbusPDUError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUError) deepCopy() *_ModbusPDUError {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUErrorCopy := &_ModbusPDUError{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.ExceptionCode,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUErrorCopy
+}
 
 func (m *_ModbusPDUError) String() string {
 	if m == nil {

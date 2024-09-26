@@ -38,6 +38,7 @@ type RelativeTimestamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() uint16
 	// IsRelativeTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _RelativeTimestamp struct {
 }
 
 var _ RelativeTimestamp = (*_RelativeTimestamp)(nil)
+
+// NewRelativeTimestamp factory function for _RelativeTimestamp
+func NewRelativeTimestamp(timestamp uint16) *_RelativeTimestamp {
+	return &_RelativeTimestamp{Timestamp: timestamp}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_RelativeTimestamp) GetTimestamp() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRelativeTimestamp factory function for _RelativeTimestamp
-func NewRelativeTimestamp(timestamp uint16) *_RelativeTimestamp {
-	return &_RelativeTimestamp{Timestamp: timestamp}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRelativeTimestamp(structType any) RelativeTimestamp {
@@ -166,6 +167,20 @@ func (m *_RelativeTimestamp) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_RelativeTimestamp) IsRelativeTimestamp() {}
+
+func (m *_RelativeTimestamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RelativeTimestamp) deepCopy() *_RelativeTimestamp {
+	if m == nil {
+		return nil
+	}
+	_RelativeTimestampCopy := &_RelativeTimestamp{
+		m.Timestamp,
+	}
+	return _RelativeTimestampCopy
+}
 
 func (m *_RelativeTimestamp) String() string {
 	if m == nil {

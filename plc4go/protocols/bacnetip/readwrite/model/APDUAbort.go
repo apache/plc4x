@@ -38,6 +38,7 @@ type APDUAbort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetServer returns Server (property field)
 	GetServer() bool
@@ -61,6 +62,21 @@ type _APDUAbort struct {
 
 var _ APDUAbort = (*_APDUAbort)(nil)
 var _ APDURequirements = (*_APDUAbort)(nil)
+
+// NewAPDUAbort factory function for _APDUAbort
+func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged, apduLength uint16) *_APDUAbort {
+	if abortReason == nil {
+		panic("abortReason of type BACnetAbortReasonTagged for APDUAbort must not be nil")
+	}
+	_result := &_APDUAbort{
+		APDUContract:     NewAPDU(apduLength),
+		Server:           server,
+		OriginalInvokeId: originalInvokeId,
+		AbortReason:      abortReason,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,21 +117,6 @@ func (m *_APDUAbort) GetAbortReason() BACnetAbortReasonTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUAbort factory function for _APDUAbort
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged, apduLength uint16) *_APDUAbort {
-	if abortReason == nil {
-		panic("abortReason of type BACnetAbortReasonTagged for APDUAbort must not be nil")
-	}
-	_result := &_APDUAbort{
-		APDUContract:     NewAPDU(apduLength),
-		Server:           server,
-		OriginalInvokeId: originalInvokeId,
-		AbortReason:      abortReason,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUAbort(structType any) APDUAbort {
@@ -239,6 +240,25 @@ func (m *_APDUAbort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_APDUAbort) IsAPDUAbort() {}
+
+func (m *_APDUAbort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUAbort) deepCopy() *_APDUAbort {
+	if m == nil {
+		return nil
+	}
+	_APDUAbortCopy := &_APDUAbort{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.Server,
+		m.OriginalInvokeId,
+		m.AbortReason.DeepCopy().(BACnetAbortReasonTagged),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUAbortCopy
+}
 
 func (m *_APDUAbort) String() string {
 	if m == nil {

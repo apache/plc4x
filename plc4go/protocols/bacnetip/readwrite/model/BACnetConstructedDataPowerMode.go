@@ -38,6 +38,7 @@ type BACnetConstructedDataPowerMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPowerMode returns PowerMode (property field)
 	GetPowerMode() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataPowerMode struct {
 
 var _ BACnetConstructedDataPowerMode = (*_BACnetConstructedDataPowerMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPowerMode)(nil)
+
+// NewBACnetConstructedDataPowerMode factory function for _BACnetConstructedDataPowerMode
+func NewBACnetConstructedDataPowerMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, powerMode BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPowerMode {
+	if powerMode == nil {
+		panic("powerMode of type BACnetApplicationTagBoolean for BACnetConstructedDataPowerMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataPowerMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PowerMode:                     powerMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataPowerMode) GetActualValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPowerMode factory function for _BACnetConstructedDataPowerMode
-func NewBACnetConstructedDataPowerMode(powerMode BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPowerMode {
-	if powerMode == nil {
-		panic("powerMode of type BACnetApplicationTagBoolean for BACnetConstructedDataPowerMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataPowerMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PowerMode:                     powerMode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPowerMode(structType any) BACnetConstructedDataPowerMode {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPowerMode) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataPowerMode) IsBACnetConstructedDataPowerMode() {}
+
+func (m *_BACnetConstructedDataPowerMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPowerMode) deepCopy() *_BACnetConstructedDataPowerMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPowerModeCopy := &_BACnetConstructedDataPowerMode{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PowerMode.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPowerModeCopy
+}
 
 func (m *_BACnetConstructedDataPowerMode) String() string {
 	if m == nil {

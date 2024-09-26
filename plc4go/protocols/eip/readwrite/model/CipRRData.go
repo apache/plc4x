@@ -38,6 +38,7 @@ type CipRRData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// GetInterfaceHandle returns InterfaceHandle (property field)
 	GetInterfaceHandle() uint32
@@ -59,6 +60,18 @@ type _CipRRData struct {
 
 var _ CipRRData = (*_CipRRData)(nil)
 var _ EipPacketRequirements = (*_CipRRData)(nil)
+
+// NewCipRRData factory function for _CipRRData
+func NewCipRRData(sessionHandle uint32, status uint32, senderContext []byte, options uint32, interfaceHandle uint32, timeout uint16, typeIds []TypeId) *_CipRRData {
+	_result := &_CipRRData{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		InterfaceHandle:   interfaceHandle,
+		Timeout:           timeout,
+		TypeIds:           typeIds,
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,18 +120,6 @@ func (m *_CipRRData) GetTypeIds() []TypeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipRRData factory function for _CipRRData
-func NewCipRRData(interfaceHandle uint32, timeout uint16, typeIds []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_CipRRData {
-	_result := &_CipRRData{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-		InterfaceHandle:   interfaceHandle,
-		Timeout:           timeout,
-		TypeIds:           typeIds,
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipRRData(structType any) CipRRData {
@@ -249,6 +250,24 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_CipRRData) IsCipRRData() {}
+
+func (m *_CipRRData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipRRData) deepCopy() *_CipRRData {
+	if m == nil {
+		return nil
+	}
+	_CipRRDataCopy := &_CipRRData{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+		m.InterfaceHandle,
+		m.Timeout,
+		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _CipRRDataCopy
+}
 
 func (m *_CipRRData) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type EUInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNamespaceUri returns NamespaceUri (property field)
 	GetNamespaceUri() PascalString
@@ -62,6 +63,28 @@ type _EUInformation struct {
 
 var _ EUInformation = (*_EUInformation)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EUInformation)(nil)
+
+// NewEUInformation factory function for _EUInformation
+func NewEUInformation(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) *_EUInformation {
+	if namespaceUri == nil {
+		panic("namespaceUri of type PascalString for EUInformation must not be nil")
+	}
+	if displayName == nil {
+		panic("displayName of type LocalizedText for EUInformation must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for EUInformation must not be nil")
+	}
+	_result := &_EUInformation{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NamespaceUri:                      namespaceUri,
+		UnitId:                            unitId,
+		DisplayName:                       displayName,
+		Description:                       description,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +129,6 @@ func (m *_EUInformation) GetDescription() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEUInformation factory function for _EUInformation
-func NewEUInformation(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) *_EUInformation {
-	if namespaceUri == nil {
-		panic("namespaceUri of type PascalString for EUInformation must not be nil")
-	}
-	if displayName == nil {
-		panic("displayName of type LocalizedText for EUInformation must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for EUInformation must not be nil")
-	}
-	_result := &_EUInformation{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NamespaceUri:                      namespaceUri,
-		UnitId:                            unitId,
-		DisplayName:                       displayName,
-		Description:                       description,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEUInformation(structType any) EUInformation {
@@ -251,6 +252,25 @@ func (m *_EUInformation) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_EUInformation) IsEUInformation() {}
+
+func (m *_EUInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EUInformation) deepCopy() *_EUInformation {
+	if m == nil {
+		return nil
+	}
+	_EUInformationCopy := &_EUInformation{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NamespaceUri.DeepCopy().(PascalString),
+		m.UnitId,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EUInformationCopy
+}
 
 func (m *_EUInformation) String() string {
 	if m == nil {

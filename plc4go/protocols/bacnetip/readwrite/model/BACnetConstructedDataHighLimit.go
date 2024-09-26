@@ -38,6 +38,7 @@ type BACnetConstructedDataHighLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetHighLimit returns HighLimit (property field)
 	GetHighLimit() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataHighLimit struct {
 
 var _ BACnetConstructedDataHighLimit = (*_BACnetConstructedDataHighLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataHighLimit)(nil)
+
+// NewBACnetConstructedDataHighLimit factory function for _BACnetConstructedDataHighLimit
+func NewBACnetConstructedDataHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHighLimit {
+	if highLimit == nil {
+		panic("highLimit of type BACnetApplicationTagReal for BACnetConstructedDataHighLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataHighLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		HighLimit:                     highLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataHighLimit) GetActualValue() BACnetApplicationTagR
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataHighLimit factory function for _BACnetConstructedDataHighLimit
-func NewBACnetConstructedDataHighLimit(highLimit BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHighLimit {
-	if highLimit == nil {
-		panic("highLimit of type BACnetApplicationTagReal for BACnetConstructedDataHighLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		HighLimit:                     highLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataHighLimit(structType any) BACnetConstructedDataHighLimit {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataHighLimit) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataHighLimit) IsBACnetConstructedDataHighLimit() {}
+
+func (m *_BACnetConstructedDataHighLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataHighLimit) deepCopy() *_BACnetConstructedDataHighLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataHighLimitCopy := &_BACnetConstructedDataHighLimit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.HighLimit.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataHighLimitCopy
+}
 
 func (m *_BACnetConstructedDataHighLimit) String() string {
 	if m == nil {

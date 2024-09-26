@@ -38,6 +38,7 @@ type BACnetConstructedDataActivationTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActivationTime returns ActivationTime (property field)
 	GetActivationTime() BACnetDateTime
@@ -55,6 +56,19 @@ type _BACnetConstructedDataActivationTime struct {
 
 var _ BACnetConstructedDataActivationTime = (*_BACnetConstructedDataActivationTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActivationTime)(nil)
+
+// NewBACnetConstructedDataActivationTime factory function for _BACnetConstructedDataActivationTime
+func NewBACnetConstructedDataActivationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activationTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActivationTime {
+	if activationTime == nil {
+		panic("activationTime of type BACnetDateTime for BACnetConstructedDataActivationTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataActivationTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActivationTime:                activationTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataActivationTime) GetActualValue() BACnetDateTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActivationTime factory function for _BACnetConstructedDataActivationTime
-func NewBACnetConstructedDataActivationTime(activationTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActivationTime {
-	if activationTime == nil {
-		panic("activationTime of type BACnetDateTime for BACnetConstructedDataActivationTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataActivationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActivationTime:                activationTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActivationTime(structType any) BACnetConstructedDataActivationTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataActivationTime) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataActivationTime) IsBACnetConstructedDataActivationTime() {}
+
+func (m *_BACnetConstructedDataActivationTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActivationTime) deepCopy() *_BACnetConstructedDataActivationTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActivationTimeCopy := &_BACnetConstructedDataActivationTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ActivationTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActivationTimeCopy
+}
 
 func (m *_BACnetConstructedDataActivationTime) String() string {
 	if m == nil {

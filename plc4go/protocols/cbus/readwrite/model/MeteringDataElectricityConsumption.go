@@ -38,6 +38,7 @@ type MeteringDataElectricityConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetKWhr returns KWhr (property field)
 	GetKWhr() uint32
@@ -53,6 +54,16 @@ type _MeteringDataElectricityConsumption struct {
 
 var _ MeteringDataElectricityConsumption = (*_MeteringDataElectricityConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataElectricityConsumption)(nil)
+
+// NewMeteringDataElectricityConsumption factory function for _MeteringDataElectricityConsumption
+func NewMeteringDataElectricityConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kWhr uint32) *_MeteringDataElectricityConsumption {
+	_result := &_MeteringDataElectricityConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		KWhr:                 kWhr,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_MeteringDataElectricityConsumption) GetKWhr() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataElectricityConsumption factory function for _MeteringDataElectricityConsumption
-func NewMeteringDataElectricityConsumption(kWhr uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataElectricityConsumption {
-	_result := &_MeteringDataElectricityConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		KWhr:                 kWhr,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataElectricityConsumption(structType any) MeteringDataElectricityConsumption {
@@ -175,6 +176,22 @@ func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_MeteringDataElectricityConsumption) IsMeteringDataElectricityConsumption() {}
+
+func (m *_MeteringDataElectricityConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataElectricityConsumption) deepCopy() *_MeteringDataElectricityConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataElectricityConsumptionCopy := &_MeteringDataElectricityConsumption{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+		m.KWhr,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataElectricityConsumptionCopy
+}
 
 func (m *_MeteringDataElectricityConsumption) String() string {
 	if m == nil {

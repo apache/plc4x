@@ -38,6 +38,7 @@ type CALDataIdentifyReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetAttribute returns Attribute (property field)
 	GetAttribute() Attribute
@@ -56,6 +57,20 @@ type _CALDataIdentifyReply struct {
 
 var _ CALDataIdentifyReply = (*_CALDataIdentifyReply)(nil)
 var _ CALDataRequirements = (*_CALDataIdentifyReply)(nil)
+
+// NewCALDataIdentifyReply factory function for _CALDataIdentifyReply
+func NewCALDataIdentifyReply(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, identifyReplyCommand IdentifyReplyCommand, requestContext RequestContext) *_CALDataIdentifyReply {
+	if identifyReplyCommand == nil {
+		panic("identifyReplyCommand of type IdentifyReplyCommand for CALDataIdentifyReply must not be nil")
+	}
+	_result := &_CALDataIdentifyReply{
+		CALDataContract:      NewCALData(commandTypeContainer, additionalData, requestContext),
+		Attribute:            attribute,
+		IdentifyReplyCommand: identifyReplyCommand,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,20 +103,6 @@ func (m *_CALDataIdentifyReply) GetIdentifyReplyCommand() IdentifyReplyCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataIdentifyReply factory function for _CALDataIdentifyReply
-func NewCALDataIdentifyReply(attribute Attribute, identifyReplyCommand IdentifyReplyCommand, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataIdentifyReply {
-	if identifyReplyCommand == nil {
-		panic("identifyReplyCommand of type IdentifyReplyCommand for CALDataIdentifyReply must not be nil")
-	}
-	_result := &_CALDataIdentifyReply{
-		CALDataContract:      NewCALData(commandTypeContainer, additionalData, requestContext),
-		Attribute:            attribute,
-		IdentifyReplyCommand: identifyReplyCommand,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataIdentifyReply(structType any) CALDataIdentifyReply {
@@ -199,6 +200,23 @@ func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_CALDataIdentifyReply) IsCALDataIdentifyReply() {}
+
+func (m *_CALDataIdentifyReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataIdentifyReply) deepCopy() *_CALDataIdentifyReply {
+	if m == nil {
+		return nil
+	}
+	_CALDataIdentifyReplyCopy := &_CALDataIdentifyReply{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.Attribute,
+		m.IdentifyReplyCommand.DeepCopy().(IdentifyReplyCommand),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataIdentifyReplyCopy
+}
 
 func (m *_CALDataIdentifyReply) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetActionList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
 	// GetAction returns Action (property field)
@@ -56,6 +57,17 @@ type _BACnetActionList struct {
 }
 
 var _ BACnetActionList = (*_BACnetActionList)(nil)
+
+// NewBACnetActionList factory function for _BACnetActionList
+func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) *_BACnetActionList {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetActionList must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetActionList must not be nil")
+	}
+	return &_BACnetActionList{InnerOpeningTag: innerOpeningTag, Action: action, InnerClosingTag: innerClosingTag}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +90,6 @@ func (m *_BACnetActionList) GetInnerClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetActionList factory function for _BACnetActionList
-func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) *_BACnetActionList {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetActionList must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetActionList must not be nil")
-	}
-	return &_BACnetActionList{InnerOpeningTag: innerOpeningTag, Action: action, InnerClosingTag: innerClosingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetActionList(structType any) BACnetActionList {
@@ -216,6 +217,22 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_BACnetActionList) IsBACnetActionList() {}
+
+func (m *_BACnetActionList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetActionList) deepCopy() *_BACnetActionList {
+	if m == nil {
+		return nil
+	}
+	_BACnetActionListCopy := &_BACnetActionList{
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetActionCommand, BACnetActionCommand](m.Action),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetActionListCopy
+}
 
 func (m *_BACnetActionList) String() string {
 	if m == nil {

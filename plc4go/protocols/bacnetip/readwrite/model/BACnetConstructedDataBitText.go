@@ -38,6 +38,7 @@ type BACnetConstructedDataBitText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataBitText struct {
 
 var _ BACnetConstructedDataBitText = (*_BACnetConstructedDataBitText)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitText)(nil)
+
+// NewBACnetConstructedDataBitText factory function for _BACnetConstructedDataBitText
+func NewBACnetConstructedDataBitText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, bitText []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitText {
+	_result := &_BACnetConstructedDataBitText{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		BitText:                       bitText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataBitText) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBitText factory function for _BACnetConstructedDataBitText
-func NewBACnetConstructedDataBitText(numberOfDataElements BACnetApplicationTagUnsignedInteger, bitText []BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitText {
-	_result := &_BACnetConstructedDataBitText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		BitText:                       bitText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBitText(structType any) BACnetConstructedDataBitText {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataBitText) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataBitText) IsBACnetConstructedDataBitText() {}
+
+func (m *_BACnetConstructedDataBitText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBitText) deepCopy() *_BACnetConstructedDataBitText {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBitTextCopy := &_BACnetConstructedDataBitText{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.BitText),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBitTextCopy
+}
 
 func (m *_BACnetConstructedDataBitText) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type SALDataAirConditioning interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetAirConditioningData returns AirConditioningData (property field)
 	GetAirConditioningData() AirConditioningData
@@ -53,6 +54,19 @@ type _SALDataAirConditioning struct {
 
 var _ SALDataAirConditioning = (*_SALDataAirConditioning)(nil)
 var _ SALDataRequirements = (*_SALDataAirConditioning)(nil)
+
+// NewSALDataAirConditioning factory function for _SALDataAirConditioning
+func NewSALDataAirConditioning(salData SALData, airConditioningData AirConditioningData) *_SALDataAirConditioning {
+	if airConditioningData == nil {
+		panic("airConditioningData of type AirConditioningData for SALDataAirConditioning must not be nil")
+	}
+	_result := &_SALDataAirConditioning{
+		SALDataContract:     NewSALData(salData),
+		AirConditioningData: airConditioningData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataAirConditioning) GetAirConditioningData() AirConditioningData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataAirConditioning factory function for _SALDataAirConditioning
-func NewSALDataAirConditioning(airConditioningData AirConditioningData, salData SALData) *_SALDataAirConditioning {
-	if airConditioningData == nil {
-		panic("airConditioningData of type AirConditioningData for SALDataAirConditioning must not be nil")
-	}
-	_result := &_SALDataAirConditioning{
-		SALDataContract:     NewSALData(salData),
-		AirConditioningData: airConditioningData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataAirConditioning(structType any) SALDataAirConditioning {
@@ -182,6 +183,22 @@ func (m *_SALDataAirConditioning) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SALDataAirConditioning) IsSALDataAirConditioning() {}
+
+func (m *_SALDataAirConditioning) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataAirConditioning) deepCopy() *_SALDataAirConditioning {
+	if m == nil {
+		return nil
+	}
+	_SALDataAirConditioningCopy := &_SALDataAirConditioning{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.AirConditioningData.DeepCopy().(AirConditioningData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataAirConditioningCopy
+}
 
 func (m *_SALDataAirConditioning) String() string {
 	if m == nil {

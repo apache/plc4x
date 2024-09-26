@@ -38,6 +38,7 @@ type QueryFirstResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -77,6 +78,33 @@ type _QueryFirstResponse struct {
 
 var _ QueryFirstResponse = (*_QueryFirstResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryFirstResponse)(nil)
+
+// NewQueryFirstResponse factory function for _QueryFirstResponse
+func NewQueryFirstResponse(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, continuationPoint PascalByteString, noOfParsingResults int32, parsingResults []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo, filterResult ExtensionObjectDefinition) *_QueryFirstResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for QueryFirstResponse must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for QueryFirstResponse must not be nil")
+	}
+	if filterResult == nil {
+		panic("filterResult of type ExtensionObjectDefinition for QueryFirstResponse must not be nil")
+	}
+	_result := &_QueryFirstResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfQueryDataSets:                 noOfQueryDataSets,
+		QueryDataSets:                     queryDataSets,
+		ContinuationPoint:                 continuationPoint,
+		NoOfParsingResults:                noOfParsingResults,
+		ParsingResults:                    parsingResults,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+		FilterResult:                      filterResult,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -141,33 +169,6 @@ func (m *_QueryFirstResponse) GetFilterResult() ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryFirstResponse factory function for _QueryFirstResponse
-func NewQueryFirstResponse(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, continuationPoint PascalByteString, noOfParsingResults int32, parsingResults []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo, filterResult ExtensionObjectDefinition) *_QueryFirstResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for QueryFirstResponse must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for QueryFirstResponse must not be nil")
-	}
-	if filterResult == nil {
-		panic("filterResult of type ExtensionObjectDefinition for QueryFirstResponse must not be nil")
-	}
-	_result := &_QueryFirstResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfQueryDataSets:                 noOfQueryDataSets,
-		QueryDataSets:                     queryDataSets,
-		ContinuationPoint:                 continuationPoint,
-		NoOfParsingResults:                noOfParsingResults,
-		ParsingResults:                    parsingResults,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-		FilterResult:                      filterResult,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryFirstResponse(structType any) QueryFirstResponse {
@@ -377,6 +378,30 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_QueryFirstResponse) IsQueryFirstResponse() {}
+
+func (m *_QueryFirstResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryFirstResponse) deepCopy() *_QueryFirstResponse {
+	if m == nil {
+		return nil
+	}
+	_QueryFirstResponseCopy := &_QueryFirstResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfQueryDataSets,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.QueryDataSets),
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		m.NoOfParsingResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ParsingResults),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+		m.FilterResult.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryFirstResponseCopy
+}
 
 func (m *_QueryFirstResponse) String() string {
 	if m == nil {

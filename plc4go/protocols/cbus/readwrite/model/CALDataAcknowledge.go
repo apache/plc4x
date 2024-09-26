@@ -38,6 +38,7 @@ type CALDataAcknowledge interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -56,6 +57,17 @@ type _CALDataAcknowledge struct {
 
 var _ CALDataAcknowledge = (*_CALDataAcknowledge)(nil)
 var _ CALDataRequirements = (*_CALDataAcknowledge)(nil)
+
+// NewCALDataAcknowledge factory function for _CALDataAcknowledge
+func NewCALDataAcknowledge(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code uint8, requestContext RequestContext) *_CALDataAcknowledge {
+	_result := &_CALDataAcknowledge{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		Code:            code,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +100,6 @@ func (m *_CALDataAcknowledge) GetCode() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataAcknowledge factory function for _CALDataAcknowledge
-func NewCALDataAcknowledge(paramNo Parameter, code uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataAcknowledge {
-	_result := &_CALDataAcknowledge{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		ParamNo:         paramNo,
-		Code:            code,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataAcknowledge(structType any) CALDataAcknowledge {
@@ -196,6 +197,23 @@ func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_CALDataAcknowledge) IsCALDataAcknowledge() {}
+
+func (m *_CALDataAcknowledge) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataAcknowledge) deepCopy() *_CALDataAcknowledge {
+	if m == nil {
+		return nil
+	}
+	_CALDataAcknowledgeCopy := &_CALDataAcknowledge{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.ParamNo,
+		m.Code,
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataAcknowledgeCopy
+}
 
 func (m *_CALDataAcknowledge) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetTimeStampsEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetTimestamps returns Timestamps (property field)
@@ -60,6 +61,17 @@ type _BACnetTimeStampsEnclosed struct {
 
 var _ BACnetTimeStampsEnclosed = (*_BACnetTimeStampsEnclosed)(nil)
 
+// NewBACnetTimeStampsEnclosed factory function for _BACnetTimeStampsEnclosed
+func NewBACnetTimeStampsEnclosed(openingTag BACnetOpeningTag, timestamps []BACnetTimeStamp, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetTimeStampsEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetTimeStampsEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetTimeStampsEnclosed must not be nil")
+	}
+	return &_BACnetTimeStampsEnclosed{OpeningTag: openingTag, Timestamps: timestamps, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_BACnetTimeStampsEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimeStampsEnclosed factory function for _BACnetTimeStampsEnclosed
-func NewBACnetTimeStampsEnclosed(openingTag BACnetOpeningTag, timestamps []BACnetTimeStamp, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetTimeStampsEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetTimeStampsEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetTimeStampsEnclosed must not be nil")
-	}
-	return &_BACnetTimeStampsEnclosed{OpeningTag: openingTag, Timestamps: timestamps, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimeStampsEnclosed(structType any) BACnetTimeStampsEnclosed {
@@ -229,6 +230,23 @@ func (m *_BACnetTimeStampsEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetTimeStampsEnclosed) IsBACnetTimeStampsEnclosed() {}
+
+func (m *_BACnetTimeStampsEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStampsEnclosed) deepCopy() *_BACnetTimeStampsEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampsEnclosedCopy := &_BACnetTimeStampsEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimeStamp, BACnetTimeStamp](m.Timestamps),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetTimeStampsEnclosedCopy
+}
 
 func (m *_BACnetTimeStampsEnclosed) String() string {
 	if m == nil {

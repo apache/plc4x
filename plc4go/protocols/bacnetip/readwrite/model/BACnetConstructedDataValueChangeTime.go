@@ -38,6 +38,7 @@ type BACnetConstructedDataValueChangeTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetValueChangeTime returns ValueChangeTime (property field)
 	GetValueChangeTime() BACnetDateTime
@@ -55,6 +56,19 @@ type _BACnetConstructedDataValueChangeTime struct {
 
 var _ BACnetConstructedDataValueChangeTime = (*_BACnetConstructedDataValueChangeTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueChangeTime)(nil)
+
+// NewBACnetConstructedDataValueChangeTime factory function for _BACnetConstructedDataValueChangeTime
+func NewBACnetConstructedDataValueChangeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueChangeTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueChangeTime {
+	if valueChangeTime == nil {
+		panic("valueChangeTime of type BACnetDateTime for BACnetConstructedDataValueChangeTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataValueChangeTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ValueChangeTime:               valueChangeTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataValueChangeTime) GetActualValue() BACnetDateTime 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataValueChangeTime factory function for _BACnetConstructedDataValueChangeTime
-func NewBACnetConstructedDataValueChangeTime(valueChangeTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueChangeTime {
-	if valueChangeTime == nil {
-		panic("valueChangeTime of type BACnetDateTime for BACnetConstructedDataValueChangeTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataValueChangeTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ValueChangeTime:               valueChangeTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataValueChangeTime(structType any) BACnetConstructedDataValueChangeTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataValueChangeTime) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataValueChangeTime) IsBACnetConstructedDataValueChangeTime() {}
+
+func (m *_BACnetConstructedDataValueChangeTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataValueChangeTime) deepCopy() *_BACnetConstructedDataValueChangeTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataValueChangeTimeCopy := &_BACnetConstructedDataValueChangeTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ValueChangeTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataValueChangeTimeCopy
+}
 
 func (m *_BACnetConstructedDataValueChangeTime) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataAcceptedModes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAcceptedModes returns AcceptedModes (property field)
 	GetAcceptedModes() []BACnetLifeSafetyModeTagged
@@ -53,6 +54,16 @@ type _BACnetConstructedDataAcceptedModes struct {
 
 var _ BACnetConstructedDataAcceptedModes = (*_BACnetConstructedDataAcceptedModes)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAcceptedModes)(nil)
+
+// NewBACnetConstructedDataAcceptedModes factory function for _BACnetConstructedDataAcceptedModes
+func NewBACnetConstructedDataAcceptedModes(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, acceptedModes []BACnetLifeSafetyModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAcceptedModes {
+	_result := &_BACnetConstructedDataAcceptedModes{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AcceptedModes:                 acceptedModes,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataAcceptedModes) GetAcceptedModes() []BACnetLifeSaf
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAcceptedModes factory function for _BACnetConstructedDataAcceptedModes
-func NewBACnetConstructedDataAcceptedModes(acceptedModes []BACnetLifeSafetyModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAcceptedModes {
-	_result := &_BACnetConstructedDataAcceptedModes{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AcceptedModes:                 acceptedModes,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAcceptedModes(structType any) BACnetConstructedDataAcceptedModes {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAcceptedModes) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataAcceptedModes) IsBACnetConstructedDataAcceptedModes() {}
+
+func (m *_BACnetConstructedDataAcceptedModes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAcceptedModes) deepCopy() *_BACnetConstructedDataAcceptedModes {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAcceptedModesCopy := &_BACnetConstructedDataAcceptedModes{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetLifeSafetyModeTagged, BACnetLifeSafetyModeTagged](m.AcceptedModes),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAcceptedModesCopy
+}
 
 func (m *_BACnetConstructedDataAcceptedModes) String() string {
 	if m == nil {

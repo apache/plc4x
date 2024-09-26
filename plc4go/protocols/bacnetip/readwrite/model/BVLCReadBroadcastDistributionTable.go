@@ -37,6 +37,7 @@ type BVLCReadBroadcastDistributionTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// IsBVLCReadBroadcastDistributionTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCReadBroadcastDistributionTable()
@@ -49,6 +50,15 @@ type _BVLCReadBroadcastDistributionTable struct {
 
 var _ BVLCReadBroadcastDistributionTable = (*_BVLCReadBroadcastDistributionTable)(nil)
 var _ BVLCRequirements = (*_BVLCReadBroadcastDistributionTable)(nil)
+
+// NewBVLCReadBroadcastDistributionTable factory function for _BVLCReadBroadcastDistributionTable
+func NewBVLCReadBroadcastDistributionTable() *_BVLCReadBroadcastDistributionTable {
+	_result := &_BVLCReadBroadcastDistributionTable{
+		BVLCContract: NewBVLC(),
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,15 +76,6 @@ func (m *_BVLCReadBroadcastDistributionTable) GetBvlcFunction() uint8 {
 
 func (m *_BVLCReadBroadcastDistributionTable) GetParent() BVLCContract {
 	return m.BVLCContract
-}
-
-// NewBVLCReadBroadcastDistributionTable factory function for _BVLCReadBroadcastDistributionTable
-func NewBVLCReadBroadcastDistributionTable() *_BVLCReadBroadcastDistributionTable {
-	_result := &_BVLCReadBroadcastDistributionTable{
-		BVLCContract: NewBVLC(),
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,6 +148,21 @@ func (m *_BVLCReadBroadcastDistributionTable) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BVLCReadBroadcastDistributionTable) IsBVLCReadBroadcastDistributionTable() {}
+
+func (m *_BVLCReadBroadcastDistributionTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCReadBroadcastDistributionTable) deepCopy() *_BVLCReadBroadcastDistributionTable {
+	if m == nil {
+		return nil
+	}
+	_BVLCReadBroadcastDistributionTableCopy := &_BVLCReadBroadcastDistributionTable{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCReadBroadcastDistributionTableCopy
+}
 
 func (m *_BVLCReadBroadcastDistributionTable) String() string {
 	if m == nil {

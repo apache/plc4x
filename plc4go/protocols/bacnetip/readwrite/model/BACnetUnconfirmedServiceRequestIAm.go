@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestIAm interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
@@ -62,6 +63,31 @@ type _BACnetUnconfirmedServiceRequestIAm struct {
 
 var _ BACnetUnconfirmedServiceRequestIAm = (*_BACnetUnconfirmedServiceRequestIAm)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestIAm)(nil)
+
+// NewBACnetUnconfirmedServiceRequestIAm factory function for _BACnetUnconfirmedServiceRequestIAm
+func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength BACnetApplicationTagUnsignedInteger, segmentationSupported BACnetSegmentationTagged, vendorId BACnetVendorIdTagged, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestIAm {
+	if deviceIdentifier == nil {
+		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetUnconfirmedServiceRequestIAm must not be nil")
+	}
+	if maximumApduLengthAcceptedLength == nil {
+		panic("maximumApduLengthAcceptedLength of type BACnetApplicationTagUnsignedInteger for BACnetUnconfirmedServiceRequestIAm must not be nil")
+	}
+	if segmentationSupported == nil {
+		panic("segmentationSupported of type BACnetSegmentationTagged for BACnetUnconfirmedServiceRequestIAm must not be nil")
+	}
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetUnconfirmedServiceRequestIAm must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestIAm{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		DeviceIdentifier:                        deviceIdentifier,
+		MaximumApduLengthAcceptedLength:         maximumApduLengthAcceptedLength,
+		SegmentationSupported:                   segmentationSupported,
+		VendorId:                                vendorId,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,31 +132,6 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) GetVendorId() BACnetVendorIdTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestIAm factory function for _BACnetUnconfirmedServiceRequestIAm
-func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier BACnetApplicationTagObjectIdentifier, maximumApduLengthAcceptedLength BACnetApplicationTagUnsignedInteger, segmentationSupported BACnetSegmentationTagged, vendorId BACnetVendorIdTagged, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestIAm {
-	if deviceIdentifier == nil {
-		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetUnconfirmedServiceRequestIAm must not be nil")
-	}
-	if maximumApduLengthAcceptedLength == nil {
-		panic("maximumApduLengthAcceptedLength of type BACnetApplicationTagUnsignedInteger for BACnetUnconfirmedServiceRequestIAm must not be nil")
-	}
-	if segmentationSupported == nil {
-		panic("segmentationSupported of type BACnetSegmentationTagged for BACnetUnconfirmedServiceRequestIAm must not be nil")
-	}
-	if vendorId == nil {
-		panic("vendorId of type BACnetVendorIdTagged for BACnetUnconfirmedServiceRequestIAm must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestIAm{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		DeviceIdentifier:                        deviceIdentifier,
-		MaximumApduLengthAcceptedLength:         maximumApduLengthAcceptedLength,
-		SegmentationSupported:                   segmentationSupported,
-		VendorId:                                vendorId,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestIAm(structType any) BACnetUnconfirmedServiceRequestIAm {
@@ -254,6 +255,25 @@ func (m *_BACnetUnconfirmedServiceRequestIAm) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetUnconfirmedServiceRequestIAm) IsBACnetUnconfirmedServiceRequestIAm() {}
+
+func (m *_BACnetUnconfirmedServiceRequestIAm) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestIAm) deepCopy() *_BACnetUnconfirmedServiceRequestIAm {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestIAmCopy := &_BACnetUnconfirmedServiceRequestIAm{
+		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
+		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.MaximumApduLengthAcceptedLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.SegmentationSupported.DeepCopy().(BACnetSegmentationTagged),
+		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestIAmCopy
+}
 
 func (m *_BACnetUnconfirmedServiceRequestIAm) String() string {
 	if m == nil {

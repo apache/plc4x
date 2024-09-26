@@ -38,6 +38,7 @@ type BACnetPriorityValueBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
@@ -53,6 +54,19 @@ type _BACnetPriorityValueBoolean struct {
 
 var _ BACnetPriorityValueBoolean = (*_BACnetPriorityValueBoolean)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueBoolean)(nil)
+
+// NewBACnetPriorityValueBoolean factory function for _BACnetPriorityValueBoolean
+func NewBACnetPriorityValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBoolean {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetPriorityValueBoolean must not be nil")
+	}
+	_result := &_BACnetPriorityValueBoolean{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BooleanValue:                booleanValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueBoolean) GetBooleanValue() BACnetApplicationTagBool
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueBoolean factory function for _BACnetPriorityValueBoolean
-func NewBACnetPriorityValueBoolean(booleanValue BACnetApplicationTagBoolean, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBoolean {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetPriorityValueBoolean must not be nil")
-	}
-	_result := &_BACnetPriorityValueBoolean{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		BooleanValue:                booleanValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueBoolean(structType any) BACnetPriorityValueBoolean {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueBoolean) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetPriorityValueBoolean) IsBACnetPriorityValueBoolean() {}
+
+func (m *_BACnetPriorityValueBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueBoolean) deepCopy() *_BACnetPriorityValueBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueBooleanCopy := &_BACnetPriorityValueBoolean{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueBooleanCopy
+}
 
 func (m *_BACnetPriorityValueBoolean) String() string {
 	if m == nil {

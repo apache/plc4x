@@ -38,6 +38,7 @@ type KeyValuePair interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetKey returns Key (property field)
 	GetKey() QualifiedName
@@ -56,6 +57,23 @@ type _KeyValuePair struct {
 
 var _ KeyValuePair = (*_KeyValuePair)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_KeyValuePair)(nil)
+
+// NewKeyValuePair factory function for _KeyValuePair
+func NewKeyValuePair(key QualifiedName, value Variant) *_KeyValuePair {
+	if key == nil {
+		panic("key of type QualifiedName for KeyValuePair must not be nil")
+	}
+	if value == nil {
+		panic("value of type Variant for KeyValuePair must not be nil")
+	}
+	_result := &_KeyValuePair{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Key:                               key,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_KeyValuePair) GetValue() Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKeyValuePair factory function for _KeyValuePair
-func NewKeyValuePair(key QualifiedName, value Variant) *_KeyValuePair {
-	if key == nil {
-		panic("key of type QualifiedName for KeyValuePair must not be nil")
-	}
-	if value == nil {
-		panic("value of type Variant for KeyValuePair must not be nil")
-	}
-	_result := &_KeyValuePair{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Key:                               key,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKeyValuePair(structType any) KeyValuePair {
@@ -206,6 +207,23 @@ func (m *_KeyValuePair) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_KeyValuePair) IsKeyValuePair() {}
+
+func (m *_KeyValuePair) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KeyValuePair) deepCopy() *_KeyValuePair {
+	if m == nil {
+		return nil
+	}
+	_KeyValuePairCopy := &_KeyValuePair{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Key.DeepCopy().(QualifiedName),
+		m.Value.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _KeyValuePairCopy
+}
 
 func (m *_KeyValuePair) String() string {
 	if m == nil {

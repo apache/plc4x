@@ -38,6 +38,7 @@ type S7PayloadUserDataItemClkFResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetRes returns Res (property field)
 	GetRes() uint8
@@ -59,6 +60,21 @@ type _S7PayloadUserDataItemClkFResponse struct {
 
 var _ S7PayloadUserDataItemClkFResponse = (*_S7PayloadUserDataItemClkFResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemClkFResponse)(nil)
+
+// NewS7PayloadUserDataItemClkFResponse factory function for _S7PayloadUserDataItemClkFResponse
+func NewS7PayloadUserDataItemClkFResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, res uint8, year1 uint8, timeStamp DateAndTime) *_S7PayloadUserDataItemClkFResponse {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for S7PayloadUserDataItemClkFResponse must not be nil")
+	}
+	_result := &_S7PayloadUserDataItemClkFResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Res:                           res,
+		Year1:                         year1,
+		TimeStamp:                     timeStamp,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,21 +123,6 @@ func (m *_S7PayloadUserDataItemClkFResponse) GetTimeStamp() DateAndTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemClkFResponse factory function for _S7PayloadUserDataItemClkFResponse
-func NewS7PayloadUserDataItemClkFResponse(res uint8, year1 uint8, timeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkFResponse {
-	if timeStamp == nil {
-		panic("timeStamp of type DateAndTime for S7PayloadUserDataItemClkFResponse must not be nil")
-	}
-	_result := &_S7PayloadUserDataItemClkFResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Res:                           res,
-		Year1:                         year1,
-		TimeStamp:                     timeStamp,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemClkFResponse(structType any) S7PayloadUserDataItemClkFResponse {
@@ -232,6 +233,24 @@ func (m *_S7PayloadUserDataItemClkFResponse) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_S7PayloadUserDataItemClkFResponse) IsS7PayloadUserDataItemClkFResponse() {}
+
+func (m *_S7PayloadUserDataItemClkFResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemClkFResponse) deepCopy() *_S7PayloadUserDataItemClkFResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemClkFResponseCopy := &_S7PayloadUserDataItemClkFResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.Res,
+		m.Year1,
+		m.TimeStamp.DeepCopy().(DateAndTime),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemClkFResponseCopy
+}
 
 func (m *_S7PayloadUserDataItemClkFResponse) String() string {
 	if m == nil {

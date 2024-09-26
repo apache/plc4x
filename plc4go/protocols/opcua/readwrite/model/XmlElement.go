@@ -38,6 +38,7 @@ type XmlElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLength returns Length (property field)
 	GetLength() int32
 	// GetValue returns Value (property field)
@@ -53,6 +54,11 @@ type _XmlElement struct {
 }
 
 var _ XmlElement = (*_XmlElement)(nil)
+
+// NewXmlElement factory function for _XmlElement
+func NewXmlElement(length int32, value []string) *_XmlElement {
+	return &_XmlElement{Length: length, Value: value}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +77,6 @@ func (m *_XmlElement) GetValue() []string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewXmlElement factory function for _XmlElement
-func NewXmlElement(length int32, value []string) *_XmlElement {
-	return &_XmlElement{Length: length, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastXmlElement(structType any) XmlElement {
@@ -188,6 +189,21 @@ func (m *_XmlElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_XmlElement) IsXmlElement() {}
+
+func (m *_XmlElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_XmlElement) deepCopy() *_XmlElement {
+	if m == nil {
+		return nil
+	}
+	_XmlElementCopy := &_XmlElement{
+		m.Length,
+		utils.DeepCopySlice[string, string](m.Value),
+	}
+	return _XmlElementCopy
+}
 
 func (m *_XmlElement) String() string {
 	if m == nil {

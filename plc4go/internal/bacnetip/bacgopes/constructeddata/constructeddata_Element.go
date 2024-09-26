@@ -20,11 +20,15 @@
 package constructeddata
 
 import (
+	"fmt"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type Element interface {
+	fmt.Formatter
 	GetName() string
 	GetKlass() func(Args, KWArgs) (ElementKlass, error)
 	GetContext() *int
@@ -37,18 +41,20 @@ type ElementKlass interface {
 	GetAppTag() readWriteModel.BACnetDataType
 }
 
-// TODO: finish
 type _Element struct {
-	Name     string
-	Klass    func(Args, KWArgs) (ElementKlass, error)
-	Context  *int
-	Optional bool
+	name     string
+	klass    func(Args, KWArgs) (ElementKlass, error)
+	context  *int
+	optional bool
+
+	_leafName string
 }
 
 func NewElement(name string, klass func(Args, KWArgs) (ElementKlass, error), options ...Option) Element {
 	e := &_Element{
-		Name:  name,
-		Klass: klass,
+		name:      name,
+		klass:     klass,
+		_leafName: ExtractLeafName(options, StructName()),
 	}
 	ApplyAppliers(options, e)
 	return e
@@ -57,30 +63,48 @@ func NewElement(name string, klass func(Args, KWArgs) (ElementKlass, error), opt
 var _ Element = (*_Element)(nil)
 
 func WithElementOptional(optional bool) GenericApplier[*_Element] {
-	return WrapGenericApplier(func(e *_Element) { e.Optional = optional })
+	return WrapGenericApplier(func(e *_Element) { e.optional = optional })
 }
 
 func WithElementContext(context int) GenericApplier[*_Element] {
-	return WrapGenericApplier(func(e *_Element) { e.Context = &context })
+	return WrapGenericApplier(func(e *_Element) { e.context = &context })
 }
 
 func (e *_Element) GetName() string {
-	return e.Name
+	return e.name
 }
 
 func (e *_Element) GetKlass() func(Args, KWArgs) (ElementKlass, error) {
-	return e.Klass
+	return e.klass
 }
 
 func (e *_Element) GetContext() *int {
-	return e.Context
+	return e.context
 }
 
 func (e *_Element) IsOptional() bool {
-	return e.Optional
+	return e.optional
 }
 
 func (e *_Element) Encode(tagList Arg) error {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (e *_Element) Format(s fmt.State, verb rune) {
+	switch verb {
+	case 'r':
+		desc := fmt.Sprintf("%s(%s", e._leafName, e.name)
+		elementKlass, _ := e.klass(Nothing())
+		desc += " " + QualifiedTypeName(elementKlass)
+		if e.context != nil {
+			desc += fmt.Sprintf(", context=%d", *e.context)
+		}
+		if e.optional {
+			desc += ", optional"
+		}
+		desc += ")"
+
+		_, _ = fmt.Fprintf(s, "<%s instance at %p>", desc, e)
+	}
 }

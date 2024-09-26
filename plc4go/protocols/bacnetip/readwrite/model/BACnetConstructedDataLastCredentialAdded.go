@@ -38,6 +38,7 @@ type BACnetConstructedDataLastCredentialAdded interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastCredentialAdded returns LastCredentialAdded (property field)
 	GetLastCredentialAdded() BACnetDeviceObjectReference
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLastCredentialAdded struct {
 
 var _ BACnetConstructedDataLastCredentialAdded = (*_BACnetConstructedDataLastCredentialAdded)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastCredentialAdded)(nil)
+
+// NewBACnetConstructedDataLastCredentialAdded factory function for _BACnetConstructedDataLastCredentialAdded
+func NewBACnetConstructedDataLastCredentialAdded(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCredentialAdded BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAdded {
+	if lastCredentialAdded == nil {
+		panic("lastCredentialAdded of type BACnetDeviceObjectReference for BACnetConstructedDataLastCredentialAdded must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastCredentialAdded{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastCredentialAdded:           lastCredentialAdded,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLastCredentialAdded) GetActualValue() BACnetDevic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastCredentialAdded factory function for _BACnetConstructedDataLastCredentialAdded
-func NewBACnetConstructedDataLastCredentialAdded(lastCredentialAdded BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAdded {
-	if lastCredentialAdded == nil {
-		panic("lastCredentialAdded of type BACnetDeviceObjectReference for BACnetConstructedDataLastCredentialAdded must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastCredentialAdded{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastCredentialAdded:           lastCredentialAdded,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastCredentialAdded(structType any) BACnetConstructedDataLastCredentialAdded {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastCredentialAdded) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataLastCredentialAdded) IsBACnetConstructedDataLastCredentialAdded() {}
+
+func (m *_BACnetConstructedDataLastCredentialAdded) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastCredentialAdded) deepCopy() *_BACnetConstructedDataLastCredentialAdded {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastCredentialAddedCopy := &_BACnetConstructedDataLastCredentialAdded{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LastCredentialAdded.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastCredentialAddedCopy
+}
 
 func (m *_BACnetConstructedDataLastCredentialAdded) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetTimerStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetTimerStateTagged struct {
 
 var _ BACnetTimerStateTagged = (*_BACnetTimerStateTagged)(nil)
 
+// NewBACnetTimerStateTagged factory function for _BACnetTimerStateTagged
+func NewBACnetTimerStateTagged(header BACnetTagHeader, value BACnetTimerState, tagNumber uint8, tagClass TagClass) *_BACnetTimerStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetTimerStateTagged must not be nil")
+	}
+	return &_BACnetTimerStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetTimerStateTagged) GetValue() BACnetTimerState {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateTagged factory function for _BACnetTimerStateTagged
-func NewBACnetTimerStateTagged(header BACnetTagHeader, value BACnetTimerState, tagNumber uint8, tagClass TagClass) *_BACnetTimerStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetTimerStateTagged must not be nil")
-	}
-	return &_BACnetTimerStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateTagged(structType any) BACnetTimerStateTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetTimerStateTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetTimerStateTagged) IsBACnetTimerStateTagged() {}
+
+func (m *_BACnetTimerStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateTagged) deepCopy() *_BACnetTimerStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateTaggedCopy := &_BACnetTimerStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetTimerStateTaggedCopy
+}
 
 func (m *_BACnetTimerStateTagged) String() string {
 	if m == nil {

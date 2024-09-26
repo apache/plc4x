@@ -38,6 +38,7 @@ type BACnetTagPayloadTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHour returns Hour (property field)
 	GetHour() uint8
 	// GetMinute returns Minute (property field)
@@ -69,6 +70,11 @@ type _BACnetTagPayloadTime struct {
 }
 
 var _ BACnetTagPayloadTime = (*_BACnetTagPayloadTime)(nil)
+
+// NewBACnetTagPayloadTime factory function for _BACnetTagPayloadTime
+func NewBACnetTagPayloadTime(hour uint8, minute uint8, second uint8, fractional uint8) *_BACnetTagPayloadTime {
+	return &_BACnetTagPayloadTime{Hour: hour, Minute: minute, Second: second, Fractional: fractional}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,11 +140,6 @@ func (m *_BACnetTagPayloadTime) GetFractionalIsWildcard() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadTime factory function for _BACnetTagPayloadTime
-func NewBACnetTagPayloadTime(hour uint8, minute uint8, second uint8, fractional uint8) *_BACnetTagPayloadTime {
-	return &_BACnetTagPayloadTime{Hour: hour, Minute: minute, Second: second, Fractional: fractional}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadTime(structType any) BACnetTagPayloadTime {
@@ -345,6 +346,23 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetTagPayloadTime) IsBACnetTagPayloadTime() {}
+
+func (m *_BACnetTagPayloadTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadTime) deepCopy() *_BACnetTagPayloadTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadTimeCopy := &_BACnetTagPayloadTime{
+		m.Hour,
+		m.Minute,
+		m.Second,
+		m.Fractional,
+	}
+	return _BACnetTagPayloadTimeCopy
+}
 
 func (m *_BACnetTagPayloadTime) String() string {
 	if m == nil {

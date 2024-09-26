@@ -38,6 +38,7 @@ type BACnetConstructedDataIPDNSServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataIPDNSServer struct {
 
 var _ BACnetConstructedDataIPDNSServer = (*_BACnetConstructedDataIPDNSServer)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDNSServer)(nil)
+
+// NewBACnetConstructedDataIPDNSServer factory function for _BACnetConstructedDataIPDNSServer
+func NewBACnetConstructedDataIPDNSServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, ipDnsServer []BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDNSServer {
+	_result := &_BACnetConstructedDataIPDNSServer{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		IpDnsServer:                   ipDnsServer,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataIPDNSServer) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPDNSServer factory function for _BACnetConstructedDataIPDNSServer
-func NewBACnetConstructedDataIPDNSServer(numberOfDataElements BACnetApplicationTagUnsignedInteger, ipDnsServer []BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDNSServer {
-	_result := &_BACnetConstructedDataIPDNSServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		IpDnsServer:                   ipDnsServer,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPDNSServer(structType any) BACnetConstructedDataIPDNSServer {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataIPDNSServer) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataIPDNSServer) IsBACnetConstructedDataIPDNSServer() {}
+
+func (m *_BACnetConstructedDataIPDNSServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPDNSServer) deepCopy() *_BACnetConstructedDataIPDNSServer {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPDNSServerCopy := &_BACnetConstructedDataIPDNSServer{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagOctetString, BACnetApplicationTagOctetString](m.IpDnsServer),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPDNSServerCopy
+}
 
 func (m *_BACnetConstructedDataIPDNSServer) String() string {
 	if m == nil {

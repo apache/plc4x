@@ -40,6 +40,7 @@ type BACnetClientCOV interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetClientCOV is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetClientCOV()
 }
@@ -70,6 +71,14 @@ type _BACnetClientCOV struct {
 
 var _ BACnetClientCOVContract = (*_BACnetClientCOV)(nil)
 
+// NewBACnetClientCOV factory function for _BACnetClientCOV
+func NewBACnetClientCOV(peekedTagHeader BACnetTagHeader) *_BACnetClientCOV {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetClientCOV must not be nil")
+	}
+	return &_BACnetClientCOV{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetClientCOV) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClientCOV factory function for _BACnetClientCOV
-func NewBACnetClientCOV(peekedTagHeader BACnetTagHeader) *_BACnetClientCOV {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetClientCOV must not be nil")
-	}
-	return &_BACnetClientCOV{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClientCOV(structType any) BACnetClientCOV {
@@ -189,11 +190,11 @@ func (m *_BACnetClientCOV) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetClientCOV
 	switch {
 	case peekedTagNumber == 0x4: // BACnetClientCOVObject
-		if _child, err = (&_BACnetClientCOVObject{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetClientCOVObject).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetClientCOVObject for type-switch of BACnetClientCOV")
 		}
 	case peekedTagNumber == 0x0: // BACnetClientCOVNone
-		if _child, err = (&_BACnetClientCOVNone{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetClientCOVNone).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetClientCOVNone for type-switch of BACnetClientCOV")
 		}
 	default:
@@ -237,3 +238,18 @@ func (pm *_BACnetClientCOV) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetClientCOV) IsBACnetClientCOV() {}
+
+func (m *_BACnetClientCOV) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetClientCOV) deepCopy() *_BACnetClientCOV {
+	if m == nil {
+		return nil
+	}
+	_BACnetClientCOVCopy := &_BACnetClientCOV{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetClientCOVCopy
+}

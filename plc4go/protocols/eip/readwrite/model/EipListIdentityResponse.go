@@ -38,6 +38,7 @@ type EipListIdentityResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// GetItems returns Items (property field)
 	GetItems() []CommandSpecificDataItem
@@ -53,6 +54,16 @@ type _EipListIdentityResponse struct {
 
 var _ EipListIdentityResponse = (*_EipListIdentityResponse)(nil)
 var _ EipPacketRequirements = (*_EipListIdentityResponse)(nil)
+
+// NewEipListIdentityResponse factory function for _EipListIdentityResponse
+func NewEipListIdentityResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32, items []CommandSpecificDataItem) *_EipListIdentityResponse {
+	_result := &_EipListIdentityResponse{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		Items:             items,
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_EipListIdentityResponse) GetItems() []CommandSpecificDataItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEipListIdentityResponse factory function for _EipListIdentityResponse
-func NewEipListIdentityResponse(items []CommandSpecificDataItem, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipListIdentityResponse {
-	_result := &_EipListIdentityResponse{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-		Items:             items,
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEipListIdentityResponse(structType any) EipListIdentityResponse {
@@ -207,6 +208,22 @@ func (m *_EipListIdentityResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_EipListIdentityResponse) IsEipListIdentityResponse() {}
+
+func (m *_EipListIdentityResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipListIdentityResponse) deepCopy() *_EipListIdentityResponse {
+	if m == nil {
+		return nil
+	}
+	_EipListIdentityResponseCopy := &_EipListIdentityResponse{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+		utils.DeepCopySlice[CommandSpecificDataItem, CommandSpecificDataItem](m.Items),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _EipListIdentityResponseCopy
+}
 
 func (m *_EipListIdentityResponse) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type SecurityDataPanicCleared interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataPanicCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataPanicCleared()
@@ -49,6 +50,15 @@ type _SecurityDataPanicCleared struct {
 var _ SecurityDataPanicCleared = (*_SecurityDataPanicCleared)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataPanicCleared)(nil)
 
+// NewSecurityDataPanicCleared factory function for _SecurityDataPanicCleared
+func NewSecurityDataPanicCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataPanicCleared {
+	_result := &_SecurityDataPanicCleared{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataPanicCleared)(nil)
 
 func (m *_SecurityDataPanicCleared) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataPanicCleared factory function for _SecurityDataPanicCleared
-func NewSecurityDataPanicCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataPanicCleared {
-	_result := &_SecurityDataPanicCleared{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataPanicCleared) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SecurityDataPanicCleared) IsSecurityDataPanicCleared() {}
+
+func (m *_SecurityDataPanicCleared) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataPanicCleared) deepCopy() *_SecurityDataPanicCleared {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataPanicClearedCopy := &_SecurityDataPanicCleared{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataPanicClearedCopy
+}
 
 func (m *_SecurityDataPanicCleared) String() string {
 	if m == nil {

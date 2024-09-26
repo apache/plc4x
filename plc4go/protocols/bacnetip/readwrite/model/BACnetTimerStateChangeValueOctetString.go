@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
@@ -53,6 +54,19 @@ type _BACnetTimerStateChangeValueOctetString struct {
 
 var _ BACnetTimerStateChangeValueOctetString = (*_BACnetTimerStateChangeValueOctetString)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueOctetString)(nil)
+
+// NewBACnetTimerStateChangeValueOctetString factory function for _BACnetTimerStateChangeValueOctetString
+func NewBACnetTimerStateChangeValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetTimerStateChangeValueOctetString must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueOctetString{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		OctetStringValue:                    octetStringValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetTimerStateChangeValueOctetString) GetOctetStringValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueOctetString factory function for _BACnetTimerStateChangeValueOctetString
-func NewBACnetTimerStateChangeValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueOctetString {
-	if octetStringValue == nil {
-		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetTimerStateChangeValueOctetString must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueOctetString{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		OctetStringValue:                    octetStringValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueOctetString(structType any) BACnetTimerStateChangeValueOctetString {
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueOctetString) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetTimerStateChangeValueOctetString) IsBACnetTimerStateChangeValueOctetString() {}
+
+func (m *_BACnetTimerStateChangeValueOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueOctetString) deepCopy() *_BACnetTimerStateChangeValueOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueOctetStringCopy := &_BACnetTimerStateChangeValueOctetString{
+		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueOctetStringCopy
+}
 
 func (m *_BACnetTimerStateChangeValueOctetString) String() string {
 	if m == nil {

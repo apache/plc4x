@@ -38,6 +38,7 @@ type BACnetShedLevelPercent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetShedLevel
 	// GetPercent returns Percent (property field)
 	GetPercent() BACnetContextTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetShedLevelPercent struct {
 
 var _ BACnetShedLevelPercent = (*_BACnetShedLevelPercent)(nil)
 var _ BACnetShedLevelRequirements = (*_BACnetShedLevelPercent)(nil)
+
+// NewBACnetShedLevelPercent factory function for _BACnetShedLevelPercent
+func NewBACnetShedLevelPercent(peekedTagHeader BACnetTagHeader, percent BACnetContextTagUnsignedInteger) *_BACnetShedLevelPercent {
+	if percent == nil {
+		panic("percent of type BACnetContextTagUnsignedInteger for BACnetShedLevelPercent must not be nil")
+	}
+	_result := &_BACnetShedLevelPercent{
+		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
+		Percent:                 percent,
+	}
+	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetShedLevelPercent) GetPercent() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetShedLevelPercent factory function for _BACnetShedLevelPercent
-func NewBACnetShedLevelPercent(percent BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetShedLevelPercent {
-	if percent == nil {
-		panic("percent of type BACnetContextTagUnsignedInteger for BACnetShedLevelPercent must not be nil")
-	}
-	_result := &_BACnetShedLevelPercent{
-		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
-		Percent:                 percent,
-	}
-	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetShedLevelPercent(structType any) BACnetShedLevelPercent {
@@ -178,6 +179,22 @@ func (m *_BACnetShedLevelPercent) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetShedLevelPercent) IsBACnetShedLevelPercent() {}
+
+func (m *_BACnetShedLevelPercent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetShedLevelPercent) deepCopy() *_BACnetShedLevelPercent {
+	if m == nil {
+		return nil
+	}
+	_BACnetShedLevelPercentCopy := &_BACnetShedLevelPercent{
+		m.BACnetShedLevelContract.(*_BACnetShedLevel).deepCopy(),
+		m.Percent.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m
+	return _BACnetShedLevelPercentCopy
+}
 
 func (m *_BACnetShedLevelPercent) String() string {
 	if m == nil {

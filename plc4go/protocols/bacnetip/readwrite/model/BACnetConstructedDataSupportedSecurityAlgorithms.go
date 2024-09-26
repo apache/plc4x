@@ -38,6 +38,7 @@ type BACnetConstructedDataSupportedSecurityAlgorithms interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSupportedSecurityAlgorithms returns SupportedSecurityAlgorithms (property field)
 	GetSupportedSecurityAlgorithms() []BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,16 @@ type _BACnetConstructedDataSupportedSecurityAlgorithms struct {
 
 var _ BACnetConstructedDataSupportedSecurityAlgorithms = (*_BACnetConstructedDataSupportedSecurityAlgorithms)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSupportedSecurityAlgorithms)(nil)
+
+// NewBACnetConstructedDataSupportedSecurityAlgorithms factory function for _BACnetConstructedDataSupportedSecurityAlgorithms
+func NewBACnetConstructedDataSupportedSecurityAlgorithms(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedSecurityAlgorithms {
+	_result := &_BACnetConstructedDataSupportedSecurityAlgorithms{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SupportedSecurityAlgorithms:   supportedSecurityAlgorithms,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) GetSupportedSecurity
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSupportedSecurityAlgorithms factory function for _BACnetConstructedDataSupportedSecurityAlgorithms
-func NewBACnetConstructedDataSupportedSecurityAlgorithms(supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedSecurityAlgorithms {
-	_result := &_BACnetConstructedDataSupportedSecurityAlgorithms{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SupportedSecurityAlgorithms:   supportedSecurityAlgorithms,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSupportedSecurityAlgorithms(structType any) BACnetConstructedDataSupportedSecurityAlgorithms {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) IsBACnetConstructedDataSupportedSecurityAlgorithms() {
+}
+
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) deepCopy() *_BACnetConstructedDataSupportedSecurityAlgorithms {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSupportedSecurityAlgorithmsCopy := &_BACnetConstructedDataSupportedSecurityAlgorithms{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.SupportedSecurityAlgorithms),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSupportedSecurityAlgorithmsCopy
 }
 
 func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) String() string {

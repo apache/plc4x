@@ -36,6 +36,7 @@ type SetAttributeSingleRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeSingleRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeSingleRequest()
@@ -48,6 +49,15 @@ type _SetAttributeSingleRequest struct {
 
 var _ SetAttributeSingleRequest = (*_SetAttributeSingleRequest)(nil)
 var _ CipServiceRequirements = (*_SetAttributeSingleRequest)(nil)
+
+// NewSetAttributeSingleRequest factory function for _SetAttributeSingleRequest
+func NewSetAttributeSingleRequest(serviceLen uint16) *_SetAttributeSingleRequest {
+	_result := &_SetAttributeSingleRequest{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_SetAttributeSingleRequest) GetConnected() bool {
 
 func (m *_SetAttributeSingleRequest) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewSetAttributeSingleRequest factory function for _SetAttributeSingleRequest
-func NewSetAttributeSingleRequest(serviceLen uint16) *_SetAttributeSingleRequest {
-	_result := &_SetAttributeSingleRequest{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_SetAttributeSingleRequest) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SetAttributeSingleRequest) IsSetAttributeSingleRequest() {}
+
+func (m *_SetAttributeSingleRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeSingleRequest) deepCopy() *_SetAttributeSingleRequest {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeSingleRequestCopy := &_SetAttributeSingleRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeSingleRequestCopy
+}
 
 func (m *_SetAttributeSingleRequest) String() string {
 	if m == nil {

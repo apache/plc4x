@@ -38,6 +38,7 @@ type SALDataIrrigationControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetIrrigationControlData returns IrrigationControlData (property field)
 	GetIrrigationControlData() LightingData
@@ -53,6 +54,19 @@ type _SALDataIrrigationControl struct {
 
 var _ SALDataIrrigationControl = (*_SALDataIrrigationControl)(nil)
 var _ SALDataRequirements = (*_SALDataIrrigationControl)(nil)
+
+// NewSALDataIrrigationControl factory function for _SALDataIrrigationControl
+func NewSALDataIrrigationControl(salData SALData, irrigationControlData LightingData) *_SALDataIrrigationControl {
+	if irrigationControlData == nil {
+		panic("irrigationControlData of type LightingData for SALDataIrrigationControl must not be nil")
+	}
+	_result := &_SALDataIrrigationControl{
+		SALDataContract:       NewSALData(salData),
+		IrrigationControlData: irrigationControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataIrrigationControl) GetIrrigationControlData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataIrrigationControl factory function for _SALDataIrrigationControl
-func NewSALDataIrrigationControl(irrigationControlData LightingData, salData SALData) *_SALDataIrrigationControl {
-	if irrigationControlData == nil {
-		panic("irrigationControlData of type LightingData for SALDataIrrigationControl must not be nil")
-	}
-	_result := &_SALDataIrrigationControl{
-		SALDataContract:       NewSALData(salData),
-		IrrigationControlData: irrigationControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataIrrigationControl(structType any) SALDataIrrigationControl {
@@ -182,6 +183,22 @@ func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SALDataIrrigationControl) IsSALDataIrrigationControl() {}
+
+func (m *_SALDataIrrigationControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataIrrigationControl) deepCopy() *_SALDataIrrigationControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataIrrigationControlCopy := &_SALDataIrrigationControl{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.IrrigationControlData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataIrrigationControlCopy
+}
 
 func (m *_SALDataIrrigationControl) String() string {
 	if m == nil {

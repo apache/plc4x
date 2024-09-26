@@ -38,6 +38,7 @@ type WriteRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _WriteRequest struct {
 
 var _ WriteRequest = (*_WriteRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_WriteRequest)(nil)
+
+// NewWriteRequest factory function for _WriteRequest
+func NewWriteRequest(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) *_WriteRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for WriteRequest must not be nil")
+	}
+	_result := &_WriteRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToWrite:                  noOfNodesToWrite,
+		NodesToWrite:                      nodesToWrite,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_WriteRequest) GetNodesToWrite() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewWriteRequest factory function for _WriteRequest
-func NewWriteRequest(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) *_WriteRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for WriteRequest must not be nil")
-	}
-	_result := &_WriteRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfNodesToWrite:                  noOfNodesToWrite,
-		NodesToWrite:                      nodesToWrite,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastWriteRequest(structType any) WriteRequest {
@@ -231,6 +232,24 @@ func (m *_WriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_WriteRequest) IsWriteRequest() {}
+
+func (m *_WriteRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WriteRequest) deepCopy() *_WriteRequest {
+	if m == nil {
+		return nil
+	}
+	_WriteRequestCopy := &_WriteRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodesToWrite,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToWrite),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _WriteRequestCopy
+}
 
 func (m *_WriteRequest) String() string {
 	if m == nil {

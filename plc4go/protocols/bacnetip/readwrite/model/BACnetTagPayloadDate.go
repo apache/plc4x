@@ -38,6 +38,7 @@ type BACnetTagPayloadDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetYearMinus1900 returns YearMinus1900 (property field)
 	GetYearMinus1900() uint8
 	// GetMonth returns Month (property field)
@@ -81,6 +82,11 @@ type _BACnetTagPayloadDate struct {
 }
 
 var _ BACnetTagPayloadDate = (*_BACnetTagPayloadDate)(nil)
+
+// NewBACnetTagPayloadDate factory function for _BACnetTagPayloadDate
+func NewBACnetTagPayloadDate(yearMinus1900 uint8, month uint8, dayOfMonth uint8, dayOfWeek uint8) *_BACnetTagPayloadDate {
+	return &_BACnetTagPayloadDate{YearMinus1900: yearMinus1900, Month: month, DayOfMonth: dayOfMonth, DayOfWeek: dayOfWeek}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -182,11 +188,6 @@ func (m *_BACnetTagPayloadDate) GetDayOfWeekIsWildcard() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadDate factory function for _BACnetTagPayloadDate
-func NewBACnetTagPayloadDate(yearMinus1900 uint8, month uint8, dayOfMonth uint8, dayOfWeek uint8) *_BACnetTagPayloadDate {
-	return &_BACnetTagPayloadDate{YearMinus1900: yearMinus1900, Month: month, DayOfMonth: dayOfMonth, DayOfWeek: dayOfWeek}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadDate(structType any) BACnetTagPayloadDate {
@@ -477,6 +478,23 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetTagPayloadDate) IsBACnetTagPayloadDate() {}
+
+func (m *_BACnetTagPayloadDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadDate) deepCopy() *_BACnetTagPayloadDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadDateCopy := &_BACnetTagPayloadDate{
+		m.YearMinus1900,
+		m.Month,
+		m.DayOfMonth,
+		m.DayOfWeek,
+	}
+	return _BACnetTagPayloadDateCopy
+}
 
 func (m *_BACnetTagPayloadDate) String() string {
 	if m == nil {

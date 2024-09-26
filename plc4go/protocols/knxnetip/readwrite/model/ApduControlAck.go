@@ -36,6 +36,7 @@ type ApduControlAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduControl
 	// IsApduControlAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControlAck()
@@ -48,6 +49,15 @@ type _ApduControlAck struct {
 
 var _ ApduControlAck = (*_ApduControlAck)(nil)
 var _ ApduControlRequirements = (*_ApduControlAck)(nil)
+
+// NewApduControlAck factory function for _ApduControlAck
+func NewApduControlAck() *_ApduControlAck {
+	_result := &_ApduControlAck{
+		ApduControlContract: NewApduControl(),
+	}
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduControlAck) GetControlType() uint8 {
 
 func (m *_ApduControlAck) GetParent() ApduControlContract {
 	return m.ApduControlContract
-}
-
-// NewApduControlAck factory function for _ApduControlAck
-func NewApduControlAck() *_ApduControlAck {
-	_result := &_ApduControlAck{
-		ApduControlContract: NewApduControl(),
-	}
-	_result.ApduControlContract.(*_ApduControl)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduControlAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ApduControlAck) IsApduControlAck() {}
+
+func (m *_ApduControlAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlAck) deepCopy() *_ApduControlAck {
+	if m == nil {
+		return nil
+	}
+	_ApduControlAckCopy := &_ApduControlAck{
+		m.ApduControlContract.(*_ApduControl).deepCopy(),
+	}
+	m.ApduControlContract.(*_ApduControl)._SubType = m
+	return _ApduControlAckCopy
+}
 
 func (m *_ApduControlAck) String() string {
 	if m == nil {

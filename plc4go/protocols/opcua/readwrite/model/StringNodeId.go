@@ -38,6 +38,7 @@ type StringNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
@@ -53,6 +54,14 @@ type _StringNodeId struct {
 }
 
 var _ StringNodeId = (*_StringNodeId)(nil)
+
+// NewStringNodeId factory function for _StringNodeId
+func NewStringNodeId(namespaceIndex uint16, identifier PascalString) *_StringNodeId {
+	if identifier == nil {
+		panic("identifier of type PascalString for StringNodeId must not be nil")
+	}
+	return &_StringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_StringNodeId) GetIdentifier() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStringNodeId factory function for _StringNodeId
-func NewStringNodeId(namespaceIndex uint16, identifier PascalString) *_StringNodeId {
-	if identifier == nil {
-		panic("identifier of type PascalString for StringNodeId must not be nil")
-	}
-	return &_StringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastStringNodeId(structType any) StringNodeId {
@@ -189,6 +190,21 @@ func (m *_StringNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_StringNodeId) IsStringNodeId() {}
+
+func (m *_StringNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StringNodeId) deepCopy() *_StringNodeId {
+	if m == nil {
+		return nil
+	}
+	_StringNodeIdCopy := &_StringNodeId{
+		m.NamespaceIndex,
+		m.Identifier.DeepCopy().(PascalString),
+	}
+	return _StringNodeIdCopy
+}
 
 func (m *_StringNodeId) String() string {
 	if m == nil {

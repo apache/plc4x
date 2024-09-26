@@ -38,6 +38,7 @@ type BACnetConstructedDataTotalRecordCount interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTotalRecordCount returns TotalRecordCount (property field)
 	GetTotalRecordCount() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTotalRecordCount struct {
 
 var _ BACnetConstructedDataTotalRecordCount = (*_BACnetConstructedDataTotalRecordCount)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTotalRecordCount)(nil)
+
+// NewBACnetConstructedDataTotalRecordCount factory function for _BACnetConstructedDataTotalRecordCount
+func NewBACnetConstructedDataTotalRecordCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, totalRecordCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTotalRecordCount {
+	if totalRecordCount == nil {
+		panic("totalRecordCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTotalRecordCount must not be nil")
+	}
+	_result := &_BACnetConstructedDataTotalRecordCount{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TotalRecordCount:              totalRecordCount,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTotalRecordCount) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTotalRecordCount factory function for _BACnetConstructedDataTotalRecordCount
-func NewBACnetConstructedDataTotalRecordCount(totalRecordCount BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTotalRecordCount {
-	if totalRecordCount == nil {
-		panic("totalRecordCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTotalRecordCount must not be nil")
-	}
-	_result := &_BACnetConstructedDataTotalRecordCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TotalRecordCount:              totalRecordCount,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTotalRecordCount(structType any) BACnetConstructedDataTotalRecordCount {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTotalRecordCount) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataTotalRecordCount) IsBACnetConstructedDataTotalRecordCount() {}
+
+func (m *_BACnetConstructedDataTotalRecordCount) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTotalRecordCount) deepCopy() *_BACnetConstructedDataTotalRecordCount {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTotalRecordCountCopy := &_BACnetConstructedDataTotalRecordCount{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TotalRecordCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTotalRecordCountCopy
+}
 
 func (m *_BACnetConstructedDataTotalRecordCount) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type NodeReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -67,6 +68,26 @@ type _NodeReference struct {
 
 var _ NodeReference = (*_NodeReference)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NodeReference)(nil)
+
+// NewNodeReference factory function for _NodeReference
+func NewNodeReference(nodeId NodeId, referenceTypeId NodeId, isForward bool, noOfReferencedNodeIds int32, referencedNodeIds []NodeId) *_NodeReference {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for NodeReference must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for NodeReference must not be nil")
+	}
+	_result := &_NodeReference{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		ReferenceTypeId:                   referenceTypeId,
+		IsForward:                         isForward,
+		NoOfReferencedNodeIds:             noOfReferencedNodeIds,
+		ReferencedNodeIds:                 referencedNodeIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,26 +136,6 @@ func (m *_NodeReference) GetReferencedNodeIds() []NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeReference factory function for _NodeReference
-func NewNodeReference(nodeId NodeId, referenceTypeId NodeId, isForward bool, noOfReferencedNodeIds int32, referencedNodeIds []NodeId) *_NodeReference {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for NodeReference must not be nil")
-	}
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for NodeReference must not be nil")
-	}
-	_result := &_NodeReference{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		ReferenceTypeId:                   referenceTypeId,
-		IsForward:                         isForward,
-		NoOfReferencedNodeIds:             noOfReferencedNodeIds,
-		ReferencedNodeIds:                 referencedNodeIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeReference(structType any) NodeReference {
@@ -291,6 +292,27 @@ func (m *_NodeReference) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_NodeReference) IsNodeReference() {}
+
+func (m *_NodeReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeReference) deepCopy() *_NodeReference {
+	if m == nil {
+		return nil
+	}
+	_NodeReferenceCopy := &_NodeReference{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IsForward,
+		m.NoOfReferencedNodeIds,
+		utils.DeepCopySlice[NodeId, NodeId](m.ReferencedNodeIds),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NodeReferenceCopy
+}
 
 func (m *_NodeReference) String() string {
 	if m == nil {

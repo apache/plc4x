@@ -38,6 +38,7 @@ type BACnetNotificationParametersSignedOutOfRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -68,6 +69,39 @@ type _BACnetNotificationParametersSignedOutOfRange struct {
 
 var _ BACnetNotificationParametersSignedOutOfRange = (*_BACnetNotificationParametersSignedOutOfRange)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersSignedOutOfRange)(nil)
+
+// NewBACnetNotificationParametersSignedOutOfRange factory function for _BACnetNotificationParametersSignedOutOfRange
+func NewBACnetNotificationParametersSignedOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagSignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagSignedInteger, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersSignedOutOfRange {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersSignedOutOfRange must not be nil")
+	}
+	if exceedingValue == nil {
+		panic("exceedingValue of type BACnetContextTagSignedInteger for BACnetNotificationParametersSignedOutOfRange must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersSignedOutOfRange must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersSignedOutOfRange must not be nil")
+	}
+	if exceededLimit == nil {
+		panic("exceededLimit of type BACnetContextTagSignedInteger for BACnetNotificationParametersSignedOutOfRange must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersSignedOutOfRange must not be nil")
+	}
+	_result := &_BACnetNotificationParametersSignedOutOfRange{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		ExceedingValue:                       exceedingValue,
+		StatusFlags:                          statusFlags,
+		Deadband:                             deadband,
+		ExceededLimit:                        exceededLimit,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,39 +150,6 @@ func (m *_BACnetNotificationParametersSignedOutOfRange) GetInnerClosingTag() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersSignedOutOfRange factory function for _BACnetNotificationParametersSignedOutOfRange
-func NewBACnetNotificationParametersSignedOutOfRange(innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagSignedInteger, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagUnsignedInteger, exceededLimit BACnetContextTagSignedInteger, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersSignedOutOfRange {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersSignedOutOfRange must not be nil")
-	}
-	if exceedingValue == nil {
-		panic("exceedingValue of type BACnetContextTagSignedInteger for BACnetNotificationParametersSignedOutOfRange must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersSignedOutOfRange must not be nil")
-	}
-	if deadband == nil {
-		panic("deadband of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersSignedOutOfRange must not be nil")
-	}
-	if exceededLimit == nil {
-		panic("exceededLimit of type BACnetContextTagSignedInteger for BACnetNotificationParametersSignedOutOfRange must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersSignedOutOfRange must not be nil")
-	}
-	_result := &_BACnetNotificationParametersSignedOutOfRange{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		ExceedingValue:                       exceedingValue,
-		StatusFlags:                          statusFlags,
-		Deadband:                             deadband,
-		ExceededLimit:                        exceededLimit,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersSignedOutOfRange(structType any) BACnetNotificationParametersSignedOutOfRange {
@@ -298,6 +299,27 @@ func (m *_BACnetNotificationParametersSignedOutOfRange) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetNotificationParametersSignedOutOfRange) IsBACnetNotificationParametersSignedOutOfRange() {
+}
+
+func (m *_BACnetNotificationParametersSignedOutOfRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersSignedOutOfRange) deepCopy() *_BACnetNotificationParametersSignedOutOfRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersSignedOutOfRangeCopy := &_BACnetNotificationParametersSignedOutOfRange{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ExceedingValue.DeepCopy().(BACnetContextTagSignedInteger),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.Deadband.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ExceededLimit.DeepCopy().(BACnetContextTagSignedInteger),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersSignedOutOfRangeCopy
 }
 
 func (m *_BACnetNotificationParametersSignedOutOfRange) String() string {

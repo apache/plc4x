@@ -38,6 +38,7 @@ type HistoryUpdateResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -65,6 +66,23 @@ type _HistoryUpdateResult struct {
 
 var _ HistoryUpdateResult = (*_HistoryUpdateResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateResult)(nil)
+
+// NewHistoryUpdateResult factory function for _HistoryUpdateResult
+func NewHistoryUpdateResult(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for HistoryUpdateResult must not be nil")
+	}
+	_result := &_HistoryUpdateResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfOperationResults:              noOfOperationResults,
+		OperationResults:                  operationResults,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_HistoryUpdateResult) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryUpdateResult factory function for _HistoryUpdateResult
-func NewHistoryUpdateResult(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for HistoryUpdateResult must not be nil")
-	}
-	_result := &_HistoryUpdateResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfOperationResults:              noOfOperationResults,
-		OperationResults:                  operationResults,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryUpdateResult(structType any) HistoryUpdateResult {
@@ -280,6 +281,26 @@ func (m *_HistoryUpdateResult) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_HistoryUpdateResult) IsHistoryUpdateResult() {}
+
+func (m *_HistoryUpdateResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryUpdateResult) deepCopy() *_HistoryUpdateResult {
+	if m == nil {
+		return nil
+	}
+	_HistoryUpdateResultCopy := &_HistoryUpdateResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfOperationResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.OperationResults),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryUpdateResultCopy
+}
 
 func (m *_HistoryUpdateResult) String() string {
 	if m == nil {

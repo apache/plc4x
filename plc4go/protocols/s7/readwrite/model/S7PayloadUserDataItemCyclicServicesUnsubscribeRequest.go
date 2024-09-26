@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetFunction returns Function (property field)
 	GetFunction() uint8
@@ -56,6 +57,17 @@ type _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest struct {
 
 var _ S7PayloadUserDataItemCyclicServicesUnsubscribeRequest = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest)(nil)
+
+// NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest factory function for _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
+func NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, function uint8, jobId uint8) *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
+	_result := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Function:                      function,
+		JobId:                         jobId,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetJobId() uint
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest factory function for _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
-func NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest(function uint8, jobId uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
-	_result := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Function:                      function,
-		JobId:                         jobId,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCyclicServicesUnsubscribeRequest(structType any) S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
@@ -208,6 +209,23 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) SerializeWithWr
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() {
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) deepCopy() *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestCopy := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.Function,
+		m.JobId,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCyclicServicesUnsubscribeRequestCopy
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) String() string {

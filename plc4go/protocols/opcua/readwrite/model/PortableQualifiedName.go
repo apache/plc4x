@@ -38,6 +38,7 @@ type PortableQualifiedName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNamespaceUri returns NamespaceUri (property field)
 	GetNamespaceUri() PascalString
@@ -56,6 +57,23 @@ type _PortableQualifiedName struct {
 
 var _ PortableQualifiedName = (*_PortableQualifiedName)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PortableQualifiedName)(nil)
+
+// NewPortableQualifiedName factory function for _PortableQualifiedName
+func NewPortableQualifiedName(namespaceUri PascalString, name PascalString) *_PortableQualifiedName {
+	if namespaceUri == nil {
+		panic("namespaceUri of type PascalString for PortableQualifiedName must not be nil")
+	}
+	if name == nil {
+		panic("name of type PascalString for PortableQualifiedName must not be nil")
+	}
+	_result := &_PortableQualifiedName{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NamespaceUri:                      namespaceUri,
+		Name:                              name,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_PortableQualifiedName) GetName() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPortableQualifiedName factory function for _PortableQualifiedName
-func NewPortableQualifiedName(namespaceUri PascalString, name PascalString) *_PortableQualifiedName {
-	if namespaceUri == nil {
-		panic("namespaceUri of type PascalString for PortableQualifiedName must not be nil")
-	}
-	if name == nil {
-		panic("name of type PascalString for PortableQualifiedName must not be nil")
-	}
-	_result := &_PortableQualifiedName{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NamespaceUri:                      namespaceUri,
-		Name:                              name,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPortableQualifiedName(structType any) PortableQualifiedName {
@@ -206,6 +207,23 @@ func (m *_PortableQualifiedName) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_PortableQualifiedName) IsPortableQualifiedName() {}
+
+func (m *_PortableQualifiedName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortableQualifiedName) deepCopy() *_PortableQualifiedName {
+	if m == nil {
+		return nil
+	}
+	_PortableQualifiedNameCopy := &_PortableQualifiedName{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NamespaceUri.DeepCopy().(PascalString),
+		m.Name.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PortableQualifiedNameCopy
+}
 
 func (m *_PortableQualifiedName) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ModbusPDUWriteSingleCoilRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -56,6 +57,17 @@ type _ModbusPDUWriteSingleCoilRequest struct {
 
 var _ ModbusPDUWriteSingleCoilRequest = (*_ModbusPDUWriteSingleCoilRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteSingleCoilRequest)(nil)
+
+// NewModbusPDUWriteSingleCoilRequest factory function for _ModbusPDUWriteSingleCoilRequest
+func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *_ModbusPDUWriteSingleCoilRequest {
+	_result := &_ModbusPDUWriteSingleCoilRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		Address:           address,
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_ModbusPDUWriteSingleCoilRequest) GetValue() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteSingleCoilRequest factory function for _ModbusPDUWriteSingleCoilRequest
-func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *_ModbusPDUWriteSingleCoilRequest {
-	_result := &_ModbusPDUWriteSingleCoilRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		Address:           address,
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteSingleCoilRequest(structType any) ModbusPDUWriteSingleCoilRequest {
@@ -208,6 +209,23 @@ func (m *_ModbusPDUWriteSingleCoilRequest) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ModbusPDUWriteSingleCoilRequest) IsModbusPDUWriteSingleCoilRequest() {}
+
+func (m *_ModbusPDUWriteSingleCoilRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteSingleCoilRequest) deepCopy() *_ModbusPDUWriteSingleCoilRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteSingleCoilRequestCopy := &_ModbusPDUWriteSingleCoilRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.Address,
+		m.Value,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteSingleCoilRequestCopy
+}
 
 func (m *_ModbusPDUWriteSingleCoilRequest) String() string {
 	if m == nil {

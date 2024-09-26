@@ -38,6 +38,7 @@ type SALDataMeasurement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetMeasurementData returns MeasurementData (property field)
 	GetMeasurementData() MeasurementData
@@ -53,6 +54,19 @@ type _SALDataMeasurement struct {
 
 var _ SALDataMeasurement = (*_SALDataMeasurement)(nil)
 var _ SALDataRequirements = (*_SALDataMeasurement)(nil)
+
+// NewSALDataMeasurement factory function for _SALDataMeasurement
+func NewSALDataMeasurement(salData SALData, measurementData MeasurementData) *_SALDataMeasurement {
+	if measurementData == nil {
+		panic("measurementData of type MeasurementData for SALDataMeasurement must not be nil")
+	}
+	_result := &_SALDataMeasurement{
+		SALDataContract: NewSALData(salData),
+		MeasurementData: measurementData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataMeasurement) GetMeasurementData() MeasurementData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataMeasurement factory function for _SALDataMeasurement
-func NewSALDataMeasurement(measurementData MeasurementData, salData SALData) *_SALDataMeasurement {
-	if measurementData == nil {
-		panic("measurementData of type MeasurementData for SALDataMeasurement must not be nil")
-	}
-	_result := &_SALDataMeasurement{
-		SALDataContract: NewSALData(salData),
-		MeasurementData: measurementData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataMeasurement(structType any) SALDataMeasurement {
@@ -182,6 +183,22 @@ func (m *_SALDataMeasurement) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_SALDataMeasurement) IsSALDataMeasurement() {}
+
+func (m *_SALDataMeasurement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataMeasurement) deepCopy() *_SALDataMeasurement {
+	if m == nil {
+		return nil
+	}
+	_SALDataMeasurementCopy := &_SALDataMeasurement{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.MeasurementData.DeepCopy().(MeasurementData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataMeasurementCopy
+}
 
 func (m *_SALDataMeasurement) String() string {
 	if m == nil {

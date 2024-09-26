@@ -38,6 +38,7 @@ type AccessControlDataValidAccessRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AccessControlData
 	// GetAccessControlDirection returns AccessControlDirection (property field)
 	GetAccessControlDirection() AccessControlDirection
@@ -56,6 +57,17 @@ type _AccessControlDataValidAccessRequest struct {
 
 var _ AccessControlDataValidAccessRequest = (*_AccessControlDataValidAccessRequest)(nil)
 var _ AccessControlDataRequirements = (*_AccessControlDataValidAccessRequest)(nil)
+
+// NewAccessControlDataValidAccessRequest factory function for _AccessControlDataValidAccessRequest
+func NewAccessControlDataValidAccessRequest(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte, accessControlDirection AccessControlDirection, data []byte) *_AccessControlDataValidAccessRequest {
+	_result := &_AccessControlDataValidAccessRequest{
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+		AccessControlDirection:    accessControlDirection,
+		Data:                      data,
+	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +100,6 @@ func (m *_AccessControlDataValidAccessRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAccessControlDataValidAccessRequest factory function for _AccessControlDataValidAccessRequest
-func NewAccessControlDataValidAccessRequest(accessControlDirection AccessControlDirection, data []byte, commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataValidAccessRequest {
-	_result := &_AccessControlDataValidAccessRequest{
-		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
-		AccessControlDirection:    accessControlDirection,
-		Data:                      data,
-	}
-	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAccessControlDataValidAccessRequest(structType any) AccessControlDataValidAccessRequest {
@@ -198,6 +199,23 @@ func (m *_AccessControlDataValidAccessRequest) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_AccessControlDataValidAccessRequest) IsAccessControlDataValidAccessRequest() {}
+
+func (m *_AccessControlDataValidAccessRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlDataValidAccessRequest) deepCopy() *_AccessControlDataValidAccessRequest {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataValidAccessRequestCopy := &_AccessControlDataValidAccessRequest{
+		m.AccessControlDataContract.(*_AccessControlData).deepCopy(),
+		m.AccessControlDirection,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	return _AccessControlDataValidAccessRequestCopy
+}
 
 func (m *_AccessControlDataValidAccessRequest) String() string {
 	if m == nil {

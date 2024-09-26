@@ -38,6 +38,7 @@ type BACnetConstructedDataLifeSafetyPointPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetLifeSafetyStateTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLifeSafetyPointPresentValue struct {
 
 var _ BACnetConstructedDataLifeSafetyPointPresentValue = (*_BACnetConstructedDataLifeSafetyPointPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyPointPresentValue)(nil)
+
+// NewBACnetConstructedDataLifeSafetyPointPresentValue factory function for _BACnetConstructedDataLifeSafetyPointPresentValue
+func NewBACnetConstructedDataLifeSafetyPointPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyPointPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetLifeSafetyStateTagged for BACnetConstructedDataLifeSafetyPointPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataLifeSafetyPointPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLifeSafetyPointPresentValue factory function for _BACnetConstructedDataLifeSafetyPointPresentValue
-func NewBACnetConstructedDataLifeSafetyPointPresentValue(presentValue BACnetLifeSafetyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyPointPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetLifeSafetyStateTagged for BACnetConstructedDataLifeSafetyPointPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataLifeSafetyPointPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLifeSafetyPointPresentValue(structType any) BACnetConstructedDataLifeSafetyPointPresentValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) IsBACnetConstructedDataLifeSafetyPointPresentValue() {
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) deepCopy() *_BACnetConstructedDataLifeSafetyPointPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLifeSafetyPointPresentValueCopy := &_BACnetConstructedDataLifeSafetyPointPresentValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PresentValue.DeepCopy().(BACnetLifeSafetyStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLifeSafetyPointPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) String() string {

@@ -38,6 +38,7 @@ type BACnetClientCOVObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetClientCOV
 	// GetRealIncrement returns RealIncrement (property field)
 	GetRealIncrement() BACnetApplicationTagReal
@@ -53,6 +54,19 @@ type _BACnetClientCOVObject struct {
 
 var _ BACnetClientCOVObject = (*_BACnetClientCOVObject)(nil)
 var _ BACnetClientCOVRequirements = (*_BACnetClientCOVObject)(nil)
+
+// NewBACnetClientCOVObject factory function for _BACnetClientCOVObject
+func NewBACnetClientCOVObject(peekedTagHeader BACnetTagHeader, realIncrement BACnetApplicationTagReal) *_BACnetClientCOVObject {
+	if realIncrement == nil {
+		panic("realIncrement of type BACnetApplicationTagReal for BACnetClientCOVObject must not be nil")
+	}
+	_result := &_BACnetClientCOVObject{
+		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
+		RealIncrement:           realIncrement,
+	}
+	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetClientCOVObject) GetRealIncrement() BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClientCOVObject factory function for _BACnetClientCOVObject
-func NewBACnetClientCOVObject(realIncrement BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetClientCOVObject {
-	if realIncrement == nil {
-		panic("realIncrement of type BACnetApplicationTagReal for BACnetClientCOVObject must not be nil")
-	}
-	_result := &_BACnetClientCOVObject{
-		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
-		RealIncrement:           realIncrement,
-	}
-	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClientCOVObject(structType any) BACnetClientCOVObject {
@@ -178,6 +179,22 @@ func (m *_BACnetClientCOVObject) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetClientCOVObject) IsBACnetClientCOVObject() {}
+
+func (m *_BACnetClientCOVObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetClientCOVObject) deepCopy() *_BACnetClientCOVObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetClientCOVObjectCopy := &_BACnetClientCOVObject{
+		m.BACnetClientCOVContract.(*_BACnetClientCOV).deepCopy(),
+		m.RealIncrement.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = m
+	return _BACnetClientCOVObjectCopy
+}
 
 func (m *_BACnetClientCOVObject) String() string {
 	if m == nil {

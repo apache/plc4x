@@ -38,6 +38,7 @@ type BACnetPropertyStatesAccessCredentialDisableReason interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetAccessCredentialDisableReason returns AccessCredentialDisableReason (property field)
 	GetAccessCredentialDisableReason() BACnetAccessCredentialDisableReasonTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesAccessCredentialDisableReason struct {
 
 var _ BACnetPropertyStatesAccessCredentialDisableReason = (*_BACnetPropertyStatesAccessCredentialDisableReason)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAccessCredentialDisableReason)(nil)
+
+// NewBACnetPropertyStatesAccessCredentialDisableReason factory function for _BACnetPropertyStatesAccessCredentialDisableReason
+func NewBACnetPropertyStatesAccessCredentialDisableReason(peekedTagHeader BACnetTagHeader, accessCredentialDisableReason BACnetAccessCredentialDisableReasonTagged) *_BACnetPropertyStatesAccessCredentialDisableReason {
+	if accessCredentialDisableReason == nil {
+		panic("accessCredentialDisableReason of type BACnetAccessCredentialDisableReasonTagged for BACnetPropertyStatesAccessCredentialDisableReason must not be nil")
+	}
+	_result := &_BACnetPropertyStatesAccessCredentialDisableReason{
+		BACnetPropertyStatesContract:  NewBACnetPropertyStates(peekedTagHeader),
+		AccessCredentialDisableReason: accessCredentialDisableReason,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesAccessCredentialDisableReason) GetAccessCredential
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesAccessCredentialDisableReason factory function for _BACnetPropertyStatesAccessCredentialDisableReason
-func NewBACnetPropertyStatesAccessCredentialDisableReason(accessCredentialDisableReason BACnetAccessCredentialDisableReasonTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAccessCredentialDisableReason {
-	if accessCredentialDisableReason == nil {
-		panic("accessCredentialDisableReason of type BACnetAccessCredentialDisableReasonTagged for BACnetPropertyStatesAccessCredentialDisableReason must not be nil")
-	}
-	_result := &_BACnetPropertyStatesAccessCredentialDisableReason{
-		BACnetPropertyStatesContract:  NewBACnetPropertyStates(peekedTagHeader),
-		AccessCredentialDisableReason: accessCredentialDisableReason,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesAccessCredentialDisableReason(structType any) BACnetPropertyStatesAccessCredentialDisableReason {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesAccessCredentialDisableReason) SerializeWithWriteB
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisableReason) IsBACnetPropertyStatesAccessCredentialDisableReason() {
+}
+
+func (m *_BACnetPropertyStatesAccessCredentialDisableReason) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesAccessCredentialDisableReason) deepCopy() *_BACnetPropertyStatesAccessCredentialDisableReason {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesAccessCredentialDisableReasonCopy := &_BACnetPropertyStatesAccessCredentialDisableReason{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.AccessCredentialDisableReason.DeepCopy().(BACnetAccessCredentialDisableReasonTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesAccessCredentialDisableReasonCopy
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisableReason) String() string {

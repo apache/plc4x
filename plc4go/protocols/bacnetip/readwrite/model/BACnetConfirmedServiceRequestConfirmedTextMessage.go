@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetTextMessageSourceDevice returns TextMessageSourceDevice (property field)
 	GetTextMessageSourceDevice() BACnetContextTagObjectIdentifier
@@ -62,6 +63,28 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessage struct {
 
 var _ BACnetConfirmedServiceRequestConfirmedTextMessage = (*_BACnetConfirmedServiceRequestConfirmedTextMessage)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedTextMessage)(nil)
+
+// NewBACnetConfirmedServiceRequestConfirmedTextMessage factory function for _BACnetConfirmedServiceRequestConfirmedTextMessage
+func NewBACnetConfirmedServiceRequestConfirmedTextMessage(textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedTextMessage {
+	if textMessageSourceDevice == nil {
+		panic("textMessageSourceDevice of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
+	}
+	if messagePriority == nil {
+		panic("messagePriority of type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
+	}
+	if message == nil {
+		panic("message of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessage{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		TextMessageSourceDevice:               textMessageSourceDevice,
+		MessageClass:                          messageClass,
+		MessagePriority:                       messagePriority,
+		Message:                               message,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +129,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) GetMessage() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestConfirmedTextMessage factory function for _BACnetConfirmedServiceRequestConfirmedTextMessage
-func NewBACnetConfirmedServiceRequestConfirmedTextMessage(textMessageSourceDevice BACnetContextTagObjectIdentifier, messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedTextMessage {
-	if textMessageSourceDevice == nil {
-		panic("textMessageSourceDevice of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
-	}
-	if messagePriority == nil {
-		panic("messagePriority of type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
-	}
-	if message == nil {
-		panic("message of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestConfirmedTextMessage must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessage{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		TextMessageSourceDevice:               textMessageSourceDevice,
-		MessageClass:                          messageClass,
-		MessagePriority:                       messagePriority,
-		Message:                               message,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestConfirmedTextMessage(structType any) BACnetConfirmedServiceRequestConfirmedTextMessage {
@@ -257,6 +258,25 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) SerializeWithWriteB
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) IsBACnetConfirmedServiceRequestConfirmedTextMessage() {
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) deepCopy() *_BACnetConfirmedServiceRequestConfirmedTextMessage {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestConfirmedTextMessageCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessage{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.TextMessageSourceDevice.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.MessageClass.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass),
+		m.MessagePriority.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged),
+		m.Message.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestConfirmedTextMessageCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) String() string {

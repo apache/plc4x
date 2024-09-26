@@ -38,6 +38,7 @@ type BACnetConstructedDataLastRestartReason interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastRestartReason returns LastRestartReason (property field)
 	GetLastRestartReason() BACnetRestartReasonTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLastRestartReason struct {
 
 var _ BACnetConstructedDataLastRestartReason = (*_BACnetConstructedDataLastRestartReason)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastRestartReason)(nil)
+
+// NewBACnetConstructedDataLastRestartReason factory function for _BACnetConstructedDataLastRestartReason
+func NewBACnetConstructedDataLastRestartReason(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastRestartReason BACnetRestartReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestartReason {
+	if lastRestartReason == nil {
+		panic("lastRestartReason of type BACnetRestartReasonTagged for BACnetConstructedDataLastRestartReason must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastRestartReason{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastRestartReason:             lastRestartReason,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLastRestartReason) GetActualValue() BACnetRestart
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastRestartReason factory function for _BACnetConstructedDataLastRestartReason
-func NewBACnetConstructedDataLastRestartReason(lastRestartReason BACnetRestartReasonTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestartReason {
-	if lastRestartReason == nil {
-		panic("lastRestartReason of type BACnetRestartReasonTagged for BACnetConstructedDataLastRestartReason must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastRestartReason{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastRestartReason:             lastRestartReason,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastRestartReason(structType any) BACnetConstructedDataLastRestartReason {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastRestartReason) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataLastRestartReason) IsBACnetConstructedDataLastRestartReason() {}
+
+func (m *_BACnetConstructedDataLastRestartReason) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastRestartReason) deepCopy() *_BACnetConstructedDataLastRestartReason {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastRestartReasonCopy := &_BACnetConstructedDataLastRestartReason{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LastRestartReason.DeepCopy().(BACnetRestartReasonTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastRestartReasonCopy
+}
 
 func (m *_BACnetConstructedDataLastRestartReason) String() string {
 	if m == nil {

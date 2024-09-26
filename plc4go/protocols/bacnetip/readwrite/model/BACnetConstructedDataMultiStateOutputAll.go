@@ -36,6 +36,7 @@ type BACnetConstructedDataMultiStateOutputAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataMultiStateOutputAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateOutputAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataMultiStateOutputAll struct {
 
 var _ BACnetConstructedDataMultiStateOutputAll = (*_BACnetConstructedDataMultiStateOutputAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateOutputAll)(nil)
+
+// NewBACnetConstructedDataMultiStateOutputAll factory function for _BACnetConstructedDataMultiStateOutputAll
+func NewBACnetConstructedDataMultiStateOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputAll {
+	_result := &_BACnetConstructedDataMultiStateOutputAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataMultiStateOutputAll) GetPropertyIdentifierArgumen
 
 func (m *_BACnetConstructedDataMultiStateOutputAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataMultiStateOutputAll factory function for _BACnetConstructedDataMultiStateOutputAll
-func NewBACnetConstructedDataMultiStateOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputAll {
-	_result := &_BACnetConstructedDataMultiStateOutputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataMultiStateOutputAll) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataMultiStateOutputAll) IsBACnetConstructedDataMultiStateOutputAll() {}
+
+func (m *_BACnetConstructedDataMultiStateOutputAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputAll) deepCopy() *_BACnetConstructedDataMultiStateOutputAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMultiStateOutputAllCopy := &_BACnetConstructedDataMultiStateOutputAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMultiStateOutputAllCopy
+}
 
 func (m *_BACnetConstructedDataMultiStateOutputAll) String() string {
 	if m == nil {

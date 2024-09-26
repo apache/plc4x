@@ -41,6 +41,7 @@ type AlarmMessageAckObjectPushType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLengthSpec returns LengthSpec (property field)
 	GetLengthSpec() uint8
 	// GetSyntaxId returns SyntaxId (property field)
@@ -68,6 +69,17 @@ type _AlarmMessageAckObjectPushType struct {
 }
 
 var _ AlarmMessageAckObjectPushType = (*_AlarmMessageAckObjectPushType)(nil)
+
+// NewAlarmMessageAckObjectPushType factory function for _AlarmMessageAckObjectPushType
+func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageAckObjectPushType {
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageAckObjectPushType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageAckObjectPushType must not be nil")
+	}
+	return &_AlarmMessageAckObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_AlarmMessageAckObjectPushType) GetVariableSpec() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageAckObjectPushType factory function for _AlarmMessageAckObjectPushType
-func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageAckObjectPushType {
-	if ackStateGoing == nil {
-		panic("ackStateGoing of type State for AlarmMessageAckObjectPushType must not be nil")
-	}
-	if ackStateComing == nil {
-		panic("ackStateComing of type State for AlarmMessageAckObjectPushType must not be nil")
-	}
-	return &_AlarmMessageAckObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageAckObjectPushType(structType any) AlarmMessageAckObjectPushType {
@@ -301,6 +302,25 @@ func (m *_AlarmMessageAckObjectPushType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_AlarmMessageAckObjectPushType) IsAlarmMessageAckObjectPushType() {}
+
+func (m *_AlarmMessageAckObjectPushType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageAckObjectPushType) deepCopy() *_AlarmMessageAckObjectPushType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageAckObjectPushTypeCopy := &_AlarmMessageAckObjectPushType{
+		m.LengthSpec,
+		m.SyntaxId,
+		m.NumberOfValues,
+		m.EventId,
+		m.AckStateGoing.DeepCopy().(State),
+		m.AckStateComing.DeepCopy().(State),
+	}
+	return _AlarmMessageAckObjectPushTypeCopy
+}
 
 func (m *_AlarmMessageAckObjectPushType) String() string {
 	if m == nil {

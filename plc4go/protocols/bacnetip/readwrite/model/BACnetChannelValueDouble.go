@@ -38,6 +38,7 @@ type BACnetChannelValueDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
@@ -53,6 +54,19 @@ type _BACnetChannelValueDouble struct {
 
 var _ BACnetChannelValueDouble = (*_BACnetChannelValueDouble)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueDouble)(nil)
+
+// NewBACnetChannelValueDouble factory function for _BACnetChannelValueDouble
+func NewBACnetChannelValueDouble(peekedTagHeader BACnetTagHeader, doubleValue BACnetApplicationTagDouble) *_BACnetChannelValueDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetChannelValueDouble must not be nil")
+	}
+	_result := &_BACnetChannelValueDouble{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		DoubleValue:                doubleValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueDouble) GetDoubleValue() BACnetApplicationTagDouble 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueDouble factory function for _BACnetChannelValueDouble
-func NewBACnetChannelValueDouble(doubleValue BACnetApplicationTagDouble, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueDouble {
-	if doubleValue == nil {
-		panic("doubleValue of type BACnetApplicationTagDouble for BACnetChannelValueDouble must not be nil")
-	}
-	_result := &_BACnetChannelValueDouble{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		DoubleValue:                doubleValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueDouble(structType any) BACnetChannelValueDouble {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueDouble) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetChannelValueDouble) IsBACnetChannelValueDouble() {}
+
+func (m *_BACnetChannelValueDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueDouble) deepCopy() *_BACnetChannelValueDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueDoubleCopy := &_BACnetChannelValueDouble{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueDoubleCopy
+}
 
 func (m *_BACnetChannelValueDouble) String() string {
 	if m == nil {

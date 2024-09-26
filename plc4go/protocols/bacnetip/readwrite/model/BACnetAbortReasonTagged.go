@@ -37,6 +37,7 @@ type BACnetAbortReasonTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() BACnetAbortReason
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -57,6 +58,11 @@ type _BACnetAbortReasonTagged struct {
 }
 
 var _ BACnetAbortReasonTagged = (*_BACnetAbortReasonTagged)(nil)
+
+// NewBACnetAbortReasonTagged factory function for _BACnetAbortReasonTagged
+func NewBACnetAbortReasonTagged(value BACnetAbortReason, proprietaryValue uint32, actualLength uint32) *_BACnetAbortReasonTagged {
+	return &_BACnetAbortReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,11 +96,6 @@ func (m *_BACnetAbortReasonTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAbortReasonTagged factory function for _BACnetAbortReasonTagged
-func NewBACnetAbortReasonTagged(value BACnetAbortReason, proprietaryValue uint32, actualLength uint32) *_BACnetAbortReasonTagged {
-	return &_BACnetAbortReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAbortReasonTagged(structType any) BACnetAbortReasonTagged {
@@ -231,6 +232,22 @@ func (m *_BACnetAbortReasonTagged) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetAbortReasonTagged) IsBACnetAbortReasonTagged() {}
+
+func (m *_BACnetAbortReasonTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAbortReasonTagged) deepCopy() *_BACnetAbortReasonTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAbortReasonTaggedCopy := &_BACnetAbortReasonTagged{
+		m.Value,
+		m.ProprietaryValue,
+		m.ActualLength,
+	}
+	return _BACnetAbortReasonTaggedCopy
+}
 
 func (m *_BACnetAbortReasonTagged) String() string {
 	if m == nil {

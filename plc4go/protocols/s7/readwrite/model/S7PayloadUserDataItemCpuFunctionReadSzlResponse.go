@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetItems returns Items (property field)
 	GetItems() []byte
@@ -53,6 +54,16 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 
 var _ S7PayloadUserDataItemCpuFunctionReadSzlResponse = (*_S7PayloadUserDataItemCpuFunctionReadSzlResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionReadSzlResponse)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionReadSzlResponse factory function for _S7PayloadUserDataItemCpuFunctionReadSzlResponse
+func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, items []byte) *_S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Items:                         items,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetItems() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionReadSzlResponse factory function for _S7PayloadUserDataItemCpuFunctionReadSzlResponse
-func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items []byte, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Items:                         items,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType any) S7PayloadUserDataItemCpuFunctionReadSzlResponse {
@@ -189,6 +190,22 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) SerializeWithWriteBuf
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) IsS7PayloadUserDataItemCpuFunctionReadSzlResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionReadSzlResponseCopy := &_S7PayloadUserDataItemCpuFunctionReadSzlResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Items),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionReadSzlResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) String() string {

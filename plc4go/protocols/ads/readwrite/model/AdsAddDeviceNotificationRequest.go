@@ -38,6 +38,7 @@ type AdsAddDeviceNotificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
@@ -71,6 +72,21 @@ type _AdsAddDeviceNotificationRequest struct {
 
 var _ AdsAddDeviceNotificationRequest = (*_AdsAddDeviceNotificationRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsAddDeviceNotificationRequest)(nil)
+
+// NewAdsAddDeviceNotificationRequest factory function for _AdsAddDeviceNotificationRequest
+func NewAdsAddDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32) *_AdsAddDeviceNotificationRequest {
+	_result := &_AdsAddDeviceNotificationRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		IndexGroup:        indexGroup,
+		IndexOffset:       indexOffset,
+		Length:            length,
+		TransmissionMode:  transmissionMode,
+		MaxDelayInMs:      maxDelayInMs,
+		CycleTimeInMs:     cycleTimeInMs,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,21 +143,6 @@ func (m *_AdsAddDeviceNotificationRequest) GetCycleTimeInMs() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsAddDeviceNotificationRequest factory function for _AdsAddDeviceNotificationRequest
-func NewAdsAddDeviceNotificationRequest(indexGroup uint32, indexOffset uint32, length uint32, transmissionMode AdsTransMode, maxDelayInMs uint32, cycleTimeInMs uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsAddDeviceNotificationRequest {
-	_result := &_AdsAddDeviceNotificationRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		IndexGroup:        indexGroup,
-		IndexOffset:       indexOffset,
-		Length:            length,
-		TransmissionMode:  transmissionMode,
-		MaxDelayInMs:      maxDelayInMs,
-		CycleTimeInMs:     cycleTimeInMs,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsAddDeviceNotificationRequest(structType any) AdsAddDeviceNotificationRequest {
@@ -317,6 +318,29 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_AdsAddDeviceNotificationRequest) IsAdsAddDeviceNotificationRequest() {}
+
+func (m *_AdsAddDeviceNotificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsAddDeviceNotificationRequest) deepCopy() *_AdsAddDeviceNotificationRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsAddDeviceNotificationRequestCopy := &_AdsAddDeviceNotificationRequest{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.IndexGroup,
+		m.IndexOffset,
+		m.Length,
+		m.TransmissionMode,
+		m.MaxDelayInMs,
+		m.CycleTimeInMs,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsAddDeviceNotificationRequestCopy
+}
 
 func (m *_AdsAddDeviceNotificationRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type TransferSubscriptionsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -64,6 +65,22 @@ type _TransferSubscriptionsRequest struct {
 
 var _ TransferSubscriptionsRequest = (*_TransferSubscriptionsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TransferSubscriptionsRequest)(nil)
+
+// NewTransferSubscriptionsRequest factory function for _TransferSubscriptionsRequest
+func NewTransferSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) *_TransferSubscriptionsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for TransferSubscriptionsRequest must not be nil")
+	}
+	_result := &_TransferSubscriptionsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfSubscriptionIds:               noOfSubscriptionIds,
+		SubscriptionIds:                   subscriptionIds,
+		SendInitialValues:                 sendInitialValues,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,22 +125,6 @@ func (m *_TransferSubscriptionsRequest) GetSendInitialValues() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransferSubscriptionsRequest factory function for _TransferSubscriptionsRequest
-func NewTransferSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) *_TransferSubscriptionsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for TransferSubscriptionsRequest must not be nil")
-	}
-	_result := &_TransferSubscriptionsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfSubscriptionIds:               noOfSubscriptionIds,
-		SubscriptionIds:                   subscriptionIds,
-		SendInitialValues:                 sendInitialValues,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransferSubscriptionsRequest(structType any) TransferSubscriptionsRequest {
@@ -262,6 +263,26 @@ func (m *_TransferSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_TransferSubscriptionsRequest) IsTransferSubscriptionsRequest() {}
+
+func (m *_TransferSubscriptionsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransferSubscriptionsRequest) deepCopy() *_TransferSubscriptionsRequest {
+	if m == nil {
+		return nil
+	}
+	_TransferSubscriptionsRequestCopy := &_TransferSubscriptionsRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfSubscriptionIds,
+		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
+		m.SendInitialValues,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TransferSubscriptionsRequestCopy
+}
 
 func (m *_TransferSubscriptionsRequest) String() string {
 	if m == nil {

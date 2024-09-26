@@ -36,6 +36,7 @@ type Frame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFrame()
@@ -48,6 +49,15 @@ type _Frame struct {
 
 var _ Frame = (*_Frame)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Frame)(nil)
+
+// NewFrame factory function for _Frame
+func NewFrame() *_Frame {
+	_result := &_Frame{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_Frame) GetIdentifier() string {
 
 func (m *_Frame) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewFrame factory function for _Frame
-func NewFrame() *_Frame {
-	_result := &_Frame{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_Frame) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Frame) IsFrame() {}
+
+func (m *_Frame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Frame) deepCopy() *_Frame {
+	if m == nil {
+		return nil
+	}
+	_FrameCopy := &_Frame{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FrameCopy
+}
 
 func (m *_Frame) String() string {
 	if m == nil {

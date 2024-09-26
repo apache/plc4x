@@ -38,6 +38,7 @@ type GetAttributeAllResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -61,6 +62,18 @@ type _GetAttributeAllResponse struct {
 
 var _ GetAttributeAllResponse = (*_GetAttributeAllResponse)(nil)
 var _ CipServiceRequirements = (*_GetAttributeAllResponse)(nil)
+
+// NewGetAttributeAllResponse factory function for _GetAttributeAllResponse
+func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAttributes, serviceLen uint16) *_GetAttributeAllResponse {
+	_result := &_GetAttributeAllResponse{
+		CipServiceContract: NewCipService(serviceLen),
+		Status:             status,
+		ExtStatus:          extStatus,
+		Attributes:         attributes,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,18 +122,6 @@ func (m *_GetAttributeAllResponse) GetAttributes() CIPAttributes {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGetAttributeAllResponse factory function for _GetAttributeAllResponse
-func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAttributes, serviceLen uint16) *_GetAttributeAllResponse {
-	_result := &_GetAttributeAllResponse{
-		CipServiceContract: NewCipService(serviceLen),
-		Status:             status,
-		ExtStatus:          extStatus,
-		Attributes:         attributes,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGetAttributeAllResponse(structType any) GetAttributeAllResponse {
@@ -250,6 +251,25 @@ func (m *_GetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_GetAttributeAllResponse) IsGetAttributeAllResponse() {}
+
+func (m *_GetAttributeAllResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetAttributeAllResponse) deepCopy() *_GetAttributeAllResponse {
+	if m == nil {
+		return nil
+	}
+	_GetAttributeAllResponseCopy := &_GetAttributeAllResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.Status,
+		m.ExtStatus,
+		m.Attributes.DeepCopy().(CIPAttributes),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _GetAttributeAllResponseCopy
+}
 
 func (m *_GetAttributeAllResponse) String() string {
 	if m == nil {

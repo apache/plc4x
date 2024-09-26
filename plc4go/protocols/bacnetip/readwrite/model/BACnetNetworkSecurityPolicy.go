@@ -38,6 +38,7 @@ type BACnetNetworkSecurityPolicy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPortId returns PortId (property field)
 	GetPortId() BACnetContextTagUnsignedInteger
 	// GetSecurityLevel returns SecurityLevel (property field)
@@ -53,6 +54,17 @@ type _BACnetNetworkSecurityPolicy struct {
 }
 
 var _ BACnetNetworkSecurityPolicy = (*_BACnetNetworkSecurityPolicy)(nil)
+
+// NewBACnetNetworkSecurityPolicy factory function for _BACnetNetworkSecurityPolicy
+func NewBACnetNetworkSecurityPolicy(portId BACnetContextTagUnsignedInteger, securityLevel BACnetSecurityPolicyTagged) *_BACnetNetworkSecurityPolicy {
+	if portId == nil {
+		panic("portId of type BACnetContextTagUnsignedInteger for BACnetNetworkSecurityPolicy must not be nil")
+	}
+	if securityLevel == nil {
+		panic("securityLevel of type BACnetSecurityPolicyTagged for BACnetNetworkSecurityPolicy must not be nil")
+	}
+	return &_BACnetNetworkSecurityPolicy{PortId: portId, SecurityLevel: securityLevel}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetNetworkSecurityPolicy) GetSecurityLevel() BACnetSecurityPolicyTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNetworkSecurityPolicy factory function for _BACnetNetworkSecurityPolicy
-func NewBACnetNetworkSecurityPolicy(portId BACnetContextTagUnsignedInteger, securityLevel BACnetSecurityPolicyTagged) *_BACnetNetworkSecurityPolicy {
-	if portId == nil {
-		panic("portId of type BACnetContextTagUnsignedInteger for BACnetNetworkSecurityPolicy must not be nil")
-	}
-	if securityLevel == nil {
-		panic("securityLevel of type BACnetSecurityPolicyTagged for BACnetNetworkSecurityPolicy must not be nil")
-	}
-	return &_BACnetNetworkSecurityPolicy{PortId: portId, SecurityLevel: securityLevel}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNetworkSecurityPolicy(structType any) BACnetNetworkSecurityPolicy {
@@ -192,6 +193,21 @@ func (m *_BACnetNetworkSecurityPolicy) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetNetworkSecurityPolicy) IsBACnetNetworkSecurityPolicy() {}
+
+func (m *_BACnetNetworkSecurityPolicy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNetworkSecurityPolicy) deepCopy() *_BACnetNetworkSecurityPolicy {
+	if m == nil {
+		return nil
+	}
+	_BACnetNetworkSecurityPolicyCopy := &_BACnetNetworkSecurityPolicy{
+		m.PortId.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.SecurityLevel.DeepCopy().(BACnetSecurityPolicyTagged),
+	}
+	return _BACnetNetworkSecurityPolicyCopy
+}
 
 func (m *_BACnetNetworkSecurityPolicy) String() string {
 	if m == nil {

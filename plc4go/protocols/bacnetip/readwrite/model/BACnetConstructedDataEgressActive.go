@@ -38,6 +38,7 @@ type BACnetConstructedDataEgressActive interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEgressActive returns EgressActive (property field)
 	GetEgressActive() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataEgressActive struct {
 
 var _ BACnetConstructedDataEgressActive = (*_BACnetConstructedDataEgressActive)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEgressActive)(nil)
+
+// NewBACnetConstructedDataEgressActive factory function for _BACnetConstructedDataEgressActive
+func NewBACnetConstructedDataEgressActive(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressActive BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressActive {
+	if egressActive == nil {
+		panic("egressActive of type BACnetApplicationTagBoolean for BACnetConstructedDataEgressActive must not be nil")
+	}
+	_result := &_BACnetConstructedDataEgressActive{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EgressActive:                  egressActive,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataEgressActive) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEgressActive factory function for _BACnetConstructedDataEgressActive
-func NewBACnetConstructedDataEgressActive(egressActive BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressActive {
-	if egressActive == nil {
-		panic("egressActive of type BACnetApplicationTagBoolean for BACnetConstructedDataEgressActive must not be nil")
-	}
-	_result := &_BACnetConstructedDataEgressActive{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EgressActive:                  egressActive,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEgressActive(structType any) BACnetConstructedDataEgressActive {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEgressActive) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataEgressActive) IsBACnetConstructedDataEgressActive() {}
+
+func (m *_BACnetConstructedDataEgressActive) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEgressActive) deepCopy() *_BACnetConstructedDataEgressActive {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEgressActiveCopy := &_BACnetConstructedDataEgressActive{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EgressActive.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEgressActiveCopy
+}
 
 func (m *_BACnetConstructedDataEgressActive) String() string {
 	if m == nil {

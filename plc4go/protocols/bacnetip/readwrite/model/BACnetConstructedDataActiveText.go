@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveText returns ActiveText (property field)
 	GetActiveText() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataActiveText struct {
 
 var _ BACnetConstructedDataActiveText = (*_BACnetConstructedDataActiveText)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveText)(nil)
+
+// NewBACnetConstructedDataActiveText factory function for _BACnetConstructedDataActiveText
+func NewBACnetConstructedDataActiveText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeText BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveText {
+	if activeText == nil {
+		panic("activeText of type BACnetApplicationTagCharacterString for BACnetConstructedDataActiveText must not be nil")
+	}
+	_result := &_BACnetConstructedDataActiveText{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveText:                    activeText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataActiveText) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveText factory function for _BACnetConstructedDataActiveText
-func NewBACnetConstructedDataActiveText(activeText BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveText {
-	if activeText == nil {
-		panic("activeText of type BACnetApplicationTagCharacterString for BACnetConstructedDataActiveText must not be nil")
-	}
-	_result := &_BACnetConstructedDataActiveText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveText:                    activeText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveText(structType any) BACnetConstructedDataActiveText {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataActiveText) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataActiveText) IsBACnetConstructedDataActiveText() {}
+
+func (m *_BACnetConstructedDataActiveText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveText) deepCopy() *_BACnetConstructedDataActiveText {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveTextCopy := &_BACnetConstructedDataActiveText{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ActiveText.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveTextCopy
+}
 
 func (m *_BACnetConstructedDataActiveText) String() string {
 	if m == nil {

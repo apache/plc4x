@@ -38,6 +38,7 @@ type BACnetConstructedDataUsesRemaining interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUsesRemaining returns UsesRemaining (property field)
 	GetUsesRemaining() BACnetApplicationTagSignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataUsesRemaining struct {
 
 var _ BACnetConstructedDataUsesRemaining = (*_BACnetConstructedDataUsesRemaining)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUsesRemaining)(nil)
+
+// NewBACnetConstructedDataUsesRemaining factory function for _BACnetConstructedDataUsesRemaining
+func NewBACnetConstructedDataUsesRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, usesRemaining BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUsesRemaining {
+	if usesRemaining == nil {
+		panic("usesRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUsesRemaining must not be nil")
+	}
+	_result := &_BACnetConstructedDataUsesRemaining{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UsesRemaining:                 usesRemaining,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataUsesRemaining) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUsesRemaining factory function for _BACnetConstructedDataUsesRemaining
-func NewBACnetConstructedDataUsesRemaining(usesRemaining BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUsesRemaining {
-	if usesRemaining == nil {
-		panic("usesRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUsesRemaining must not be nil")
-	}
-	_result := &_BACnetConstructedDataUsesRemaining{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UsesRemaining:                 usesRemaining,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUsesRemaining(structType any) BACnetConstructedDataUsesRemaining {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUsesRemaining) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataUsesRemaining) IsBACnetConstructedDataUsesRemaining() {}
+
+func (m *_BACnetConstructedDataUsesRemaining) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUsesRemaining) deepCopy() *_BACnetConstructedDataUsesRemaining {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUsesRemainingCopy := &_BACnetConstructedDataUsesRemaining{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.UsesRemaining.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUsesRemainingCopy
+}
 
 func (m *_BACnetConstructedDataUsesRemaining) String() string {
 	if m == nil {

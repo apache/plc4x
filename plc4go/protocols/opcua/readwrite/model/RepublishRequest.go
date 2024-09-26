@@ -38,6 +38,7 @@ type RepublishRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _RepublishRequest struct {
 
 var _ RepublishRequest = (*_RepublishRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RepublishRequest)(nil)
+
+// NewRepublishRequest factory function for _RepublishRequest
+func NewRepublishRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) *_RepublishRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RepublishRequest must not be nil")
+	}
+	_result := &_RepublishRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		RetransmitSequenceNumber:          retransmitSequenceNumber,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_RepublishRequest) GetRetransmitSequenceNumber() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRepublishRequest factory function for _RepublishRequest
-func NewRepublishRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) *_RepublishRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RepublishRequest must not be nil")
-	}
-	_result := &_RepublishRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		RetransmitSequenceNumber:          retransmitSequenceNumber,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRepublishRequest(structType any) RepublishRequest {
@@ -224,6 +225,24 @@ func (m *_RepublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_RepublishRequest) IsRepublishRequest() {}
+
+func (m *_RepublishRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RepublishRequest) deepCopy() *_RepublishRequest {
+	if m == nil {
+		return nil
+	}
+	_RepublishRequestCopy := &_RepublishRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.RetransmitSequenceNumber,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RepublishRequestCopy
+}
 
 func (m *_RepublishRequest) String() string {
 	if m == nil {

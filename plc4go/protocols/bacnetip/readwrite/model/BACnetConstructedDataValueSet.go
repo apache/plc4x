@@ -38,6 +38,7 @@ type BACnetConstructedDataValueSet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetValueSet returns ValueSet (property field)
 	GetValueSet() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataValueSet struct {
 
 var _ BACnetConstructedDataValueSet = (*_BACnetConstructedDataValueSet)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSet)(nil)
+
+// NewBACnetConstructedDataValueSet factory function for _BACnetConstructedDataValueSet
+func NewBACnetConstructedDataValueSet(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueSet BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSet {
+	if valueSet == nil {
+		panic("valueSet of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueSet must not be nil")
+	}
+	_result := &_BACnetConstructedDataValueSet{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ValueSet:                      valueSet,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataValueSet) GetActualValue() BACnetApplicationTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataValueSet factory function for _BACnetConstructedDataValueSet
-func NewBACnetConstructedDataValueSet(valueSet BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSet {
-	if valueSet == nil {
-		panic("valueSet of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueSet must not be nil")
-	}
-	_result := &_BACnetConstructedDataValueSet{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ValueSet:                      valueSet,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataValueSet(structType any) BACnetConstructedDataValueSet {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataValueSet) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataValueSet) IsBACnetConstructedDataValueSet() {}
+
+func (m *_BACnetConstructedDataValueSet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataValueSet) deepCopy() *_BACnetConstructedDataValueSet {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataValueSetCopy := &_BACnetConstructedDataValueSet{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ValueSet.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataValueSetCopy
+}
 
 func (m *_BACnetConstructedDataValueSet) String() string {
 	if m == nil {

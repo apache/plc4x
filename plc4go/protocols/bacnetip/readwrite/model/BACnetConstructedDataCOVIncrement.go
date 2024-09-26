@@ -38,6 +38,7 @@ type BACnetConstructedDataCOVIncrement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCovIncrement returns CovIncrement (property field)
 	GetCovIncrement() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCOVIncrement struct {
 
 var _ BACnetConstructedDataCOVIncrement = (*_BACnetConstructedDataCOVIncrement)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVIncrement)(nil)
+
+// NewBACnetConstructedDataCOVIncrement factory function for _BACnetConstructedDataCOVIncrement
+func NewBACnetConstructedDataCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVIncrement {
+	if covIncrement == nil {
+		panic("covIncrement of type BACnetApplicationTagReal for BACnetConstructedDataCOVIncrement must not be nil")
+	}
+	_result := &_BACnetConstructedDataCOVIncrement{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovIncrement:                  covIncrement,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCOVIncrement) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCOVIncrement factory function for _BACnetConstructedDataCOVIncrement
-func NewBACnetConstructedDataCOVIncrement(covIncrement BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVIncrement {
-	if covIncrement == nil {
-		panic("covIncrement of type BACnetApplicationTagReal for BACnetConstructedDataCOVIncrement must not be nil")
-	}
-	_result := &_BACnetConstructedDataCOVIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CovIncrement:                  covIncrement,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCOVIncrement(structType any) BACnetConstructedDataCOVIncrement {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCOVIncrement) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataCOVIncrement) IsBACnetConstructedDataCOVIncrement() {}
+
+func (m *_BACnetConstructedDataCOVIncrement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCOVIncrement) deepCopy() *_BACnetConstructedDataCOVIncrement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCOVIncrementCopy := &_BACnetConstructedDataCOVIncrement{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CovIncrement.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCOVIncrementCopy
+}
 
 func (m *_BACnetConstructedDataCOVIncrement) String() string {
 	if m == nil {

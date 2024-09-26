@@ -38,6 +38,7 @@ type VariantExpandedNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantExpandedNodeId struct {
 
 var _ VariantExpandedNodeId = (*_VariantExpandedNodeId)(nil)
 var _ VariantRequirements = (*_VariantExpandedNodeId)(nil)
+
+// NewVariantExpandedNodeId factory function for _VariantExpandedNodeId
+func NewVariantExpandedNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ExpandedNodeId) *_VariantExpandedNodeId {
+	_result := &_VariantExpandedNodeId{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantExpandedNodeId) GetValue() []ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantExpandedNodeId factory function for _VariantExpandedNodeId
-func NewVariantExpandedNodeId(arrayLength *int32, value []ExpandedNodeId, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantExpandedNodeId {
-	_result := &_VariantExpandedNodeId{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantExpandedNodeId(structType any) VariantExpandedNodeId {
@@ -210,6 +211,23 @@ func (m *_VariantExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_VariantExpandedNodeId) IsVariantExpandedNodeId() {}
+
+func (m *_VariantExpandedNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantExpandedNodeId) deepCopy() *_VariantExpandedNodeId {
+	if m == nil {
+		return nil
+	}
+	_VariantExpandedNodeIdCopy := &_VariantExpandedNodeId{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[ExpandedNodeId, ExpandedNodeId](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantExpandedNodeIdCopy
+}
 
 func (m *_VariantExpandedNodeId) String() string {
 	if m == nil {

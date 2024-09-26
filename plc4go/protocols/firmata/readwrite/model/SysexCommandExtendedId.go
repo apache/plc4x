@@ -38,6 +38,7 @@ type SysexCommandExtendedId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetId returns Id (property field)
 	GetId() []int8
@@ -53,6 +54,16 @@ type _SysexCommandExtendedId struct {
 
 var _ SysexCommandExtendedId = (*_SysexCommandExtendedId)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandExtendedId)(nil)
+
+// NewSysexCommandExtendedId factory function for _SysexCommandExtendedId
+func NewSysexCommandExtendedId(id []int8) *_SysexCommandExtendedId {
+	_result := &_SysexCommandExtendedId{
+		SysexCommandContract: NewSysexCommand(),
+		Id:                   id,
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_SysexCommandExtendedId) GetId() []int8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSysexCommandExtendedId factory function for _SysexCommandExtendedId
-func NewSysexCommandExtendedId(id []int8) *_SysexCommandExtendedId {
-	_result := &_SysexCommandExtendedId{
-		SysexCommandContract: NewSysexCommand(),
-		Id:                   id,
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSysexCommandExtendedId(structType any) SysexCommandExtendedId {
@@ -185,6 +186,22 @@ func (m *_SysexCommandExtendedId) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SysexCommandExtendedId) IsSysexCommandExtendedId() {}
+
+func (m *_SysexCommandExtendedId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandExtendedId) deepCopy() *_SysexCommandExtendedId {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandExtendedIdCopy := &_SysexCommandExtendedId{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+		utils.DeepCopySlice[int8, int8](m.Id),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandExtendedIdCopy
+}
 
 func (m *_SysexCommandExtendedId) String() string {
 	if m == nil {

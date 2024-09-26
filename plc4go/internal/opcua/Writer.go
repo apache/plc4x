@@ -214,7 +214,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantBoolean(arrayLength, tmpBOOL, false, false, nil, nil), nil
+		return readWriteModel.NewVariantBoolean(false, false, nil, nil, arrayLength, tmpBOOL), nil
 
 	// 8-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.BYTE:
@@ -227,7 +227,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantByte(arrayLength, tmpBYTE, false, false, nil, nil), nil
+		return readWriteModel.NewVariantByte(false, false, nil, nil, arrayLength, tmpBYTE), nil
 
 	// 16-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.WORD:
@@ -240,7 +240,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantUInt16(arrayLength, tmpWORD, false, false, nil, nil), nil
+		return readWriteModel.NewVariantUInt16(false, false, nil, nil, arrayLength, tmpWORD), nil
 
 	// 32-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.DWORD:
@@ -253,7 +253,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantUInt32(arrayLength, tmpDWORD, false, false, nil, nil), nil
+		return readWriteModel.NewVariantUInt32(false, false, nil, nil, arrayLength, tmpDWORD), nil
 
 	// 64-Bit Bit-Strings (Groups of Boolean Values)
 	case apiValues.LWORD:
@@ -266,7 +266,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantUInt64(arrayLength, tmpLWORD, false, false, nil, nil), nil
+		return readWriteModel.NewVariantUInt64(false, false, nil, nil, arrayLength, tmpLWORD), nil
 
 	// 8-Bit Unsigned Integers
 	case apiValues.USINT:
@@ -279,7 +279,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantByte(arrayLength, tmpUSINT, false, false, nil, nil), nil
+		return readWriteModel.NewVariantByte(false, false, nil, nil, arrayLength, tmpUSINT), nil
 
 	// 8-Bit Signed Integers
 	case apiValues.SINT:
@@ -292,7 +292,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantSByte(arrayLength, tmpSINT, false, false, nil, nil), nil
+		return readWriteModel.NewVariantSByte(false, false, nil, nil, arrayLength, tmpSINT), nil
 
 	// 16-Bit Unsigned Integers
 	case apiValues.UINT:
@@ -305,7 +305,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantUInt16(arrayLength, tmpUINT, false, false, nil, nil), nil
+		return readWriteModel.NewVariantUInt16(false, false, nil, nil, arrayLength, tmpUINT), nil
 
 	// 16-Bit Signed Integers
 	case apiValues.INT:
@@ -318,7 +318,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantInt16(arrayLength, tmpINT, false, false, nil, nil), nil
+		return readWriteModel.NewVariantInt16(false, false, nil, nil, arrayLength, tmpINT), nil
 
 	// 32-Bit Unsigned Integers
 	case apiValues.UDINT:
@@ -331,7 +331,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantUInt32(arrayLength, tmpUDINT, false, false, nil, nil), nil
+		return readWriteModel.NewVariantUInt32(false, false, nil, nil, arrayLength, tmpUDINT), nil
 
 	// 32-Bit Signed Integers
 	case apiValues.DINT:
@@ -344,7 +344,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantInt32(arrayLength, tmpDINT, false, false, nil, nil), nil
+		return readWriteModel.NewVariantInt32(false, false, nil, nil, arrayLength, tmpDINT), nil
 
 	// 64-Bit Unsigned Integers
 	case apiValues.ULINT:
@@ -357,7 +357,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantUInt64(arrayLength, tmpULINT, false, false, nil, nil), nil
+		return readWriteModel.NewVariantUInt64(false, false, nil, nil, arrayLength, tmpULINT), nil
 
 	// 64-Bit Signed Integers
 	case apiValues.LINT:
@@ -370,7 +370,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantInt64(arrayLength, tmpUINT, false, false, nil, nil), nil
+		return readWriteModel.NewVariantInt64(false, false, nil, nil, arrayLength, tmpUINT), nil
 
 	// 32-Bit Floating Point Values
 	case apiValues.REAL:
@@ -383,7 +383,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantFloat(arrayLength, tmpREAL, false, false, nil, nil), nil
+		return readWriteModel.NewVariantFloat(false, false, nil, nil, arrayLength, tmpREAL), nil
 
 	// 64-Bit Floating Point Values
 	case apiValues.LREAL:
@@ -396,7 +396,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantDouble(arrayLength, tmpLREAL, false, false, nil, nil), nil
+		return readWriteModel.NewVariantDouble(false, false, nil, nil, arrayLength, tmpLREAL), nil
 
 	// UTF-8 Characters and Strings
 	case apiValues.CHAR:
@@ -416,7 +416,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantString(arrayLength, tmpString, false, false, nil, nil), nil
+		return readWriteModel.NewVariantString(false, false, nil, nil, arrayLength, tmpString), nil
 
 	case apiValues.DATE_AND_TIME:
 		tmpDateTime := make([]int64, length)
@@ -428,7 +428,7 @@ func (m *Writer) fromPlcValue(tagName string, tag Tag, request apiModel.PlcWrite
 			int32Length := int32(length)
 			arrayLength = &int32Length
 		}
-		return readWriteModel.NewVariantDateTime(arrayLength, tmpDateTime, false, false, nil, nil), nil
+		return readWriteModel.NewVariantDateTime(false, false, nil, nil, arrayLength, tmpDateTime), nil
 	default:
 		return nil, errors.Errorf("Unsupported write tag type %s", dataType)
 	}

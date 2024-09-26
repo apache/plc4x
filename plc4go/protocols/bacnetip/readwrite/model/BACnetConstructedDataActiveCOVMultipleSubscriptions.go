@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveCOVMultipleSubscriptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveCOVMultipleSubscriptions returns ActiveCOVMultipleSubscriptions (property field)
 	GetActiveCOVMultipleSubscriptions() []BACnetCOVMultipleSubscription
@@ -53,6 +54,16 @@ type _BACnetConstructedDataActiveCOVMultipleSubscriptions struct {
 
 var _ BACnetConstructedDataActiveCOVMultipleSubscriptions = (*_BACnetConstructedDataActiveCOVMultipleSubscriptions)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveCOVMultipleSubscriptions)(nil)
+
+// NewBACnetConstructedDataActiveCOVMultipleSubscriptions factory function for _BACnetConstructedDataActiveCOVMultipleSubscriptions
+func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
+	_result := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetActiveCOVMulti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveCOVMultipleSubscriptions factory function for _BACnetConstructedDataActiveCOVMultipleSubscriptions
-func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
-	_result := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveCOVMultipleSubscriptions(structType any) BACnetConstructedDataActiveCOVMultipleSubscriptions {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) IsBACnetConstructedDataActiveCOVMultipleSubscriptions() {
+}
+
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) deepCopy() *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveCOVMultipleSubscriptionsCopy := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetCOVMultipleSubscription, BACnetCOVMultipleSubscription](m.ActiveCOVMultipleSubscriptions),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveCOVMultipleSubscriptionsCopy
 }
 
 func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) String() string {

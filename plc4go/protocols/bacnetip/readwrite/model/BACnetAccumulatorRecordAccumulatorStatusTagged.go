@@ -38,6 +38,7 @@ type BACnetAccumulatorRecordAccumulatorStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetAccumulatorRecordAccumulatorStatusTagged struct {
 
 var _ BACnetAccumulatorRecordAccumulatorStatusTagged = (*_BACnetAccumulatorRecordAccumulatorStatusTagged)(nil)
 
+// NewBACnetAccumulatorRecordAccumulatorStatusTagged factory function for _BACnetAccumulatorRecordAccumulatorStatusTagged
+func NewBACnetAccumulatorRecordAccumulatorStatusTagged(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus, tagNumber uint8, tagClass TagClass) *_BACnetAccumulatorRecordAccumulatorStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccumulatorRecordAccumulatorStatusTagged must not be nil")
+	}
+	return &_BACnetAccumulatorRecordAccumulatorStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetValue() BACnetAccum
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccumulatorRecordAccumulatorStatusTagged factory function for _BACnetAccumulatorRecordAccumulatorStatusTagged
-func NewBACnetAccumulatorRecordAccumulatorStatusTagged(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus, tagNumber uint8, tagClass TagClass) *_BACnetAccumulatorRecordAccumulatorStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccumulatorRecordAccumulatorStatusTagged must not be nil")
-	}
-	return &_BACnetAccumulatorRecordAccumulatorStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccumulatorRecordAccumulatorStatusTagged(structType any) BACnetAccumulatorRecordAccumulatorStatusTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetTagClass() TagClass
 ////
 
 func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) IsBACnetAccumulatorRecordAccumulatorStatusTagged() {
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) deepCopy() *_BACnetAccumulatorRecordAccumulatorStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccumulatorRecordAccumulatorStatusTaggedCopy := &_BACnetAccumulatorRecordAccumulatorStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccumulatorRecordAccumulatorStatusTaggedCopy
 }
 
 func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) String() string {

@@ -40,6 +40,7 @@ type Request interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequest()
 }
@@ -86,6 +87,14 @@ type _Request struct {
 }
 
 var _ RequestContract = (*_Request)(nil)
+
+// NewRequest factory function for _Request
+func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_Request {
+	if termination == nil {
+		panic("termination of type RequestTermination for Request must not be nil")
+	}
+	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,14 +145,6 @@ func (pm *_Request) GetActualPeek() RequestType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequest factory function for _Request
-func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_Request {
-	if termination == nil {
-		panic("termination of type RequestTermination for Request must not be nil")
-	}
-	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequest(structType any) Request {
@@ -259,31 +260,31 @@ func (m *_Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusO
 	var _child Request
 	switch {
 	case actualPeek == RequestType_SMART_CONNECT_SHORTCUT: // RequestSmartConnectShortcut
-		if _child, err = (&_RequestSmartConnectShortcut{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestSmartConnectShortcut).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestSmartConnectShortcut for type-switch of Request")
 		}
 	case actualPeek == RequestType_RESET: // RequestReset
-		if _child, err = (&_RequestReset{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestReset).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestReset for type-switch of Request")
 		}
 	case actualPeek == RequestType_DIRECT_COMMAND: // RequestDirectCommandAccess
-		if _child, err = (&_RequestDirectCommandAccess{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestDirectCommandAccess).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestDirectCommandAccess for type-switch of Request")
 		}
 	case actualPeek == RequestType_REQUEST_COMMAND: // RequestCommand
-		if _child, err = (&_RequestCommand{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestCommand).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestCommand for type-switch of Request")
 		}
 	case actualPeek == RequestType_NULL: // RequestNull
-		if _child, err = (&_RequestNull{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestNull).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestNull for type-switch of Request")
 		}
 	case actualPeek == RequestType_EMPTY: // RequestEmpty
-		if _child, err = (&_RequestEmpty{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestEmpty).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestEmpty for type-switch of Request")
 		}
 	case 0 == 0: // RequestObsolete
-		if _child, err = (&_RequestObsolete{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestObsolete).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestObsolete for type-switch of Request")
 		}
 	default:
@@ -355,3 +356,23 @@ func (m *_Request) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_Request) IsRequest() {}
+
+func (m *_Request) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Request) deepCopy() *_Request {
+	if m == nil {
+		return nil
+	}
+	_RequestCopy := &_Request{
+		nil, // will be set by child
+		m.PeekedByte,
+		utils.CopyPtr[RequestType](m.StartingCR),
+		utils.CopyPtr[RequestType](m.ResetMode),
+		m.SecondPeek,
+		m.Termination.DeepCopy().(RequestTermination),
+		m.CBusOptions,
+	}
+	return _RequestCopy
+}

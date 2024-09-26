@@ -38,6 +38,7 @@ type BACnetPropertyStateActionUnknown interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetUnknownValue returns UnknownValue (property field)
 	GetUnknownValue() BACnetContextTagUnknown
@@ -53,6 +54,19 @@ type _BACnetPropertyStateActionUnknown struct {
 
 var _ BACnetPropertyStateActionUnknown = (*_BACnetPropertyStateActionUnknown)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStateActionUnknown)(nil)
+
+// NewBACnetPropertyStateActionUnknown factory function for _BACnetPropertyStateActionUnknown
+func NewBACnetPropertyStateActionUnknown(peekedTagHeader BACnetTagHeader, unknownValue BACnetContextTagUnknown) *_BACnetPropertyStateActionUnknown {
+	if unknownValue == nil {
+		panic("unknownValue of type BACnetContextTagUnknown for BACnetPropertyStateActionUnknown must not be nil")
+	}
+	_result := &_BACnetPropertyStateActionUnknown{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		UnknownValue:                 unknownValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStateActionUnknown) GetUnknownValue() BACnetContextTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStateActionUnknown factory function for _BACnetPropertyStateActionUnknown
-func NewBACnetPropertyStateActionUnknown(unknownValue BACnetContextTagUnknown, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStateActionUnknown {
-	if unknownValue == nil {
-		panic("unknownValue of type BACnetContextTagUnknown for BACnetPropertyStateActionUnknown must not be nil")
-	}
-	_result := &_BACnetPropertyStateActionUnknown{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		UnknownValue:                 unknownValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStateActionUnknown(structType any) BACnetPropertyStateActionUnknown {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStateActionUnknown) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetPropertyStateActionUnknown) IsBACnetPropertyStateActionUnknown() {}
+
+func (m *_BACnetPropertyStateActionUnknown) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStateActionUnknown) deepCopy() *_BACnetPropertyStateActionUnknown {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStateActionUnknownCopy := &_BACnetPropertyStateActionUnknown{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.UnknownValue.DeepCopy().(BACnetContextTagUnknown),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStateActionUnknownCopy
+}
 
 func (m *_BACnetPropertyStateActionUnknown) String() string {
 	if m == nil {

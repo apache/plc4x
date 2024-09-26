@@ -38,6 +38,7 @@ type BACnetServiceAckConfirmedPrivateTransfer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
@@ -59,6 +60,24 @@ type _BACnetServiceAckConfirmedPrivateTransfer struct {
 
 var _ BACnetServiceAckConfirmedPrivateTransfer = (*_BACnetServiceAckConfirmedPrivateTransfer)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckConfirmedPrivateTransfer)(nil)
+
+// NewBACnetServiceAckConfirmedPrivateTransfer factory function for _BACnetServiceAckConfirmedPrivateTransfer
+func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckConfirmedPrivateTransfer {
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
+	}
+	if serviceNumber == nil {
+		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
+	}
+	_result := &_BACnetServiceAckConfirmedPrivateTransfer{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		VendorId:                 vendorId,
+		ServiceNumber:            serviceNumber,
+		ResultBlock:              resultBlock,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,24 +118,6 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetResultBlock() BACnetConst
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckConfirmedPrivateTransfer factory function for _BACnetServiceAckConfirmedPrivateTransfer
-func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckConfirmedPrivateTransfer {
-	if vendorId == nil {
-		panic("vendorId of type BACnetVendorIdTagged for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
-	}
-	if serviceNumber == nil {
-		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
-	}
-	_result := &_BACnetServiceAckConfirmedPrivateTransfer{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		VendorId:                 vendorId,
-		ServiceNumber:            serviceNumber,
-		ResultBlock:              resultBlock,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckConfirmedPrivateTransfer(structType any) BACnetServiceAckConfirmedPrivateTransfer {
@@ -233,6 +234,24 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetServiceAckConfirmedPrivateTransfer) IsBACnetServiceAckConfirmedPrivateTransfer() {}
+
+func (m *_BACnetServiceAckConfirmedPrivateTransfer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckConfirmedPrivateTransfer) deepCopy() *_BACnetServiceAckConfirmedPrivateTransfer {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckConfirmedPrivateTransferCopy := &_BACnetServiceAckConfirmedPrivateTransfer{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+		m.ServiceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ResultBlock.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckConfirmedPrivateTransferCopy
+}
 
 func (m *_BACnetServiceAckConfirmedPrivateTransfer) String() string {
 	if m == nil {

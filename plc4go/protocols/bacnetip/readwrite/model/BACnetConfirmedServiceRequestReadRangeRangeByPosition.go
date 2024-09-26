@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReadRangeRangeByPosition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequestReadRangeRange
 	// GetReferenceIndex returns ReferenceIndex (property field)
 	GetReferenceIndex() BACnetApplicationTagUnsignedInteger
@@ -56,6 +57,23 @@ type _BACnetConfirmedServiceRequestReadRangeRangeByPosition struct {
 
 var _ BACnetConfirmedServiceRequestReadRangeRangeByPosition = (*_BACnetConfirmedServiceRequestReadRangeRangeByPosition)(nil)
 var _ BACnetConfirmedServiceRequestReadRangeRangeRequirements = (*_BACnetConfirmedServiceRequestReadRangeRangeByPosition)(nil)
+
+// NewBACnetConfirmedServiceRequestReadRangeRangeByPosition factory function for _BACnetConfirmedServiceRequestReadRangeRangeByPosition
+func NewBACnetConfirmedServiceRequestReadRangeRangeByPosition(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, referenceIndex BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) *_BACnetConfirmedServiceRequestReadRangeRangeByPosition {
+	if referenceIndex == nil {
+		panic("referenceIndex of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByPosition must not be nil")
+	}
+	if count == nil {
+		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByPosition must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestReadRangeRangeByPosition{
+		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
+		ReferenceIndex: referenceIndex,
+		Count:          count,
+	}
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,23 +106,6 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetCount() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestReadRangeRangeByPosition factory function for _BACnetConfirmedServiceRequestReadRangeRangeByPosition
-func NewBACnetConfirmedServiceRequestReadRangeRangeByPosition(referenceIndex BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRangeByPosition {
-	if referenceIndex == nil {
-		panic("referenceIndex of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByPosition must not be nil")
-	}
-	if count == nil {
-		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByPosition must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestReadRangeRangeByPosition{
-		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
-		ReferenceIndex: referenceIndex,
-		Count:          count,
-	}
-	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestReadRangeRangeByPosition(structType any) BACnetConfirmedServiceRequestReadRangeRangeByPosition {
@@ -202,6 +203,23 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWr
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) IsBACnetConfirmedServiceRequestReadRangeRangeByPosition() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) deepCopy() *_BACnetConfirmedServiceRequestReadRangeRangeByPosition {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadRangeRangeByPositionCopy := &_BACnetConfirmedServiceRequestReadRangeRangeByPosition{
+		m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).deepCopy(),
+		m.ReferenceIndex.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.Count.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = m
+	return _BACnetConfirmedServiceRequestReadRangeRangeByPositionCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) String() string {

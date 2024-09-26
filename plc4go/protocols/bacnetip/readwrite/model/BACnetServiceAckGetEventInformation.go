@@ -38,6 +38,7 @@ type BACnetServiceAckGetEventInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
 	GetListOfEventSummaries() BACnetEventSummariesList
@@ -56,6 +57,23 @@ type _BACnetServiceAckGetEventInformation struct {
 
 var _ BACnetServiceAckGetEventInformation = (*_BACnetServiceAckGetEventInformation)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetEventInformation)(nil)
+
+// NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
+func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
+	if listOfEventSummaries == nil {
+		panic("listOfEventSummaries of type BACnetEventSummariesList for BACnetServiceAckGetEventInformation must not be nil")
+	}
+	if moreEvents == nil {
+		panic("moreEvents of type BACnetContextTagBoolean for BACnetServiceAckGetEventInformation must not be nil")
+	}
+	_result := &_BACnetServiceAckGetEventInformation{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ListOfEventSummaries:     listOfEventSummaries,
+		MoreEvents:               moreEvents,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_BACnetServiceAckGetEventInformation) GetMoreEvents() BACnetContextTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
-	if listOfEventSummaries == nil {
-		panic("listOfEventSummaries of type BACnetEventSummariesList for BACnetServiceAckGetEventInformation must not be nil")
-	}
-	if moreEvents == nil {
-		panic("moreEvents of type BACnetContextTagBoolean for BACnetServiceAckGetEventInformation must not be nil")
-	}
-	_result := &_BACnetServiceAckGetEventInformation{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		ListOfEventSummaries:     listOfEventSummaries,
-		MoreEvents:               moreEvents,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckGetEventInformation(structType any) BACnetServiceAckGetEventInformation {
@@ -206,6 +207,23 @@ func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetServiceAckGetEventInformation) IsBACnetServiceAckGetEventInformation() {}
+
+func (m *_BACnetServiceAckGetEventInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckGetEventInformation) deepCopy() *_BACnetServiceAckGetEventInformation {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckGetEventInformationCopy := &_BACnetServiceAckGetEventInformation{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.ListOfEventSummaries.DeepCopy().(BACnetEventSummariesList),
+		m.MoreEvents.DeepCopy().(BACnetContextTagBoolean),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckGetEventInformationCopy
+}
 
 func (m *_BACnetServiceAckGetEventInformation) String() string {
 	if m == nil {

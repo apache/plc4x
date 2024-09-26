@@ -38,6 +38,7 @@ type BACnetConstructedDataCountBeforeChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCountBeforeChange returns CountBeforeChange (property field)
 	GetCountBeforeChange() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCountBeforeChange struct {
 
 var _ BACnetConstructedDataCountBeforeChange = (*_BACnetConstructedDataCountBeforeChange)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCountBeforeChange)(nil)
+
+// NewBACnetConstructedDataCountBeforeChange factory function for _BACnetConstructedDataCountBeforeChange
+func NewBACnetConstructedDataCountBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, countBeforeChange BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
+	if countBeforeChange == nil {
+		panic("countBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCountBeforeChange must not be nil")
+	}
+	_result := &_BACnetConstructedDataCountBeforeChange{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CountBeforeChange:             countBeforeChange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCountBeforeChange) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCountBeforeChange factory function for _BACnetConstructedDataCountBeforeChange
-func NewBACnetConstructedDataCountBeforeChange(countBeforeChange BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
-	if countBeforeChange == nil {
-		panic("countBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCountBeforeChange must not be nil")
-	}
-	_result := &_BACnetConstructedDataCountBeforeChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CountBeforeChange:             countBeforeChange,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCountBeforeChange(structType any) BACnetConstructedDataCountBeforeChange {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCountBeforeChange) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataCountBeforeChange) IsBACnetConstructedDataCountBeforeChange() {}
+
+func (m *_BACnetConstructedDataCountBeforeChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCountBeforeChange) deepCopy() *_BACnetConstructedDataCountBeforeChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCountBeforeChangeCopy := &_BACnetConstructedDataCountBeforeChange{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CountBeforeChange.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCountBeforeChangeCopy
+}
 
 func (m *_BACnetConstructedDataCountBeforeChange) String() string {
 	if m == nil {

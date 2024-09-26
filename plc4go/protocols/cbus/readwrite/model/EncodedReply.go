@@ -40,6 +40,7 @@ type EncodedReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedReply()
 }
@@ -78,6 +79,11 @@ type _EncodedReply struct {
 
 var _ EncodedReplyContract = (*_EncodedReply)(nil)
 
+// NewEncodedReply factory function for _EncodedReply
+func NewEncodedReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReply {
+	return &_EncodedReply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -107,11 +113,6 @@ func (pm *_EncodedReply) GetIsMonitoredSAL() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEncodedReply factory function for _EncodedReply
-func NewEncodedReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReply {
-	return &_EncodedReply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastEncodedReply(structType any) EncodedReply {
@@ -194,11 +195,11 @@ func (m *_EncodedReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	var _child EncodedReply
 	switch {
 	case isMonitoredSAL == bool(true): // MonitoredSALReply
-		if _child, err = (&_MonitoredSALReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_MonitoredSALReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALReply for type-switch of EncodedReply")
 		}
 	case 0 == 0: // EncodedReplyCALReply
-		if _child, err = (&_EncodedReplyCALReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_EncodedReplyCALReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type EncodedReplyCALReply for type-switch of EncodedReply")
 		}
 	default:
@@ -255,3 +256,20 @@ func (m *_EncodedReply) GetRequestContext() RequestContext {
 ////
 
 func (m *_EncodedReply) IsEncodedReply() {}
+
+func (m *_EncodedReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EncodedReply) deepCopy() *_EncodedReply {
+	if m == nil {
+		return nil
+	}
+	_EncodedReplyCopy := &_EncodedReply{
+		nil, // will be set by child
+		m.PeekedByte,
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _EncodedReplyCopy
+}

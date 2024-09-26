@@ -38,6 +38,7 @@ type BACnetValueSourceNone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetValueSource
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
@@ -53,6 +54,19 @@ type _BACnetValueSourceNone struct {
 
 var _ BACnetValueSourceNone = (*_BACnetValueSourceNone)(nil)
 var _ BACnetValueSourceRequirements = (*_BACnetValueSourceNone)(nil)
+
+// NewBACnetValueSourceNone factory function for _BACnetValueSourceNone
+func NewBACnetValueSourceNone(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetValueSourceNone {
+	if none == nil {
+		panic("none of type BACnetContextTagNull for BACnetValueSourceNone must not be nil")
+	}
+	_result := &_BACnetValueSourceNone{
+		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
+		None:                      none,
+	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetValueSourceNone) GetNone() BACnetContextTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSourceNone factory function for _BACnetValueSourceNone
-func NewBACnetValueSourceNone(none BACnetContextTagNull, peekedTagHeader BACnetTagHeader) *_BACnetValueSourceNone {
-	if none == nil {
-		panic("none of type BACnetContextTagNull for BACnetValueSourceNone must not be nil")
-	}
-	_result := &_BACnetValueSourceNone{
-		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
-		None:                      none,
-	}
-	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSourceNone(structType any) BACnetValueSourceNone {
@@ -178,6 +179,22 @@ func (m *_BACnetValueSourceNone) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetValueSourceNone) IsBACnetValueSourceNone() {}
+
+func (m *_BACnetValueSourceNone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSourceNone) deepCopy() *_BACnetValueSourceNone {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceNoneCopy := &_BACnetValueSourceNone{
+		m.BACnetValueSourceContract.(*_BACnetValueSource).deepCopy(),
+		m.None.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	return _BACnetValueSourceNoneCopy
+}
 
 func (m *_BACnetValueSourceNone) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type LightingLabelOptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLabelFlavour returns LabelFlavour (property field)
 	GetLabelFlavour() LightingLabelFlavour
 	// GetLabelType returns LabelType (property field)
@@ -59,6 +60,11 @@ type _LightingLabelOptions struct {
 
 var _ LightingLabelOptions = (*_LightingLabelOptions)(nil)
 
+// NewLightingLabelOptions factory function for _LightingLabelOptions
+func NewLightingLabelOptions(labelFlavour LightingLabelFlavour, labelType LightingLabelType) *_LightingLabelOptions {
+	return &_LightingLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -76,11 +82,6 @@ func (m *_LightingLabelOptions) GetLabelType() LightingLabelType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingLabelOptions factory function for _LightingLabelOptions
-func NewLightingLabelOptions(labelFlavour LightingLabelFlavour, labelType LightingLabelType) *_LightingLabelOptions {
-	return &_LightingLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingLabelOptions(structType any) LightingLabelOptions {
@@ -243,6 +244,25 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_LightingLabelOptions) IsLightingLabelOptions() {}
+
+func (m *_LightingLabelOptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingLabelOptions) deepCopy() *_LightingLabelOptions {
+	if m == nil {
+		return nil
+	}
+	_LightingLabelOptionsCopy := &_LightingLabelOptions{
+		m.LabelFlavour,
+		m.LabelType,
+		m.reservedField0,
+		m.reservedField1,
+		m.reservedField2,
+		m.reservedField3,
+	}
+	return _LightingLabelOptionsCopy
+}
 
 func (m *_LightingLabelOptions) String() string {
 	if m == nil {

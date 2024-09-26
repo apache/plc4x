@@ -38,6 +38,7 @@ type BACnetConstructedDataPassbackTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPassbackTimeout returns PassbackTimeout (property field)
 	GetPassbackTimeout() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataPassbackTimeout struct {
 
 var _ BACnetConstructedDataPassbackTimeout = (*_BACnetConstructedDataPassbackTimeout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPassbackTimeout)(nil)
+
+// NewBACnetConstructedDataPassbackTimeout factory function for _BACnetConstructedDataPassbackTimeout
+func NewBACnetConstructedDataPassbackTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackTimeout {
+	if passbackTimeout == nil {
+		panic("passbackTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPassbackTimeout must not be nil")
+	}
+	_result := &_BACnetConstructedDataPassbackTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PassbackTimeout:               passbackTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataPassbackTimeout) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPassbackTimeout factory function for _BACnetConstructedDataPassbackTimeout
-func NewBACnetConstructedDataPassbackTimeout(passbackTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackTimeout {
-	if passbackTimeout == nil {
-		panic("passbackTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPassbackTimeout must not be nil")
-	}
-	_result := &_BACnetConstructedDataPassbackTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PassbackTimeout:               passbackTimeout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPassbackTimeout(structType any) BACnetConstructedDataPassbackTimeout {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPassbackTimeout) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataPassbackTimeout) IsBACnetConstructedDataPassbackTimeout() {}
+
+func (m *_BACnetConstructedDataPassbackTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPassbackTimeout) deepCopy() *_BACnetConstructedDataPassbackTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPassbackTimeoutCopy := &_BACnetConstructedDataPassbackTimeout{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PassbackTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPassbackTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataPassbackTimeout) String() string {
 	if m == nil {

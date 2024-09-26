@@ -38,6 +38,7 @@ type ModbusPDUReadCoilsResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
@@ -53,6 +54,16 @@ type _ModbusPDUReadCoilsResponse struct {
 
 var _ ModbusPDUReadCoilsResponse = (*_ModbusPDUReadCoilsResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadCoilsResponse)(nil)
+
+// NewModbusPDUReadCoilsResponse factory function for _ModbusPDUReadCoilsResponse
+func NewModbusPDUReadCoilsResponse(value []byte) *_ModbusPDUReadCoilsResponse {
+	_result := &_ModbusPDUReadCoilsResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ModbusPDUReadCoilsResponse) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadCoilsResponse factory function for _ModbusPDUReadCoilsResponse
-func NewModbusPDUReadCoilsResponse(value []byte) *_ModbusPDUReadCoilsResponse {
-	_result := &_ModbusPDUReadCoilsResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadCoilsResponse(structType any) ModbusPDUReadCoilsResponse {
@@ -202,6 +203,22 @@ func (m *_ModbusPDUReadCoilsResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ModbusPDUReadCoilsResponse) IsModbusPDUReadCoilsResponse() {}
+
+func (m *_ModbusPDUReadCoilsResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadCoilsResponse) deepCopy() *_ModbusPDUReadCoilsResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadCoilsResponseCopy := &_ModbusPDUReadCoilsResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadCoilsResponseCopy
+}
 
 func (m *_ModbusPDUReadCoilsResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataDefaultTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDefaultTimeout returns DefaultTimeout (property field)
 	GetDefaultTimeout() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDefaultTimeout struct {
 
 var _ BACnetConstructedDataDefaultTimeout = (*_BACnetConstructedDataDefaultTimeout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultTimeout)(nil)
+
+// NewBACnetConstructedDataDefaultTimeout factory function for _BACnetConstructedDataDefaultTimeout
+func NewBACnetConstructedDataDefaultTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultTimeout {
+	if defaultTimeout == nil {
+		panic("defaultTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultTimeout must not be nil")
+	}
+	_result := &_BACnetConstructedDataDefaultTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DefaultTimeout:                defaultTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDefaultTimeout) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDefaultTimeout factory function for _BACnetConstructedDataDefaultTimeout
-func NewBACnetConstructedDataDefaultTimeout(defaultTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultTimeout {
-	if defaultTimeout == nil {
-		panic("defaultTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultTimeout must not be nil")
-	}
-	_result := &_BACnetConstructedDataDefaultTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DefaultTimeout:                defaultTimeout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDefaultTimeout(structType any) BACnetConstructedDataDefaultTimeout {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDefaultTimeout) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataDefaultTimeout) IsBACnetConstructedDataDefaultTimeout() {}
+
+func (m *_BACnetConstructedDataDefaultTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDefaultTimeout) deepCopy() *_BACnetConstructedDataDefaultTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDefaultTimeoutCopy := &_BACnetConstructedDataDefaultTimeout{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DefaultTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDefaultTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataDefaultTimeout) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type NotificationMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint32
@@ -62,6 +63,19 @@ type _NotificationMessage struct {
 
 var _ NotificationMessage = (*_NotificationMessage)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NotificationMessage)(nil)
+
+// NewNotificationMessage factory function for _NotificationMessage
+func NewNotificationMessage(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) *_NotificationMessage {
+	_result := &_NotificationMessage{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SequenceNumber:                    sequenceNumber,
+		PublishTime:                       publishTime,
+		NoOfNotificationData:              noOfNotificationData,
+		NotificationData:                  notificationData,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_NotificationMessage) GetNotificationData() []ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNotificationMessage factory function for _NotificationMessage
-func NewNotificationMessage(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) *_NotificationMessage {
-	_result := &_NotificationMessage{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SequenceNumber:                    sequenceNumber,
-		PublishTime:                       publishTime,
-		NoOfNotificationData:              noOfNotificationData,
-		NotificationData:                  notificationData,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNotificationMessage(structType any) NotificationMessage {
@@ -249,6 +250,25 @@ func (m *_NotificationMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NotificationMessage) IsNotificationMessage() {}
+
+func (m *_NotificationMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NotificationMessage) deepCopy() *_NotificationMessage {
+	if m == nil {
+		return nil
+	}
+	_NotificationMessageCopy := &_NotificationMessage{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SequenceNumber,
+		m.PublishTime,
+		m.NoOfNotificationData,
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.NotificationData),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NotificationMessageCopy
+}
 
 func (m *_NotificationMessage) String() string {
 	if m == nil {

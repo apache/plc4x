@@ -38,6 +38,7 @@ type VariantLocalizedText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantLocalizedText struct {
 
 var _ VariantLocalizedText = (*_VariantLocalizedText)(nil)
 var _ VariantRequirements = (*_VariantLocalizedText)(nil)
+
+// NewVariantLocalizedText factory function for _VariantLocalizedText
+func NewVariantLocalizedText(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []LocalizedText) *_VariantLocalizedText {
+	_result := &_VariantLocalizedText{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantLocalizedText) GetValue() []LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantLocalizedText factory function for _VariantLocalizedText
-func NewVariantLocalizedText(arrayLength *int32, value []LocalizedText, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantLocalizedText {
-	_result := &_VariantLocalizedText{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantLocalizedText(structType any) VariantLocalizedText {
@@ -210,6 +211,23 @@ func (m *_VariantLocalizedText) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_VariantLocalizedText) IsVariantLocalizedText() {}
+
+func (m *_VariantLocalizedText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantLocalizedText) deepCopy() *_VariantLocalizedText {
+	if m == nil {
+		return nil
+	}
+	_VariantLocalizedTextCopy := &_VariantLocalizedText{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[LocalizedText, LocalizedText](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantLocalizedTextCopy
+}
 
 func (m *_VariantLocalizedText) String() string {
 	if m == nil {

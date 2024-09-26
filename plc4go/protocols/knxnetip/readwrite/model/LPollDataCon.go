@@ -36,6 +36,7 @@ type LPollDataCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsLPollDataCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLPollDataCon()
@@ -48,6 +49,15 @@ type _LPollDataCon struct {
 
 var _ LPollDataCon = (*_LPollDataCon)(nil)
 var _ CEMIRequirements = (*_LPollDataCon)(nil)
+
+// NewLPollDataCon factory function for _LPollDataCon
+func NewLPollDataCon(size uint16) *_LPollDataCon {
+	_result := &_LPollDataCon{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_LPollDataCon) GetMessageCode() uint8 {
 
 func (m *_LPollDataCon) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewLPollDataCon factory function for _LPollDataCon
-func NewLPollDataCon(size uint16) *_LPollDataCon {
-	_result := &_LPollDataCon{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_LPollDataCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_LPollDataCon) IsLPollDataCon() {}
+
+func (m *_LPollDataCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LPollDataCon) deepCopy() *_LPollDataCon {
+	if m == nil {
+		return nil
+	}
+	_LPollDataConCopy := &_LPollDataCon{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LPollDataConCopy
+}
 
 func (m *_LPollDataCon) String() string {
 	if m == nil {

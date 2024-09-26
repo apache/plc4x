@@ -38,6 +38,7 @@ type CALDataStatusExtended interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetCoding returns Coding (property field)
 	GetCoding() StatusCoding
@@ -69,6 +70,20 @@ type _CALDataStatusExtended struct {
 
 var _ CALDataStatusExtended = (*_CALDataStatusExtended)(nil)
 var _ CALDataRequirements = (*_CALDataStatusExtended)(nil)
+
+// NewCALDataStatusExtended factory function for _CALDataStatusExtended
+func NewCALDataStatusExtended(commandTypeContainer CALCommandTypeContainer, additionalData CALData, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, requestContext RequestContext) *_CALDataStatusExtended {
+	_result := &_CALDataStatusExtended{
+		CALDataContract:  NewCALData(commandTypeContainer, additionalData, requestContext),
+		Coding:           coding,
+		Application:      application,
+		BlockStart:       blockStart,
+		StatusBytes:      statusBytes,
+		LevelInformation: levelInformation,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,20 +151,6 @@ func (m *_CALDataStatusExtended) GetNumberOfLevelInformation() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataStatusExtended factory function for _CALDataStatusExtended
-func NewCALDataStatusExtended(coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatusExtended {
-	_result := &_CALDataStatusExtended{
-		CALDataContract:  NewCALData(commandTypeContainer, additionalData, requestContext),
-		Coding:           coding,
-		Application:      application,
-		BlockStart:       blockStart,
-		StatusBytes:      statusBytes,
-		LevelInformation: levelInformation,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataStatusExtended(structType any) CALDataStatusExtended {
@@ -330,6 +331,26 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_CALDataStatusExtended) IsCALDataStatusExtended() {}
+
+func (m *_CALDataStatusExtended) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataStatusExtended) deepCopy() *_CALDataStatusExtended {
+	if m == nil {
+		return nil
+	}
+	_CALDataStatusExtendedCopy := &_CALDataStatusExtended{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.Coding,
+		m.Application,
+		m.BlockStart,
+		utils.DeepCopySlice[StatusByte, StatusByte](m.StatusBytes),
+		utils.DeepCopySlice[LevelInformation, LevelInformation](m.LevelInformation),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataStatusExtendedCopy
+}
 
 func (m *_CALDataStatusExtended) String() string {
 	if m == nil {

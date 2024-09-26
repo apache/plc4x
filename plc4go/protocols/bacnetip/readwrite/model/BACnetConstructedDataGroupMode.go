@@ -38,6 +38,7 @@ type BACnetConstructedDataGroupMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetGroupMode returns GroupMode (property field)
 	GetGroupMode() BACnetLiftGroupModeTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataGroupMode struct {
 
 var _ BACnetConstructedDataGroupMode = (*_BACnetConstructedDataGroupMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupMode)(nil)
+
+// NewBACnetConstructedDataGroupMode factory function for _BACnetConstructedDataGroupMode
+func NewBACnetConstructedDataGroupMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, groupMode BACnetLiftGroupModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupMode {
+	if groupMode == nil {
+		panic("groupMode of type BACnetLiftGroupModeTagged for BACnetConstructedDataGroupMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataGroupMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		GroupMode:                     groupMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataGroupMode) GetActualValue() BACnetLiftGroupModeTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataGroupMode factory function for _BACnetConstructedDataGroupMode
-func NewBACnetConstructedDataGroupMode(groupMode BACnetLiftGroupModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupMode {
-	if groupMode == nil {
-		panic("groupMode of type BACnetLiftGroupModeTagged for BACnetConstructedDataGroupMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataGroupMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		GroupMode:                     groupMode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataGroupMode(structType any) BACnetConstructedDataGroupMode {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataGroupMode) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataGroupMode) IsBACnetConstructedDataGroupMode() {}
+
+func (m *_BACnetConstructedDataGroupMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGroupMode) deepCopy() *_BACnetConstructedDataGroupMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGroupModeCopy := &_BACnetConstructedDataGroupMode{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.GroupMode.DeepCopy().(BACnetLiftGroupModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGroupModeCopy
+}
 
 func (m *_BACnetConstructedDataGroupMode) String() string {
 	if m == nil {

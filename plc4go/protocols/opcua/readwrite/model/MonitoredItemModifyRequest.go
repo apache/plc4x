@@ -38,6 +38,7 @@ type MonitoredItemModifyRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMonitoredItemId returns MonitoredItemId (property field)
 	GetMonitoredItemId() uint32
@@ -56,6 +57,20 @@ type _MonitoredItemModifyRequest struct {
 
 var _ MonitoredItemModifyRequest = (*_MonitoredItemModifyRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemModifyRequest)(nil)
+
+// NewMonitoredItemModifyRequest factory function for _MonitoredItemModifyRequest
+func NewMonitoredItemModifyRequest(monitoredItemId uint32, requestedParameters ExtensionObjectDefinition) *_MonitoredItemModifyRequest {
+	if requestedParameters == nil {
+		panic("requestedParameters of type ExtensionObjectDefinition for MonitoredItemModifyRequest must not be nil")
+	}
+	_result := &_MonitoredItemModifyRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		MonitoredItemId:                   monitoredItemId,
+		RequestedParameters:               requestedParameters,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_MonitoredItemModifyRequest) GetRequestedParameters() ExtensionObjectDe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredItemModifyRequest factory function for _MonitoredItemModifyRequest
-func NewMonitoredItemModifyRequest(monitoredItemId uint32, requestedParameters ExtensionObjectDefinition) *_MonitoredItemModifyRequest {
-	if requestedParameters == nil {
-		panic("requestedParameters of type ExtensionObjectDefinition for MonitoredItemModifyRequest must not be nil")
-	}
-	_result := &_MonitoredItemModifyRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		MonitoredItemId:                   monitoredItemId,
-		RequestedParameters:               requestedParameters,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredItemModifyRequest(structType any) MonitoredItemModifyRequest {
@@ -203,6 +204,23 @@ func (m *_MonitoredItemModifyRequest) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_MonitoredItemModifyRequest) IsMonitoredItemModifyRequest() {}
+
+func (m *_MonitoredItemModifyRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredItemModifyRequest) deepCopy() *_MonitoredItemModifyRequest {
+	if m == nil {
+		return nil
+	}
+	_MonitoredItemModifyRequestCopy := &_MonitoredItemModifyRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.MonitoredItemId,
+		m.RequestedParameters.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoredItemModifyRequestCopy
+}
 
 func (m *_MonitoredItemModifyRequest) String() string {
 	if m == nil {

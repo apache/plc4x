@@ -38,6 +38,7 @@ type BACnetConstructedDataEventState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEventState returns EventState (property field)
 	GetEventState() BACnetEventStateTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataEventState struct {
 
 var _ BACnetConstructedDataEventState = (*_BACnetConstructedDataEventState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventState)(nil)
+
+// NewBACnetConstructedDataEventState factory function for _BACnetConstructedDataEventState
+func NewBACnetConstructedDataEventState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventState BACnetEventStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventState {
+	if eventState == nil {
+		panic("eventState of type BACnetEventStateTagged for BACnetConstructedDataEventState must not be nil")
+	}
+	_result := &_BACnetConstructedDataEventState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventState:                    eventState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataEventState) GetActualValue() BACnetEventStateTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventState factory function for _BACnetConstructedDataEventState
-func NewBACnetConstructedDataEventState(eventState BACnetEventStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventState {
-	if eventState == nil {
-		panic("eventState of type BACnetEventStateTagged for BACnetConstructedDataEventState must not be nil")
-	}
-	_result := &_BACnetConstructedDataEventState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EventState:                    eventState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventState(structType any) BACnetConstructedDataEventState {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEventState) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataEventState) IsBACnetConstructedDataEventState() {}
+
+func (m *_BACnetConstructedDataEventState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventState) deepCopy() *_BACnetConstructedDataEventState {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventStateCopy := &_BACnetConstructedDataEventState{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EventState.DeepCopy().(BACnetEventStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventStateCopy
+}
 
 func (m *_BACnetConstructedDataEventState) String() string {
 	if m == nil {

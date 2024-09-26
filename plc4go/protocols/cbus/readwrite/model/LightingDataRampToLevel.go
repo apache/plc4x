@@ -38,6 +38,7 @@ type LightingDataRampToLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
@@ -56,6 +57,17 @@ type _LightingDataRampToLevel struct {
 
 var _ LightingDataRampToLevel = (*_LightingDataRampToLevel)(nil)
 var _ LightingDataRequirements = (*_LightingDataRampToLevel)(nil)
+
+// NewLightingDataRampToLevel factory function for _LightingDataRampToLevel
+func NewLightingDataRampToLevel(commandTypeContainer LightingCommandTypeContainer, group byte, level byte) *_LightingDataRampToLevel {
+	_result := &_LightingDataRampToLevel{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+		Level:                level,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +100,6 @@ func (m *_LightingDataRampToLevel) GetLevel() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataRampToLevel factory function for _LightingDataRampToLevel
-func NewLightingDataRampToLevel(group byte, level byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataRampToLevel {
-	_result := &_LightingDataRampToLevel{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-		Level:                level,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataRampToLevel(structType any) LightingDataRampToLevel {
@@ -196,6 +197,23 @@ func (m *_LightingDataRampToLevel) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_LightingDataRampToLevel) IsLightingDataRampToLevel() {}
+
+func (m *_LightingDataRampToLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataRampToLevel) deepCopy() *_LightingDataRampToLevel {
+	if m == nil {
+		return nil
+	}
+	_LightingDataRampToLevelCopy := &_LightingDataRampToLevel{
+		m.LightingDataContract.(*_LightingData).deepCopy(),
+		m.Group,
+		m.Level,
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataRampToLevelCopy
+}
 
 func (m *_LightingDataRampToLevel) String() string {
 	if m == nil {

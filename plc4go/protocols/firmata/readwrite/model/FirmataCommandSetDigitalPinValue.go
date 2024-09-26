@@ -38,6 +38,7 @@ type FirmataCommandSetDigitalPinValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -58,6 +59,17 @@ type _FirmataCommandSetDigitalPinValue struct {
 
 var _ FirmataCommandSetDigitalPinValue = (*_FirmataCommandSetDigitalPinValue)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSetDigitalPinValue)(nil)
+
+// NewFirmataCommandSetDigitalPinValue factory function for _FirmataCommandSetDigitalPinValue
+func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_FirmataCommandSetDigitalPinValue {
+	_result := &_FirmataCommandSetDigitalPinValue{
+		FirmataCommandContract: NewFirmataCommand(response),
+		Pin:                    pin,
+		On:                     on,
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +106,6 @@ func (m *_FirmataCommandSetDigitalPinValue) GetOn() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataCommandSetDigitalPinValue factory function for _FirmataCommandSetDigitalPinValue
-func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_FirmataCommandSetDigitalPinValue {
-	_result := &_FirmataCommandSetDigitalPinValue{
-		FirmataCommandContract: NewFirmataCommand(response),
-		Pin:                    pin,
-		On:                     on,
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommandSetDigitalPinValue(structType any) FirmataCommandSetDigitalPinValue {
@@ -215,6 +216,24 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_FirmataCommandSetDigitalPinValue) IsFirmataCommandSetDigitalPinValue() {}
+
+func (m *_FirmataCommandSetDigitalPinValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandSetDigitalPinValue) deepCopy() *_FirmataCommandSetDigitalPinValue {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandSetDigitalPinValueCopy := &_FirmataCommandSetDigitalPinValue{
+		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
+		m.Pin,
+		m.On,
+		m.reservedField0,
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandSetDigitalPinValueCopy
+}
 
 func (m *_FirmataCommandSetDigitalPinValue) String() string {
 	if m == nil {

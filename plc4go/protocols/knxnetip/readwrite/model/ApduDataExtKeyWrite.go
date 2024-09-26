@@ -36,6 +36,7 @@ type ApduDataExtKeyWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtKeyWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtKeyWrite()
@@ -48,6 +49,15 @@ type _ApduDataExtKeyWrite struct {
 
 var _ ApduDataExtKeyWrite = (*_ApduDataExtKeyWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtKeyWrite)(nil)
+
+// NewApduDataExtKeyWrite factory function for _ApduDataExtKeyWrite
+func NewApduDataExtKeyWrite(length uint8) *_ApduDataExtKeyWrite {
+	_result := &_ApduDataExtKeyWrite{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtKeyWrite) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtKeyWrite) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtKeyWrite factory function for _ApduDataExtKeyWrite
-func NewApduDataExtKeyWrite(length uint8) *_ApduDataExtKeyWrite {
-	_result := &_ApduDataExtKeyWrite{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtKeyWrite) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ApduDataExtKeyWrite) IsApduDataExtKeyWrite() {}
+
+func (m *_ApduDataExtKeyWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtKeyWrite) deepCopy() *_ApduDataExtKeyWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtKeyWriteCopy := &_ApduDataExtKeyWrite{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtKeyWriteCopy
+}
 
 func (m *_ApduDataExtKeyWrite) String() string {
 	if m == nil {

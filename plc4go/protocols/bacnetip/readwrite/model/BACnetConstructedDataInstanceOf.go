@@ -38,6 +38,7 @@ type BACnetConstructedDataInstanceOf interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInstanceOf returns InstanceOf (property field)
 	GetInstanceOf() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataInstanceOf struct {
 
 var _ BACnetConstructedDataInstanceOf = (*_BACnetConstructedDataInstanceOf)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInstanceOf)(nil)
+
+// NewBACnetConstructedDataInstanceOf factory function for _BACnetConstructedDataInstanceOf
+func NewBACnetConstructedDataInstanceOf(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instanceOf BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstanceOf {
+	if instanceOf == nil {
+		panic("instanceOf of type BACnetApplicationTagCharacterString for BACnetConstructedDataInstanceOf must not be nil")
+	}
+	_result := &_BACnetConstructedDataInstanceOf{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InstanceOf:                    instanceOf,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataInstanceOf) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInstanceOf factory function for _BACnetConstructedDataInstanceOf
-func NewBACnetConstructedDataInstanceOf(instanceOf BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstanceOf {
-	if instanceOf == nil {
-		panic("instanceOf of type BACnetApplicationTagCharacterString for BACnetConstructedDataInstanceOf must not be nil")
-	}
-	_result := &_BACnetConstructedDataInstanceOf{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InstanceOf:                    instanceOf,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInstanceOf(structType any) BACnetConstructedDataInstanceOf {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataInstanceOf) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataInstanceOf) IsBACnetConstructedDataInstanceOf() {}
+
+func (m *_BACnetConstructedDataInstanceOf) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInstanceOf) deepCopy() *_BACnetConstructedDataInstanceOf {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInstanceOfCopy := &_BACnetConstructedDataInstanceOf{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.InstanceOf.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInstanceOfCopy
+}
 
 func (m *_BACnetConstructedDataInstanceOf) String() string {
 	if m == nil {

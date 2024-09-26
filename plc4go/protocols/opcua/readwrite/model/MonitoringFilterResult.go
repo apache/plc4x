@@ -36,6 +36,7 @@ type MonitoringFilterResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsMonitoringFilterResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoringFilterResult()
@@ -48,6 +49,15 @@ type _MonitoringFilterResult struct {
 
 var _ MonitoringFilterResult = (*_MonitoringFilterResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoringFilterResult)(nil)
+
+// NewMonitoringFilterResult factory function for _MonitoringFilterResult
+func NewMonitoringFilterResult() *_MonitoringFilterResult {
+	_result := &_MonitoringFilterResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_MonitoringFilterResult) GetIdentifier() string {
 
 func (m *_MonitoringFilterResult) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewMonitoringFilterResult factory function for _MonitoringFilterResult
-func NewMonitoringFilterResult() *_MonitoringFilterResult {
-	_result := &_MonitoringFilterResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_MonitoringFilterResult) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_MonitoringFilterResult) IsMonitoringFilterResult() {}
+
+func (m *_MonitoringFilterResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoringFilterResult) deepCopy() *_MonitoringFilterResult {
+	if m == nil {
+		return nil
+	}
+	_MonitoringFilterResultCopy := &_MonitoringFilterResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoringFilterResultCopy
+}
 
 func (m *_MonitoringFilterResult) String() string {
 	if m == nil {

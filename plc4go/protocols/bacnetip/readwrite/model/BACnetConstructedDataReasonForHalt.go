@@ -38,6 +38,7 @@ type BACnetConstructedDataReasonForHalt interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProgramError returns ProgramError (property field)
 	GetProgramError() BACnetProgramErrorTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataReasonForHalt struct {
 
 var _ BACnetConstructedDataReasonForHalt = (*_BACnetConstructedDataReasonForHalt)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForHalt)(nil)
+
+// NewBACnetConstructedDataReasonForHalt factory function for _BACnetConstructedDataReasonForHalt
+func NewBACnetConstructedDataReasonForHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programError BACnetProgramErrorTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForHalt {
+	if programError == nil {
+		panic("programError of type BACnetProgramErrorTagged for BACnetConstructedDataReasonForHalt must not be nil")
+	}
+	_result := &_BACnetConstructedDataReasonForHalt{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramError:                  programError,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataReasonForHalt) GetActualValue() BACnetProgramErro
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReasonForHalt factory function for _BACnetConstructedDataReasonForHalt
-func NewBACnetConstructedDataReasonForHalt(programError BACnetProgramErrorTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForHalt {
-	if programError == nil {
-		panic("programError of type BACnetProgramErrorTagged for BACnetConstructedDataReasonForHalt must not be nil")
-	}
-	_result := &_BACnetConstructedDataReasonForHalt{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProgramError:                  programError,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReasonForHalt(structType any) BACnetConstructedDataReasonForHalt {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataReasonForHalt) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataReasonForHalt) IsBACnetConstructedDataReasonForHalt() {}
+
+func (m *_BACnetConstructedDataReasonForHalt) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReasonForHalt) deepCopy() *_BACnetConstructedDataReasonForHalt {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReasonForHaltCopy := &_BACnetConstructedDataReasonForHalt{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProgramError.DeepCopy().(BACnetProgramErrorTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReasonForHaltCopy
+}
 
 func (m *_BACnetConstructedDataReasonForHalt) String() string {
 	if m == nil {

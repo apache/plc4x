@@ -37,6 +37,7 @@ type DF1SymbolMessageFrameACK interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1Symbol
 	// IsDF1SymbolMessageFrameACK is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1SymbolMessageFrameACK()
@@ -49,6 +50,15 @@ type _DF1SymbolMessageFrameACK struct {
 
 var _ DF1SymbolMessageFrameACK = (*_DF1SymbolMessageFrameACK)(nil)
 var _ DF1SymbolRequirements = (*_DF1SymbolMessageFrameACK)(nil)
+
+// NewDF1SymbolMessageFrameACK factory function for _DF1SymbolMessageFrameACK
+func NewDF1SymbolMessageFrameACK() *_DF1SymbolMessageFrameACK {
+	_result := &_DF1SymbolMessageFrameACK{
+		DF1SymbolContract: NewDF1Symbol(),
+	}
+	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,15 +76,6 @@ func (m *_DF1SymbolMessageFrameACK) GetSymbolType() uint8 {
 
 func (m *_DF1SymbolMessageFrameACK) GetParent() DF1SymbolContract {
 	return m.DF1SymbolContract
-}
-
-// NewDF1SymbolMessageFrameACK factory function for _DF1SymbolMessageFrameACK
-func NewDF1SymbolMessageFrameACK() *_DF1SymbolMessageFrameACK {
-	_result := &_DF1SymbolMessageFrameACK{
-		DF1SymbolContract: NewDF1Symbol(),
-	}
-	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,6 +148,21 @@ func (m *_DF1SymbolMessageFrameACK) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_DF1SymbolMessageFrameACK) IsDF1SymbolMessageFrameACK() {}
+
+func (m *_DF1SymbolMessageFrameACK) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1SymbolMessageFrameACK) deepCopy() *_DF1SymbolMessageFrameACK {
+	if m == nil {
+		return nil
+	}
+	_DF1SymbolMessageFrameACKCopy := &_DF1SymbolMessageFrameACK{
+		m.DF1SymbolContract.(*_DF1Symbol).deepCopy(),
+	}
+	m.DF1SymbolContract.(*_DF1Symbol)._SubType = m
+	return _DF1SymbolMessageFrameACKCopy
+}
 
 func (m *_DF1SymbolMessageFrameACK) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type SetAttributeSingleResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeSingleResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeSingleResponse()
@@ -48,6 +49,15 @@ type _SetAttributeSingleResponse struct {
 
 var _ SetAttributeSingleResponse = (*_SetAttributeSingleResponse)(nil)
 var _ CipServiceRequirements = (*_SetAttributeSingleResponse)(nil)
+
+// NewSetAttributeSingleResponse factory function for _SetAttributeSingleResponse
+func NewSetAttributeSingleResponse(serviceLen uint16) *_SetAttributeSingleResponse {
+	_result := &_SetAttributeSingleResponse{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_SetAttributeSingleResponse) GetConnected() bool {
 
 func (m *_SetAttributeSingleResponse) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewSetAttributeSingleResponse factory function for _SetAttributeSingleResponse
-func NewSetAttributeSingleResponse(serviceLen uint16) *_SetAttributeSingleResponse {
-	_result := &_SetAttributeSingleResponse{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_SetAttributeSingleResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SetAttributeSingleResponse) IsSetAttributeSingleResponse() {}
+
+func (m *_SetAttributeSingleResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeSingleResponse) deepCopy() *_SetAttributeSingleResponse {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeSingleResponseCopy := &_SetAttributeSingleResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeSingleResponseCopy
+}
 
 func (m *_SetAttributeSingleResponse) String() string {
 	if m == nil {

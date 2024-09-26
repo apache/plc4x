@@ -38,6 +38,7 @@ type BACnetWeekNDayTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetMonth returns Month (property field)
@@ -91,6 +92,14 @@ type _BACnetWeekNDayTagged struct {
 }
 
 var _ BACnetWeekNDayTagged = (*_BACnetWeekNDayTagged)(nil)
+
+// NewBACnetWeekNDayTagged factory function for _BACnetWeekNDayTagged
+func NewBACnetWeekNDayTagged(header BACnetTagHeader, month uint8, weekOfMonth uint8, dayOfWeek uint8, tagNumber uint8, tagClass TagClass) *_BACnetWeekNDayTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetWeekNDayTagged must not be nil")
+	}
+	return &_BACnetWeekNDayTagged{Header: header, Month: month, WeekOfMonth: weekOfMonth, DayOfWeek: dayOfWeek, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -210,14 +219,6 @@ func (m *_BACnetWeekNDayTagged) GetAnyDayOfWeek() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetWeekNDayTagged factory function for _BACnetWeekNDayTagged
-func NewBACnetWeekNDayTagged(header BACnetTagHeader, month uint8, weekOfMonth uint8, dayOfWeek uint8, tagNumber uint8, tagClass TagClass) *_BACnetWeekNDayTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetWeekNDayTagged must not be nil")
-	}
-	return &_BACnetWeekNDayTagged{Header: header, Month: month, WeekOfMonth: weekOfMonth, DayOfWeek: dayOfWeek, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetWeekNDayTagged(structType any) BACnetWeekNDayTagged {
@@ -578,6 +579,25 @@ func (m *_BACnetWeekNDayTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetWeekNDayTagged) IsBACnetWeekNDayTagged() {}
+
+func (m *_BACnetWeekNDayTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetWeekNDayTagged) deepCopy() *_BACnetWeekNDayTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetWeekNDayTaggedCopy := &_BACnetWeekNDayTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Month,
+		m.WeekOfMonth,
+		m.DayOfWeek,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetWeekNDayTaggedCopy
+}
 
 func (m *_BACnetWeekNDayTagged) String() string {
 	if m == nil {

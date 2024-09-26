@@ -38,6 +38,7 @@ type SecurityDataArmReadyNotReady interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
@@ -53,6 +54,16 @@ type _SecurityDataArmReadyNotReady struct {
 
 var _ SecurityDataArmReadyNotReady = (*_SecurityDataArmReadyNotReady)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataArmReadyNotReady)(nil)
+
+// NewSecurityDataArmReadyNotReady factory function for _SecurityDataArmReadyNotReady
+func NewSecurityDataArmReadyNotReady(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataArmReadyNotReady {
+	_result := &_SecurityDataArmReadyNotReady{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_SecurityDataArmReadyNotReady) GetZoneNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataArmReadyNotReady factory function for _SecurityDataArmReadyNotReady
-func NewSecurityDataArmReadyNotReady(zoneNumber uint8, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataArmReadyNotReady {
-	_result := &_SecurityDataArmReadyNotReady{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataArmReadyNotReady(structType any) SecurityDataArmReadyNotReady {
@@ -175,6 +176,22 @@ func (m *_SecurityDataArmReadyNotReady) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SecurityDataArmReadyNotReady) IsSecurityDataArmReadyNotReady() {}
+
+func (m *_SecurityDataArmReadyNotReady) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataArmReadyNotReady) deepCopy() *_SecurityDataArmReadyNotReady {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataArmReadyNotReadyCopy := &_SecurityDataArmReadyNotReady{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ZoneNumber,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataArmReadyNotReadyCopy
+}
 
 func (m *_SecurityDataArmReadyNotReady) String() string {
 	if m == nil {

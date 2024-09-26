@@ -481,15 +481,15 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
-						readWriteModel.RequestType_RESET,
-						nil,
-						0,
-						nil,
 						readWriteModel.RequestType_EMPTY,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.RequestType_RESET,
+						nil,
+						0,
+						nil,
 						nil,
 					),
 					nil,
@@ -561,15 +561,15 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestReset(
-						readWriteModel.RequestType_RESET,
-						nil,
-						0,
-						nil,
 						readWriteModel.RequestType_EMPTY,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.RequestType_RESET,
+						nil,
+						0,
+						nil,
 						nil,
 					),
 					nil,
@@ -642,18 +642,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -725,18 +725,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -808,18 +808,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -891,18 +891,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -974,18 +974,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,
@@ -1057,18 +1057,18 @@ func TestReader_sendMessageOverTheWire(t *testing.T) {
 			args: args{
 				messageToSend: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							readWriteModel.Attribute_CurrentSenseLevels,
-							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
-							nil,
-							nil,
-						),
-						readWriteModel.NewAlpha('g'),
 						readWriteModel.RequestType_DIRECT_COMMAND,
 						nil,
 						nil,
 						readWriteModel.RequestType_EMPTY,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+							nil,
+							readWriteModel.Attribute_CurrentSenseLevels,
+							nil,
+						),
+						readWriteModel.NewAlpha('g'),
 						nil,
 					),
 					nil,

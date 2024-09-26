@@ -38,6 +38,7 @@ type BACnetConstructedDataDoorExtendedPulseTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoorExtendedPulseTime returns DoorExtendedPulseTime (property field)
 	GetDoorExtendedPulseTime() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDoorExtendedPulseTime struct {
 
 var _ BACnetConstructedDataDoorExtendedPulseTime = (*_BACnetConstructedDataDoorExtendedPulseTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorExtendedPulseTime)(nil)
+
+// NewBACnetConstructedDataDoorExtendedPulseTime factory function for _BACnetConstructedDataDoorExtendedPulseTime
+func NewBACnetConstructedDataDoorExtendedPulseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorExtendedPulseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
+	if doorExtendedPulseTime == nil {
+		panic("doorExtendedPulseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorExtendedPulseTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataDoorExtendedPulseTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorExtendedPulseTime:         doorExtendedPulseTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDoorExtendedPulseTime factory function for _BACnetConstructedDataDoorExtendedPulseTime
-func NewBACnetConstructedDataDoorExtendedPulseTime(doorExtendedPulseTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
-	if doorExtendedPulseTime == nil {
-		panic("doorExtendedPulseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorExtendedPulseTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataDoorExtendedPulseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DoorExtendedPulseTime:         doorExtendedPulseTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDoorExtendedPulseTime(structType any) BACnetConstructedDataDoorExtendedPulseTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) IsBACnetConstructedDataDoorExtendedPulseTime() {
+}
+
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoorExtendedPulseTime) deepCopy() *_BACnetConstructedDataDoorExtendedPulseTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoorExtendedPulseTimeCopy := &_BACnetConstructedDataDoorExtendedPulseTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DoorExtendedPulseTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoorExtendedPulseTimeCopy
 }
 
 func (m *_BACnetConstructedDataDoorExtendedPulseTime) String() string {

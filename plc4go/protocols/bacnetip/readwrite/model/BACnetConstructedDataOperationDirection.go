@@ -38,6 +38,7 @@ type BACnetConstructedDataOperationDirection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOperationDirection returns OperationDirection (property field)
 	GetOperationDirection() BACnetEscalatorOperationDirectionTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataOperationDirection struct {
 
 var _ BACnetConstructedDataOperationDirection = (*_BACnetConstructedDataOperationDirection)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOperationDirection)(nil)
+
+// NewBACnetConstructedDataOperationDirection factory function for _BACnetConstructedDataOperationDirection
+func NewBACnetConstructedDataOperationDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, operationDirection BACnetEscalatorOperationDirectionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationDirection {
+	if operationDirection == nil {
+		panic("operationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetConstructedDataOperationDirection must not be nil")
+	}
+	_result := &_BACnetConstructedDataOperationDirection{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OperationDirection:            operationDirection,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataOperationDirection) GetActualValue() BACnetEscala
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOperationDirection factory function for _BACnetConstructedDataOperationDirection
-func NewBACnetConstructedDataOperationDirection(operationDirection BACnetEscalatorOperationDirectionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationDirection {
-	if operationDirection == nil {
-		panic("operationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetConstructedDataOperationDirection must not be nil")
-	}
-	_result := &_BACnetConstructedDataOperationDirection{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OperationDirection:            operationDirection,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOperationDirection(structType any) BACnetConstructedDataOperationDirection {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOperationDirection) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataOperationDirection) IsBACnetConstructedDataOperationDirection() {}
+
+func (m *_BACnetConstructedDataOperationDirection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOperationDirection) deepCopy() *_BACnetConstructedDataOperationDirection {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOperationDirectionCopy := &_BACnetConstructedDataOperationDirection{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.OperationDirection.DeepCopy().(BACnetEscalatorOperationDirectionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOperationDirectionCopy
+}
 
 func (m *_BACnetConstructedDataOperationDirection) String() string {
 	if m == nil {

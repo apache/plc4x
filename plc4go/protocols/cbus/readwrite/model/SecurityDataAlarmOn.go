@@ -36,6 +36,7 @@ type SecurityDataAlarmOn interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataAlarmOn is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataAlarmOn()
@@ -49,6 +50,15 @@ type _SecurityDataAlarmOn struct {
 var _ SecurityDataAlarmOn = (*_SecurityDataAlarmOn)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataAlarmOn)(nil)
 
+// NewSecurityDataAlarmOn factory function for _SecurityDataAlarmOn
+func NewSecurityDataAlarmOn(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataAlarmOn {
+	_result := &_SecurityDataAlarmOn{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataAlarmOn)(nil)
 
 func (m *_SecurityDataAlarmOn) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataAlarmOn factory function for _SecurityDataAlarmOn
-func NewSecurityDataAlarmOn(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataAlarmOn {
-	_result := &_SecurityDataAlarmOn{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataAlarmOn) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_SecurityDataAlarmOn) IsSecurityDataAlarmOn() {}
+
+func (m *_SecurityDataAlarmOn) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataAlarmOn) deepCopy() *_SecurityDataAlarmOn {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataAlarmOnCopy := &_SecurityDataAlarmOn{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataAlarmOnCopy
+}
 
 func (m *_SecurityDataAlarmOn) String() string {
 	if m == nil {

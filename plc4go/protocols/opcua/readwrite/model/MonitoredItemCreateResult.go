@@ -38,6 +38,7 @@ type MonitoredItemCreateResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -65,6 +66,26 @@ type _MonitoredItemCreateResult struct {
 
 var _ MonitoredItemCreateResult = (*_MonitoredItemCreateResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemCreateResult)(nil)
+
+// NewMonitoredItemCreateResult factory function for _MonitoredItemCreateResult
+func NewMonitoredItemCreateResult(statusCode StatusCode, monitoredItemId uint32, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) *_MonitoredItemCreateResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for MonitoredItemCreateResult must not be nil")
+	}
+	if filterResult == nil {
+		panic("filterResult of type ExtensionObject for MonitoredItemCreateResult must not be nil")
+	}
+	_result := &_MonitoredItemCreateResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		MonitoredItemId:                   monitoredItemId,
+		RevisedSamplingInterval:           revisedSamplingInterval,
+		RevisedQueueSize:                  revisedQueueSize,
+		FilterResult:                      filterResult,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,26 +134,6 @@ func (m *_MonitoredItemCreateResult) GetFilterResult() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredItemCreateResult factory function for _MonitoredItemCreateResult
-func NewMonitoredItemCreateResult(statusCode StatusCode, monitoredItemId uint32, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) *_MonitoredItemCreateResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for MonitoredItemCreateResult must not be nil")
-	}
-	if filterResult == nil {
-		panic("filterResult of type ExtensionObject for MonitoredItemCreateResult must not be nil")
-	}
-	_result := &_MonitoredItemCreateResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		MonitoredItemId:                   monitoredItemId,
-		RevisedSamplingInterval:           revisedSamplingInterval,
-		RevisedQueueSize:                  revisedQueueSize,
-		FilterResult:                      filterResult,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredItemCreateResult(structType any) MonitoredItemCreateResult {
@@ -269,6 +270,26 @@ func (m *_MonitoredItemCreateResult) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_MonitoredItemCreateResult) IsMonitoredItemCreateResult() {}
+
+func (m *_MonitoredItemCreateResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredItemCreateResult) deepCopy() *_MonitoredItemCreateResult {
+	if m == nil {
+		return nil
+	}
+	_MonitoredItemCreateResultCopy := &_MonitoredItemCreateResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.MonitoredItemId,
+		m.RevisedSamplingInterval,
+		m.RevisedQueueSize,
+		m.FilterResult.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoredItemCreateResultCopy
+}
 
 func (m *_MonitoredItemCreateResult) String() string {
 	if m == nil {

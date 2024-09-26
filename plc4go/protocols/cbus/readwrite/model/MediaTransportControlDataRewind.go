@@ -38,6 +38,7 @@ type MediaTransportControlDataRewind interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetOperation returns Operation (property field)
 	GetOperation() byte
@@ -69,6 +70,16 @@ type _MediaTransportControlDataRewind struct {
 
 var _ MediaTransportControlDataRewind = (*_MediaTransportControlDataRewind)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataRewind)(nil)
+
+// NewMediaTransportControlDataRewind factory function for _MediaTransportControlDataRewind
+func NewMediaTransportControlDataRewind(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataRewind {
+	_result := &_MediaTransportControlDataRewind{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -154,16 +165,6 @@ func (m *_MediaTransportControlDataRewind) GetIsReserved() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataRewind factory function for _MediaTransportControlDataRewind
-func NewMediaTransportControlDataRewind(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataRewind {
-	_result := &_MediaTransportControlDataRewind{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		Operation:                         operation,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataRewind(structType any) MediaTransportControlDataRewind {
@@ -360,6 +361,22 @@ func (m *_MediaTransportControlDataRewind) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_MediaTransportControlDataRewind) IsMediaTransportControlDataRewind() {}
+
+func (m *_MediaTransportControlDataRewind) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataRewind) deepCopy() *_MediaTransportControlDataRewind {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataRewindCopy := &_MediaTransportControlDataRewind{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.Operation,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataRewindCopy
+}
 
 func (m *_MediaTransportControlDataRewind) String() string {
 	if m == nil {

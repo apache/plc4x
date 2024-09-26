@@ -38,6 +38,7 @@ type BACnetConstructedDataPassengerAlarm interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPassengerAlarm returns PassengerAlarm (property field)
 	GetPassengerAlarm() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataPassengerAlarm struct {
 
 var _ BACnetConstructedDataPassengerAlarm = (*_BACnetConstructedDataPassengerAlarm)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPassengerAlarm)(nil)
+
+// NewBACnetConstructedDataPassengerAlarm factory function for _BACnetConstructedDataPassengerAlarm
+func NewBACnetConstructedDataPassengerAlarm(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passengerAlarm BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassengerAlarm {
+	if passengerAlarm == nil {
+		panic("passengerAlarm of type BACnetApplicationTagBoolean for BACnetConstructedDataPassengerAlarm must not be nil")
+	}
+	_result := &_BACnetConstructedDataPassengerAlarm{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PassengerAlarm:                passengerAlarm,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataPassengerAlarm) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPassengerAlarm factory function for _BACnetConstructedDataPassengerAlarm
-func NewBACnetConstructedDataPassengerAlarm(passengerAlarm BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassengerAlarm {
-	if passengerAlarm == nil {
-		panic("passengerAlarm of type BACnetApplicationTagBoolean for BACnetConstructedDataPassengerAlarm must not be nil")
-	}
-	_result := &_BACnetConstructedDataPassengerAlarm{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PassengerAlarm:                passengerAlarm,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPassengerAlarm(structType any) BACnetConstructedDataPassengerAlarm {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPassengerAlarm) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataPassengerAlarm) IsBACnetConstructedDataPassengerAlarm() {}
+
+func (m *_BACnetConstructedDataPassengerAlarm) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPassengerAlarm) deepCopy() *_BACnetConstructedDataPassengerAlarm {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPassengerAlarmCopy := &_BACnetConstructedDataPassengerAlarm{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PassengerAlarm.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPassengerAlarmCopy
+}
 
 func (m *_BACnetConstructedDataPassengerAlarm) String() string {
 	if m == nil {

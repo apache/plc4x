@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -39,20 +37,21 @@ type RejectMessageToNetwork struct {
 }
 
 func NewRejectMessageToNetwork(args Args, kwArgs KWArgs, options ...Option) (*RejectMessageToNetwork, error) {
-	i := &RejectMessageToNetwork{
+	r := &RejectMessageToNetwork{
 		messageType: 0x03,
 	}
-	ApplyAppliers(options, i)
-	options = AddLeafTypeIfAbundant(options, i)
-	options = AddNLMIfAbundant(options, model.NewNLMRejectMessageToNetwork(i.rmtnRejectionReason, i.rmtnDNET, 0))
+	ApplyAppliers(options, r)
+	options = AddLeafTypeIfAbundant(options, r)
+	options = AddNLMIfAbundant(options, model.NewNLMRejectMessageToNetwork(r.rmtnRejectionReason, r.rmtnDNET, 0))
 	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
-	i._NPDU = npdu.(*_NPDU)
+	r._NPDU = npdu.(*_NPDU)
+	r.AddDebugContents(r, "rmtnRejectReason", "rmtnDNET")
 
-	i.npduNetMessage = &i.messageType
-	return i, nil
+	r.npduNetMessage = &r.messageType
+	return r, nil
 }
 
 // TODO: check if this is rather a KWArgs
@@ -63,6 +62,16 @@ func WithRejectMessageToNetworkRejectionReason(reason model.NLMRejectMessageToNe
 // TODO: check if this is rather a KWArgs
 func WithRejectMessageToNetworkDnet(dnet uint16) GenericApplier[*RejectMessageToNetwork] {
 	return WrapGenericApplier(func(n *RejectMessageToNetwork) { n.rmtnDNET = dnet })
+}
+
+func (r *RejectMessageToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "rmtnRejectReason":
+		return r.rmtnRejectionReason
+	case "rmtnDNET":
+		return r.rmtnDNET
+	}
+	return nil
 }
 
 func (r *RejectMessageToNetwork) GetRmtnRejectionReason() model.NLMRejectMessageToNetworkRejectReason {
@@ -114,8 +123,4 @@ func (r *RejectMessageToNetwork) Decode(npdu Arg) error {
 		r.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (r *RejectMessageToNetwork) String() string {
-	return fmt.Sprintf("RejectMessageToNetwork{%s, rmtnRejectionReason: %s, rmtnDNET: %v}", r._NPDU, r.rmtnRejectionReason, r.rmtnDNET)
 }

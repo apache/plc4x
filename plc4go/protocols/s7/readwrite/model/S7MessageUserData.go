@@ -36,6 +36,7 @@ type S7MessageUserData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Message
 	// IsS7MessageUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7MessageUserData()
@@ -48,6 +49,15 @@ type _S7MessageUserData struct {
 
 var _ S7MessageUserData = (*_S7MessageUserData)(nil)
 var _ S7MessageRequirements = (*_S7MessageUserData)(nil)
+
+// NewS7MessageUserData factory function for _S7MessageUserData
+func NewS7MessageUserData(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageUserData {
+	_result := &_S7MessageUserData{
+		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
+	}
+	_result.S7MessageContract.(*_S7Message)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_S7MessageUserData) GetMessageType() uint8 {
 
 func (m *_S7MessageUserData) GetParent() S7MessageContract {
 	return m.S7MessageContract
-}
-
-// NewS7MessageUserData factory function for _S7MessageUserData
-func NewS7MessageUserData(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageUserData {
-	_result := &_S7MessageUserData{
-		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
-	}
-	_result.S7MessageContract.(*_S7Message)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_S7MessageUserData) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_S7MessageUserData) IsS7MessageUserData() {}
+
+func (m *_S7MessageUserData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageUserData) deepCopy() *_S7MessageUserData {
+	if m == nil {
+		return nil
+	}
+	_S7MessageUserDataCopy := &_S7MessageUserData{
+		m.S7MessageContract.(*_S7Message).deepCopy(),
+	}
+	m.S7MessageContract.(*_S7Message)._SubType = m
+	return _S7MessageUserDataCopy
+}
 
 func (m *_S7MessageUserData) String() string {
 	if m == nil {

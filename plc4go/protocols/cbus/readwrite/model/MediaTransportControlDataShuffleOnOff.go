@@ -38,6 +38,7 @@ type MediaTransportControlDataShuffleOnOff interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetState returns State (property field)
 	GetState() byte
@@ -57,6 +58,16 @@ type _MediaTransportControlDataShuffleOnOff struct {
 
 var _ MediaTransportControlDataShuffleOnOff = (*_MediaTransportControlDataShuffleOnOff)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataShuffleOnOff)(nil)
+
+// NewMediaTransportControlDataShuffleOnOff factory function for _MediaTransportControlDataShuffleOnOff
+func NewMediaTransportControlDataShuffleOnOff(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, state byte) *_MediaTransportControlDataShuffleOnOff {
+	_result := &_MediaTransportControlDataShuffleOnOff{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		State:                             state,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +117,6 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetIsOn() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataShuffleOnOff factory function for _MediaTransportControlDataShuffleOnOff
-func NewMediaTransportControlDataShuffleOnOff(state byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataShuffleOnOff {
-	_result := &_MediaTransportControlDataShuffleOnOff{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		State:                             state,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataShuffleOnOff(structType any) MediaTransportControlDataShuffleOnOff {
@@ -228,6 +229,22 @@ func (m *_MediaTransportControlDataShuffleOnOff) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_MediaTransportControlDataShuffleOnOff) IsMediaTransportControlDataShuffleOnOff() {}
+
+func (m *_MediaTransportControlDataShuffleOnOff) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataShuffleOnOff) deepCopy() *_MediaTransportControlDataShuffleOnOff {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataShuffleOnOffCopy := &_MediaTransportControlDataShuffleOnOff{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.State,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataShuffleOnOffCopy
+}
 
 func (m *_MediaTransportControlDataShuffleOnOff) String() string {
 	if m == nil {

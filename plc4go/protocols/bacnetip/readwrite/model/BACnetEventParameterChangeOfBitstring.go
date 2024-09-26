@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfBitstring interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -65,6 +66,35 @@ type _BACnetEventParameterChangeOfBitstring struct {
 
 var _ BACnetEventParameterChangeOfBitstring = (*_BACnetEventParameterChangeOfBitstring)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfBitstring)(nil)
+
+// NewBACnetEventParameterChangeOfBitstring factory function for _BACnetEventParameterChangeOfBitstring
+func NewBACnetEventParameterChangeOfBitstring(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, bitmask BACnetContextTagBitString, listOfBitstringValues BACnetEventParameterChangeOfBitstringListOfBitstringValues, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfBitstring {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
+	if bitmask == nil {
+		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
+	if listOfBitstringValues == nil {
+		panic("listOfBitstringValues of type BACnetEventParameterChangeOfBitstringListOfBitstringValues for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfBitstring must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfBitstring{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		Bitmask:                      bitmask,
+		ListOfBitstringValues:        listOfBitstringValues,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,35 +139,6 @@ func (m *_BACnetEventParameterChangeOfBitstring) GetClosingTag() BACnetClosingTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfBitstring factory function for _BACnetEventParameterChangeOfBitstring
-func NewBACnetEventParameterChangeOfBitstring(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, bitmask BACnetContextTagBitString, listOfBitstringValues BACnetEventParameterChangeOfBitstringListOfBitstringValues, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfBitstring {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfBitstring must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfBitstring must not be nil")
-	}
-	if bitmask == nil {
-		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfBitstring must not be nil")
-	}
-	if listOfBitstringValues == nil {
-		panic("listOfBitstringValues of type BACnetEventParameterChangeOfBitstringListOfBitstringValues for BACnetEventParameterChangeOfBitstring must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfBitstring must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfBitstring{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		Bitmask:                      bitmask,
-		ListOfBitstringValues:        listOfBitstringValues,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfBitstring(structType any) BACnetEventParameterChangeOfBitstring {
@@ -274,6 +275,26 @@ func (m *_BACnetEventParameterChangeOfBitstring) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetEventParameterChangeOfBitstring) IsBACnetEventParameterChangeOfBitstring() {}
+
+func (m *_BACnetEventParameterChangeOfBitstring) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfBitstring) deepCopy() *_BACnetEventParameterChangeOfBitstring {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfBitstringCopy := &_BACnetEventParameterChangeOfBitstring{
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Bitmask.DeepCopy().(BACnetContextTagBitString),
+		m.ListOfBitstringValues.DeepCopy().(BACnetEventParameterChangeOfBitstringListOfBitstringValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterChangeOfBitstringCopy
+}
 
 func (m *_BACnetEventParameterChangeOfBitstring) String() string {
 	if m == nil {

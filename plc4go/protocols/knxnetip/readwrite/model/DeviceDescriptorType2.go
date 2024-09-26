@@ -38,6 +38,7 @@ type DeviceDescriptorType2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetManufacturerId returns ManufacturerId (property field)
 	GetManufacturerId() uint16
 	// GetDeviceType returns DeviceType (property field)
@@ -77,6 +78,23 @@ type _DeviceDescriptorType2 struct {
 }
 
 var _ DeviceDescriptorType2 = (*_DeviceDescriptorType2)(nil)
+
+// NewDeviceDescriptorType2 factory function for _DeviceDescriptorType2
+func NewDeviceDescriptorType2(manufacturerId uint16, deviceType uint16, version uint8, readSupported bool, writeSupported bool, logicalTagBase uint8, channelInfo1 ChannelInformation, channelInfo2 ChannelInformation, channelInfo3 ChannelInformation, channelInfo4 ChannelInformation) *_DeviceDescriptorType2 {
+	if channelInfo1 == nil {
+		panic("channelInfo1 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
+	}
+	if channelInfo2 == nil {
+		panic("channelInfo2 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
+	}
+	if channelInfo3 == nil {
+		panic("channelInfo3 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
+	}
+	if channelInfo4 == nil {
+		panic("channelInfo4 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
+	}
+	return &_DeviceDescriptorType2{ManufacturerId: manufacturerId, DeviceType: deviceType, Version: version, ReadSupported: readSupported, WriteSupported: writeSupported, LogicalTagBase: logicalTagBase, ChannelInfo1: channelInfo1, ChannelInfo2: channelInfo2, ChannelInfo3: channelInfo3, ChannelInfo4: channelInfo4}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,23 +145,6 @@ func (m *_DeviceDescriptorType2) GetChannelInfo4() ChannelInformation {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceDescriptorType2 factory function for _DeviceDescriptorType2
-func NewDeviceDescriptorType2(manufacturerId uint16, deviceType uint16, version uint8, readSupported bool, writeSupported bool, logicalTagBase uint8, channelInfo1 ChannelInformation, channelInfo2 ChannelInformation, channelInfo3 ChannelInformation, channelInfo4 ChannelInformation) *_DeviceDescriptorType2 {
-	if channelInfo1 == nil {
-		panic("channelInfo1 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
-	}
-	if channelInfo2 == nil {
-		panic("channelInfo2 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
-	}
-	if channelInfo3 == nil {
-		panic("channelInfo3 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
-	}
-	if channelInfo4 == nil {
-		panic("channelInfo4 of type ChannelInformation for DeviceDescriptorType2 must not be nil")
-	}
-	return &_DeviceDescriptorType2{ManufacturerId: manufacturerId, DeviceType: deviceType, Version: version, ReadSupported: readSupported, WriteSupported: writeSupported, LogicalTagBase: logicalTagBase, ChannelInfo1: channelInfo1, ChannelInfo2: channelInfo2, ChannelInfo3: channelInfo3, ChannelInfo4: channelInfo4}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceDescriptorType2(structType any) DeviceDescriptorType2 {
@@ -358,6 +359,29 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_DeviceDescriptorType2) IsDeviceDescriptorType2() {}
+
+func (m *_DeviceDescriptorType2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceDescriptorType2) deepCopy() *_DeviceDescriptorType2 {
+	if m == nil {
+		return nil
+	}
+	_DeviceDescriptorType2Copy := &_DeviceDescriptorType2{
+		m.ManufacturerId,
+		m.DeviceType,
+		m.Version,
+		m.ReadSupported,
+		m.WriteSupported,
+		m.LogicalTagBase,
+		m.ChannelInfo1.DeepCopy().(ChannelInformation),
+		m.ChannelInfo2.DeepCopy().(ChannelInformation),
+		m.ChannelInfo3.DeepCopy().(ChannelInformation),
+		m.ChannelInfo4.DeepCopy().(ChannelInformation),
+	}
+	return _DeviceDescriptorType2Copy
+}
 
 func (m *_DeviceDescriptorType2) String() string {
 	if m == nil {

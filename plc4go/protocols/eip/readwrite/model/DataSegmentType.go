@@ -40,6 +40,7 @@ type DataSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDataSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSegmentType()
 }
@@ -144,7 +145,7 @@ func (m *_DataSegmentType) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child DataSegmentType
 	switch {
 	case dataSegmentType == 0x11: // AnsiExtendedSymbolSegment
-		if _child, err = (&_AnsiExtendedSymbolSegment{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AnsiExtendedSymbolSegment).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AnsiExtendedSymbolSegment for type-switch of DataSegmentType")
 		}
 	default:
@@ -186,3 +187,17 @@ func (pm *_DataSegmentType) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_DataSegmentType) IsDataSegmentType() {}
+
+func (m *_DataSegmentType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSegmentType) deepCopy() *_DataSegmentType {
+	if m == nil {
+		return nil
+	}
+	_DataSegmentTypeCopy := &_DataSegmentType{
+		nil, // will be set by child
+	}
+	return _DataSegmentTypeCopy
+}

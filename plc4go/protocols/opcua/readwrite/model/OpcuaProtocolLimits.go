@@ -38,6 +38,7 @@ type OpcuaProtocolLimits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReceiveBufferSize returns ReceiveBufferSize (property field)
 	GetReceiveBufferSize() uint32
 	// GetSendBufferSize returns SendBufferSize (property field)
@@ -59,6 +60,11 @@ type _OpcuaProtocolLimits struct {
 }
 
 var _ OpcuaProtocolLimits = (*_OpcuaProtocolLimits)(nil)
+
+// NewOpcuaProtocolLimits factory function for _OpcuaProtocolLimits
+func NewOpcuaProtocolLimits(receiveBufferSize uint32, sendBufferSize uint32, maxMessageSize uint32, maxChunkCount uint32) *_OpcuaProtocolLimits {
+	return &_OpcuaProtocolLimits{ReceiveBufferSize: receiveBufferSize, SendBufferSize: sendBufferSize, MaxMessageSize: maxMessageSize, MaxChunkCount: maxChunkCount}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +91,6 @@ func (m *_OpcuaProtocolLimits) GetMaxChunkCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaProtocolLimits factory function for _OpcuaProtocolLimits
-func NewOpcuaProtocolLimits(receiveBufferSize uint32, sendBufferSize uint32, maxMessageSize uint32, maxChunkCount uint32) *_OpcuaProtocolLimits {
-	return &_OpcuaProtocolLimits{ReceiveBufferSize: receiveBufferSize, SendBufferSize: sendBufferSize, MaxMessageSize: maxMessageSize, MaxChunkCount: maxChunkCount}
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaProtocolLimits(structType any) OpcuaProtocolLimits {
@@ -226,6 +227,23 @@ func (m *_OpcuaProtocolLimits) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_OpcuaProtocolLimits) IsOpcuaProtocolLimits() {}
+
+func (m *_OpcuaProtocolLimits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaProtocolLimits) deepCopy() *_OpcuaProtocolLimits {
+	if m == nil {
+		return nil
+	}
+	_OpcuaProtocolLimitsCopy := &_OpcuaProtocolLimits{
+		m.ReceiveBufferSize,
+		m.SendBufferSize,
+		m.MaxMessageSize,
+		m.MaxChunkCount,
+	}
+	return _OpcuaProtocolLimitsCopy
+}
 
 func (m *_OpcuaProtocolLimits) String() string {
 	if m == nil {

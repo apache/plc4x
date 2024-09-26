@@ -38,6 +38,7 @@ type ExtensionObjectEncodingMask interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTypeIdSpecified returns TypeIdSpecified (property field)
 	GetTypeIdSpecified() bool
 	// GetXmlbody returns Xmlbody (property field)
@@ -58,6 +59,11 @@ type _ExtensionObjectEncodingMask struct {
 }
 
 var _ ExtensionObjectEncodingMask = (*_ExtensionObjectEncodingMask)(nil)
+
+// NewExtensionObjectEncodingMask factory function for _ExtensionObjectEncodingMask
+func NewExtensionObjectEncodingMask(typeIdSpecified bool, xmlbody bool, binaryBody bool) *_ExtensionObjectEncodingMask {
+	return &_ExtensionObjectEncodingMask{TypeIdSpecified: typeIdSpecified, Xmlbody: xmlbody, BinaryBody: binaryBody}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -80,11 +86,6 @@ func (m *_ExtensionObjectEncodingMask) GetBinaryBody() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensionObjectEncodingMask factory function for _ExtensionObjectEncodingMask
-func NewExtensionObjectEncodingMask(typeIdSpecified bool, xmlbody bool, binaryBody bool) *_ExtensionObjectEncodingMask {
-	return &_ExtensionObjectEncodingMask{TypeIdSpecified: typeIdSpecified, Xmlbody: xmlbody, BinaryBody: binaryBody}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensionObjectEncodingMask(structType any) ExtensionObjectEncodingMask {
@@ -221,6 +222,23 @@ func (m *_ExtensionObjectEncodingMask) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_ExtensionObjectEncodingMask) IsExtensionObjectEncodingMask() {}
+
+func (m *_ExtensionObjectEncodingMask) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExtensionObjectEncodingMask) deepCopy() *_ExtensionObjectEncodingMask {
+	if m == nil {
+		return nil
+	}
+	_ExtensionObjectEncodingMaskCopy := &_ExtensionObjectEncodingMask{
+		m.TypeIdSpecified,
+		m.Xmlbody,
+		m.BinaryBody,
+		m.reservedField0,
+	}
+	return _ExtensionObjectEncodingMaskCopy
+}
 
 func (m *_ExtensionObjectEncodingMask) String() string {
 	if m == nil {

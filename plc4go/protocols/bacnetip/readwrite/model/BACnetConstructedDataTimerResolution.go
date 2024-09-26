@@ -38,6 +38,7 @@ type BACnetConstructedDataTimerResolution interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTimerResolution struct {
 
 var _ BACnetConstructedDataTimerResolution = (*_BACnetConstructedDataTimerResolution)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerResolution)(nil)
+
+// NewBACnetConstructedDataTimerResolution factory function for _BACnetConstructedDataTimerResolution
+func NewBACnetConstructedDataTimerResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerResolution {
+	if resolution == nil {
+		panic("resolution of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerResolution must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimerResolution{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Resolution:                    resolution,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTimerResolution) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimerResolution factory function for _BACnetConstructedDataTimerResolution
-func NewBACnetConstructedDataTimerResolution(resolution BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerResolution {
-	if resolution == nil {
-		panic("resolution of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerResolution must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimerResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Resolution:                    resolution,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimerResolution(structType any) BACnetConstructedDataTimerResolution {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimerResolution) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataTimerResolution) IsBACnetConstructedDataTimerResolution() {}
+
+func (m *_BACnetConstructedDataTimerResolution) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimerResolution) deepCopy() *_BACnetConstructedDataTimerResolution {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimerResolutionCopy := &_BACnetConstructedDataTimerResolution{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Resolution.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimerResolutionCopy
+}
 
 func (m *_BACnetConstructedDataTimerResolution) String() string {
 	if m == nil {

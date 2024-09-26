@@ -382,21 +382,21 @@ func (c *Connection) createIdentifyRemoteMessage() readWriteModel.TPKTPacket {
 		readWriteModel.NewS7PayloadUserData(
 			[]readWriteModel.S7PayloadUserDataItem{
 				readWriteModel.NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(
+					readWriteModel.DataTransportErrorCode_OK,
+					readWriteModel.DataTransportSize_OCTET_STRING,
+					4,
 					readWriteModel.NewSzlId(
 						readWriteModel.SzlModuleTypeClass_CPU,
 						0x00,
 						readWriteModel.SzlSublist_MODULE_IDENTIFICATION,
 					),
 					0x0000,
-					readWriteModel.DataTransportErrorCode_OK,
-					readWriteModel.DataTransportSize_OCTET_STRING,
-					4,
 				),
 			},
 			nil,
 		),
 	)
-	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 2, nil, identifyRemoteMessage, 0)
+	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, identifyRemoteMessage, true, 2, 0)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }
 
@@ -421,21 +421,21 @@ func (c *Connection) createS7ConnectionRequest(cotpPacketConnectionResponse read
 		c.driverContext.MaxAmqCaller, c.driverContext.MaxAmqCallee, c.driverContext.PduSize,
 	)
 	s7Message := readWriteModel.NewS7MessageRequest(0, s7ParameterSetupCommunication, nil)
-	cotpPacketData := readWriteModel.NewCOTPPacketData(true, 1, nil, s7Message, 0)
+	cotpPacketData := readWriteModel.NewCOTPPacketData(nil, s7Message, true, 1, 0)
 	return readWriteModel.NewTPKTPacket(cotpPacketData)
 }
 
 func (c *Connection) createCOTPConnectionRequest() readWriteModel.COTPPacket {
 	return readWriteModel.NewCOTPPacketConnectionRequest(
-		0x0000,
-		0x000F,
-		readWriteModel.COTPProtocolClass_CLASS_0,
 		[]readWriteModel.COTPParameter{
 			readWriteModel.NewCOTPParameterCallingTsap(c.driverContext.CallingTsapId, 0),
 			readWriteModel.NewCOTPParameterCalledTsap(c.driverContext.CalledTsapId, 0),
 			readWriteModel.NewCOTPParameterTpduSize(c.driverContext.CotpTpduSize, 0),
 		},
 		nil,
+		0x0000,
+		0x000F,
+		readWriteModel.COTPProtocolClass_CLASS_0,
 		0,
 	)
 }

@@ -36,6 +36,7 @@ type SetAttributeListResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeListResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeListResponse()
@@ -48,6 +49,15 @@ type _SetAttributeListResponse struct {
 
 var _ SetAttributeListResponse = (*_SetAttributeListResponse)(nil)
 var _ CipServiceRequirements = (*_SetAttributeListResponse)(nil)
+
+// NewSetAttributeListResponse factory function for _SetAttributeListResponse
+func NewSetAttributeListResponse(serviceLen uint16) *_SetAttributeListResponse {
+	_result := &_SetAttributeListResponse{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_SetAttributeListResponse) GetConnected() bool {
 
 func (m *_SetAttributeListResponse) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewSetAttributeListResponse factory function for _SetAttributeListResponse
-func NewSetAttributeListResponse(serviceLen uint16) *_SetAttributeListResponse {
-	_result := &_SetAttributeListResponse{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_SetAttributeListResponse) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SetAttributeListResponse) IsSetAttributeListResponse() {}
+
+func (m *_SetAttributeListResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeListResponse) deepCopy() *_SetAttributeListResponse {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeListResponseCopy := &_SetAttributeListResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeListResponseCopy
+}
 
 func (m *_SetAttributeListResponse) String() string {
 	if m == nil {

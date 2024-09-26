@@ -36,6 +36,7 @@ type RequestEmpty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// IsRequestEmpty is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestEmpty()
@@ -49,6 +50,15 @@ type _RequestEmpty struct {
 var _ RequestEmpty = (*_RequestEmpty)(nil)
 var _ RequestRequirements = (*_RequestEmpty)(nil)
 
+// NewRequestEmpty factory function for _RequestEmpty
+func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestEmpty {
+	_result := &_RequestEmpty{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ RequestRequirements = (*_RequestEmpty)(nil)
 
 func (m *_RequestEmpty) GetParent() RequestContract {
 	return m.RequestContract
-}
-
-// NewRequestEmpty factory function for _RequestEmpty
-func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestEmpty {
-	_result := &_RequestEmpty{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_RequestEmpty) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_RequestEmpty) IsRequestEmpty() {}
+
+func (m *_RequestEmpty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestEmpty) deepCopy() *_RequestEmpty {
+	if m == nil {
+		return nil
+	}
+	_RequestEmptyCopy := &_RequestEmpty{
+		m.RequestContract.(*_Request).deepCopy(),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestEmptyCopy
+}
 
 func (m *_RequestEmpty) String() string {
 	if m == nil {

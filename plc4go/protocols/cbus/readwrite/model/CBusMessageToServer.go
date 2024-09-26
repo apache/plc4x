@@ -38,6 +38,7 @@ type CBusMessageToServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusMessage
 	// GetRequest returns Request (property field)
 	GetRequest() Request
@@ -53,6 +54,19 @@ type _CBusMessageToServer struct {
 
 var _ CBusMessageToServer = (*_CBusMessageToServer)(nil)
 var _ CBusMessageRequirements = (*_CBusMessageToServer)(nil)
+
+// NewCBusMessageToServer factory function for _CBusMessageToServer
+func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
+	if request == nil {
+		panic("request of type Request for CBusMessageToServer must not be nil")
+	}
+	_result := &_CBusMessageToServer{
+		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
+		Request:             request,
+	}
+	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_CBusMessageToServer) GetRequest() Request {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusMessageToServer factory function for _CBusMessageToServer
-func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
-	if request == nil {
-		panic("request of type Request for CBusMessageToServer must not be nil")
-	}
-	_result := &_CBusMessageToServer{
-		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
-		Request:             request,
-	}
-	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusMessageToServer(structType any) CBusMessageToServer {
@@ -182,6 +183,22 @@ func (m *_CBusMessageToServer) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_CBusMessageToServer) IsCBusMessageToServer() {}
+
+func (m *_CBusMessageToServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusMessageToServer) deepCopy() *_CBusMessageToServer {
+	if m == nil {
+		return nil
+	}
+	_CBusMessageToServerCopy := &_CBusMessageToServer{
+		m.CBusMessageContract.(*_CBusMessage).deepCopy(),
+		m.Request.DeepCopy().(Request),
+	}
+	m.CBusMessageContract.(*_CBusMessage)._SubType = m
+	return _CBusMessageToServerCopy
+}
 
 func (m *_CBusMessageToServer) String() string {
 	if m == nil {

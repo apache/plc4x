@@ -36,6 +36,7 @@ type ModbusPDUReadExceptionStatusRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// IsModbusPDUReadExceptionStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadExceptionStatusRequest()
@@ -48,6 +49,15 @@ type _ModbusPDUReadExceptionStatusRequest struct {
 
 var _ ModbusPDUReadExceptionStatusRequest = (*_ModbusPDUReadExceptionStatusRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadExceptionStatusRequest)(nil)
+
+// NewModbusPDUReadExceptionStatusRequest factory function for _ModbusPDUReadExceptionStatusRequest
+func NewModbusPDUReadExceptionStatusRequest() *_ModbusPDUReadExceptionStatusRequest {
+	_result := &_ModbusPDUReadExceptionStatusRequest{
+		ModbusPDUContract: NewModbusPDU(),
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_ModbusPDUReadExceptionStatusRequest) GetResponse() bool {
 
 func (m *_ModbusPDUReadExceptionStatusRequest) GetParent() ModbusPDUContract {
 	return m.ModbusPDUContract
-}
-
-// NewModbusPDUReadExceptionStatusRequest factory function for _ModbusPDUReadExceptionStatusRequest
-func NewModbusPDUReadExceptionStatusRequest() *_ModbusPDUReadExceptionStatusRequest {
-	_result := &_ModbusPDUReadExceptionStatusRequest{
-		ModbusPDUContract: NewModbusPDU(),
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_ModbusPDUReadExceptionStatusRequest) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ModbusPDUReadExceptionStatusRequest) IsModbusPDUReadExceptionStatusRequest() {}
+
+func (m *_ModbusPDUReadExceptionStatusRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadExceptionStatusRequest) deepCopy() *_ModbusPDUReadExceptionStatusRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadExceptionStatusRequestCopy := &_ModbusPDUReadExceptionStatusRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadExceptionStatusRequestCopy
+}
 
 func (m *_ModbusPDUReadExceptionStatusRequest) String() string {
 	if m == nil {

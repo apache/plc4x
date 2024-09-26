@@ -40,6 +40,7 @@ type COTPParameter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCOTPParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPParameter()
 }
@@ -158,23 +159,23 @@ func (m *_COTPParameter) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	var _child COTPParameter
 	switch {
 	case parameterType == 0xC0: // COTPParameterTpduSize
-		if _child, err = (&_COTPParameterTpduSize{}).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterTpduSize).parse(ctx, readBuffer, m, rest); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterTpduSize for type-switch of COTPParameter")
 		}
 	case parameterType == 0xC1: // COTPParameterCallingTsap
-		if _child, err = (&_COTPParameterCallingTsap{}).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterCallingTsap).parse(ctx, readBuffer, m, rest); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterCallingTsap for type-switch of COTPParameter")
 		}
 	case parameterType == 0xC2: // COTPParameterCalledTsap
-		if _child, err = (&_COTPParameterCalledTsap{}).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterCalledTsap).parse(ctx, readBuffer, m, rest); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterCalledTsap for type-switch of COTPParameter")
 		}
 	case parameterType == 0xC3: // COTPParameterChecksum
-		if _child, err = (&_COTPParameterChecksum{}).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterChecksum).parse(ctx, readBuffer, m, rest); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterChecksum for type-switch of COTPParameter")
 		}
 	case parameterType == 0xE0: // COTPParameterDisconnectAdditionalInformation
-		if _child, err = (&_COTPParameterDisconnectAdditionalInformation{}).parse(ctx, readBuffer, m, rest); err != nil {
+		if _child, err = new(_COTPParameterDisconnectAdditionalInformation).parse(ctx, readBuffer, m, rest); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type COTPParameterDisconnectAdditionalInformation for type-switch of COTPParameter")
 		}
 	default:
@@ -230,3 +231,18 @@ func (m *_COTPParameter) GetRest() uint8 {
 ////
 
 func (m *_COTPParameter) IsCOTPParameter() {}
+
+func (m *_COTPParameter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameter) deepCopy() *_COTPParameter {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterCopy := &_COTPParameter{
+		nil, // will be set by child
+		m.Rest,
+	}
+	return _COTPParameterCopy
+}

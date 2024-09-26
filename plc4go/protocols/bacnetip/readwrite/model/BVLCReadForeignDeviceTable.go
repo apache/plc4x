@@ -37,6 +37,7 @@ type BVLCReadForeignDeviceTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// IsBVLCReadForeignDeviceTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCReadForeignDeviceTable()
@@ -49,6 +50,15 @@ type _BVLCReadForeignDeviceTable struct {
 
 var _ BVLCReadForeignDeviceTable = (*_BVLCReadForeignDeviceTable)(nil)
 var _ BVLCRequirements = (*_BVLCReadForeignDeviceTable)(nil)
+
+// NewBVLCReadForeignDeviceTable factory function for _BVLCReadForeignDeviceTable
+func NewBVLCReadForeignDeviceTable() *_BVLCReadForeignDeviceTable {
+	_result := &_BVLCReadForeignDeviceTable{
+		BVLCContract: NewBVLC(),
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,15 +76,6 @@ func (m *_BVLCReadForeignDeviceTable) GetBvlcFunction() uint8 {
 
 func (m *_BVLCReadForeignDeviceTable) GetParent() BVLCContract {
 	return m.BVLCContract
-}
-
-// NewBVLCReadForeignDeviceTable factory function for _BVLCReadForeignDeviceTable
-func NewBVLCReadForeignDeviceTable() *_BVLCReadForeignDeviceTable {
-	_result := &_BVLCReadForeignDeviceTable{
-		BVLCContract: NewBVLC(),
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,6 +148,21 @@ func (m *_BVLCReadForeignDeviceTable) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BVLCReadForeignDeviceTable) IsBVLCReadForeignDeviceTable() {}
+
+func (m *_BVLCReadForeignDeviceTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCReadForeignDeviceTable) deepCopy() *_BVLCReadForeignDeviceTable {
+	if m == nil {
+		return nil
+	}
+	_BVLCReadForeignDeviceTableCopy := &_BVLCReadForeignDeviceTable{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCReadForeignDeviceTableCopy
+}
 
 func (m *_BVLCReadForeignDeviceTable) String() string {
 	if m == nil {

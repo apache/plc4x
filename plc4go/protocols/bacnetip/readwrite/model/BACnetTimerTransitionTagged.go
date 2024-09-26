@@ -38,6 +38,7 @@ type BACnetTimerTransitionTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetTimerTransitionTagged struct {
 
 var _ BACnetTimerTransitionTagged = (*_BACnetTimerTransitionTagged)(nil)
 
+// NewBACnetTimerTransitionTagged factory function for _BACnetTimerTransitionTagged
+func NewBACnetTimerTransitionTagged(header BACnetTagHeader, value BACnetTimerTransition, tagNumber uint8, tagClass TagClass) *_BACnetTimerTransitionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetTimerTransitionTagged must not be nil")
+	}
+	return &_BACnetTimerTransitionTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetTimerTransitionTagged) GetValue() BACnetTimerTransition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerTransitionTagged factory function for _BACnetTimerTransitionTagged
-func NewBACnetTimerTransitionTagged(header BACnetTagHeader, value BACnetTimerTransition, tagNumber uint8, tagClass TagClass) *_BACnetTimerTransitionTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetTimerTransitionTagged must not be nil")
-	}
-	return &_BACnetTimerTransitionTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerTransitionTagged(structType any) BACnetTimerTransitionTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetTimerTransitionTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetTimerTransitionTagged) IsBACnetTimerTransitionTagged() {}
+
+func (m *_BACnetTimerTransitionTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerTransitionTagged) deepCopy() *_BACnetTimerTransitionTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerTransitionTaggedCopy := &_BACnetTimerTransitionTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetTimerTransitionTaggedCopy
+}
 
 func (m *_BACnetTimerTransitionTagged) String() string {
 	if m == nil {

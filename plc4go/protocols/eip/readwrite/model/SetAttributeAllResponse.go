@@ -36,6 +36,7 @@ type SetAttributeAllResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeAllResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeAllResponse()
@@ -48,6 +49,15 @@ type _SetAttributeAllResponse struct {
 
 var _ SetAttributeAllResponse = (*_SetAttributeAllResponse)(nil)
 var _ CipServiceRequirements = (*_SetAttributeAllResponse)(nil)
+
+// NewSetAttributeAllResponse factory function for _SetAttributeAllResponse
+func NewSetAttributeAllResponse(serviceLen uint16) *_SetAttributeAllResponse {
+	_result := &_SetAttributeAllResponse{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_SetAttributeAllResponse) GetConnected() bool {
 
 func (m *_SetAttributeAllResponse) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewSetAttributeAllResponse factory function for _SetAttributeAllResponse
-func NewSetAttributeAllResponse(serviceLen uint16) *_SetAttributeAllResponse {
-	_result := &_SetAttributeAllResponse{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_SetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_SetAttributeAllResponse) IsSetAttributeAllResponse() {}
+
+func (m *_SetAttributeAllResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeAllResponse) deepCopy() *_SetAttributeAllResponse {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeAllResponseCopy := &_SetAttributeAllResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeAllResponseCopy
+}
 
 func (m *_SetAttributeAllResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetHostAddressName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetHostAddress
 	// GetName returns Name (property field)
 	GetName() BACnetContextTagCharacterString
@@ -53,6 +54,19 @@ type _BACnetHostAddressName struct {
 
 var _ BACnetHostAddressName = (*_BACnetHostAddressName)(nil)
 var _ BACnetHostAddressRequirements = (*_BACnetHostAddressName)(nil)
+
+// NewBACnetHostAddressName factory function for _BACnetHostAddressName
+func NewBACnetHostAddressName(peekedTagHeader BACnetTagHeader, name BACnetContextTagCharacterString) *_BACnetHostAddressName {
+	if name == nil {
+		panic("name of type BACnetContextTagCharacterString for BACnetHostAddressName must not be nil")
+	}
+	_result := &_BACnetHostAddressName{
+		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
+		Name:                      name,
+	}
+	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetHostAddressName) GetName() BACnetContextTagCharacterString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddressName factory function for _BACnetHostAddressName
-func NewBACnetHostAddressName(name BACnetContextTagCharacterString, peekedTagHeader BACnetTagHeader) *_BACnetHostAddressName {
-	if name == nil {
-		panic("name of type BACnetContextTagCharacterString for BACnetHostAddressName must not be nil")
-	}
-	_result := &_BACnetHostAddressName{
-		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
-		Name:                      name,
-	}
-	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddressName(structType any) BACnetHostAddressName {
@@ -178,6 +179,22 @@ func (m *_BACnetHostAddressName) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetHostAddressName) IsBACnetHostAddressName() {}
+
+func (m *_BACnetHostAddressName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddressName) deepCopy() *_BACnetHostAddressName {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressNameCopy := &_BACnetHostAddressName{
+		m.BACnetHostAddressContract.(*_BACnetHostAddress).deepCopy(),
+		m.Name.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
+	return _BACnetHostAddressNameCopy
+}
 
 func (m *_BACnetHostAddressName) String() string {
 	if m == nil {

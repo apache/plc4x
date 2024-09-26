@@ -38,6 +38,7 @@ type HVACStartTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMinutesSinceSunday12AM returns MinutesSinceSunday12AM (property field)
 	GetMinutesSinceSunday12AM() uint16
 	// GetHoursSinceSunday12AM returns HoursSinceSunday12AM (virtual field)
@@ -60,6 +61,11 @@ type _HVACStartTime struct {
 }
 
 var _ HVACStartTime = (*_HVACStartTime)(nil)
+
+// NewHVACStartTime factory function for _HVACStartTime
+func NewHVACStartTime(minutesSinceSunday12AM uint16) *_HVACStartTime {
+	return &_HVACStartTime{MinutesSinceSunday12AM: minutesSinceSunday12AM}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,11 +119,6 @@ func (m *_HVACStartTime) GetMinute() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACStartTime factory function for _HVACStartTime
-func NewHVACStartTime(minutesSinceSunday12AM uint16) *_HVACStartTime {
-	return &_HVACStartTime{MinutesSinceSunday12AM: minutesSinceSunday12AM}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACStartTime(structType any) HVACStartTime {
@@ -285,6 +286,20 @@ func (m *_HVACStartTime) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_HVACStartTime) IsHVACStartTime() {}
+
+func (m *_HVACStartTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACStartTime) deepCopy() *_HVACStartTime {
+	if m == nil {
+		return nil
+	}
+	_HVACStartTimeCopy := &_HVACStartTime{
+		m.MinutesSinceSunday12AM,
+	}
+	return _HVACStartTimeCopy
+}
 
 func (m *_HVACStartTime) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetEventParameterUnsignedOutOfRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -68,6 +69,39 @@ type _BACnetEventParameterUnsignedOutOfRange struct {
 
 var _ BACnetEventParameterUnsignedOutOfRange = (*_BACnetEventParameterUnsignedOutOfRange)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterUnsignedOutOfRange)(nil)
+
+// NewBACnetEventParameterUnsignedOutOfRange factory function for _BACnetEventParameterUnsignedOutOfRange
+func NewBACnetEventParameterUnsignedOutOfRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagUnsignedInteger, highLimit BACnetContextTagUnsignedInteger, deadband BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetEventParameterUnsignedOutOfRange {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterUnsignedOutOfRange must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedOutOfRange must not be nil")
+	}
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedOutOfRange must not be nil")
+	}
+	if highLimit == nil {
+		panic("highLimit of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedOutOfRange must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedOutOfRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterUnsignedOutOfRange must not be nil")
+	}
+	_result := &_BACnetEventParameterUnsignedOutOfRange{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		LowLimit:                     lowLimit,
+		HighLimit:                    highLimit,
+		Deadband:                     deadband,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,39 +150,6 @@ func (m *_BACnetEventParameterUnsignedOutOfRange) GetClosingTag() BACnetClosingT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterUnsignedOutOfRange factory function for _BACnetEventParameterUnsignedOutOfRange
-func NewBACnetEventParameterUnsignedOutOfRange(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagUnsignedInteger, highLimit BACnetContextTagUnsignedInteger, deadband BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterUnsignedOutOfRange {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterUnsignedOutOfRange must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedOutOfRange must not be nil")
-	}
-	if lowLimit == nil {
-		panic("lowLimit of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedOutOfRange must not be nil")
-	}
-	if highLimit == nil {
-		panic("highLimit of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedOutOfRange must not be nil")
-	}
-	if deadband == nil {
-		panic("deadband of type BACnetContextTagUnsignedInteger for BACnetEventParameterUnsignedOutOfRange must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterUnsignedOutOfRange must not be nil")
-	}
-	_result := &_BACnetEventParameterUnsignedOutOfRange{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		LowLimit:                     lowLimit,
-		HighLimit:                    highLimit,
-		Deadband:                     deadband,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterUnsignedOutOfRange(structType any) BACnetEventParameterUnsignedOutOfRange {
@@ -298,6 +299,27 @@ func (m *_BACnetEventParameterUnsignedOutOfRange) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetEventParameterUnsignedOutOfRange) IsBACnetEventParameterUnsignedOutOfRange() {}
+
+func (m *_BACnetEventParameterUnsignedOutOfRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterUnsignedOutOfRange) deepCopy() *_BACnetEventParameterUnsignedOutOfRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterUnsignedOutOfRangeCopy := &_BACnetEventParameterUnsignedOutOfRange{
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.LowLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.HighLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Deadband.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterUnsignedOutOfRangeCopy
+}
 
 func (m *_BACnetEventParameterUnsignedOutOfRange) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type SecurityDataStatusReport2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneStatus returns ZoneStatus (property field)
 	GetZoneStatus() []ZoneStatus
@@ -53,6 +54,16 @@ type _SecurityDataStatusReport2 struct {
 
 var _ SecurityDataStatusReport2 = (*_SecurityDataStatusReport2)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataStatusReport2)(nil)
+
+// NewSecurityDataStatusReport2 factory function for _SecurityDataStatusReport2
+func NewSecurityDataStatusReport2(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneStatus []ZoneStatus) *_SecurityDataStatusReport2 {
+	_result := &_SecurityDataStatusReport2{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneStatus:           zoneStatus,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_SecurityDataStatusReport2) GetZoneStatus() []ZoneStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataStatusReport2 factory function for _SecurityDataStatusReport2
-func NewSecurityDataStatusReport2(zoneStatus []ZoneStatus, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatusReport2 {
-	_result := &_SecurityDataStatusReport2{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneStatus:           zoneStatus,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataStatusReport2(structType any) SecurityDataStatusReport2 {
@@ -182,6 +183,22 @@ func (m *_SecurityDataStatusReport2) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SecurityDataStatusReport2) IsSecurityDataStatusReport2() {}
+
+func (m *_SecurityDataStatusReport2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataStatusReport2) deepCopy() *_SecurityDataStatusReport2 {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataStatusReport2Copy := &_SecurityDataStatusReport2{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		utils.DeepCopySlice[ZoneStatus, ZoneStatus](m.ZoneStatus),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataStatusReport2Copy
+}
 
 func (m *_SecurityDataStatusReport2) String() string {
 	if m == nil {

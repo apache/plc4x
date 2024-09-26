@@ -38,6 +38,7 @@ type PubSubConfigurationDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfPublishedDataSets returns NoOfPublishedDataSets (property field)
 	GetNoOfPublishedDataSets() int32
@@ -67,6 +68,20 @@ type _PubSubConfigurationDataType struct {
 
 var _ PubSubConfigurationDataType = (*_PubSubConfigurationDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubConfigurationDataType)(nil)
+
+// NewPubSubConfigurationDataType factory function for _PubSubConfigurationDataType
+func NewPubSubConfigurationDataType(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) *_PubSubConfigurationDataType {
+	_result := &_PubSubConfigurationDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfPublishedDataSets:             noOfPublishedDataSets,
+		PublishedDataSets:                 publishedDataSets,
+		NoOfConnections:                   noOfConnections,
+		Connections:                       connections,
+		Enabled:                           enabled,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,20 +130,6 @@ func (m *_PubSubConfigurationDataType) GetEnabled() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPubSubConfigurationDataType factory function for _PubSubConfigurationDataType
-func NewPubSubConfigurationDataType(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) *_PubSubConfigurationDataType {
-	_result := &_PubSubConfigurationDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfPublishedDataSets:             noOfPublishedDataSets,
-		PublishedDataSets:                 publishedDataSets,
-		NoOfConnections:                   noOfConnections,
-		Connections:                       connections,
-		Enabled:                           enabled,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPubSubConfigurationDataType(structType any) PubSubConfigurationDataType {
@@ -292,6 +293,27 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_PubSubConfigurationDataType) IsPubSubConfigurationDataType() {}
+
+func (m *_PubSubConfigurationDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubConfigurationDataType) deepCopy() *_PubSubConfigurationDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubConfigurationDataTypeCopy := &_PubSubConfigurationDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfPublishedDataSets,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.PublishedDataSets),
+		m.NoOfConnections,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Connections),
+		m.Enabled,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubConfigurationDataTypeCopy
+}
 
 func (m *_PubSubConfigurationDataType) String() string {
 	if m == nil {

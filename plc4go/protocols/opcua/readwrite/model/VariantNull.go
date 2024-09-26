@@ -36,6 +36,7 @@ type VariantNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// IsVariantNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantNull()
@@ -48,6 +49,15 @@ type _VariantNull struct {
 
 var _ VariantNull = (*_VariantNull)(nil)
 var _ VariantRequirements = (*_VariantNull)(nil)
+
+// NewVariantNull factory function for _VariantNull
+func NewVariantNull(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantNull {
+	_result := &_VariantNull{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_VariantNull) GetVariantType() uint8 {
 
 func (m *_VariantNull) GetParent() VariantContract {
 	return m.VariantContract
-}
-
-// NewVariantNull factory function for _VariantNull
-func NewVariantNull(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantNull {
-	_result := &_VariantNull{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_VariantNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_VariantNull) IsVariantNull() {}
+
+func (m *_VariantNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantNull) deepCopy() *_VariantNull {
+	if m == nil {
+		return nil
+	}
+	_VariantNullCopy := &_VariantNull{
+		m.VariantContract.(*_Variant).deepCopy(),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantNullCopy
+}
 
 func (m *_VariantNull) String() string {
 	if m == nil {

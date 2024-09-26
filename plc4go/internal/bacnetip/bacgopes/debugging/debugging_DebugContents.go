@@ -31,7 +31,6 @@ import (
 
 type Debuggable interface {
 	GetDebugAttr(attr string) any
-	GetLeafName() string
 }
 
 type DebugContentPrinter interface {
@@ -55,14 +54,6 @@ func NewDebugContents(debuggable Debuggable, contents ...string) *DebugContents 
 
 var _ DebugContentPrinter = (*DebugContents)(nil)
 
-func (d *DebugContents) GetLeafName() string {
-	if len(d.debuggables) > 0 {
-		debuggable := d.debuggables[0]
-		return QualifiedTypeName(debuggable)
-	}
-	return StructName()
-}
-
 func (d *DebugContents) AddExtraPrinters(printers ...DebugContentPrinter) {
 	d.extraPrinters = append(d.extraPrinters, printers...)
 }
@@ -70,6 +61,10 @@ func (d *DebugContents) AddExtraPrinters(printers ...DebugContentPrinter) {
 func (d *DebugContents) AddDebugContents(debuggable Debuggable, contents ...string) {
 	d.debuggables = append(d.debuggables, debuggable)
 	d.debuggableContents[debuggable] = contents
+}
+
+func (d *DebugContents) StructHeader() []byte {
+	return []byte(fmt.Sprintf("<%s object at %p>", d.LeafNameOrFallback(), d))
 }
 
 func (d *DebugContents) Format(s fmt.State, v rune) {
@@ -81,20 +76,23 @@ func (d *DebugContents) Format(s fmt.State, v rune) {
 	}
 	switch v {
 	case 's', 'v':
-		// TODO: check if that hacky hacky makes sense
-		if len(d.debuggables) > 0 {
-			debuggable := d.debuggables[0]
-			_, _ = fmt.Fprintf(s, "<%s at %p>", debuggable.GetLeafName(), debuggable)
-		}
+		_, _ = s.Write(d.StructHeader())
 	case 'r':
-		// TODO: check if that hacky hacky makes sense
-		if len(d.debuggables) > 0 {
-			debuggable := d.debuggables[0]
-			_, _ = fmt.Fprintf(s, "<%s at %p>\n", debuggable.GetLeafName(), debuggable)
-			_, _ = fmt.Fprintf(s, "    <%s at %p>\n", debuggable.GetLeafName(), debuggable) // TODO: why is this duplicated?
-		}
+		_, _ = s.Write(d.StructHeader())
+		_, _ = s.Write([]byte{'\n'})
+		_, _ = s.Write(append([]byte("    "), d.StructHeader()...)) // TODO: why is this duplicated?
 		d.PrintDebugContents(2, s, nil)
 	}
+}
+
+func (d *DebugContents) LeafNameOrFallback() string {
+	if len(d.debuggables) > 0 {
+		debuggable := d.debuggables[0]
+		if leafNameSupplier, ok := debuggable.(interface{ GetLeafName() string }); ok {
+			return leafNameSupplier.GetLeafName()
+		}
+	}
+	return StructName()
 }
 
 func (d *DebugContents) PrintDebugContents(indent int, file io.Writer, _ids []uintptr) {

@@ -38,6 +38,7 @@ type ErrorReportingSystemCategoryTypeInputUnits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForInputUnits
@@ -53,6 +54,16 @@ type _ErrorReportingSystemCategoryTypeInputUnits struct {
 
 var _ ErrorReportingSystemCategoryTypeInputUnits = (*_ErrorReportingSystemCategoryTypeInputUnits)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeInputUnits)(nil)
+
+// NewErrorReportingSystemCategoryTypeInputUnits factory function for _ErrorReportingSystemCategoryTypeInputUnits
+func NewErrorReportingSystemCategoryTypeInputUnits(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) *_ErrorReportingSystemCategoryTypeInputUnits {
+	_result := &_ErrorReportingSystemCategoryTypeInputUnits{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetCategoryForType() Error
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeInputUnits factory function for _ErrorReportingSystemCategoryTypeInputUnits
-func NewErrorReportingSystemCategoryTypeInputUnits(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) *_ErrorReportingSystemCategoryTypeInputUnits {
-	_result := &_ErrorReportingSystemCategoryTypeInputUnits{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		CategoryForType:                          categoryForType,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeInputUnits(structType any) ErrorReportingSystemCategoryTypeInputUnits {
@@ -179,6 +180,22 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) SerializeWithWriteBuffer(c
 }
 
 func (m *_ErrorReportingSystemCategoryTypeInputUnits) IsErrorReportingSystemCategoryTypeInputUnits() {
+}
+
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) deepCopy() *_ErrorReportingSystemCategoryTypeInputUnits {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeInputUnitsCopy := &_ErrorReportingSystemCategoryTypeInputUnits{
+		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
+		m.CategoryForType,
+	}
+	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	return _ErrorReportingSystemCategoryTypeInputUnitsCopy
 }
 
 func (m *_ErrorReportingSystemCategoryTypeInputUnits) String() string {

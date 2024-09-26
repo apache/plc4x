@@ -38,6 +38,7 @@ type SALDataTemperatureBroadcast interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetTemperatureBroadcastData returns TemperatureBroadcastData (property field)
 	GetTemperatureBroadcastData() TemperatureBroadcastData
@@ -53,6 +54,19 @@ type _SALDataTemperatureBroadcast struct {
 
 var _ SALDataTemperatureBroadcast = (*_SALDataTemperatureBroadcast)(nil)
 var _ SALDataRequirements = (*_SALDataTemperatureBroadcast)(nil)
+
+// NewSALDataTemperatureBroadcast factory function for _SALDataTemperatureBroadcast
+func NewSALDataTemperatureBroadcast(salData SALData, temperatureBroadcastData TemperatureBroadcastData) *_SALDataTemperatureBroadcast {
+	if temperatureBroadcastData == nil {
+		panic("temperatureBroadcastData of type TemperatureBroadcastData for SALDataTemperatureBroadcast must not be nil")
+	}
+	_result := &_SALDataTemperatureBroadcast{
+		SALDataContract:          NewSALData(salData),
+		TemperatureBroadcastData: temperatureBroadcastData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataTemperatureBroadcast) GetTemperatureBroadcastData() Temperature
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataTemperatureBroadcast factory function for _SALDataTemperatureBroadcast
-func NewSALDataTemperatureBroadcast(temperatureBroadcastData TemperatureBroadcastData, salData SALData) *_SALDataTemperatureBroadcast {
-	if temperatureBroadcastData == nil {
-		panic("temperatureBroadcastData of type TemperatureBroadcastData for SALDataTemperatureBroadcast must not be nil")
-	}
-	_result := &_SALDataTemperatureBroadcast{
-		SALDataContract:          NewSALData(salData),
-		TemperatureBroadcastData: temperatureBroadcastData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataTemperatureBroadcast(structType any) SALDataTemperatureBroadcast {
@@ -182,6 +183,22 @@ func (m *_SALDataTemperatureBroadcast) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_SALDataTemperatureBroadcast) IsSALDataTemperatureBroadcast() {}
+
+func (m *_SALDataTemperatureBroadcast) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataTemperatureBroadcast) deepCopy() *_SALDataTemperatureBroadcast {
+	if m == nil {
+		return nil
+	}
+	_SALDataTemperatureBroadcastCopy := &_SALDataTemperatureBroadcast{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.TemperatureBroadcastData.DeepCopy().(TemperatureBroadcastData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataTemperatureBroadcastCopy
+}
 
 func (m *_SALDataTemperatureBroadcast) String() string {
 	if m == nil {

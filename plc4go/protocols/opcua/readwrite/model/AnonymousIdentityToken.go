@@ -36,6 +36,7 @@ type AnonymousIdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	UserIdentityTokenDefinition
 	// IsAnonymousIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAnonymousIdentityToken()
@@ -48,6 +49,15 @@ type _AnonymousIdentityToken struct {
 
 var _ AnonymousIdentityToken = (*_AnonymousIdentityToken)(nil)
 var _ UserIdentityTokenDefinitionRequirements = (*_AnonymousIdentityToken)(nil)
+
+// NewAnonymousIdentityToken factory function for _AnonymousIdentityToken
+func NewAnonymousIdentityToken() *_AnonymousIdentityToken {
+	_result := &_AnonymousIdentityToken{
+		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_AnonymousIdentityToken) GetIdentifier() string {
 
 func (m *_AnonymousIdentityToken) GetParent() UserIdentityTokenDefinitionContract {
 	return m.UserIdentityTokenDefinitionContract
-}
-
-// NewAnonymousIdentityToken factory function for _AnonymousIdentityToken
-func NewAnonymousIdentityToken() *_AnonymousIdentityToken {
-	_result := &_AnonymousIdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_AnonymousIdentityToken) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_AnonymousIdentityToken) IsAnonymousIdentityToken() {}
+
+func (m *_AnonymousIdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AnonymousIdentityToken) deepCopy() *_AnonymousIdentityToken {
+	if m == nil {
+		return nil
+	}
+	_AnonymousIdentityTokenCopy := &_AnonymousIdentityToken{
+		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
+	}
+	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	return _AnonymousIdentityTokenCopy
+}
 
 func (m *_AnonymousIdentityToken) String() string {
 	if m == nil {

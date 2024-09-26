@@ -38,6 +38,7 @@ type NodeIdNumeric interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NodeIdTypeDefinition
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
@@ -58,6 +59,17 @@ type _NodeIdNumeric struct {
 
 var _ NodeIdNumeric = (*_NodeIdNumeric)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdNumeric)(nil)
+
+// NewNodeIdNumeric factory function for _NodeIdNumeric
+func NewNodeIdNumeric(namespaceIndex uint16, id uint32) *_NodeIdNumeric {
+	_result := &_NodeIdNumeric{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,17 +121,6 @@ func (m *_NodeIdNumeric) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdNumeric factory function for _NodeIdNumeric
-func NewNodeIdNumeric(namespaceIndex uint16, id uint32) *_NodeIdNumeric {
-	_result := &_NodeIdNumeric{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		NamespaceIndex:               namespaceIndex,
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdNumeric(structType any) NodeIdNumeric {
@@ -231,6 +232,23 @@ func (m *_NodeIdNumeric) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_NodeIdNumeric) IsNodeIdNumeric() {}
+
+func (m *_NodeIdNumeric) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdNumeric) deepCopy() *_NodeIdNumeric {
+	if m == nil {
+		return nil
+	}
+	_NodeIdNumericCopy := &_NodeIdNumeric{
+		m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).deepCopy(),
+		m.NamespaceIndex,
+		m.Id,
+	}
+	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	return _NodeIdNumericCopy
+}
 
 func (m *_NodeIdNumeric) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type MFuncPropStateReadReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMFuncPropStateReadReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropStateReadReq()
@@ -48,6 +49,15 @@ type _MFuncPropStateReadReq struct {
 
 var _ MFuncPropStateReadReq = (*_MFuncPropStateReadReq)(nil)
 var _ CEMIRequirements = (*_MFuncPropStateReadReq)(nil)
+
+// NewMFuncPropStateReadReq factory function for _MFuncPropStateReadReq
+func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
+	_result := &_MFuncPropStateReadReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_MFuncPropStateReadReq) GetMessageCode() uint8 {
 
 func (m *_MFuncPropStateReadReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMFuncPropStateReadReq factory function for _MFuncPropStateReadReq
-func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
-	_result := &_MFuncPropStateReadReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_MFuncPropStateReadReq) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_MFuncPropStateReadReq) IsMFuncPropStateReadReq() {}
+
+func (m *_MFuncPropStateReadReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MFuncPropStateReadReq) deepCopy() *_MFuncPropStateReadReq {
+	if m == nil {
+		return nil
+	}
+	_MFuncPropStateReadReqCopy := &_MFuncPropStateReadReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MFuncPropStateReadReqCopy
+}
 
 func (m *_MFuncPropStateReadReq) String() string {
 	if m == nil {

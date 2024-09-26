@@ -38,6 +38,7 @@ type UnitAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
 	// IsUnitAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _UnitAddress struct {
 }
 
 var _ UnitAddress = (*_UnitAddress)(nil)
+
+// NewUnitAddress factory function for _UnitAddress
+func NewUnitAddress(address byte) *_UnitAddress {
+	return &_UnitAddress{Address: address}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_UnitAddress) GetAddress() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnitAddress factory function for _UnitAddress
-func NewUnitAddress(address byte) *_UnitAddress {
-	return &_UnitAddress{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnitAddress(structType any) UnitAddress {
@@ -166,6 +167,20 @@ func (m *_UnitAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_UnitAddress) IsUnitAddress() {}
+
+func (m *_UnitAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnitAddress) deepCopy() *_UnitAddress {
+	if m == nil {
+		return nil
+	}
+	_UnitAddressCopy := &_UnitAddress{
+		m.Address,
+	}
+	return _UnitAddressCopy
+}
 
 func (m *_UnitAddress) String() string {
 	if m == nil {

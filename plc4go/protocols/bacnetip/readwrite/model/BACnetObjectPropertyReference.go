@@ -38,6 +38,7 @@ type BACnetObjectPropertyReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
@@ -56,6 +57,17 @@ type _BACnetObjectPropertyReference struct {
 }
 
 var _ BACnetObjectPropertyReference = (*_BACnetObjectPropertyReference)(nil)
+
+// NewBACnetObjectPropertyReference factory function for _BACnetObjectPropertyReference
+func NewBACnetObjectPropertyReference(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger) *_BACnetObjectPropertyReference {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetObjectPropertyReference must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetObjectPropertyReference must not be nil")
+	}
+	return &_BACnetObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +90,6 @@ func (m *_BACnetObjectPropertyReference) GetArrayIndex() BACnetContextTagUnsigne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetObjectPropertyReference factory function for _BACnetObjectPropertyReference
-func NewBACnetObjectPropertyReference(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger) *_BACnetObjectPropertyReference {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetObjectPropertyReference must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetObjectPropertyReference must not be nil")
-	}
-	return &_BACnetObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetObjectPropertyReference(structType any) BACnetObjectPropertyReference {
@@ -218,6 +219,22 @@ func (m *_BACnetObjectPropertyReference) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetObjectPropertyReference) IsBACnetObjectPropertyReference() {}
+
+func (m *_BACnetObjectPropertyReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetObjectPropertyReference) deepCopy() *_BACnetObjectPropertyReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetObjectPropertyReferenceCopy := &_BACnetObjectPropertyReference{
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetObjectPropertyReferenceCopy
+}
 
 func (m *_BACnetObjectPropertyReference) String() string {
 	if m == nil {

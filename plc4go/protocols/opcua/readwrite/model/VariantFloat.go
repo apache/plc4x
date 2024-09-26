@@ -38,6 +38,7 @@ type VariantFloat interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantFloat struct {
 
 var _ VariantFloat = (*_VariantFloat)(nil)
 var _ VariantRequirements = (*_VariantFloat)(nil)
+
+// NewVariantFloat factory function for _VariantFloat
+func NewVariantFloat(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []float32) *_VariantFloat {
+	_result := &_VariantFloat{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantFloat) GetValue() []float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantFloat factory function for _VariantFloat
-func NewVariantFloat(arrayLength *int32, value []float32, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantFloat {
-	_result := &_VariantFloat{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantFloat(structType any) VariantFloat {
@@ -205,6 +206,23 @@ func (m *_VariantFloat) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_VariantFloat) IsVariantFloat() {}
+
+func (m *_VariantFloat) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantFloat) deepCopy() *_VariantFloat {
+	if m == nil {
+		return nil
+	}
+	_VariantFloatCopy := &_VariantFloat{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[float32, float32](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantFloatCopy
+}
 
 func (m *_VariantFloat) String() string {
 	if m == nil {

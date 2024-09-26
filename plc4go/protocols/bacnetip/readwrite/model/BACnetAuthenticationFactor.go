@@ -38,6 +38,7 @@ type BACnetAuthenticationFactor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFormatType returns FormatType (property field)
 	GetFormatType() BACnetAuthenticationFactorTypeTagged
 	// GetFormatClass returns FormatClass (property field)
@@ -56,6 +57,20 @@ type _BACnetAuthenticationFactor struct {
 }
 
 var _ BACnetAuthenticationFactor = (*_BACnetAuthenticationFactor)(nil)
+
+// NewBACnetAuthenticationFactor factory function for _BACnetAuthenticationFactor
+func NewBACnetAuthenticationFactor(formatType BACnetAuthenticationFactorTypeTagged, formatClass BACnetContextTagUnsignedInteger, value BACnetContextTagOctetString) *_BACnetAuthenticationFactor {
+	if formatType == nil {
+		panic("formatType of type BACnetAuthenticationFactorTypeTagged for BACnetAuthenticationFactor must not be nil")
+	}
+	if formatClass == nil {
+		panic("formatClass of type BACnetContextTagUnsignedInteger for BACnetAuthenticationFactor must not be nil")
+	}
+	if value == nil {
+		panic("value of type BACnetContextTagOctetString for BACnetAuthenticationFactor must not be nil")
+	}
+	return &_BACnetAuthenticationFactor{FormatType: formatType, FormatClass: formatClass, Value: value}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,20 +93,6 @@ func (m *_BACnetAuthenticationFactor) GetValue() BACnetContextTagOctetString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationFactor factory function for _BACnetAuthenticationFactor
-func NewBACnetAuthenticationFactor(formatType BACnetAuthenticationFactorTypeTagged, formatClass BACnetContextTagUnsignedInteger, value BACnetContextTagOctetString) *_BACnetAuthenticationFactor {
-	if formatType == nil {
-		panic("formatType of type BACnetAuthenticationFactorTypeTagged for BACnetAuthenticationFactor must not be nil")
-	}
-	if formatClass == nil {
-		panic("formatClass of type BACnetContextTagUnsignedInteger for BACnetAuthenticationFactor must not be nil")
-	}
-	if value == nil {
-		panic("value of type BACnetContextTagOctetString for BACnetAuthenticationFactor must not be nil")
-	}
-	return &_BACnetAuthenticationFactor{FormatType: formatType, FormatClass: formatClass, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationFactor(structType any) BACnetAuthenticationFactor {
@@ -215,6 +216,22 @@ func (m *_BACnetAuthenticationFactor) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetAuthenticationFactor) IsBACnetAuthenticationFactor() {}
+
+func (m *_BACnetAuthenticationFactor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationFactor) deepCopy() *_BACnetAuthenticationFactor {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationFactorCopy := &_BACnetAuthenticationFactor{
+		m.FormatType.DeepCopy().(BACnetAuthenticationFactorTypeTagged),
+		m.FormatClass.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Value.DeepCopy().(BACnetContextTagOctetString),
+	}
+	return _BACnetAuthenticationFactorCopy
+}
 
 func (m *_BACnetAuthenticationFactor) String() string {
 	if m == nil {

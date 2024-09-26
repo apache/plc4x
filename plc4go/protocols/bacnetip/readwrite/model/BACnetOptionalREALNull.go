@@ -38,6 +38,7 @@ type BACnetOptionalREALNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalREAL
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -53,6 +54,19 @@ type _BACnetOptionalREALNull struct {
 
 var _ BACnetOptionalREALNull = (*_BACnetOptionalREALNull)(nil)
 var _ BACnetOptionalREALRequirements = (*_BACnetOptionalREALNull)(nil)
+
+// NewBACnetOptionalREALNull factory function for _BACnetOptionalREALNull
+func NewBACnetOptionalREALNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalREALNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalREALNull must not be nil")
+	}
+	_result := &_BACnetOptionalREALNull{
+		BACnetOptionalREALContract: NewBACnetOptionalREAL(peekedTagHeader),
+		NullValue:                  nullValue,
+	}
+	_result.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetOptionalREALNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalREALNull factory function for _BACnetOptionalREALNull
-func NewBACnetOptionalREALNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalREALNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalREALNull must not be nil")
-	}
-	_result := &_BACnetOptionalREALNull{
-		BACnetOptionalREALContract: NewBACnetOptionalREAL(peekedTagHeader),
-		NullValue:                  nullValue,
-	}
-	_result.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalREALNull(structType any) BACnetOptionalREALNull {
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalREALNull) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetOptionalREALNull) IsBACnetOptionalREALNull() {}
+
+func (m *_BACnetOptionalREALNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalREALNull) deepCopy() *_BACnetOptionalREALNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalREALNullCopy := &_BACnetOptionalREALNull{
+		m.BACnetOptionalREALContract.(*_BACnetOptionalREAL).deepCopy(),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = m
+	return _BACnetOptionalREALNullCopy
+}
 
 func (m *_BACnetOptionalREALNull) String() string {
 	if m == nil {

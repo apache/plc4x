@@ -38,6 +38,7 @@ type ModbusPDUDiagnosticRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetSubFunction returns SubFunction (property field)
 	GetSubFunction() uint16
@@ -56,6 +57,17 @@ type _ModbusPDUDiagnosticRequest struct {
 
 var _ ModbusPDUDiagnosticRequest = (*_ModbusPDUDiagnosticRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUDiagnosticRequest)(nil)
+
+// NewModbusPDUDiagnosticRequest factory function for _ModbusPDUDiagnosticRequest
+func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *_ModbusPDUDiagnosticRequest {
+	_result := &_ModbusPDUDiagnosticRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		SubFunction:       subFunction,
+		Data:              data,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_ModbusPDUDiagnosticRequest) GetData() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUDiagnosticRequest factory function for _ModbusPDUDiagnosticRequest
-func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) *_ModbusPDUDiagnosticRequest {
-	_result := &_ModbusPDUDiagnosticRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		SubFunction:       subFunction,
-		Data:              data,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUDiagnosticRequest(structType any) ModbusPDUDiagnosticRequest {
@@ -208,6 +209,23 @@ func (m *_ModbusPDUDiagnosticRequest) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ModbusPDUDiagnosticRequest) IsModbusPDUDiagnosticRequest() {}
+
+func (m *_ModbusPDUDiagnosticRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUDiagnosticRequest) deepCopy() *_ModbusPDUDiagnosticRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUDiagnosticRequestCopy := &_ModbusPDUDiagnosticRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.SubFunction,
+		m.Data,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUDiagnosticRequestCopy
+}
 
 func (m *_ModbusPDUDiagnosticRequest) String() string {
 	if m == nil {

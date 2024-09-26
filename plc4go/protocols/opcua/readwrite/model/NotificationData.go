@@ -36,6 +36,7 @@ type NotificationData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsNotificationData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNotificationData()
@@ -48,6 +49,15 @@ type _NotificationData struct {
 
 var _ NotificationData = (*_NotificationData)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NotificationData)(nil)
+
+// NewNotificationData factory function for _NotificationData
+func NewNotificationData() *_NotificationData {
+	_result := &_NotificationData{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_NotificationData) GetIdentifier() string {
 
 func (m *_NotificationData) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewNotificationData factory function for _NotificationData
-func NewNotificationData() *_NotificationData {
-	_result := &_NotificationData{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_NotificationData) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_NotificationData) IsNotificationData() {}
+
+func (m *_NotificationData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NotificationData) deepCopy() *_NotificationData {
+	if m == nil {
+		return nil
+	}
+	_NotificationDataCopy := &_NotificationData{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NotificationDataCopy
+}
 
 func (m *_NotificationData) String() string {
 	if m == nil {

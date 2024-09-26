@@ -40,6 +40,7 @@ type AccessControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAccessControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlData()
 }
@@ -75,6 +76,11 @@ type _AccessControlData struct {
 }
 
 var _ AccessControlDataContract = (*_AccessControlData)(nil)
+
+// NewAccessControlData factory function for _AccessControlData
+func NewAccessControlData(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlData {
+	return &_AccessControlData{CommandTypeContainer: commandTypeContainer, NetworkId: networkId, AccessPointId: accessPointId}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,11 +119,6 @@ func (pm *_AccessControlData) GetCommandType() AccessControlCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAccessControlData factory function for _AccessControlData
-func NewAccessControlData(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlData {
-	return &_AccessControlData{CommandTypeContainer: commandTypeContainer, NetworkId: networkId, AccessPointId: accessPointId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAccessControlData(structType any) AccessControlData {
@@ -226,35 +227,35 @@ func (m *_AccessControlData) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child AccessControlData
 	switch {
 	case commandType == AccessControlCommandType_VALID_ACCESS: // AccessControlDataValidAccessRequest
-		if _child, err = (&_AccessControlDataValidAccessRequest{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_AccessControlDataValidAccessRequest).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataValidAccessRequest for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_INVALID_ACCESS: // AccessControlDataInvalidAccessRequest
-		if _child, err = (&_AccessControlDataInvalidAccessRequest{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_AccessControlDataInvalidAccessRequest).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataInvalidAccessRequest for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_ACCESS_POINT_LEFT_OPEN: // AccessControlDataAccessPointLeftOpen
-		if _child, err = (&_AccessControlDataAccessPointLeftOpen{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataAccessPointLeftOpen).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataAccessPointLeftOpen for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_ACCESS_POINT_FORCED_OPEN: // AccessControlDataAccessPointForcedOpen
-		if _child, err = (&_AccessControlDataAccessPointForcedOpen{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataAccessPointForcedOpen).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataAccessPointForcedOpen for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_ACCESS_POINT_CLOSED: // AccessControlDataAccessPointClosed
-		if _child, err = (&_AccessControlDataAccessPointClosed{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataAccessPointClosed).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataAccessPointClosed for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_REQUEST_TO_EXIT: // AccessControlDataRequestToExit
-		if _child, err = (&_AccessControlDataRequestToExit{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataRequestToExit).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataRequestToExit for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_CLOSE_ACCESS_POINT: // AccessControlDataCloseAccessPoint
-		if _child, err = (&_AccessControlDataCloseAccessPoint{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataCloseAccessPoint).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataCloseAccessPoint for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_LOCK_ACCESS_POINT: // AccessControlDataLockAccessPoint
-		if _child, err = (&_AccessControlDataLockAccessPoint{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataLockAccessPoint).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataLockAccessPoint for type-switch of AccessControlData")
 		}
 	default:
@@ -310,3 +311,20 @@ func (pm *_AccessControlData) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_AccessControlData) IsAccessControlData() {}
+
+func (m *_AccessControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlData) deepCopy() *_AccessControlData {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataCopy := &_AccessControlData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.NetworkId,
+		m.AccessPointId,
+	}
+	return _AccessControlDataCopy
+}

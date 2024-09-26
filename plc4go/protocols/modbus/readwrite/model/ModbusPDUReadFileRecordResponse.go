@@ -38,6 +38,7 @@ type ModbusPDUReadFileRecordResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetItems returns Items (property field)
 	GetItems() []ModbusPDUReadFileRecordResponseItem
@@ -53,6 +54,16 @@ type _ModbusPDUReadFileRecordResponse struct {
 
 var _ ModbusPDUReadFileRecordResponse = (*_ModbusPDUReadFileRecordResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadFileRecordResponse)(nil)
+
+// NewModbusPDUReadFileRecordResponse factory function for _ModbusPDUReadFileRecordResponse
+func NewModbusPDUReadFileRecordResponse(items []ModbusPDUReadFileRecordResponseItem) *_ModbusPDUReadFileRecordResponse {
+	_result := &_ModbusPDUReadFileRecordResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Items:             items,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ModbusPDUReadFileRecordResponse) GetItems() []ModbusPDUReadFileRecordR
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadFileRecordResponse factory function for _ModbusPDUReadFileRecordResponse
-func NewModbusPDUReadFileRecordResponse(items []ModbusPDUReadFileRecordResponseItem) *_ModbusPDUReadFileRecordResponse {
-	_result := &_ModbusPDUReadFileRecordResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Items:             items,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadFileRecordResponse(structType any) ModbusPDUReadFileRecordResponse {
@@ -211,6 +212,22 @@ func (m *_ModbusPDUReadFileRecordResponse) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ModbusPDUReadFileRecordResponse) IsModbusPDUReadFileRecordResponse() {}
+
+func (m *_ModbusPDUReadFileRecordResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFileRecordResponse) deepCopy() *_ModbusPDUReadFileRecordResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFileRecordResponseCopy := &_ModbusPDUReadFileRecordResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		utils.DeepCopySlice[ModbusPDUReadFileRecordResponseItem, ModbusPDUReadFileRecordResponseItem](m.Items),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadFileRecordResponseCopy
+}
 
 func (m *_ModbusPDUReadFileRecordResponse) String() string {
 	if m == nil {

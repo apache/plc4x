@@ -38,6 +38,7 @@ type FieldTargetDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataSetFieldId returns DataSetFieldId (property field)
 	GetDataSetFieldId() GuidValue
@@ -71,6 +72,37 @@ type _FieldTargetDataType struct {
 
 var _ FieldTargetDataType = (*_FieldTargetDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FieldTargetDataType)(nil)
+
+// NewFieldTargetDataType factory function for _FieldTargetDataType
+func NewFieldTargetDataType(dataSetFieldId GuidValue, receiverIndexRange PascalString, targetNodeId NodeId, attributeId uint32, writeIndexRange PascalString, overrideValueHandling OverrideValueHandling, overrideValue Variant) *_FieldTargetDataType {
+	if dataSetFieldId == nil {
+		panic("dataSetFieldId of type GuidValue for FieldTargetDataType must not be nil")
+	}
+	if receiverIndexRange == nil {
+		panic("receiverIndexRange of type PascalString for FieldTargetDataType must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type NodeId for FieldTargetDataType must not be nil")
+	}
+	if writeIndexRange == nil {
+		panic("writeIndexRange of type PascalString for FieldTargetDataType must not be nil")
+	}
+	if overrideValue == nil {
+		panic("overrideValue of type Variant for FieldTargetDataType must not be nil")
+	}
+	_result := &_FieldTargetDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		DataSetFieldId:                    dataSetFieldId,
+		ReceiverIndexRange:                receiverIndexRange,
+		TargetNodeId:                      targetNodeId,
+		AttributeId:                       attributeId,
+		WriteIndexRange:                   writeIndexRange,
+		OverrideValueHandling:             overrideValueHandling,
+		OverrideValue:                     overrideValue,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,37 +159,6 @@ func (m *_FieldTargetDataType) GetOverrideValue() Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFieldTargetDataType factory function for _FieldTargetDataType
-func NewFieldTargetDataType(dataSetFieldId GuidValue, receiverIndexRange PascalString, targetNodeId NodeId, attributeId uint32, writeIndexRange PascalString, overrideValueHandling OverrideValueHandling, overrideValue Variant) *_FieldTargetDataType {
-	if dataSetFieldId == nil {
-		panic("dataSetFieldId of type GuidValue for FieldTargetDataType must not be nil")
-	}
-	if receiverIndexRange == nil {
-		panic("receiverIndexRange of type PascalString for FieldTargetDataType must not be nil")
-	}
-	if targetNodeId == nil {
-		panic("targetNodeId of type NodeId for FieldTargetDataType must not be nil")
-	}
-	if writeIndexRange == nil {
-		panic("writeIndexRange of type PascalString for FieldTargetDataType must not be nil")
-	}
-	if overrideValue == nil {
-		panic("overrideValue of type Variant for FieldTargetDataType must not be nil")
-	}
-	_result := &_FieldTargetDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		DataSetFieldId:                    dataSetFieldId,
-		ReceiverIndexRange:                receiverIndexRange,
-		TargetNodeId:                      targetNodeId,
-		AttributeId:                       attributeId,
-		WriteIndexRange:                   writeIndexRange,
-		OverrideValueHandling:             overrideValueHandling,
-		OverrideValue:                     overrideValue,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFieldTargetDataType(structType any) FieldTargetDataType {
@@ -320,6 +321,28 @@ func (m *_FieldTargetDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_FieldTargetDataType) IsFieldTargetDataType() {}
+
+func (m *_FieldTargetDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FieldTargetDataType) deepCopy() *_FieldTargetDataType {
+	if m == nil {
+		return nil
+	}
+	_FieldTargetDataTypeCopy := &_FieldTargetDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DataSetFieldId.DeepCopy().(GuidValue),
+		m.ReceiverIndexRange.DeepCopy().(PascalString),
+		m.TargetNodeId.DeepCopy().(NodeId),
+		m.AttributeId,
+		m.WriteIndexRange.DeepCopy().(PascalString),
+		m.OverrideValueHandling,
+		m.OverrideValue.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FieldTargetDataTypeCopy
+}
 
 func (m *_FieldTargetDataType) String() string {
 	if m == nil {

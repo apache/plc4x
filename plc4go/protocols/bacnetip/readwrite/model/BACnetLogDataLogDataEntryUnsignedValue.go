@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryUnsignedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetLogDataLogDataEntryUnsignedValue struct {
 
 var _ BACnetLogDataLogDataEntryUnsignedValue = (*_BACnetLogDataLogDataEntryUnsignedValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryUnsignedValue)(nil)
+
+// NewBACnetLogDataLogDataEntryUnsignedValue factory function for _BACnetLogDataLogDataEntryUnsignedValue
+func NewBACnetLogDataLogDataEntryUnsignedValue(peekedTagHeader BACnetTagHeader, unsignedValue BACnetContextTagUnsignedInteger) *_BACnetLogDataLogDataEntryUnsignedValue {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogDataLogDataEntryUnsignedValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryUnsignedValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		UnsignedValue:                     unsignedValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) GetUnsignedValue() BACnetConte
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryUnsignedValue factory function for _BACnetLogDataLogDataEntryUnsignedValue
-func NewBACnetLogDataLogDataEntryUnsignedValue(unsignedValue BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryUnsignedValue {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogDataLogDataEntryUnsignedValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryUnsignedValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		UnsignedValue:                     unsignedValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryUnsignedValue(structType any) BACnetLogDataLogDataEntryUnsignedValue {
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetLogDataLogDataEntryUnsignedValue) IsBACnetLogDataLogDataEntryUnsignedValue() {}
+
+func (m *_BACnetLogDataLogDataEntryUnsignedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryUnsignedValue) deepCopy() *_BACnetLogDataLogDataEntryUnsignedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryUnsignedValueCopy := &_BACnetLogDataLogDataEntryUnsignedValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.UnsignedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryUnsignedValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryUnsignedValue) String() string {
 	if m == nil {

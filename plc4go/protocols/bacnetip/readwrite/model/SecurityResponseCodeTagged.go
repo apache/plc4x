@@ -38,6 +38,7 @@ type SecurityResponseCodeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _SecurityResponseCodeTagged struct {
 
 var _ SecurityResponseCodeTagged = (*_SecurityResponseCodeTagged)(nil)
 
+// NewSecurityResponseCodeTagged factory function for _SecurityResponseCodeTagged
+func NewSecurityResponseCodeTagged(header BACnetTagHeader, value SecurityResponseCode, tagNumber uint8, tagClass TagClass) *_SecurityResponseCodeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for SecurityResponseCodeTagged must not be nil")
+	}
+	return &_SecurityResponseCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_SecurityResponseCodeTagged) GetValue() SecurityResponseCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityResponseCodeTagged factory function for _SecurityResponseCodeTagged
-func NewSecurityResponseCodeTagged(header BACnetTagHeader, value SecurityResponseCode, tagNumber uint8, tagClass TagClass) *_SecurityResponseCodeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for SecurityResponseCodeTagged must not be nil")
-	}
-	return &_SecurityResponseCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityResponseCodeTagged(structType any) SecurityResponseCodeTagged {
@@ -216,6 +217,23 @@ func (m *_SecurityResponseCodeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_SecurityResponseCodeTagged) IsSecurityResponseCodeTagged() {}
+
+func (m *_SecurityResponseCodeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityResponseCodeTagged) deepCopy() *_SecurityResponseCodeTagged {
+	if m == nil {
+		return nil
+	}
+	_SecurityResponseCodeTaggedCopy := &_SecurityResponseCodeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _SecurityResponseCodeTaggedCopy
+}
 
 func (m *_SecurityResponseCodeTagged) String() string {
 	if m == nil {

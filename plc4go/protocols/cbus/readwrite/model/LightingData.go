@@ -40,6 +40,7 @@ type LightingData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLightingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingData()
 }
@@ -70,6 +71,11 @@ type _LightingData struct {
 
 var _ LightingDataContract = (*_LightingData)(nil)
 
+// NewLightingData factory function for _LightingData
+func NewLightingData(commandTypeContainer LightingCommandTypeContainer) *_LightingData {
+	return &_LightingData{CommandTypeContainer: commandTypeContainer}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +105,6 @@ func (pm *_LightingData) GetCommandType() LightingCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingData factory function for _LightingData
-func NewLightingData(commandTypeContainer LightingCommandTypeContainer) *_LightingData {
-	return &_LightingData{CommandTypeContainer: commandTypeContainer}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingData(structType any) LightingData {
@@ -194,23 +195,23 @@ func (m *_LightingData) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var _child LightingData
 	switch {
 	case commandType == LightingCommandType_OFF: // LightingDataOff
-		if _child, err = (&_LightingDataOff{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LightingDataOff).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataOff for type-switch of LightingData")
 		}
 	case commandType == LightingCommandType_ON: // LightingDataOn
-		if _child, err = (&_LightingDataOn{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LightingDataOn).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataOn for type-switch of LightingData")
 		}
 	case commandType == LightingCommandType_RAMP_TO_LEVEL: // LightingDataRampToLevel
-		if _child, err = (&_LightingDataRampToLevel{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LightingDataRampToLevel).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataRampToLevel for type-switch of LightingData")
 		}
 	case commandType == LightingCommandType_TERMINATE_RAMP: // LightingDataTerminateRamp
-		if _child, err = (&_LightingDataTerminateRamp{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LightingDataTerminateRamp).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataTerminateRamp for type-switch of LightingData")
 		}
 	case commandType == LightingCommandType_LABEL: // LightingDataLabel
-		if _child, err = (&_LightingDataLabel{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_LightingDataLabel).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LightingDataLabel for type-switch of LightingData")
 		}
 	default:
@@ -258,3 +259,18 @@ func (pm *_LightingData) serializeParent(ctx context.Context, writeBuffer utils.
 }
 
 func (m *_LightingData) IsLightingData() {}
+
+func (m *_LightingData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingData) deepCopy() *_LightingData {
+	if m == nil {
+		return nil
+	}
+	_LightingDataCopy := &_LightingData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+	}
+	return _LightingDataCopy
+}

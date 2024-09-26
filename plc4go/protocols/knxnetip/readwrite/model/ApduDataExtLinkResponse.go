@@ -36,6 +36,7 @@ type ApduDataExtLinkResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtLinkResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtLinkResponse()
@@ -48,6 +49,15 @@ type _ApduDataExtLinkResponse struct {
 
 var _ ApduDataExtLinkResponse = (*_ApduDataExtLinkResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtLinkResponse)(nil)
+
+// NewApduDataExtLinkResponse factory function for _ApduDataExtLinkResponse
+func NewApduDataExtLinkResponse(length uint8) *_ApduDataExtLinkResponse {
+	_result := &_ApduDataExtLinkResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtLinkResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtLinkResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtLinkResponse factory function for _ApduDataExtLinkResponse
-func NewApduDataExtLinkResponse(length uint8) *_ApduDataExtLinkResponse {
-	_result := &_ApduDataExtLinkResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtLinkResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_ApduDataExtLinkResponse) IsApduDataExtLinkResponse() {}
+
+func (m *_ApduDataExtLinkResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtLinkResponse) deepCopy() *_ApduDataExtLinkResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtLinkResponseCopy := &_ApduDataExtLinkResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtLinkResponseCopy
+}
 
 func (m *_ApduDataExtLinkResponse) String() string {
 	if m == nil {

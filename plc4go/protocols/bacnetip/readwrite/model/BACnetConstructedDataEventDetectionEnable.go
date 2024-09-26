@@ -38,6 +38,7 @@ type BACnetConstructedDataEventDetectionEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEventDetectionEnable returns EventDetectionEnable (property field)
 	GetEventDetectionEnable() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataEventDetectionEnable struct {
 
 var _ BACnetConstructedDataEventDetectionEnable = (*_BACnetConstructedDataEventDetectionEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventDetectionEnable)(nil)
+
+// NewBACnetConstructedDataEventDetectionEnable factory function for _BACnetConstructedDataEventDetectionEnable
+func NewBACnetConstructedDataEventDetectionEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventDetectionEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventDetectionEnable {
+	if eventDetectionEnable == nil {
+		panic("eventDetectionEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataEventDetectionEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataEventDetectionEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventDetectionEnable:          eventDetectionEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataEventDetectionEnable) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventDetectionEnable factory function for _BACnetConstructedDataEventDetectionEnable
-func NewBACnetConstructedDataEventDetectionEnable(eventDetectionEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventDetectionEnable {
-	if eventDetectionEnable == nil {
-		panic("eventDetectionEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataEventDetectionEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataEventDetectionEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EventDetectionEnable:          eventDetectionEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventDetectionEnable(structType any) BACnetConstructedDataEventDetectionEnable {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEventDetectionEnable) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataEventDetectionEnable) IsBACnetConstructedDataEventDetectionEnable() {}
+
+func (m *_BACnetConstructedDataEventDetectionEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventDetectionEnable) deepCopy() *_BACnetConstructedDataEventDetectionEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventDetectionEnableCopy := &_BACnetConstructedDataEventDetectionEnable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EventDetectionEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventDetectionEnableCopy
+}
 
 func (m *_BACnetConstructedDataEventDetectionEnable) String() string {
 	if m == nil {

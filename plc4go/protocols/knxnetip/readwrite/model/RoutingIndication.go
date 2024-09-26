@@ -37,6 +37,7 @@ type RoutingIndication interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// IsRoutingIndication is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRoutingIndication()
@@ -49,6 +50,15 @@ type _RoutingIndication struct {
 
 var _ RoutingIndication = (*_RoutingIndication)(nil)
 var _ KnxNetIpMessageRequirements = (*_RoutingIndication)(nil)
+
+// NewRoutingIndication factory function for _RoutingIndication
+func NewRoutingIndication() *_RoutingIndication {
+	_result := &_RoutingIndication{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,15 +76,6 @@ func (m *_RoutingIndication) GetMsgType() uint16 {
 
 func (m *_RoutingIndication) GetParent() KnxNetIpMessageContract {
 	return m.KnxNetIpMessageContract
-}
-
-// NewRoutingIndication factory function for _RoutingIndication
-func NewRoutingIndication() *_RoutingIndication {
-	_result := &_RoutingIndication{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,6 +148,21 @@ func (m *_RoutingIndication) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_RoutingIndication) IsRoutingIndication() {}
+
+func (m *_RoutingIndication) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RoutingIndication) deepCopy() *_RoutingIndication {
+	if m == nil {
+		return nil
+	}
+	_RoutingIndicationCopy := &_RoutingIndication{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _RoutingIndicationCopy
+}
 
 func (m *_RoutingIndication) String() string {
 	if m == nil {

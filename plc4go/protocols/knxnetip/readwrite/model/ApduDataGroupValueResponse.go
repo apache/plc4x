@@ -38,6 +38,7 @@ type ApduDataGroupValueResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetDataFirstByte returns DataFirstByte (property field)
 	GetDataFirstByte() int8
@@ -56,6 +57,17 @@ type _ApduDataGroupValueResponse struct {
 
 var _ ApduDataGroupValueResponse = (*_ApduDataGroupValueResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataGroupValueResponse)(nil)
+
+// NewApduDataGroupValueResponse factory function for _ApduDataGroupValueResponse
+func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueResponse {
+	_result := &_ApduDataGroupValueResponse{
+		ApduDataContract: NewApduData(dataLength),
+		DataFirstByte:    dataFirstByte,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ApduDataGroupValueResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataGroupValueResponse factory function for _ApduDataGroupValueResponse
-func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueResponse {
-	_result := &_ApduDataGroupValueResponse{
-		ApduDataContract: NewApduData(dataLength),
-		DataFirstByte:    dataFirstByte,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataGroupValueResponse(structType any) ApduDataGroupValueResponse {
@@ -202,6 +203,23 @@ func (m *_ApduDataGroupValueResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ApduDataGroupValueResponse) IsApduDataGroupValueResponse() {}
+
+func (m *_ApduDataGroupValueResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataGroupValueResponse) deepCopy() *_ApduDataGroupValueResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataGroupValueResponseCopy := &_ApduDataGroupValueResponse{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.DataFirstByte,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataGroupValueResponseCopy
+}
 
 func (m *_ApduDataGroupValueResponse) String() string {
 	if m == nil {

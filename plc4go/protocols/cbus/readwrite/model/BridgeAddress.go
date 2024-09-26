@@ -38,6 +38,7 @@ type BridgeAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
 	// IsBridgeAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _BridgeAddress struct {
 }
 
 var _ BridgeAddress = (*_BridgeAddress)(nil)
+
+// NewBridgeAddress factory function for _BridgeAddress
+func NewBridgeAddress(address byte) *_BridgeAddress {
+	return &_BridgeAddress{Address: address}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_BridgeAddress) GetAddress() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBridgeAddress factory function for _BridgeAddress
-func NewBridgeAddress(address byte) *_BridgeAddress {
-	return &_BridgeAddress{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBridgeAddress(structType any) BridgeAddress {
@@ -166,6 +167,20 @@ func (m *_BridgeAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_BridgeAddress) IsBridgeAddress() {}
+
+func (m *_BridgeAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BridgeAddress) deepCopy() *_BridgeAddress {
+	if m == nil {
+		return nil
+	}
+	_BridgeAddressCopy := &_BridgeAddress{
+		m.Address,
+	}
+	return _BridgeAddressCopy
+}
 
 func (m *_BridgeAddress) String() string {
 	if m == nil {

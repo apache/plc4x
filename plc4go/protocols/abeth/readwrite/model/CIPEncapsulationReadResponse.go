@@ -40,6 +40,7 @@ type CIPEncapsulationReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CIPEncapsulationPacket
 	// GetResponse returns Response (property field)
 	GetResponse() DF1ResponseMessage
@@ -58,6 +59,19 @@ type _CIPEncapsulationReadResponse struct {
 
 var _ CIPEncapsulationReadResponse = (*_CIPEncapsulationReadResponse)(nil)
 var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationReadResponse)(nil)
+
+// NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
+func NewCIPEncapsulationReadResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, response DF1ResponseMessage, packetLen uint16) *_CIPEncapsulationReadResponse {
+	if response == nil {
+		panic("response of type DF1ResponseMessage for CIPEncapsulationReadResponse must not be nil")
+	}
+	_result := &_CIPEncapsulationReadResponse{
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+		Response:                       response,
+	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,19 +104,6 @@ func (m *_CIPEncapsulationReadResponse) GetResponse() DF1ResponseMessage {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
-func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLen uint16) *_CIPEncapsulationReadResponse {
-	if response == nil {
-		panic("response of type DF1ResponseMessage for CIPEncapsulationReadResponse must not be nil")
-	}
-	_result := &_CIPEncapsulationReadResponse{
-		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
-		Response:                       response,
-	}
-	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPEncapsulationReadResponse(structType any) CIPEncapsulationReadResponse {
@@ -197,6 +198,23 @@ func (m *_CIPEncapsulationReadResponse) GetPacketLen() uint16 {
 ////
 
 func (m *_CIPEncapsulationReadResponse) IsCIPEncapsulationReadResponse() {}
+
+func (m *_CIPEncapsulationReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationReadResponse) deepCopy() *_CIPEncapsulationReadResponse {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationReadResponseCopy := &_CIPEncapsulationReadResponse{
+		m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).deepCopy(),
+		m.Response.DeepCopy().(DF1ResponseMessage),
+		m.PacketLen,
+	}
+	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	return _CIPEncapsulationReadResponseCopy
+}
 
 func (m *_CIPEncapsulationReadResponse) String() string {
 	if m == nil {

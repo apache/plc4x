@@ -38,6 +38,7 @@ type BACnetApplicationTagBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadBoolean
@@ -55,6 +56,19 @@ type _BACnetApplicationTagBoolean struct {
 
 var _ BACnetApplicationTagBoolean = (*_BACnetApplicationTagBoolean)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagBoolean)(nil)
+
+// NewBACnetApplicationTagBoolean factory function for _BACnetApplicationTagBoolean
+func NewBACnetApplicationTagBoolean(header BACnetTagHeader, payload BACnetTagPayloadBoolean) *_BACnetApplicationTagBoolean {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBoolean for BACnetApplicationTagBoolean must not be nil")
+	}
+	_result := &_BACnetApplicationTagBoolean{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -98,19 +112,6 @@ func (m *_BACnetApplicationTagBoolean) GetActualValue() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagBoolean factory function for _BACnetApplicationTagBoolean
-func NewBACnetApplicationTagBoolean(payload BACnetTagPayloadBoolean, header BACnetTagHeader) *_BACnetApplicationTagBoolean {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBoolean for BACnetApplicationTagBoolean must not be nil")
-	}
-	_result := &_BACnetApplicationTagBoolean{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagBoolean(structType any) BACnetApplicationTagBoolean {
@@ -209,6 +210,22 @@ func (m *_BACnetApplicationTagBoolean) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetApplicationTagBoolean) IsBACnetApplicationTagBoolean() {}
+
+func (m *_BACnetApplicationTagBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagBoolean) deepCopy() *_BACnetApplicationTagBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagBooleanCopy := &_BACnetApplicationTagBoolean{
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadBoolean),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagBooleanCopy
+}
 
 func (m *_BACnetApplicationTagBoolean) String() string {
 	if m == nil {

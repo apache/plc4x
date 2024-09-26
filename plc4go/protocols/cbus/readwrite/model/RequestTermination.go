@@ -41,6 +41,7 @@ type RequestTermination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsRequestTermination is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestTermination()
 }
@@ -50,6 +51,11 @@ type _RequestTermination struct {
 }
 
 var _ RequestTermination = (*_RequestTermination)(nil)
+
+// NewRequestTermination factory function for _RequestTermination
+func NewRequestTermination() *_RequestTermination {
+	return &_RequestTermination{}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_RequestTermination) GetCr() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestTermination factory function for _RequestTermination
-func NewRequestTermination() *_RequestTermination {
-	return &_RequestTermination{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestTermination(structType any) RequestTermination {
@@ -166,6 +167,18 @@ func (m *_RequestTermination) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_RequestTermination) IsRequestTermination() {}
+
+func (m *_RequestTermination) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestTermination) deepCopy() *_RequestTermination {
+	if m == nil {
+		return nil
+	}
+	_RequestTerminationCopy := &_RequestTermination{}
+	return _RequestTerminationCopy
+}
 
 func (m *_RequestTermination) String() string {
 	if m == nil {

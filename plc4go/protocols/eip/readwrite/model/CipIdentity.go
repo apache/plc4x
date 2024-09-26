@@ -44,6 +44,7 @@ type CipIdentity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CommandSpecificDataItem
 	// GetEncapsulationProtocolVersion returns EncapsulationProtocolVersion (property field)
 	GetEncapsulationProtocolVersion() uint16
@@ -95,6 +96,28 @@ type _CipIdentity struct {
 
 var _ CipIdentity = (*_CipIdentity)(nil)
 var _ CommandSpecificDataItemRequirements = (*_CipIdentity)(nil)
+
+// NewCipIdentity factory function for _CipIdentity
+func NewCipIdentity(encapsulationProtocolVersion uint16, socketAddressFamily uint16, socketAddressPort uint16, socketAddressAddress []uint8, vendorId uint16, deviceType uint16, productCode uint16, revisionMajor uint8, revisionMinor uint8, status uint16, serialNumber uint32, productName string, state uint8) *_CipIdentity {
+	_result := &_CipIdentity{
+		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
+		EncapsulationProtocolVersion:    encapsulationProtocolVersion,
+		SocketAddressFamily:             socketAddressFamily,
+		SocketAddressPort:               socketAddressPort,
+		SocketAddressAddress:            socketAddressAddress,
+		VendorId:                        vendorId,
+		DeviceType:                      deviceType,
+		ProductCode:                     productCode,
+		RevisionMajor:                   revisionMajor,
+		RevisionMinor:                   revisionMinor,
+		Status:                          status,
+		SerialNumber:                    serialNumber,
+		ProductName:                     productName,
+		State:                           state,
+	}
+	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -192,28 +215,6 @@ func (m *_CipIdentity) GetZeroes2() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipIdentity factory function for _CipIdentity
-func NewCipIdentity(encapsulationProtocolVersion uint16, socketAddressFamily uint16, socketAddressPort uint16, socketAddressAddress []uint8, vendorId uint16, deviceType uint16, productCode uint16, revisionMajor uint8, revisionMinor uint8, status uint16, serialNumber uint32, productName string, state uint8) *_CipIdentity {
-	_result := &_CipIdentity{
-		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
-		EncapsulationProtocolVersion:    encapsulationProtocolVersion,
-		SocketAddressFamily:             socketAddressFamily,
-		SocketAddressPort:               socketAddressPort,
-		SocketAddressAddress:            socketAddressAddress,
-		VendorId:                        vendorId,
-		DeviceType:                      deviceType,
-		ProductCode:                     productCode,
-		RevisionMajor:                   revisionMajor,
-		RevisionMinor:                   revisionMinor,
-		Status:                          status,
-		SerialNumber:                    serialNumber,
-		ProductName:                     productName,
-		State:                           state,
-	}
-	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipIdentity(structType any) CipIdentity {
@@ -508,6 +509,34 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_CipIdentity) IsCipIdentity() {}
+
+func (m *_CipIdentity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipIdentity) deepCopy() *_CipIdentity {
+	if m == nil {
+		return nil
+	}
+	_CipIdentityCopy := &_CipIdentity{
+		m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).deepCopy(),
+		m.EncapsulationProtocolVersion,
+		m.SocketAddressFamily,
+		m.SocketAddressPort,
+		utils.DeepCopySlice[uint8, uint8](m.SocketAddressAddress),
+		m.VendorId,
+		m.DeviceType,
+		m.ProductCode,
+		m.RevisionMajor,
+		m.RevisionMinor,
+		m.Status,
+		m.SerialNumber,
+		m.ProductName,
+		m.State,
+	}
+	m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = m
+	return _CipIdentityCopy
+}
 
 func (m *_CipIdentity) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type RegisterServerResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -53,6 +54,19 @@ type _RegisterServerResponse struct {
 
 var _ RegisterServerResponse = (*_RegisterServerResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServerResponse)(nil)
+
+// NewRegisterServerResponse factory function for _RegisterServerResponse
+func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_RegisterServerResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterServerResponse must not be nil")
+	}
+	_result := &_RegisterServerResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_RegisterServerResponse) GetResponseHeader() ExtensionObjectDefinition 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterServerResponse factory function for _RegisterServerResponse
-func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_RegisterServerResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterServerResponse must not be nil")
-	}
-	_result := &_RegisterServerResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterServerResponse(structType any) RegisterServerResponse {
@@ -182,6 +183,22 @@ func (m *_RegisterServerResponse) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_RegisterServerResponse) IsRegisterServerResponse() {}
+
+func (m *_RegisterServerResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterServerResponse) deepCopy() *_RegisterServerResponse {
+	if m == nil {
+		return nil
+	}
+	_RegisterServerResponseCopy := &_RegisterServerResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterServerResponseCopy
+}
 
 func (m *_RegisterServerResponse) String() string {
 	if m == nil {

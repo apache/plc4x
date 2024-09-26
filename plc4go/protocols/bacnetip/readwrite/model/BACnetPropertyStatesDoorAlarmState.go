@@ -38,6 +38,7 @@ type BACnetPropertyStatesDoorAlarmState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetDoorAlarmState returns DoorAlarmState (property field)
 	GetDoorAlarmState() BACnetDoorAlarmStateTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesDoorAlarmState struct {
 
 var _ BACnetPropertyStatesDoorAlarmState = (*_BACnetPropertyStatesDoorAlarmState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorAlarmState)(nil)
+
+// NewBACnetPropertyStatesDoorAlarmState factory function for _BACnetPropertyStatesDoorAlarmState
+func NewBACnetPropertyStatesDoorAlarmState(peekedTagHeader BACnetTagHeader, doorAlarmState BACnetDoorAlarmStateTagged) *_BACnetPropertyStatesDoorAlarmState {
+	if doorAlarmState == nil {
+		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetPropertyStatesDoorAlarmState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesDoorAlarmState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		DoorAlarmState:               doorAlarmState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesDoorAlarmState) GetDoorAlarmState() BACnetDoorAlar
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesDoorAlarmState factory function for _BACnetPropertyStatesDoorAlarmState
-func NewBACnetPropertyStatesDoorAlarmState(doorAlarmState BACnetDoorAlarmStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesDoorAlarmState {
-	if doorAlarmState == nil {
-		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetPropertyStatesDoorAlarmState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesDoorAlarmState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		DoorAlarmState:               doorAlarmState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesDoorAlarmState(structType any) BACnetPropertyStatesDoorAlarmState {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesDoorAlarmState) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetPropertyStatesDoorAlarmState) IsBACnetPropertyStatesDoorAlarmState() {}
+
+func (m *_BACnetPropertyStatesDoorAlarmState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesDoorAlarmState) deepCopy() *_BACnetPropertyStatesDoorAlarmState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesDoorAlarmStateCopy := &_BACnetPropertyStatesDoorAlarmState{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.DoorAlarmState.DeepCopy().(BACnetDoorAlarmStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesDoorAlarmStateCopy
+}
 
 func (m *_BACnetPropertyStatesDoorAlarmState) String() string {
 	if m == nil {

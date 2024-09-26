@@ -26,6 +26,17 @@ type ObjectIdentifierProperty interface {
 	ReadableProperty
 }
 
-func NewObjectIdentifierProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), opts ...func(property *_Property)) ObjectIdentifierProperty {
+type _ObjectIdentifierProperty struct {
+	ReadableProperty
+}
+
+func NewObjectIdentifierProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) ObjectIdentifierProperty {
+	o := &_ObjectIdentifierProperty{}
+	o.ReadableProperty = NewReadableProperty(name, klass, options...)
+	return o
+}
+
+func (o *_ObjectIdentifierProperty) WriteProperty() error {
+	//TODO implement me
 	panic("implement me")
 }

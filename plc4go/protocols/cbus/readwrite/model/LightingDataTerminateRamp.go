@@ -38,6 +38,7 @@ type LightingDataTerminateRamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
@@ -53,6 +54,16 @@ type _LightingDataTerminateRamp struct {
 
 var _ LightingDataTerminateRamp = (*_LightingDataTerminateRamp)(nil)
 var _ LightingDataRequirements = (*_LightingDataTerminateRamp)(nil)
+
+// NewLightingDataTerminateRamp factory function for _LightingDataTerminateRamp
+func NewLightingDataTerminateRamp(commandTypeContainer LightingCommandTypeContainer, group byte) *_LightingDataTerminateRamp {
+	_result := &_LightingDataTerminateRamp{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_LightingDataTerminateRamp) GetGroup() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataTerminateRamp factory function for _LightingDataTerminateRamp
-func NewLightingDataTerminateRamp(group byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataTerminateRamp {
-	_result := &_LightingDataTerminateRamp{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataTerminateRamp(structType any) LightingDataTerminateRamp {
@@ -175,6 +176,22 @@ func (m *_LightingDataTerminateRamp) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_LightingDataTerminateRamp) IsLightingDataTerminateRamp() {}
+
+func (m *_LightingDataTerminateRamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataTerminateRamp) deepCopy() *_LightingDataTerminateRamp {
+	if m == nil {
+		return nil
+	}
+	_LightingDataTerminateRampCopy := &_LightingDataTerminateRamp{
+		m.LightingDataContract.(*_LightingData).deepCopy(),
+		m.Group,
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataTerminateRampCopy
+}
 
 func (m *_LightingDataTerminateRamp) String() string {
 	if m == nil {

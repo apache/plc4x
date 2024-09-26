@@ -38,6 +38,7 @@ type BACnetApplicationTagDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadDouble
@@ -55,6 +56,19 @@ type _BACnetApplicationTagDouble struct {
 
 var _ BACnetApplicationTagDouble = (*_BACnetApplicationTagDouble)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagDouble)(nil)
+
+// NewBACnetApplicationTagDouble factory function for _BACnetApplicationTagDouble
+func NewBACnetApplicationTagDouble(header BACnetTagHeader, payload BACnetTagPayloadDouble) *_BACnetApplicationTagDouble {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadDouble for BACnetApplicationTagDouble must not be nil")
+	}
+	_result := &_BACnetApplicationTagDouble{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -98,19 +112,6 @@ func (m *_BACnetApplicationTagDouble) GetActualValue() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagDouble factory function for _BACnetApplicationTagDouble
-func NewBACnetApplicationTagDouble(payload BACnetTagPayloadDouble, header BACnetTagHeader) *_BACnetApplicationTagDouble {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadDouble for BACnetApplicationTagDouble must not be nil")
-	}
-	_result := &_BACnetApplicationTagDouble{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagDouble(structType any) BACnetApplicationTagDouble {
@@ -209,6 +210,22 @@ func (m *_BACnetApplicationTagDouble) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetApplicationTagDouble) IsBACnetApplicationTagDouble() {}
+
+func (m *_BACnetApplicationTagDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagDouble) deepCopy() *_BACnetApplicationTagDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagDoubleCopy := &_BACnetApplicationTagDouble{
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadDouble),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagDoubleCopy
+}
 
 func (m *_BACnetApplicationTagDouble) String() string {
 	if m == nil {

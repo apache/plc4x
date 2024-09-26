@@ -36,6 +36,7 @@ type ApduDataIndividualAddressResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataIndividualAddressResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataIndividualAddressResponse()
@@ -48,6 +49,15 @@ type _ApduDataIndividualAddressResponse struct {
 
 var _ ApduDataIndividualAddressResponse = (*_ApduDataIndividualAddressResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataIndividualAddressResponse)(nil)
+
+// NewApduDataIndividualAddressResponse factory function for _ApduDataIndividualAddressResponse
+func NewApduDataIndividualAddressResponse(dataLength uint8) *_ApduDataIndividualAddressResponse {
+	_result := &_ApduDataIndividualAddressResponse{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataIndividualAddressResponse) GetApciType() uint8 {
 
 func (m *_ApduDataIndividualAddressResponse) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataIndividualAddressResponse factory function for _ApduDataIndividualAddressResponse
-func NewApduDataIndividualAddressResponse(dataLength uint8) *_ApduDataIndividualAddressResponse {
-	_result := &_ApduDataIndividualAddressResponse{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataIndividualAddressResponse) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_ApduDataIndividualAddressResponse) IsApduDataIndividualAddressResponse() {}
+
+func (m *_ApduDataIndividualAddressResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataIndividualAddressResponse) deepCopy() *_ApduDataIndividualAddressResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataIndividualAddressResponseCopy := &_ApduDataIndividualAddressResponse{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataIndividualAddressResponseCopy
+}
 
 func (m *_ApduDataIndividualAddressResponse) String() string {
 	if m == nil {

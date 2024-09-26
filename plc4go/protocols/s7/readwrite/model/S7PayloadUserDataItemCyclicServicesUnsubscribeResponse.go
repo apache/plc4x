@@ -36,6 +36,7 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse()
@@ -48,6 +49,15 @@ type _S7PayloadUserDataItemCyclicServicesUnsubscribeResponse struct {
 
 var _ S7PayloadUserDataItemCyclicServicesUnsubscribeResponse = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse)(nil)
+
+// NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponse factory function for _S7PayloadUserDataItemCyclicServicesUnsubscribeResponse
+func NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse {
+	_result := &_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) GetCpuSubfunct
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponse factory function for _S7PayloadUserDataItemCyclicServicesUnsubscribeResponse
-func NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse {
-	_result := &_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) SerializeWithW
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) IsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) deepCopy() *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseCopy := &_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCyclicServicesUnsubscribeResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) String() string {

@@ -41,6 +41,7 @@ type RequestCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// GetCbusCommand returns CbusCommand (property field)
 	GetCbusCommand() CBusCommand
@@ -66,6 +67,18 @@ type _RequestCommand struct {
 
 var _ RequestCommand = (*_RequestCommand)(nil)
 var _ RequestRequirements = (*_RequestCommand)(nil)
+
+// NewRequestCommand factory function for _RequestCommand
+func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cbusCommand CBusCommand, chksum Checksum, alpha Alpha, cBusOptions CBusOptions) *_RequestCommand {
+	_result := &_RequestCommand{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		CbusCommand:     cbusCommand,
+		Chksum:          chksum,
+		Alpha:           alpha,
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -140,18 +153,6 @@ func (m *_RequestCommand) GetInitiator() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestCommand factory function for _RequestCommand
-func NewRequestCommand(cbusCommand CBusCommand, chksum Checksum, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestCommand {
-	_result := &_RequestCommand{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-		CbusCommand:     cbusCommand,
-		Chksum:          chksum,
-		Alpha:           alpha,
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestCommand(structType any) RequestCommand {
@@ -311,6 +312,24 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_RequestCommand) IsRequestCommand() {}
+
+func (m *_RequestCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestCommand) deepCopy() *_RequestCommand {
+	if m == nil {
+		return nil
+	}
+	_RequestCommandCopy := &_RequestCommand{
+		m.RequestContract.(*_Request).deepCopy(),
+		m.CbusCommand.DeepCopy().(CBusCommand),
+		m.Chksum.DeepCopy().(Checksum),
+		m.Alpha.DeepCopy().(Alpha),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestCommandCopy
+}
 
 func (m *_RequestCommand) String() string {
 	if m == nil {

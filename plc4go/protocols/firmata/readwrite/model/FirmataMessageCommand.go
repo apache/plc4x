@@ -40,6 +40,7 @@ type FirmataMessageCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataMessage
 	// GetCommand returns Command (property field)
 	GetCommand() FirmataCommand
@@ -55,6 +56,19 @@ type _FirmataMessageCommand struct {
 
 var _ FirmataMessageCommand = (*_FirmataMessageCommand)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageCommand)(nil)
+
+// NewFirmataMessageCommand factory function for _FirmataMessageCommand
+func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMessageCommand {
+	if command == nil {
+		panic("command of type FirmataCommand for FirmataMessageCommand must not be nil")
+	}
+	_result := &_FirmataMessageCommand{
+		FirmataMessageContract: NewFirmataMessage(response),
+		Command:                command,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +101,6 @@ func (m *_FirmataMessageCommand) GetCommand() FirmataCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataMessageCommand factory function for _FirmataMessageCommand
-func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMessageCommand {
-	if command == nil {
-		panic("command of type FirmataCommand for FirmataMessageCommand must not be nil")
-	}
-	_result := &_FirmataMessageCommand{
-		FirmataMessageContract: NewFirmataMessage(response),
-		Command:                command,
-	}
-	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessageCommand(structType any) FirmataMessageCommand {
@@ -184,6 +185,22 @@ func (m *_FirmataMessageCommand) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_FirmataMessageCommand) IsFirmataMessageCommand() {}
+
+func (m *_FirmataMessageCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessageCommand) deepCopy() *_FirmataMessageCommand {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageCommandCopy := &_FirmataMessageCommand{
+		m.FirmataMessageContract.(*_FirmataMessage).deepCopy(),
+		m.Command.DeepCopy().(FirmataCommand),
+	}
+	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	return _FirmataMessageCommandCopy
+}
 
 func (m *_FirmataMessageCommand) String() string {
 	if m == nil {

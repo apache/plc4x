@@ -38,6 +38,7 @@ type NPDUNetworkPriorityTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _NPDUNetworkPriorityTagged struct {
 
 var _ NPDUNetworkPriorityTagged = (*_NPDUNetworkPriorityTagged)(nil)
 
+// NewNPDUNetworkPriorityTagged factory function for _NPDUNetworkPriorityTagged
+func NewNPDUNetworkPriorityTagged(header BACnetTagHeader, value NPDUNetworkPriority, tagNumber uint8, tagClass TagClass) *_NPDUNetworkPriorityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for NPDUNetworkPriorityTagged must not be nil")
+	}
+	return &_NPDUNetworkPriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_NPDUNetworkPriorityTagged) GetValue() NPDUNetworkPriority {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNPDUNetworkPriorityTagged factory function for _NPDUNetworkPriorityTagged
-func NewNPDUNetworkPriorityTagged(header BACnetTagHeader, value NPDUNetworkPriority, tagNumber uint8, tagClass TagClass) *_NPDUNetworkPriorityTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for NPDUNetworkPriorityTagged must not be nil")
-	}
-	return &_NPDUNetworkPriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNPDUNetworkPriorityTagged(structType any) NPDUNetworkPriorityTagged {
@@ -216,6 +217,23 @@ func (m *_NPDUNetworkPriorityTagged) GetTagClass() TagClass {
 ////
 
 func (m *_NPDUNetworkPriorityTagged) IsNPDUNetworkPriorityTagged() {}
+
+func (m *_NPDUNetworkPriorityTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NPDUNetworkPriorityTagged) deepCopy() *_NPDUNetworkPriorityTagged {
+	if m == nil {
+		return nil
+	}
+	_NPDUNetworkPriorityTaggedCopy := &_NPDUNetworkPriorityTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _NPDUNetworkPriorityTaggedCopy
+}
 
 func (m *_NPDUNetworkPriorityTagged) String() string {
 	if m == nil {

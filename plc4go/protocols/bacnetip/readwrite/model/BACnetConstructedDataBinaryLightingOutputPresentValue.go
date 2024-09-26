@@ -38,6 +38,7 @@ type BACnetConstructedDataBinaryLightingOutputPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetBinaryLightingPVTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBinaryLightingOutputPresentValue struct {
 
 var _ BACnetConstructedDataBinaryLightingOutputPresentValue = (*_BACnetConstructedDataBinaryLightingOutputPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryLightingOutputPresentValue)(nil)
+
+// NewBACnetConstructedDataBinaryLightingOutputPresentValue factory function for _BACnetConstructedDataBinaryLightingOutputPresentValue
+func NewBACnetConstructedDataBinaryLightingOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryLightingPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetBinaryLightingPVTagged for BACnetConstructedDataBinaryLightingOutputPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataBinaryLightingOutputPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetActualValue(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBinaryLightingOutputPresentValue factory function for _BACnetConstructedDataBinaryLightingOutputPresentValue
-func NewBACnetConstructedDataBinaryLightingOutputPresentValue(presentValue BACnetBinaryLightingPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetBinaryLightingPVTagged for BACnetConstructedDataBinaryLightingOutputPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataBinaryLightingOutputPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBinaryLightingOutputPresentValue(structType any) BACnetConstructedDataBinaryLightingOutputPresentValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) SerializeWithWr
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) IsBACnetConstructedDataBinaryLightingOutputPresentValue() {
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) deepCopy() *_BACnetConstructedDataBinaryLightingOutputPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryLightingOutputPresentValueCopy := &_BACnetConstructedDataBinaryLightingOutputPresentValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PresentValue.DeepCopy().(BACnetBinaryLightingPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryLightingOutputPresentValueCopy
 }
 
 func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) String() string {

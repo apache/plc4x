@@ -40,6 +40,7 @@ type S7VarRequestParameterItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7VarRequestParameterItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7VarRequestParameterItem()
 }
@@ -144,7 +145,7 @@ func (m *_S7VarRequestParameterItem) parse(ctx context.Context, readBuffer utils
 	var _child S7VarRequestParameterItem
 	switch {
 	case itemType == 0x12: // S7VarRequestParameterItemAddress
-		if _child, err = (&_S7VarRequestParameterItemAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7VarRequestParameterItemAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7VarRequestParameterItemAddress for type-switch of S7VarRequestParameterItem")
 		}
 	default:
@@ -186,3 +187,17 @@ func (pm *_S7VarRequestParameterItem) serializeParent(ctx context.Context, write
 }
 
 func (m *_S7VarRequestParameterItem) IsS7VarRequestParameterItem() {}
+
+func (m *_S7VarRequestParameterItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7VarRequestParameterItem) deepCopy() *_S7VarRequestParameterItem {
+	if m == nil {
+		return nil
+	}
+	_S7VarRequestParameterItemCopy := &_S7VarRequestParameterItem{
+		nil, // will be set by child
+	}
+	return _S7VarRequestParameterItemCopy
+}

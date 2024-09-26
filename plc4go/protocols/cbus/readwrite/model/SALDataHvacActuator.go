@@ -38,6 +38,7 @@ type SALDataHvacActuator interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetHvacActuatorData returns HvacActuatorData (property field)
 	GetHvacActuatorData() LightingData
@@ -53,6 +54,19 @@ type _SALDataHvacActuator struct {
 
 var _ SALDataHvacActuator = (*_SALDataHvacActuator)(nil)
 var _ SALDataRequirements = (*_SALDataHvacActuator)(nil)
+
+// NewSALDataHvacActuator factory function for _SALDataHvacActuator
+func NewSALDataHvacActuator(salData SALData, hvacActuatorData LightingData) *_SALDataHvacActuator {
+	if hvacActuatorData == nil {
+		panic("hvacActuatorData of type LightingData for SALDataHvacActuator must not be nil")
+	}
+	_result := &_SALDataHvacActuator{
+		SALDataContract:  NewSALData(salData),
+		HvacActuatorData: hvacActuatorData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataHvacActuator) GetHvacActuatorData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataHvacActuator factory function for _SALDataHvacActuator
-func NewSALDataHvacActuator(hvacActuatorData LightingData, salData SALData) *_SALDataHvacActuator {
-	if hvacActuatorData == nil {
-		panic("hvacActuatorData of type LightingData for SALDataHvacActuator must not be nil")
-	}
-	_result := &_SALDataHvacActuator{
-		SALDataContract:  NewSALData(salData),
-		HvacActuatorData: hvacActuatorData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataHvacActuator(structType any) SALDataHvacActuator {
@@ -182,6 +183,22 @@ func (m *_SALDataHvacActuator) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_SALDataHvacActuator) IsSALDataHvacActuator() {}
+
+func (m *_SALDataHvacActuator) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataHvacActuator) deepCopy() *_SALDataHvacActuator {
+	if m == nil {
+		return nil
+	}
+	_SALDataHvacActuatorCopy := &_SALDataHvacActuator{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.HvacActuatorData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataHvacActuatorCopy
+}
 
 func (m *_SALDataHvacActuator) String() string {
 	if m == nil {

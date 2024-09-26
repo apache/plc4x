@@ -40,6 +40,7 @@ type AirConditioningData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAirConditioningData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningData()
 }
@@ -70,6 +71,11 @@ type _AirConditioningData struct {
 
 var _ AirConditioningDataContract = (*_AirConditioningData)(nil)
 
+// NewAirConditioningData factory function for _AirConditioningData
+func NewAirConditioningData(commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningData {
+	return &_AirConditioningData{CommandTypeContainer: commandTypeContainer}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +105,6 @@ func (pm *_AirConditioningData) GetCommandType() AirConditioningCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningData factory function for _AirConditioningData
-func NewAirConditioningData(commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningData {
-	return &_AirConditioningData{CommandTypeContainer: commandTypeContainer}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningData(structType any) AirConditioningData {
@@ -194,79 +195,79 @@ func (m *_AirConditioningData) parse(ctx context.Context, readBuffer utils.ReadB
 	var _child AirConditioningData
 	switch {
 	case commandType == AirConditioningCommandType_HVAC_SCHEDULE_ENTRY: // AirConditioningDataHvacScheduleEntry
-		if _child, err = (&_AirConditioningDataHvacScheduleEntry{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataHvacScheduleEntry).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataHvacScheduleEntry for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY: // AirConditioningDataHumidityScheduleEntry
-		if _child, err = (&_AirConditioningDataHumidityScheduleEntry{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataHumidityScheduleEntry).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataHumidityScheduleEntry for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_REFRESH: // AirConditioningDataRefresh
-		if _child, err = (&_AirConditioningDataRefresh{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataRefresh).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataRefresh for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_ZONE_HVAC_PLANT_STATUS: // AirConditioningDataZoneHvacPlantStatus
-		if _child, err = (&_AirConditioningDataZoneHvacPlantStatus{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataZoneHvacPlantStatus).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataZoneHvacPlantStatus for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_ZONE_HUMIDITY_PLANT_STATUS: // AirConditioningDataZoneHumidityPlantStatus
-		if _child, err = (&_AirConditioningDataZoneHumidityPlantStatus{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataZoneHumidityPlantStatus).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataZoneHumidityPlantStatus for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_ZONE_TEMPERATURE: // AirConditioningDataZoneTemperature
-		if _child, err = (&_AirConditioningDataZoneTemperature{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataZoneTemperature).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataZoneTemperature for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_ZONE_HUMIDITY: // AirConditioningDataZoneHumidity
-		if _child, err = (&_AirConditioningDataZoneHumidity{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataZoneHumidity).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataZoneHumidity for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_ZONE_GROUP_OFF: // AirConditioningDataSetZoneGroupOff
-		if _child, err = (&_AirConditioningDataSetZoneGroupOff{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetZoneGroupOff).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetZoneGroupOff for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_ZONE_GROUP_ON: // AirConditioningDataSetZoneGroupOn
-		if _child, err = (&_AirConditioningDataSetZoneGroupOn{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetZoneGroupOn).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetZoneGroupOn for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_ZONE_HVAC_MODE: // AirConditioningDataSetZoneHvacMode
-		if _child, err = (&_AirConditioningDataSetZoneHvacMode{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetZoneHvacMode).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetZoneHvacMode for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_PLANT_HVAC_LEVEL: // AirConditioningDataSetPlantHvacLevel
-		if _child, err = (&_AirConditioningDataSetPlantHvacLevel{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetPlantHvacLevel).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetPlantHvacLevel for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_ZONE_HUMIDITY_MODE: // AirConditioningDataSetZoneHumidityMode
-		if _child, err = (&_AirConditioningDataSetZoneHumidityMode{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetZoneHumidityMode).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetZoneHumidityMode for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_PLANT_HUMIDITY_LEVEL: // AirConditioningDataSetPlantHumidityLevel
-		if _child, err = (&_AirConditioningDataSetPlantHumidityLevel{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetPlantHumidityLevel).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetPlantHumidityLevel for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_HVAC_UPPER_GUARD_LIMIT: // AirConditioningDataSetHvacUpperGuardLimit
-		if _child, err = (&_AirConditioningDataSetHvacUpperGuardLimit{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetHvacUpperGuardLimit).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetHvacUpperGuardLimit for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_HVAC_LOWER_GUARD_LIMIT: // AirConditioningDataSetHvacLowerGuardLimit
-		if _child, err = (&_AirConditioningDataSetHvacLowerGuardLimit{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetHvacLowerGuardLimit).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetHvacLowerGuardLimit for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_HVAC_SETBACK_LIMIT: // AirConditioningDataSetHvacSetbackLimit
-		if _child, err = (&_AirConditioningDataSetHvacSetbackLimit{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetHvacSetbackLimit).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetHvacSetbackLimit for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_HUMIDITY_UPPER_GUARD_LIMIT: // AirConditioningDataSetHumidityUpperGuardLimit
-		if _child, err = (&_AirConditioningDataSetHumidityUpperGuardLimit{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetHumidityUpperGuardLimit).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetHumidityUpperGuardLimit for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_HUMIDITY_LOWER_GUARD_LIMIT: // AirConditioningDataSetHumidityLowerGuardLimit
-		if _child, err = (&_AirConditioningDataSetHumidityLowerGuardLimit{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetHumidityLowerGuardLimit).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetHumidityLowerGuardLimit for type-switch of AirConditioningData")
 		}
 	case commandType == AirConditioningCommandType_SET_HUMIDITY_SETBACK_LIMIT: // AirConditioningDataSetHumiditySetbackLimit
-		if _child, err = (&_AirConditioningDataSetHumiditySetbackLimit{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AirConditioningDataSetHumiditySetbackLimit).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AirConditioningDataSetHumiditySetbackLimit for type-switch of AirConditioningData")
 		}
 	default:
@@ -314,3 +315,18 @@ func (pm *_AirConditioningData) serializeParent(ctx context.Context, writeBuffer
 }
 
 func (m *_AirConditioningData) IsAirConditioningData() {}
+
+func (m *_AirConditioningData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningData) deepCopy() *_AirConditioningData {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataCopy := &_AirConditioningData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+	}
+	return _AirConditioningDataCopy
+}

@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryBitStringValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetContextTagBitString
@@ -53,6 +54,19 @@ type _BACnetLogDataLogDataEntryBitStringValue struct {
 
 var _ BACnetLogDataLogDataEntryBitStringValue = (*_BACnetLogDataLogDataEntryBitStringValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryBitStringValue)(nil)
+
+// NewBACnetLogDataLogDataEntryBitStringValue factory function for _BACnetLogDataLogDataEntryBitStringValue
+func NewBACnetLogDataLogDataEntryBitStringValue(peekedTagHeader BACnetTagHeader, bitStringValue BACnetContextTagBitString) *_BACnetLogDataLogDataEntryBitStringValue {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogDataLogDataEntryBitStringValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryBitStringValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		BitStringValue:                    bitStringValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) GetBitStringValue() BACnetCon
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryBitStringValue factory function for _BACnetLogDataLogDataEntryBitStringValue
-func NewBACnetLogDataLogDataEntryBitStringValue(bitStringValue BACnetContextTagBitString, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryBitStringValue {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogDataLogDataEntryBitStringValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryBitStringValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		BitStringValue:                    bitStringValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryBitStringValue(structType any) BACnetLogDataLogDataEntryBitStringValue {
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetLogDataLogDataEntryBitStringValue) IsBACnetLogDataLogDataEntryBitStringValue() {}
+
+func (m *_BACnetLogDataLogDataEntryBitStringValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryBitStringValue) deepCopy() *_BACnetLogDataLogDataEntryBitStringValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryBitStringValueCopy := &_BACnetLogDataLogDataEntryBitStringValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.BitStringValue.DeepCopy().(BACnetContextTagBitString),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryBitStringValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryBitStringValue) String() string {
 	if m == nil {

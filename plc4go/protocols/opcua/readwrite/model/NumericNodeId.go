@@ -38,6 +38,7 @@ type NumericNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
@@ -53,6 +54,11 @@ type _NumericNodeId struct {
 }
 
 var _ NumericNodeId = (*_NumericNodeId)(nil)
+
+// NewNumericNodeId factory function for _NumericNodeId
+func NewNumericNodeId(namespaceIndex uint16, identifier uint32) *_NumericNodeId {
+	return &_NumericNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +77,6 @@ func (m *_NumericNodeId) GetIdentifier() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNumericNodeId factory function for _NumericNodeId
-func NewNumericNodeId(namespaceIndex uint16, identifier uint32) *_NumericNodeId {
-	return &_NumericNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNumericNodeId(structType any) NumericNodeId {
@@ -186,6 +187,21 @@ func (m *_NumericNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_NumericNodeId) IsNumericNodeId() {}
+
+func (m *_NumericNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NumericNodeId) deepCopy() *_NumericNodeId {
+	if m == nil {
+		return nil
+	}
+	_NumericNodeIdCopy := &_NumericNodeId{
+		m.NamespaceIndex,
+		m.Identifier,
+	}
+	return _NumericNodeIdCopy
+}
 
 func (m *_NumericNodeId) String() string {
 	if m == nil {

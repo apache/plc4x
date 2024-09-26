@@ -38,6 +38,7 @@ type BACnetEventParameterBufferReady interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -62,6 +63,31 @@ type _BACnetEventParameterBufferReady struct {
 
 var _ BACnetEventParameterBufferReady = (*_BACnetEventParameterBufferReady)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterBufferReady)(nil)
+
+// NewBACnetEventParameterBufferReady factory function for _BACnetEventParameterBufferReady
+func NewBACnetEventParameterBufferReady(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, notificationThreshold BACnetContextTagUnsignedInteger, previousNotificationCount BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetEventParameterBufferReady {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterBufferReady must not be nil")
+	}
+	if notificationThreshold == nil {
+		panic("notificationThreshold of type BACnetContextTagUnsignedInteger for BACnetEventParameterBufferReady must not be nil")
+	}
+	if previousNotificationCount == nil {
+		panic("previousNotificationCount of type BACnetContextTagUnsignedInteger for BACnetEventParameterBufferReady must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterBufferReady must not be nil")
+	}
+	_result := &_BACnetEventParameterBufferReady{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		NotificationThreshold:        notificationThreshold,
+		PreviousNotificationCount:    previousNotificationCount,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,31 +128,6 @@ func (m *_BACnetEventParameterBufferReady) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterBufferReady factory function for _BACnetEventParameterBufferReady
-func NewBACnetEventParameterBufferReady(openingTag BACnetOpeningTag, notificationThreshold BACnetContextTagUnsignedInteger, previousNotificationCount BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterBufferReady {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterBufferReady must not be nil")
-	}
-	if notificationThreshold == nil {
-		panic("notificationThreshold of type BACnetContextTagUnsignedInteger for BACnetEventParameterBufferReady must not be nil")
-	}
-	if previousNotificationCount == nil {
-		panic("previousNotificationCount of type BACnetContextTagUnsignedInteger for BACnetEventParameterBufferReady must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterBufferReady must not be nil")
-	}
-	_result := &_BACnetEventParameterBufferReady{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		NotificationThreshold:        notificationThreshold,
-		PreviousNotificationCount:    previousNotificationCount,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterBufferReady(structType any) BACnetEventParameterBufferReady {
@@ -250,6 +251,25 @@ func (m *_BACnetEventParameterBufferReady) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetEventParameterBufferReady) IsBACnetEventParameterBufferReady() {}
+
+func (m *_BACnetEventParameterBufferReady) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterBufferReady) deepCopy() *_BACnetEventParameterBufferReady {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterBufferReadyCopy := &_BACnetEventParameterBufferReady{
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.NotificationThreshold.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.PreviousNotificationCount.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterBufferReadyCopy
+}
 
 func (m *_BACnetEventParameterBufferReady) String() string {
 	if m == nil {

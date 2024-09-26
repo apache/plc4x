@@ -38,6 +38,7 @@ type COTPPacketDisconnectRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
@@ -59,6 +60,18 @@ type _COTPPacketDisconnectRequest struct {
 
 var _ COTPPacketDisconnectRequest = (*_COTPPacketDisconnectRequest)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketDisconnectRequest)(nil)
+
+// NewCOTPPacketDisconnectRequest factory function for _COTPPacketDisconnectRequest
+func NewCOTPPacketDisconnectRequest(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketDisconnectRequest {
+	_result := &_COTPPacketDisconnectRequest{
+		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		DestinationReference: destinationReference,
+		SourceReference:      sourceReference,
+		ProtocolClass:        protocolClass,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +112,6 @@ func (m *_COTPPacketDisconnectRequest) GetProtocolClass() COTPProtocolClass {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketDisconnectRequest factory function for _COTPPacketDisconnectRequest
-func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketDisconnectRequest {
-	_result := &_COTPPacketDisconnectRequest{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
-		DestinationReference: destinationReference,
-		SourceReference:      sourceReference,
-		ProtocolClass:        protocolClass,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketDisconnectRequest(structType any) COTPPacketDisconnectRequest {
@@ -221,6 +222,24 @@ func (m *_COTPPacketDisconnectRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_COTPPacketDisconnectRequest) IsCOTPPacketDisconnectRequest() {}
+
+func (m *_COTPPacketDisconnectRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPPacketDisconnectRequest) deepCopy() *_COTPPacketDisconnectRequest {
+	if m == nil {
+		return nil
+	}
+	_COTPPacketDisconnectRequestCopy := &_COTPPacketDisconnectRequest{
+		m.COTPPacketContract.(*_COTPPacket).deepCopy(),
+		m.DestinationReference,
+		m.SourceReference,
+		m.ProtocolClass,
+	}
+	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	return _COTPPacketDisconnectRequestCopy
+}
 
 func (m *_COTPPacketDisconnectRequest) String() string {
 	if m == nil {

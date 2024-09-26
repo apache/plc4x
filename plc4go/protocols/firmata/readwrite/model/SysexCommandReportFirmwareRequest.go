@@ -36,6 +36,7 @@ type SysexCommandReportFirmwareRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandReportFirmwareRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandReportFirmwareRequest()
@@ -48,6 +49,15 @@ type _SysexCommandReportFirmwareRequest struct {
 
 var _ SysexCommandReportFirmwareRequest = (*_SysexCommandReportFirmwareRequest)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandReportFirmwareRequest)(nil)
+
+// NewSysexCommandReportFirmwareRequest factory function for _SysexCommandReportFirmwareRequest
+func NewSysexCommandReportFirmwareRequest() *_SysexCommandReportFirmwareRequest {
+	_result := &_SysexCommandReportFirmwareRequest{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_SysexCommandReportFirmwareRequest) GetResponse() bool {
 
 func (m *_SysexCommandReportFirmwareRequest) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandReportFirmwareRequest factory function for _SysexCommandReportFirmwareRequest
-func NewSysexCommandReportFirmwareRequest() *_SysexCommandReportFirmwareRequest {
-	_result := &_SysexCommandReportFirmwareRequest{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_SysexCommandReportFirmwareRequest) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_SysexCommandReportFirmwareRequest) IsSysexCommandReportFirmwareRequest() {}
+
+func (m *_SysexCommandReportFirmwareRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandReportFirmwareRequest) deepCopy() *_SysexCommandReportFirmwareRequest {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandReportFirmwareRequestCopy := &_SysexCommandReportFirmwareRequest{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandReportFirmwareRequestCopy
+}
 
 func (m *_SysexCommandReportFirmwareRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type VariantExtensionObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantExtensionObject struct {
 
 var _ VariantExtensionObject = (*_VariantExtensionObject)(nil)
 var _ VariantRequirements = (*_VariantExtensionObject)(nil)
+
+// NewVariantExtensionObject factory function for _VariantExtensionObject
+func NewVariantExtensionObject(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ExtensionObject) *_VariantExtensionObject {
+	_result := &_VariantExtensionObject{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantExtensionObject) GetValue() []ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantExtensionObject factory function for _VariantExtensionObject
-func NewVariantExtensionObject(arrayLength *int32, value []ExtensionObject, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantExtensionObject {
-	_result := &_VariantExtensionObject{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantExtensionObject(structType any) VariantExtensionObject {
@@ -210,6 +211,23 @@ func (m *_VariantExtensionObject) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_VariantExtensionObject) IsVariantExtensionObject() {}
+
+func (m *_VariantExtensionObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantExtensionObject) deepCopy() *_VariantExtensionObject {
+	if m == nil {
+		return nil
+	}
+	_VariantExtensionObjectCopy := &_VariantExtensionObject{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantExtensionObjectCopy
+}
 
 func (m *_VariantExtensionObject) String() string {
 	if m == nil {

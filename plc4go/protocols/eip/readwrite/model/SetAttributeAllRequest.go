@@ -36,6 +36,7 @@ type SetAttributeAllRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeAllRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeAllRequest()
@@ -48,6 +49,15 @@ type _SetAttributeAllRequest struct {
 
 var _ SetAttributeAllRequest = (*_SetAttributeAllRequest)(nil)
 var _ CipServiceRequirements = (*_SetAttributeAllRequest)(nil)
+
+// NewSetAttributeAllRequest factory function for _SetAttributeAllRequest
+func NewSetAttributeAllRequest(serviceLen uint16) *_SetAttributeAllRequest {
+	_result := &_SetAttributeAllRequest{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_SetAttributeAllRequest) GetConnected() bool {
 
 func (m *_SetAttributeAllRequest) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewSetAttributeAllRequest factory function for _SetAttributeAllRequest
-func NewSetAttributeAllRequest(serviceLen uint16) *_SetAttributeAllRequest {
-	_result := &_SetAttributeAllRequest{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_SetAttributeAllRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SetAttributeAllRequest) IsSetAttributeAllRequest() {}
+
+func (m *_SetAttributeAllRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeAllRequest) deepCopy() *_SetAttributeAllRequest {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeAllRequestCopy := &_SetAttributeAllRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeAllRequestCopy
+}
 
 func (m *_SetAttributeAllRequest) String() string {
 	if m == nil {

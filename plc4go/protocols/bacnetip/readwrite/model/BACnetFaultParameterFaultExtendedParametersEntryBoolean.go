@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetApplicationTagBoolean
@@ -53,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryBoolean struct {
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryBoolean = (*_BACnetFaultParameterFaultExtendedParametersEntryBoolean)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryBoolean)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryBoolean factory function for _BACnetFaultParameterFaultExtendedParametersEntryBoolean
+func NewBACnetFaultParameterFaultExtendedParametersEntryBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean) *_BACnetFaultParameterFaultExtendedParametersEntryBoolean {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetFaultParameterFaultExtendedParametersEntryBoolean must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		BooleanValue: booleanValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetBooleanVal
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryBoolean factory function for _BACnetFaultParameterFaultExtendedParametersEntryBoolean
-func NewBACnetFaultParameterFaultExtendedParametersEntryBoolean(booleanValue BACnetApplicationTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryBoolean {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetFaultParameterFaultExtendedParametersEntryBoolean must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		BooleanValue: booleanValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryBoolean(structType any) BACnetFaultParameterFaultExtendedParametersEntryBoolean {
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) SerializeWith
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) IsBACnetFaultParameterFaultExtendedParametersEntryBoolean() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryBooleanCopy := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryBooleanCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) String() string {

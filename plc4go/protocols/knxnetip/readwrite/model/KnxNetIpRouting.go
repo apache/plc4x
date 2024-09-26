@@ -38,6 +38,7 @@ type KnxNetIpRouting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -53,6 +54,16 @@ type _KnxNetIpRouting struct {
 
 var _ KnxNetIpRouting = (*_KnxNetIpRouting)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpRouting)(nil)
+
+// NewKnxNetIpRouting factory function for _KnxNetIpRouting
+func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
+	_result := &_KnxNetIpRouting{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_KnxNetIpRouting) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpRouting factory function for _KnxNetIpRouting
-func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
-	_result := &_KnxNetIpRouting{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpRouting(structType any) KnxNetIpRouting {
@@ -179,6 +180,22 @@ func (m *_KnxNetIpRouting) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_KnxNetIpRouting) IsKnxNetIpRouting() {}
+
+func (m *_KnxNetIpRouting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpRouting) deepCopy() *_KnxNetIpRouting {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpRoutingCopy := &_KnxNetIpRouting{
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpRoutingCopy
+}
 
 func (m *_KnxNetIpRouting) String() string {
 	if m == nil {

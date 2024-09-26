@@ -38,6 +38,7 @@ type BACnetCOVSubscription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientProcessEnclosed
 	// GetMonitoredPropertyReference returns MonitoredPropertyReference (property field)
@@ -62,6 +63,23 @@ type _BACnetCOVSubscription struct {
 }
 
 var _ BACnetCOVSubscription = (*_BACnetCOVSubscription)(nil)
+
+// NewBACnetCOVSubscription factory function for _BACnetCOVSubscription
+func NewBACnetCOVSubscription(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, covIncrement BACnetContextTagReal) *_BACnetCOVSubscription {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVSubscription must not be nil")
+	}
+	if monitoredPropertyReference == nil {
+		panic("monitoredPropertyReference of type BACnetObjectPropertyReferenceEnclosed for BACnetCOVSubscription must not be nil")
+	}
+	if issueConfirmedNotifications == nil {
+		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVSubscription must not be nil")
+	}
+	if timeRemaining == nil {
+		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVSubscription must not be nil")
+	}
+	return &_BACnetCOVSubscription{Recipient: recipient, MonitoredPropertyReference: monitoredPropertyReference, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, CovIncrement: covIncrement}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_BACnetCOVSubscription) GetCovIncrement() BACnetContextTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCOVSubscription factory function for _BACnetCOVSubscription
-func NewBACnetCOVSubscription(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, covIncrement BACnetContextTagReal) *_BACnetCOVSubscription {
-	if recipient == nil {
-		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVSubscription must not be nil")
-	}
-	if monitoredPropertyReference == nil {
-		panic("monitoredPropertyReference of type BACnetObjectPropertyReferenceEnclosed for BACnetCOVSubscription must not be nil")
-	}
-	if issueConfirmedNotifications == nil {
-		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVSubscription must not be nil")
-	}
-	if timeRemaining == nil {
-		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVSubscription must not be nil")
-	}
-	return &_BACnetCOVSubscription{Recipient: recipient, MonitoredPropertyReference: monitoredPropertyReference, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, CovIncrement: covIncrement}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCOVSubscription(structType any) BACnetCOVSubscription {
@@ -264,6 +265,24 @@ func (m *_BACnetCOVSubscription) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetCOVSubscription) IsBACnetCOVSubscription() {}
+
+func (m *_BACnetCOVSubscription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCOVSubscription) deepCopy() *_BACnetCOVSubscription {
+	if m == nil {
+		return nil
+	}
+	_BACnetCOVSubscriptionCopy := &_BACnetCOVSubscription{
+		m.Recipient.DeepCopy().(BACnetRecipientProcessEnclosed),
+		m.MonitoredPropertyReference.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
+		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.CovIncrement.DeepCopy().(BACnetContextTagReal),
+	}
+	return _BACnetCOVSubscriptionCopy
+}
 
 func (m *_BACnetCOVSubscription) String() string {
 	if m == nil {

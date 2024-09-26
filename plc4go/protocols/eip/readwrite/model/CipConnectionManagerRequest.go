@@ -38,6 +38,7 @@ type CipConnectionManagerRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
@@ -106,6 +107,48 @@ type _CipConnectionManagerRequest struct {
 
 var _ CipConnectionManagerRequest = (*_CipConnectionManagerRequest)(nil)
 var _ CipServiceRequirements = (*_CipConnectionManagerRequest)(nil)
+
+// NewCipConnectionManagerRequest factory function for _CipConnectionManagerRequest
+func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16) *_CipConnectionManagerRequest {
+	if classSegment == nil {
+		panic("classSegment of type PathSegment for CipConnectionManagerRequest must not be nil")
+	}
+	if instanceSegment == nil {
+		panic("instanceSegment of type PathSegment for CipConnectionManagerRequest must not be nil")
+	}
+	if otConnectionParameters == nil {
+		panic("otConnectionParameters of type NetworkConnectionParameters for CipConnectionManagerRequest must not be nil")
+	}
+	if toConnectionParameters == nil {
+		panic("toConnectionParameters of type NetworkConnectionParameters for CipConnectionManagerRequest must not be nil")
+	}
+	if transportType == nil {
+		panic("transportType of type TransportType for CipConnectionManagerRequest must not be nil")
+	}
+	_result := &_CipConnectionManagerRequest{
+		CipServiceContract:     NewCipService(serviceLen),
+		ClassSegment:           classSegment,
+		InstanceSegment:        instanceSegment,
+		Priority:               priority,
+		TickTime:               tickTime,
+		TimeoutTicks:           timeoutTicks,
+		OtConnectionId:         otConnectionId,
+		ToConnectionId:         toConnectionId,
+		ConnectionSerialNumber: connectionSerialNumber,
+		OriginatorVendorId:     originatorVendorId,
+		OriginatorSerialNumber: originatorSerialNumber,
+		TimeoutMultiplier:      timeoutMultiplier,
+		OtRpi:                  otRpi,
+		OtConnectionParameters: otConnectionParameters,
+		ToRpi:                  toRpi,
+		ToConnectionParameters: toConnectionParameters,
+		TransportType:          transportType,
+		ConnectionPathSize:     connectionPathSize,
+		ConnectionPaths:        connectionPaths,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -214,48 +257,6 @@ func (m *_CipConnectionManagerRequest) GetConnectionPaths() []PathSegment {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectionManagerRequest factory function for _CipConnectionManagerRequest
-func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16) *_CipConnectionManagerRequest {
-	if classSegment == nil {
-		panic("classSegment of type PathSegment for CipConnectionManagerRequest must not be nil")
-	}
-	if instanceSegment == nil {
-		panic("instanceSegment of type PathSegment for CipConnectionManagerRequest must not be nil")
-	}
-	if otConnectionParameters == nil {
-		panic("otConnectionParameters of type NetworkConnectionParameters for CipConnectionManagerRequest must not be nil")
-	}
-	if toConnectionParameters == nil {
-		panic("toConnectionParameters of type NetworkConnectionParameters for CipConnectionManagerRequest must not be nil")
-	}
-	if transportType == nil {
-		panic("transportType of type TransportType for CipConnectionManagerRequest must not be nil")
-	}
-	_result := &_CipConnectionManagerRequest{
-		CipServiceContract:     NewCipService(serviceLen),
-		ClassSegment:           classSegment,
-		InstanceSegment:        instanceSegment,
-		Priority:               priority,
-		TickTime:               tickTime,
-		TimeoutTicks:           timeoutTicks,
-		OtConnectionId:         otConnectionId,
-		ToConnectionId:         toConnectionId,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		TimeoutMultiplier:      timeoutMultiplier,
-		OtRpi:                  otRpi,
-		OtConnectionParameters: otConnectionParameters,
-		ToRpi:                  toRpi,
-		ToConnectionParameters: toConnectionParameters,
-		TransportType:          transportType,
-		ConnectionPathSize:     connectionPathSize,
-		ConnectionPaths:        connectionPaths,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectionManagerRequest(structType any) CipConnectionManagerRequest {
@@ -591,6 +592,40 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_CipConnectionManagerRequest) IsCipConnectionManagerRequest() {}
+
+func (m *_CipConnectionManagerRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectionManagerRequest) deepCopy() *_CipConnectionManagerRequest {
+	if m == nil {
+		return nil
+	}
+	_CipConnectionManagerRequestCopy := &_CipConnectionManagerRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.ClassSegment.DeepCopy().(PathSegment),
+		m.InstanceSegment.DeepCopy().(PathSegment),
+		m.Priority,
+		m.TickTime,
+		m.TimeoutTicks,
+		m.OtConnectionId,
+		m.ToConnectionId,
+		m.ConnectionSerialNumber,
+		m.OriginatorVendorId,
+		m.OriginatorSerialNumber,
+		m.TimeoutMultiplier,
+		m.OtRpi,
+		m.OtConnectionParameters.DeepCopy().(NetworkConnectionParameters),
+		m.ToRpi,
+		m.ToConnectionParameters.DeepCopy().(NetworkConnectionParameters),
+		m.TransportType.DeepCopy().(TransportType),
+		m.ConnectionPathSize,
+		utils.DeepCopySlice[PathSegment, PathSegment](m.ConnectionPaths),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectionManagerRequestCopy
+}
 
 func (m *_CipConnectionManagerRequest) String() string {
 	if m == nil {

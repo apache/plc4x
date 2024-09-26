@@ -38,6 +38,7 @@ type BACnetConstructedDataAccompaniment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccompaniment returns Accompaniment (property field)
 	GetAccompaniment() BACnetDeviceObjectReference
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAccompaniment struct {
 
 var _ BACnetConstructedDataAccompaniment = (*_BACnetConstructedDataAccompaniment)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccompaniment)(nil)
+
+// NewBACnetConstructedDataAccompaniment factory function for _BACnetConstructedDataAccompaniment
+func NewBACnetConstructedDataAccompaniment(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accompaniment BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompaniment {
+	if accompaniment == nil {
+		panic("accompaniment of type BACnetDeviceObjectReference for BACnetConstructedDataAccompaniment must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccompaniment{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Accompaniment:                 accompaniment,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAccompaniment) GetActualValue() BACnetDeviceObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccompaniment factory function for _BACnetConstructedDataAccompaniment
-func NewBACnetConstructedDataAccompaniment(accompaniment BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompaniment {
-	if accompaniment == nil {
-		panic("accompaniment of type BACnetDeviceObjectReference for BACnetConstructedDataAccompaniment must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccompaniment{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Accompaniment:                 accompaniment,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccompaniment(structType any) BACnetConstructedDataAccompaniment {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAccompaniment) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataAccompaniment) IsBACnetConstructedDataAccompaniment() {}
+
+func (m *_BACnetConstructedDataAccompaniment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccompaniment) deepCopy() *_BACnetConstructedDataAccompaniment {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccompanimentCopy := &_BACnetConstructedDataAccompaniment{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Accompaniment.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccompanimentCopy
+}
 
 func (m *_BACnetConstructedDataAccompaniment) String() string {
 	if m == nil {

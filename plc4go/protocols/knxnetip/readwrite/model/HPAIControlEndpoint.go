@@ -38,6 +38,7 @@ type HPAIControlEndpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
@@ -56,6 +57,14 @@ type _HPAIControlEndpoint struct {
 }
 
 var _ HPAIControlEndpoint = (*_HPAIControlEndpoint)(nil)
+
+// NewHPAIControlEndpoint factory function for _HPAIControlEndpoint
+func NewHPAIControlEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIControlEndpoint {
+	if ipAddress == nil {
+		panic("ipAddress of type IPAddress for HPAIControlEndpoint must not be nil")
+	}
+	return &_HPAIControlEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +87,6 @@ func (m *_HPAIControlEndpoint) GetIpPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHPAIControlEndpoint factory function for _HPAIControlEndpoint
-func NewHPAIControlEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIControlEndpoint {
-	if ipAddress == nil {
-		panic("ipAddress of type IPAddress for HPAIControlEndpoint must not be nil")
-	}
-	return &_HPAIControlEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHPAIControlEndpoint(structType any) HPAIControlEndpoint {
@@ -222,6 +223,22 @@ func (m *_HPAIControlEndpoint) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_HPAIControlEndpoint) IsHPAIControlEndpoint() {}
+
+func (m *_HPAIControlEndpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HPAIControlEndpoint) deepCopy() *_HPAIControlEndpoint {
+	if m == nil {
+		return nil
+	}
+	_HPAIControlEndpointCopy := &_HPAIControlEndpoint{
+		m.HostProtocolCode,
+		m.IpAddress.DeepCopy().(IPAddress),
+		m.IpPort,
+	}
+	return _HPAIControlEndpointCopy
+}
 
 func (m *_HPAIControlEndpoint) String() string {
 	if m == nil {

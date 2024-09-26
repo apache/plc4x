@@ -38,6 +38,7 @@ type BACnetErrorGeneral interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetError returns Error (property field)
 	GetError() Error
@@ -53,6 +54,19 @@ type _BACnetErrorGeneral struct {
 
 var _ BACnetErrorGeneral = (*_BACnetErrorGeneral)(nil)
 var _ BACnetErrorRequirements = (*_BACnetErrorGeneral)(nil)
+
+// NewBACnetErrorGeneral factory function for _BACnetErrorGeneral
+func NewBACnetErrorGeneral(error Error) *_BACnetErrorGeneral {
+	if error == nil {
+		panic("error of type Error for BACnetErrorGeneral must not be nil")
+	}
+	_result := &_BACnetErrorGeneral{
+		BACnetErrorContract: NewBACnetError(),
+		Error:               error,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_BACnetErrorGeneral) GetError() Error {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetErrorGeneral factory function for _BACnetErrorGeneral
-func NewBACnetErrorGeneral(error Error) *_BACnetErrorGeneral {
-	if error == nil {
-		panic("error of type Error for BACnetErrorGeneral must not be nil")
-	}
-	_result := &_BACnetErrorGeneral{
-		BACnetErrorContract: NewBACnetError(),
-		Error:               error,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetErrorGeneral(structType any) BACnetErrorGeneral {
@@ -182,6 +183,22 @@ func (m *_BACnetErrorGeneral) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_BACnetErrorGeneral) IsBACnetErrorGeneral() {}
+
+func (m *_BACnetErrorGeneral) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetErrorGeneral) deepCopy() *_BACnetErrorGeneral {
+	if m == nil {
+		return nil
+	}
+	_BACnetErrorGeneralCopy := &_BACnetErrorGeneral{
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
+		m.Error.DeepCopy().(Error),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _BACnetErrorGeneralCopy
+}
 
 func (m *_BACnetErrorGeneral) String() string {
 	if m == nil {

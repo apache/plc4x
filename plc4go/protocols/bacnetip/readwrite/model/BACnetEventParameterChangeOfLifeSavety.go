@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfLifeSavety interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -68,6 +69,39 @@ type _BACnetEventParameterChangeOfLifeSavety struct {
 
 var _ BACnetEventParameterChangeOfLifeSavety = (*_BACnetEventParameterChangeOfLifeSavety)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfLifeSavety)(nil)
+
+// NewBACnetEventParameterChangeOfLifeSavety factory function for _BACnetEventParameterChangeOfLifeSavety
+func NewBACnetEventParameterChangeOfLifeSavety(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfLifeSavetyAlarmValues BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, listOfAlarmValues BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, modePropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfLifeSavety {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if listOfLifeSavetyAlarmValues == nil {
+		panic("listOfLifeSavetyAlarmValues of type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if listOfAlarmValues == nil {
+		panic("listOfAlarmValues of type BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if modePropertyReference == nil {
+		panic("modePropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfLifeSavety must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfLifeSavety{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		ListOfLifeSavetyAlarmValues:  listOfLifeSavetyAlarmValues,
+		ListOfAlarmValues:            listOfAlarmValues,
+		ModePropertyReference:        modePropertyReference,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,39 +150,6 @@ func (m *_BACnetEventParameterChangeOfLifeSavety) GetClosingTag() BACnetClosingT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfLifeSavety factory function for _BACnetEventParameterChangeOfLifeSavety
-func NewBACnetEventParameterChangeOfLifeSavety(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfLifeSavetyAlarmValues BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, listOfAlarmValues BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues, modePropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfLifeSavety {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfLifeSavety must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfLifeSavety must not be nil")
-	}
-	if listOfLifeSavetyAlarmValues == nil {
-		panic("listOfLifeSavetyAlarmValues of type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues for BACnetEventParameterChangeOfLifeSavety must not be nil")
-	}
-	if listOfAlarmValues == nil {
-		panic("listOfAlarmValues of type BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues for BACnetEventParameterChangeOfLifeSavety must not be nil")
-	}
-	if modePropertyReference == nil {
-		panic("modePropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterChangeOfLifeSavety must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfLifeSavety must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfLifeSavety{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		ListOfLifeSavetyAlarmValues:  listOfLifeSavetyAlarmValues,
-		ListOfAlarmValues:            listOfAlarmValues,
-		ModePropertyReference:        modePropertyReference,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfLifeSavety(structType any) BACnetEventParameterChangeOfLifeSavety {
@@ -298,6 +299,27 @@ func (m *_BACnetEventParameterChangeOfLifeSavety) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetEventParameterChangeOfLifeSavety) IsBACnetEventParameterChangeOfLifeSavety() {}
+
+func (m *_BACnetEventParameterChangeOfLifeSavety) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavety) deepCopy() *_BACnetEventParameterChangeOfLifeSavety {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfLifeSavetyCopy := &_BACnetEventParameterChangeOfLifeSavety{
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfLifeSavetyAlarmValues.DeepCopy().(BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues),
+		m.ListOfAlarmValues.DeepCopy().(BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues),
+		m.ModePropertyReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m
+	return _BACnetEventParameterChangeOfLifeSavetyCopy
+}
 
 func (m *_BACnetEventParameterChangeOfLifeSavety) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataAlarmValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAlarmValue struct {
 
 var _ BACnetConstructedDataAlarmValue = (*_BACnetConstructedDataAlarmValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlarmValue)(nil)
+
+// NewBACnetConstructedDataAlarmValue factory function for _BACnetConstructedDataAlarmValue
+func NewBACnetConstructedDataAlarmValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, binaryPv BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlarmValue {
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataAlarmValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAlarmValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BinaryPv:                      binaryPv,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAlarmValue) GetActualValue() BACnetBinaryPVTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAlarmValue factory function for _BACnetConstructedDataAlarmValue
-func NewBACnetConstructedDataAlarmValue(binaryPv BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlarmValue {
-	if binaryPv == nil {
-		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataAlarmValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAlarmValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BinaryPv:                      binaryPv,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAlarmValue(structType any) BACnetConstructedDataAlarmValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAlarmValue) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataAlarmValue) IsBACnetConstructedDataAlarmValue() {}
+
+func (m *_BACnetConstructedDataAlarmValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAlarmValue) deepCopy() *_BACnetConstructedDataAlarmValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAlarmValueCopy := &_BACnetConstructedDataAlarmValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAlarmValueCopy
+}
 
 func (m *_BACnetConstructedDataAlarmValue) String() string {
 	if m == nil {

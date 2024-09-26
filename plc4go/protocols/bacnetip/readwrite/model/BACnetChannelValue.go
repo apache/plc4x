@@ -40,6 +40,7 @@ type BACnetChannelValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetChannelValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValue()
 }
@@ -73,6 +74,14 @@ type _BACnetChannelValue struct {
 }
 
 var _ BACnetChannelValueContract = (*_BACnetChannelValue)(nil)
+
+// NewBACnetChannelValue factory function for _BACnetChannelValue
+func NewBACnetChannelValue(peekedTagHeader BACnetTagHeader) *_BACnetChannelValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetChannelValue must not be nil")
+	}
+	return &_BACnetChannelValue{PeekedTagHeader: peekedTagHeader}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,14 +119,6 @@ func (pm *_BACnetChannelValue) GetPeekedIsContextTag() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValue factory function for _BACnetChannelValue
-func NewBACnetChannelValue(peekedTagHeader BACnetTagHeader) *_BACnetChannelValue {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetChannelValue must not be nil")
-	}
-	return &_BACnetChannelValue{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValue(structType any) BACnetChannelValue {
@@ -213,59 +214,59 @@ func (m *_BACnetChannelValue) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child BACnetChannelValue
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetChannelValueNull
-		if _child, err = (&_BACnetChannelValueNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueNull for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetChannelValueReal
-		if _child, err = (&_BACnetChannelValueReal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueReal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueReal for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetChannelValueEnumerated
-		if _child, err = (&_BACnetChannelValueEnumerated{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueEnumerated).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueEnumerated for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetChannelValueUnsigned
-		if _child, err = (&_BACnetChannelValueUnsigned{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueUnsigned).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueUnsigned for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetChannelValueBoolean
-		if _child, err = (&_BACnetChannelValueBoolean{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueBoolean).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueBoolean for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetChannelValueInteger
-		if _child, err = (&_BACnetChannelValueInteger{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueInteger).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueInteger for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetChannelValueDouble
-		if _child, err = (&_BACnetChannelValueDouble{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueDouble).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueDouble for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetChannelValueTime
-		if _child, err = (&_BACnetChannelValueTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueTime for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetChannelValueCharacterString
-		if _child, err = (&_BACnetChannelValueCharacterString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueCharacterString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueCharacterString for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetChannelValueOctetString
-		if _child, err = (&_BACnetChannelValueOctetString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueOctetString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueOctetString for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetChannelValueBitString
-		if _child, err = (&_BACnetChannelValueBitString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueBitString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueBitString for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetChannelValueDate
-		if _child, err = (&_BACnetChannelValueDate{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueDate).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueDate for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetChannelValueObjectidentifier
-		if _child, err = (&_BACnetChannelValueObjectidentifier{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueObjectidentifier).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueObjectidentifier for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetChannelValueLightingCommand
-		if _child, err = (&_BACnetChannelValueLightingCommand{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueLightingCommand).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueLightingCommand for type-switch of BACnetChannelValue")
 		}
 	default:
@@ -315,3 +316,18 @@ func (pm *_BACnetChannelValue) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_BACnetChannelValue) IsBACnetChannelValue() {}
+
+func (m *_BACnetChannelValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValue) deepCopy() *_BACnetChannelValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueCopy := &_BACnetChannelValue{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetChannelValueCopy
+}

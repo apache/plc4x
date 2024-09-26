@@ -38,6 +38,7 @@ type HistoryReadValueId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -62,6 +63,31 @@ type _HistoryReadValueId struct {
 
 var _ HistoryReadValueId = (*_HistoryReadValueId)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadValueId)(nil)
+
+// NewHistoryReadValueId factory function for _HistoryReadValueId
+func NewHistoryReadValueId(nodeId NodeId, indexRange PascalString, dataEncoding QualifiedName, continuationPoint PascalByteString) *_HistoryReadValueId {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for HistoryReadValueId must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for HistoryReadValueId must not be nil")
+	}
+	if dataEncoding == nil {
+		panic("dataEncoding of type QualifiedName for HistoryReadValueId must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for HistoryReadValueId must not be nil")
+	}
+	_result := &_HistoryReadValueId{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		IndexRange:                        indexRange,
+		DataEncoding:                      dataEncoding,
+		ContinuationPoint:                 continuationPoint,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,31 +132,6 @@ func (m *_HistoryReadValueId) GetContinuationPoint() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryReadValueId factory function for _HistoryReadValueId
-func NewHistoryReadValueId(nodeId NodeId, indexRange PascalString, dataEncoding QualifiedName, continuationPoint PascalByteString) *_HistoryReadValueId {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for HistoryReadValueId must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for HistoryReadValueId must not be nil")
-	}
-	if dataEncoding == nil {
-		panic("dataEncoding of type QualifiedName for HistoryReadValueId must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for HistoryReadValueId must not be nil")
-	}
-	_result := &_HistoryReadValueId{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		IndexRange:                        indexRange,
-		DataEncoding:                      dataEncoding,
-		ContinuationPoint:                 continuationPoint,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryReadValueId(structType any) HistoryReadValueId {
@@ -254,6 +255,25 @@ func (m *_HistoryReadValueId) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_HistoryReadValueId) IsHistoryReadValueId() {}
+
+func (m *_HistoryReadValueId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadValueId) deepCopy() *_HistoryReadValueId {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadValueIdCopy := &_HistoryReadValueId{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.IndexRange.DeepCopy().(PascalString),
+		m.DataEncoding.DeepCopy().(QualifiedName),
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadValueIdCopy
+}
 
 func (m *_HistoryReadValueId) String() string {
 	if m == nil {

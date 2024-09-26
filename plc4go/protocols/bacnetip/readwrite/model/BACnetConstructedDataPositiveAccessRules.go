@@ -38,6 +38,7 @@ type BACnetConstructedDataPositiveAccessRules interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataPositiveAccessRules struct {
 
 var _ BACnetConstructedDataPositiveAccessRules = (*_BACnetConstructedDataPositiveAccessRules)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveAccessRules)(nil)
+
+// NewBACnetConstructedDataPositiveAccessRules factory function for _BACnetConstructedDataPositiveAccessRules
+func NewBACnetConstructedDataPositiveAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, positiveAccessRules []BACnetAccessRule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveAccessRules {
+	_result := &_BACnetConstructedDataPositiveAccessRules{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		PositiveAccessRules:           positiveAccessRules,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataPositiveAccessRules) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPositiveAccessRules factory function for _BACnetConstructedDataPositiveAccessRules
-func NewBACnetConstructedDataPositiveAccessRules(numberOfDataElements BACnetApplicationTagUnsignedInteger, positiveAccessRules []BACnetAccessRule, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveAccessRules {
-	_result := &_BACnetConstructedDataPositiveAccessRules{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		PositiveAccessRules:           positiveAccessRules,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPositiveAccessRules(structType any) BACnetConstructedDataPositiveAccessRules {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataPositiveAccessRules) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataPositiveAccessRules) IsBACnetConstructedDataPositiveAccessRules() {}
+
+func (m *_BACnetConstructedDataPositiveAccessRules) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPositiveAccessRules) deepCopy() *_BACnetConstructedDataPositiveAccessRules {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPositiveAccessRulesCopy := &_BACnetConstructedDataPositiveAccessRules{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetAccessRule, BACnetAccessRule](m.PositiveAccessRules),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPositiveAccessRulesCopy
+}
 
 func (m *_BACnetConstructedDataPositiveAccessRules) String() string {
 	if m == nil {

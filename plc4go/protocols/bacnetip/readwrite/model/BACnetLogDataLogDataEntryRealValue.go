@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryRealValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetContextTagReal
@@ -53,6 +54,19 @@ type _BACnetLogDataLogDataEntryRealValue struct {
 
 var _ BACnetLogDataLogDataEntryRealValue = (*_BACnetLogDataLogDataEntryRealValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryRealValue)(nil)
+
+// NewBACnetLogDataLogDataEntryRealValue factory function for _BACnetLogDataLogDataEntryRealValue
+func NewBACnetLogDataLogDataEntryRealValue(peekedTagHeader BACnetTagHeader, realValue BACnetContextTagReal) *_BACnetLogDataLogDataEntryRealValue {
+	if realValue == nil {
+		panic("realValue of type BACnetContextTagReal for BACnetLogDataLogDataEntryRealValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryRealValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		RealValue:                         realValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogDataLogDataEntryRealValue) GetRealValue() BACnetContextTagRea
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryRealValue factory function for _BACnetLogDataLogDataEntryRealValue
-func NewBACnetLogDataLogDataEntryRealValue(realValue BACnetContextTagReal, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryRealValue {
-	if realValue == nil {
-		panic("realValue of type BACnetContextTagReal for BACnetLogDataLogDataEntryRealValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryRealValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		RealValue:                         realValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryRealValue(structType any) BACnetLogDataLogDataEntryRealValue {
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryRealValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetLogDataLogDataEntryRealValue) IsBACnetLogDataLogDataEntryRealValue() {}
+
+func (m *_BACnetLogDataLogDataEntryRealValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryRealValue) deepCopy() *_BACnetLogDataLogDataEntryRealValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryRealValueCopy := &_BACnetLogDataLogDataEntryRealValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.RealValue.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryRealValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryRealValue) String() string {
 	if m == nil {

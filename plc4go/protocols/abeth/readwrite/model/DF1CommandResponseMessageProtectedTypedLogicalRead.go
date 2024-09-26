@@ -38,6 +38,7 @@ type DF1CommandResponseMessageProtectedTypedLogicalRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1ResponseMessage
 	// GetData returns Data (property field)
 	GetData() []uint8
@@ -53,6 +54,16 @@ type _DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 
 var _ DF1CommandResponseMessageProtectedTypedLogicalRead = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
 var _ DF1ResponseMessageRequirements = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
+
+// NewDF1CommandResponseMessageProtectedTypedLogicalRead factory function for _DF1CommandResponseMessageProtectedTypedLogicalRead
+func NewDF1CommandResponseMessageProtectedTypedLogicalRead(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, data []uint8, payloadLength uint16) *_DF1CommandResponseMessageProtectedTypedLogicalRead {
+	_result := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
+		DF1ResponseMessageContract: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
+		Data:                       data,
+	}
+	_result.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetData() []uint8 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1CommandResponseMessageProtectedTypedLogicalRead factory function for _DF1CommandResponseMessageProtectedTypedLogicalRead
-func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1CommandResponseMessageProtectedTypedLogicalRead {
-	_result := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
-		DF1ResponseMessageContract: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
-		Data:                       data,
-	}
-	_result.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType any) DF1CommandResponseMessageProtectedTypedLogicalRead {
@@ -181,6 +182,22 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWrite
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) IsDF1CommandResponseMessageProtectedTypedLogicalRead() {
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) deepCopy() *_DF1CommandResponseMessageProtectedTypedLogicalRead {
+	if m == nil {
+		return nil
+	}
+	_DF1CommandResponseMessageProtectedTypedLogicalReadCopy := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
+		m.DF1ResponseMessageContract.(*_DF1ResponseMessage).deepCopy(),
+		utils.DeepCopySlice[uint8, uint8](m.Data),
+	}
+	m.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = m
+	return _DF1CommandResponseMessageProtectedTypedLogicalReadCopy
 }
 
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) String() string {

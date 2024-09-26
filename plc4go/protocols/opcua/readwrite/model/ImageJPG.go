@@ -36,6 +36,7 @@ type ImageJPG interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsImageJPG is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsImageJPG()
 }
@@ -134,6 +135,18 @@ func (m *_ImageJPG) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_ImageJPG) IsImageJPG() {}
+
+func (m *_ImageJPG) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ImageJPG) deepCopy() *_ImageJPG {
+	if m == nil {
+		return nil
+	}
+	_ImageJPGCopy := &_ImageJPG{}
+	return _ImageJPGCopy
+}
 
 func (m *_ImageJPG) String() string {
 	if m == nil {

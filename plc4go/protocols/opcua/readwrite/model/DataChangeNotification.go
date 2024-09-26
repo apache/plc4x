@@ -38,6 +38,7 @@ type DataChangeNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfMonitoredItems returns NoOfMonitoredItems (property field)
 	GetNoOfMonitoredItems() int32
@@ -62,6 +63,19 @@ type _DataChangeNotification struct {
 
 var _ DataChangeNotification = (*_DataChangeNotification)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataChangeNotification)(nil)
+
+// NewDataChangeNotification factory function for _DataChangeNotification
+func NewDataChangeNotification(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DataChangeNotification {
+	_result := &_DataChangeNotification{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfMonitoredItems:                noOfMonitoredItems,
+		MonitoredItems:                    monitoredItems,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_DataChangeNotification) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataChangeNotification factory function for _DataChangeNotification
-func NewDataChangeNotification(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DataChangeNotification {
-	_result := &_DataChangeNotification{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfMonitoredItems:                noOfMonitoredItems,
-		MonitoredItems:                    monitoredItems,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataChangeNotification(structType any) DataChangeNotification {
@@ -269,6 +270,25 @@ func (m *_DataChangeNotification) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_DataChangeNotification) IsDataChangeNotification() {}
+
+func (m *_DataChangeNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataChangeNotification) deepCopy() *_DataChangeNotification {
+	if m == nil {
+		return nil
+	}
+	_DataChangeNotificationCopy := &_DataChangeNotification{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfMonitoredItems,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MonitoredItems),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataChangeNotificationCopy
+}
 
 func (m *_DataChangeNotification) String() string {
 	if m == nil {

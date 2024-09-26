@@ -38,6 +38,7 @@ type TransferResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -59,6 +60,21 @@ type _TransferResult struct {
 
 var _ TransferResult = (*_TransferResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TransferResult)(nil)
+
+// NewTransferResult factory function for _TransferResult
+func NewTransferResult(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) *_TransferResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for TransferResult must not be nil")
+	}
+	_result := &_TransferResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfAvailableSequenceNumbers:      noOfAvailableSequenceNumbers,
+		AvailableSequenceNumbers:          availableSequenceNumbers,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_TransferResult) GetAvailableSequenceNumbers() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransferResult factory function for _TransferResult
-func NewTransferResult(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) *_TransferResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for TransferResult must not be nil")
-	}
-	_result := &_TransferResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfAvailableSequenceNumbers:      noOfAvailableSequenceNumbers,
-		AvailableSequenceNumbers:          availableSequenceNumbers,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransferResult(structType any) TransferResult {
@@ -226,6 +227,24 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_TransferResult) IsTransferResult() {}
+
+func (m *_TransferResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransferResult) deepCopy() *_TransferResult {
+	if m == nil {
+		return nil
+	}
+	_TransferResultCopy := &_TransferResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfAvailableSequenceNumbers,
+		utils.DeepCopySlice[uint32, uint32](m.AvailableSequenceNumbers),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TransferResultCopy
+}
 
 func (m *_TransferResult) String() string {
 	if m == nil {

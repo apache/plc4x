@@ -38,6 +38,7 @@ type BACnetPropertyStatesSecurityLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityLevelTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesSecurityLevel struct {
 
 var _ BACnetPropertyStatesSecurityLevel = (*_BACnetPropertyStatesSecurityLevel)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesSecurityLevel)(nil)
+
+// NewBACnetPropertyStatesSecurityLevel factory function for _BACnetPropertyStatesSecurityLevel
+func NewBACnetPropertyStatesSecurityLevel(peekedTagHeader BACnetTagHeader, securityLevel BACnetSecurityLevelTagged) *_BACnetPropertyStatesSecurityLevel {
+	if securityLevel == nil {
+		panic("securityLevel of type BACnetSecurityLevelTagged for BACnetPropertyStatesSecurityLevel must not be nil")
+	}
+	_result := &_BACnetPropertyStatesSecurityLevel{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		SecurityLevel:                securityLevel,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesSecurityLevel) GetSecurityLevel() BACnetSecurityLe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesSecurityLevel factory function for _BACnetPropertyStatesSecurityLevel
-func NewBACnetPropertyStatesSecurityLevel(securityLevel BACnetSecurityLevelTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesSecurityLevel {
-	if securityLevel == nil {
-		panic("securityLevel of type BACnetSecurityLevelTagged for BACnetPropertyStatesSecurityLevel must not be nil")
-	}
-	_result := &_BACnetPropertyStatesSecurityLevel{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		SecurityLevel:                securityLevel,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesSecurityLevel(structType any) BACnetPropertyStatesSecurityLevel {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesSecurityLevel) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesSecurityLevel) IsBACnetPropertyStatesSecurityLevel() {}
+
+func (m *_BACnetPropertyStatesSecurityLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesSecurityLevel) deepCopy() *_BACnetPropertyStatesSecurityLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesSecurityLevelCopy := &_BACnetPropertyStatesSecurityLevel{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.SecurityLevel.DeepCopy().(BACnetSecurityLevelTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesSecurityLevelCopy
+}
 
 func (m *_BACnetPropertyStatesSecurityLevel) String() string {
 	if m == nil {

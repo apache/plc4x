@@ -38,6 +38,7 @@ type BACnetConstructedDataAuthorizationMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAuthorizationMode returns AuthorizationMode (property field)
 	GetAuthorizationMode() BACnetAuthorizationModeTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAuthorizationMode struct {
 
 var _ BACnetConstructedDataAuthorizationMode = (*_BACnetConstructedDataAuthorizationMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthorizationMode)(nil)
+
+// NewBACnetConstructedDataAuthorizationMode factory function for _BACnetConstructedDataAuthorizationMode
+func NewBACnetConstructedDataAuthorizationMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationMode BACnetAuthorizationModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationMode {
+	if authorizationMode == nil {
+		panic("authorizationMode of type BACnetAuthorizationModeTagged for BACnetConstructedDataAuthorizationMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataAuthorizationMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AuthorizationMode:             authorizationMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetActualValue() BACnetAuthori
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAuthorizationMode factory function for _BACnetConstructedDataAuthorizationMode
-func NewBACnetConstructedDataAuthorizationMode(authorizationMode BACnetAuthorizationModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationMode {
-	if authorizationMode == nil {
-		panic("authorizationMode of type BACnetAuthorizationModeTagged for BACnetConstructedDataAuthorizationMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataAuthorizationMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AuthorizationMode:             authorizationMode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAuthorizationMode(structType any) BACnetConstructedDataAuthorizationMode {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataAuthorizationMode) IsBACnetConstructedDataAuthorizationMode() {}
+
+func (m *_BACnetConstructedDataAuthorizationMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAuthorizationMode) deepCopy() *_BACnetConstructedDataAuthorizationMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAuthorizationModeCopy := &_BACnetConstructedDataAuthorizationMode{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AuthorizationMode.DeepCopy().(BACnetAuthorizationModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAuthorizationModeCopy
+}
 
 func (m *_BACnetConstructedDataAuthorizationMode) String() string {
 	if m == nil {

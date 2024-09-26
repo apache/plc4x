@@ -38,6 +38,7 @@ type BACnetConstructedDataRequestedShedLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRequestedShedLevel returns RequestedShedLevel (property field)
 	GetRequestedShedLevel() BACnetShedLevel
@@ -55,6 +56,19 @@ type _BACnetConstructedDataRequestedShedLevel struct {
 
 var _ BACnetConstructedDataRequestedShedLevel = (*_BACnetConstructedDataRequestedShedLevel)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRequestedShedLevel)(nil)
+
+// NewBACnetConstructedDataRequestedShedLevel factory function for _BACnetConstructedDataRequestedShedLevel
+func NewBACnetConstructedDataRequestedShedLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, requestedShedLevel BACnetShedLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRequestedShedLevel {
+	if requestedShedLevel == nil {
+		panic("requestedShedLevel of type BACnetShedLevel for BACnetConstructedDataRequestedShedLevel must not be nil")
+	}
+	_result := &_BACnetConstructedDataRequestedShedLevel{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RequestedShedLevel:            requestedShedLevel,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataRequestedShedLevel) GetActualValue() BACnetShedLe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRequestedShedLevel factory function for _BACnetConstructedDataRequestedShedLevel
-func NewBACnetConstructedDataRequestedShedLevel(requestedShedLevel BACnetShedLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRequestedShedLevel {
-	if requestedShedLevel == nil {
-		panic("requestedShedLevel of type BACnetShedLevel for BACnetConstructedDataRequestedShedLevel must not be nil")
-	}
-	_result := &_BACnetConstructedDataRequestedShedLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RequestedShedLevel:            requestedShedLevel,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRequestedShedLevel(structType any) BACnetConstructedDataRequestedShedLevel {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRequestedShedLevel) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataRequestedShedLevel) IsBACnetConstructedDataRequestedShedLevel() {}
+
+func (m *_BACnetConstructedDataRequestedShedLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRequestedShedLevel) deepCopy() *_BACnetConstructedDataRequestedShedLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRequestedShedLevelCopy := &_BACnetConstructedDataRequestedShedLevel{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RequestedShedLevel.DeepCopy().(BACnetShedLevel),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRequestedShedLevelCopy
+}
 
 func (m *_BACnetConstructedDataRequestedShedLevel) String() string {
 	if m == nil {

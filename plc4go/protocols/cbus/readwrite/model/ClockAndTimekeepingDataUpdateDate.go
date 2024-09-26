@@ -38,6 +38,7 @@ type ClockAndTimekeepingDataUpdateDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ClockAndTimekeepingData
 	// GetYearHigh returns YearHigh (property field)
 	GetYearHigh() byte
@@ -65,6 +66,20 @@ type _ClockAndTimekeepingDataUpdateDate struct {
 
 var _ ClockAndTimekeepingDataUpdateDate = (*_ClockAndTimekeepingDataUpdateDate)(nil)
 var _ ClockAndTimekeepingDataRequirements = (*_ClockAndTimekeepingDataUpdateDate)(nil)
+
+// NewClockAndTimekeepingDataUpdateDate factory function for _ClockAndTimekeepingDataUpdateDate
+func NewClockAndTimekeepingDataUpdateDate(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte, yearHigh byte, yearLow byte, month uint8, day uint8, dayOfWeek uint8) *_ClockAndTimekeepingDataUpdateDate {
+	_result := &_ClockAndTimekeepingDataUpdateDate{
+		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
+		YearHigh:                        yearHigh,
+		YearLow:                         yearLow,
+		Month:                           month,
+		Day:                             day,
+		DayOfWeek:                       dayOfWeek,
+	}
+	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,20 +124,6 @@ func (m *_ClockAndTimekeepingDataUpdateDate) GetDayOfWeek() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewClockAndTimekeepingDataUpdateDate factory function for _ClockAndTimekeepingDataUpdateDate
-func NewClockAndTimekeepingDataUpdateDate(yearHigh byte, yearLow byte, month uint8, day uint8, dayOfWeek uint8, commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingDataUpdateDate {
-	_result := &_ClockAndTimekeepingDataUpdateDate{
-		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
-		YearHigh:                        yearHigh,
-		YearLow:                         yearLow,
-		Month:                           month,
-		Day:                             day,
-		DayOfWeek:                       dayOfWeek,
-	}
-	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastClockAndTimekeepingDataUpdateDate(structType any) ClockAndTimekeepingDataUpdateDate {
@@ -259,6 +260,26 @@ func (m *_ClockAndTimekeepingDataUpdateDate) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_ClockAndTimekeepingDataUpdateDate) IsClockAndTimekeepingDataUpdateDate() {}
+
+func (m *_ClockAndTimekeepingDataUpdateDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ClockAndTimekeepingDataUpdateDate) deepCopy() *_ClockAndTimekeepingDataUpdateDate {
+	if m == nil {
+		return nil
+	}
+	_ClockAndTimekeepingDataUpdateDateCopy := &_ClockAndTimekeepingDataUpdateDate{
+		m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).deepCopy(),
+		m.YearHigh,
+		m.YearLow,
+		m.Month,
+		m.Day,
+		m.DayOfWeek,
+	}
+	m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
+	return _ClockAndTimekeepingDataUpdateDateCopy
+}
 
 func (m *_ClockAndTimekeepingDataUpdateDate) String() string {
 	if m == nil {

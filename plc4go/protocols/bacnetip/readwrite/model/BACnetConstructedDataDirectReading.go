@@ -38,6 +38,7 @@ type BACnetConstructedDataDirectReading interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDirectReading returns DirectReading (property field)
 	GetDirectReading() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDirectReading struct {
 
 var _ BACnetConstructedDataDirectReading = (*_BACnetConstructedDataDirectReading)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDirectReading)(nil)
+
+// NewBACnetConstructedDataDirectReading factory function for _BACnetConstructedDataDirectReading
+func NewBACnetConstructedDataDirectReading(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, directReading BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDirectReading {
+	if directReading == nil {
+		panic("directReading of type BACnetApplicationTagReal for BACnetConstructedDataDirectReading must not be nil")
+	}
+	_result := &_BACnetConstructedDataDirectReading{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DirectReading:                 directReading,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDirectReading) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDirectReading factory function for _BACnetConstructedDataDirectReading
-func NewBACnetConstructedDataDirectReading(directReading BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDirectReading {
-	if directReading == nil {
-		panic("directReading of type BACnetApplicationTagReal for BACnetConstructedDataDirectReading must not be nil")
-	}
-	_result := &_BACnetConstructedDataDirectReading{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DirectReading:                 directReading,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDirectReading(structType any) BACnetConstructedDataDirectReading {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDirectReading) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataDirectReading) IsBACnetConstructedDataDirectReading() {}
+
+func (m *_BACnetConstructedDataDirectReading) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDirectReading) deepCopy() *_BACnetConstructedDataDirectReading {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDirectReadingCopy := &_BACnetConstructedDataDirectReading{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DirectReading.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDirectReadingCopy
+}
 
 func (m *_BACnetConstructedDataDirectReading) String() string {
 	if m == nil {

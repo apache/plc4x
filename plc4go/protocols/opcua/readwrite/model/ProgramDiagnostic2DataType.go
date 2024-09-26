@@ -38,6 +38,7 @@ type ProgramDiagnostic2DataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetCreateSessionId returns CreateSessionId (property field)
 	GetCreateSessionId() NodeId
@@ -98,6 +99,46 @@ type _ProgramDiagnostic2DataType struct {
 
 var _ ProgramDiagnostic2DataType = (*_ProgramDiagnostic2DataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ProgramDiagnostic2DataType)(nil)
+
+// NewProgramDiagnostic2DataType factory function for _ProgramDiagnostic2DataType
+func NewProgramDiagnostic2DataType(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) *_ProgramDiagnostic2DataType {
+	if createSessionId == nil {
+		panic("createSessionId of type NodeId for ProgramDiagnostic2DataType must not be nil")
+	}
+	if createClientName == nil {
+		panic("createClientName of type PascalString for ProgramDiagnostic2DataType must not be nil")
+	}
+	if lastMethodCall == nil {
+		panic("lastMethodCall of type PascalString for ProgramDiagnostic2DataType must not be nil")
+	}
+	if lastMethodSessionId == nil {
+		panic("lastMethodSessionId of type NodeId for ProgramDiagnostic2DataType must not be nil")
+	}
+	if lastMethodReturnStatus == nil {
+		panic("lastMethodReturnStatus of type StatusCode for ProgramDiagnostic2DataType must not be nil")
+	}
+	_result := &_ProgramDiagnostic2DataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		CreateSessionId:                   createSessionId,
+		CreateClientName:                  createClientName,
+		InvocationCreationTime:            invocationCreationTime,
+		LastTransitionTime:                lastTransitionTime,
+		LastMethodCall:                    lastMethodCall,
+		LastMethodSessionId:               lastMethodSessionId,
+		NoOfLastMethodInputArguments:      noOfLastMethodInputArguments,
+		LastMethodInputArguments:          lastMethodInputArguments,
+		NoOfLastMethodOutputArguments:     noOfLastMethodOutputArguments,
+		LastMethodOutputArguments:         lastMethodOutputArguments,
+		NoOfLastMethodInputValues:         noOfLastMethodInputValues,
+		LastMethodInputValues:             lastMethodInputValues,
+		NoOfLastMethodOutputValues:        noOfLastMethodOutputValues,
+		LastMethodOutputValues:            lastMethodOutputValues,
+		LastMethodCallTime:                lastMethodCallTime,
+		LastMethodReturnStatus:            lastMethodReturnStatus,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -190,46 +231,6 @@ func (m *_ProgramDiagnostic2DataType) GetLastMethodReturnStatus() StatusCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewProgramDiagnostic2DataType factory function for _ProgramDiagnostic2DataType
-func NewProgramDiagnostic2DataType(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) *_ProgramDiagnostic2DataType {
-	if createSessionId == nil {
-		panic("createSessionId of type NodeId for ProgramDiagnostic2DataType must not be nil")
-	}
-	if createClientName == nil {
-		panic("createClientName of type PascalString for ProgramDiagnostic2DataType must not be nil")
-	}
-	if lastMethodCall == nil {
-		panic("lastMethodCall of type PascalString for ProgramDiagnostic2DataType must not be nil")
-	}
-	if lastMethodSessionId == nil {
-		panic("lastMethodSessionId of type NodeId for ProgramDiagnostic2DataType must not be nil")
-	}
-	if lastMethodReturnStatus == nil {
-		panic("lastMethodReturnStatus of type StatusCode for ProgramDiagnostic2DataType must not be nil")
-	}
-	_result := &_ProgramDiagnostic2DataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		CreateSessionId:                   createSessionId,
-		CreateClientName:                  createClientName,
-		InvocationCreationTime:            invocationCreationTime,
-		LastTransitionTime:                lastTransitionTime,
-		LastMethodCall:                    lastMethodCall,
-		LastMethodSessionId:               lastMethodSessionId,
-		NoOfLastMethodInputArguments:      noOfLastMethodInputArguments,
-		LastMethodInputArguments:          lastMethodInputArguments,
-		NoOfLastMethodOutputArguments:     noOfLastMethodOutputArguments,
-		LastMethodOutputArguments:         lastMethodOutputArguments,
-		NoOfLastMethodInputValues:         noOfLastMethodInputValues,
-		LastMethodInputValues:             lastMethodInputValues,
-		NoOfLastMethodOutputValues:        noOfLastMethodOutputValues,
-		LastMethodOutputValues:            lastMethodOutputValues,
-		LastMethodCallTime:                lastMethodCallTime,
-		LastMethodReturnStatus:            lastMethodReturnStatus,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastProgramDiagnostic2DataType(structType any) ProgramDiagnostic2DataType {
@@ -537,6 +538,37 @@ func (m *_ProgramDiagnostic2DataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ProgramDiagnostic2DataType) IsProgramDiagnostic2DataType() {}
+
+func (m *_ProgramDiagnostic2DataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ProgramDiagnostic2DataType) deepCopy() *_ProgramDiagnostic2DataType {
+	if m == nil {
+		return nil
+	}
+	_ProgramDiagnostic2DataTypeCopy := &_ProgramDiagnostic2DataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.CreateSessionId.DeepCopy().(NodeId),
+		m.CreateClientName.DeepCopy().(PascalString),
+		m.InvocationCreationTime,
+		m.LastTransitionTime,
+		m.LastMethodCall.DeepCopy().(PascalString),
+		m.LastMethodSessionId.DeepCopy().(NodeId),
+		m.NoOfLastMethodInputArguments,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodInputArguments),
+		m.NoOfLastMethodOutputArguments,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodOutputArguments),
+		m.NoOfLastMethodInputValues,
+		utils.DeepCopySlice[Variant, Variant](m.LastMethodInputValues),
+		m.NoOfLastMethodOutputValues,
+		utils.DeepCopySlice[Variant, Variant](m.LastMethodOutputValues),
+		m.LastMethodCallTime,
+		m.LastMethodReturnStatus.DeepCopy().(StatusCode),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ProgramDiagnostic2DataTypeCopy
+}
 
 func (m *_ProgramDiagnostic2DataType) String() string {
 	if m == nil {

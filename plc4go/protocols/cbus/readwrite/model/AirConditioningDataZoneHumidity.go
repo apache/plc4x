@@ -38,6 +38,7 @@ type AirConditioningDataZoneHumidity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -62,6 +63,25 @@ type _AirConditioningDataZoneHumidity struct {
 
 var _ AirConditioningDataZoneHumidity = (*_AirConditioningDataZoneHumidity)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataZoneHumidity)(nil)
+
+// NewAirConditioningDataZoneHumidity factory function for _AirConditioningDataZoneHumidity
+func NewAirConditioningDataZoneHumidity(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, humidity HVACHumidity, sensorStatus HVACSensorStatus) *_AirConditioningDataZoneHumidity {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHumidity must not be nil")
+	}
+	if humidity == nil {
+		panic("humidity of type HVACHumidity for AirConditioningDataZoneHumidity must not be nil")
+	}
+	_result := &_AirConditioningDataZoneHumidity{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Humidity:                    humidity,
+		SensorStatus:                sensorStatus,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,25 +122,6 @@ func (m *_AirConditioningDataZoneHumidity) GetSensorStatus() HVACSensorStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataZoneHumidity factory function for _AirConditioningDataZoneHumidity
-func NewAirConditioningDataZoneHumidity(zoneGroup byte, zoneList HVACZoneList, humidity HVACHumidity, sensorStatus HVACSensorStatus, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataZoneHumidity {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHumidity must not be nil")
-	}
-	if humidity == nil {
-		panic("humidity of type HVACHumidity for AirConditioningDataZoneHumidity must not be nil")
-	}
-	_result := &_AirConditioningDataZoneHumidity{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Humidity:                    humidity,
-		SensorStatus:                sensorStatus,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataZoneHumidity(structType any) AirConditioningDataZoneHumidity {
@@ -244,6 +245,25 @@ func (m *_AirConditioningDataZoneHumidity) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_AirConditioningDataZoneHumidity) IsAirConditioningDataZoneHumidity() {}
+
+func (m *_AirConditioningDataZoneHumidity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataZoneHumidity) deepCopy() *_AirConditioningDataZoneHumidity {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataZoneHumidityCopy := &_AirConditioningDataZoneHumidity{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Humidity.DeepCopy().(HVACHumidity),
+		m.SensorStatus,
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataZoneHumidityCopy
+}
 
 func (m *_AirConditioningDataZoneHumidity) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type NetworkAddressDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNetworkInterface returns NetworkInterface (property field)
 	GetNetworkInterface() PascalString
@@ -53,6 +54,19 @@ type _NetworkAddressDataType struct {
 
 var _ NetworkAddressDataType = (*_NetworkAddressDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NetworkAddressDataType)(nil)
+
+// NewNetworkAddressDataType factory function for _NetworkAddressDataType
+func NewNetworkAddressDataType(networkInterface PascalString) *_NetworkAddressDataType {
+	if networkInterface == nil {
+		panic("networkInterface of type PascalString for NetworkAddressDataType must not be nil")
+	}
+	_result := &_NetworkAddressDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NetworkInterface:                  networkInterface,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_NetworkAddressDataType) GetNetworkInterface() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNetworkAddressDataType factory function for _NetworkAddressDataType
-func NewNetworkAddressDataType(networkInterface PascalString) *_NetworkAddressDataType {
-	if networkInterface == nil {
-		panic("networkInterface of type PascalString for NetworkAddressDataType must not be nil")
-	}
-	_result := &_NetworkAddressDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NetworkInterface:                  networkInterface,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNetworkAddressDataType(structType any) NetworkAddressDataType {
@@ -182,6 +183,22 @@ func (m *_NetworkAddressDataType) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_NetworkAddressDataType) IsNetworkAddressDataType() {}
+
+func (m *_NetworkAddressDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkAddressDataType) deepCopy() *_NetworkAddressDataType {
+	if m == nil {
+		return nil
+	}
+	_NetworkAddressDataTypeCopy := &_NetworkAddressDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NetworkInterface.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NetworkAddressDataTypeCopy
+}
 
 func (m *_NetworkAddressDataType) String() string {
 	if m == nil {

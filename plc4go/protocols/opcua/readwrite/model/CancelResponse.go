@@ -38,6 +38,7 @@ type CancelResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -56,6 +57,20 @@ type _CancelResponse struct {
 
 var _ CancelResponse = (*_CancelResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CancelResponse)(nil)
+
+// NewCancelResponse factory function for _CancelResponse
+func NewCancelResponse(responseHeader ExtensionObjectDefinition, cancelCount uint32) *_CancelResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CancelResponse must not be nil")
+	}
+	_result := &_CancelResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		CancelCount:                       cancelCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_CancelResponse) GetCancelCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCancelResponse factory function for _CancelResponse
-func NewCancelResponse(responseHeader ExtensionObjectDefinition, cancelCount uint32) *_CancelResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CancelResponse must not be nil")
-	}
-	_result := &_CancelResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		CancelCount:                       cancelCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCancelResponse(structType any) CancelResponse {
@@ -203,6 +204,23 @@ func (m *_CancelResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_CancelResponse) IsCancelResponse() {}
+
+func (m *_CancelResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CancelResponse) deepCopy() *_CancelResponse {
+	if m == nil {
+		return nil
+	}
+	_CancelResponseCopy := &_CancelResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.CancelCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CancelResponseCopy
+}
 
 func (m *_CancelResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentialDisable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCredentialDisable returns CredentialDisable (property field)
 	GetCredentialDisable() BACnetAccessCredentialDisableTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCredentialDisable struct {
 
 var _ BACnetConstructedDataCredentialDisable = (*_BACnetConstructedDataCredentialDisable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDisable)(nil)
+
+// NewBACnetConstructedDataCredentialDisable factory function for _BACnetConstructedDataCredentialDisable
+func NewBACnetConstructedDataCredentialDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialDisable BACnetAccessCredentialDisableTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDisable {
+	if credentialDisable == nil {
+		panic("credentialDisable of type BACnetAccessCredentialDisableTagged for BACnetConstructedDataCredentialDisable must not be nil")
+	}
+	_result := &_BACnetConstructedDataCredentialDisable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CredentialDisable:             credentialDisable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCredentialDisable) GetActualValue() BACnetAccessC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentialDisable factory function for _BACnetConstructedDataCredentialDisable
-func NewBACnetConstructedDataCredentialDisable(credentialDisable BACnetAccessCredentialDisableTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDisable {
-	if credentialDisable == nil {
-		panic("credentialDisable of type BACnetAccessCredentialDisableTagged for BACnetConstructedDataCredentialDisable must not be nil")
-	}
-	_result := &_BACnetConstructedDataCredentialDisable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CredentialDisable:             credentialDisable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentialDisable(structType any) BACnetConstructedDataCredentialDisable {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCredentialDisable) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataCredentialDisable) IsBACnetConstructedDataCredentialDisable() {}
+
+func (m *_BACnetConstructedDataCredentialDisable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentialDisable) deepCopy() *_BACnetConstructedDataCredentialDisable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialDisableCopy := &_BACnetConstructedDataCredentialDisable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CredentialDisable.DeepCopy().(BACnetAccessCredentialDisableTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialDisableCopy
+}
 
 func (m *_BACnetConstructedDataCredentialDisable) String() string {
 	if m == nil {

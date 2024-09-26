@@ -38,6 +38,7 @@ type BACnetConstructedDataAlignIntervals interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlignIntervals returns AlignIntervals (property field)
 	GetAlignIntervals() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAlignIntervals struct {
 
 var _ BACnetConstructedDataAlignIntervals = (*_BACnetConstructedDataAlignIntervals)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlignIntervals)(nil)
+
+// NewBACnetConstructedDataAlignIntervals factory function for _BACnetConstructedDataAlignIntervals
+func NewBACnetConstructedDataAlignIntervals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alignIntervals BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlignIntervals {
+	if alignIntervals == nil {
+		panic("alignIntervals of type BACnetApplicationTagBoolean for BACnetConstructedDataAlignIntervals must not be nil")
+	}
+	_result := &_BACnetConstructedDataAlignIntervals{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AlignIntervals:                alignIntervals,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAlignIntervals) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAlignIntervals factory function for _BACnetConstructedDataAlignIntervals
-func NewBACnetConstructedDataAlignIntervals(alignIntervals BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlignIntervals {
-	if alignIntervals == nil {
-		panic("alignIntervals of type BACnetApplicationTagBoolean for BACnetConstructedDataAlignIntervals must not be nil")
-	}
-	_result := &_BACnetConstructedDataAlignIntervals{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AlignIntervals:                alignIntervals,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAlignIntervals(structType any) BACnetConstructedDataAlignIntervals {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAlignIntervals) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataAlignIntervals) IsBACnetConstructedDataAlignIntervals() {}
+
+func (m *_BACnetConstructedDataAlignIntervals) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAlignIntervals) deepCopy() *_BACnetConstructedDataAlignIntervals {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAlignIntervalsCopy := &_BACnetConstructedDataAlignIntervals{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AlignIntervals.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAlignIntervalsCopy
+}
 
 func (m *_BACnetConstructedDataAlignIntervals) String() string {
 	if m == nil {

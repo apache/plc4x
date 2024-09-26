@@ -38,6 +38,7 @@ type ClassID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LogicalSegmentType
 	// GetFormat returns Format (property field)
 	GetFormat() uint8
@@ -56,6 +57,17 @@ type _ClassID struct {
 
 var _ ClassID = (*_ClassID)(nil)
 var _ LogicalSegmentTypeRequirements = (*_ClassID)(nil)
+
+// NewClassID factory function for _ClassID
+func NewClassID(format uint8, segmentClass uint8) *_ClassID {
+	_result := &_ClassID{
+		LogicalSegmentTypeContract: NewLogicalSegmentType(),
+		Format:                     format,
+		SegmentClass:               segmentClass,
+	}
+	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ClassID) GetSegmentClass() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewClassID factory function for _ClassID
-func NewClassID(format uint8, segmentClass uint8) *_ClassID {
-	_result := &_ClassID{
-		LogicalSegmentTypeContract: NewLogicalSegmentType(),
-		Format:                     format,
-		SegmentClass:               segmentClass,
-	}
-	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastClassID(structType any) ClassID {
@@ -200,6 +201,23 @@ func (m *_ClassID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 }
 
 func (m *_ClassID) IsClassID() {}
+
+func (m *_ClassID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ClassID) deepCopy() *_ClassID {
+	if m == nil {
+		return nil
+	}
+	_ClassIDCopy := &_ClassID{
+		m.LogicalSegmentTypeContract.(*_LogicalSegmentType).deepCopy(),
+		m.Format,
+		m.SegmentClass,
+	}
+	m.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
+	return _ClassIDCopy
+}
 
 func (m *_ClassID) String() string {
 	if m == nil {

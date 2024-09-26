@@ -38,6 +38,7 @@ type MonitoringParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetClientHandle returns ClientHandle (property field)
 	GetClientHandle() uint32
@@ -67,6 +68,23 @@ type _MonitoringParameters struct {
 
 var _ MonitoringParameters = (*_MonitoringParameters)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoringParameters)(nil)
+
+// NewMonitoringParameters factory function for _MonitoringParameters
+func NewMonitoringParameters(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) *_MonitoringParameters {
+	if filter == nil {
+		panic("filter of type ExtensionObject for MonitoringParameters must not be nil")
+	}
+	_result := &_MonitoringParameters{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ClientHandle:                      clientHandle,
+		SamplingInterval:                  samplingInterval,
+		Filter:                            filter,
+		QueueSize:                         queueSize,
+		DiscardOldest:                     discardOldest,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,23 +133,6 @@ func (m *_MonitoringParameters) GetDiscardOldest() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoringParameters factory function for _MonitoringParameters
-func NewMonitoringParameters(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) *_MonitoringParameters {
-	if filter == nil {
-		panic("filter of type ExtensionObject for MonitoringParameters must not be nil")
-	}
-	_result := &_MonitoringParameters{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ClientHandle:                      clientHandle,
-		SamplingInterval:                  samplingInterval,
-		Filter:                            filter,
-		QueueSize:                         queueSize,
-		DiscardOldest:                     discardOldest,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoringParameters(structType any) MonitoringParameters {
@@ -281,6 +282,27 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_MonitoringParameters) IsMonitoringParameters() {}
+
+func (m *_MonitoringParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoringParameters) deepCopy() *_MonitoringParameters {
+	if m == nil {
+		return nil
+	}
+	_MonitoringParametersCopy := &_MonitoringParameters{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ClientHandle,
+		m.SamplingInterval,
+		m.Filter.DeepCopy().(ExtensionObject),
+		m.QueueSize,
+		m.DiscardOldest,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoringParametersCopy
+}
 
 func (m *_MonitoringParameters) String() string {
 	if m == nil {

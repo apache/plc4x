@@ -38,6 +38,7 @@ type BACnetConstructedDataNotifyType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() BACnetNotifyTypeTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataNotifyType struct {
 
 var _ BACnetConstructedDataNotifyType = (*_BACnetConstructedDataNotifyType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotifyType)(nil)
+
+// NewBACnetConstructedDataNotifyType factory function for _BACnetConstructedDataNotifyType
+func NewBACnetConstructedDataNotifyType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notifyType BACnetNotifyTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotifyType {
+	if notifyType == nil {
+		panic("notifyType of type BACnetNotifyTypeTagged for BACnetConstructedDataNotifyType must not be nil")
+	}
+	_result := &_BACnetConstructedDataNotifyType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NotifyType:                    notifyType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataNotifyType) GetActualValue() BACnetNotifyTypeTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNotifyType factory function for _BACnetConstructedDataNotifyType
-func NewBACnetConstructedDataNotifyType(notifyType BACnetNotifyTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotifyType {
-	if notifyType == nil {
-		panic("notifyType of type BACnetNotifyTypeTagged for BACnetConstructedDataNotifyType must not be nil")
-	}
-	_result := &_BACnetConstructedDataNotifyType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NotifyType:                    notifyType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNotifyType(structType any) BACnetConstructedDataNotifyType {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNotifyType) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataNotifyType) IsBACnetConstructedDataNotifyType() {}
+
+func (m *_BACnetConstructedDataNotifyType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNotifyType) deepCopy() *_BACnetConstructedDataNotifyType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNotifyTypeCopy := &_BACnetConstructedDataNotifyType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNotifyTypeCopy
+}
 
 func (m *_BACnetConstructedDataNotifyType) String() string {
 	if m == nil {

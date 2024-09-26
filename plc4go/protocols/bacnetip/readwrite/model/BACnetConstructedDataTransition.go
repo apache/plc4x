@@ -38,6 +38,7 @@ type BACnetConstructedDataTransition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTransition returns Transition (property field)
 	GetTransition() BACnetLightingTransitionTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTransition struct {
 
 var _ BACnetConstructedDataTransition = (*_BACnetConstructedDataTransition)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTransition)(nil)
+
+// NewBACnetConstructedDataTransition factory function for _BACnetConstructedDataTransition
+func NewBACnetConstructedDataTransition(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, transition BACnetLightingTransitionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransition {
+	if transition == nil {
+		panic("transition of type BACnetLightingTransitionTagged for BACnetConstructedDataTransition must not be nil")
+	}
+	_result := &_BACnetConstructedDataTransition{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Transition:                    transition,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTransition) GetActualValue() BACnetLightingTransi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTransition factory function for _BACnetConstructedDataTransition
-func NewBACnetConstructedDataTransition(transition BACnetLightingTransitionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransition {
-	if transition == nil {
-		panic("transition of type BACnetLightingTransitionTagged for BACnetConstructedDataTransition must not be nil")
-	}
-	_result := &_BACnetConstructedDataTransition{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Transition:                    transition,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTransition(structType any) BACnetConstructedDataTransition {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataTransition) IsBACnetConstructedDataTransition() {}
+
+func (m *_BACnetConstructedDataTransition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTransition) deepCopy() *_BACnetConstructedDataTransition {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTransitionCopy := &_BACnetConstructedDataTransition{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Transition.DeepCopy().(BACnetLightingTransitionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTransitionCopy
+}
 
 func (m *_BACnetConstructedDataTransition) String() string {
 	if m == nil {

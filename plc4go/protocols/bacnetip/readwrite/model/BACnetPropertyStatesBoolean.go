@@ -38,6 +38,7 @@ type BACnetPropertyStatesBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesBoolean struct {
 
 var _ BACnetPropertyStatesBoolean = (*_BACnetPropertyStatesBoolean)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBoolean)(nil)
+
+// NewBACnetPropertyStatesBoolean factory function for _BACnetPropertyStatesBoolean
+func NewBACnetPropertyStatesBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetContextTagBoolean) *_BACnetPropertyStatesBoolean {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetContextTagBoolean for BACnetPropertyStatesBoolean must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBoolean{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BooleanValue:                 booleanValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesBoolean) GetBooleanValue() BACnetContextTagBoolean
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBoolean factory function for _BACnetPropertyStatesBoolean
-func NewBACnetPropertyStatesBoolean(booleanValue BACnetContextTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBoolean {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetContextTagBoolean for BACnetPropertyStatesBoolean must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBoolean{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BooleanValue:                 booleanValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBoolean(structType any) BACnetPropertyStatesBoolean {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBoolean) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetPropertyStatesBoolean) IsBACnetPropertyStatesBoolean() {}
+
+func (m *_BACnetPropertyStatesBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBoolean) deepCopy() *_BACnetPropertyStatesBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBooleanCopy := &_BACnetPropertyStatesBoolean{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.BooleanValue.DeepCopy().(BACnetContextTagBoolean),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBooleanCopy
+}
 
 func (m *_BACnetPropertyStatesBoolean) String() string {
 	if m == nil {

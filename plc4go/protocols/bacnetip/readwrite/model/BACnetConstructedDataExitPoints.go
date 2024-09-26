@@ -38,6 +38,7 @@ type BACnetConstructedDataExitPoints interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetExitPoints returns ExitPoints (property field)
 	GetExitPoints() []BACnetDeviceObjectReference
@@ -53,6 +54,16 @@ type _BACnetConstructedDataExitPoints struct {
 
 var _ BACnetConstructedDataExitPoints = (*_BACnetConstructedDataExitPoints)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExitPoints)(nil)
+
+// NewBACnetConstructedDataExitPoints factory function for _BACnetConstructedDataExitPoints
+func NewBACnetConstructedDataExitPoints(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, exitPoints []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExitPoints {
+	_result := &_BACnetConstructedDataExitPoints{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ExitPoints:                    exitPoints,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataExitPoints) GetExitPoints() []BACnetDeviceObjectR
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataExitPoints factory function for _BACnetConstructedDataExitPoints
-func NewBACnetConstructedDataExitPoints(exitPoints []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExitPoints {
-	_result := &_BACnetConstructedDataExitPoints{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ExitPoints:                    exitPoints,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataExitPoints(structType any) BACnetConstructedDataExitPoints {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataExitPoints) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataExitPoints) IsBACnetConstructedDataExitPoints() {}
+
+func (m *_BACnetConstructedDataExitPoints) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExitPoints) deepCopy() *_BACnetConstructedDataExitPoints {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExitPointsCopy := &_BACnetConstructedDataExitPoints{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.ExitPoints),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExitPointsCopy
+}
 
 func (m *_BACnetConstructedDataExitPoints) String() string {
 	if m == nil {

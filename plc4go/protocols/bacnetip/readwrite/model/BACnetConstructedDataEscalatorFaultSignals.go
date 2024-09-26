@@ -38,6 +38,7 @@ type BACnetConstructedDataEscalatorFaultSignals interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultSignals returns FaultSignals (property field)
 	GetFaultSignals() []BACnetEscalatorFaultTagged
@@ -53,6 +54,16 @@ type _BACnetConstructedDataEscalatorFaultSignals struct {
 
 var _ BACnetConstructedDataEscalatorFaultSignals = (*_BACnetConstructedDataEscalatorFaultSignals)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEscalatorFaultSignals)(nil)
+
+// NewBACnetConstructedDataEscalatorFaultSignals factory function for _BACnetConstructedDataEscalatorFaultSignals
+func NewBACnetConstructedDataEscalatorFaultSignals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultSignals []BACnetEscalatorFaultTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorFaultSignals {
+	_result := &_BACnetConstructedDataEscalatorFaultSignals{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultSignals:                  faultSignals,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataEscalatorFaultSignals) GetFaultSignals() []BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEscalatorFaultSignals factory function for _BACnetConstructedDataEscalatorFaultSignals
-func NewBACnetConstructedDataEscalatorFaultSignals(faultSignals []BACnetEscalatorFaultTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorFaultSignals {
-	_result := &_BACnetConstructedDataEscalatorFaultSignals{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultSignals:                  faultSignals,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEscalatorFaultSignals(structType any) BACnetConstructedDataEscalatorFaultSignals {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataEscalatorFaultSignals) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataEscalatorFaultSignals) IsBACnetConstructedDataEscalatorFaultSignals() {
+}
+
+func (m *_BACnetConstructedDataEscalatorFaultSignals) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEscalatorFaultSignals) deepCopy() *_BACnetConstructedDataEscalatorFaultSignals {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEscalatorFaultSignalsCopy := &_BACnetConstructedDataEscalatorFaultSignals{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetEscalatorFaultTagged, BACnetEscalatorFaultTagged](m.FaultSignals),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEscalatorFaultSignalsCopy
 }
 
 func (m *_BACnetConstructedDataEscalatorFaultSignals) String() string {

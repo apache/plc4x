@@ -38,6 +38,7 @@ type SALDataTriggerControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetTriggerControlData returns TriggerControlData (property field)
 	GetTriggerControlData() TriggerControlData
@@ -53,6 +54,19 @@ type _SALDataTriggerControl struct {
 
 var _ SALDataTriggerControl = (*_SALDataTriggerControl)(nil)
 var _ SALDataRequirements = (*_SALDataTriggerControl)(nil)
+
+// NewSALDataTriggerControl factory function for _SALDataTriggerControl
+func NewSALDataTriggerControl(salData SALData, triggerControlData TriggerControlData) *_SALDataTriggerControl {
+	if triggerControlData == nil {
+		panic("triggerControlData of type TriggerControlData for SALDataTriggerControl must not be nil")
+	}
+	_result := &_SALDataTriggerControl{
+		SALDataContract:    NewSALData(salData),
+		TriggerControlData: triggerControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataTriggerControl) GetTriggerControlData() TriggerControlData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataTriggerControl factory function for _SALDataTriggerControl
-func NewSALDataTriggerControl(triggerControlData TriggerControlData, salData SALData) *_SALDataTriggerControl {
-	if triggerControlData == nil {
-		panic("triggerControlData of type TriggerControlData for SALDataTriggerControl must not be nil")
-	}
-	_result := &_SALDataTriggerControl{
-		SALDataContract:    NewSALData(salData),
-		TriggerControlData: triggerControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataTriggerControl(structType any) SALDataTriggerControl {
@@ -182,6 +183,22 @@ func (m *_SALDataTriggerControl) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SALDataTriggerControl) IsSALDataTriggerControl() {}
+
+func (m *_SALDataTriggerControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataTriggerControl) deepCopy() *_SALDataTriggerControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataTriggerControlCopy := &_SALDataTriggerControl{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.TriggerControlData.DeepCopy().(TriggerControlData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataTriggerControlCopy
+}
 
 func (m *_SALDataTriggerControl) String() string {
 	if m == nil {

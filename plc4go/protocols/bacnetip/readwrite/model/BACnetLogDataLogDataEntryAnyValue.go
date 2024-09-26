@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryAnyValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetAnyValue returns AnyValue (property field)
 	GetAnyValue() BACnetConstructedData
@@ -53,6 +54,16 @@ type _BACnetLogDataLogDataEntryAnyValue struct {
 
 var _ BACnetLogDataLogDataEntryAnyValue = (*_BACnetLogDataLogDataEntryAnyValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryAnyValue)(nil)
+
+// NewBACnetLogDataLogDataEntryAnyValue factory function for _BACnetLogDataLogDataEntryAnyValue
+func NewBACnetLogDataLogDataEntryAnyValue(peekedTagHeader BACnetTagHeader, anyValue BACnetConstructedData) *_BACnetLogDataLogDataEntryAnyValue {
+	_result := &_BACnetLogDataLogDataEntryAnyValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		AnyValue:                          anyValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) GetAnyValue() BACnetConstructedData
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryAnyValue factory function for _BACnetLogDataLogDataEntryAnyValue
-func NewBACnetLogDataLogDataEntryAnyValue(anyValue BACnetConstructedData, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryAnyValue {
-	_result := &_BACnetLogDataLogDataEntryAnyValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		AnyValue:                          anyValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryAnyValue(structType any) BACnetLogDataLogDataEntryAnyValue {
@@ -181,6 +182,22 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetLogDataLogDataEntryAnyValue) IsBACnetLogDataLogDataEntryAnyValue() {}
+
+func (m *_BACnetLogDataLogDataEntryAnyValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryAnyValue) deepCopy() *_BACnetLogDataLogDataEntryAnyValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryAnyValueCopy := &_BACnetLogDataLogDataEntryAnyValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.AnyValue.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryAnyValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryAnyValue) String() string {
 	if m == nil {

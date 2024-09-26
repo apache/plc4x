@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetTimeDuration returns TimeDuration (property field)
 	GetTimeDuration() BACnetContextTagUnsignedInteger
@@ -59,6 +60,21 @@ type _BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 
 var _ BACnetConfirmedServiceRequestDeviceCommunicationControl = (*_BACnetConfirmedServiceRequestDeviceCommunicationControl)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestDeviceCommunicationControl)(nil)
+
+// NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for _BACnetConfirmedServiceRequestDeviceCommunicationControl
+func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BACnetContextTagUnsignedInteger, enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeviceCommunicationControl {
+	if enableDisable == nil {
+		panic("enableDisable of type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged for BACnetConfirmedServiceRequestDeviceCommunicationControl must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		TimeDuration:                          timeDuration,
+		EnableDisable:                         enableDisable,
+		Password:                              password,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPassword()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for _BACnetConfirmedServiceRequestDeviceCommunicationControl
-func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BACnetContextTagUnsignedInteger, enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeviceCommunicationControl {
-	if enableDisable == nil {
-		panic("enableDisable of type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged for BACnetConfirmedServiceRequestDeviceCommunicationControl must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		TimeDuration:                          timeDuration,
-		EnableDisable:                         enableDisable,
-		Password:                              password,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType any) BACnetConfirmedServiceRequestDeviceCommunicationControl {
@@ -236,6 +237,24 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) SerializeWith
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) IsBACnetConfirmedServiceRequestDeviceCommunicationControl() {
+}
+
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) deepCopy() *_BACnetConfirmedServiceRequestDeviceCommunicationControl {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestDeviceCommunicationControlCopy := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.TimeDuration.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.EnableDisable.DeepCopy().(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged),
+		m.Password.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestDeviceCommunicationControlCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) String() string {

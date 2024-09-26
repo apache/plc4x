@@ -38,6 +38,7 @@ type ModbusPDUReadDiscreteInputsResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
@@ -53,6 +54,16 @@ type _ModbusPDUReadDiscreteInputsResponse struct {
 
 var _ ModbusPDUReadDiscreteInputsResponse = (*_ModbusPDUReadDiscreteInputsResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadDiscreteInputsResponse)(nil)
+
+// NewModbusPDUReadDiscreteInputsResponse factory function for _ModbusPDUReadDiscreteInputsResponse
+func NewModbusPDUReadDiscreteInputsResponse(value []byte) *_ModbusPDUReadDiscreteInputsResponse {
+	_result := &_ModbusPDUReadDiscreteInputsResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadDiscreteInputsResponse factory function for _ModbusPDUReadDiscreteInputsResponse
-func NewModbusPDUReadDiscreteInputsResponse(value []byte) *_ModbusPDUReadDiscreteInputsResponse {
-	_result := &_ModbusPDUReadDiscreteInputsResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadDiscreteInputsResponse(structType any) ModbusPDUReadDiscreteInputsResponse {
@@ -202,6 +203,22 @@ func (m *_ModbusPDUReadDiscreteInputsResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ModbusPDUReadDiscreteInputsResponse) IsModbusPDUReadDiscreteInputsResponse() {}
+
+func (m *_ModbusPDUReadDiscreteInputsResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadDiscreteInputsResponse) deepCopy() *_ModbusPDUReadDiscreteInputsResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadDiscreteInputsResponseCopy := &_ModbusPDUReadDiscreteInputsResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadDiscreteInputsResponseCopy
+}
 
 func (m *_ModbusPDUReadDiscreteInputsResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type SALDataAudioAndVideo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetAudioVideoData returns AudioVideoData (property field)
 	GetAudioVideoData() LightingData
@@ -53,6 +54,19 @@ type _SALDataAudioAndVideo struct {
 
 var _ SALDataAudioAndVideo = (*_SALDataAudioAndVideo)(nil)
 var _ SALDataRequirements = (*_SALDataAudioAndVideo)(nil)
+
+// NewSALDataAudioAndVideo factory function for _SALDataAudioAndVideo
+func NewSALDataAudioAndVideo(salData SALData, audioVideoData LightingData) *_SALDataAudioAndVideo {
+	if audioVideoData == nil {
+		panic("audioVideoData of type LightingData for SALDataAudioAndVideo must not be nil")
+	}
+	_result := &_SALDataAudioAndVideo{
+		SALDataContract: NewSALData(salData),
+		AudioVideoData:  audioVideoData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataAudioAndVideo) GetAudioVideoData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataAudioAndVideo factory function for _SALDataAudioAndVideo
-func NewSALDataAudioAndVideo(audioVideoData LightingData, salData SALData) *_SALDataAudioAndVideo {
-	if audioVideoData == nil {
-		panic("audioVideoData of type LightingData for SALDataAudioAndVideo must not be nil")
-	}
-	_result := &_SALDataAudioAndVideo{
-		SALDataContract: NewSALData(salData),
-		AudioVideoData:  audioVideoData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataAudioAndVideo(structType any) SALDataAudioAndVideo {
@@ -182,6 +183,22 @@ func (m *_SALDataAudioAndVideo) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SALDataAudioAndVideo) IsSALDataAudioAndVideo() {}
+
+func (m *_SALDataAudioAndVideo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataAudioAndVideo) deepCopy() *_SALDataAudioAndVideo {
+	if m == nil {
+		return nil
+	}
+	_SALDataAudioAndVideoCopy := &_SALDataAudioAndVideo{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.AudioVideoData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataAudioAndVideoCopy
+}
 
 func (m *_SALDataAudioAndVideo) String() string {
 	if m == nil {

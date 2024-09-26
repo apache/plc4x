@@ -38,6 +38,7 @@ type BACnetNameValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetName returns Name (property field)
 	GetName() BACnetContextTagCharacterString
 	// GetValue returns Value (property field)
@@ -53,6 +54,14 @@ type _BACnetNameValue struct {
 }
 
 var _ BACnetNameValue = (*_BACnetNameValue)(nil)
+
+// NewBACnetNameValue factory function for _BACnetNameValue
+func NewBACnetNameValue(name BACnetContextTagCharacterString, value BACnetConstructedData) *_BACnetNameValue {
+	if name == nil {
+		panic("name of type BACnetContextTagCharacterString for BACnetNameValue must not be nil")
+	}
+	return &_BACnetNameValue{Name: name, Value: value}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_BACnetNameValue) GetValue() BACnetConstructedData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNameValue factory function for _BACnetNameValue
-func NewBACnetNameValue(name BACnetContextTagCharacterString, value BACnetConstructedData) *_BACnetNameValue {
-	if name == nil {
-		panic("name of type BACnetContextTagCharacterString for BACnetNameValue must not be nil")
-	}
-	return &_BACnetNameValue{Name: name, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNameValue(structType any) BACnetNameValue {
@@ -195,6 +196,21 @@ func (m *_BACnetNameValue) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetNameValue) IsBACnetNameValue() {}
+
+func (m *_BACnetNameValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNameValue) deepCopy() *_BACnetNameValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetNameValueCopy := &_BACnetNameValue{
+		m.Name.DeepCopy().(BACnetContextTagCharacterString),
+		m.Value.DeepCopy().(BACnetConstructedData),
+	}
+	return _BACnetNameValueCopy
+}
 
 func (m *_BACnetNameValue) String() string {
 	if m == nil {

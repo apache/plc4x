@@ -40,6 +40,7 @@ type ConnectionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiDiscoveryEndpoint returns HpaiDiscoveryEndpoint (property field)
 	GetHpaiDiscoveryEndpoint() HPAIDiscoveryEndpoint
@@ -61,6 +62,27 @@ type _ConnectionRequest struct {
 
 var _ ConnectionRequest = (*_ConnectionRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_ConnectionRequest)(nil)
+
+// NewConnectionRequest factory function for _ConnectionRequest
+func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) *_ConnectionRequest {
+	if hpaiDiscoveryEndpoint == nil {
+		panic("hpaiDiscoveryEndpoint of type HPAIDiscoveryEndpoint for ConnectionRequest must not be nil")
+	}
+	if hpaiDataEndpoint == nil {
+		panic("hpaiDataEndpoint of type HPAIDataEndpoint for ConnectionRequest must not be nil")
+	}
+	if connectionRequestInformation == nil {
+		panic("connectionRequestInformation of type ConnectionRequestInformation for ConnectionRequest must not be nil")
+	}
+	_result := &_ConnectionRequest{
+		KnxNetIpMessageContract:      NewKnxNetIpMessage(),
+		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
+		HpaiDataEndpoint:             hpaiDataEndpoint,
+		ConnectionRequestInformation: connectionRequestInformation,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,27 +123,6 @@ func (m *_ConnectionRequest) GetConnectionRequestInformation() ConnectionRequest
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionRequest factory function for _ConnectionRequest
-func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) *_ConnectionRequest {
-	if hpaiDiscoveryEndpoint == nil {
-		panic("hpaiDiscoveryEndpoint of type HPAIDiscoveryEndpoint for ConnectionRequest must not be nil")
-	}
-	if hpaiDataEndpoint == nil {
-		panic("hpaiDataEndpoint of type HPAIDataEndpoint for ConnectionRequest must not be nil")
-	}
-	if connectionRequestInformation == nil {
-		panic("connectionRequestInformation of type ConnectionRequestInformation for ConnectionRequest must not be nil")
-	}
-	_result := &_ConnectionRequest{
-		KnxNetIpMessageContract:      NewKnxNetIpMessage(),
-		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
-		HpaiDataEndpoint:             hpaiDataEndpoint,
-		ConnectionRequestInformation: connectionRequestInformation,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionRequest(structType any) ConnectionRequest {
@@ -232,6 +233,24 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ConnectionRequest) IsConnectionRequest() {}
+
+func (m *_ConnectionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequest) deepCopy() *_ConnectionRequest {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestCopy := &_ConnectionRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.HpaiDiscoveryEndpoint.DeepCopy().(HPAIDiscoveryEndpoint),
+		m.HpaiDataEndpoint.DeepCopy().(HPAIDataEndpoint),
+		m.ConnectionRequestInformation.DeepCopy().(ConnectionRequestInformation),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _ConnectionRequestCopy
+}
 
 func (m *_ConnectionRequest) String() string {
 	if m == nil {

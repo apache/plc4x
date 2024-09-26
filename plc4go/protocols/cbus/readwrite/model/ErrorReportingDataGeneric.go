@@ -38,6 +38,7 @@ type ErrorReportingDataGeneric interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingData
 	// GetSystemCategory returns SystemCategory (property field)
 	GetSystemCategory() ErrorReportingSystemCategory
@@ -80,6 +81,26 @@ type _ErrorReportingDataGeneric struct {
 
 var _ ErrorReportingDataGeneric = (*_ErrorReportingDataGeneric)(nil)
 var _ ErrorReportingDataRequirements = (*_ErrorReportingDataGeneric)(nil)
+
+// NewErrorReportingDataGeneric factory function for _ErrorReportingDataGeneric
+func NewErrorReportingDataGeneric(commandTypeContainer ErrorReportingCommandTypeContainer, systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8) *_ErrorReportingDataGeneric {
+	if systemCategory == nil {
+		panic("systemCategory of type ErrorReportingSystemCategory for ErrorReportingDataGeneric must not be nil")
+	}
+	_result := &_ErrorReportingDataGeneric{
+		ErrorReportingDataContract: NewErrorReportingData(commandTypeContainer),
+		SystemCategory:             systemCategory,
+		MostRecent:                 mostRecent,
+		Acknowledge:                acknowledge,
+		MostSevere:                 mostSevere,
+		Severity:                   severity,
+		DeviceId:                   deviceId,
+		ErrorData1:                 errorData1,
+		ErrorData2:                 errorData2,
+	}
+	_result.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -163,26 +184,6 @@ func (m *_ErrorReportingDataGeneric) GetIsMostRecentAndMostSevere() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingDataGeneric factory function for _ErrorReportingDataGeneric
-func NewErrorReportingDataGeneric(systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8, commandTypeContainer ErrorReportingCommandTypeContainer) *_ErrorReportingDataGeneric {
-	if systemCategory == nil {
-		panic("systemCategory of type ErrorReportingSystemCategory for ErrorReportingDataGeneric must not be nil")
-	}
-	_result := &_ErrorReportingDataGeneric{
-		ErrorReportingDataContract: NewErrorReportingData(commandTypeContainer),
-		SystemCategory:             systemCategory,
-		MostRecent:                 mostRecent,
-		Acknowledge:                acknowledge,
-		MostSevere:                 mostSevere,
-		Severity:                   severity,
-		DeviceId:                   deviceId,
-		ErrorData1:                 errorData1,
-		ErrorData2:                 errorData2,
-	}
-	_result.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingDataGeneric(structType any) ErrorReportingDataGeneric {
@@ -405,6 +406,29 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_ErrorReportingDataGeneric) IsErrorReportingDataGeneric() {}
+
+func (m *_ErrorReportingDataGeneric) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingDataGeneric) deepCopy() *_ErrorReportingDataGeneric {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingDataGenericCopy := &_ErrorReportingDataGeneric{
+		m.ErrorReportingDataContract.(*_ErrorReportingData).deepCopy(),
+		m.SystemCategory.DeepCopy().(ErrorReportingSystemCategory),
+		m.MostRecent,
+		m.Acknowledge,
+		m.MostSevere,
+		m.Severity,
+		m.DeviceId,
+		m.ErrorData1,
+		m.ErrorData2,
+	}
+	m.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = m
+	return _ErrorReportingDataGenericCopy
+}
 
 func (m *_ErrorReportingDataGeneric) String() string {
 	if m == nil {

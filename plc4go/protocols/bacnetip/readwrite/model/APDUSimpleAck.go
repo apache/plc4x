@@ -38,6 +38,7 @@ type APDUSimpleAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
@@ -58,6 +59,17 @@ type _APDUSimpleAck struct {
 
 var _ APDUSimpleAck = (*_APDUSimpleAck)(nil)
 var _ APDURequirements = (*_APDUSimpleAck)(nil)
+
+// NewAPDUSimpleAck factory function for _APDUSimpleAck
+func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice, apduLength uint16) *_APDUSimpleAck {
+	_result := &_APDUSimpleAck{
+		APDUContract:     NewAPDU(apduLength),
+		OriginalInvokeId: originalInvokeId,
+		ServiceChoice:    serviceChoice,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +106,6 @@ func (m *_APDUSimpleAck) GetServiceChoice() BACnetConfirmedServiceChoice {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUSimpleAck factory function for _APDUSimpleAck
-func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice, apduLength uint16) *_APDUSimpleAck {
-	_result := &_APDUSimpleAck{
-		APDUContract:     NewAPDU(apduLength),
-		OriginalInvokeId: originalInvokeId,
-		ServiceChoice:    serviceChoice,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUSimpleAck(structType any) APDUSimpleAck {
@@ -215,6 +216,24 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_APDUSimpleAck) IsAPDUSimpleAck() {}
+
+func (m *_APDUSimpleAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUSimpleAck) deepCopy() *_APDUSimpleAck {
+	if m == nil {
+		return nil
+	}
+	_APDUSimpleAckCopy := &_APDUSimpleAck{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.OriginalInvokeId,
+		m.ServiceChoice,
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUSimpleAckCopy
+}
 
 func (m *_APDUSimpleAck) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type BACnetApplicationTagNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// IsBACnetApplicationTagNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTagNull()
@@ -49,6 +50,15 @@ type _BACnetApplicationTagNull struct {
 var _ BACnetApplicationTagNull = (*_BACnetApplicationTagNull)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagNull)(nil)
 
+// NewBACnetApplicationTagNull factory function for _BACnetApplicationTagNull
+func NewBACnetApplicationTagNull(header BACnetTagHeader) *_BACnetApplicationTagNull {
+	_result := &_BACnetApplicationTagNull{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagNull)(nil)
 
 func (m *_BACnetApplicationTagNull) GetParent() BACnetApplicationTagContract {
 	return m.BACnetApplicationTagContract
-}
-
-// NewBACnetApplicationTagNull factory function for _BACnetApplicationTagNull
-func NewBACnetApplicationTagNull(header BACnetTagHeader) *_BACnetApplicationTagNull {
-	_result := &_BACnetApplicationTagNull{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_BACnetApplicationTagNull) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_BACnetApplicationTagNull) IsBACnetApplicationTagNull() {}
+
+func (m *_BACnetApplicationTagNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagNull) deepCopy() *_BACnetApplicationTagNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagNullCopy := &_BACnetApplicationTagNull{
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagNullCopy
+}
 
 func (m *_BACnetApplicationTagNull) String() string {
 	if m == nil {

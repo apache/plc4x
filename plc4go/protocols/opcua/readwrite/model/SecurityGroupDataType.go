@@ -38,6 +38,7 @@ type SecurityGroupDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -86,6 +87,36 @@ type _SecurityGroupDataType struct {
 
 var _ SecurityGroupDataType = (*_SecurityGroupDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SecurityGroupDataType)(nil)
+
+// NewSecurityGroupDataType factory function for _SecurityGroupDataType
+func NewSecurityGroupDataType(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) *_SecurityGroupDataType {
+	if name == nil {
+		panic("name of type PascalString for SecurityGroupDataType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for SecurityGroupDataType must not be nil")
+	}
+	if securityGroupId == nil {
+		panic("securityGroupId of type PascalString for SecurityGroupDataType must not be nil")
+	}
+	_result := &_SecurityGroupDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		NoOfSecurityGroupFolder:           noOfSecurityGroupFolder,
+		SecurityGroupFolder:               securityGroupFolder,
+		KeyLifetime:                       keyLifetime,
+		SecurityPolicyUri:                 securityPolicyUri,
+		MaxFutureKeyCount:                 maxFutureKeyCount,
+		MaxPastKeyCount:                   maxPastKeyCount,
+		SecurityGroupId:                   securityGroupId,
+		NoOfRolePermissions:               noOfRolePermissions,
+		RolePermissions:                   rolePermissions,
+		NoOfGroupProperties:               noOfGroupProperties,
+		GroupProperties:                   groupProperties,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,36 +193,6 @@ func (m *_SecurityGroupDataType) GetGroupProperties() []ExtensionObjectDefinitio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityGroupDataType factory function for _SecurityGroupDataType
-func NewSecurityGroupDataType(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) *_SecurityGroupDataType {
-	if name == nil {
-		panic("name of type PascalString for SecurityGroupDataType must not be nil")
-	}
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for SecurityGroupDataType must not be nil")
-	}
-	if securityGroupId == nil {
-		panic("securityGroupId of type PascalString for SecurityGroupDataType must not be nil")
-	}
-	_result := &_SecurityGroupDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		NoOfSecurityGroupFolder:           noOfSecurityGroupFolder,
-		SecurityGroupFolder:               securityGroupFolder,
-		KeyLifetime:                       keyLifetime,
-		SecurityPolicyUri:                 securityPolicyUri,
-		MaxFutureKeyCount:                 maxFutureKeyCount,
-		MaxPastKeyCount:                   maxPastKeyCount,
-		SecurityGroupId:                   securityGroupId,
-		NoOfRolePermissions:               noOfRolePermissions,
-		RolePermissions:                   rolePermissions,
-		NoOfGroupProperties:               noOfGroupProperties,
-		GroupProperties:                   groupProperties,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityGroupDataType(structType any) SecurityGroupDataType {
@@ -440,6 +441,33 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SecurityGroupDataType) IsSecurityGroupDataType() {}
+
+func (m *_SecurityGroupDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityGroupDataType) deepCopy() *_SecurityGroupDataType {
+	if m == nil {
+		return nil
+	}
+	_SecurityGroupDataTypeCopy := &_SecurityGroupDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.NoOfSecurityGroupFolder,
+		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroupFolder),
+		m.KeyLifetime,
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.MaxFutureKeyCount,
+		m.MaxPastKeyCount,
+		m.SecurityGroupId.DeepCopy().(PascalString),
+		m.NoOfRolePermissions,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.RolePermissions),
+		m.NoOfGroupProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.GroupProperties),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SecurityGroupDataTypeCopy
+}
 
 func (m *_SecurityGroupDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CreateObjectError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -56,6 +57,23 @@ type _CreateObjectError struct {
 
 var _ CreateObjectError = (*_CreateObjectError)(nil)
 var _ BACnetErrorRequirements = (*_CreateObjectError)(nil)
+
+// NewCreateObjectError factory function for _CreateObjectError
+func NewCreateObjectError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_CreateObjectError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for CreateObjectError must not be nil")
+	}
+	if firstFailedElementNumber == nil {
+		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for CreateObjectError must not be nil")
+	}
+	_result := &_CreateObjectError{
+		BACnetErrorContract:      NewBACnetError(),
+		ErrorType:                errorType,
+		FirstFailedElementNumber: firstFailedElementNumber,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_CreateObjectError) GetFirstFailedElementNumber() BACnetContextTagUnsig
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCreateObjectError factory function for _CreateObjectError
-func NewCreateObjectError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_CreateObjectError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for CreateObjectError must not be nil")
-	}
-	if firstFailedElementNumber == nil {
-		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for CreateObjectError must not be nil")
-	}
-	_result := &_CreateObjectError{
-		BACnetErrorContract:      NewBACnetError(),
-		ErrorType:                errorType,
-		FirstFailedElementNumber: firstFailedElementNumber,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCreateObjectError(structType any) CreateObjectError {
@@ -206,6 +207,23 @@ func (m *_CreateObjectError) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_CreateObjectError) IsCreateObjectError() {}
+
+func (m *_CreateObjectError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CreateObjectError) deepCopy() *_CreateObjectError {
+	if m == nil {
+		return nil
+	}
+	_CreateObjectErrorCopy := &_CreateObjectError{
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.FirstFailedElementNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _CreateObjectErrorCopy
+}
 
 func (m *_CreateObjectError) String() string {
 	if m == nil {

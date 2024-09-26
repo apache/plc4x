@@ -38,6 +38,7 @@ type BACnetSegmentationTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetSegmentationTagged struct {
 
 var _ BACnetSegmentationTagged = (*_BACnetSegmentationTagged)(nil)
 
+// NewBACnetSegmentationTagged factory function for _BACnetSegmentationTagged
+func NewBACnetSegmentationTagged(header BACnetTagHeader, value BACnetSegmentation, tagNumber uint8, tagClass TagClass) *_BACnetSegmentationTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetSegmentationTagged must not be nil")
+	}
+	return &_BACnetSegmentationTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetSegmentationTagged) GetValue() BACnetSegmentation {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSegmentationTagged factory function for _BACnetSegmentationTagged
-func NewBACnetSegmentationTagged(header BACnetTagHeader, value BACnetSegmentation, tagNumber uint8, tagClass TagClass) *_BACnetSegmentationTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetSegmentationTagged must not be nil")
-	}
-	return &_BACnetSegmentationTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSegmentationTagged(structType any) BACnetSegmentationTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetSegmentationTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetSegmentationTagged) IsBACnetSegmentationTagged() {}
+
+func (m *_BACnetSegmentationTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSegmentationTagged) deepCopy() *_BACnetSegmentationTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetSegmentationTaggedCopy := &_BACnetSegmentationTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetSegmentationTaggedCopy
+}
 
 func (m *_BACnetSegmentationTagged) String() string {
 	if m == nil {

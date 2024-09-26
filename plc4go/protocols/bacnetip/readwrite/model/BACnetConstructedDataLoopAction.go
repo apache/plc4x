@@ -38,6 +38,7 @@ type BACnetConstructedDataLoopAction interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAction returns Action (property field)
 	GetAction() BACnetActionTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLoopAction struct {
 
 var _ BACnetConstructedDataLoopAction = (*_BACnetConstructedDataLoopAction)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoopAction)(nil)
+
+// NewBACnetConstructedDataLoopAction factory function for _BACnetConstructedDataLoopAction
+func NewBACnetConstructedDataLoopAction(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, action BACnetActionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopAction {
+	if action == nil {
+		panic("action of type BACnetActionTagged for BACnetConstructedDataLoopAction must not be nil")
+	}
+	_result := &_BACnetConstructedDataLoopAction{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Action:                        action,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLoopAction) GetActualValue() BACnetActionTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLoopAction factory function for _BACnetConstructedDataLoopAction
-func NewBACnetConstructedDataLoopAction(action BACnetActionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopAction {
-	if action == nil {
-		panic("action of type BACnetActionTagged for BACnetConstructedDataLoopAction must not be nil")
-	}
-	_result := &_BACnetConstructedDataLoopAction{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Action:                        action,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLoopAction(structType any) BACnetConstructedDataLoopAction {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoopAction) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataLoopAction) IsBACnetConstructedDataLoopAction() {}
+
+func (m *_BACnetConstructedDataLoopAction) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoopAction) deepCopy() *_BACnetConstructedDataLoopAction {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoopActionCopy := &_BACnetConstructedDataLoopAction{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Action.DeepCopy().(BACnetActionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoopActionCopy
+}
 
 func (m *_BACnetConstructedDataLoopAction) String() string {
 	if m == nil {

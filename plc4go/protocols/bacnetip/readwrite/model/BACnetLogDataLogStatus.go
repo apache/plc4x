@@ -38,6 +38,7 @@ type BACnetLogDataLogStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogData
 	// GetLogStatus returns LogStatus (property field)
 	GetLogStatus() BACnetLogStatusTagged
@@ -53,6 +54,19 @@ type _BACnetLogDataLogStatus struct {
 
 var _ BACnetLogDataLogStatus = (*_BACnetLogDataLogStatus)(nil)
 var _ BACnetLogDataRequirements = (*_BACnetLogDataLogStatus)(nil)
+
+// NewBACnetLogDataLogStatus factory function for _BACnetLogDataLogStatus
+func NewBACnetLogDataLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logStatus BACnetLogStatusTagged, tagNumber uint8) *_BACnetLogDataLogStatus {
+	if logStatus == nil {
+		panic("logStatus of type BACnetLogStatusTagged for BACnetLogDataLogStatus must not be nil")
+	}
+	_result := &_BACnetLogDataLogStatus{
+		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		LogStatus:             logStatus,
+	}
+	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogDataLogStatus) GetLogStatus() BACnetLogStatusTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogStatus factory function for _BACnetLogDataLogStatus
-func NewBACnetLogDataLogStatus(logStatus BACnetLogStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogStatus {
-	if logStatus == nil {
-		panic("logStatus of type BACnetLogStatusTagged for BACnetLogDataLogStatus must not be nil")
-	}
-	_result := &_BACnetLogDataLogStatus{
-		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
-		LogStatus:             logStatus,
-	}
-	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogStatus(structType any) BACnetLogDataLogStatus {
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogStatus) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetLogDataLogStatus) IsBACnetLogDataLogStatus() {}
+
+func (m *_BACnetLogDataLogStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogStatus) deepCopy() *_BACnetLogDataLogStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogStatusCopy := &_BACnetLogDataLogStatus{
+		m.BACnetLogDataContract.(*_BACnetLogData).deepCopy(),
+		m.LogStatus.DeepCopy().(BACnetLogStatusTagged),
+	}
+	m.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
+	return _BACnetLogDataLogStatusCopy
+}
 
 func (m *_BACnetLogDataLogStatus) String() string {
 	if m == nil {

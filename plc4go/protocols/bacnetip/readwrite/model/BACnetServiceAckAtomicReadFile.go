@@ -38,6 +38,7 @@ type BACnetServiceAckAtomicReadFile interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetEndOfFile returns EndOfFile (property field)
 	GetEndOfFile() BACnetApplicationTagBoolean
@@ -56,6 +57,23 @@ type _BACnetServiceAckAtomicReadFile struct {
 
 var _ BACnetServiceAckAtomicReadFile = (*_BACnetServiceAckAtomicReadFile)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicReadFile)(nil)
+
+// NewBACnetServiceAckAtomicReadFile factory function for _BACnetServiceAckAtomicReadFile
+func NewBACnetServiceAckAtomicReadFile(endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord, serviceAckLength uint32) *_BACnetServiceAckAtomicReadFile {
+	if endOfFile == nil {
+		panic("endOfFile of type BACnetApplicationTagBoolean for BACnetServiceAckAtomicReadFile must not be nil")
+	}
+	if accessMethod == nil {
+		panic("accessMethod of type BACnetServiceAckAtomicReadFileStreamOrRecord for BACnetServiceAckAtomicReadFile must not be nil")
+	}
+	_result := &_BACnetServiceAckAtomicReadFile{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		EndOfFile:                endOfFile,
+		AccessMethod:             accessMethod,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_BACnetServiceAckAtomicReadFile) GetAccessMethod() BACnetServiceAckAtom
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckAtomicReadFile factory function for _BACnetServiceAckAtomicReadFile
-func NewBACnetServiceAckAtomicReadFile(endOfFile BACnetApplicationTagBoolean, accessMethod BACnetServiceAckAtomicReadFileStreamOrRecord, serviceAckLength uint32) *_BACnetServiceAckAtomicReadFile {
-	if endOfFile == nil {
-		panic("endOfFile of type BACnetApplicationTagBoolean for BACnetServiceAckAtomicReadFile must not be nil")
-	}
-	if accessMethod == nil {
-		panic("accessMethod of type BACnetServiceAckAtomicReadFileStreamOrRecord for BACnetServiceAckAtomicReadFile must not be nil")
-	}
-	_result := &_BACnetServiceAckAtomicReadFile{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		EndOfFile:                endOfFile,
-		AccessMethod:             accessMethod,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckAtomicReadFile(structType any) BACnetServiceAckAtomicReadFile {
@@ -206,6 +207,23 @@ func (m *_BACnetServiceAckAtomicReadFile) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetServiceAckAtomicReadFile) IsBACnetServiceAckAtomicReadFile() {}
+
+func (m *_BACnetServiceAckAtomicReadFile) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAtomicReadFile) deepCopy() *_BACnetServiceAckAtomicReadFile {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAtomicReadFileCopy := &_BACnetServiceAckAtomicReadFile{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.EndOfFile.DeepCopy().(BACnetApplicationTagBoolean),
+		m.AccessMethod.DeepCopy().(BACnetServiceAckAtomicReadFileStreamOrRecord),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckAtomicReadFileCopy
+}
 
 func (m *_BACnetServiceAckAtomicReadFile) String() string {
 	if m == nil {

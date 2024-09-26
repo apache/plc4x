@@ -38,6 +38,7 @@ type ModifySubscriptionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -71,6 +72,25 @@ type _ModifySubscriptionRequest struct {
 
 var _ ModifySubscriptionRequest = (*_ModifySubscriptionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModifySubscriptionRequest)(nil)
+
+// NewModifySubscriptionRequest factory function for _ModifySubscriptionRequest
+func NewModifySubscriptionRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, priority uint8) *_ModifySubscriptionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ModifySubscriptionRequest must not be nil")
+	}
+	_result := &_ModifySubscriptionRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		RequestedPublishingInterval:       requestedPublishingInterval,
+		RequestedLifetimeCount:            requestedLifetimeCount,
+		RequestedMaxKeepAliveCount:        requestedMaxKeepAliveCount,
+		MaxNotificationsPerPublish:        maxNotificationsPerPublish,
+		Priority:                          priority,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,25 +147,6 @@ func (m *_ModifySubscriptionRequest) GetPriority() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModifySubscriptionRequest factory function for _ModifySubscriptionRequest
-func NewModifySubscriptionRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, priority uint8) *_ModifySubscriptionRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ModifySubscriptionRequest must not be nil")
-	}
-	_result := &_ModifySubscriptionRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		RequestedPublishingInterval:       requestedPublishingInterval,
-		RequestedLifetimeCount:            requestedLifetimeCount,
-		RequestedMaxKeepAliveCount:        requestedMaxKeepAliveCount,
-		MaxNotificationsPerPublish:        maxNotificationsPerPublish,
-		Priority:                          priority,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModifySubscriptionRequest(structType any) ModifySubscriptionRequest {
@@ -308,6 +309,28 @@ func (m *_ModifySubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_ModifySubscriptionRequest) IsModifySubscriptionRequest() {}
+
+func (m *_ModifySubscriptionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModifySubscriptionRequest) deepCopy() *_ModifySubscriptionRequest {
+	if m == nil {
+		return nil
+	}
+	_ModifySubscriptionRequestCopy := &_ModifySubscriptionRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.RequestedPublishingInterval,
+		m.RequestedLifetimeCount,
+		m.RequestedMaxKeepAliveCount,
+		m.MaxNotificationsPerPublish,
+		m.Priority,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModifySubscriptionRequestCopy
+}
 
 func (m *_ModifySubscriptionRequest) String() string {
 	if m == nil {

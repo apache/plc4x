@@ -38,6 +38,7 @@ type AdsReadStateResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -59,6 +60,18 @@ type _AdsReadStateResponse struct {
 
 var _ AdsReadStateResponse = (*_AdsReadStateResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsReadStateResponse)(nil)
+
+// NewAdsReadStateResponse factory function for _AdsReadStateResponse
+func NewAdsReadStateResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, adsState uint16, deviceState uint16) *_AdsReadStateResponse {
+	_result := &_AdsReadStateResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:            result,
+		AdsState:          adsState,
+		DeviceState:       deviceState,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,18 +116,6 @@ func (m *_AdsReadStateResponse) GetDeviceState() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsReadStateResponse factory function for _AdsReadStateResponse
-func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uint16, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadStateResponse {
-	_result := &_AdsReadStateResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:            result,
-		AdsState:          adsState,
-		DeviceState:       deviceState,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsReadStateResponse(structType any) AdsReadStateResponse {
@@ -225,6 +226,24 @@ func (m *_AdsReadStateResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_AdsReadStateResponse) IsAdsReadStateResponse() {}
+
+func (m *_AdsReadStateResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadStateResponse) deepCopy() *_AdsReadStateResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsReadStateResponseCopy := &_AdsReadStateResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Result,
+		m.AdsState,
+		m.DeviceState,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadStateResponseCopy
+}
 
 func (m *_AdsReadStateResponse) String() string {
 	if m == nil {

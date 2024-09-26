@@ -38,6 +38,7 @@ type BACnetConstructedDataDateTimePatternValuePresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetDateTime
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDateTimePatternValuePresentValue struct {
 
 var _ BACnetConstructedDataDateTimePatternValuePresentValue = (*_BACnetConstructedDataDateTimePatternValuePresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDateTimePatternValuePresentValue)(nil)
+
+// NewBACnetConstructedDataDateTimePatternValuePresentValue factory function for _BACnetConstructedDataDateTimePatternValuePresentValue
+func NewBACnetConstructedDataDateTimePatternValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimePatternValuePresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetDateTime for BACnetConstructedDataDateTimePatternValuePresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataDateTimePatternValuePresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) GetActualValue(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDateTimePatternValuePresentValue factory function for _BACnetConstructedDataDateTimePatternValuePresentValue
-func NewBACnetConstructedDataDateTimePatternValuePresentValue(presentValue BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimePatternValuePresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetDateTime for BACnetConstructedDataDateTimePatternValuePresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataDateTimePatternValuePresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDateTimePatternValuePresentValue(structType any) BACnetConstructedDataDateTimePatternValuePresentValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) SerializeWithWr
 }
 
 func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) IsBACnetConstructedDataDateTimePatternValuePresentValue() {
+}
+
+func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) deepCopy() *_BACnetConstructedDataDateTimePatternValuePresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDateTimePatternValuePresentValueCopy := &_BACnetConstructedDataDateTimePatternValuePresentValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PresentValue.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDateTimePatternValuePresentValueCopy
 }
 
 func (m *_BACnetConstructedDataDateTimePatternValuePresentValue) String() string {

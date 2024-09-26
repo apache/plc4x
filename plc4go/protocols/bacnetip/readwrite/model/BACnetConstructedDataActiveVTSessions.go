@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveVTSessions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveVTSession returns ActiveVTSession (property field)
 	GetActiveVTSession() []BACnetVTSession
@@ -53,6 +54,16 @@ type _BACnetConstructedDataActiveVTSessions struct {
 
 var _ BACnetConstructedDataActiveVTSessions = (*_BACnetConstructedDataActiveVTSessions)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveVTSessions)(nil)
+
+// NewBACnetConstructedDataActiveVTSessions factory function for _BACnetConstructedDataActiveVTSessions
+func NewBACnetConstructedDataActiveVTSessions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeVTSession []BACnetVTSession, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveVTSessions {
+	_result := &_BACnetConstructedDataActiveVTSessions{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveVTSession:               activeVTSession,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetActiveVTSession() []BACnetVT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveVTSessions factory function for _BACnetConstructedDataActiveVTSessions
-func NewBACnetConstructedDataActiveVTSessions(activeVTSession []BACnetVTSession, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveVTSessions {
-	_result := &_BACnetConstructedDataActiveVTSessions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveVTSession:               activeVTSession,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveVTSessions(structType any) BACnetConstructedDataActiveVTSessions {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataActiveVTSessions) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataActiveVTSessions) IsBACnetConstructedDataActiveVTSessions() {}
+
+func (m *_BACnetConstructedDataActiveVTSessions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveVTSessions) deepCopy() *_BACnetConstructedDataActiveVTSessions {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveVTSessionsCopy := &_BACnetConstructedDataActiveVTSessions{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetVTSession, BACnetVTSession](m.ActiveVTSession),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveVTSessionsCopy
+}
 
 func (m *_BACnetConstructedDataActiveVTSessions) String() string {
 	if m == nil {

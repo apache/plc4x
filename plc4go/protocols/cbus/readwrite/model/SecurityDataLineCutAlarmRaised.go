@@ -36,6 +36,7 @@ type SecurityDataLineCutAlarmRaised interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataLineCutAlarmRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLineCutAlarmRaised()
@@ -49,6 +50,15 @@ type _SecurityDataLineCutAlarmRaised struct {
 var _ SecurityDataLineCutAlarmRaised = (*_SecurityDataLineCutAlarmRaised)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataLineCutAlarmRaised)(nil)
 
+// NewSecurityDataLineCutAlarmRaised factory function for _SecurityDataLineCutAlarmRaised
+func NewSecurityDataLineCutAlarmRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLineCutAlarmRaised {
+	_result := &_SecurityDataLineCutAlarmRaised{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataLineCutAlarmRaised)(nil)
 
 func (m *_SecurityDataLineCutAlarmRaised) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataLineCutAlarmRaised factory function for _SecurityDataLineCutAlarmRaised
-func NewSecurityDataLineCutAlarmRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLineCutAlarmRaised {
-	_result := &_SecurityDataLineCutAlarmRaised{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataLineCutAlarmRaised) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_SecurityDataLineCutAlarmRaised) IsSecurityDataLineCutAlarmRaised() {}
+
+func (m *_SecurityDataLineCutAlarmRaised) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataLineCutAlarmRaised) deepCopy() *_SecurityDataLineCutAlarmRaised {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataLineCutAlarmRaisedCopy := &_SecurityDataLineCutAlarmRaised{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataLineCutAlarmRaisedCopy
+}
 
 func (m *_SecurityDataLineCutAlarmRaised) String() string {
 	if m == nil {

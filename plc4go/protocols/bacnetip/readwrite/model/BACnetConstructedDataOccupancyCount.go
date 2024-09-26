@@ -38,6 +38,7 @@ type BACnetConstructedDataOccupancyCount interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOccupancyCount returns OccupancyCount (property field)
 	GetOccupancyCount() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataOccupancyCount struct {
 
 var _ BACnetConstructedDataOccupancyCount = (*_BACnetConstructedDataOccupancyCount)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyCount)(nil)
+
+// NewBACnetConstructedDataOccupancyCount factory function for _BACnetConstructedDataOccupancyCount
+func NewBACnetConstructedDataOccupancyCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCount {
+	if occupancyCount == nil {
+		panic("occupancyCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataOccupancyCount must not be nil")
+	}
+	_result := &_BACnetConstructedDataOccupancyCount{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OccupancyCount:                occupancyCount,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataOccupancyCount) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOccupancyCount factory function for _BACnetConstructedDataOccupancyCount
-func NewBACnetConstructedDataOccupancyCount(occupancyCount BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCount {
-	if occupancyCount == nil {
-		panic("occupancyCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataOccupancyCount must not be nil")
-	}
-	_result := &_BACnetConstructedDataOccupancyCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OccupancyCount:                occupancyCount,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOccupancyCount(structType any) BACnetConstructedDataOccupancyCount {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOccupancyCount) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataOccupancyCount) IsBACnetConstructedDataOccupancyCount() {}
+
+func (m *_BACnetConstructedDataOccupancyCount) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOccupancyCount) deepCopy() *_BACnetConstructedDataOccupancyCount {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOccupancyCountCopy := &_BACnetConstructedDataOccupancyCount{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.OccupancyCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOccupancyCountCopy
+}
 
 func (m *_BACnetConstructedDataOccupancyCount) String() string {
 	if m == nil {

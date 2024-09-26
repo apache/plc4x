@@ -38,6 +38,7 @@ type BACnetConstructedDataMaintenanceRequired interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaintenanceRequired returns MaintenanceRequired (property field)
 	GetMaintenanceRequired() BACnetMaintenanceTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataMaintenanceRequired struct {
 
 var _ BACnetConstructedDataMaintenanceRequired = (*_BACnetConstructedDataMaintenanceRequired)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaintenanceRequired)(nil)
+
+// NewBACnetConstructedDataMaintenanceRequired factory function for _BACnetConstructedDataMaintenanceRequired
+func NewBACnetConstructedDataMaintenanceRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maintenanceRequired BACnetMaintenanceTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaintenanceRequired {
+	if maintenanceRequired == nil {
+		panic("maintenanceRequired of type BACnetMaintenanceTagged for BACnetConstructedDataMaintenanceRequired must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaintenanceRequired{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaintenanceRequired:           maintenanceRequired,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataMaintenanceRequired) GetActualValue() BACnetMaint
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaintenanceRequired factory function for _BACnetConstructedDataMaintenanceRequired
-func NewBACnetConstructedDataMaintenanceRequired(maintenanceRequired BACnetMaintenanceTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaintenanceRequired {
-	if maintenanceRequired == nil {
-		panic("maintenanceRequired of type BACnetMaintenanceTagged for BACnetConstructedDataMaintenanceRequired must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaintenanceRequired{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaintenanceRequired:           maintenanceRequired,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaintenanceRequired(structType any) BACnetConstructedDataMaintenanceRequired {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMaintenanceRequired) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataMaintenanceRequired) IsBACnetConstructedDataMaintenanceRequired() {}
+
+func (m *_BACnetConstructedDataMaintenanceRequired) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaintenanceRequired) deepCopy() *_BACnetConstructedDataMaintenanceRequired {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaintenanceRequiredCopy := &_BACnetConstructedDataMaintenanceRequired{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MaintenanceRequired.DeepCopy().(BACnetMaintenanceTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaintenanceRequiredCopy
+}
 
 func (m *_BACnetConstructedDataMaintenanceRequired) String() string {
 	if m == nil {

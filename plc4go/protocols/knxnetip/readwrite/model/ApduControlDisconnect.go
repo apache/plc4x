@@ -36,6 +36,7 @@ type ApduControlDisconnect interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduControl
 	// IsApduControlDisconnect is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControlDisconnect()
@@ -48,6 +49,15 @@ type _ApduControlDisconnect struct {
 
 var _ ApduControlDisconnect = (*_ApduControlDisconnect)(nil)
 var _ ApduControlRequirements = (*_ApduControlDisconnect)(nil)
+
+// NewApduControlDisconnect factory function for _ApduControlDisconnect
+func NewApduControlDisconnect() *_ApduControlDisconnect {
+	_result := &_ApduControlDisconnect{
+		ApduControlContract: NewApduControl(),
+	}
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduControlDisconnect) GetControlType() uint8 {
 
 func (m *_ApduControlDisconnect) GetParent() ApduControlContract {
 	return m.ApduControlContract
-}
-
-// NewApduControlDisconnect factory function for _ApduControlDisconnect
-func NewApduControlDisconnect() *_ApduControlDisconnect {
-	_result := &_ApduControlDisconnect{
-		ApduControlContract: NewApduControl(),
-	}
-	_result.ApduControlContract.(*_ApduControl)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduControlDisconnect) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_ApduControlDisconnect) IsApduControlDisconnect() {}
+
+func (m *_ApduControlDisconnect) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlDisconnect) deepCopy() *_ApduControlDisconnect {
+	if m == nil {
+		return nil
+	}
+	_ApduControlDisconnectCopy := &_ApduControlDisconnect{
+		m.ApduControlContract.(*_ApduControl).deepCopy(),
+	}
+	m.ApduControlContract.(*_ApduControl)._SubType = m
+	return _ApduControlDisconnectCopy
+}
 
 func (m *_ApduControlDisconnect) String() string {
 	if m == nil {

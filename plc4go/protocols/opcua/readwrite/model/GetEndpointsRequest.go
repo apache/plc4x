@@ -38,6 +38,7 @@ type GetEndpointsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -68,6 +69,27 @@ type _GetEndpointsRequest struct {
 
 var _ GetEndpointsRequest = (*_GetEndpointsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_GetEndpointsRequest)(nil)
+
+// NewGetEndpointsRequest factory function for _GetEndpointsRequest
+func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) *_GetEndpointsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for GetEndpointsRequest must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for GetEndpointsRequest must not be nil")
+	}
+	_result := &_GetEndpointsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		EndpointUrl:                       endpointUrl,
+		NoOfLocaleIds:                     noOfLocaleIds,
+		LocaleIds:                         localeIds,
+		NoOfProfileUris:                   noOfProfileUris,
+		ProfileUris:                       profileUris,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,27 +142,6 @@ func (m *_GetEndpointsRequest) GetProfileUris() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGetEndpointsRequest factory function for _GetEndpointsRequest
-func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) *_GetEndpointsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for GetEndpointsRequest must not be nil")
-	}
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for GetEndpointsRequest must not be nil")
-	}
-	_result := &_GetEndpointsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		EndpointUrl:                       endpointUrl,
-		NoOfLocaleIds:                     noOfLocaleIds,
-		LocaleIds:                         localeIds,
-		NoOfProfileUris:                   noOfProfileUris,
-		ProfileUris:                       profileUris,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGetEndpointsRequest(structType any) GetEndpointsRequest {
@@ -304,6 +305,27 @@ func (m *_GetEndpointsRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_GetEndpointsRequest) IsGetEndpointsRequest() {}
+
+func (m *_GetEndpointsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetEndpointsRequest) deepCopy() *_GetEndpointsRequest {
+	if m == nil {
+		return nil
+	}
+	_GetEndpointsRequestCopy := &_GetEndpointsRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.NoOfLocaleIds,
+		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
+		m.NoOfProfileUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.ProfileUris),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _GetEndpointsRequestCopy
+}
 
 func (m *_GetEndpointsRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type AssociatedValueType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
@@ -59,6 +60,11 @@ type _AssociatedValueType struct {
 }
 
 var _ AssociatedValueType = (*_AssociatedValueType)(nil)
+
+// NewAssociatedValueType factory function for _AssociatedValueType
+func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedValueType {
+	return &_AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +91,6 @@ func (m *_AssociatedValueType) GetData() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAssociatedValueType factory function for _AssociatedValueType
-func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedValueType {
-	return &_AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAssociatedValueType(structType any) AssociatedValueType {
@@ -228,6 +229,23 @@ func (m *_AssociatedValueType) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_AssociatedValueType) IsAssociatedValueType() {}
+
+func (m *_AssociatedValueType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AssociatedValueType) deepCopy() *_AssociatedValueType {
+	if m == nil {
+		return nil
+	}
+	_AssociatedValueTypeCopy := &_AssociatedValueType{
+		m.ReturnCode,
+		m.TransportSize,
+		m.ValueLength,
+		utils.DeepCopySlice[uint8, uint8](m.Data),
+	}
+	return _AssociatedValueTypeCopy
+}
 
 func (m *_AssociatedValueType) String() string {
 	if m == nil {

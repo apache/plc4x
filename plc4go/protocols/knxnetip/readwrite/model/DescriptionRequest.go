@@ -40,6 +40,7 @@ type DescriptionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
@@ -55,6 +56,19 @@ type _DescriptionRequest struct {
 
 var _ DescriptionRequest = (*_DescriptionRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_DescriptionRequest)(nil)
+
+// NewDescriptionRequest factory function for _DescriptionRequest
+func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_DescriptionRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DescriptionRequest must not be nil")
+	}
+	_result := &_DescriptionRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +101,6 @@ func (m *_DescriptionRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDescriptionRequest factory function for _DescriptionRequest
-func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_DescriptionRequest {
-	if hpaiControlEndpoint == nil {
-		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DescriptionRequest must not be nil")
-	}
-	_result := &_DescriptionRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		HpaiControlEndpoint:     hpaiControlEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDescriptionRequest(structType any) DescriptionRequest {
@@ -184,6 +185,22 @@ func (m *_DescriptionRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_DescriptionRequest) IsDescriptionRequest() {}
+
+func (m *_DescriptionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DescriptionRequest) deepCopy() *_DescriptionRequest {
+	if m == nil {
+		return nil
+	}
+	_DescriptionRequestCopy := &_DescriptionRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DescriptionRequestCopy
+}
 
 func (m *_DescriptionRequest) String() string {
 	if m == nil {

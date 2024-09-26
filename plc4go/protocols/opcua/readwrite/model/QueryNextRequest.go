@@ -38,6 +38,7 @@ type QueryNextRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -61,6 +62,24 @@ type _QueryNextRequest struct {
 
 var _ QueryNextRequest = (*_QueryNextRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryNextRequest)(nil)
+
+// NewQueryNextRequest factory function for _QueryNextRequest
+func NewQueryNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) *_QueryNextRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for QueryNextRequest must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for QueryNextRequest must not be nil")
+	}
+	_result := &_QueryNextRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ReleaseContinuationPoint:          releaseContinuationPoint,
+		ContinuationPoint:                 continuationPoint,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,24 +120,6 @@ func (m *_QueryNextRequest) GetContinuationPoint() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryNextRequest factory function for _QueryNextRequest
-func NewQueryNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) *_QueryNextRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for QueryNextRequest must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for QueryNextRequest must not be nil")
-	}
-	_result := &_QueryNextRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		ReleaseContinuationPoint:          releaseContinuationPoint,
-		ContinuationPoint:                 continuationPoint,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryNextRequest(structType any) QueryNextRequest {
@@ -242,6 +243,25 @@ func (m *_QueryNextRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_QueryNextRequest) IsQueryNextRequest() {}
+
+func (m *_QueryNextRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryNextRequest) deepCopy() *_QueryNextRequest {
+	if m == nil {
+		return nil
+	}
+	_QueryNextRequestCopy := &_QueryNextRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ReleaseContinuationPoint,
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryNextRequestCopy
+}
 
 func (m *_QueryNextRequest) String() string {
 	if m == nil {

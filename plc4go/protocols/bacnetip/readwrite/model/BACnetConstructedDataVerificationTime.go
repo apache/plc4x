@@ -38,6 +38,7 @@ type BACnetConstructedDataVerificationTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVerificationTime returns VerificationTime (property field)
 	GetVerificationTime() BACnetApplicationTagSignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataVerificationTime struct {
 
 var _ BACnetConstructedDataVerificationTime = (*_BACnetConstructedDataVerificationTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVerificationTime)(nil)
+
+// NewBACnetConstructedDataVerificationTime factory function for _BACnetConstructedDataVerificationTime
+func NewBACnetConstructedDataVerificationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, verificationTime BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVerificationTime {
+	if verificationTime == nil {
+		panic("verificationTime of type BACnetApplicationTagSignedInteger for BACnetConstructedDataVerificationTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataVerificationTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VerificationTime:              verificationTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataVerificationTime) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVerificationTime factory function for _BACnetConstructedDataVerificationTime
-func NewBACnetConstructedDataVerificationTime(verificationTime BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVerificationTime {
-	if verificationTime == nil {
-		panic("verificationTime of type BACnetApplicationTagSignedInteger for BACnetConstructedDataVerificationTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataVerificationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VerificationTime:              verificationTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVerificationTime(structType any) BACnetConstructedDataVerificationTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataVerificationTime) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataVerificationTime) IsBACnetConstructedDataVerificationTime() {}
+
+func (m *_BACnetConstructedDataVerificationTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVerificationTime) deepCopy() *_BACnetConstructedDataVerificationTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVerificationTimeCopy := &_BACnetConstructedDataVerificationTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.VerificationTime.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVerificationTimeCopy
+}
 
 func (m *_BACnetConstructedDataVerificationTime) String() string {
 	if m == nil {

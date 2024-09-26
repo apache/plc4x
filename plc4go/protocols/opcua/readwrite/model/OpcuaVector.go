@@ -36,6 +36,7 @@ type OpcuaVector interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsOpcuaVector is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaVector()
@@ -48,6 +49,15 @@ type _OpcuaVector struct {
 
 var _ OpcuaVector = (*_OpcuaVector)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_OpcuaVector)(nil)
+
+// NewOpcuaVector factory function for _OpcuaVector
+func NewOpcuaVector() *_OpcuaVector {
+	_result := &_OpcuaVector{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_OpcuaVector) GetIdentifier() string {
 
 func (m *_OpcuaVector) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewOpcuaVector factory function for _OpcuaVector
-func NewOpcuaVector() *_OpcuaVector {
-	_result := &_OpcuaVector{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_OpcuaVector) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_OpcuaVector) IsOpcuaVector() {}
+
+func (m *_OpcuaVector) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaVector) deepCopy() *_OpcuaVector {
+	if m == nil {
+		return nil
+	}
+	_OpcuaVectorCopy := &_OpcuaVector{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _OpcuaVectorCopy
+}
 
 func (m *_OpcuaVector) String() string {
 	if m == nil {

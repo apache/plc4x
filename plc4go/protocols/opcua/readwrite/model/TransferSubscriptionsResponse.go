@@ -38,6 +38,7 @@ type TransferSubscriptionsResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _TransferSubscriptionsResponse struct {
 
 var _ TransferSubscriptionsResponse = (*_TransferSubscriptionsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TransferSubscriptionsResponse)(nil)
+
+// NewTransferSubscriptionsResponse factory function for _TransferSubscriptionsResponse
+func NewTransferSubscriptionsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_TransferSubscriptionsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for TransferSubscriptionsResponse must not be nil")
+	}
+	_result := &_TransferSubscriptionsResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_TransferSubscriptionsResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransferSubscriptionsResponse factory function for _TransferSubscriptionsResponse
-func NewTransferSubscriptionsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_TransferSubscriptionsResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for TransferSubscriptionsResponse must not be nil")
-	}
-	_result := &_TransferSubscriptionsResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransferSubscriptionsResponse(structType any) TransferSubscriptionsResponse {
@@ -280,6 +281,26 @@ func (m *_TransferSubscriptionsResponse) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_TransferSubscriptionsResponse) IsTransferSubscriptionsResponse() {}
+
+func (m *_TransferSubscriptionsResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransferSubscriptionsResponse) deepCopy() *_TransferSubscriptionsResponse {
+	if m == nil {
+		return nil
+	}
+	_TransferSubscriptionsResponseCopy := &_TransferSubscriptionsResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TransferSubscriptionsResponseCopy
+}
 
 func (m *_TransferSubscriptionsResponse) String() string {
 	if m == nil {

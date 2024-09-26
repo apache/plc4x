@@ -38,6 +38,7 @@ type Confirmation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAlpha returns Alpha (property field)
 	GetAlpha() Alpha
 	// GetSecondAlpha returns SecondAlpha (property field)
@@ -58,6 +59,14 @@ type _Confirmation struct {
 }
 
 var _ Confirmation = (*_Confirmation)(nil)
+
+// NewConfirmation factory function for _Confirmation
+func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType ConfirmationType) *_Confirmation {
+	if alpha == nil {
+		panic("alpha of type Alpha for Confirmation must not be nil")
+	}
+	return &_Confirmation{Alpha: alpha, SecondAlpha: secondAlpha, ConfirmationType: confirmationType}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,14 +106,6 @@ func (m *_Confirmation) GetIsSuccess() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConfirmation factory function for _Confirmation
-func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType ConfirmationType) *_Confirmation {
-	if alpha == nil {
-		panic("alpha of type Alpha for Confirmation must not be nil")
-	}
-	return &_Confirmation{Alpha: alpha, SecondAlpha: secondAlpha, ConfirmationType: confirmationType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastConfirmation(structType any) Confirmation {
@@ -248,6 +249,22 @@ func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_Confirmation) IsConfirmation() {}
+
+func (m *_Confirmation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Confirmation) deepCopy() *_Confirmation {
+	if m == nil {
+		return nil
+	}
+	_ConfirmationCopy := &_Confirmation{
+		m.Alpha.DeepCopy().(Alpha),
+		m.SecondAlpha.DeepCopy().(Alpha),
+		m.ConfirmationType,
+	}
+	return _ConfirmationCopy
+}
 
 func (m *_Confirmation) String() string {
 	if m == nil {

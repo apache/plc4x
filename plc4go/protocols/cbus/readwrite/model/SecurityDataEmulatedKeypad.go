@@ -38,6 +38,7 @@ type SecurityDataEmulatedKeypad interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetKey returns Key (property field)
 	GetKey() byte
@@ -75,6 +76,16 @@ type _SecurityDataEmulatedKeypad struct {
 
 var _ SecurityDataEmulatedKeypad = (*_SecurityDataEmulatedKeypad)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataEmulatedKeypad)(nil)
+
+// NewSecurityDataEmulatedKeypad factory function for _SecurityDataEmulatedKeypad
+func NewSecurityDataEmulatedKeypad(commandTypeContainer SecurityCommandTypeContainer, argument byte, key byte) *_SecurityDataEmulatedKeypad {
+	_result := &_SecurityDataEmulatedKeypad{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Key:                  key,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -178,16 +189,6 @@ func (m *_SecurityDataEmulatedKeypad) GetIsVacation() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataEmulatedKeypad factory function for _SecurityDataEmulatedKeypad
-func NewSecurityDataEmulatedKeypad(key byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataEmulatedKeypad {
-	_result := &_SecurityDataEmulatedKeypad{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Key:                  key,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataEmulatedKeypad(structType any) SecurityDataEmulatedKeypad {
@@ -426,6 +427,22 @@ func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SecurityDataEmulatedKeypad) IsSecurityDataEmulatedKeypad() {}
+
+func (m *_SecurityDataEmulatedKeypad) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataEmulatedKeypad) deepCopy() *_SecurityDataEmulatedKeypad {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataEmulatedKeypadCopy := &_SecurityDataEmulatedKeypad{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.Key,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataEmulatedKeypadCopy
+}
 
 func (m *_SecurityDataEmulatedKeypad) String() string {
 	if m == nil {

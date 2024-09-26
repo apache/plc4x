@@ -38,6 +38,7 @@ type TunnelingRequestDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
@@ -56,6 +57,11 @@ type _TunnelingRequestDataBlock struct {
 
 var _ TunnelingRequestDataBlock = (*_TunnelingRequestDataBlock)(nil)
 
+// NewTunnelingRequestDataBlock factory function for _TunnelingRequestDataBlock
+func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_TunnelingRequestDataBlock {
+	return &_TunnelingRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -73,11 +79,6 @@ func (m *_TunnelingRequestDataBlock) GetSequenceCounter() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingRequestDataBlock factory function for _TunnelingRequestDataBlock
-func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_TunnelingRequestDataBlock {
-	return &_TunnelingRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingRequestDataBlock(structType any) TunnelingRequestDataBlock {
@@ -214,6 +215,22 @@ func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_TunnelingRequestDataBlock) IsTunnelingRequestDataBlock() {}
+
+func (m *_TunnelingRequestDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TunnelingRequestDataBlock) deepCopy() *_TunnelingRequestDataBlock {
+	if m == nil {
+		return nil
+	}
+	_TunnelingRequestDataBlockCopy := &_TunnelingRequestDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.reservedField0,
+	}
+	return _TunnelingRequestDataBlockCopy
+}
 
 func (m *_TunnelingRequestDataBlock) String() string {
 	if m == nil {

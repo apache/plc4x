@@ -38,6 +38,7 @@ type BACnetConstructedDataStopWhenFull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStopWhenFull returns StopWhenFull (property field)
 	GetStopWhenFull() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataStopWhenFull struct {
 
 var _ BACnetConstructedDataStopWhenFull = (*_BACnetConstructedDataStopWhenFull)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStopWhenFull)(nil)
+
+// NewBACnetConstructedDataStopWhenFull factory function for _BACnetConstructedDataStopWhenFull
+func NewBACnetConstructedDataStopWhenFull(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, stopWhenFull BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStopWhenFull {
+	if stopWhenFull == nil {
+		panic("stopWhenFull of type BACnetApplicationTagBoolean for BACnetConstructedDataStopWhenFull must not be nil")
+	}
+	_result := &_BACnetConstructedDataStopWhenFull{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		StopWhenFull:                  stopWhenFull,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataStopWhenFull) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataStopWhenFull factory function for _BACnetConstructedDataStopWhenFull
-func NewBACnetConstructedDataStopWhenFull(stopWhenFull BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStopWhenFull {
-	if stopWhenFull == nil {
-		panic("stopWhenFull of type BACnetApplicationTagBoolean for BACnetConstructedDataStopWhenFull must not be nil")
-	}
-	_result := &_BACnetConstructedDataStopWhenFull{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		StopWhenFull:                  stopWhenFull,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataStopWhenFull(structType any) BACnetConstructedDataStopWhenFull {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataStopWhenFull) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataStopWhenFull) IsBACnetConstructedDataStopWhenFull() {}
+
+func (m *_BACnetConstructedDataStopWhenFull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStopWhenFull) deepCopy() *_BACnetConstructedDataStopWhenFull {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStopWhenFullCopy := &_BACnetConstructedDataStopWhenFull{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.StopWhenFull.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStopWhenFullCopy
+}
 
 func (m *_BACnetConstructedDataStopWhenFull) String() string {
 	if m == nil {

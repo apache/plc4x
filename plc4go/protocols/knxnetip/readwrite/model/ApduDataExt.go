@@ -40,6 +40,7 @@ type ApduDataExt interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApduDataExt is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExt()
 }
@@ -149,167 +150,167 @@ func (m *_ApduDataExt) parse(ctx context.Context, readBuffer utils.ReadBuffer, l
 	var _child ApduDataExt
 	switch {
 	case extApciType == 0x00: // ApduDataExtOpenRoutingTableRequest
-		if _child, err = (&_ApduDataExtOpenRoutingTableRequest{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtOpenRoutingTableRequest).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtOpenRoutingTableRequest for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x01: // ApduDataExtReadRoutingTableRequest
-		if _child, err = (&_ApduDataExtReadRoutingTableRequest{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtReadRoutingTableRequest).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtReadRoutingTableRequest for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x02: // ApduDataExtReadRoutingTableResponse
-		if _child, err = (&_ApduDataExtReadRoutingTableResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtReadRoutingTableResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtReadRoutingTableResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x03: // ApduDataExtWriteRoutingTableRequest
-		if _child, err = (&_ApduDataExtWriteRoutingTableRequest{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtWriteRoutingTableRequest).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtWriteRoutingTableRequest for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x08: // ApduDataExtReadRouterMemoryRequest
-		if _child, err = (&_ApduDataExtReadRouterMemoryRequest{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtReadRouterMemoryRequest).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtReadRouterMemoryRequest for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x09: // ApduDataExtReadRouterMemoryResponse
-		if _child, err = (&_ApduDataExtReadRouterMemoryResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtReadRouterMemoryResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtReadRouterMemoryResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x0A: // ApduDataExtWriteRouterMemoryRequest
-		if _child, err = (&_ApduDataExtWriteRouterMemoryRequest{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtWriteRouterMemoryRequest).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtWriteRouterMemoryRequest for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x0D: // ApduDataExtReadRouterStatusRequest
-		if _child, err = (&_ApduDataExtReadRouterStatusRequest{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtReadRouterStatusRequest).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtReadRouterStatusRequest for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x0E: // ApduDataExtReadRouterStatusResponse
-		if _child, err = (&_ApduDataExtReadRouterStatusResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtReadRouterStatusResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtReadRouterStatusResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x0F: // ApduDataExtWriteRouterStatusRequest
-		if _child, err = (&_ApduDataExtWriteRouterStatusRequest{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtWriteRouterStatusRequest).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtWriteRouterStatusRequest for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x10: // ApduDataExtMemoryBitWrite
-		if _child, err = (&_ApduDataExtMemoryBitWrite{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtMemoryBitWrite).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtMemoryBitWrite for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x11: // ApduDataExtAuthorizeRequest
-		if _child, err = (&_ApduDataExtAuthorizeRequest{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtAuthorizeRequest).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtAuthorizeRequest for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x12: // ApduDataExtAuthorizeResponse
-		if _child, err = (&_ApduDataExtAuthorizeResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtAuthorizeResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtAuthorizeResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x13: // ApduDataExtKeyWrite
-		if _child, err = (&_ApduDataExtKeyWrite{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtKeyWrite).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtKeyWrite for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x14: // ApduDataExtKeyResponse
-		if _child, err = (&_ApduDataExtKeyResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtKeyResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtKeyResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x15: // ApduDataExtPropertyValueRead
-		if _child, err = (&_ApduDataExtPropertyValueRead{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtPropertyValueRead).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtPropertyValueRead for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x16: // ApduDataExtPropertyValueResponse
-		if _child, err = (&_ApduDataExtPropertyValueResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtPropertyValueResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtPropertyValueResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x17: // ApduDataExtPropertyValueWrite
-		if _child, err = (&_ApduDataExtPropertyValueWrite{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtPropertyValueWrite).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtPropertyValueWrite for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x18: // ApduDataExtPropertyDescriptionRead
-		if _child, err = (&_ApduDataExtPropertyDescriptionRead{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtPropertyDescriptionRead).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtPropertyDescriptionRead for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x19: // ApduDataExtPropertyDescriptionResponse
-		if _child, err = (&_ApduDataExtPropertyDescriptionResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtPropertyDescriptionResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtPropertyDescriptionResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x1A: // ApduDataExtNetworkParameterRead
-		if _child, err = (&_ApduDataExtNetworkParameterRead{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtNetworkParameterRead).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtNetworkParameterRead for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x1B: // ApduDataExtNetworkParameterResponse
-		if _child, err = (&_ApduDataExtNetworkParameterResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtNetworkParameterResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtNetworkParameterResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x1C: // ApduDataExtIndividualAddressSerialNumberRead
-		if _child, err = (&_ApduDataExtIndividualAddressSerialNumberRead{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtIndividualAddressSerialNumberRead).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtIndividualAddressSerialNumberRead for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x1D: // ApduDataExtIndividualAddressSerialNumberResponse
-		if _child, err = (&_ApduDataExtIndividualAddressSerialNumberResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtIndividualAddressSerialNumberResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtIndividualAddressSerialNumberResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x1E: // ApduDataExtIndividualAddressSerialNumberWrite
-		if _child, err = (&_ApduDataExtIndividualAddressSerialNumberWrite{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtIndividualAddressSerialNumberWrite).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtIndividualAddressSerialNumberWrite for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x20: // ApduDataExtDomainAddressWrite
-		if _child, err = (&_ApduDataExtDomainAddressWrite{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtDomainAddressWrite).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtDomainAddressWrite for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x21: // ApduDataExtDomainAddressRead
-		if _child, err = (&_ApduDataExtDomainAddressRead{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtDomainAddressRead).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtDomainAddressRead for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x22: // ApduDataExtDomainAddressResponse
-		if _child, err = (&_ApduDataExtDomainAddressResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtDomainAddressResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtDomainAddressResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x23: // ApduDataExtDomainAddressSelectiveRead
-		if _child, err = (&_ApduDataExtDomainAddressSelectiveRead{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtDomainAddressSelectiveRead).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtDomainAddressSelectiveRead for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x24: // ApduDataExtNetworkParameterWrite
-		if _child, err = (&_ApduDataExtNetworkParameterWrite{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtNetworkParameterWrite).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtNetworkParameterWrite for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x25: // ApduDataExtLinkRead
-		if _child, err = (&_ApduDataExtLinkRead{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtLinkRead).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtLinkRead for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x26: // ApduDataExtLinkResponse
-		if _child, err = (&_ApduDataExtLinkResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtLinkResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtLinkResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x27: // ApduDataExtLinkWrite
-		if _child, err = (&_ApduDataExtLinkWrite{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtLinkWrite).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtLinkWrite for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x28: // ApduDataExtGroupPropertyValueRead
-		if _child, err = (&_ApduDataExtGroupPropertyValueRead{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtGroupPropertyValueRead).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtGroupPropertyValueRead for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x29: // ApduDataExtGroupPropertyValueResponse
-		if _child, err = (&_ApduDataExtGroupPropertyValueResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtGroupPropertyValueResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtGroupPropertyValueResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x2A: // ApduDataExtGroupPropertyValueWrite
-		if _child, err = (&_ApduDataExtGroupPropertyValueWrite{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtGroupPropertyValueWrite).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtGroupPropertyValueWrite for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x2B: // ApduDataExtGroupPropertyValueInfoReport
-		if _child, err = (&_ApduDataExtGroupPropertyValueInfoReport{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtGroupPropertyValueInfoReport).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtGroupPropertyValueInfoReport for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x2C: // ApduDataExtDomainAddressSerialNumberRead
-		if _child, err = (&_ApduDataExtDomainAddressSerialNumberRead{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtDomainAddressSerialNumberRead).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtDomainAddressSerialNumberRead for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x2D: // ApduDataExtDomainAddressSerialNumberResponse
-		if _child, err = (&_ApduDataExtDomainAddressSerialNumberResponse{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtDomainAddressSerialNumberResponse).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtDomainAddressSerialNumberResponse for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x2E: // ApduDataExtDomainAddressSerialNumberWrite
-		if _child, err = (&_ApduDataExtDomainAddressSerialNumberWrite{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtDomainAddressSerialNumberWrite).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtDomainAddressSerialNumberWrite for type-switch of ApduDataExt")
 		}
 	case extApciType == 0x30: // ApduDataExtFileStreamInfoReport
-		if _child, err = (&_ApduDataExtFileStreamInfoReport{}).parse(ctx, readBuffer, m, length); err != nil {
+		if _child, err = new(_ApduDataExtFileStreamInfoReport).parse(ctx, readBuffer, m, length); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataExtFileStreamInfoReport for type-switch of ApduDataExt")
 		}
 	default:
@@ -361,3 +362,18 @@ func (m *_ApduDataExt) GetLength() uint8 {
 ////
 
 func (m *_ApduDataExt) IsApduDataExt() {}
+
+func (m *_ApduDataExt) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExt) deepCopy() *_ApduDataExt {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtCopy := &_ApduDataExt{
+		nil, // will be set by child
+		m.Length,
+	}
+	return _ApduDataExtCopy
+}

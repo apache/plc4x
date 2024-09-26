@@ -38,6 +38,7 @@ type NLMRouterAvailableToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddresses returns DestinationNetworkAddresses (property field)
 	GetDestinationNetworkAddresses() []uint16
@@ -53,6 +54,16 @@ type _NLMRouterAvailableToNetwork struct {
 
 var _ NLMRouterAvailableToNetwork = (*_NLMRouterAvailableToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRouterAvailableToNetwork)(nil)
+
+// NewNLMRouterAvailableToNetwork factory function for _NLMRouterAvailableToNetwork
+func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterAvailableToNetwork {
+	_result := &_NLMRouterAvailableToNetwork{
+		NLMContract:                 NewNLM(apduLength),
+		DestinationNetworkAddresses: destinationNetworkAddresses,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_NLMRouterAvailableToNetwork) GetDestinationNetworkAddresses() []uint16
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRouterAvailableToNetwork factory function for _NLMRouterAvailableToNetwork
-func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterAvailableToNetwork {
-	_result := &_NLMRouterAvailableToNetwork{
-		NLMContract:                 NewNLM(apduLength),
-		DestinationNetworkAddresses: destinationNetworkAddresses,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRouterAvailableToNetwork(structType any) NLMRouterAvailableToNetwork {
@@ -181,6 +182,22 @@ func (m *_NLMRouterAvailableToNetwork) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_NLMRouterAvailableToNetwork) IsNLMRouterAvailableToNetwork() {}
+
+func (m *_NLMRouterAvailableToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRouterAvailableToNetwork) deepCopy() *_NLMRouterAvailableToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMRouterAvailableToNetworkCopy := &_NLMRouterAvailableToNetwork{
+		m.NLMContract.(*_NLM).deepCopy(),
+		utils.DeepCopySlice[uint16, uint16](m.DestinationNetworkAddresses),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRouterAvailableToNetworkCopy
+}
 
 func (m *_NLMRouterAvailableToNetwork) String() string {
 	if m == nil {

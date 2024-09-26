@@ -38,6 +38,7 @@ type MediaTransportControlDataTotalTracks interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetTotalTracksMSB returns TotalTracksMSB (property field)
 	GetTotalTracksMSB() byte
@@ -62,6 +63,19 @@ type _MediaTransportControlDataTotalTracks struct {
 
 var _ MediaTransportControlDataTotalTracks = (*_MediaTransportControlDataTotalTracks)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataTotalTracks)(nil)
+
+// NewMediaTransportControlDataTotalTracks factory function for _MediaTransportControlDataTotalTracks
+func NewMediaTransportControlDataTotalTracks(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte) *_MediaTransportControlDataTotalTracks {
+	_result := &_MediaTransportControlDataTotalTracks{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		TotalTracksMSB:                    totalTracksMSB,
+		TotalTracksMMSB:                   totalTracksMMSB,
+		TotalTracksMLSB:                   totalTracksMLSB,
+		TotalTracksLSB:                    totalTracksLSB,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,19 +116,6 @@ func (m *_MediaTransportControlDataTotalTracks) GetTotalTracksLSB() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataTotalTracks factory function for _MediaTransportControlDataTotalTracks
-func NewMediaTransportControlDataTotalTracks(totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataTotalTracks {
-	_result := &_MediaTransportControlDataTotalTracks{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		TotalTracksMSB:                    totalTracksMSB,
-		TotalTracksMMSB:                   totalTracksMMSB,
-		TotalTracksMLSB:                   totalTracksMLSB,
-		TotalTracksLSB:                    totalTracksLSB,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataTotalTracks(structType any) MediaTransportControlDataTotalTracks {
@@ -238,6 +239,25 @@ func (m *_MediaTransportControlDataTotalTracks) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataTotalTracks) IsMediaTransportControlDataTotalTracks() {}
+
+func (m *_MediaTransportControlDataTotalTracks) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataTotalTracks) deepCopy() *_MediaTransportControlDataTotalTracks {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataTotalTracksCopy := &_MediaTransportControlDataTotalTracks{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.TotalTracksMSB,
+		m.TotalTracksMMSB,
+		m.TotalTracksMLSB,
+		m.TotalTracksLSB,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataTotalTracksCopy
+}
 
 func (m *_MediaTransportControlDataTotalTracks) String() string {
 	if m == nil {

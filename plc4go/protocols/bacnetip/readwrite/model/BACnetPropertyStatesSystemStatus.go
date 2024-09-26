@@ -38,6 +38,7 @@ type BACnetPropertyStatesSystemStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetSystemStatus returns SystemStatus (property field)
 	GetSystemStatus() BACnetDeviceStatusTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesSystemStatus struct {
 
 var _ BACnetPropertyStatesSystemStatus = (*_BACnetPropertyStatesSystemStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesSystemStatus)(nil)
+
+// NewBACnetPropertyStatesSystemStatus factory function for _BACnetPropertyStatesSystemStatus
+func NewBACnetPropertyStatesSystemStatus(peekedTagHeader BACnetTagHeader, systemStatus BACnetDeviceStatusTagged) *_BACnetPropertyStatesSystemStatus {
+	if systemStatus == nil {
+		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetPropertyStatesSystemStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesSystemStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		SystemStatus:                 systemStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesSystemStatus) GetSystemStatus() BACnetDeviceStatus
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesSystemStatus factory function for _BACnetPropertyStatesSystemStatus
-func NewBACnetPropertyStatesSystemStatus(systemStatus BACnetDeviceStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesSystemStatus {
-	if systemStatus == nil {
-		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetPropertyStatesSystemStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesSystemStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		SystemStatus:                 systemStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesSystemStatus(structType any) BACnetPropertyStatesSystemStatus {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesSystemStatus) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetPropertyStatesSystemStatus) IsBACnetPropertyStatesSystemStatus() {}
+
+func (m *_BACnetPropertyStatesSystemStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesSystemStatus) deepCopy() *_BACnetPropertyStatesSystemStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesSystemStatusCopy := &_BACnetPropertyStatesSystemStatus{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.SystemStatus.DeepCopy().(BACnetDeviceStatusTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesSystemStatusCopy
+}
 
 func (m *_BACnetPropertyStatesSystemStatus) String() string {
 	if m == nil {

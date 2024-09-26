@@ -38,6 +38,7 @@ type BACnetPropertyStatesEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPropertyState returns PropertyState (property field)
@@ -60,6 +61,20 @@ type _BACnetPropertyStatesEnclosed struct {
 
 var _ BACnetPropertyStatesEnclosed = (*_BACnetPropertyStatesEnclosed)(nil)
 
+// NewBACnetPropertyStatesEnclosed factory function for _BACnetPropertyStatesEnclosed
+func NewBACnetPropertyStatesEnclosed(openingTag BACnetOpeningTag, propertyState BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetPropertyStatesEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetPropertyStatesEnclosed must not be nil")
+	}
+	if propertyState == nil {
+		panic("propertyState of type BACnetPropertyStates for BACnetPropertyStatesEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetPropertyStatesEnclosed must not be nil")
+	}
+	return &_BACnetPropertyStatesEnclosed{OpeningTag: openingTag, PropertyState: propertyState, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +96,6 @@ func (m *_BACnetPropertyStatesEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesEnclosed factory function for _BACnetPropertyStatesEnclosed
-func NewBACnetPropertyStatesEnclosed(openingTag BACnetOpeningTag, propertyState BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetPropertyStatesEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetPropertyStatesEnclosed must not be nil")
-	}
-	if propertyState == nil {
-		panic("propertyState of type BACnetPropertyStates for BACnetPropertyStatesEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetPropertyStatesEnclosed must not be nil")
-	}
-	return &_BACnetPropertyStatesEnclosed{OpeningTag: openingTag, PropertyState: propertyState, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesEnclosed(structType any) BACnetPropertyStatesEnclosed {
@@ -228,6 +229,23 @@ func (m *_BACnetPropertyStatesEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetPropertyStatesEnclosed) IsBACnetPropertyStatesEnclosed() {}
+
+func (m *_BACnetPropertyStatesEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEnclosed) deepCopy() *_BACnetPropertyStatesEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEnclosedCopy := &_BACnetPropertyStatesEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PropertyState.DeepCopy().(BACnetPropertyStates),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetPropertyStatesEnclosedCopy
+}
 
 func (m *_BACnetPropertyStatesEnclosed) String() string {
 	if m == nil {

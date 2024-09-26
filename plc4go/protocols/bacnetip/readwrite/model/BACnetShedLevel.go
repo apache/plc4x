@@ -40,6 +40,7 @@ type BACnetShedLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetShedLevel()
 }
@@ -70,6 +71,14 @@ type _BACnetShedLevel struct {
 
 var _ BACnetShedLevelContract = (*_BACnetShedLevel)(nil)
 
+// NewBACnetShedLevel factory function for _BACnetShedLevel
+func NewBACnetShedLevel(peekedTagHeader BACnetTagHeader) *_BACnetShedLevel {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetShedLevel must not be nil")
+	}
+	return &_BACnetShedLevel{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetShedLevel) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetShedLevel factory function for _BACnetShedLevel
-func NewBACnetShedLevel(peekedTagHeader BACnetTagHeader) *_BACnetShedLevel {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetShedLevel must not be nil")
-	}
-	return &_BACnetShedLevel{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetShedLevel(structType any) BACnetShedLevel {
@@ -189,15 +190,15 @@ func (m *_BACnetShedLevel) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetShedLevel
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetShedLevelPercent
-		if _child, err = (&_BACnetShedLevelPercent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetShedLevelPercent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelPercent for type-switch of BACnetShedLevel")
 		}
 	case peekedTagNumber == uint8(1): // BACnetShedLevelLevel
-		if _child, err = (&_BACnetShedLevelLevel{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetShedLevelLevel).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelLevel for type-switch of BACnetShedLevel")
 		}
 	case peekedTagNumber == uint8(2): // BACnetShedLevelAmount
-		if _child, err = (&_BACnetShedLevelAmount{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetShedLevelAmount).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelAmount for type-switch of BACnetShedLevel")
 		}
 	default:
@@ -241,3 +242,18 @@ func (pm *_BACnetShedLevel) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetShedLevel) IsBACnetShedLevel() {}
+
+func (m *_BACnetShedLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetShedLevel) deepCopy() *_BACnetShedLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetShedLevelCopy := &_BACnetShedLevel{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetShedLevelCopy
+}

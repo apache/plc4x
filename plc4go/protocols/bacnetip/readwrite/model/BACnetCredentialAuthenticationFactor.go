@@ -38,6 +38,7 @@ type BACnetCredentialAuthenticationFactor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDisable returns Disable (property field)
 	GetDisable() BACnetAccessAuthenticationFactorDisableTagged
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
@@ -53,6 +54,17 @@ type _BACnetCredentialAuthenticationFactor struct {
 }
 
 var _ BACnetCredentialAuthenticationFactor = (*_BACnetCredentialAuthenticationFactor)(nil)
+
+// NewBACnetCredentialAuthenticationFactor factory function for _BACnetCredentialAuthenticationFactor
+func NewBACnetCredentialAuthenticationFactor(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) *_BACnetCredentialAuthenticationFactor {
+	if disable == nil {
+		panic("disable of type BACnetAccessAuthenticationFactorDisableTagged for BACnetCredentialAuthenticationFactor must not be nil")
+	}
+	if authenticationFactor == nil {
+		panic("authenticationFactor of type BACnetAuthenticationFactorEnclosed for BACnetCredentialAuthenticationFactor must not be nil")
+	}
+	return &_BACnetCredentialAuthenticationFactor{Disable: disable, AuthenticationFactor: authenticationFactor}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetCredentialAuthenticationFactor) GetAuthenticationFactor() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCredentialAuthenticationFactor factory function for _BACnetCredentialAuthenticationFactor
-func NewBACnetCredentialAuthenticationFactor(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) *_BACnetCredentialAuthenticationFactor {
-	if disable == nil {
-		panic("disable of type BACnetAccessAuthenticationFactorDisableTagged for BACnetCredentialAuthenticationFactor must not be nil")
-	}
-	if authenticationFactor == nil {
-		panic("authenticationFactor of type BACnetAuthenticationFactorEnclosed for BACnetCredentialAuthenticationFactor must not be nil")
-	}
-	return &_BACnetCredentialAuthenticationFactor{Disable: disable, AuthenticationFactor: authenticationFactor}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCredentialAuthenticationFactor(structType any) BACnetCredentialAuthenticationFactor {
@@ -192,6 +193,21 @@ func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetCredentialAuthenticationFactor) IsBACnetCredentialAuthenticationFactor() {}
+
+func (m *_BACnetCredentialAuthenticationFactor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCredentialAuthenticationFactor) deepCopy() *_BACnetCredentialAuthenticationFactor {
+	if m == nil {
+		return nil
+	}
+	_BACnetCredentialAuthenticationFactorCopy := &_BACnetCredentialAuthenticationFactor{
+		m.Disable.DeepCopy().(BACnetAccessAuthenticationFactorDisableTagged),
+		m.AuthenticationFactor.DeepCopy().(BACnetAuthenticationFactorEnclosed),
+	}
+	return _BACnetCredentialAuthenticationFactorCopy
+}
 
 func (m *_BACnetCredentialAuthenticationFactor) String() string {
 	if m == nil {

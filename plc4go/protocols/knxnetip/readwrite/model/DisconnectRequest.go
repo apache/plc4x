@@ -40,6 +40,7 @@ type DisconnectRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
@@ -60,6 +61,20 @@ type _DisconnectRequest struct {
 
 var _ DisconnectRequest = (*_DisconnectRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_DisconnectRequest)(nil)
+
+// NewDisconnectRequest factory function for _DisconnectRequest
+func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_DisconnectRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DisconnectRequest must not be nil")
+	}
+	_result := &_DisconnectRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		CommunicationChannelId:  communicationChannelId,
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,20 +111,6 @@ func (m *_DisconnectRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDisconnectRequest factory function for _DisconnectRequest
-func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_DisconnectRequest {
-	if hpaiControlEndpoint == nil {
-		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DisconnectRequest must not be nil")
-	}
-	_result := &_DisconnectRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		CommunicationChannelId:  communicationChannelId,
-		HpaiControlEndpoint:     hpaiControlEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDisconnectRequest(structType any) DisconnectRequest {
@@ -220,6 +221,24 @@ func (m *_DisconnectRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_DisconnectRequest) IsDisconnectRequest() {}
+
+func (m *_DisconnectRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DisconnectRequest) deepCopy() *_DisconnectRequest {
+	if m == nil {
+		return nil
+	}
+	_DisconnectRequestCopy := &_DisconnectRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.CommunicationChannelId,
+		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+		m.reservedField0,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DisconnectRequestCopy
+}
 
 func (m *_DisconnectRequest) String() string {
 	if m == nil {

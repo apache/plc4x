@@ -38,6 +38,7 @@ type SALDataLighting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetLightingData returns LightingData (property field)
 	GetLightingData() LightingData
@@ -53,6 +54,19 @@ type _SALDataLighting struct {
 
 var _ SALDataLighting = (*_SALDataLighting)(nil)
 var _ SALDataRequirements = (*_SALDataLighting)(nil)
+
+// NewSALDataLighting factory function for _SALDataLighting
+func NewSALDataLighting(salData SALData, lightingData LightingData) *_SALDataLighting {
+	if lightingData == nil {
+		panic("lightingData of type LightingData for SALDataLighting must not be nil")
+	}
+	_result := &_SALDataLighting{
+		SALDataContract: NewSALData(salData),
+		LightingData:    lightingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataLighting) GetLightingData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataLighting factory function for _SALDataLighting
-func NewSALDataLighting(lightingData LightingData, salData SALData) *_SALDataLighting {
-	if lightingData == nil {
-		panic("lightingData of type LightingData for SALDataLighting must not be nil")
-	}
-	_result := &_SALDataLighting{
-		SALDataContract: NewSALData(salData),
-		LightingData:    lightingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataLighting(structType any) SALDataLighting {
@@ -182,6 +183,22 @@ func (m *_SALDataLighting) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SALDataLighting) IsSALDataLighting() {}
+
+func (m *_SALDataLighting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataLighting) deepCopy() *_SALDataLighting {
+	if m == nil {
+		return nil
+	}
+	_SALDataLightingCopy := &_SALDataLighting{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.LightingData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataLightingCopy
+}
 
 func (m *_SALDataLighting) String() string {
 	if m == nil {

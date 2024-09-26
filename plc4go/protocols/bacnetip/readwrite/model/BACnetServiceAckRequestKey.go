@@ -38,6 +38,7 @@ type BACnetServiceAckRequestKey interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
@@ -56,6 +57,16 @@ type _BACnetServiceAckRequestKey struct {
 
 var _ BACnetServiceAckRequestKey = (*_BACnetServiceAckRequestKey)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckRequestKey)(nil)
+
+// NewBACnetServiceAckRequestKey factory function for _BACnetServiceAckRequestKey
+func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckRequestKey {
+	_result := &_BACnetServiceAckRequestKey{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		BytesOfRemovedService:    bytesOfRemovedService,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,16 +99,6 @@ func (m *_BACnetServiceAckRequestKey) GetBytesOfRemovedService() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckRequestKey factory function for _BACnetServiceAckRequestKey
-func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckRequestKey {
-	_result := &_BACnetServiceAckRequestKey{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		BytesOfRemovedService:    bytesOfRemovedService,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckRequestKey(structType any) BACnetServiceAckRequestKey {
@@ -194,6 +195,23 @@ func (m *_BACnetServiceAckRequestKey) GetServiceAckPayloadLength() uint32 {
 ////
 
 func (m *_BACnetServiceAckRequestKey) IsBACnetServiceAckRequestKey() {}
+
+func (m *_BACnetServiceAckRequestKey) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckRequestKey) deepCopy() *_BACnetServiceAckRequestKey {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckRequestKeyCopy := &_BACnetServiceAckRequestKey{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
+		m.ServiceAckPayloadLength,
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckRequestKeyCopy
+}
 
 func (m *_BACnetServiceAckRequestKey) String() string {
 	if m == nil {

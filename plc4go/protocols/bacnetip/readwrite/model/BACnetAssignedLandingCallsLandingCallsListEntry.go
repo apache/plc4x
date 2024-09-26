@@ -38,6 +38,7 @@ type BACnetAssignedLandingCallsLandingCallsListEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFloorNumber returns FloorNumber (property field)
 	GetFloorNumber() BACnetContextTagUnsignedInteger
 	// GetDirection returns Direction (property field)
@@ -53,6 +54,17 @@ type _BACnetAssignedLandingCallsLandingCallsListEntry struct {
 }
 
 var _ BACnetAssignedLandingCallsLandingCallsListEntry = (*_BACnetAssignedLandingCallsLandingCallsListEntry)(nil)
+
+// NewBACnetAssignedLandingCallsLandingCallsListEntry factory function for _BACnetAssignedLandingCallsLandingCallsListEntry
+func NewBACnetAssignedLandingCallsLandingCallsListEntry(floorNumber BACnetContextTagUnsignedInteger, direction BACnetLiftCarDirectionTagged) *_BACnetAssignedLandingCallsLandingCallsListEntry {
+	if floorNumber == nil {
+		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetAssignedLandingCallsLandingCallsListEntry must not be nil")
+	}
+	if direction == nil {
+		panic("direction of type BACnetLiftCarDirectionTagged for BACnetAssignedLandingCallsLandingCallsListEntry must not be nil")
+	}
+	return &_BACnetAssignedLandingCallsLandingCallsListEntry{FloorNumber: floorNumber, Direction: direction}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) GetDirection() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAssignedLandingCallsLandingCallsListEntry factory function for _BACnetAssignedLandingCallsLandingCallsListEntry
-func NewBACnetAssignedLandingCallsLandingCallsListEntry(floorNumber BACnetContextTagUnsignedInteger, direction BACnetLiftCarDirectionTagged) *_BACnetAssignedLandingCallsLandingCallsListEntry {
-	if floorNumber == nil {
-		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetAssignedLandingCallsLandingCallsListEntry must not be nil")
-	}
-	if direction == nil {
-		panic("direction of type BACnetLiftCarDirectionTagged for BACnetAssignedLandingCallsLandingCallsListEntry must not be nil")
-	}
-	return &_BACnetAssignedLandingCallsLandingCallsListEntry{FloorNumber: floorNumber, Direction: direction}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAssignedLandingCallsLandingCallsListEntry(structType any) BACnetAssignedLandingCallsLandingCallsListEntry {
@@ -192,6 +193,21 @@ func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) SerializeWithWriteBuf
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) IsBACnetAssignedLandingCallsLandingCallsListEntry() {
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) deepCopy() *_BACnetAssignedLandingCallsLandingCallsListEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetAssignedLandingCallsLandingCallsListEntryCopy := &_BACnetAssignedLandingCallsLandingCallsListEntry{
+		m.FloorNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Direction.DeepCopy().(BACnetLiftCarDirectionTagged),
+	}
+	return _BACnetAssignedLandingCallsLandingCallsListEntryCopy
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsListEntry) String() string {

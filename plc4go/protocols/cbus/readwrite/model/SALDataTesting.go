@@ -36,6 +36,7 @@ type SALDataTesting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataTesting is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataTesting()
@@ -48,6 +49,15 @@ type _SALDataTesting struct {
 
 var _ SALDataTesting = (*_SALDataTesting)(nil)
 var _ SALDataRequirements = (*_SALDataTesting)(nil)
+
+// NewSALDataTesting factory function for _SALDataTesting
+func NewSALDataTesting(salData SALData) *_SALDataTesting {
+	_result := &_SALDataTesting{
+		SALDataContract: NewSALData(salData),
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_SALDataTesting) GetApplicationId() ApplicationId {
 
 func (m *_SALDataTesting) GetParent() SALDataContract {
 	return m.SALDataContract
-}
-
-// NewSALDataTesting factory function for _SALDataTesting
-func NewSALDataTesting(salData SALData) *_SALDataTesting {
-	_result := &_SALDataTesting{
-		SALDataContract: NewSALData(salData),
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -151,6 +152,21 @@ func (m *_SALDataTesting) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SALDataTesting) IsSALDataTesting() {}
+
+func (m *_SALDataTesting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataTesting) deepCopy() *_SALDataTesting {
+	if m == nil {
+		return nil
+	}
+	_SALDataTestingCopy := &_SALDataTesting{
+		m.SALDataContract.(*_SALData).deepCopy(),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataTestingCopy
+}
 
 func (m *_SALDataTesting) String() string {
 	if m == nil {

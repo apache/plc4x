@@ -36,6 +36,7 @@ type SysexCommandCapabilityQuery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandCapabilityQuery is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandCapabilityQuery()
@@ -48,6 +49,15 @@ type _SysexCommandCapabilityQuery struct {
 
 var _ SysexCommandCapabilityQuery = (*_SysexCommandCapabilityQuery)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandCapabilityQuery)(nil)
+
+// NewSysexCommandCapabilityQuery factory function for _SysexCommandCapabilityQuery
+func NewSysexCommandCapabilityQuery() *_SysexCommandCapabilityQuery {
+	_result := &_SysexCommandCapabilityQuery{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_SysexCommandCapabilityQuery) GetResponse() bool {
 
 func (m *_SysexCommandCapabilityQuery) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandCapabilityQuery factory function for _SysexCommandCapabilityQuery
-func NewSysexCommandCapabilityQuery() *_SysexCommandCapabilityQuery {
-	_result := &_SysexCommandCapabilityQuery{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_SysexCommandCapabilityQuery) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_SysexCommandCapabilityQuery) IsSysexCommandCapabilityQuery() {}
+
+func (m *_SysexCommandCapabilityQuery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandCapabilityQuery) deepCopy() *_SysexCommandCapabilityQuery {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandCapabilityQueryCopy := &_SysexCommandCapabilityQuery{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandCapabilityQueryCopy
+}
 
 func (m *_SysexCommandCapabilityQuery) String() string {
 	if m == nil {

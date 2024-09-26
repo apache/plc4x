@@ -38,6 +38,7 @@ type BVLCForeignDeviceTableEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
 	// GetPort returns Port (property field)
@@ -59,6 +60,11 @@ type _BVLCForeignDeviceTableEntry struct {
 }
 
 var _ BVLCForeignDeviceTableEntry = (*_BVLCForeignDeviceTableEntry)(nil)
+
+// NewBVLCForeignDeviceTableEntry factory function for _BVLCForeignDeviceTableEntry
+func NewBVLCForeignDeviceTableEntry(ip []uint8, port uint16, ttl uint16, secondRemainingBeforePurge uint16) *_BVLCForeignDeviceTableEntry {
+	return &_BVLCForeignDeviceTableEntry{Ip: ip, Port: port, Ttl: ttl, SecondRemainingBeforePurge: secondRemainingBeforePurge}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +91,6 @@ func (m *_BVLCForeignDeviceTableEntry) GetSecondRemainingBeforePurge() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCForeignDeviceTableEntry factory function for _BVLCForeignDeviceTableEntry
-func NewBVLCForeignDeviceTableEntry(ip []uint8, port uint16, ttl uint16, secondRemainingBeforePurge uint16) *_BVLCForeignDeviceTableEntry {
-	return &_BVLCForeignDeviceTableEntry{Ip: ip, Port: port, Ttl: ttl, SecondRemainingBeforePurge: secondRemainingBeforePurge}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCForeignDeviceTableEntry(structType any) BVLCForeignDeviceTableEntry {
@@ -228,6 +229,23 @@ func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BVLCForeignDeviceTableEntry) IsBVLCForeignDeviceTableEntry() {}
+
+func (m *_BVLCForeignDeviceTableEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCForeignDeviceTableEntry) deepCopy() *_BVLCForeignDeviceTableEntry {
+	if m == nil {
+		return nil
+	}
+	_BVLCForeignDeviceTableEntryCopy := &_BVLCForeignDeviceTableEntry{
+		utils.DeepCopySlice[uint8, uint8](m.Ip),
+		m.Port,
+		m.Ttl,
+		m.SecondRemainingBeforePurge,
+	}
+	return _BVLCForeignDeviceTableEntryCopy
+}
 
 func (m *_BVLCForeignDeviceTableEntry) String() string {
 	if m == nil {

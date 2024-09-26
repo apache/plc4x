@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
@@ -53,6 +54,19 @@ type _BACnetTimerStateChangeValueReal struct {
 
 var _ BACnetTimerStateChangeValueReal = (*_BACnetTimerStateChangeValueReal)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueReal)(nil)
+
+// NewBACnetTimerStateChangeValueReal factory function for _BACnetTimerStateChangeValueReal
+func NewBACnetTimerStateChangeValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetTimerStateChangeValueReal must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueReal{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		RealValue:                           realValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetTimerStateChangeValueReal) GetRealValue() BACnetApplicationTagRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueReal factory function for _BACnetTimerStateChangeValueReal
-func NewBACnetTimerStateChangeValueReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueReal {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetTimerStateChangeValueReal must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueReal{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		RealValue:                           realValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueReal(structType any) BACnetTimerStateChangeValueReal {
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueReal) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetTimerStateChangeValueReal) IsBACnetTimerStateChangeValueReal() {}
+
+func (m *_BACnetTimerStateChangeValueReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueReal) deepCopy() *_BACnetTimerStateChangeValueReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueRealCopy := &_BACnetTimerStateChangeValueReal{
+		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueRealCopy
+}
 
 func (m *_BACnetTimerStateChangeValueReal) String() string {
 	if m == nil {

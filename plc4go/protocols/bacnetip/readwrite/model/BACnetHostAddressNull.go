@@ -38,6 +38,7 @@ type BACnetHostAddressNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetHostAddress
 	// GetNone returns None (property field)
 	GetNone() BACnetContextTagNull
@@ -53,6 +54,19 @@ type _BACnetHostAddressNull struct {
 
 var _ BACnetHostAddressNull = (*_BACnetHostAddressNull)(nil)
 var _ BACnetHostAddressRequirements = (*_BACnetHostAddressNull)(nil)
+
+// NewBACnetHostAddressNull factory function for _BACnetHostAddressNull
+func NewBACnetHostAddressNull(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetHostAddressNull {
+	if none == nil {
+		panic("none of type BACnetContextTagNull for BACnetHostAddressNull must not be nil")
+	}
+	_result := &_BACnetHostAddressNull{
+		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
+		None:                      none,
+	}
+	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetHostAddressNull) GetNone() BACnetContextTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddressNull factory function for _BACnetHostAddressNull
-func NewBACnetHostAddressNull(none BACnetContextTagNull, peekedTagHeader BACnetTagHeader) *_BACnetHostAddressNull {
-	if none == nil {
-		panic("none of type BACnetContextTagNull for BACnetHostAddressNull must not be nil")
-	}
-	_result := &_BACnetHostAddressNull{
-		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
-		None:                      none,
-	}
-	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddressNull(structType any) BACnetHostAddressNull {
@@ -178,6 +179,22 @@ func (m *_BACnetHostAddressNull) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetHostAddressNull) IsBACnetHostAddressNull() {}
+
+func (m *_BACnetHostAddressNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddressNull) deepCopy() *_BACnetHostAddressNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressNullCopy := &_BACnetHostAddressNull{
+		m.BACnetHostAddressContract.(*_BACnetHostAddress).deepCopy(),
+		m.None.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m
+	return _BACnetHostAddressNullCopy
+}
 
 func (m *_BACnetHostAddressNull) String() string {
 	if m == nil {

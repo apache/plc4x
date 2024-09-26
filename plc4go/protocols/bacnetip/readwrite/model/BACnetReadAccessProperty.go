@@ -38,6 +38,7 @@ type BACnetReadAccessProperty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -60,6 +61,14 @@ type _BACnetReadAccessProperty struct {
 
 var _ BACnetReadAccessProperty = (*_BACnetReadAccessProperty)(nil)
 
+// NewBACnetReadAccessProperty factory function for _BACnetReadAccessProperty
+func NewBACnetReadAccessProperty(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, readResult BACnetReadAccessPropertyReadResult, objectTypeArgument BACnetObjectType) *_BACnetReadAccessProperty {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetReadAccessProperty must not be nil")
+	}
+	return &_BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectTypeArgument: objectTypeArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,14 +90,6 @@ func (m *_BACnetReadAccessProperty) GetReadResult() BACnetReadAccessPropertyRead
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReadAccessProperty factory function for _BACnetReadAccessProperty
-func NewBACnetReadAccessProperty(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, readResult BACnetReadAccessPropertyReadResult, objectTypeArgument BACnetObjectType) *_BACnetReadAccessProperty {
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetReadAccessProperty must not be nil")
-	}
-	return &_BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReadAccessProperty(structType any) BACnetReadAccessProperty {
@@ -234,6 +235,23 @@ func (m *_BACnetReadAccessProperty) GetObjectTypeArgument() BACnetObjectType {
 ////
 
 func (m *_BACnetReadAccessProperty) IsBACnetReadAccessProperty() {}
+
+func (m *_BACnetReadAccessProperty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessProperty) deepCopy() *_BACnetReadAccessProperty {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessPropertyCopy := &_BACnetReadAccessProperty{
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ReadResult.DeepCopy().(BACnetReadAccessPropertyReadResult),
+		m.ObjectTypeArgument,
+	}
+	return _BACnetReadAccessPropertyCopy
+}
 
 func (m *_BACnetReadAccessProperty) String() string {
 	if m == nil {

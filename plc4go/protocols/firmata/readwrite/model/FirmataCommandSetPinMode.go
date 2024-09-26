@@ -38,6 +38,7 @@ type FirmataCommandSetPinMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -56,6 +57,17 @@ type _FirmataCommandSetPinMode struct {
 
 var _ FirmataCommandSetPinMode = (*_FirmataCommandSetPinMode)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSetPinMode)(nil)
+
+// NewFirmataCommandSetPinMode factory function for _FirmataCommandSetPinMode
+func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_FirmataCommandSetPinMode {
+	_result := &_FirmataCommandSetPinMode{
+		FirmataCommandContract: NewFirmataCommand(response),
+		Pin:                    pin,
+		Mode:                   mode,
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_FirmataCommandSetPinMode) GetMode() PinMode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataCommandSetPinMode factory function for _FirmataCommandSetPinMode
-func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_FirmataCommandSetPinMode {
-	_result := &_FirmataCommandSetPinMode{
-		FirmataCommandContract: NewFirmataCommand(response),
-		Pin:                    pin,
-		Mode:                   mode,
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommandSetPinMode(structType any) FirmataCommandSetPinMode {
@@ -200,6 +201,23 @@ func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_FirmataCommandSetPinMode) IsFirmataCommandSetPinMode() {}
+
+func (m *_FirmataCommandSetPinMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandSetPinMode) deepCopy() *_FirmataCommandSetPinMode {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandSetPinModeCopy := &_FirmataCommandSetPinMode{
+		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
+		m.Pin,
+		m.Mode,
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandSetPinModeCopy
+}
 
 func (m *_FirmataCommandSetPinMode) String() string {
 	if m == nil {

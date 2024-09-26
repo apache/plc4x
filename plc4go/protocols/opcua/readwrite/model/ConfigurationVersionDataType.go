@@ -38,6 +38,7 @@ type ConfigurationVersionDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMajorVersion returns MajorVersion (property field)
 	GetMajorVersion() uint32
@@ -56,6 +57,17 @@ type _ConfigurationVersionDataType struct {
 
 var _ ConfigurationVersionDataType = (*_ConfigurationVersionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ConfigurationVersionDataType)(nil)
+
+// NewConfigurationVersionDataType factory function for _ConfigurationVersionDataType
+func NewConfigurationVersionDataType(majorVersion uint32, minorVersion uint32) *_ConfigurationVersionDataType {
+	_result := &_ConfigurationVersionDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		MajorVersion:                      majorVersion,
+		MinorVersion:                      minorVersion,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ConfigurationVersionDataType) GetMinorVersion() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConfigurationVersionDataType factory function for _ConfigurationVersionDataType
-func NewConfigurationVersionDataType(majorVersion uint32, minorVersion uint32) *_ConfigurationVersionDataType {
-	_result := &_ConfigurationVersionDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		MajorVersion:                      majorVersion,
-		MinorVersion:                      minorVersion,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConfigurationVersionDataType(structType any) ConfigurationVersionDataType {
@@ -200,6 +201,23 @@ func (m *_ConfigurationVersionDataType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ConfigurationVersionDataType) IsConfigurationVersionDataType() {}
+
+func (m *_ConfigurationVersionDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConfigurationVersionDataType) deepCopy() *_ConfigurationVersionDataType {
+	if m == nil {
+		return nil
+	}
+	_ConfigurationVersionDataTypeCopy := &_ConfigurationVersionDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.MajorVersion,
+		m.MinorVersion,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ConfigurationVersionDataTypeCopy
+}
 
 func (m *_ConfigurationVersionDataType) String() string {
 	if m == nil {

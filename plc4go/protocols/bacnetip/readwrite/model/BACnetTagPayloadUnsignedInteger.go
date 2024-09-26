@@ -38,6 +38,7 @@ type BACnetTagPayloadUnsignedInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValueUint8 returns ValueUint8 (property field)
 	GetValueUint8() *uint8
 	// GetValueUint16 returns ValueUint16 (property field)
@@ -92,6 +93,11 @@ type _BACnetTagPayloadUnsignedInteger struct {
 }
 
 var _ BACnetTagPayloadUnsignedInteger = (*_BACnetTagPayloadUnsignedInteger)(nil)
+
+// NewBACnetTagPayloadUnsignedInteger factory function for _BACnetTagPayloadUnsignedInteger
+func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, valueUint40 *uint64, valueUint48 *uint64, valueUint56 *uint64, valueUint64 *uint64, actualLength uint32) *_BACnetTagPayloadUnsignedInteger {
+	return &_BACnetTagPayloadUnsignedInteger{ValueUint8: valueUint8, ValueUint16: valueUint16, ValueUint24: valueUint24, ValueUint32: valueUint32, ValueUint40: valueUint40, ValueUint48: valueUint48, ValueUint56: valueUint56, ValueUint64: valueUint64, ActualLength: actualLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -353,11 +359,6 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetActualValue() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadUnsignedInteger factory function for _BACnetTagPayloadUnsignedInteger
-func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, valueUint40 *uint64, valueUint48 *uint64, valueUint56 *uint64, valueUint64 *uint64, actualLength uint32) *_BACnetTagPayloadUnsignedInteger {
-	return &_BACnetTagPayloadUnsignedInteger{ValueUint8: valueUint8, ValueUint16: valueUint16, ValueUint24: valueUint24, ValueUint32: valueUint32, ValueUint40: valueUint40, ValueUint48: valueUint48, ValueUint56: valueUint56, ValueUint64: valueUint64, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadUnsignedInteger(structType any) BACnetTagPayloadUnsignedInteger {
@@ -723,6 +724,28 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadUnsignedInteger) IsBACnetTagPayloadUnsignedInteger() {}
+
+func (m *_BACnetTagPayloadUnsignedInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadUnsignedInteger) deepCopy() *_BACnetTagPayloadUnsignedInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadUnsignedIntegerCopy := &_BACnetTagPayloadUnsignedInteger{
+		utils.CopyPtr[uint8](m.ValueUint8),
+		utils.CopyPtr[uint16](m.ValueUint16),
+		utils.CopyPtr[uint32](m.ValueUint24),
+		utils.CopyPtr[uint32](m.ValueUint32),
+		utils.CopyPtr[uint64](m.ValueUint40),
+		utils.CopyPtr[uint64](m.ValueUint48),
+		utils.CopyPtr[uint64](m.ValueUint56),
+		utils.CopyPtr[uint64](m.ValueUint64),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadUnsignedIntegerCopy
+}
 
 func (m *_BACnetTagPayloadUnsignedInteger) String() string {
 	if m == nil {

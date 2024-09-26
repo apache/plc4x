@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetItems returns Items (property field)
 	GetItems() []byte
@@ -53,6 +54,16 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
 
 var _ S7PayloadUserDataItemCpuFunctionAlarmQueryResponse = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
+func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, items []byte) *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Items:                         items,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetItems() []byte 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(items []byte, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Items:                         items,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(structType any) S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
@@ -189,6 +190,22 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) SerializeWithWrite
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) IsS7PayloadUserDataItemCpuFunctionAlarmQueryResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseCopy := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Items),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmQueryResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) String() string {

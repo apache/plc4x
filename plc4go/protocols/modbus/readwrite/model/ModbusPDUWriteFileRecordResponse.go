@@ -38,6 +38,7 @@ type ModbusPDUWriteFileRecordResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetItems returns Items (property field)
 	GetItems() []ModbusPDUWriteFileRecordResponseItem
@@ -53,6 +54,16 @@ type _ModbusPDUWriteFileRecordResponse struct {
 
 var _ ModbusPDUWriteFileRecordResponse = (*_ModbusPDUWriteFileRecordResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteFileRecordResponse)(nil)
+
+// NewModbusPDUWriteFileRecordResponse factory function for _ModbusPDUWriteFileRecordResponse
+func NewModbusPDUWriteFileRecordResponse(items []ModbusPDUWriteFileRecordResponseItem) *_ModbusPDUWriteFileRecordResponse {
+	_result := &_ModbusPDUWriteFileRecordResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Items:             items,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ModbusPDUWriteFileRecordResponse) GetItems() []ModbusPDUWriteFileRecor
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteFileRecordResponse factory function for _ModbusPDUWriteFileRecordResponse
-func NewModbusPDUWriteFileRecordResponse(items []ModbusPDUWriteFileRecordResponseItem) *_ModbusPDUWriteFileRecordResponse {
-	_result := &_ModbusPDUWriteFileRecordResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Items:             items,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteFileRecordResponse(structType any) ModbusPDUWriteFileRecordResponse {
@@ -211,6 +212,22 @@ func (m *_ModbusPDUWriteFileRecordResponse) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_ModbusPDUWriteFileRecordResponse) IsModbusPDUWriteFileRecordResponse() {}
+
+func (m *_ModbusPDUWriteFileRecordResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteFileRecordResponse) deepCopy() *_ModbusPDUWriteFileRecordResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteFileRecordResponseCopy := &_ModbusPDUWriteFileRecordResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		utils.DeepCopySlice[ModbusPDUWriteFileRecordResponseItem, ModbusPDUWriteFileRecordResponseItem](m.Items),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteFileRecordResponseCopy
+}
 
 func (m *_ModbusPDUWriteFileRecordResponse) String() string {
 	if m == nil {

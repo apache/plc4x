@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPGlobalAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBacnetIpGlobalAddress returns BacnetIpGlobalAddress (property field)
 	GetBacnetIpGlobalAddress() BACnetHostNPort
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBACnetIPGlobalAddress struct {
 
 var _ BACnetConstructedDataBACnetIPGlobalAddress = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
+
+// NewBACnetConstructedDataBACnetIPGlobalAddress factory function for _BACnetConstructedDataBACnetIPGlobalAddress
+func NewBACnetConstructedDataBACnetIPGlobalAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpGlobalAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
+	if bacnetIpGlobalAddress == nil {
+		panic("bacnetIpGlobalAddress of type BACnetHostNPort for BACnetConstructedDataBACnetIPGlobalAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataBACnetIPGlobalAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BacnetIpGlobalAddress:         bacnetIpGlobalAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) GetActualValue() BACnetHos
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBACnetIPGlobalAddress factory function for _BACnetConstructedDataBACnetIPGlobalAddress
-func NewBACnetConstructedDataBACnetIPGlobalAddress(bacnetIpGlobalAddress BACnetHostNPort, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
-	if bacnetIpGlobalAddress == nil {
-		panic("bacnetIpGlobalAddress of type BACnetHostNPort for BACnetConstructedDataBACnetIPGlobalAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataBACnetIPGlobalAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BacnetIpGlobalAddress:         bacnetIpGlobalAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBACnetIPGlobalAddress(structType any) BACnetConstructedDataBACnetIPGlobalAddress {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataBACnetIPGlobalAddress) IsBACnetConstructedDataBACnetIPGlobalAddress() {
+}
+
+func (m *_BACnetConstructedDataBACnetIPGlobalAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPGlobalAddress) deepCopy() *_BACnetConstructedDataBACnetIPGlobalAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPGlobalAddressCopy := &_BACnetConstructedDataBACnetIPGlobalAddress{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BacnetIpGlobalAddress.DeepCopy().(BACnetHostNPort),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPGlobalAddressCopy
 }
 
 func (m *_BACnetConstructedDataBACnetIPGlobalAddress) String() string {

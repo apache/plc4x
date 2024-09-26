@@ -36,6 +36,7 @@ type S7PayloadUserDataItemClkFRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemClkFRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemClkFRequest()
@@ -48,6 +49,15 @@ type _S7PayloadUserDataItemClkFRequest struct {
 
 var _ S7PayloadUserDataItemClkFRequest = (*_S7PayloadUserDataItemClkFRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemClkFRequest)(nil)
+
+// NewS7PayloadUserDataItemClkFRequest factory function for _S7PayloadUserDataItemClkFRequest
+func NewS7PayloadUserDataItemClkFRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkFRequest {
+	_result := &_S7PayloadUserDataItemClkFRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_S7PayloadUserDataItemClkFRequest) GetCpuSubfunction() uint8 {
 
 func (m *_S7PayloadUserDataItemClkFRequest) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemClkFRequest factory function for _S7PayloadUserDataItemClkFRequest
-func NewS7PayloadUserDataItemClkFRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkFRequest {
-	_result := &_S7PayloadUserDataItemClkFRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemClkFRequest) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_S7PayloadUserDataItemClkFRequest) IsS7PayloadUserDataItemClkFRequest() {}
+
+func (m *_S7PayloadUserDataItemClkFRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemClkFRequest) deepCopy() *_S7PayloadUserDataItemClkFRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemClkFRequestCopy := &_S7PayloadUserDataItemClkFRequest{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemClkFRequestCopy
+}
 
 func (m *_S7PayloadUserDataItemClkFRequest) String() string {
 	if m == nil {

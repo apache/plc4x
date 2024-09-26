@@ -36,6 +36,7 @@ type ConnectionRequestInformationDeviceManagement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ConnectionRequestInformation
 	// IsConnectionRequestInformationDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequestInformationDeviceManagement()
@@ -48,6 +49,15 @@ type _ConnectionRequestInformationDeviceManagement struct {
 
 var _ ConnectionRequestInformationDeviceManagement = (*_ConnectionRequestInformationDeviceManagement)(nil)
 var _ ConnectionRequestInformationRequirements = (*_ConnectionRequestInformationDeviceManagement)(nil)
+
+// NewConnectionRequestInformationDeviceManagement factory function for _ConnectionRequestInformationDeviceManagement
+func NewConnectionRequestInformationDeviceManagement() *_ConnectionRequestInformationDeviceManagement {
+	_result := &_ConnectionRequestInformationDeviceManagement{
+		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
+	}
+	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetConnectionType() uint
 
 func (m *_ConnectionRequestInformationDeviceManagement) GetParent() ConnectionRequestInformationContract {
 	return m.ConnectionRequestInformationContract
-}
-
-// NewConnectionRequestInformationDeviceManagement factory function for _ConnectionRequestInformationDeviceManagement
-func NewConnectionRequestInformationDeviceManagement() *_ConnectionRequestInformationDeviceManagement {
-	_result := &_ConnectionRequestInformationDeviceManagement{
-		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
-	}
-	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ConnectionRequestInformationDeviceManagement) SerializeWithWriteBuffer
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) IsConnectionRequestInformationDeviceManagement() {
+}
+
+func (m *_ConnectionRequestInformationDeviceManagement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequestInformationDeviceManagement) deepCopy() *_ConnectionRequestInformationDeviceManagement {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestInformationDeviceManagementCopy := &_ConnectionRequestInformationDeviceManagement{
+		m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).deepCopy(),
+	}
+	m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = m
+	return _ConnectionRequestInformationDeviceManagementCopy
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) String() string {

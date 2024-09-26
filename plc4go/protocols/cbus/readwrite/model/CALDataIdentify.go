@@ -38,6 +38,7 @@ type CALDataIdentify interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetAttribute returns Attribute (property field)
 	GetAttribute() Attribute
@@ -53,6 +54,16 @@ type _CALDataIdentify struct {
 
 var _ CALDataIdentify = (*_CALDataIdentify)(nil)
 var _ CALDataRequirements = (*_CALDataIdentify)(nil)
+
+// NewCALDataIdentify factory function for _CALDataIdentify
+func NewCALDataIdentify(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, requestContext RequestContext) *_CALDataIdentify {
+	_result := &_CALDataIdentify{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		Attribute:       attribute,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_CALDataIdentify) GetAttribute() Attribute {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataIdentify factory function for _CALDataIdentify
-func NewCALDataIdentify(attribute Attribute, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataIdentify {
-	_result := &_CALDataIdentify{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		Attribute:       attribute,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataIdentify(structType any) CALDataIdentify {
@@ -175,6 +176,22 @@ func (m *_CALDataIdentify) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_CALDataIdentify) IsCALDataIdentify() {}
+
+func (m *_CALDataIdentify) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataIdentify) deepCopy() *_CALDataIdentify {
+	if m == nil {
+		return nil
+	}
+	_CALDataIdentifyCopy := &_CALDataIdentify{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.Attribute,
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataIdentifyCopy
+}
 
 func (m *_CALDataIdentify) String() string {
 	if m == nil {

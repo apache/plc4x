@@ -38,6 +38,7 @@ type CreateMonitoredItemsResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _CreateMonitoredItemsResponse struct {
 
 var _ CreateMonitoredItemsResponse = (*_CreateMonitoredItemsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CreateMonitoredItemsResponse)(nil)
+
+// NewCreateMonitoredItemsResponse factory function for _CreateMonitoredItemsResponse
+func NewCreateMonitoredItemsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_CreateMonitoredItemsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CreateMonitoredItemsResponse must not be nil")
+	}
+	_result := &_CreateMonitoredItemsResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_CreateMonitoredItemsResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCreateMonitoredItemsResponse factory function for _CreateMonitoredItemsResponse
-func NewCreateMonitoredItemsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_CreateMonitoredItemsResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CreateMonitoredItemsResponse must not be nil")
-	}
-	_result := &_CreateMonitoredItemsResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCreateMonitoredItemsResponse(structType any) CreateMonitoredItemsResponse {
@@ -280,6 +281,26 @@ func (m *_CreateMonitoredItemsResponse) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_CreateMonitoredItemsResponse) IsCreateMonitoredItemsResponse() {}
+
+func (m *_CreateMonitoredItemsResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CreateMonitoredItemsResponse) deepCopy() *_CreateMonitoredItemsResponse {
+	if m == nil {
+		return nil
+	}
+	_CreateMonitoredItemsResponseCopy := &_CreateMonitoredItemsResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CreateMonitoredItemsResponseCopy
+}
 
 func (m *_CreateMonitoredItemsResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type HVACHumidityModeAndFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAuxiliaryLevel returns AuxiliaryLevel (property field)
 	GetAuxiliaryLevel() bool
 	// GetGuard returns Guard (property field)
@@ -80,6 +81,11 @@ type _HVACHumidityModeAndFlags struct {
 }
 
 var _ HVACHumidityModeAndFlags = (*_HVACHumidityModeAndFlags)(nil)
+
+// NewHVACHumidityModeAndFlags factory function for _HVACHumidityModeAndFlags
+func NewHVACHumidityModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) *_HVACHumidityModeAndFlags {
+	return &_HVACHumidityModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -167,11 +173,6 @@ func (m *_HVACHumidityModeAndFlags) GetIsLevelRaw() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACHumidityModeAndFlags factory function for _HVACHumidityModeAndFlags
-func NewHVACHumidityModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) *_HVACHumidityModeAndFlags {
-	return &_HVACHumidityModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACHumidityModeAndFlags(structType any) HVACHumidityModeAndFlags {
@@ -446,6 +447,25 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_HVACHumidityModeAndFlags) IsHVACHumidityModeAndFlags() {}
+
+func (m *_HVACHumidityModeAndFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACHumidityModeAndFlags) deepCopy() *_HVACHumidityModeAndFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACHumidityModeAndFlagsCopy := &_HVACHumidityModeAndFlags{
+		m.AuxiliaryLevel,
+		m.Guard,
+		m.Setback,
+		m.Level,
+		m.Mode,
+		m.reservedField0,
+	}
+	return _HVACHumidityModeAndFlagsCopy
+}
 
 func (m *_HVACHumidityModeAndFlags) String() string {
 	if m == nil {

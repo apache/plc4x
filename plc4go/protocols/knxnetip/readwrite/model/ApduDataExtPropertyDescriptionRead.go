@@ -38,6 +38,7 @@ type ApduDataExtPropertyDescriptionRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -59,6 +60,18 @@ type _ApduDataExtPropertyDescriptionRead struct {
 
 var _ ApduDataExtPropertyDescriptionRead = (*_ApduDataExtPropertyDescriptionRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyDescriptionRead)(nil)
+
+// NewApduDataExtPropertyDescriptionRead factory function for _ApduDataExtPropertyDescriptionRead
+func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8, length uint8) *_ApduDataExtPropertyDescriptionRead {
+	_result := &_ApduDataExtPropertyDescriptionRead{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Index:               index,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +112,6 @@ func (m *_ApduDataExtPropertyDescriptionRead) GetIndex() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyDescriptionRead factory function for _ApduDataExtPropertyDescriptionRead
-func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8, length uint8) *_ApduDataExtPropertyDescriptionRead {
-	_result := &_ApduDataExtPropertyDescriptionRead{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Index:               index,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyDescriptionRead(structType any) ApduDataExtPropertyDescriptionRead {
@@ -221,6 +222,24 @@ func (m *_ApduDataExtPropertyDescriptionRead) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ApduDataExtPropertyDescriptionRead) IsApduDataExtPropertyDescriptionRead() {}
+
+func (m *_ApduDataExtPropertyDescriptionRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtPropertyDescriptionRead) deepCopy() *_ApduDataExtPropertyDescriptionRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtPropertyDescriptionReadCopy := &_ApduDataExtPropertyDescriptionRead{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.ObjectIndex,
+		m.PropertyId,
+		m.Index,
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtPropertyDescriptionReadCopy
+}
 
 func (m *_ApduDataExtPropertyDescriptionRead) String() string {
 	if m == nil {

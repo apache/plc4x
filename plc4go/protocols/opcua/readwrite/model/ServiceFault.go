@@ -38,6 +38,7 @@ type ServiceFault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -53,6 +54,19 @@ type _ServiceFault struct {
 
 var _ ServiceFault = (*_ServiceFault)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServiceFault)(nil)
+
+// NewServiceFault factory function for _ServiceFault
+func NewServiceFault(responseHeader ExtensionObjectDefinition) *_ServiceFault {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ServiceFault must not be nil")
+	}
+	_result := &_ServiceFault{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_ServiceFault) GetResponseHeader() ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServiceFault factory function for _ServiceFault
-func NewServiceFault(responseHeader ExtensionObjectDefinition) *_ServiceFault {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ServiceFault must not be nil")
-	}
-	_result := &_ServiceFault{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServiceFault(structType any) ServiceFault {
@@ -182,6 +183,22 @@ func (m *_ServiceFault) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_ServiceFault) IsServiceFault() {}
+
+func (m *_ServiceFault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServiceFault) deepCopy() *_ServiceFault {
+	if m == nil {
+		return nil
+	}
+	_ServiceFaultCopy := &_ServiceFault{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServiceFaultCopy
+}
 
 func (m *_ServiceFault) String() string {
 	if m == nil {

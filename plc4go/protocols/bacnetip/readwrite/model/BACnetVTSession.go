@@ -38,6 +38,7 @@ type BACnetVTSession interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLocalVtSessionId returns LocalVtSessionId (property field)
 	GetLocalVtSessionId() BACnetApplicationTagUnsignedInteger
 	// GetRemoveVtSessionId returns RemoveVtSessionId (property field)
@@ -56,6 +57,20 @@ type _BACnetVTSession struct {
 }
 
 var _ BACnetVTSession = (*_BACnetVTSession)(nil)
+
+// NewBACnetVTSession factory function for _BACnetVTSession
+func NewBACnetVTSession(localVtSessionId BACnetApplicationTagUnsignedInteger, removeVtSessionId BACnetApplicationTagUnsignedInteger, remoteVtAddress BACnetAddress) *_BACnetVTSession {
+	if localVtSessionId == nil {
+		panic("localVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
+	}
+	if removeVtSessionId == nil {
+		panic("removeVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
+	}
+	if remoteVtAddress == nil {
+		panic("remoteVtAddress of type BACnetAddress for BACnetVTSession must not be nil")
+	}
+	return &_BACnetVTSession{LocalVtSessionId: localVtSessionId, RemoveVtSessionId: removeVtSessionId, RemoteVtAddress: remoteVtAddress}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,20 +93,6 @@ func (m *_BACnetVTSession) GetRemoteVtAddress() BACnetAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetVTSession factory function for _BACnetVTSession
-func NewBACnetVTSession(localVtSessionId BACnetApplicationTagUnsignedInteger, removeVtSessionId BACnetApplicationTagUnsignedInteger, remoteVtAddress BACnetAddress) *_BACnetVTSession {
-	if localVtSessionId == nil {
-		panic("localVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
-	}
-	if removeVtSessionId == nil {
-		panic("removeVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
-	}
-	if remoteVtAddress == nil {
-		panic("remoteVtAddress of type BACnetAddress for BACnetVTSession must not be nil")
-	}
-	return &_BACnetVTSession{LocalVtSessionId: localVtSessionId, RemoveVtSessionId: removeVtSessionId, RemoteVtAddress: remoteVtAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetVTSession(structType any) BACnetVTSession {
@@ -215,6 +216,22 @@ func (m *_BACnetVTSession) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetVTSession) IsBACnetVTSession() {}
+
+func (m *_BACnetVTSession) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetVTSession) deepCopy() *_BACnetVTSession {
+	if m == nil {
+		return nil
+	}
+	_BACnetVTSessionCopy := &_BACnetVTSession{
+		m.LocalVtSessionId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.RemoveVtSessionId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.RemoteVtAddress.DeepCopy().(BACnetAddress),
+	}
+	return _BACnetVTSessionCopy
+}
 
 func (m *_BACnetVTSession) String() string {
 	if m == nil {

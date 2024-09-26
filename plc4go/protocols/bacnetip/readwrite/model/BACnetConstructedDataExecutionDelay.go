@@ -38,6 +38,7 @@ type BACnetConstructedDataExecutionDelay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataExecutionDelay struct {
 
 var _ BACnetConstructedDataExecutionDelay = (*_BACnetConstructedDataExecutionDelay)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExecutionDelay)(nil)
+
+// NewBACnetConstructedDataExecutionDelay factory function for _BACnetConstructedDataExecutionDelay
+func NewBACnetConstructedDataExecutionDelay(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, executionDelay []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExecutionDelay {
+	_result := &_BACnetConstructedDataExecutionDelay{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ExecutionDelay:                executionDelay,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataExecutionDelay) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataExecutionDelay factory function for _BACnetConstructedDataExecutionDelay
-func NewBACnetConstructedDataExecutionDelay(numberOfDataElements BACnetApplicationTagUnsignedInteger, executionDelay []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExecutionDelay {
-	_result := &_BACnetConstructedDataExecutionDelay{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ExecutionDelay:                executionDelay,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataExecutionDelay(structType any) BACnetConstructedDataExecutionDelay {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataExecutionDelay) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataExecutionDelay) IsBACnetConstructedDataExecutionDelay() {}
+
+func (m *_BACnetConstructedDataExecutionDelay) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExecutionDelay) deepCopy() *_BACnetConstructedDataExecutionDelay {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExecutionDelayCopy := &_BACnetConstructedDataExecutionDelay{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ExecutionDelay),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExecutionDelayCopy
+}
 
 func (m *_BACnetConstructedDataExecutionDelay) String() string {
 	if m == nil {

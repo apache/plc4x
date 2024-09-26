@@ -38,6 +38,7 @@ type ApduDataDeviceDescriptorRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetDescriptorType returns DescriptorType (property field)
 	GetDescriptorType() uint8
@@ -53,6 +54,16 @@ type _ApduDataDeviceDescriptorRead struct {
 
 var _ ApduDataDeviceDescriptorRead = (*_ApduDataDeviceDescriptorRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorRead)(nil)
+
+// NewApduDataDeviceDescriptorRead factory function for _ApduDataDeviceDescriptorRead
+func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_ApduDataDeviceDescriptorRead {
+	_result := &_ApduDataDeviceDescriptorRead{
+		ApduDataContract: NewApduData(dataLength),
+		DescriptorType:   descriptorType,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_ApduDataDeviceDescriptorRead) GetDescriptorType() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataDeviceDescriptorRead factory function for _ApduDataDeviceDescriptorRead
-func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_ApduDataDeviceDescriptorRead {
-	_result := &_ApduDataDeviceDescriptorRead{
-		ApduDataContract: NewApduData(dataLength),
-		DescriptorType:   descriptorType,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataDeviceDescriptorRead(structType any) ApduDataDeviceDescriptorRead {
@@ -179,6 +180,22 @@ func (m *_ApduDataDeviceDescriptorRead) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ApduDataDeviceDescriptorRead) IsApduDataDeviceDescriptorRead() {}
+
+func (m *_ApduDataDeviceDescriptorRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataDeviceDescriptorRead) deepCopy() *_ApduDataDeviceDescriptorRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataDeviceDescriptorReadCopy := &_ApduDataDeviceDescriptorRead{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.DescriptorType,
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataDeviceDescriptorReadCopy
+}
 
 func (m *_ApduDataDeviceDescriptorRead) String() string {
 	if m == nil {

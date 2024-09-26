@@ -38,6 +38,7 @@ type BACnetConstructedDataVarianceValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVarianceValue returns VarianceValue (property field)
 	GetVarianceValue() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataVarianceValue struct {
 
 var _ BACnetConstructedDataVarianceValue = (*_BACnetConstructedDataVarianceValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVarianceValue)(nil)
+
+// NewBACnetConstructedDataVarianceValue factory function for _BACnetConstructedDataVarianceValue
+func NewBACnetConstructedDataVarianceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, varianceValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVarianceValue {
+	if varianceValue == nil {
+		panic("varianceValue of type BACnetApplicationTagReal for BACnetConstructedDataVarianceValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataVarianceValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VarianceValue:                 varianceValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataVarianceValue) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVarianceValue factory function for _BACnetConstructedDataVarianceValue
-func NewBACnetConstructedDataVarianceValue(varianceValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVarianceValue {
-	if varianceValue == nil {
-		panic("varianceValue of type BACnetApplicationTagReal for BACnetConstructedDataVarianceValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataVarianceValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VarianceValue:                 varianceValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVarianceValue(structType any) BACnetConstructedDataVarianceValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataVarianceValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataVarianceValue) IsBACnetConstructedDataVarianceValue() {}
+
+func (m *_BACnetConstructedDataVarianceValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVarianceValue) deepCopy() *_BACnetConstructedDataVarianceValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVarianceValueCopy := &_BACnetConstructedDataVarianceValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.VarianceValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVarianceValueCopy
+}
 
 func (m *_BACnetConstructedDataVarianceValue) String() string {
 	if m == nil {

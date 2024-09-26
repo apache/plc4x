@@ -36,6 +36,7 @@ type SecurityDataEntryDelayStarted interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataEntryDelayStarted is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataEntryDelayStarted()
@@ -49,6 +50,15 @@ type _SecurityDataEntryDelayStarted struct {
 var _ SecurityDataEntryDelayStarted = (*_SecurityDataEntryDelayStarted)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataEntryDelayStarted)(nil)
 
+// NewSecurityDataEntryDelayStarted factory function for _SecurityDataEntryDelayStarted
+func NewSecurityDataEntryDelayStarted(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataEntryDelayStarted {
+	_result := &_SecurityDataEntryDelayStarted{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataEntryDelayStarted)(nil)
 
 func (m *_SecurityDataEntryDelayStarted) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataEntryDelayStarted factory function for _SecurityDataEntryDelayStarted
-func NewSecurityDataEntryDelayStarted(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataEntryDelayStarted {
-	_result := &_SecurityDataEntryDelayStarted{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataEntryDelayStarted) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_SecurityDataEntryDelayStarted) IsSecurityDataEntryDelayStarted() {}
+
+func (m *_SecurityDataEntryDelayStarted) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataEntryDelayStarted) deepCopy() *_SecurityDataEntryDelayStarted {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataEntryDelayStartedCopy := &_SecurityDataEntryDelayStarted{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataEntryDelayStartedCopy
+}
 
 func (m *_SecurityDataEntryDelayStarted) String() string {
 	if m == nil {

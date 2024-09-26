@@ -38,6 +38,7 @@ type BACnetAccessRuleTimeRangeSpecifierTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetAccessRuleTimeRangeSpecifierTagged struct {
 
 var _ BACnetAccessRuleTimeRangeSpecifierTagged = (*_BACnetAccessRuleTimeRangeSpecifierTagged)(nil)
 
+// NewBACnetAccessRuleTimeRangeSpecifierTagged factory function for _BACnetAccessRuleTimeRangeSpecifierTagged
+func NewBACnetAccessRuleTimeRangeSpecifierTagged(header BACnetTagHeader, value BACnetAccessRuleTimeRangeSpecifier, tagNumber uint8, tagClass TagClass) *_BACnetAccessRuleTimeRangeSpecifierTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessRuleTimeRangeSpecifierTagged must not be nil")
+	}
+	return &_BACnetAccessRuleTimeRangeSpecifierTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) GetValue() BACnetAccessRuleT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessRuleTimeRangeSpecifierTagged factory function for _BACnetAccessRuleTimeRangeSpecifierTagged
-func NewBACnetAccessRuleTimeRangeSpecifierTagged(header BACnetTagHeader, value BACnetAccessRuleTimeRangeSpecifier, tagNumber uint8, tagClass TagClass) *_BACnetAccessRuleTimeRangeSpecifierTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessRuleTimeRangeSpecifierTagged must not be nil")
-	}
-	return &_BACnetAccessRuleTimeRangeSpecifierTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessRuleTimeRangeSpecifierTagged(structType any) BACnetAccessRuleTimeRangeSpecifierTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) IsBACnetAccessRuleTimeRangeSpecifierTagged() {}
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) deepCopy() *_BACnetAccessRuleTimeRangeSpecifierTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessRuleTimeRangeSpecifierTaggedCopy := &_BACnetAccessRuleTimeRangeSpecifierTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessRuleTimeRangeSpecifierTaggedCopy
+}
 
 func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) String() string {
 	if m == nil {

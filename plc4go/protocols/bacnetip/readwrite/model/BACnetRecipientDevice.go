@@ -38,6 +38,7 @@ type BACnetRecipientDevice interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetRecipient
 	// GetDeviceValue returns DeviceValue (property field)
 	GetDeviceValue() BACnetContextTagObjectIdentifier
@@ -53,6 +54,19 @@ type _BACnetRecipientDevice struct {
 
 var _ BACnetRecipientDevice = (*_BACnetRecipientDevice)(nil)
 var _ BACnetRecipientRequirements = (*_BACnetRecipientDevice)(nil)
+
+// NewBACnetRecipientDevice factory function for _BACnetRecipientDevice
+func NewBACnetRecipientDevice(peekedTagHeader BACnetTagHeader, deviceValue BACnetContextTagObjectIdentifier) *_BACnetRecipientDevice {
+	if deviceValue == nil {
+		panic("deviceValue of type BACnetContextTagObjectIdentifier for BACnetRecipientDevice must not be nil")
+	}
+	_result := &_BACnetRecipientDevice{
+		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
+		DeviceValue:             deviceValue,
+	}
+	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetRecipientDevice) GetDeviceValue() BACnetContextTagObjectIdentifi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipientDevice factory function for _BACnetRecipientDevice
-func NewBACnetRecipientDevice(deviceValue BACnetContextTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetRecipientDevice {
-	if deviceValue == nil {
-		panic("deviceValue of type BACnetContextTagObjectIdentifier for BACnetRecipientDevice must not be nil")
-	}
-	_result := &_BACnetRecipientDevice{
-		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
-		DeviceValue:             deviceValue,
-	}
-	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipientDevice(structType any) BACnetRecipientDevice {
@@ -178,6 +179,22 @@ func (m *_BACnetRecipientDevice) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetRecipientDevice) IsBACnetRecipientDevice() {}
+
+func (m *_BACnetRecipientDevice) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipientDevice) deepCopy() *_BACnetRecipientDevice {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientDeviceCopy := &_BACnetRecipientDevice{
+		m.BACnetRecipientContract.(*_BACnetRecipient).deepCopy(),
+		m.DeviceValue.DeepCopy().(BACnetContextTagObjectIdentifier),
+	}
+	m.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m
+	return _BACnetRecipientDeviceCopy
+}
 
 func (m *_BACnetRecipientDevice) String() string {
 	if m == nil {

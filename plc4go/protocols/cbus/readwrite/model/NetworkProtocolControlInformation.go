@@ -38,6 +38,7 @@ type NetworkProtocolControlInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStackCounter returns StackCounter (property field)
 	GetStackCounter() uint8
 	// GetStackDepth returns StackDepth (property field)
@@ -56,6 +57,11 @@ type _NetworkProtocolControlInformation struct {
 
 var _ NetworkProtocolControlInformation = (*_NetworkProtocolControlInformation)(nil)
 
+// NewNetworkProtocolControlInformation factory function for _NetworkProtocolControlInformation
+func NewNetworkProtocolControlInformation(stackCounter uint8, stackDepth uint8) *_NetworkProtocolControlInformation {
+	return &_NetworkProtocolControlInformation{StackCounter: stackCounter, StackDepth: stackDepth}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -73,11 +79,6 @@ func (m *_NetworkProtocolControlInformation) GetStackDepth() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNetworkProtocolControlInformation factory function for _NetworkProtocolControlInformation
-func NewNetworkProtocolControlInformation(stackCounter uint8, stackDepth uint8) *_NetworkProtocolControlInformation {
-	return &_NetworkProtocolControlInformation{StackCounter: stackCounter, StackDepth: stackDepth}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNetworkProtocolControlInformation(structType any) NetworkProtocolControlInformation {
@@ -201,6 +202,22 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_NetworkProtocolControlInformation) IsNetworkProtocolControlInformation() {}
+
+func (m *_NetworkProtocolControlInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkProtocolControlInformation) deepCopy() *_NetworkProtocolControlInformation {
+	if m == nil {
+		return nil
+	}
+	_NetworkProtocolControlInformationCopy := &_NetworkProtocolControlInformation{
+		m.StackCounter,
+		m.StackDepth,
+		m.reservedField0,
+	}
+	return _NetworkProtocolControlInformationCopy
+}
 
 func (m *_NetworkProtocolControlInformation) String() string {
 	if m == nil {

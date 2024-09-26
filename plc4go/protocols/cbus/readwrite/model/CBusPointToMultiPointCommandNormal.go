@@ -38,6 +38,7 @@ type CBusPointToMultiPointCommandNormal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToMultiPointCommand
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -58,6 +59,20 @@ type _CBusPointToMultiPointCommandNormal struct {
 
 var _ CBusPointToMultiPointCommandNormal = (*_CBusPointToMultiPointCommandNormal)(nil)
 var _ CBusPointToMultiPointCommandRequirements = (*_CBusPointToMultiPointCommandNormal)(nil)
+
+// NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
+func NewCBusPointToMultiPointCommandNormal(peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandNormal {
+	if salData == nil {
+		panic("salData of type SALData for CBusPointToMultiPointCommandNormal must not be nil")
+	}
+	_result := &_CBusPointToMultiPointCommandNormal{
+		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
+		Application:                          application,
+		SalData:                              salData,
+	}
+	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,20 +105,6 @@ func (m *_CBusPointToMultiPointCommandNormal) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
-func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandNormal {
-	if salData == nil {
-		panic("salData of type SALData for CBusPointToMultiPointCommandNormal must not be nil")
-	}
-	_result := &_CBusPointToMultiPointCommandNormal{
-		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
-		Application:                          application,
-		SalData:                              salData,
-	}
-	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToMultiPointCommandNormal(structType any) CBusPointToMultiPointCommandNormal {
@@ -214,6 +215,24 @@ func (m *_CBusPointToMultiPointCommandNormal) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_CBusPointToMultiPointCommandNormal) IsCBusPointToMultiPointCommandNormal() {}
+
+func (m *_CBusPointToMultiPointCommandNormal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToMultiPointCommandNormal) deepCopy() *_CBusPointToMultiPointCommandNormal {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToMultiPointCommandNormalCopy := &_CBusPointToMultiPointCommandNormal{
+		m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand).deepCopy(),
+		m.Application,
+		m.SalData.DeepCopy().(SALData),
+		m.reservedField0,
+	}
+	m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = m
+	return _CBusPointToMultiPointCommandNormalCopy
+}
 
 func (m *_CBusPointToMultiPointCommandNormal) String() string {
 	if m == nil {

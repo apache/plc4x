@@ -38,6 +38,7 @@ type BACnetConstructedDataFloorText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataFloorText struct {
 
 var _ BACnetConstructedDataFloorText = (*_BACnetConstructedDataFloorText)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFloorText)(nil)
+
+// NewBACnetConstructedDataFloorText factory function for _BACnetConstructedDataFloorText
+func NewBACnetConstructedDataFloorText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, floorText []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFloorText {
+	_result := &_BACnetConstructedDataFloorText{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		FloorText:                     floorText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataFloorText) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFloorText factory function for _BACnetConstructedDataFloorText
-func NewBACnetConstructedDataFloorText(numberOfDataElements BACnetApplicationTagUnsignedInteger, floorText []BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFloorText {
-	_result := &_BACnetConstructedDataFloorText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		FloorText:                     floorText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFloorText(structType any) BACnetConstructedDataFloorText {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataFloorText) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataFloorText) IsBACnetConstructedDataFloorText() {}
+
+func (m *_BACnetConstructedDataFloorText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFloorText) deepCopy() *_BACnetConstructedDataFloorText {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFloorTextCopy := &_BACnetConstructedDataFloorText{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.FloorText),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFloorTextCopy
+}
 
 func (m *_BACnetConstructedDataFloorText) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetParameters returns Parameters (property field)
@@ -60,6 +61,17 @@ type _BACnetFaultParameterFaultExtendedParameters struct {
 
 var _ BACnetFaultParameterFaultExtendedParameters = (*_BACnetFaultParameterFaultExtendedParameters)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParameters factory function for _BACnetFaultParameterFaultExtendedParameters
+func NewBACnetFaultParameterFaultExtendedParameters(openingTag BACnetOpeningTag, parameters []BACnetFaultParameterFaultExtendedParametersEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultExtendedParameters {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
+	}
+	return &_BACnetFaultParameterFaultExtendedParameters{OpeningTag: openingTag, Parameters: parameters, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) GetClosingTag() BACnetClo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParameters factory function for _BACnetFaultParameterFaultExtendedParameters
-func NewBACnetFaultParameterFaultExtendedParameters(openingTag BACnetOpeningTag, parameters []BACnetFaultParameterFaultExtendedParametersEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultExtendedParameters {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
-	}
-	return &_BACnetFaultParameterFaultExtendedParameters{OpeningTag: openingTag, Parameters: parameters, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParameters(structType any) BACnetFaultParameterFaultExtendedParameters {
@@ -229,6 +230,23 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetFaultParameterFaultExtendedParameters) IsBACnetFaultParameterFaultExtendedParameters() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParameters) deepCopy() *_BACnetFaultParameterFaultExtendedParameters {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersCopy := &_BACnetFaultParameterFaultExtendedParameters{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetFaultParameterFaultExtendedParametersEntry, BACnetFaultParameterFaultExtendedParametersEntry](m.Parameters),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetFaultParameterFaultExtendedParametersCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParameters) String() string {

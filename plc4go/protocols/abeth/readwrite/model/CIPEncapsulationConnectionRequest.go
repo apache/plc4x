@@ -37,6 +37,7 @@ type CIPEncapsulationConnectionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CIPEncapsulationPacket
 	// IsCIPEncapsulationConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationConnectionRequest()
@@ -49,6 +50,15 @@ type _CIPEncapsulationConnectionRequest struct {
 
 var _ CIPEncapsulationConnectionRequest = (*_CIPEncapsulationConnectionRequest)(nil)
 var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationConnectionRequest)(nil)
+
+// NewCIPEncapsulationConnectionRequest factory function for _CIPEncapsulationConnectionRequest
+func NewCIPEncapsulationConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationConnectionRequest {
+	_result := &_CIPEncapsulationConnectionRequest{
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,15 +76,6 @@ func (m *_CIPEncapsulationConnectionRequest) GetCommandType() uint16 {
 
 func (m *_CIPEncapsulationConnectionRequest) GetParent() CIPEncapsulationPacketContract {
 	return m.CIPEncapsulationPacketContract
-}
-
-// NewCIPEncapsulationConnectionRequest factory function for _CIPEncapsulationConnectionRequest
-func NewCIPEncapsulationConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationConnectionRequest {
-	_result := &_CIPEncapsulationConnectionRequest{
-		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,6 +148,21 @@ func (m *_CIPEncapsulationConnectionRequest) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_CIPEncapsulationConnectionRequest) IsCIPEncapsulationConnectionRequest() {}
+
+func (m *_CIPEncapsulationConnectionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationConnectionRequest) deepCopy() *_CIPEncapsulationConnectionRequest {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationConnectionRequestCopy := &_CIPEncapsulationConnectionRequest{
+		m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).deepCopy(),
+	}
+	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	return _CIPEncapsulationConnectionRequestCopy
+}
 
 func (m *_CIPEncapsulationConnectionRequest) String() string {
 	if m == nil {

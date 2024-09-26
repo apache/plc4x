@@ -38,6 +38,7 @@ type SecurityDataOn interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -53,6 +54,16 @@ type _SecurityDataOn struct {
 
 var _ SecurityDataOn = (*_SecurityDataOn)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataOn)(nil)
+
+// NewSecurityDataOn factory function for _SecurityDataOn
+func NewSecurityDataOn(commandTypeContainer SecurityCommandTypeContainer, argument byte, data []byte) *_SecurityDataOn {
+	_result := &_SecurityDataOn{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Data:                 data,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_SecurityDataOn) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataOn factory function for _SecurityDataOn
-func NewSecurityDataOn(data []byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataOn {
-	_result := &_SecurityDataOn{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Data:                 data,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataOn(structType any) SecurityDataOn {
@@ -177,6 +178,22 @@ func (m *_SecurityDataOn) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SecurityDataOn) IsSecurityDataOn() {}
+
+func (m *_SecurityDataOn) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataOn) deepCopy() *_SecurityDataOn {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataOnCopy := &_SecurityDataOn{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataOnCopy
+}
 
 func (m *_SecurityDataOn) String() string {
 	if m == nil {

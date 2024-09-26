@@ -38,6 +38,7 @@ type BACnetConstructedDataObjectList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataObjectList struct {
 
 var _ BACnetConstructedDataObjectList = (*_BACnetConstructedDataObjectList)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectList)(nil)
+
+// NewBACnetConstructedDataObjectList factory function for _BACnetConstructedDataObjectList
+func NewBACnetConstructedDataObjectList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, objectList []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectList {
+	_result := &_BACnetConstructedDataObjectList{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ObjectList:                    objectList,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataObjectList) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataObjectList factory function for _BACnetConstructedDataObjectList
-func NewBACnetConstructedDataObjectList(numberOfDataElements BACnetApplicationTagUnsignedInteger, objectList []BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectList {
-	_result := &_BACnetConstructedDataObjectList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ObjectList:                    objectList,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataObjectList(structType any) BACnetConstructedDataObjectList {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataObjectList) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataObjectList) IsBACnetConstructedDataObjectList() {}
+
+func (m *_BACnetConstructedDataObjectList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataObjectList) deepCopy() *_BACnetConstructedDataObjectList {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataObjectListCopy := &_BACnetConstructedDataObjectList{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagObjectIdentifier, BACnetApplicationTagObjectIdentifier](m.ObjectList),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataObjectListCopy
+}
 
 func (m *_BACnetConstructedDataObjectList) String() string {
 	if m == nil {

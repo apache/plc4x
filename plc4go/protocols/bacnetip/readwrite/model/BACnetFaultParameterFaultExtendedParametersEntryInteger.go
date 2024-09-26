@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
@@ -53,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryInteger struct {
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryInteger = (*_BACnetFaultParameterFaultExtendedParametersEntryInteger)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryInteger)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryInteger factory function for _BACnetFaultParameterFaultExtendedParametersEntryInteger
+func NewBACnetFaultParameterFaultExtendedParametersEntryInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger) *_BACnetFaultParameterFaultExtendedParametersEntryInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetFaultParameterFaultExtendedParametersEntryInteger must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryInteger{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		IntegerValue: integerValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) GetIntegerVal
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryInteger factory function for _BACnetFaultParameterFaultExtendedParametersEntryInteger
-func NewBACnetFaultParameterFaultExtendedParametersEntryInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryInteger {
-	if integerValue == nil {
-		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetFaultParameterFaultExtendedParametersEntryInteger must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryInteger{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		IntegerValue: integerValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryInteger(structType any) BACnetFaultParameterFaultExtendedParametersEntryInteger {
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) SerializeWith
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) IsBACnetFaultParameterFaultExtendedParametersEntryInteger() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryIntegerCopy := &_BACnetFaultParameterFaultExtendedParametersEntryInteger{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryIntegerCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) String() string {

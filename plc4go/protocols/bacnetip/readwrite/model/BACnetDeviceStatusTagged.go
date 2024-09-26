@@ -38,6 +38,7 @@ type BACnetDeviceStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetDeviceStatusTagged struct {
 }
 
 var _ BACnetDeviceStatusTagged = (*_BACnetDeviceStatusTagged)(nil)
+
+// NewBACnetDeviceStatusTagged factory function for _BACnetDeviceStatusTagged
+func NewBACnetDeviceStatusTagged(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDeviceStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDeviceStatusTagged must not be nil")
+	}
+	return &_BACnetDeviceStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetDeviceStatusTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDeviceStatusTagged factory function for _BACnetDeviceStatusTagged
-func NewBACnetDeviceStatusTagged(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDeviceStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDeviceStatusTagged must not be nil")
-	}
-	return &_BACnetDeviceStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDeviceStatusTagged(structType any) BACnetDeviceStatusTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetDeviceStatusTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetDeviceStatusTagged) IsBACnetDeviceStatusTagged() {}
+
+func (m *_BACnetDeviceStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDeviceStatusTagged) deepCopy() *_BACnetDeviceStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDeviceStatusTaggedCopy := &_BACnetDeviceStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDeviceStatusTaggedCopy
+}
 
 func (m *_BACnetDeviceStatusTagged) String() string {
 	if m == nil {

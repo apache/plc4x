@@ -40,6 +40,7 @@ type DF1Command interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1Command is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1Command()
 }
@@ -71,6 +72,11 @@ type _DF1Command struct {
 
 var _ DF1CommandContract = (*_DF1Command)(nil)
 
+// NewDF1Command factory function for _DF1Command
+func NewDF1Command(status uint8, transactionCounter uint16) *_DF1Command {
+	return &_DF1Command{Status: status, TransactionCounter: transactionCounter}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -88,11 +94,6 @@ func (m *_DF1Command) GetTransactionCounter() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1Command factory function for _DF1Command
-func NewDF1Command(status uint8, transactionCounter uint16) *_DF1Command {
-	return &_DF1Command{Status: status, TransactionCounter: transactionCounter}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1Command(structType any) DF1Command {
@@ -186,11 +187,11 @@ func (m *_DF1Command) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 	var _child DF1Command
 	switch {
 	case commandCode == 0x01: // DF1UnprotectedReadRequest
-		if _child, err = (&_DF1UnprotectedReadRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1UnprotectedReadRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1UnprotectedReadRequest for type-switch of DF1Command")
 		}
 	case commandCode == 0x41: // DF1UnprotectedReadResponse
-		if _child, err = (&_DF1UnprotectedReadResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1UnprotectedReadResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1UnprotectedReadResponse for type-switch of DF1Command")
 		}
 	default:
@@ -240,3 +241,19 @@ func (pm *_DF1Command) serializeParent(ctx context.Context, writeBuffer utils.Wr
 }
 
 func (m *_DF1Command) IsDF1Command() {}
+
+func (m *_DF1Command) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1Command) deepCopy() *_DF1Command {
+	if m == nil {
+		return nil
+	}
+	_DF1CommandCopy := &_DF1Command{
+		nil, // will be set by child
+		m.Status,
+		m.TransactionCounter,
+	}
+	return _DF1CommandCopy
+}

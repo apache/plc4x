@@ -38,6 +38,7 @@ type BACnetConstructedDataRestartNotificationRecipients interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRestartNotificationRecipients returns RestartNotificationRecipients (property field)
 	GetRestartNotificationRecipients() []BACnetRecipient
@@ -53,6 +54,16 @@ type _BACnetConstructedDataRestartNotificationRecipients struct {
 
 var _ BACnetConstructedDataRestartNotificationRecipients = (*_BACnetConstructedDataRestartNotificationRecipients)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestartNotificationRecipients)(nil)
+
+// NewBACnetConstructedDataRestartNotificationRecipients factory function for _BACnetConstructedDataRestartNotificationRecipients
+func NewBACnetConstructedDataRestartNotificationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, restartNotificationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestartNotificationRecipients {
+	_result := &_BACnetConstructedDataRestartNotificationRecipients{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RestartNotificationRecipients: restartNotificationRecipients,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetRestartNotifica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRestartNotificationRecipients factory function for _BACnetConstructedDataRestartNotificationRecipients
-func NewBACnetConstructedDataRestartNotificationRecipients(restartNotificationRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestartNotificationRecipients {
-	_result := &_BACnetConstructedDataRestartNotificationRecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RestartNotificationRecipients: restartNotificationRecipients,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRestartNotificationRecipients(structType any) BACnetConstructedDataRestartNotificationRecipients {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) SerializeWithWrite
 }
 
 func (m *_BACnetConstructedDataRestartNotificationRecipients) IsBACnetConstructedDataRestartNotificationRecipients() {
+}
+
+func (m *_BACnetConstructedDataRestartNotificationRecipients) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRestartNotificationRecipients) deepCopy() *_BACnetConstructedDataRestartNotificationRecipients {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRestartNotificationRecipientsCopy := &_BACnetConstructedDataRestartNotificationRecipients{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetRecipient, BACnetRecipient](m.RestartNotificationRecipients),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRestartNotificationRecipientsCopy
 }
 
 func (m *_BACnetConstructedDataRestartNotificationRecipients) String() string {

@@ -272,9 +272,23 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 		// Prepare the discovery packet data
 		cBusOptions := readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, true)
 		requestContext := readWriteModel.NewRequestContext(false)
-		calData := readWriteModel.NewCALDataIdentify(readWriteModel.Attribute_Manufacturer, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, requestContext)
+		calData := readWriteModel.NewCALDataIdentify(
+			readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+			nil,
+			readWriteModel.Attribute_Manufacturer,
+			requestContext,
+		)
 		alpha := readWriteModel.NewAlpha('x')
-		request := readWriteModel.NewRequestDirectCommandAccess(calData, alpha, 0x0, nil, nil, readWriteModel.RequestType_DIRECT_COMMAND, readWriteModel.NewRequestTermination(), cBusOptions)
+		request := readWriteModel.NewRequestDirectCommandAccess(
+			0x0,
+			nil,
+			nil,
+			readWriteModel.RequestType_DIRECT_COMMAND,
+			readWriteModel.NewRequestTermination(),
+			calData,
+			alpha,
+			cBusOptions,
+		)
 		cBusMessageToServer := readWriteModel.NewCBusMessageToServer(request, requestContext, cBusOptions)
 		// Send the search request.
 		if err := codec.Send(cBusMessageToServer); err != nil {

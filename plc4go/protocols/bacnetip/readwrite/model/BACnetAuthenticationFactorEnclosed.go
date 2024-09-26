@@ -38,6 +38,7 @@ type BACnetAuthenticationFactorEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
@@ -60,6 +61,20 @@ type _BACnetAuthenticationFactorEnclosed struct {
 
 var _ BACnetAuthenticationFactorEnclosed = (*_BACnetAuthenticationFactorEnclosed)(nil)
 
+// NewBACnetAuthenticationFactorEnclosed factory function for _BACnetAuthenticationFactorEnclosed
+func NewBACnetAuthenticationFactorEnclosed(openingTag BACnetOpeningTag, authenticationFactor BACnetAuthenticationFactor, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAuthenticationFactorEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetAuthenticationFactorEnclosed must not be nil")
+	}
+	if authenticationFactor == nil {
+		panic("authenticationFactor of type BACnetAuthenticationFactor for BACnetAuthenticationFactorEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetAuthenticationFactorEnclosed must not be nil")
+	}
+	return &_BACnetAuthenticationFactorEnclosed{OpeningTag: openingTag, AuthenticationFactor: authenticationFactor, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +96,6 @@ func (m *_BACnetAuthenticationFactorEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationFactorEnclosed factory function for _BACnetAuthenticationFactorEnclosed
-func NewBACnetAuthenticationFactorEnclosed(openingTag BACnetOpeningTag, authenticationFactor BACnetAuthenticationFactor, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAuthenticationFactorEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetAuthenticationFactorEnclosed must not be nil")
-	}
-	if authenticationFactor == nil {
-		panic("authenticationFactor of type BACnetAuthenticationFactor for BACnetAuthenticationFactorEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetAuthenticationFactorEnclosed must not be nil")
-	}
-	return &_BACnetAuthenticationFactorEnclosed{OpeningTag: openingTag, AuthenticationFactor: authenticationFactor, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationFactorEnclosed(structType any) BACnetAuthenticationFactorEnclosed {
@@ -228,6 +229,23 @@ func (m *_BACnetAuthenticationFactorEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetAuthenticationFactorEnclosed) IsBACnetAuthenticationFactorEnclosed() {}
+
+func (m *_BACnetAuthenticationFactorEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationFactorEnclosed) deepCopy() *_BACnetAuthenticationFactorEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationFactorEnclosedCopy := &_BACnetAuthenticationFactorEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.AuthenticationFactor.DeepCopy().(BACnetAuthenticationFactor),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetAuthenticationFactorEnclosedCopy
+}
 
 func (m *_BACnetAuthenticationFactorEnclosed) String() string {
 	if m == nil {

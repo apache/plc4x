@@ -38,6 +38,7 @@ type BACnetConstructedDataLimitMonitoringInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLimitMonitoringInterval returns LimitMonitoringInterval (property field)
 	GetLimitMonitoringInterval() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLimitMonitoringInterval struct {
 
 var _ BACnetConstructedDataLimitMonitoringInterval = (*_BACnetConstructedDataLimitMonitoringInterval)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLimitMonitoringInterval)(nil)
+
+// NewBACnetConstructedDataLimitMonitoringInterval factory function for _BACnetConstructedDataLimitMonitoringInterval
+func NewBACnetConstructedDataLimitMonitoringInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitMonitoringInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
+	if limitMonitoringInterval == nil {
+		panic("limitMonitoringInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLimitMonitoringInterval must not be nil")
+	}
+	_result := &_BACnetConstructedDataLimitMonitoringInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LimitMonitoringInterval:       limitMonitoringInterval,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) GetActualValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLimitMonitoringInterval factory function for _BACnetConstructedDataLimitMonitoringInterval
-func NewBACnetConstructedDataLimitMonitoringInterval(limitMonitoringInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
-	if limitMonitoringInterval == nil {
-		panic("limitMonitoringInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLimitMonitoringInterval must not be nil")
-	}
-	_result := &_BACnetConstructedDataLimitMonitoringInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LimitMonitoringInterval:       limitMonitoringInterval,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLimitMonitoringInterval(structType any) BACnetConstructedDataLimitMonitoringInterval {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataLimitMonitoringInterval) IsBACnetConstructedDataLimitMonitoringInterval() {
+}
+
+func (m *_BACnetConstructedDataLimitMonitoringInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLimitMonitoringInterval) deepCopy() *_BACnetConstructedDataLimitMonitoringInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLimitMonitoringIntervalCopy := &_BACnetConstructedDataLimitMonitoringInterval{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LimitMonitoringInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLimitMonitoringIntervalCopy
 }
 
 func (m *_BACnetConstructedDataLimitMonitoringInterval) String() string {

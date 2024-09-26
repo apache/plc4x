@@ -41,6 +41,7 @@ type AdsDiscoveryBlockAmsNetId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetAmsNetId returns AmsNetId (property field)
 	GetAmsNetId() AmsNetId
@@ -56,6 +57,19 @@ type _AdsDiscoveryBlockAmsNetId struct {
 
 var _ AdsDiscoveryBlockAmsNetId = (*_AdsDiscoveryBlockAmsNetId)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockAmsNetId)(nil)
+
+// NewAdsDiscoveryBlockAmsNetId factory function for _AdsDiscoveryBlockAmsNetId
+func NewAdsDiscoveryBlockAmsNetId(amsNetId AmsNetId) *_AdsDiscoveryBlockAmsNetId {
+	if amsNetId == nil {
+		panic("amsNetId of type AmsNetId for AdsDiscoveryBlockAmsNetId must not be nil")
+	}
+	_result := &_AdsDiscoveryBlockAmsNetId{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		AmsNetId:                  amsNetId,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,19 +115,6 @@ func (m *_AdsDiscoveryBlockAmsNetId) GetAmsNetIdLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockAmsNetId factory function for _AdsDiscoveryBlockAmsNetId
-func NewAdsDiscoveryBlockAmsNetId(amsNetId AmsNetId) *_AdsDiscoveryBlockAmsNetId {
-	if amsNetId == nil {
-		panic("amsNetId of type AmsNetId for AdsDiscoveryBlockAmsNetId must not be nil")
-	}
-	_result := &_AdsDiscoveryBlockAmsNetId{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		AmsNetId:                  amsNetId,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockAmsNetId(structType any) AdsDiscoveryBlockAmsNetId {
@@ -211,6 +212,22 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AdsDiscoveryBlockAmsNetId) IsAdsDiscoveryBlockAmsNetId() {}
+
+func (m *_AdsDiscoveryBlockAmsNetId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockAmsNetId) deepCopy() *_AdsDiscoveryBlockAmsNetId {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockAmsNetIdCopy := &_AdsDiscoveryBlockAmsNetId{
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
+		m.AmsNetId.DeepCopy().(AmsNetId),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockAmsNetIdCopy
+}
 
 func (m *_AdsDiscoveryBlockAmsNetId) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetTimerStateChangeValueUnsigned struct {
 
 var _ BACnetTimerStateChangeValueUnsigned = (*_BACnetTimerStateChangeValueUnsigned)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueUnsigned)(nil)
+
+// NewBACnetTimerStateChangeValueUnsigned factory function for _BACnetTimerStateChangeValueUnsigned
+func NewBACnetTimerStateChangeValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetTimerStateChangeValueUnsigned must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueUnsigned{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		UnsignedValue:                       unsignedValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetTimerStateChangeValueUnsigned) GetUnsignedValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueUnsigned factory function for _BACnetTimerStateChangeValueUnsigned
-func NewBACnetTimerStateChangeValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueUnsigned {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetTimerStateChangeValueUnsigned must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueUnsigned{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		UnsignedValue:                       unsignedValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueUnsigned(structType any) BACnetTimerStateChangeValueUnsigned {
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueUnsigned) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetTimerStateChangeValueUnsigned) IsBACnetTimerStateChangeValueUnsigned() {}
+
+func (m *_BACnetTimerStateChangeValueUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueUnsigned) deepCopy() *_BACnetTimerStateChangeValueUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueUnsignedCopy := &_BACnetTimerStateChangeValueUnsigned{
+		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueUnsignedCopy
+}
 
 func (m *_BACnetTimerStateChangeValueUnsigned) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type LDataFrameACK interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LDataFrame
 	// IsLDataFrameACK is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataFrameACK()
@@ -48,6 +49,15 @@ type _LDataFrameACK struct {
 
 var _ LDataFrameACK = (*_LDataFrameACK)(nil)
 var _ LDataFrameRequirements = (*_LDataFrameACK)(nil)
+
+// NewLDataFrameACK factory function for _LDataFrameACK
+func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrameACK {
+	_result := &_LDataFrameACK{
+		LDataFrameContract: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
+	}
+	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_LDataFrameACK) GetPolling() bool {
 
 func (m *_LDataFrameACK) GetParent() LDataFrameContract {
 	return m.LDataFrameContract
-}
-
-// NewLDataFrameACK factory function for _LDataFrameACK
-func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrameACK {
-	_result := &_LDataFrameACK{
-		LDataFrameContract: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
-	}
-	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_LDataFrameACK) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_LDataFrameACK) IsLDataFrameACK() {}
+
+func (m *_LDataFrameACK) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataFrameACK) deepCopy() *_LDataFrameACK {
+	if m == nil {
+		return nil
+	}
+	_LDataFrameACKCopy := &_LDataFrameACK{
+		m.LDataFrameContract.(*_LDataFrame).deepCopy(),
+	}
+	m.LDataFrameContract.(*_LDataFrame)._SubType = m
+	return _LDataFrameACKCopy
+}
 
 func (m *_LDataFrameACK) String() string {
 	if m == nil {

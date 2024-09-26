@@ -38,6 +38,7 @@ type ErrorReportingSystemCategoryTypeClimateControllers interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForClimateControllers
@@ -53,6 +54,16 @@ type _ErrorReportingSystemCategoryTypeClimateControllers struct {
 
 var _ ErrorReportingSystemCategoryTypeClimateControllers = (*_ErrorReportingSystemCategoryTypeClimateControllers)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeClimateControllers)(nil)
+
+// NewErrorReportingSystemCategoryTypeClimateControllers factory function for _ErrorReportingSystemCategoryTypeClimateControllers
+func NewErrorReportingSystemCategoryTypeClimateControllers(categoryForType ErrorReportingSystemCategoryTypeForClimateControllers) *_ErrorReportingSystemCategoryTypeClimateControllers {
+	_result := &_ErrorReportingSystemCategoryTypeClimateControllers{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetCategoryForType
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeClimateControllers factory function for _ErrorReportingSystemCategoryTypeClimateControllers
-func NewErrorReportingSystemCategoryTypeClimateControllers(categoryForType ErrorReportingSystemCategoryTypeForClimateControllers) *_ErrorReportingSystemCategoryTypeClimateControllers {
-	_result := &_ErrorReportingSystemCategoryTypeClimateControllers{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		CategoryForType:                          categoryForType,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeClimateControllers(structType any) ErrorReportingSystemCategoryTypeClimateControllers {
@@ -179,6 +180,22 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) SerializeWithWrite
 }
 
 func (m *_ErrorReportingSystemCategoryTypeClimateControllers) IsErrorReportingSystemCategoryTypeClimateControllers() {
+}
+
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryTypeClimateControllers) deepCopy() *_ErrorReportingSystemCategoryTypeClimateControllers {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeClimateControllersCopy := &_ErrorReportingSystemCategoryTypeClimateControllers{
+		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
+		m.CategoryForType,
+	}
+	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	return _ErrorReportingSystemCategoryTypeClimateControllersCopy
 }
 
 func (m *_ErrorReportingSystemCategoryTypeClimateControllers) String() string {

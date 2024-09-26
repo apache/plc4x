@@ -38,6 +38,7 @@ type ReadValueId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -62,6 +63,28 @@ type _ReadValueId struct {
 
 var _ ReadValueId = (*_ReadValueId)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReadValueId)(nil)
+
+// NewReadValueId factory function for _ReadValueId
+func NewReadValueId(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) *_ReadValueId {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for ReadValueId must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for ReadValueId must not be nil")
+	}
+	if dataEncoding == nil {
+		panic("dataEncoding of type QualifiedName for ReadValueId must not be nil")
+	}
+	_result := &_ReadValueId{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		AttributeId:                       attributeId,
+		IndexRange:                        indexRange,
+		DataEncoding:                      dataEncoding,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +129,6 @@ func (m *_ReadValueId) GetDataEncoding() QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReadValueId factory function for _ReadValueId
-func NewReadValueId(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) *_ReadValueId {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for ReadValueId must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for ReadValueId must not be nil")
-	}
-	if dataEncoding == nil {
-		panic("dataEncoding of type QualifiedName for ReadValueId must not be nil")
-	}
-	_result := &_ReadValueId{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		AttributeId:                       attributeId,
-		IndexRange:                        indexRange,
-		DataEncoding:                      dataEncoding,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReadValueId(structType any) ReadValueId {
@@ -251,6 +252,25 @@ func (m *_ReadValueId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_ReadValueId) IsReadValueId() {}
+
+func (m *_ReadValueId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReadValueId) deepCopy() *_ReadValueId {
+	if m == nil {
+		return nil
+	}
+	_ReadValueIdCopy := &_ReadValueId{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+		m.DataEncoding.DeepCopy().(QualifiedName),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReadValueIdCopy
+}
 
 func (m *_ReadValueId) String() string {
 	if m == nil {

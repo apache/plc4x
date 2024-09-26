@@ -38,6 +38,7 @@ type BACnetConstructedDataCarDoorText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataCarDoorText struct {
 
 var _ BACnetConstructedDataCarDoorText = (*_BACnetConstructedDataCarDoorText)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDoorText)(nil)
+
+// NewBACnetConstructedDataCarDoorText factory function for _BACnetConstructedDataCarDoorText
+func NewBACnetConstructedDataCarDoorText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, carDoorText []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorText {
+	_result := &_BACnetConstructedDataCarDoorText{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		CarDoorText:                   carDoorText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataCarDoorText) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarDoorText factory function for _BACnetConstructedDataCarDoorText
-func NewBACnetConstructedDataCarDoorText(numberOfDataElements BACnetApplicationTagUnsignedInteger, carDoorText []BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorText {
-	_result := &_BACnetConstructedDataCarDoorText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		CarDoorText:                   carDoorText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarDoorText(structType any) BACnetConstructedDataCarDoorText {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataCarDoorText) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataCarDoorText) IsBACnetConstructedDataCarDoorText() {}
+
+func (m *_BACnetConstructedDataCarDoorText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarDoorText) deepCopy() *_BACnetConstructedDataCarDoorText {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarDoorTextCopy := &_BACnetConstructedDataCarDoorText{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.CarDoorText),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarDoorTextCopy
+}
 
 func (m *_BACnetConstructedDataCarDoorText) String() string {
 	if m == nil {

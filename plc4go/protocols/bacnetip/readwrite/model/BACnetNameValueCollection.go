@@ -38,6 +38,7 @@ type BACnetNameValueCollection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetMembers returns Members (property field)
@@ -60,6 +61,17 @@ type _BACnetNameValueCollection struct {
 
 var _ BACnetNameValueCollection = (*_BACnetNameValueCollection)(nil)
 
+// NewBACnetNameValueCollection factory function for _BACnetNameValueCollection
+func NewBACnetNameValueCollection(openingTag BACnetOpeningTag, members []BACnetNameValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNameValueCollection {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetNameValueCollection must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetNameValueCollection must not be nil")
+	}
+	return &_BACnetNameValueCollection{OpeningTag: openingTag, Members: members, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_BACnetNameValueCollection) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNameValueCollection factory function for _BACnetNameValueCollection
-func NewBACnetNameValueCollection(openingTag BACnetOpeningTag, members []BACnetNameValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNameValueCollection {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetNameValueCollection must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetNameValueCollection must not be nil")
-	}
-	return &_BACnetNameValueCollection{OpeningTag: openingTag, Members: members, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNameValueCollection(structType any) BACnetNameValueCollection {
@@ -229,6 +230,23 @@ func (m *_BACnetNameValueCollection) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetNameValueCollection) IsBACnetNameValueCollection() {}
+
+func (m *_BACnetNameValueCollection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNameValueCollection) deepCopy() *_BACnetNameValueCollection {
+	if m == nil {
+		return nil
+	}
+	_BACnetNameValueCollectionCopy := &_BACnetNameValueCollection{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetNameValue, BACnetNameValue](m.Members),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetNameValueCollectionCopy
+}
 
 func (m *_BACnetNameValueCollection) String() string {
 	if m == nil {

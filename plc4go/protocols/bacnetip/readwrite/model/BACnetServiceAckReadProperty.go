@@ -38,6 +38,7 @@ type BACnetServiceAckReadProperty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -62,6 +63,25 @@ type _BACnetServiceAckReadProperty struct {
 
 var _ BACnetServiceAckReadProperty = (*_BACnetServiceAckReadProperty)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadProperty)(nil)
+
+// NewBACnetServiceAckReadProperty factory function for _BACnetServiceAckReadProperty
+func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckReadProperty {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadProperty must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetServiceAckReadProperty must not be nil")
+	}
+	_result := &_BACnetServiceAckReadProperty{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ObjectIdentifier:         objectIdentifier,
+		PropertyIdentifier:       propertyIdentifier,
+		ArrayIndex:               arrayIndex,
+		Values:                   values,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +126,6 @@ func (m *_BACnetServiceAckReadProperty) GetValues() BACnetConstructedData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckReadProperty factory function for _BACnetServiceAckReadProperty
-func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckReadProperty {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadProperty must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetServiceAckReadProperty must not be nil")
-	}
-	_result := &_BACnetServiceAckReadProperty{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		ObjectIdentifier:         objectIdentifier,
-		PropertyIdentifier:       propertyIdentifier,
-		ArrayIndex:               arrayIndex,
-		Values:                   values,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckReadProperty(structType any) BACnetServiceAckReadProperty {
@@ -260,6 +261,25 @@ func (m *_BACnetServiceAckReadProperty) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetServiceAckReadProperty) IsBACnetServiceAckReadProperty() {}
+
+func (m *_BACnetServiceAckReadProperty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckReadProperty) deepCopy() *_BACnetServiceAckReadProperty {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckReadPropertyCopy := &_BACnetServiceAckReadProperty{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Values.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckReadPropertyCopy
+}
 
 func (m *_BACnetServiceAckReadProperty) String() string {
 	if m == nil {

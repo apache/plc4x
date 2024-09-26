@@ -38,6 +38,7 @@ type PascalByteString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStringLength returns StringLength (property field)
 	GetStringLength() int32
 	// GetStringValue returns StringValue (property field)
@@ -53,6 +54,11 @@ type _PascalByteString struct {
 }
 
 var _ PascalByteString = (*_PascalByteString)(nil)
+
+// NewPascalByteString factory function for _PascalByteString
+func NewPascalByteString(stringLength int32, stringValue []byte) *_PascalByteString {
+	return &_PascalByteString{StringLength: stringLength, StringValue: stringValue}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +77,6 @@ func (m *_PascalByteString) GetStringValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPascalByteString factory function for _PascalByteString
-func NewPascalByteString(stringLength int32, stringValue []byte) *_PascalByteString {
-	return &_PascalByteString{StringLength: stringLength, StringValue: stringValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPascalByteString(structType any) PascalByteString {
@@ -188,6 +189,21 @@ func (m *_PascalByteString) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_PascalByteString) IsPascalByteString() {}
+
+func (m *_PascalByteString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PascalByteString) deepCopy() *_PascalByteString {
+	if m == nil {
+		return nil
+	}
+	_PascalByteStringCopy := &_PascalByteString{
+		m.StringLength,
+		utils.DeepCopySlice[byte, byte](m.StringValue),
+	}
+	return _PascalByteStringCopy
+}
 
 func (m *_PascalByteString) String() string {
 	if m == nil {

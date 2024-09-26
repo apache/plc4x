@@ -38,6 +38,7 @@ type BACnetSecurityKeySet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetKeyRevision returns KeyRevision (property field)
 	GetKeyRevision() BACnetContextTagUnsignedInteger
 	// GetActivationTime returns ActivationTime (property field)
@@ -59,6 +60,23 @@ type _BACnetSecurityKeySet struct {
 }
 
 var _ BACnetSecurityKeySet = (*_BACnetSecurityKeySet)(nil)
+
+// NewBACnetSecurityKeySet factory function for _BACnetSecurityKeySet
+func NewBACnetSecurityKeySet(keyRevision BACnetContextTagUnsignedInteger, activationTime BACnetDateTimeEnclosed, expirationTime BACnetDateTimeEnclosed, keyIds BACnetSecurityKeySetKeyIds) *_BACnetSecurityKeySet {
+	if keyRevision == nil {
+		panic("keyRevision of type BACnetContextTagUnsignedInteger for BACnetSecurityKeySet must not be nil")
+	}
+	if activationTime == nil {
+		panic("activationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
+	}
+	if expirationTime == nil {
+		panic("expirationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
+	}
+	if keyIds == nil {
+		panic("keyIds of type BACnetSecurityKeySetKeyIds for BACnetSecurityKeySet must not be nil")
+	}
+	return &_BACnetSecurityKeySet{KeyRevision: keyRevision, ActivationTime: activationTime, ExpirationTime: expirationTime, KeyIds: keyIds}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,23 +103,6 @@ func (m *_BACnetSecurityKeySet) GetKeyIds() BACnetSecurityKeySetKeyIds {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSecurityKeySet factory function for _BACnetSecurityKeySet
-func NewBACnetSecurityKeySet(keyRevision BACnetContextTagUnsignedInteger, activationTime BACnetDateTimeEnclosed, expirationTime BACnetDateTimeEnclosed, keyIds BACnetSecurityKeySetKeyIds) *_BACnetSecurityKeySet {
-	if keyRevision == nil {
-		panic("keyRevision of type BACnetContextTagUnsignedInteger for BACnetSecurityKeySet must not be nil")
-	}
-	if activationTime == nil {
-		panic("activationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
-	}
-	if expirationTime == nil {
-		panic("expirationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
-	}
-	if keyIds == nil {
-		panic("keyIds of type BACnetSecurityKeySetKeyIds for BACnetSecurityKeySet must not be nil")
-	}
-	return &_BACnetSecurityKeySet{KeyRevision: keyRevision, ActivationTime: activationTime, ExpirationTime: expirationTime, KeyIds: keyIds}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSecurityKeySet(structType any) BACnetSecurityKeySet {
@@ -238,6 +239,23 @@ func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetSecurityKeySet) IsBACnetSecurityKeySet() {}
+
+func (m *_BACnetSecurityKeySet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSecurityKeySet) deepCopy() *_BACnetSecurityKeySet {
+	if m == nil {
+		return nil
+	}
+	_BACnetSecurityKeySetCopy := &_BACnetSecurityKeySet{
+		m.KeyRevision.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ActivationTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.ExpirationTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.KeyIds.DeepCopy().(BACnetSecurityKeySetKeyIds),
+	}
+	return _BACnetSecurityKeySetCopy
+}
 
 func (m *_BACnetSecurityKeySet) String() string {
 	if m == nil {

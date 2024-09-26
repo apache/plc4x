@@ -38,6 +38,7 @@ type AddNodesItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetParentNodeId returns ParentNodeId (property field)
 	GetParentNodeId() ExpandedNodeId
@@ -71,6 +72,40 @@ type _AddNodesItem struct {
 
 var _ AddNodesItem = (*_AddNodesItem)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddNodesItem)(nil)
+
+// NewAddNodesItem factory function for _AddNodesItem
+func NewAddNodesItem(parentNodeId ExpandedNodeId, referenceTypeId NodeId, requestedNewNodeId ExpandedNodeId, browseName QualifiedName, nodeClass NodeClass, nodeAttributes ExtensionObject, typeDefinition ExpandedNodeId) *_AddNodesItem {
+	if parentNodeId == nil {
+		panic("parentNodeId of type ExpandedNodeId for AddNodesItem must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for AddNodesItem must not be nil")
+	}
+	if requestedNewNodeId == nil {
+		panic("requestedNewNodeId of type ExpandedNodeId for AddNodesItem must not be nil")
+	}
+	if browseName == nil {
+		panic("browseName of type QualifiedName for AddNodesItem must not be nil")
+	}
+	if nodeAttributes == nil {
+		panic("nodeAttributes of type ExtensionObject for AddNodesItem must not be nil")
+	}
+	if typeDefinition == nil {
+		panic("typeDefinition of type ExpandedNodeId for AddNodesItem must not be nil")
+	}
+	_result := &_AddNodesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ParentNodeId:                      parentNodeId,
+		ReferenceTypeId:                   referenceTypeId,
+		RequestedNewNodeId:                requestedNewNodeId,
+		BrowseName:                        browseName,
+		NodeClass:                         nodeClass,
+		NodeAttributes:                    nodeAttributes,
+		TypeDefinition:                    typeDefinition,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,40 +162,6 @@ func (m *_AddNodesItem) GetTypeDefinition() ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddNodesItem factory function for _AddNodesItem
-func NewAddNodesItem(parentNodeId ExpandedNodeId, referenceTypeId NodeId, requestedNewNodeId ExpandedNodeId, browseName QualifiedName, nodeClass NodeClass, nodeAttributes ExtensionObject, typeDefinition ExpandedNodeId) *_AddNodesItem {
-	if parentNodeId == nil {
-		panic("parentNodeId of type ExpandedNodeId for AddNodesItem must not be nil")
-	}
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for AddNodesItem must not be nil")
-	}
-	if requestedNewNodeId == nil {
-		panic("requestedNewNodeId of type ExpandedNodeId for AddNodesItem must not be nil")
-	}
-	if browseName == nil {
-		panic("browseName of type QualifiedName for AddNodesItem must not be nil")
-	}
-	if nodeAttributes == nil {
-		panic("nodeAttributes of type ExtensionObject for AddNodesItem must not be nil")
-	}
-	if typeDefinition == nil {
-		panic("typeDefinition of type ExpandedNodeId for AddNodesItem must not be nil")
-	}
-	_result := &_AddNodesItem{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ParentNodeId:                      parentNodeId,
-		ReferenceTypeId:                   referenceTypeId,
-		RequestedNewNodeId:                requestedNewNodeId,
-		BrowseName:                        browseName,
-		NodeClass:                         nodeClass,
-		NodeAttributes:                    nodeAttributes,
-		TypeDefinition:                    typeDefinition,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddNodesItem(structType any) AddNodesItem {
@@ -323,6 +324,28 @@ func (m *_AddNodesItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_AddNodesItem) IsAddNodesItem() {}
+
+func (m *_AddNodesItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddNodesItem) deepCopy() *_AddNodesItem {
+	if m == nil {
+		return nil
+	}
+	_AddNodesItemCopy := &_AddNodesItem{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ParentNodeId.DeepCopy().(ExpandedNodeId),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.RequestedNewNodeId.DeepCopy().(ExpandedNodeId),
+		m.BrowseName.DeepCopy().(QualifiedName),
+		m.NodeClass,
+		m.NodeAttributes.DeepCopy().(ExtensionObject),
+		m.TypeDefinition.DeepCopy().(ExpandedNodeId),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddNodesItemCopy
+}
 
 func (m *_AddNodesItem) String() string {
 	if m == nil {

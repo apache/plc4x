@@ -38,6 +38,7 @@ type BACnetPropertyStatesProgramChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetProgramState returns ProgramState (property field)
 	GetProgramState() BACnetProgramStateTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesProgramChange struct {
 
 var _ BACnetPropertyStatesProgramChange = (*_BACnetPropertyStatesProgramChange)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesProgramChange)(nil)
+
+// NewBACnetPropertyStatesProgramChange factory function for _BACnetPropertyStatesProgramChange
+func NewBACnetPropertyStatesProgramChange(peekedTagHeader BACnetTagHeader, programState BACnetProgramStateTagged) *_BACnetPropertyStatesProgramChange {
+	if programState == nil {
+		panic("programState of type BACnetProgramStateTagged for BACnetPropertyStatesProgramChange must not be nil")
+	}
+	_result := &_BACnetPropertyStatesProgramChange{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ProgramState:                 programState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesProgramChange) GetProgramState() BACnetProgramStat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesProgramChange factory function for _BACnetPropertyStatesProgramChange
-func NewBACnetPropertyStatesProgramChange(programState BACnetProgramStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesProgramChange {
-	if programState == nil {
-		panic("programState of type BACnetProgramStateTagged for BACnetPropertyStatesProgramChange must not be nil")
-	}
-	_result := &_BACnetPropertyStatesProgramChange{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ProgramState:                 programState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesProgramChange(structType any) BACnetPropertyStatesProgramChange {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesProgramChange) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesProgramChange) IsBACnetPropertyStatesProgramChange() {}
+
+func (m *_BACnetPropertyStatesProgramChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesProgramChange) deepCopy() *_BACnetPropertyStatesProgramChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesProgramChangeCopy := &_BACnetPropertyStatesProgramChange{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.ProgramState.DeepCopy().(BACnetProgramStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesProgramChangeCopy
+}
 
 func (m *_BACnetPropertyStatesProgramChange) String() string {
 	if m == nil {

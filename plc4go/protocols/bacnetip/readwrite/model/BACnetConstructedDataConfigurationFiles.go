@@ -38,6 +38,7 @@ type BACnetConstructedDataConfigurationFiles interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataConfigurationFiles struct {
 
 var _ BACnetConstructedDataConfigurationFiles = (*_BACnetConstructedDataConfigurationFiles)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataConfigurationFiles)(nil)
+
+// NewBACnetConstructedDataConfigurationFiles factory function for _BACnetConstructedDataConfigurationFiles
+func NewBACnetConstructedDataConfigurationFiles(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, configurationFiles []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataConfigurationFiles {
+	_result := &_BACnetConstructedDataConfigurationFiles{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ConfigurationFiles:            configurationFiles,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataConfigurationFiles) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataConfigurationFiles factory function for _BACnetConstructedDataConfigurationFiles
-func NewBACnetConstructedDataConfigurationFiles(numberOfDataElements BACnetApplicationTagUnsignedInteger, configurationFiles []BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataConfigurationFiles {
-	_result := &_BACnetConstructedDataConfigurationFiles{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ConfigurationFiles:            configurationFiles,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataConfigurationFiles(structType any) BACnetConstructedDataConfigurationFiles {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataConfigurationFiles) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataConfigurationFiles) IsBACnetConstructedDataConfigurationFiles() {}
+
+func (m *_BACnetConstructedDataConfigurationFiles) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataConfigurationFiles) deepCopy() *_BACnetConstructedDataConfigurationFiles {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataConfigurationFilesCopy := &_BACnetConstructedDataConfigurationFiles{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagObjectIdentifier, BACnetApplicationTagObjectIdentifier](m.ConfigurationFiles),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataConfigurationFilesCopy
+}
 
 func (m *_BACnetConstructedDataConfigurationFiles) String() string {
 	if m == nil {

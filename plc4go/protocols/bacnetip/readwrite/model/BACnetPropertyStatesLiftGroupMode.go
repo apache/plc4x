@@ -38,6 +38,7 @@ type BACnetPropertyStatesLiftGroupMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLiftGroupMode returns LiftGroupMode (property field)
 	GetLiftGroupMode() BACnetLiftGroupModeTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesLiftGroupMode struct {
 
 var _ BACnetPropertyStatesLiftGroupMode = (*_BACnetPropertyStatesLiftGroupMode)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftGroupMode)(nil)
+
+// NewBACnetPropertyStatesLiftGroupMode factory function for _BACnetPropertyStatesLiftGroupMode
+func NewBACnetPropertyStatesLiftGroupMode(peekedTagHeader BACnetTagHeader, liftGroupMode BACnetLiftGroupModeTagged) *_BACnetPropertyStatesLiftGroupMode {
+	if liftGroupMode == nil {
+		panic("liftGroupMode of type BACnetLiftGroupModeTagged for BACnetPropertyStatesLiftGroupMode must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLiftGroupMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftGroupMode:                liftGroupMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesLiftGroupMode) GetLiftGroupMode() BACnetLiftGroupM
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLiftGroupMode factory function for _BACnetPropertyStatesLiftGroupMode
-func NewBACnetPropertyStatesLiftGroupMode(liftGroupMode BACnetLiftGroupModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftGroupMode {
-	if liftGroupMode == nil {
-		panic("liftGroupMode of type BACnetLiftGroupModeTagged for BACnetPropertyStatesLiftGroupMode must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLiftGroupMode{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LiftGroupMode:                liftGroupMode,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLiftGroupMode(structType any) BACnetPropertyStatesLiftGroupMode {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLiftGroupMode) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesLiftGroupMode) IsBACnetPropertyStatesLiftGroupMode() {}
+
+func (m *_BACnetPropertyStatesLiftGroupMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLiftGroupMode) deepCopy() *_BACnetPropertyStatesLiftGroupMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLiftGroupModeCopy := &_BACnetPropertyStatesLiftGroupMode{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LiftGroupMode.DeepCopy().(BACnetLiftGroupModeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLiftGroupModeCopy
+}
 
 func (m *_BACnetPropertyStatesLiftGroupMode) String() string {
 	if m == nil {

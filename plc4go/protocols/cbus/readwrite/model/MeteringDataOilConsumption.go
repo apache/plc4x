@@ -38,6 +38,7 @@ type MeteringDataOilConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetL returns L (property field)
 	GetL() uint32
@@ -53,6 +54,16 @@ type _MeteringDataOilConsumption struct {
 
 var _ MeteringDataOilConsumption = (*_MeteringDataOilConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataOilConsumption)(nil)
+
+// NewMeteringDataOilConsumption factory function for _MeteringDataOilConsumption
+func NewMeteringDataOilConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, L uint32) *_MeteringDataOilConsumption {
+	_result := &_MeteringDataOilConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		L:                    L,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_MeteringDataOilConsumption) GetL() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataOilConsumption factory function for _MeteringDataOilConsumption
-func NewMeteringDataOilConsumption(L uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataOilConsumption {
-	_result := &_MeteringDataOilConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		L:                    L,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataOilConsumption(structType any) MeteringDataOilConsumption {
@@ -175,6 +176,22 @@ func (m *_MeteringDataOilConsumption) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_MeteringDataOilConsumption) IsMeteringDataOilConsumption() {}
+
+func (m *_MeteringDataOilConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataOilConsumption) deepCopy() *_MeteringDataOilConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataOilConsumptionCopy := &_MeteringDataOilConsumption{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+		m.L,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataOilConsumptionCopy
+}
 
 func (m *_MeteringDataOilConsumption) String() string {
 	if m == nil {

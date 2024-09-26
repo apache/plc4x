@@ -38,6 +38,7 @@ type BACnetLogRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetLogDatum returns LogDatum (property field)
@@ -56,6 +57,17 @@ type _BACnetLogRecord struct {
 }
 
 var _ BACnetLogRecord = (*_BACnetLogRecord)(nil)
+
+// NewBACnetLogRecord factory function for _BACnetLogRecord
+func NewBACnetLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetLogRecordLogDatum, statusFlags BACnetStatusFlagsTagged) *_BACnetLogRecord {
+	if timestamp == nil {
+		panic("timestamp of type BACnetDateTimeEnclosed for BACnetLogRecord must not be nil")
+	}
+	if logDatum == nil {
+		panic("logDatum of type BACnetLogRecordLogDatum for BACnetLogRecord must not be nil")
+	}
+	return &_BACnetLogRecord{Timestamp: timestamp, LogDatum: logDatum, StatusFlags: statusFlags}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +90,6 @@ func (m *_BACnetLogRecord) GetStatusFlags() BACnetStatusFlagsTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecord factory function for _BACnetLogRecord
-func NewBACnetLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetLogRecordLogDatum, statusFlags BACnetStatusFlagsTagged) *_BACnetLogRecord {
-	if timestamp == nil {
-		panic("timestamp of type BACnetDateTimeEnclosed for BACnetLogRecord must not be nil")
-	}
-	if logDatum == nil {
-		panic("logDatum of type BACnetLogRecordLogDatum for BACnetLogRecord must not be nil")
-	}
-	return &_BACnetLogRecord{Timestamp: timestamp, LogDatum: logDatum, StatusFlags: statusFlags}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecord(structType any) BACnetLogRecord {
@@ -218,6 +219,22 @@ func (m *_BACnetLogRecord) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetLogRecord) IsBACnetLogRecord() {}
+
+func (m *_BACnetLogRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecord) deepCopy() *_BACnetLogRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordCopy := &_BACnetLogRecord{
+		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
+		m.LogDatum.DeepCopy().(BACnetLogRecordLogDatum),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+	}
+	return _BACnetLogRecordCopy
+}
 
 func (m *_BACnetLogRecord) String() string {
 	if m == nil {

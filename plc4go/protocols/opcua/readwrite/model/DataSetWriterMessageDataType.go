@@ -36,6 +36,7 @@ type DataSetWriterMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsDataSetWriterMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSetWriterMessageDataType()
@@ -48,6 +49,15 @@ type _DataSetWriterMessageDataType struct {
 
 var _ DataSetWriterMessageDataType = (*_DataSetWriterMessageDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataSetWriterMessageDataType)(nil)
+
+// NewDataSetWriterMessageDataType factory function for _DataSetWriterMessageDataType
+func NewDataSetWriterMessageDataType() *_DataSetWriterMessageDataType {
+	_result := &_DataSetWriterMessageDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_DataSetWriterMessageDataType) GetIdentifier() string {
 
 func (m *_DataSetWriterMessageDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewDataSetWriterMessageDataType factory function for _DataSetWriterMessageDataType
-func NewDataSetWriterMessageDataType() *_DataSetWriterMessageDataType {
-	_result := &_DataSetWriterMessageDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_DataSetWriterMessageDataType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_DataSetWriterMessageDataType) IsDataSetWriterMessageDataType() {}
+
+func (m *_DataSetWriterMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSetWriterMessageDataType) deepCopy() *_DataSetWriterMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_DataSetWriterMessageDataTypeCopy := &_DataSetWriterMessageDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataSetWriterMessageDataTypeCopy
+}
 
 func (m *_DataSetWriterMessageDataType) String() string {
 	if m == nil {

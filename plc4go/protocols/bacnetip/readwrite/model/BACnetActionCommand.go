@@ -38,6 +38,7 @@ type BACnetActionCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetContextTagObjectIdentifier
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
@@ -74,6 +75,23 @@ type _BACnetActionCommand struct {
 }
 
 var _ BACnetActionCommand = (*_BACnetActionCommand)(nil)
+
+// NewBACnetActionCommand factory function for _BACnetActionCommand
+func NewBACnetActionCommand(deviceIdentifier BACnetContextTagObjectIdentifier, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, postDelay BACnetContextTagBoolean, quitOnFailure BACnetContextTagBoolean, writeSuccessful BACnetContextTagBoolean) *_BACnetActionCommand {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetActionCommand must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetActionCommand must not be nil")
+	}
+	if quitOnFailure == nil {
+		panic("quitOnFailure of type BACnetContextTagBoolean for BACnetActionCommand must not be nil")
+	}
+	if writeSuccessful == nil {
+		panic("writeSuccessful of type BACnetContextTagBoolean for BACnetActionCommand must not be nil")
+	}
+	return &_BACnetActionCommand{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, PostDelay: postDelay, QuitOnFailure: quitOnFailure, WriteSuccessful: writeSuccessful}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,23 +138,6 @@ func (m *_BACnetActionCommand) GetWriteSuccessful() BACnetContextTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetActionCommand factory function for _BACnetActionCommand
-func NewBACnetActionCommand(deviceIdentifier BACnetContextTagObjectIdentifier, objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, postDelay BACnetContextTagBoolean, quitOnFailure BACnetContextTagBoolean, writeSuccessful BACnetContextTagBoolean) *_BACnetActionCommand {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetActionCommand must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetActionCommand must not be nil")
-	}
-	if quitOnFailure == nil {
-		panic("quitOnFailure of type BACnetContextTagBoolean for BACnetActionCommand must not be nil")
-	}
-	if writeSuccessful == nil {
-		panic("writeSuccessful of type BACnetContextTagBoolean for BACnetActionCommand must not be nil")
-	}
-	return &_BACnetActionCommand{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, PostDelay: postDelay, QuitOnFailure: quitOnFailure, WriteSuccessful: writeSuccessful}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetActionCommand(structType any) BACnetActionCommand {
@@ -368,6 +369,28 @@ func (m *_BACnetActionCommand) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetActionCommand) IsBACnetActionCommand() {}
+
+func (m *_BACnetActionCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetActionCommand) deepCopy() *_BACnetActionCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetActionCommandCopy := &_BACnetActionCommand{
+		m.DeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.PostDelay.DeepCopy().(BACnetContextTagBoolean),
+		m.QuitOnFailure.DeepCopy().(BACnetContextTagBoolean),
+		m.WriteSuccessful.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetActionCommandCopy
+}
 
 func (m *_BACnetActionCommand) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type UnknownMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
@@ -58,6 +59,16 @@ type _UnknownMessage struct {
 
 var _ UnknownMessage = (*_UnknownMessage)(nil)
 var _ KnxNetIpMessageRequirements = (*_UnknownMessage)(nil)
+
+// NewUnknownMessage factory function for _UnknownMessage
+func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage {
+	_result := &_UnknownMessage{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		UnknownData:             unknownData,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,16 +101,6 @@ func (m *_UnknownMessage) GetUnknownData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnknownMessage factory function for _UnknownMessage
-func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage {
-	_result := &_UnknownMessage{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		UnknownData:             unknownData,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnknownMessage(structType any) UnknownMessage {
@@ -196,6 +197,23 @@ func (m *_UnknownMessage) GetTotalLength() uint16 {
 ////
 
 func (m *_UnknownMessage) IsUnknownMessage() {}
+
+func (m *_UnknownMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnknownMessage) deepCopy() *_UnknownMessage {
+	if m == nil {
+		return nil
+	}
+	_UnknownMessageCopy := &_UnknownMessage{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.UnknownData),
+		m.TotalLength,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _UnknownMessageCopy
+}
 
 func (m *_UnknownMessage) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CBusOptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetConnect returns Connect (property field)
 	GetConnect() bool
 	// GetSmart returns Smart (property field)
@@ -74,6 +75,11 @@ type _CBusOptions struct {
 }
 
 var _ CBusOptions = (*_CBusOptions)(nil)
+
+// NewCBusOptions factory function for _CBusOptions
+func NewCBusOptions(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool, srchk bool) *_CBusOptions {
+	return &_CBusOptions{Connect: connect, Smart: smart, Idmon: idmon, Exstat: exstat, Monitor: monitor, Monall: monall, Pun: pun, Pcn: pcn, Srchk: srchk}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,11 +126,6 @@ func (m *_CBusOptions) GetSrchk() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusOptions factory function for _CBusOptions
-func NewCBusOptions(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool, srchk bool) *_CBusOptions {
-	return &_CBusOptions{Connect: connect, Smart: smart, Idmon: idmon, Exstat: exstat, Monitor: monitor, Monall: monall, Pun: pun, Pcn: pcn, Srchk: srchk}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusOptions(structType any) CBusOptions {
@@ -326,6 +327,28 @@ func (m *_CBusOptions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_CBusOptions) IsCBusOptions() {}
+
+func (m *_CBusOptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusOptions) deepCopy() *_CBusOptions {
+	if m == nil {
+		return nil
+	}
+	_CBusOptionsCopy := &_CBusOptions{
+		m.Connect,
+		m.Smart,
+		m.Idmon,
+		m.Exstat,
+		m.Monitor,
+		m.Monall,
+		m.Pun,
+		m.Pcn,
+		m.Srchk,
+	}
+	return _CBusOptionsCopy
+}
 
 func (m *_CBusOptions) String() string {
 	if m == nil {

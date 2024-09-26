@@ -38,6 +38,7 @@ type BACnetConstructedDataDefaultRampRate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDefaultRampRate returns DefaultRampRate (property field)
 	GetDefaultRampRate() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDefaultRampRate struct {
 
 var _ BACnetConstructedDataDefaultRampRate = (*_BACnetConstructedDataDefaultRampRate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultRampRate)(nil)
+
+// NewBACnetConstructedDataDefaultRampRate factory function for _BACnetConstructedDataDefaultRampRate
+func NewBACnetConstructedDataDefaultRampRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultRampRate BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultRampRate {
+	if defaultRampRate == nil {
+		panic("defaultRampRate of type BACnetApplicationTagReal for BACnetConstructedDataDefaultRampRate must not be nil")
+	}
+	_result := &_BACnetConstructedDataDefaultRampRate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DefaultRampRate:               defaultRampRate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDefaultRampRate) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDefaultRampRate factory function for _BACnetConstructedDataDefaultRampRate
-func NewBACnetConstructedDataDefaultRampRate(defaultRampRate BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultRampRate {
-	if defaultRampRate == nil {
-		panic("defaultRampRate of type BACnetApplicationTagReal for BACnetConstructedDataDefaultRampRate must not be nil")
-	}
-	_result := &_BACnetConstructedDataDefaultRampRate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DefaultRampRate:               defaultRampRate,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDefaultRampRate(structType any) BACnetConstructedDataDefaultRampRate {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDefaultRampRate) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataDefaultRampRate) IsBACnetConstructedDataDefaultRampRate() {}
+
+func (m *_BACnetConstructedDataDefaultRampRate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDefaultRampRate) deepCopy() *_BACnetConstructedDataDefaultRampRate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDefaultRampRateCopy := &_BACnetConstructedDataDefaultRampRate{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DefaultRampRate.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDefaultRampRateCopy
+}
 
 func (m *_BACnetConstructedDataDefaultRampRate) String() string {
 	if m == nil {

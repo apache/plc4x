@@ -38,6 +38,7 @@ type BACnetConstructedDataInProgress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInProgress returns InProgress (property field)
 	GetInProgress() BACnetLightingInProgressTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataInProgress struct {
 
 var _ BACnetConstructedDataInProgress = (*_BACnetConstructedDataInProgress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInProgress)(nil)
+
+// NewBACnetConstructedDataInProgress factory function for _BACnetConstructedDataInProgress
+func NewBACnetConstructedDataInProgress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inProgress BACnetLightingInProgressTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProgress {
+	if inProgress == nil {
+		panic("inProgress of type BACnetLightingInProgressTagged for BACnetConstructedDataInProgress must not be nil")
+	}
+	_result := &_BACnetConstructedDataInProgress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InProgress:                    inProgress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataInProgress) GetActualValue() BACnetLightingInProg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInProgress factory function for _BACnetConstructedDataInProgress
-func NewBACnetConstructedDataInProgress(inProgress BACnetLightingInProgressTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProgress {
-	if inProgress == nil {
-		panic("inProgress of type BACnetLightingInProgressTagged for BACnetConstructedDataInProgress must not be nil")
-	}
-	_result := &_BACnetConstructedDataInProgress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InProgress:                    inProgress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInProgress(structType any) BACnetConstructedDataInProgress {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataInProgress) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataInProgress) IsBACnetConstructedDataInProgress() {}
+
+func (m *_BACnetConstructedDataInProgress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInProgress) deepCopy() *_BACnetConstructedDataInProgress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInProgressCopy := &_BACnetConstructedDataInProgress{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.InProgress.DeepCopy().(BACnetLightingInProgressTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInProgressCopy
+}
 
 func (m *_BACnetConstructedDataInProgress) String() string {
 	if m == nil {

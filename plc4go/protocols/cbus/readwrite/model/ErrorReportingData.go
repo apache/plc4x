@@ -40,6 +40,7 @@ type ErrorReportingData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsErrorReportingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingData()
 }
@@ -70,6 +71,11 @@ type _ErrorReportingData struct {
 
 var _ ErrorReportingDataContract = (*_ErrorReportingData)(nil)
 
+// NewErrorReportingData factory function for _ErrorReportingData
+func NewErrorReportingData(commandTypeContainer ErrorReportingCommandTypeContainer) *_ErrorReportingData {
+	return &_ErrorReportingData{CommandTypeContainer: commandTypeContainer}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +105,6 @@ func (pm *_ErrorReportingData) GetCommandType() ErrorReportingCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingData factory function for _ErrorReportingData
-func NewErrorReportingData(commandTypeContainer ErrorReportingCommandTypeContainer) *_ErrorReportingData {
-	return &_ErrorReportingData{CommandTypeContainer: commandTypeContainer}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingData(structType any) ErrorReportingData {
@@ -194,7 +195,7 @@ func (m *_ErrorReportingData) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child ErrorReportingData
 	switch {
 	case 0 == 0: // ErrorReportingDataGeneric
-		if _child, err = (&_ErrorReportingDataGeneric{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ErrorReportingDataGeneric).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingDataGeneric for type-switch of ErrorReportingData")
 		}
 	default:
@@ -242,3 +243,18 @@ func (pm *_ErrorReportingData) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_ErrorReportingData) IsErrorReportingData() {}
+
+func (m *_ErrorReportingData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingData) deepCopy() *_ErrorReportingData {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingDataCopy := &_ErrorReportingData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+	}
+	return _ErrorReportingDataCopy
+}

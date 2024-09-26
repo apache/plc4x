@@ -38,6 +38,7 @@ type SALDataSecurity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetSecurityData returns SecurityData (property field)
 	GetSecurityData() SecurityData
@@ -53,6 +54,19 @@ type _SALDataSecurity struct {
 
 var _ SALDataSecurity = (*_SALDataSecurity)(nil)
 var _ SALDataRequirements = (*_SALDataSecurity)(nil)
+
+// NewSALDataSecurity factory function for _SALDataSecurity
+func NewSALDataSecurity(salData SALData, securityData SecurityData) *_SALDataSecurity {
+	if securityData == nil {
+		panic("securityData of type SecurityData for SALDataSecurity must not be nil")
+	}
+	_result := &_SALDataSecurity{
+		SALDataContract: NewSALData(salData),
+		SecurityData:    securityData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataSecurity) GetSecurityData() SecurityData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataSecurity factory function for _SALDataSecurity
-func NewSALDataSecurity(securityData SecurityData, salData SALData) *_SALDataSecurity {
-	if securityData == nil {
-		panic("securityData of type SecurityData for SALDataSecurity must not be nil")
-	}
-	_result := &_SALDataSecurity{
-		SALDataContract: NewSALData(salData),
-		SecurityData:    securityData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataSecurity(structType any) SALDataSecurity {
@@ -182,6 +183,22 @@ func (m *_SALDataSecurity) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_SALDataSecurity) IsSALDataSecurity() {}
+
+func (m *_SALDataSecurity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataSecurity) deepCopy() *_SALDataSecurity {
+	if m == nil {
+		return nil
+	}
+	_SALDataSecurityCopy := &_SALDataSecurity{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.SecurityData.DeepCopy().(SecurityData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataSecurityCopy
+}
 
 func (m *_SALDataSecurity) String() string {
 	if m == nil {

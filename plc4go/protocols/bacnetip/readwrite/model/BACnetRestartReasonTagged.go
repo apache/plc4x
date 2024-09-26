@@ -38,6 +38,7 @@ type BACnetRestartReasonTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetRestartReasonTagged struct {
 }
 
 var _ BACnetRestartReasonTagged = (*_BACnetRestartReasonTagged)(nil)
+
+// NewBACnetRestartReasonTagged factory function for _BACnetRestartReasonTagged
+func NewBACnetRestartReasonTagged(header BACnetTagHeader, value BACnetRestartReason, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetRestartReasonTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetRestartReasonTagged must not be nil")
+	}
+	return &_BACnetRestartReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetRestartReasonTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRestartReasonTagged factory function for _BACnetRestartReasonTagged
-func NewBACnetRestartReasonTagged(header BACnetTagHeader, value BACnetRestartReason, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetRestartReasonTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetRestartReasonTagged must not be nil")
-	}
-	return &_BACnetRestartReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRestartReasonTagged(structType any) BACnetRestartReasonTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetRestartReasonTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetRestartReasonTagged) IsBACnetRestartReasonTagged() {}
+
+func (m *_BACnetRestartReasonTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRestartReasonTagged) deepCopy() *_BACnetRestartReasonTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetRestartReasonTaggedCopy := &_BACnetRestartReasonTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetRestartReasonTaggedCopy
+}
 
 func (m *_BACnetRestartReasonTagged) String() string {
 	if m == nil {

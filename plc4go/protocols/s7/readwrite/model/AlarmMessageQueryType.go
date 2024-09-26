@@ -41,6 +41,7 @@ type AlarmMessageQueryType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
@@ -65,6 +66,11 @@ type _AlarmMessageQueryType struct {
 }
 
 var _ AlarmMessageQueryType = (*_AlarmMessageQueryType)(nil)
+
+// NewAlarmMessageQueryType factory function for _AlarmMessageQueryType
+func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, messageObjects []AlarmMessageObjectQueryType) *_AlarmMessageQueryType {
+	return &_AlarmMessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, MessageObjects: messageObjects}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,11 +114,6 @@ func (m *_AlarmMessageQueryType) GetDataLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageQueryType factory function for _AlarmMessageQueryType
-func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, messageObjects []AlarmMessageObjectQueryType) *_AlarmMessageQueryType {
-	return &_AlarmMessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageQueryType(structType any) AlarmMessageQueryType {
@@ -282,6 +283,24 @@ func (m *_AlarmMessageQueryType) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_AlarmMessageQueryType) IsAlarmMessageQueryType() {}
+
+func (m *_AlarmMessageQueryType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageQueryType) deepCopy() *_AlarmMessageQueryType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageQueryTypeCopy := &_AlarmMessageQueryType{
+		m.FunctionId,
+		m.NumberOfObjects,
+		m.ReturnCode,
+		m.TransportSize,
+		utils.DeepCopySlice[AlarmMessageObjectQueryType, AlarmMessageObjectQueryType](m.MessageObjects),
+	}
+	return _AlarmMessageQueryTypeCopy
+}
 
 func (m *_AlarmMessageQueryType) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type ApduDataExtFileStreamInfoReport interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtFileStreamInfoReport is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtFileStreamInfoReport()
@@ -48,6 +49,15 @@ type _ApduDataExtFileStreamInfoReport struct {
 
 var _ ApduDataExtFileStreamInfoReport = (*_ApduDataExtFileStreamInfoReport)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtFileStreamInfoReport)(nil)
+
+// NewApduDataExtFileStreamInfoReport factory function for _ApduDataExtFileStreamInfoReport
+func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInfoReport {
+	_result := &_ApduDataExtFileStreamInfoReport{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtFileStreamInfoReport) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtFileStreamInfoReport) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtFileStreamInfoReport factory function for _ApduDataExtFileStreamInfoReport
-func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInfoReport {
-	_result := &_ApduDataExtFileStreamInfoReport{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtFileStreamInfoReport) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ApduDataExtFileStreamInfoReport) IsApduDataExtFileStreamInfoReport() {}
+
+func (m *_ApduDataExtFileStreamInfoReport) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtFileStreamInfoReport) deepCopy() *_ApduDataExtFileStreamInfoReport {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtFileStreamInfoReportCopy := &_ApduDataExtFileStreamInfoReport{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtFileStreamInfoReportCopy
+}
 
 func (m *_ApduDataExtFileStreamInfoReport) String() string {
 	if m == nil {

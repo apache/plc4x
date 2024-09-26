@@ -38,6 +38,7 @@ type BACnetTimeStampSequence interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimeStamp
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() BACnetContextTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetTimeStampSequence struct {
 
 var _ BACnetTimeStampSequence = (*_BACnetTimeStampSequence)(nil)
 var _ BACnetTimeStampRequirements = (*_BACnetTimeStampSequence)(nil)
+
+// NewBACnetTimeStampSequence factory function for _BACnetTimeStampSequence
+func NewBACnetTimeStampSequence(peekedTagHeader BACnetTagHeader, sequenceNumber BACnetContextTagUnsignedInteger) *_BACnetTimeStampSequence {
+	if sequenceNumber == nil {
+		panic("sequenceNumber of type BACnetContextTagUnsignedInteger for BACnetTimeStampSequence must not be nil")
+	}
+	_result := &_BACnetTimeStampSequence{
+		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
+		SequenceNumber:          sequenceNumber,
+	}
+	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetTimeStampSequence) GetSequenceNumber() BACnetContextTagUnsignedI
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimeStampSequence factory function for _BACnetTimeStampSequence
-func NewBACnetTimeStampSequence(sequenceNumber BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetTimeStampSequence {
-	if sequenceNumber == nil {
-		panic("sequenceNumber of type BACnetContextTagUnsignedInteger for BACnetTimeStampSequence must not be nil")
-	}
-	_result := &_BACnetTimeStampSequence{
-		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
-		SequenceNumber:          sequenceNumber,
-	}
-	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimeStampSequence(structType any) BACnetTimeStampSequence {
@@ -178,6 +179,22 @@ func (m *_BACnetTimeStampSequence) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetTimeStampSequence) IsBACnetTimeStampSequence() {}
+
+func (m *_BACnetTimeStampSequence) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStampSequence) deepCopy() *_BACnetTimeStampSequence {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampSequenceCopy := &_BACnetTimeStampSequence{
+		m.BACnetTimeStampContract.(*_BACnetTimeStamp).deepCopy(),
+		m.SequenceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
+	return _BACnetTimeStampSequenceCopy
+}
 
 func (m *_BACnetTimeStampSequence) String() string {
 	if m == nil {

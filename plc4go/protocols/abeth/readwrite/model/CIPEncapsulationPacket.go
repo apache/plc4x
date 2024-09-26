@@ -42,6 +42,7 @@ type CIPEncapsulationPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationPacket()
 }
@@ -81,6 +82,11 @@ type _CIPEncapsulationPacket struct {
 
 var _ CIPEncapsulationPacketContract = (*_CIPEncapsulationPacket)(nil)
 
+// NewCIPEncapsulationPacket factory function for _CIPEncapsulationPacket
+func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationPacket {
+	return &_CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -106,11 +112,6 @@ func (m *_CIPEncapsulationPacket) GetOptions() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPEncapsulationPacket factory function for _CIPEncapsulationPacket
-func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationPacket {
-	return &_CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPEncapsulationPacket(structType any) CIPEncapsulationPacket {
@@ -242,19 +243,19 @@ func (m *_CIPEncapsulationPacket) parse(ctx context.Context, readBuffer utils.Re
 	var _child CIPEncapsulationPacket
 	switch {
 	case commandType == 0x0101: // CIPEncapsulationConnectionRequest
-		if _child, err = (&_CIPEncapsulationConnectionRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CIPEncapsulationConnectionRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationConnectionRequest for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0201: // CIPEncapsulationConnectionResponse
-		if _child, err = (&_CIPEncapsulationConnectionResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CIPEncapsulationConnectionResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationConnectionResponse for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
-		if _child, err = (&_CIPEncapsulationReadRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CIPEncapsulationReadRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadRequest for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		if _child, err = (&_CIPEncapsulationReadResponse{}).parse(ctx, readBuffer, m, packetLen); err != nil {
+		if _child, err = new(_CIPEncapsulationReadResponse).parse(ctx, readBuffer, m, packetLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadResponse for type-switch of CIPEncapsulationPacket")
 		}
 	default:
@@ -320,3 +321,22 @@ func (pm *_CIPEncapsulationPacket) serializeParent(ctx context.Context, writeBuf
 }
 
 func (m *_CIPEncapsulationPacket) IsCIPEncapsulationPacket() {}
+
+func (m *_CIPEncapsulationPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationPacket) deepCopy() *_CIPEncapsulationPacket {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationPacketCopy := &_CIPEncapsulationPacket{
+		nil, // will be set by child
+		m.SessionHandle,
+		m.Status,
+		utils.DeepCopySlice[uint8, uint8](m.SenderContext),
+		m.Options,
+		m.reservedField0,
+	}
+	return _CIPEncapsulationPacketCopy
+}

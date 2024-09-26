@@ -38,6 +38,7 @@ type APDUReject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetOriginalInvokeId returns OriginalInvokeId (property field)
 	GetOriginalInvokeId() uint8
@@ -58,6 +59,20 @@ type _APDUReject struct {
 
 var _ APDUReject = (*_APDUReject)(nil)
 var _ APDURequirements = (*_APDUReject)(nil)
+
+// NewAPDUReject factory function for _APDUReject
+func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged, apduLength uint16) *_APDUReject {
+	if rejectReason == nil {
+		panic("rejectReason of type BACnetRejectReasonTagged for APDUReject must not be nil")
+	}
+	_result := &_APDUReject{
+		APDUContract:     NewAPDU(apduLength),
+		OriginalInvokeId: originalInvokeId,
+		RejectReason:     rejectReason,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,20 +109,6 @@ func (m *_APDUReject) GetRejectReason() BACnetRejectReasonTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUReject factory function for _APDUReject
-func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged, apduLength uint16) *_APDUReject {
-	if rejectReason == nil {
-		panic("rejectReason of type BACnetRejectReasonTagged for APDUReject must not be nil")
-	}
-	_result := &_APDUReject{
-		APDUContract:     NewAPDU(apduLength),
-		OriginalInvokeId: originalInvokeId,
-		RejectReason:     rejectReason,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUReject(structType any) APDUReject {
@@ -218,6 +219,24 @@ func (m *_APDUReject) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_APDUReject) IsAPDUReject() {}
+
+func (m *_APDUReject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUReject) deepCopy() *_APDUReject {
+	if m == nil {
+		return nil
+	}
+	_APDURejectCopy := &_APDUReject{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.OriginalInvokeId,
+		m.RejectReason.DeepCopy().(BACnetRejectReasonTagged),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDURejectCopy
+}
 
 func (m *_APDUReject) String() string {
 	if m == nil {

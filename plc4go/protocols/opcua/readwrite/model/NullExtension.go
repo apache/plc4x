@@ -36,6 +36,7 @@ type NullExtension interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsNullExtension is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullExtension()
@@ -48,6 +49,15 @@ type _NullExtension struct {
 
 var _ NullExtension = (*_NullExtension)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NullExtension)(nil)
+
+// NewNullExtension factory function for _NullExtension
+func NewNullExtension() *_NullExtension {
+	_result := &_NullExtension{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_NullExtension) GetIdentifier() string {
 
 func (m *_NullExtension) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewNullExtension factory function for _NullExtension
-func NewNullExtension() *_NullExtension {
-	_result := &_NullExtension{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_NullExtension) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_NullExtension) IsNullExtension() {}
+
+func (m *_NullExtension) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullExtension) deepCopy() *_NullExtension {
+	if m == nil {
+		return nil
+	}
+	_NullExtensionCopy := &_NullExtension{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NullExtensionCopy
+}
 
 func (m *_NullExtension) String() string {
 	if m == nil {

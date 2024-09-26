@@ -38,6 +38,7 @@ type RequestObsolete interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
@@ -58,6 +59,17 @@ type _RequestObsolete struct {
 
 var _ RequestObsolete = (*_RequestObsolete)(nil)
 var _ RequestRequirements = (*_RequestObsolete)(nil)
+
+// NewRequestObsolete factory function for _RequestObsolete
+func NewRequestObsolete(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestObsolete {
+	_result := &_RequestObsolete{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		CalData:         calData,
+		Alpha:           alpha,
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,17 +119,6 @@ func (m *_RequestObsolete) GetCalDataDecoded() CALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestObsolete factory function for _RequestObsolete
-func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestObsolete {
-	_result := &_RequestObsolete{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-		CalData:         calData,
-		Alpha:           alpha,
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestObsolete(structType any) RequestObsolete {
@@ -235,6 +236,23 @@ func (m *_RequestObsolete) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_RequestObsolete) IsRequestObsolete() {}
+
+func (m *_RequestObsolete) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestObsolete) deepCopy() *_RequestObsolete {
+	if m == nil {
+		return nil
+	}
+	_RequestObsoleteCopy := &_RequestObsolete{
+		m.RequestContract.(*_Request).deepCopy(),
+		m.CalData.DeepCopy().(CALData),
+		m.Alpha.DeepCopy().(Alpha),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestObsoleteCopy
+}
 
 func (m *_RequestObsolete) String() string {
 	if m == nil {

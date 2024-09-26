@@ -38,6 +38,7 @@ type BACnetLiftFaultTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetLiftFaultTagged struct {
 }
 
 var _ BACnetLiftFaultTagged = (*_BACnetLiftFaultTagged)(nil)
+
+// NewBACnetLiftFaultTagged factory function for _BACnetLiftFaultTagged
+func NewBACnetLiftFaultTagged(header BACnetTagHeader, value BACnetLiftFault, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftFaultTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftFaultTagged must not be nil")
+	}
+	return &_BACnetLiftFaultTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetLiftFaultTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftFaultTagged factory function for _BACnetLiftFaultTagged
-func NewBACnetLiftFaultTagged(header BACnetTagHeader, value BACnetLiftFault, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftFaultTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLiftFaultTagged must not be nil")
-	}
-	return &_BACnetLiftFaultTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftFaultTagged(structType any) BACnetLiftFaultTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetLiftFaultTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLiftFaultTagged) IsBACnetLiftFaultTagged() {}
+
+func (m *_BACnetLiftFaultTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftFaultTagged) deepCopy() *_BACnetLiftFaultTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftFaultTaggedCopy := &_BACnetLiftFaultTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLiftFaultTaggedCopy
+}
 
 func (m *_BACnetLiftFaultTagged) String() string {
 	if m == nil {

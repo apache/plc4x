@@ -36,6 +36,7 @@ type ApduControlConnect interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduControl
 	// IsApduControlConnect is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControlConnect()
@@ -48,6 +49,15 @@ type _ApduControlConnect struct {
 
 var _ ApduControlConnect = (*_ApduControlConnect)(nil)
 var _ ApduControlRequirements = (*_ApduControlConnect)(nil)
+
+// NewApduControlConnect factory function for _ApduControlConnect
+func NewApduControlConnect() *_ApduControlConnect {
+	_result := &_ApduControlConnect{
+		ApduControlContract: NewApduControl(),
+	}
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduControlConnect) GetControlType() uint8 {
 
 func (m *_ApduControlConnect) GetParent() ApduControlContract {
 	return m.ApduControlContract
-}
-
-// NewApduControlConnect factory function for _ApduControlConnect
-func NewApduControlConnect() *_ApduControlConnect {
-	_result := &_ApduControlConnect{
-		ApduControlContract: NewApduControl(),
-	}
-	_result.ApduControlContract.(*_ApduControl)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduControlConnect) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_ApduControlConnect) IsApduControlConnect() {}
+
+func (m *_ApduControlConnect) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlConnect) deepCopy() *_ApduControlConnect {
+	if m == nil {
+		return nil
+	}
+	_ApduControlConnectCopy := &_ApduControlConnect{
+		m.ApduControlContract.(*_ApduControl).deepCopy(),
+	}
+	m.ApduControlContract.(*_ApduControl)._SubType = m
+	return _ApduControlConnectCopy
+}
 
 func (m *_ApduControlConnect) String() string {
 	if m == nil {

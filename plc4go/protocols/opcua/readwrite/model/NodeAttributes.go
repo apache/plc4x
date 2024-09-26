@@ -38,6 +38,7 @@ type NodeAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSpecifiedAttributes returns SpecifiedAttributes (property field)
 	GetSpecifiedAttributes() uint32
@@ -65,6 +66,26 @@ type _NodeAttributes struct {
 
 var _ NodeAttributes = (*_NodeAttributes)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NodeAttributes)(nil)
+
+// NewNodeAttributes factory function for _NodeAttributes
+func NewNodeAttributes(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32) *_NodeAttributes {
+	if displayName == nil {
+		panic("displayName of type LocalizedText for NodeAttributes must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for NodeAttributes must not be nil")
+	}
+	_result := &_NodeAttributes{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SpecifiedAttributes:               specifiedAttributes,
+		DisplayName:                       displayName,
+		Description:                       description,
+		WriteMask:                         writeMask,
+		UserWriteMask:                     userWriteMask,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,26 +134,6 @@ func (m *_NodeAttributes) GetUserWriteMask() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeAttributes factory function for _NodeAttributes
-func NewNodeAttributes(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32) *_NodeAttributes {
-	if displayName == nil {
-		panic("displayName of type LocalizedText for NodeAttributes must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for NodeAttributes must not be nil")
-	}
-	_result := &_NodeAttributes{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SpecifiedAttributes:               specifiedAttributes,
-		DisplayName:                       displayName,
-		Description:                       description,
-		WriteMask:                         writeMask,
-		UserWriteMask:                     userWriteMask,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeAttributes(structType any) NodeAttributes {
@@ -269,6 +270,26 @@ func (m *_NodeAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_NodeAttributes) IsNodeAttributes() {}
+
+func (m *_NodeAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeAttributes) deepCopy() *_NodeAttributes {
+	if m == nil {
+		return nil
+	}
+	_NodeAttributesCopy := &_NodeAttributes{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SpecifiedAttributes,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+		m.WriteMask,
+		m.UserWriteMask,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NodeAttributesCopy
+}
 
 func (m *_NodeAttributes) String() string {
 	if m == nil {

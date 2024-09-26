@@ -38,6 +38,7 @@ type ApduDataExtPropertyDescriptionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -77,6 +78,23 @@ type _ApduDataExtPropertyDescriptionResponse struct {
 
 var _ ApduDataExtPropertyDescriptionResponse = (*_ApduDataExtPropertyDescriptionResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyDescriptionResponse)(nil)
+
+// NewApduDataExtPropertyDescriptionResponse factory function for _ApduDataExtPropertyDescriptionResponse
+func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel, length uint8) *_ApduDataExtPropertyDescriptionResponse {
+	_result := &_ApduDataExtPropertyDescriptionResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Index:               index,
+		WriteEnabled:        writeEnabled,
+		PropertyDataType:    propertyDataType,
+		MaxNrOfElements:     maxNrOfElements,
+		ReadLevel:           readLevel,
+		WriteLevel:          writeLevel,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -137,23 +155,6 @@ func (m *_ApduDataExtPropertyDescriptionResponse) GetWriteLevel() AccessLevel {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyDescriptionResponse factory function for _ApduDataExtPropertyDescriptionResponse
-func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel, length uint8) *_ApduDataExtPropertyDescriptionResponse {
-	_result := &_ApduDataExtPropertyDescriptionResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Index:               index,
-		WriteEnabled:        writeEnabled,
-		PropertyDataType:    propertyDataType,
-		MaxNrOfElements:     maxNrOfElements,
-		ReadLevel:           readLevel,
-		WriteLevel:          writeLevel,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyDescriptionResponse(structType any) ApduDataExtPropertyDescriptionResponse {
@@ -355,6 +356,31 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_ApduDataExtPropertyDescriptionResponse) IsApduDataExtPropertyDescriptionResponse() {}
+
+func (m *_ApduDataExtPropertyDescriptionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponse) deepCopy() *_ApduDataExtPropertyDescriptionResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtPropertyDescriptionResponseCopy := &_ApduDataExtPropertyDescriptionResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.ObjectIndex,
+		m.PropertyId,
+		m.Index,
+		m.WriteEnabled,
+		m.PropertyDataType,
+		m.MaxNrOfElements,
+		m.ReadLevel,
+		m.WriteLevel,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtPropertyDescriptionResponseCopy
+}
 
 func (m *_ApduDataExtPropertyDescriptionResponse) String() string {
 	if m == nil {

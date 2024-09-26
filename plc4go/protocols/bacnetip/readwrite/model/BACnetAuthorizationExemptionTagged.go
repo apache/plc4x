@@ -38,6 +38,7 @@ type BACnetAuthorizationExemptionTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetAuthorizationExemptionTagged struct {
 }
 
 var _ BACnetAuthorizationExemptionTagged = (*_BACnetAuthorizationExemptionTagged)(nil)
+
+// NewBACnetAuthorizationExemptionTagged factory function for _BACnetAuthorizationExemptionTagged
+func NewBACnetAuthorizationExemptionTagged(header BACnetTagHeader, value BACnetAuthorizationExemption, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationExemptionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthorizationExemptionTagged must not be nil")
+	}
+	return &_BACnetAuthorizationExemptionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetAuthorizationExemptionTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthorizationExemptionTagged factory function for _BACnetAuthorizationExemptionTagged
-func NewBACnetAuthorizationExemptionTagged(header BACnetTagHeader, value BACnetAuthorizationExemption, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationExemptionTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAuthorizationExemptionTagged must not be nil")
-	}
-	return &_BACnetAuthorizationExemptionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthorizationExemptionTagged(structType any) BACnetAuthorizationExemptionTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetAuthorizationExemptionTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAuthorizationExemptionTagged) IsBACnetAuthorizationExemptionTagged() {}
+
+func (m *_BACnetAuthorizationExemptionTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthorizationExemptionTagged) deepCopy() *_BACnetAuthorizationExemptionTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthorizationExemptionTaggedCopy := &_BACnetAuthorizationExemptionTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAuthorizationExemptionTaggedCopy
+}
 
 func (m *_BACnetAuthorizationExemptionTagged) String() string {
 	if m == nil {

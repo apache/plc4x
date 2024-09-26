@@ -38,6 +38,7 @@ type ModbusPDUWriteMultipleHoldingRegistersResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
@@ -56,6 +57,17 @@ type _ModbusPDUWriteMultipleHoldingRegistersResponse struct {
 
 var _ ModbusPDUWriteMultipleHoldingRegistersResponse = (*_ModbusPDUWriteMultipleHoldingRegistersResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteMultipleHoldingRegistersResponse)(nil)
+
+// NewModbusPDUWriteMultipleHoldingRegistersResponse factory function for _ModbusPDUWriteMultipleHoldingRegistersResponse
+func NewModbusPDUWriteMultipleHoldingRegistersResponse(startingAddress uint16, quantity uint16) *_ModbusPDUWriteMultipleHoldingRegistersResponse {
+	_result := &_ModbusPDUWriteMultipleHoldingRegistersResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		StartingAddress:   startingAddress,
+		Quantity:          quantity,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) GetQuantity() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteMultipleHoldingRegistersResponse factory function for _ModbusPDUWriteMultipleHoldingRegistersResponse
-func NewModbusPDUWriteMultipleHoldingRegistersResponse(startingAddress uint16, quantity uint16) *_ModbusPDUWriteMultipleHoldingRegistersResponse {
-	_result := &_ModbusPDUWriteMultipleHoldingRegistersResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		StartingAddress:   startingAddress,
-		Quantity:          quantity,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteMultipleHoldingRegistersResponse(structType any) ModbusPDUWriteMultipleHoldingRegistersResponse {
@@ -208,6 +209,23 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) SerializeWithWriteBuff
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) IsModbusPDUWriteMultipleHoldingRegistersResponse() {
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) deepCopy() *_ModbusPDUWriteMultipleHoldingRegistersResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteMultipleHoldingRegistersResponseCopy := &_ModbusPDUWriteMultipleHoldingRegistersResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.StartingAddress,
+		m.Quantity,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteMultipleHoldingRegistersResponseCopy
 }
 
 func (m *_ModbusPDUWriteMultipleHoldingRegistersResponse) String() string {

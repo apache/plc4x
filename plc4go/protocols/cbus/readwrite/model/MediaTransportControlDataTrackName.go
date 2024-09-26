@@ -38,6 +38,7 @@ type MediaTransportControlDataTrackName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetTrackName returns TrackName (property field)
 	GetTrackName() string
@@ -53,6 +54,16 @@ type _MediaTransportControlDataTrackName struct {
 
 var _ MediaTransportControlDataTrackName = (*_MediaTransportControlDataTrackName)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataTrackName)(nil)
+
+// NewMediaTransportControlDataTrackName factory function for _MediaTransportControlDataTrackName
+func NewMediaTransportControlDataTrackName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, trackName string) *_MediaTransportControlDataTrackName {
+	_result := &_MediaTransportControlDataTrackName{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		TrackName:                         trackName,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_MediaTransportControlDataTrackName) GetTrackName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataTrackName factory function for _MediaTransportControlDataTrackName
-func NewMediaTransportControlDataTrackName(trackName string, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataTrackName {
-	_result := &_MediaTransportControlDataTrackName{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		TrackName:                         trackName,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataTrackName(structType any) MediaTransportControlDataTrackName {
@@ -175,6 +176,22 @@ func (m *_MediaTransportControlDataTrackName) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_MediaTransportControlDataTrackName) IsMediaTransportControlDataTrackName() {}
+
+func (m *_MediaTransportControlDataTrackName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataTrackName) deepCopy() *_MediaTransportControlDataTrackName {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataTrackNameCopy := &_MediaTransportControlDataTrackName{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.TrackName,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataTrackNameCopy
+}
 
 func (m *_MediaTransportControlDataTrackName) String() string {
 	if m == nil {

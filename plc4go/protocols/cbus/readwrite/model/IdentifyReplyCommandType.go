@@ -38,6 +38,7 @@ type IdentifyReplyCommandType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetUnitType returns UnitType (property field)
 	GetUnitType() string
@@ -53,6 +54,16 @@ type _IdentifyReplyCommandType struct {
 
 var _ IdentifyReplyCommandType = (*_IdentifyReplyCommandType)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandType)(nil)
+
+// NewIdentifyReplyCommandType factory function for _IdentifyReplyCommandType
+func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyReplyCommandType {
+	_result := &_IdentifyReplyCommandType{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		UnitType:                     unitType,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_IdentifyReplyCommandType) GetUnitType() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandType factory function for _IdentifyReplyCommandType
-func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyReplyCommandType {
-	_result := &_IdentifyReplyCommandType{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		UnitType:                     unitType,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandType(structType any) IdentifyReplyCommandType {
@@ -179,6 +180,22 @@ func (m *_IdentifyReplyCommandType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_IdentifyReplyCommandType) IsIdentifyReplyCommandType() {}
+
+func (m *_IdentifyReplyCommandType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandType) deepCopy() *_IdentifyReplyCommandType {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandTypeCopy := &_IdentifyReplyCommandType{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		m.UnitType,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandTypeCopy
+}
 
 func (m *_IdentifyReplyCommandType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ParameterValueSerialNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() SerialNumber
@@ -56,6 +57,20 @@ type _ParameterValueSerialNumber struct {
 
 var _ ParameterValueSerialNumber = (*_ParameterValueSerialNumber)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueSerialNumber)(nil)
+
+// NewParameterValueSerialNumber factory function for _ParameterValueSerialNumber
+func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uint8) *_ParameterValueSerialNumber {
+	if value == nil {
+		panic("value of type SerialNumber for ParameterValueSerialNumber must not be nil")
+	}
+	_result := &_ParameterValueSerialNumber{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_ParameterValueSerialNumber) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueSerialNumber factory function for _ParameterValueSerialNumber
-func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uint8) *_ParameterValueSerialNumber {
-	if value == nil {
-		panic("value of type SerialNumber for ParameterValueSerialNumber must not be nil")
-	}
-	_result := &_ParameterValueSerialNumber{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueSerialNumber(structType any) ParameterValueSerialNumber {
@@ -210,6 +211,23 @@ func (m *_ParameterValueSerialNumber) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_ParameterValueSerialNumber) IsParameterValueSerialNumber() {}
+
+func (m *_ParameterValueSerialNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueSerialNumber) deepCopy() *_ParameterValueSerialNumber {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueSerialNumberCopy := &_ParameterValueSerialNumber{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value.DeepCopy().(SerialNumber),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueSerialNumberCopy
+}
 
 func (m *_ParameterValueSerialNumber) String() string {
 	if m == nil {

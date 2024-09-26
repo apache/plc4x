@@ -44,6 +44,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -68,6 +69,18 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest struct {
 
 var _ S7PayloadUserDataItemCpuFunctionAlarmQueryRequest = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
+func NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
+	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		SyntaxId:                      syntaxId,
+		QueryType:                     queryType,
+		AlarmType:                     alarmType,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -141,18 +154,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetLength() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
-func NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
-	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		SyntaxId:                      syntaxId,
-		QueryType:                     queryType,
-		AlarmType:                     alarmType,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(structType any) S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
@@ -341,6 +342,26 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) IsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestCopy := &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.SyntaxId,
+		m.QueryType,
+		m.AlarmType,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmQueryRequestCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) String() string {

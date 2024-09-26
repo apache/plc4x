@@ -38,6 +38,7 @@ type BACnetEventTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetEventTypeTagged struct {
 }
 
 var _ BACnetEventTypeTagged = (*_BACnetEventTypeTagged)(nil)
+
+// NewBACnetEventTypeTagged factory function for _BACnetEventTypeTagged
+func NewBACnetEventTypeTagged(header BACnetTagHeader, value BACnetEventType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEventTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetEventTypeTagged must not be nil")
+	}
+	return &_BACnetEventTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetEventTypeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventTypeTagged factory function for _BACnetEventTypeTagged
-func NewBACnetEventTypeTagged(header BACnetTagHeader, value BACnetEventType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEventTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetEventTypeTagged must not be nil")
-	}
-	return &_BACnetEventTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventTypeTagged(structType any) BACnetEventTypeTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetEventTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetEventTypeTagged) IsBACnetEventTypeTagged() {}
+
+func (m *_BACnetEventTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventTypeTagged) deepCopy() *_BACnetEventTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventTypeTaggedCopy := &_BACnetEventTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetEventTypeTaggedCopy
+}
 
 func (m *_BACnetEventTypeTagged) String() string {
 	if m == nil {

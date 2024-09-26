@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestUnknown interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
@@ -53,6 +54,16 @@ type _BACnetUnconfirmedServiceRequestUnknown struct {
 
 var _ BACnetUnconfirmedServiceRequestUnknown = (*_BACnetUnconfirmedServiceRequestUnknown)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnknown)(nil)
+
+// NewBACnetUnconfirmedServiceRequestUnknown factory function for _BACnetUnconfirmedServiceRequestUnknown
+func NewBACnetUnconfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnknown {
+	_result := &_BACnetUnconfirmedServiceRequestUnknown{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		UnknownBytes:                            unknownBytes,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_BACnetUnconfirmedServiceRequestUnknown) GetUnknownBytes() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestUnknown factory function for _BACnetUnconfirmedServiceRequestUnknown
-func NewBACnetUnconfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnknown {
-	_result := &_BACnetUnconfirmedServiceRequestUnknown{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		UnknownBytes:                            unknownBytes,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestUnknown(structType any) BACnetUnconfirmedServiceRequestUnknown {
@@ -181,6 +182,22 @@ func (m *_BACnetUnconfirmedServiceRequestUnknown) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnknown) IsBACnetUnconfirmedServiceRequestUnknown() {}
+
+func (m *_BACnetUnconfirmedServiceRequestUnknown) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnknown) deepCopy() *_BACnetUnconfirmedServiceRequestUnknown {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestUnknownCopy := &_BACnetUnconfirmedServiceRequestUnknown{
+		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestUnknownCopy
+}
 
 func (m *_BACnetUnconfirmedServiceRequestUnknown) String() string {
 	if m == nil {

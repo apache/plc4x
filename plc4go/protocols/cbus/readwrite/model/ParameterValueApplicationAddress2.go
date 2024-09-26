@@ -38,6 +38,7 @@ type ParameterValueApplicationAddress2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() ApplicationAddress2
@@ -56,6 +57,20 @@ type _ParameterValueApplicationAddress2 struct {
 
 var _ ParameterValueApplicationAddress2 = (*_ParameterValueApplicationAddress2)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueApplicationAddress2)(nil)
+
+// NewParameterValueApplicationAddress2 factory function for _ParameterValueApplicationAddress2
+func NewParameterValueApplicationAddress2(value ApplicationAddress2, data []byte, numBytes uint8) *_ParameterValueApplicationAddress2 {
+	if value == nil {
+		panic("value of type ApplicationAddress2 for ParameterValueApplicationAddress2 must not be nil")
+	}
+	_result := &_ParameterValueApplicationAddress2{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_ParameterValueApplicationAddress2) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueApplicationAddress2 factory function for _ParameterValueApplicationAddress2
-func NewParameterValueApplicationAddress2(value ApplicationAddress2, data []byte, numBytes uint8) *_ParameterValueApplicationAddress2 {
-	if value == nil {
-		panic("value of type ApplicationAddress2 for ParameterValueApplicationAddress2 must not be nil")
-	}
-	_result := &_ParameterValueApplicationAddress2{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueApplicationAddress2(structType any) ParameterValueApplicationAddress2 {
@@ -210,6 +211,23 @@ func (m *_ParameterValueApplicationAddress2) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_ParameterValueApplicationAddress2) IsParameterValueApplicationAddress2() {}
+
+func (m *_ParameterValueApplicationAddress2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueApplicationAddress2) deepCopy() *_ParameterValueApplicationAddress2 {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueApplicationAddress2Copy := &_ParameterValueApplicationAddress2{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value.DeepCopy().(ApplicationAddress2),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueApplicationAddress2Copy
+}
 
 func (m *_ParameterValueApplicationAddress2) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ApduDataMemoryResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -56,6 +57,17 @@ type _ApduDataMemoryResponse struct {
 
 var _ ApduDataMemoryResponse = (*_ApduDataMemoryResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryResponse)(nil)
+
+// NewApduDataMemoryResponse factory function for _ApduDataMemoryResponse
+func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_ApduDataMemoryResponse {
+	_result := &_ApduDataMemoryResponse{
+		ApduDataContract: NewApduData(dataLength),
+		Address:          address,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ApduDataMemoryResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataMemoryResponse factory function for _ApduDataMemoryResponse
-func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_ApduDataMemoryResponse {
-	_result := &_ApduDataMemoryResponse{
-		ApduDataContract: NewApduData(dataLength),
-		Address:          address,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataMemoryResponse(structType any) ApduDataMemoryResponse {
@@ -215,6 +216,23 @@ func (m *_ApduDataMemoryResponse) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ApduDataMemoryResponse) IsApduDataMemoryResponse() {}
+
+func (m *_ApduDataMemoryResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataMemoryResponse) deepCopy() *_ApduDataMemoryResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataMemoryResponseCopy := &_ApduDataMemoryResponse{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.Address,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataMemoryResponseCopy
+}
 
 func (m *_ApduDataMemoryResponse) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type ConnectionTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsConnectionTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionTransportDataType()
@@ -48,6 +49,15 @@ type _ConnectionTransportDataType struct {
 
 var _ ConnectionTransportDataType = (*_ConnectionTransportDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ConnectionTransportDataType)(nil)
+
+// NewConnectionTransportDataType factory function for _ConnectionTransportDataType
+func NewConnectionTransportDataType() *_ConnectionTransportDataType {
+	_result := &_ConnectionTransportDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ConnectionTransportDataType) GetIdentifier() string {
 
 func (m *_ConnectionTransportDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewConnectionTransportDataType factory function for _ConnectionTransportDataType
-func NewConnectionTransportDataType() *_ConnectionTransportDataType {
-	_result := &_ConnectionTransportDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ConnectionTransportDataType) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_ConnectionTransportDataType) IsConnectionTransportDataType() {}
+
+func (m *_ConnectionTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionTransportDataType) deepCopy() *_ConnectionTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_ConnectionTransportDataTypeCopy := &_ConnectionTransportDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ConnectionTransportDataTypeCopy
+}
 
 func (m *_ConnectionTransportDataType) String() string {
 	if m == nil {

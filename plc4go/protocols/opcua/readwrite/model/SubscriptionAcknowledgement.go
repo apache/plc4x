@@ -38,6 +38,7 @@ type SubscriptionAcknowledgement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSubscriptionId returns SubscriptionId (property field)
 	GetSubscriptionId() uint32
@@ -56,6 +57,17 @@ type _SubscriptionAcknowledgement struct {
 
 var _ SubscriptionAcknowledgement = (*_SubscriptionAcknowledgement)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SubscriptionAcknowledgement)(nil)
+
+// NewSubscriptionAcknowledgement factory function for _SubscriptionAcknowledgement
+func NewSubscriptionAcknowledgement(subscriptionId uint32, sequenceNumber uint32) *_SubscriptionAcknowledgement {
+	_result := &_SubscriptionAcknowledgement{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SubscriptionId:                    subscriptionId,
+		SequenceNumber:                    sequenceNumber,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_SubscriptionAcknowledgement) GetSequenceNumber() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSubscriptionAcknowledgement factory function for _SubscriptionAcknowledgement
-func NewSubscriptionAcknowledgement(subscriptionId uint32, sequenceNumber uint32) *_SubscriptionAcknowledgement {
-	_result := &_SubscriptionAcknowledgement{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SubscriptionId:                    subscriptionId,
-		SequenceNumber:                    sequenceNumber,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSubscriptionAcknowledgement(structType any) SubscriptionAcknowledgement {
@@ -200,6 +201,23 @@ func (m *_SubscriptionAcknowledgement) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_SubscriptionAcknowledgement) IsSubscriptionAcknowledgement() {}
+
+func (m *_SubscriptionAcknowledgement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscriptionAcknowledgement) deepCopy() *_SubscriptionAcknowledgement {
+	if m == nil {
+		return nil
+	}
+	_SubscriptionAcknowledgementCopy := &_SubscriptionAcknowledgement{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SubscriptionId,
+		m.SequenceNumber,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SubscriptionAcknowledgementCopy
+}
 
 func (m *_SubscriptionAcknowledgement) String() string {
 	if m == nil {

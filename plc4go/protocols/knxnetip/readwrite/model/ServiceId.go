@@ -40,6 +40,7 @@ type ServiceId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceId()
 }
@@ -144,31 +145,31 @@ func (m *_ServiceId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child ServiceId
 	switch {
 	case serviceType == 0x02: // KnxNetIpCore
-		if _child, err = (&_KnxNetIpCore{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetIpCore).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetIpCore for type-switch of ServiceId")
 		}
 	case serviceType == 0x03: // KnxNetIpDeviceManagement
-		if _child, err = (&_KnxNetIpDeviceManagement{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetIpDeviceManagement).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetIpDeviceManagement for type-switch of ServiceId")
 		}
 	case serviceType == 0x04: // KnxNetIpTunneling
-		if _child, err = (&_KnxNetIpTunneling{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetIpTunneling).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetIpTunneling for type-switch of ServiceId")
 		}
 	case serviceType == 0x05: // KnxNetIpRouting
-		if _child, err = (&_KnxNetIpRouting{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetIpRouting).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetIpRouting for type-switch of ServiceId")
 		}
 	case serviceType == 0x06: // KnxNetRemoteLogging
-		if _child, err = (&_KnxNetRemoteLogging{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetRemoteLogging).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetRemoteLogging for type-switch of ServiceId")
 		}
 	case serviceType == 0x07: // KnxNetRemoteConfigurationAndDiagnosis
-		if _child, err = (&_KnxNetRemoteConfigurationAndDiagnosis{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetRemoteConfigurationAndDiagnosis).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetRemoteConfigurationAndDiagnosis for type-switch of ServiceId")
 		}
 	case serviceType == 0x08: // KnxNetObjectServer
-		if _child, err = (&_KnxNetObjectServer{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetObjectServer).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetObjectServer for type-switch of ServiceId")
 		}
 	default:
@@ -210,3 +211,17 @@ func (pm *_ServiceId) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_ServiceId) IsServiceId() {}
+
+func (m *_ServiceId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServiceId) deepCopy() *_ServiceId {
+	if m == nil {
+		return nil
+	}
+	_ServiceIdCopy := &_ServiceId{
+		nil, // will be set by child
+	}
+	return _ServiceIdCopy
+}

@@ -40,6 +40,7 @@ type CEMIAdditionalInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCEMIAdditionalInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMIAdditionalInformation()
 }
@@ -144,11 +145,11 @@ func (m *_CEMIAdditionalInformation) parse(ctx context.Context, readBuffer utils
 	var _child CEMIAdditionalInformation
 	switch {
 	case additionalInformationType == 0x03: // CEMIAdditionalInformationBusmonitorInfo
-		if _child, err = (&_CEMIAdditionalInformationBusmonitorInfo{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CEMIAdditionalInformationBusmonitorInfo).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CEMIAdditionalInformationBusmonitorInfo for type-switch of CEMIAdditionalInformation")
 		}
 	case additionalInformationType == 0x04: // CEMIAdditionalInformationRelativeTimestamp
-		if _child, err = (&_CEMIAdditionalInformationRelativeTimestamp{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CEMIAdditionalInformationRelativeTimestamp).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CEMIAdditionalInformationRelativeTimestamp for type-switch of CEMIAdditionalInformation")
 		}
 	default:
@@ -190,3 +191,17 @@ func (pm *_CEMIAdditionalInformation) serializeParent(ctx context.Context, write
 }
 
 func (m *_CEMIAdditionalInformation) IsCEMIAdditionalInformation() {}
+
+func (m *_CEMIAdditionalInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CEMIAdditionalInformation) deepCopy() *_CEMIAdditionalInformation {
+	if m == nil {
+		return nil
+	}
+	_CEMIAdditionalInformationCopy := &_CEMIAdditionalInformation{
+		nil, // will be set by child
+	}
+	return _CEMIAdditionalInformationCopy
+}

@@ -38,6 +38,7 @@ type ParameterValueInterfaceOptions1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() InterfaceOptions1
@@ -56,6 +57,20 @@ type _ParameterValueInterfaceOptions1 struct {
 
 var _ ParameterValueInterfaceOptions1 = (*_ParameterValueInterfaceOptions1)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions1)(nil)
+
+// NewParameterValueInterfaceOptions1 factory function for _ParameterValueInterfaceOptions1
+func NewParameterValueInterfaceOptions1(value InterfaceOptions1, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions1 {
+	if value == nil {
+		panic("value of type InterfaceOptions1 for ParameterValueInterfaceOptions1 must not be nil")
+	}
+	_result := &_ParameterValueInterfaceOptions1{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_ParameterValueInterfaceOptions1) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueInterfaceOptions1 factory function for _ParameterValueInterfaceOptions1
-func NewParameterValueInterfaceOptions1(value InterfaceOptions1, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions1 {
-	if value == nil {
-		panic("value of type InterfaceOptions1 for ParameterValueInterfaceOptions1 must not be nil")
-	}
-	_result := &_ParameterValueInterfaceOptions1{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueInterfaceOptions1(structType any) ParameterValueInterfaceOptions1 {
@@ -210,6 +211,23 @@ func (m *_ParameterValueInterfaceOptions1) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ParameterValueInterfaceOptions1) IsParameterValueInterfaceOptions1() {}
+
+func (m *_ParameterValueInterfaceOptions1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueInterfaceOptions1) deepCopy() *_ParameterValueInterfaceOptions1 {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueInterfaceOptions1Copy := &_ParameterValueInterfaceOptions1{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value.DeepCopy().(InterfaceOptions1),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueInterfaceOptions1Copy
+}
 
 func (m *_ParameterValueInterfaceOptions1) String() string {
 	if m == nil {

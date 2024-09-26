@@ -38,6 +38,7 @@ type ApduDataGroupValueRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataGroupValueRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataGroupValueRead()
@@ -52,6 +53,15 @@ type _ApduDataGroupValueRead struct {
 
 var _ ApduDataGroupValueRead = (*_ApduDataGroupValueRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataGroupValueRead)(nil)
+
+// NewApduDataGroupValueRead factory function for _ApduDataGroupValueRead
+func NewApduDataGroupValueRead(dataLength uint8) *_ApduDataGroupValueRead {
+	_result := &_ApduDataGroupValueRead{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_ApduDataGroupValueRead) GetApciType() uint8 {
 
 func (m *_ApduDataGroupValueRead) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataGroupValueRead factory function for _ApduDataGroupValueRead
-func NewApduDataGroupValueRead(dataLength uint8) *_ApduDataGroupValueRead {
-	_result := &_ApduDataGroupValueRead{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -163,6 +164,22 @@ func (m *_ApduDataGroupValueRead) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ApduDataGroupValueRead) IsApduDataGroupValueRead() {}
+
+func (m *_ApduDataGroupValueRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataGroupValueRead) deepCopy() *_ApduDataGroupValueRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataGroupValueReadCopy := &_ApduDataGroupValueRead{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.reservedField0,
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataGroupValueReadCopy
+}
 
 func (m *_ApduDataGroupValueRead) String() string {
 	if m == nil {

@@ -41,6 +41,7 @@ type CEMIAdditionalInformationRelativeTimestamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMIAdditionalInformation
 	// GetRelativeTimestamp returns RelativeTimestamp (property field)
 	GetRelativeTimestamp() RelativeTimestamp
@@ -56,6 +57,19 @@ type _CEMIAdditionalInformationRelativeTimestamp struct {
 
 var _ CEMIAdditionalInformationRelativeTimestamp = (*_CEMIAdditionalInformationRelativeTimestamp)(nil)
 var _ CEMIAdditionalInformationRequirements = (*_CEMIAdditionalInformationRelativeTimestamp)(nil)
+
+// NewCEMIAdditionalInformationRelativeTimestamp factory function for _CEMIAdditionalInformationRelativeTimestamp
+func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTimestamp) *_CEMIAdditionalInformationRelativeTimestamp {
+	if relativeTimestamp == nil {
+		panic("relativeTimestamp of type RelativeTimestamp for CEMIAdditionalInformationRelativeTimestamp must not be nil")
+	}
+	_result := &_CEMIAdditionalInformationRelativeTimestamp{
+		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
+		RelativeTimestamp:                 relativeTimestamp,
+	}
+	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,19 +115,6 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLen() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCEMIAdditionalInformationRelativeTimestamp factory function for _CEMIAdditionalInformationRelativeTimestamp
-func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTimestamp) *_CEMIAdditionalInformationRelativeTimestamp {
-	if relativeTimestamp == nil {
-		panic("relativeTimestamp of type RelativeTimestamp for CEMIAdditionalInformationRelativeTimestamp must not be nil")
-	}
-	_result := &_CEMIAdditionalInformationRelativeTimestamp{
-		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
-		RelativeTimestamp:                 relativeTimestamp,
-	}
-	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCEMIAdditionalInformationRelativeTimestamp(structType any) CEMIAdditionalInformationRelativeTimestamp {
@@ -211,6 +212,22 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(c
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) IsCEMIAdditionalInformationRelativeTimestamp() {
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestamp) deepCopy() *_CEMIAdditionalInformationRelativeTimestamp {
+	if m == nil {
+		return nil
+	}
+	_CEMIAdditionalInformationRelativeTimestampCopy := &_CEMIAdditionalInformationRelativeTimestamp{
+		m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).deepCopy(),
+		m.RelativeTimestamp.DeepCopy().(RelativeTimestamp),
+	}
+	m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m
+	return _CEMIAdditionalInformationRelativeTimestampCopy
 }
 
 func (m *_CEMIAdditionalInformationRelativeTimestamp) String() string {

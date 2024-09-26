@@ -38,6 +38,7 @@ type BACnetNotificationParametersComplexEventType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetListOfValues returns ListOfValues (property field)
 	GetListOfValues() BACnetPropertyValues
@@ -53,6 +54,19 @@ type _BACnetNotificationParametersComplexEventType struct {
 
 var _ BACnetNotificationParametersComplexEventType = (*_BACnetNotificationParametersComplexEventType)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersComplexEventType)(nil)
+
+// NewBACnetNotificationParametersComplexEventType factory function for _BACnetNotificationParametersComplexEventType
+func NewBACnetNotificationParametersComplexEventType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfValues BACnetPropertyValues, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersComplexEventType {
+	if listOfValues == nil {
+		panic("listOfValues of type BACnetPropertyValues for BACnetNotificationParametersComplexEventType must not be nil")
+	}
+	_result := &_BACnetNotificationParametersComplexEventType{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		ListOfValues:                         listOfValues,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetNotificationParametersComplexEventType) GetListOfValues() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersComplexEventType factory function for _BACnetNotificationParametersComplexEventType
-func NewBACnetNotificationParametersComplexEventType(listOfValues BACnetPropertyValues, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersComplexEventType {
-	if listOfValues == nil {
-		panic("listOfValues of type BACnetPropertyValues for BACnetNotificationParametersComplexEventType must not be nil")
-	}
-	_result := &_BACnetNotificationParametersComplexEventType{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		ListOfValues:                         listOfValues,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersComplexEventType(structType any) BACnetNotificationParametersComplexEventType {
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersComplexEventType) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetNotificationParametersComplexEventType) IsBACnetNotificationParametersComplexEventType() {
+}
+
+func (m *_BACnetNotificationParametersComplexEventType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersComplexEventType) deepCopy() *_BACnetNotificationParametersComplexEventType {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersComplexEventTypeCopy := &_BACnetNotificationParametersComplexEventType{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.ListOfValues.DeepCopy().(BACnetPropertyValues),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersComplexEventTypeCopy
 }
 
 func (m *_BACnetNotificationParametersComplexEventType) String() string {

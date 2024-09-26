@@ -21,9 +21,7 @@ package npdu
 
 import (
 	"context"
-	"fmt"
 	"math"
-	"strconv"
 
 	"github.com/pkg/errors"
 
@@ -521,42 +519,4 @@ func (n *_NPCI) deepCopy() *_NPCI {
 
 func (n *_NPCI) DeepCopy() any {
 	return n.deepCopy()
-}
-
-func (n *_NPCI) String() string {
-	if IsDebuggingActive() {
-		npduDADRStr := ""
-		if n.npduDADR != nil {
-			npduDADRStr = "\nnpduDADR = " + n.npduDADR.String()
-		}
-		npduSADRStr := ""
-		if n.npduSADR != nil {
-			npduSADRStr = "\nnpduSADR = " + n.npduSADR.String()
-		}
-		npduHopCountStr := ""
-		if n.npduHopCount != nil {
-			npduHopCountStr = "\nnpduHopCount = " + strconv.Itoa(int(*n.npduHopCount))
-		}
-		npduNetMessageStr := ""
-		if n.npduNetMessage != nil {
-			npduNetMessageStr = "\nnpduNetMessage = " + strconv.Itoa(int(*n.npduNetMessage))
-		}
-		npduVendorIDStr := ""
-		if n.npduVendorID != nil {
-			npduVendorIDStr = "\nnpduVendorID = " + n.npduVendorID.String()
-		}
-		return fmt.Sprintf("\n%s\n"+
-			"npduVersion = %d\n"+
-			"npduControl = %d%s%s%s%s%s",
-			n.PCI,
-			n.npduVersion,
-			n.npduControl,
-			npduDADRStr,
-			npduSADRStr,
-			npduHopCountStr,
-			npduNetMessageStr,
-			npduVendorIDStr,
-		)
-	}
-	return fmt.Sprintf("NPCI{%s}", n.PCI)
 }

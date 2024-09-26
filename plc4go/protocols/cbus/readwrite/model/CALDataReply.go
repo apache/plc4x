@@ -38,6 +38,7 @@ type CALDataReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -56,6 +57,20 @@ type _CALDataReply struct {
 
 var _ CALDataReply = (*_CALDataReply)(nil)
 var _ CALDataRequirements = (*_CALDataReply)(nil)
+
+// NewCALDataReply factory function for _CALDataReply
+func NewCALDataReply(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, parameterValue ParameterValue, requestContext RequestContext) *_CALDataReply {
+	if parameterValue == nil {
+		panic("parameterValue of type ParameterValue for CALDataReply must not be nil")
+	}
+	_result := &_CALDataReply{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		ParameterValue:  parameterValue,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,20 +103,6 @@ func (m *_CALDataReply) GetParameterValue() ParameterValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataReply factory function for _CALDataReply
-func NewCALDataReply(paramNo Parameter, parameterValue ParameterValue, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataReply {
-	if parameterValue == nil {
-		panic("parameterValue of type ParameterValue for CALDataReply must not be nil")
-	}
-	_result := &_CALDataReply{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		ParamNo:         paramNo,
-		ParameterValue:  parameterValue,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataReply(structType any) CALDataReply {
@@ -199,6 +200,23 @@ func (m *_CALDataReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_CALDataReply) IsCALDataReply() {}
+
+func (m *_CALDataReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataReply) deepCopy() *_CALDataReply {
+	if m == nil {
+		return nil
+	}
+	_CALDataReplyCopy := &_CALDataReply{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.ParamNo,
+		m.ParameterValue.DeepCopy().(ParameterValue),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataReplyCopy
+}
 
 func (m *_CALDataReply) String() string {
 	if m == nil {

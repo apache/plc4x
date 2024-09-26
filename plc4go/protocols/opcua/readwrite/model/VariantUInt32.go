@@ -38,6 +38,7 @@ type VariantUInt32 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantUInt32 struct {
 
 var _ VariantUInt32 = (*_VariantUInt32)(nil)
 var _ VariantRequirements = (*_VariantUInt32)(nil)
+
+// NewVariantUInt32 factory function for _VariantUInt32
+func NewVariantUInt32(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []uint32) *_VariantUInt32 {
+	_result := &_VariantUInt32{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantUInt32) GetValue() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantUInt32 factory function for _VariantUInt32
-func NewVariantUInt32(arrayLength *int32, value []uint32, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantUInt32 {
-	_result := &_VariantUInt32{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantUInt32(structType any) VariantUInt32 {
@@ -205,6 +206,23 @@ func (m *_VariantUInt32) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_VariantUInt32) IsVariantUInt32() {}
+
+func (m *_VariantUInt32) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantUInt32) deepCopy() *_VariantUInt32 {
+	if m == nil {
+		return nil
+	}
+	_VariantUInt32Copy := &_VariantUInt32{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[uint32, uint32](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantUInt32Copy
+}
 
 func (m *_VariantUInt32) String() string {
 	if m == nil {

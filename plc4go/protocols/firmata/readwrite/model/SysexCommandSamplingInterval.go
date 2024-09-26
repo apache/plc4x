@@ -36,6 +36,7 @@ type SysexCommandSamplingInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandSamplingInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandSamplingInterval()
@@ -48,6 +49,15 @@ type _SysexCommandSamplingInterval struct {
 
 var _ SysexCommandSamplingInterval = (*_SysexCommandSamplingInterval)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandSamplingInterval)(nil)
+
+// NewSysexCommandSamplingInterval factory function for _SysexCommandSamplingInterval
+func NewSysexCommandSamplingInterval() *_SysexCommandSamplingInterval {
+	_result := &_SysexCommandSamplingInterval{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_SysexCommandSamplingInterval) GetResponse() bool {
 
 func (m *_SysexCommandSamplingInterval) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandSamplingInterval factory function for _SysexCommandSamplingInterval
-func NewSysexCommandSamplingInterval() *_SysexCommandSamplingInterval {
-	_result := &_SysexCommandSamplingInterval{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_SysexCommandSamplingInterval) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SysexCommandSamplingInterval) IsSysexCommandSamplingInterval() {}
+
+func (m *_SysexCommandSamplingInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandSamplingInterval) deepCopy() *_SysexCommandSamplingInterval {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandSamplingIntervalCopy := &_SysexCommandSamplingInterval{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandSamplingIntervalCopy
+}
 
 func (m *_SysexCommandSamplingInterval) String() string {
 	if m == nil {

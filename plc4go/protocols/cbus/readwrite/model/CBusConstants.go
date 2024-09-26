@@ -41,6 +41,7 @@ type CBusConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusConstants()
 }
@@ -50,6 +51,11 @@ type _CBusConstants struct {
 }
 
 var _ CBusConstants = (*_CBusConstants)(nil)
+
+// NewCBusConstants factory function for _CBusConstants
+func NewCBusConstants() *_CBusConstants {
+	return &_CBusConstants{}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_CBusConstants) GetCbusTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusConstants factory function for _CBusConstants
-func NewCBusConstants() *_CBusConstants {
-	return &_CBusConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusConstants(structType any) CBusConstants {
@@ -166,6 +167,18 @@ func (m *_CBusConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_CBusConstants) IsCBusConstants() {}
+
+func (m *_CBusConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusConstants) deepCopy() *_CBusConstants {
+	if m == nil {
+		return nil
+	}
+	_CBusConstantsCopy := &_CBusConstants{}
+	return _CBusConstantsCopy
+}
 
 func (m *_CBusConstants) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLoggingObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLoggingObject returns LoggingObject (property field)
 	GetLoggingObject() BACnetApplicationTagObjectIdentifier
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLoggingObject struct {
 
 var _ BACnetConstructedDataLoggingObject = (*_BACnetConstructedDataLoggingObject)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoggingObject)(nil)
+
+// NewBACnetConstructedDataLoggingObject factory function for _BACnetConstructedDataLoggingObject
+func NewBACnetConstructedDataLoggingObject(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, loggingObject BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingObject {
+	if loggingObject == nil {
+		panic("loggingObject of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataLoggingObject must not be nil")
+	}
+	_result := &_BACnetConstructedDataLoggingObject{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LoggingObject:                 loggingObject,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLoggingObject) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLoggingObject factory function for _BACnetConstructedDataLoggingObject
-func NewBACnetConstructedDataLoggingObject(loggingObject BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingObject {
-	if loggingObject == nil {
-		panic("loggingObject of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataLoggingObject must not be nil")
-	}
-	_result := &_BACnetConstructedDataLoggingObject{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LoggingObject:                 loggingObject,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLoggingObject(structType any) BACnetConstructedDataLoggingObject {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLoggingObject) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataLoggingObject) IsBACnetConstructedDataLoggingObject() {}
+
+func (m *_BACnetConstructedDataLoggingObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoggingObject) deepCopy() *_BACnetConstructedDataLoggingObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoggingObjectCopy := &_BACnetConstructedDataLoggingObject{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LoggingObject.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoggingObjectCopy
+}
 
 func (m *_BACnetConstructedDataLoggingObject) String() string {
 	if m == nil {

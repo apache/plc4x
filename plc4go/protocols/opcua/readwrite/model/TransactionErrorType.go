@@ -38,6 +38,7 @@ type TransactionErrorType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTargetId returns TargetId (property field)
 	GetTargetId() NodeId
@@ -59,6 +60,27 @@ type _TransactionErrorType struct {
 
 var _ TransactionErrorType = (*_TransactionErrorType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TransactionErrorType)(nil)
+
+// NewTransactionErrorType factory function for _TransactionErrorType
+func NewTransactionErrorType(targetId NodeId, error StatusCode, message LocalizedText) *_TransactionErrorType {
+	if targetId == nil {
+		panic("targetId of type NodeId for TransactionErrorType must not be nil")
+	}
+	if error == nil {
+		panic("error of type StatusCode for TransactionErrorType must not be nil")
+	}
+	if message == nil {
+		panic("message of type LocalizedText for TransactionErrorType must not be nil")
+	}
+	_result := &_TransactionErrorType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TargetId:                          targetId,
+		Error:                             error,
+		Message:                           message,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,27 +121,6 @@ func (m *_TransactionErrorType) GetMessage() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransactionErrorType factory function for _TransactionErrorType
-func NewTransactionErrorType(targetId NodeId, error StatusCode, message LocalizedText) *_TransactionErrorType {
-	if targetId == nil {
-		panic("targetId of type NodeId for TransactionErrorType must not be nil")
-	}
-	if error == nil {
-		panic("error of type StatusCode for TransactionErrorType must not be nil")
-	}
-	if message == nil {
-		panic("message of type LocalizedText for TransactionErrorType must not be nil")
-	}
-	_result := &_TransactionErrorType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		TargetId:                          targetId,
-		Error:                             error,
-		Message:                           message,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransactionErrorType(structType any) TransactionErrorType {
@@ -230,6 +231,24 @@ func (m *_TransactionErrorType) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_TransactionErrorType) IsTransactionErrorType() {}
+
+func (m *_TransactionErrorType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransactionErrorType) deepCopy() *_TransactionErrorType {
+	if m == nil {
+		return nil
+	}
+	_TransactionErrorTypeCopy := &_TransactionErrorType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.TargetId.DeepCopy().(NodeId),
+		m.Error.DeepCopy().(StatusCode),
+		m.Message.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TransactionErrorTypeCopy
+}
 
 func (m *_TransactionErrorType) String() string {
 	if m == nil {

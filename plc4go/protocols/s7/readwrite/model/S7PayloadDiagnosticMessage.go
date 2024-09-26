@@ -38,6 +38,7 @@ type S7PayloadDiagnosticMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetEventId returns EventId (property field)
 	GetEventId() uint16
@@ -71,6 +72,25 @@ type _S7PayloadDiagnosticMessage struct {
 
 var _ S7PayloadDiagnosticMessage = (*_S7PayloadDiagnosticMessage)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadDiagnosticMessage)(nil)
+
+// NewS7PayloadDiagnosticMessage factory function for _S7PayloadDiagnosticMessage
+func NewS7PayloadDiagnosticMessage(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime) *_S7PayloadDiagnosticMessage {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for S7PayloadDiagnosticMessage must not be nil")
+	}
+	_result := &_S7PayloadDiagnosticMessage{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		EventId:                       eventId,
+		PriorityClass:                 priorityClass,
+		ObNumber:                      obNumber,
+		DatId:                         datId,
+		Info1:                         info1,
+		Info2:                         info2,
+		TimeStamp:                     timeStamp,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -135,25 +155,6 @@ func (m *_S7PayloadDiagnosticMessage) GetTimeStamp() DateAndTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadDiagnosticMessage factory function for _S7PayloadDiagnosticMessage
-func NewS7PayloadDiagnosticMessage(eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadDiagnosticMessage {
-	if timeStamp == nil {
-		panic("timeStamp of type DateAndTime for S7PayloadDiagnosticMessage must not be nil")
-	}
-	_result := &_S7PayloadDiagnosticMessage{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		EventId:                       eventId,
-		PriorityClass:                 priorityClass,
-		ObNumber:                      obNumber,
-		DatId:                         datId,
-		Info1:                         info1,
-		Info2:                         info2,
-		TimeStamp:                     timeStamp,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadDiagnosticMessage(structType any) S7PayloadDiagnosticMessage {
@@ -316,6 +317,28 @@ func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_S7PayloadDiagnosticMessage) IsS7PayloadDiagnosticMessage() {}
+
+func (m *_S7PayloadDiagnosticMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadDiagnosticMessage) deepCopy() *_S7PayloadDiagnosticMessage {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadDiagnosticMessageCopy := &_S7PayloadDiagnosticMessage{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.EventId,
+		m.PriorityClass,
+		m.ObNumber,
+		m.DatId,
+		m.Info1,
+		m.Info2,
+		m.TimeStamp.DeepCopy().(DateAndTime),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadDiagnosticMessageCopy
+}
 
 func (m *_S7PayloadDiagnosticMessage) String() string {
 	if m == nil {

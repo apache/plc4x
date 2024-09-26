@@ -38,6 +38,7 @@ type AggregateConfiguration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTreatUncertainAsBad returns TreatUncertainAsBad (property field)
 	GetTreatUncertainAsBad() bool
@@ -68,6 +69,20 @@ type _AggregateConfiguration struct {
 
 var _ AggregateConfiguration = (*_AggregateConfiguration)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AggregateConfiguration)(nil)
+
+// NewAggregateConfiguration factory function for _AggregateConfiguration
+func NewAggregateConfiguration(treatUncertainAsBad bool, useServerCapabilitiesDefaults bool, percentDataBad uint8, percentDataGood uint8, useSlopedExtrapolation bool) *_AggregateConfiguration {
+	_result := &_AggregateConfiguration{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TreatUncertainAsBad:               treatUncertainAsBad,
+		UseServerCapabilitiesDefaults:     useServerCapabilitiesDefaults,
+		PercentDataBad:                    percentDataBad,
+		PercentDataGood:                   percentDataGood,
+		UseSlopedExtrapolation:            useSlopedExtrapolation,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,20 +131,6 @@ func (m *_AggregateConfiguration) GetUseSlopedExtrapolation() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAggregateConfiguration factory function for _AggregateConfiguration
-func NewAggregateConfiguration(treatUncertainAsBad bool, useServerCapabilitiesDefaults bool, percentDataBad uint8, percentDataGood uint8, useSlopedExtrapolation bool) *_AggregateConfiguration {
-	_result := &_AggregateConfiguration{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		TreatUncertainAsBad:               treatUncertainAsBad,
-		UseServerCapabilitiesDefaults:     useServerCapabilitiesDefaults,
-		PercentDataBad:                    percentDataBad,
-		PercentDataGood:                   percentDataGood,
-		UseSlopedExtrapolation:            useSlopedExtrapolation,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAggregateConfiguration(structType any) AggregateConfiguration {
@@ -292,6 +293,28 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_AggregateConfiguration) IsAggregateConfiguration() {}
+
+func (m *_AggregateConfiguration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AggregateConfiguration) deepCopy() *_AggregateConfiguration {
+	if m == nil {
+		return nil
+	}
+	_AggregateConfigurationCopy := &_AggregateConfiguration{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.TreatUncertainAsBad,
+		m.UseServerCapabilitiesDefaults,
+		m.PercentDataBad,
+		m.PercentDataGood,
+		m.UseSlopedExtrapolation,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AggregateConfigurationCopy
+}
 
 func (m *_AggregateConfiguration) String() string {
 	if m == nil {

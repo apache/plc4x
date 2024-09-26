@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
@@ -53,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryBitString struct {
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryBitString = (*_BACnetFaultParameterFaultExtendedParametersEntryBitString)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryBitString)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryBitString factory function for _BACnetFaultParameterFaultExtendedParametersEntryBitString
+func NewBACnetFaultParameterFaultExtendedParametersEntryBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString) *_BACnetFaultParameterFaultExtendedParametersEntryBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetFaultParameterFaultExtendedParametersEntryBitString must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBitString{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		BitStringValue: bitStringValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) GetBitStrin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryBitString factory function for _BACnetFaultParameterFaultExtendedParametersEntryBitString
-func NewBACnetFaultParameterFaultExtendedParametersEntryBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryBitString {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetFaultParameterFaultExtendedParametersEntryBitString must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBitString{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		BitStringValue: bitStringValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryBitString(structType any) BACnetFaultParameterFaultExtendedParametersEntryBitString {
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) SerializeWi
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) IsBACnetFaultParameterFaultExtendedParametersEntryBitString() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryBitStringCopy := &_BACnetFaultParameterFaultExtendedParametersEntryBitString{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryBitStringCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) String() string {

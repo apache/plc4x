@@ -36,6 +36,7 @@ type ApduDataRestart interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataRestart is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataRestart()
@@ -48,6 +49,15 @@ type _ApduDataRestart struct {
 
 var _ ApduDataRestart = (*_ApduDataRestart)(nil)
 var _ ApduDataRequirements = (*_ApduDataRestart)(nil)
+
+// NewApduDataRestart factory function for _ApduDataRestart
+func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
+	_result := &_ApduDataRestart{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataRestart) GetApciType() uint8 {
 
 func (m *_ApduDataRestart) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataRestart factory function for _ApduDataRestart
-func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
-	_result := &_ApduDataRestart{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataRestart) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ApduDataRestart) IsApduDataRestart() {}
+
+func (m *_ApduDataRestart) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataRestart) deepCopy() *_ApduDataRestart {
+	if m == nil {
+		return nil
+	}
+	_ApduDataRestartCopy := &_ApduDataRestart{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataRestartCopy
+}
 
 func (m *_ApduDataRestart) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type COTPParameterTpduSize interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPParameter
 	// GetTpduSize returns TpduSize (property field)
 	GetTpduSize() COTPTpduSize
@@ -53,6 +54,16 @@ type _COTPParameterTpduSize struct {
 
 var _ COTPParameterTpduSize = (*_COTPParameterTpduSize)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterTpduSize)(nil)
+
+// NewCOTPParameterTpduSize factory function for _COTPParameterTpduSize
+func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameterTpduSize {
+	_result := &_COTPParameterTpduSize{
+		COTPParameterContract: NewCOTPParameter(rest),
+		TpduSize:              tpduSize,
+	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_COTPParameterTpduSize) GetTpduSize() COTPTpduSize {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPParameterTpduSize factory function for _COTPParameterTpduSize
-func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameterTpduSize {
-	_result := &_COTPParameterTpduSize{
-		COTPParameterContract: NewCOTPParameter(rest),
-		TpduSize:              tpduSize,
-	}
-	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPParameterTpduSize(structType any) COTPParameterTpduSize {
@@ -179,6 +180,22 @@ func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_COTPParameterTpduSize) IsCOTPParameterTpduSize() {}
+
+func (m *_COTPParameterTpduSize) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameterTpduSize) deepCopy() *_COTPParameterTpduSize {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterTpduSizeCopy := &_COTPParameterTpduSize{
+		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
+		m.TpduSize,
+	}
+	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	return _COTPParameterTpduSizeCopy
+}
 
 func (m *_COTPParameterTpduSize) String() string {
 	if m == nil {

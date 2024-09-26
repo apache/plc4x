@@ -38,6 +38,7 @@ type BACnetConstructedDataSubscribedRecipients interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSubscribedRecipients returns SubscribedRecipients (property field)
 	GetSubscribedRecipients() []BACnetEventNotificationSubscription
@@ -53,6 +54,16 @@ type _BACnetConstructedDataSubscribedRecipients struct {
 
 var _ BACnetConstructedDataSubscribedRecipients = (*_BACnetConstructedDataSubscribedRecipients)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubscribedRecipients)(nil)
+
+// NewBACnetConstructedDataSubscribedRecipients factory function for _BACnetConstructedDataSubscribedRecipients
+func NewBACnetConstructedDataSubscribedRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, subscribedRecipients []BACnetEventNotificationSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubscribedRecipients {
+	_result := &_BACnetConstructedDataSubscribedRecipients{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SubscribedRecipients:          subscribedRecipients,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataSubscribedRecipients) GetSubscribedRecipients() [
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSubscribedRecipients factory function for _BACnetConstructedDataSubscribedRecipients
-func NewBACnetConstructedDataSubscribedRecipients(subscribedRecipients []BACnetEventNotificationSubscription, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubscribedRecipients {
-	_result := &_BACnetConstructedDataSubscribedRecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SubscribedRecipients:          subscribedRecipients,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSubscribedRecipients(structType any) BACnetConstructedDataSubscribedRecipients {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataSubscribedRecipients) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataSubscribedRecipients) IsBACnetConstructedDataSubscribedRecipients() {}
+
+func (m *_BACnetConstructedDataSubscribedRecipients) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSubscribedRecipients) deepCopy() *_BACnetConstructedDataSubscribedRecipients {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSubscribedRecipientsCopy := &_BACnetConstructedDataSubscribedRecipients{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetEventNotificationSubscription, BACnetEventNotificationSubscription](m.SubscribedRecipients),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSubscribedRecipientsCopy
+}
 
 func (m *_BACnetConstructedDataSubscribedRecipients) String() string {
 	if m == nil {

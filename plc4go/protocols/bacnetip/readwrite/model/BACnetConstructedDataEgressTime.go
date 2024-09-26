@@ -38,6 +38,7 @@ type BACnetConstructedDataEgressTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEgressTime returns EgressTime (property field)
 	GetEgressTime() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataEgressTime struct {
 
 var _ BACnetConstructedDataEgressTime = (*_BACnetConstructedDataEgressTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEgressTime)(nil)
+
+// NewBACnetConstructedDataEgressTime factory function for _BACnetConstructedDataEgressTime
+func NewBACnetConstructedDataEgressTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressTime {
+	if egressTime == nil {
+		panic("egressTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataEgressTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataEgressTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EgressTime:                    egressTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataEgressTime) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEgressTime factory function for _BACnetConstructedDataEgressTime
-func NewBACnetConstructedDataEgressTime(egressTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressTime {
-	if egressTime == nil {
-		panic("egressTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataEgressTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataEgressTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EgressTime:                    egressTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEgressTime(structType any) BACnetConstructedDataEgressTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEgressTime) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataEgressTime) IsBACnetConstructedDataEgressTime() {}
+
+func (m *_BACnetConstructedDataEgressTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEgressTime) deepCopy() *_BACnetConstructedDataEgressTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEgressTimeCopy := &_BACnetConstructedDataEgressTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EgressTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEgressTimeCopy
+}
 
 func (m *_BACnetConstructedDataEgressTime) String() string {
 	if m == nil {

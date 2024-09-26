@@ -39,6 +39,7 @@ type BACnetTagPayloadCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetEncoding returns Encoding (property field)
 	GetEncoding() BACnetCharacterEncoding
 	// GetValue returns Value (property field)
@@ -59,6 +60,11 @@ type _BACnetTagPayloadCharacterString struct {
 }
 
 var _ BACnetTagPayloadCharacterString = (*_BACnetTagPayloadCharacterString)(nil)
+
+// NewBACnetTagPayloadCharacterString factory function for _BACnetTagPayloadCharacterString
+func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value string, actualLength uint32) *_BACnetTagPayloadCharacterString {
+	return &_BACnetTagPayloadCharacterString{Encoding: encoding, Value: value, ActualLength: actualLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,11 +98,6 @@ func (m *_BACnetTagPayloadCharacterString) GetActualLengthInBit() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadCharacterString factory function for _BACnetTagPayloadCharacterString
-func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value string, actualLength uint32) *_BACnetTagPayloadCharacterString {
-	return &_BACnetTagPayloadCharacterString{Encoding: encoding, Value: value, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadCharacterString(structType any) BACnetTagPayloadCharacterString {
@@ -231,6 +232,22 @@ func (m *_BACnetTagPayloadCharacterString) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadCharacterString) IsBACnetTagPayloadCharacterString() {}
+
+func (m *_BACnetTagPayloadCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadCharacterString) deepCopy() *_BACnetTagPayloadCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadCharacterStringCopy := &_BACnetTagPayloadCharacterString{
+		m.Encoding,
+		m.Value,
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadCharacterStringCopy
+}
 
 func (m *_BACnetTagPayloadCharacterString) String() string {
 	if m == nil {

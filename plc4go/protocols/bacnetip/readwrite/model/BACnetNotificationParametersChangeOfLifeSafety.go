@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfLifeSafety interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -68,6 +69,39 @@ type _BACnetNotificationParametersChangeOfLifeSafety struct {
 
 var _ BACnetNotificationParametersChangeOfLifeSafety = (*_BACnetNotificationParametersChangeOfLifeSafety)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfLifeSafety)(nil)
+
+// NewBACnetNotificationParametersChangeOfLifeSafety factory function for _BACnetNotificationParametersChangeOfLifeSafety
+func NewBACnetNotificationParametersChangeOfLifeSafety(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, newState BACnetLifeSafetyStateTagged, newMode BACnetLifeSafetyModeTagged, statusFlags BACnetStatusFlagsTagged, operationExpected BACnetLifeSafetyOperationTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfLifeSafety {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
+	}
+	if newState == nil {
+		panic("newState of type BACnetLifeSafetyStateTagged for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
+	}
+	if newMode == nil {
+		panic("newMode of type BACnetLifeSafetyModeTagged for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
+	}
+	if operationExpected == nil {
+		panic("operationExpected of type BACnetLifeSafetyOperationTagged for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfLifeSafety{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		NewState:                             newState,
+		NewMode:                              newMode,
+		StatusFlags:                          statusFlags,
+		OperationExpected:                    operationExpected,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,39 +150,6 @@ func (m *_BACnetNotificationParametersChangeOfLifeSafety) GetInnerClosingTag() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfLifeSafety factory function for _BACnetNotificationParametersChangeOfLifeSafety
-func NewBACnetNotificationParametersChangeOfLifeSafety(innerOpeningTag BACnetOpeningTag, newState BACnetLifeSafetyStateTagged, newMode BACnetLifeSafetyModeTagged, statusFlags BACnetStatusFlagsTagged, operationExpected BACnetLifeSafetyOperationTagged, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfLifeSafety {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
-	}
-	if newState == nil {
-		panic("newState of type BACnetLifeSafetyStateTagged for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
-	}
-	if newMode == nil {
-		panic("newMode of type BACnetLifeSafetyModeTagged for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
-	}
-	if operationExpected == nil {
-		panic("operationExpected of type BACnetLifeSafetyOperationTagged for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfLifeSafety must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfLifeSafety{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		NewState:                             newState,
-		NewMode:                              newMode,
-		StatusFlags:                          statusFlags,
-		OperationExpected:                    operationExpected,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfLifeSafety(structType any) BACnetNotificationParametersChangeOfLifeSafety {
@@ -298,6 +299,27 @@ func (m *_BACnetNotificationParametersChangeOfLifeSafety) SerializeWithWriteBuff
 }
 
 func (m *_BACnetNotificationParametersChangeOfLifeSafety) IsBACnetNotificationParametersChangeOfLifeSafety() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfLifeSafety) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfLifeSafety) deepCopy() *_BACnetNotificationParametersChangeOfLifeSafety {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfLifeSafetyCopy := &_BACnetNotificationParametersChangeOfLifeSafety{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.NewState.DeepCopy().(BACnetLifeSafetyStateTagged),
+		m.NewMode.DeepCopy().(BACnetLifeSafetyModeTagged),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.OperationExpected.DeepCopy().(BACnetLifeSafetyOperationTagged),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersChangeOfLifeSafetyCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfLifeSafety) String() string {

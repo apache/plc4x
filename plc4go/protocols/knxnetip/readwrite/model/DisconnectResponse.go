@@ -40,6 +40,7 @@ type DisconnectResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
@@ -58,6 +59,17 @@ type _DisconnectResponse struct {
 
 var _ DisconnectResponse = (*_DisconnectResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_DisconnectResponse)(nil)
+
+// NewDisconnectResponse factory function for _DisconnectResponse
+func NewDisconnectResponse(communicationChannelId uint8, status Status) *_DisconnectResponse {
+	_result := &_DisconnectResponse{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		CommunicationChannelId:  communicationChannelId,
+		Status:                  status,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +106,6 @@ func (m *_DisconnectResponse) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDisconnectResponse factory function for _DisconnectResponse
-func NewDisconnectResponse(communicationChannelId uint8, status Status) *_DisconnectResponse {
-	_result := &_DisconnectResponse{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		CommunicationChannelId:  communicationChannelId,
-		Status:                  status,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDisconnectResponse(structType any) DisconnectResponse {
@@ -202,6 +203,23 @@ func (m *_DisconnectResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_DisconnectResponse) IsDisconnectResponse() {}
+
+func (m *_DisconnectResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DisconnectResponse) deepCopy() *_DisconnectResponse {
+	if m == nil {
+		return nil
+	}
+	_DisconnectResponseCopy := &_DisconnectResponse{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.CommunicationChannelId,
+		m.Status,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DisconnectResponseCopy
+}
 
 func (m *_DisconnectResponse) String() string {
 	if m == nil {

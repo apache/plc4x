@@ -38,6 +38,7 @@ type BACnetLandingDoorStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLandingDoors returns LandingDoors (property field)
 	GetLandingDoors() BACnetLandingDoorStatusLandingDoorsList
 	// IsBACnetLandingDoorStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,14 @@ type _BACnetLandingDoorStatus struct {
 }
 
 var _ BACnetLandingDoorStatus = (*_BACnetLandingDoorStatus)(nil)
+
+// NewBACnetLandingDoorStatus factory function for _BACnetLandingDoorStatus
+func NewBACnetLandingDoorStatus(landingDoors BACnetLandingDoorStatusLandingDoorsList) *_BACnetLandingDoorStatus {
+	if landingDoors == nil {
+		panic("landingDoors of type BACnetLandingDoorStatusLandingDoorsList for BACnetLandingDoorStatus must not be nil")
+	}
+	return &_BACnetLandingDoorStatus{LandingDoors: landingDoors}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +73,6 @@ func (m *_BACnetLandingDoorStatus) GetLandingDoors() BACnetLandingDoorStatusLand
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingDoorStatus factory function for _BACnetLandingDoorStatus
-func NewBACnetLandingDoorStatus(landingDoors BACnetLandingDoorStatusLandingDoorsList) *_BACnetLandingDoorStatus {
-	if landingDoors == nil {
-		panic("landingDoors of type BACnetLandingDoorStatusLandingDoorsList for BACnetLandingDoorStatus must not be nil")
-	}
-	return &_BACnetLandingDoorStatus{LandingDoors: landingDoors}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingDoorStatus(structType any) BACnetLandingDoorStatus {
@@ -169,6 +170,20 @@ func (m *_BACnetLandingDoorStatus) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetLandingDoorStatus) IsBACnetLandingDoorStatus() {}
+
+func (m *_BACnetLandingDoorStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingDoorStatus) deepCopy() *_BACnetLandingDoorStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingDoorStatusCopy := &_BACnetLandingDoorStatus{
+		m.LandingDoors.DeepCopy().(BACnetLandingDoorStatusLandingDoorsList),
+	}
+	return _BACnetLandingDoorStatusCopy
+}
 
 func (m *_BACnetLandingDoorStatus) String() string {
 	if m == nil {

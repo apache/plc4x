@@ -38,6 +38,7 @@ type BACnetSpecialEventListOfTimeValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfTimeValues returns ListOfTimeValues (property field)
@@ -60,6 +61,17 @@ type _BACnetSpecialEventListOfTimeValues struct {
 
 var _ BACnetSpecialEventListOfTimeValues = (*_BACnetSpecialEventListOfTimeValues)(nil)
 
+// NewBACnetSpecialEventListOfTimeValues factory function for _BACnetSpecialEventListOfTimeValues
+func NewBACnetSpecialEventListOfTimeValues(openingTag BACnetOpeningTag, listOfTimeValues []BACnetTimeValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSpecialEventListOfTimeValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetSpecialEventListOfTimeValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetSpecialEventListOfTimeValues must not be nil")
+	}
+	return &_BACnetSpecialEventListOfTimeValues{OpeningTag: openingTag, ListOfTimeValues: listOfTimeValues, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSpecialEventListOfTimeValues factory function for _BACnetSpecialEventListOfTimeValues
-func NewBACnetSpecialEventListOfTimeValues(openingTag BACnetOpeningTag, listOfTimeValues []BACnetTimeValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSpecialEventListOfTimeValues {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetSpecialEventListOfTimeValues must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetSpecialEventListOfTimeValues must not be nil")
-	}
-	return &_BACnetSpecialEventListOfTimeValues{OpeningTag: openingTag, ListOfTimeValues: listOfTimeValues, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSpecialEventListOfTimeValues(structType any) BACnetSpecialEventListOfTimeValues {
@@ -229,6 +230,23 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetSpecialEventListOfTimeValues) IsBACnetSpecialEventListOfTimeValues() {}
+
+func (m *_BACnetSpecialEventListOfTimeValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSpecialEventListOfTimeValues) deepCopy() *_BACnetSpecialEventListOfTimeValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetSpecialEventListOfTimeValuesCopy := &_BACnetSpecialEventListOfTimeValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimeValue, BACnetTimeValue](m.ListOfTimeValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetSpecialEventListOfTimeValuesCopy
+}
 
 func (m *_BACnetSpecialEventListOfTimeValues) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type ApduDataExtDomainAddressResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtDomainAddressResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressResponse()
@@ -48,6 +49,15 @@ type _ApduDataExtDomainAddressResponse struct {
 
 var _ ApduDataExtDomainAddressResponse = (*_ApduDataExtDomainAddressResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressResponse)(nil)
+
+// NewApduDataExtDomainAddressResponse factory function for _ApduDataExtDomainAddressResponse
+func NewApduDataExtDomainAddressResponse(length uint8) *_ApduDataExtDomainAddressResponse {
+	_result := &_ApduDataExtDomainAddressResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtDomainAddressResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtDomainAddressResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtDomainAddressResponse factory function for _ApduDataExtDomainAddressResponse
-func NewApduDataExtDomainAddressResponse(length uint8) *_ApduDataExtDomainAddressResponse {
-	_result := &_ApduDataExtDomainAddressResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtDomainAddressResponse) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_ApduDataExtDomainAddressResponse) IsApduDataExtDomainAddressResponse() {}
+
+func (m *_ApduDataExtDomainAddressResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtDomainAddressResponse) deepCopy() *_ApduDataExtDomainAddressResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtDomainAddressResponseCopy := &_ApduDataExtDomainAddressResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtDomainAddressResponseCopy
+}
 
 func (m *_ApduDataExtDomainAddressResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataBias interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBias returns Bias (property field)
 	GetBias() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBias struct {
 
 var _ BACnetConstructedDataBias = (*_BACnetConstructedDataBias)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBias)(nil)
+
+// NewBACnetConstructedDataBias factory function for _BACnetConstructedDataBias
+func NewBACnetConstructedDataBias(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bias BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBias {
+	if bias == nil {
+		panic("bias of type BACnetApplicationTagReal for BACnetConstructedDataBias must not be nil")
+	}
+	_result := &_BACnetConstructedDataBias{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Bias:                          bias,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBias) GetActualValue() BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBias factory function for _BACnetConstructedDataBias
-func NewBACnetConstructedDataBias(bias BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBias {
-	if bias == nil {
-		panic("bias of type BACnetApplicationTagReal for BACnetConstructedDataBias must not be nil")
-	}
-	_result := &_BACnetConstructedDataBias{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Bias:                          bias,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBias(structType any) BACnetConstructedDataBias {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBias) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetConstructedDataBias) IsBACnetConstructedDataBias() {}
+
+func (m *_BACnetConstructedDataBias) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBias) deepCopy() *_BACnetConstructedDataBias {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBiasCopy := &_BACnetConstructedDataBias{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Bias.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBiasCopy
+}
 
 func (m *_BACnetConstructedDataBias) String() string {
 	if m == nil {

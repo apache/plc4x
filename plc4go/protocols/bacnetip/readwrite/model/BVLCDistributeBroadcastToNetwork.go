@@ -40,6 +40,7 @@ type BVLCDistributeBroadcastToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
@@ -58,6 +59,19 @@ type _BVLCDistributeBroadcastToNetwork struct {
 
 var _ BVLCDistributeBroadcastToNetwork = (*_BVLCDistributeBroadcastToNetwork)(nil)
 var _ BVLCRequirements = (*_BVLCDistributeBroadcastToNetwork)(nil)
+
+// NewBVLCDistributeBroadcastToNetwork factory function for _BVLCDistributeBroadcastToNetwork
+func NewBVLCDistributeBroadcastToNetwork(npdu NPDU, bvlcPayloadLength uint16) *_BVLCDistributeBroadcastToNetwork {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCDistributeBroadcastToNetwork must not be nil")
+	}
+	_result := &_BVLCDistributeBroadcastToNetwork{
+		BVLCContract: NewBVLC(),
+		Npdu:         npdu,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,19 +104,6 @@ func (m *_BVLCDistributeBroadcastToNetwork) GetNpdu() NPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCDistributeBroadcastToNetwork factory function for _BVLCDistributeBroadcastToNetwork
-func NewBVLCDistributeBroadcastToNetwork(npdu NPDU, bvlcPayloadLength uint16) *_BVLCDistributeBroadcastToNetwork {
-	if npdu == nil {
-		panic("npdu of type NPDU for BVLCDistributeBroadcastToNetwork must not be nil")
-	}
-	_result := &_BVLCDistributeBroadcastToNetwork{
-		BVLCContract: NewBVLC(),
-		Npdu:         npdu,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCDistributeBroadcastToNetwork(structType any) BVLCDistributeBroadcastToNetwork {
@@ -197,6 +198,23 @@ func (m *_BVLCDistributeBroadcastToNetwork) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCDistributeBroadcastToNetwork) IsBVLCDistributeBroadcastToNetwork() {}
+
+func (m *_BVLCDistributeBroadcastToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCDistributeBroadcastToNetwork) deepCopy() *_BVLCDistributeBroadcastToNetwork {
+	if m == nil {
+		return nil
+	}
+	_BVLCDistributeBroadcastToNetworkCopy := &_BVLCDistributeBroadcastToNetwork{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		m.Npdu.DeepCopy().(NPDU),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCDistributeBroadcastToNetworkCopy
+}
 
 func (m *_BVLCDistributeBroadcastToNetwork) String() string {
 	if m == nil {

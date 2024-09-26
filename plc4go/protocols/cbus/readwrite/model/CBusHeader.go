@@ -38,6 +38,7 @@ type CBusHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPriorityClass returns PriorityClass (property field)
 	GetPriorityClass() PriorityClass
 	// GetDp returns Dp (property field)
@@ -59,6 +60,11 @@ type _CBusHeader struct {
 }
 
 var _ CBusHeader = (*_CBusHeader)(nil)
+
+// NewCBusHeader factory function for _CBusHeader
+func NewCBusHeader(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) *_CBusHeader {
+	return &_CBusHeader{PriorityClass: priorityClass, Dp: dp, Rc: rc, DestinationAddressType: destinationAddressType}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +91,6 @@ func (m *_CBusHeader) GetDestinationAddressType() DestinationAddressType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusHeader factory function for _CBusHeader
-func NewCBusHeader(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) *_CBusHeader {
-	return &_CBusHeader{PriorityClass: priorityClass, Dp: dp, Rc: rc, DestinationAddressType: destinationAddressType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusHeader(structType any) CBusHeader {
@@ -226,6 +227,23 @@ func (m *_CBusHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_CBusHeader) IsCBusHeader() {}
+
+func (m *_CBusHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusHeader) deepCopy() *_CBusHeader {
+	if m == nil {
+		return nil
+	}
+	_CBusHeaderCopy := &_CBusHeader{
+		m.PriorityClass,
+		m.Dp,
+		m.Rc,
+		m.DestinationAddressType,
+	}
+	return _CBusHeaderCopy
+}
 
 func (m *_CBusHeader) String() string {
 	if m == nil {

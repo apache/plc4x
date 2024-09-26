@@ -38,6 +38,7 @@ type MediaTransportControlDataSourcePowerControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetState returns State (property field)
 	GetState() byte
@@ -57,6 +58,16 @@ type _MediaTransportControlDataSourcePowerControl struct {
 
 var _ MediaTransportControlDataSourcePowerControl = (*_MediaTransportControlDataSourcePowerControl)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSourcePowerControl)(nil)
+
+// NewMediaTransportControlDataSourcePowerControl factory function for _MediaTransportControlDataSourcePowerControl
+func NewMediaTransportControlDataSourcePowerControl(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, state byte) *_MediaTransportControlDataSourcePowerControl {
+	_result := &_MediaTransportControlDataSourcePowerControl{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		State:                             state,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +117,6 @@ func (m *_MediaTransportControlDataSourcePowerControl) GetIsShouldPowerOff() boo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSourcePowerControl factory function for _MediaTransportControlDataSourcePowerControl
-func NewMediaTransportControlDataSourcePowerControl(state byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSourcePowerControl {
-	_result := &_MediaTransportControlDataSourcePowerControl{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		State:                             state,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSourcePowerControl(structType any) MediaTransportControlDataSourcePowerControl {
@@ -228,6 +229,22 @@ func (m *_MediaTransportControlDataSourcePowerControl) SerializeWithWriteBuffer(
 }
 
 func (m *_MediaTransportControlDataSourcePowerControl) IsMediaTransportControlDataSourcePowerControl() {
+}
+
+func (m *_MediaTransportControlDataSourcePowerControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSourcePowerControl) deepCopy() *_MediaTransportControlDataSourcePowerControl {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSourcePowerControlCopy := &_MediaTransportControlDataSourcePowerControl{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.State,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSourcePowerControlCopy
 }
 
 func (m *_MediaTransportControlDataSourcePowerControl) String() string {

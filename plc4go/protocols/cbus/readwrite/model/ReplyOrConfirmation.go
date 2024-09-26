@@ -40,6 +40,7 @@ type ReplyOrConfirmation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsReplyOrConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReplyOrConfirmation()
 }
@@ -80,6 +81,11 @@ type _ReplyOrConfirmation struct {
 
 var _ ReplyOrConfirmationContract = (*_ReplyOrConfirmation)(nil)
 
+// NewReplyOrConfirmation factory function for _ReplyOrConfirmation
+func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmation {
+	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -109,11 +115,6 @@ func (pm *_ReplyOrConfirmation) GetIsAlpha() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReplyOrConfirmation factory function for _ReplyOrConfirmation
-func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmation {
-	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastReplyOrConfirmation(structType any) ReplyOrConfirmation {
@@ -196,15 +197,15 @@ func (m *_ReplyOrConfirmation) parse(ctx context.Context, readBuffer utils.ReadB
 	var _child ReplyOrConfirmation
 	switch {
 	case isAlpha == bool(false) && peekedByte == 0x21: // ServerErrorReply
-		if _child, err = (&_ServerErrorReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ServerErrorReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ServerErrorReply for type-switch of ReplyOrConfirmation")
 		}
 	case isAlpha == bool(true): // ReplyOrConfirmationConfirmation
-		if _child, err = (&_ReplyOrConfirmationConfirmation{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ReplyOrConfirmationConfirmation).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReplyOrConfirmationConfirmation for type-switch of ReplyOrConfirmation")
 		}
 	case isAlpha == bool(false): // ReplyOrConfirmationReply
-		if _child, err = (&_ReplyOrConfirmationReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ReplyOrConfirmationReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReplyOrConfirmationReply for type-switch of ReplyOrConfirmation")
 		}
 	default:
@@ -261,3 +262,20 @@ func (m *_ReplyOrConfirmation) GetRequestContext() RequestContext {
 ////
 
 func (m *_ReplyOrConfirmation) IsReplyOrConfirmation() {}
+
+func (m *_ReplyOrConfirmation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReplyOrConfirmation) deepCopy() *_ReplyOrConfirmation {
+	if m == nil {
+		return nil
+	}
+	_ReplyOrConfirmationCopy := &_ReplyOrConfirmation{
+		nil, // will be set by child
+		m.PeekedByte,
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _ReplyOrConfirmationCopy
+}

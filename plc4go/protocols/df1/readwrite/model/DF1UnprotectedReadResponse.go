@@ -37,6 +37,7 @@ type DF1UnprotectedReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1Command
 	// GetData returns Data (property field)
 	GetData() []byte
@@ -52,6 +53,16 @@ type _DF1UnprotectedReadResponse struct {
 
 var _ DF1UnprotectedReadResponse = (*_DF1UnprotectedReadResponse)(nil)
 var _ DF1CommandRequirements = (*_DF1UnprotectedReadResponse)(nil)
+
+// NewDF1UnprotectedReadResponse factory function for _DF1UnprotectedReadResponse
+func NewDF1UnprotectedReadResponse(status uint8, transactionCounter uint16, data []byte) *_DF1UnprotectedReadResponse {
+	_result := &_DF1UnprotectedReadResponse{
+		DF1CommandContract: NewDF1Command(status, transactionCounter),
+		Data:               data,
+	}
+	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -84,16 +95,6 @@ func (m *_DF1UnprotectedReadResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1UnprotectedReadResponse factory function for _DF1UnprotectedReadResponse
-func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter uint16) *_DF1UnprotectedReadResponse {
-	_result := &_DF1UnprotectedReadResponse{
-		DF1CommandContract: NewDF1Command(status, transactionCounter),
-		Data:               data,
-	}
-	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1UnprotectedReadResponse(structType any) DF1UnprotectedReadResponse {
@@ -180,6 +181,22 @@ func (m *_DF1UnprotectedReadResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_DF1UnprotectedReadResponse) IsDF1UnprotectedReadResponse() {}
+
+func (m *_DF1UnprotectedReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1UnprotectedReadResponse) deepCopy() *_DF1UnprotectedReadResponse {
+	if m == nil {
+		return nil
+	}
+	_DF1UnprotectedReadResponseCopy := &_DF1UnprotectedReadResponse{
+		m.DF1CommandContract.(*_DF1Command).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.DF1CommandContract.(*_DF1Command)._SubType = m
+	return _DF1UnprotectedReadResponseCopy
+}
 
 func (m *_DF1UnprotectedReadResponse) String() string {
 	if m == nil {

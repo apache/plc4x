@@ -38,6 +38,7 @@ type TelephonyDataLineOffHook interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetReason returns Reason (property field)
 	GetReason() LineOffHookReason
@@ -56,6 +57,17 @@ type _TelephonyDataLineOffHook struct {
 
 var _ TelephonyDataLineOffHook = (*_TelephonyDataLineOffHook)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataLineOffHook)(nil)
+
+// NewTelephonyDataLineOffHook factory function for _TelephonyDataLineOffHook
+func NewTelephonyDataLineOffHook(commandTypeContainer TelephonyCommandTypeContainer, argument byte, reason LineOffHookReason, number string) *_TelephonyDataLineOffHook {
+	_result := &_TelephonyDataLineOffHook{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Reason:                reason,
+		Number:                number,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +100,6 @@ func (m *_TelephonyDataLineOffHook) GetNumber() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataLineOffHook factory function for _TelephonyDataLineOffHook
-func NewTelephonyDataLineOffHook(reason LineOffHookReason, number string, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataLineOffHook {
-	_result := &_TelephonyDataLineOffHook{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		Reason:                reason,
-		Number:                number,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataLineOffHook(structType any) TelephonyDataLineOffHook {
@@ -196,6 +197,23 @@ func (m *_TelephonyDataLineOffHook) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_TelephonyDataLineOffHook) IsTelephonyDataLineOffHook() {}
+
+func (m *_TelephonyDataLineOffHook) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataLineOffHook) deepCopy() *_TelephonyDataLineOffHook {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataLineOffHookCopy := &_TelephonyDataLineOffHook{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+		m.Reason,
+		m.Number,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataLineOffHookCopy
+}
 
 func (m *_TelephonyDataLineOffHook) String() string {
 	if m == nil {

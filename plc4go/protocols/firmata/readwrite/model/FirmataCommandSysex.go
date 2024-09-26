@@ -38,6 +38,7 @@ type FirmataCommandSysex interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// GetCommand returns Command (property field)
 	GetCommand() SysexCommand
@@ -55,6 +56,19 @@ type _FirmataCommandSysex struct {
 
 var _ FirmataCommandSysex = (*_FirmataCommandSysex)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSysex)(nil)
+
+// NewFirmataCommandSysex factory function for _FirmataCommandSysex
+func NewFirmataCommandSysex(command SysexCommand, response bool) *_FirmataCommandSysex {
+	if command == nil {
+		panic("command of type SysexCommand for FirmataCommandSysex must not be nil")
+	}
+	_result := &_FirmataCommandSysex{
+		FirmataCommandContract: NewFirmataCommand(response),
+		Command:                command,
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +101,6 @@ func (m *_FirmataCommandSysex) GetCommand() SysexCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataCommandSysex factory function for _FirmataCommandSysex
-func NewFirmataCommandSysex(command SysexCommand, response bool) *_FirmataCommandSysex {
-	if command == nil {
-		panic("command of type SysexCommand for FirmataCommandSysex must not be nil")
-	}
-	_result := &_FirmataCommandSysex{
-		FirmataCommandContract: NewFirmataCommand(response),
-		Command:                command,
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommandSysex(structType any) FirmataCommandSysex {
@@ -197,6 +198,23 @@ func (m *_FirmataCommandSysex) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_FirmataCommandSysex) IsFirmataCommandSysex() {}
+
+func (m *_FirmataCommandSysex) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandSysex) deepCopy() *_FirmataCommandSysex {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandSysexCopy := &_FirmataCommandSysex{
+		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
+		m.Command.DeepCopy().(SysexCommand),
+		m.reservedField0,
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandSysexCopy
+}
 
 func (m *_FirmataCommandSysex) String() string {
 	if m == nil {

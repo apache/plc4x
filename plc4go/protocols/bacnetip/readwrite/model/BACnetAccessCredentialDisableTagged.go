@@ -38,6 +38,7 @@ type BACnetAccessCredentialDisableTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetAccessCredentialDisableTagged struct {
 }
 
 var _ BACnetAccessCredentialDisableTagged = (*_BACnetAccessCredentialDisableTagged)(nil)
+
+// NewBACnetAccessCredentialDisableTagged factory function for _BACnetAccessCredentialDisableTagged
+func NewBACnetAccessCredentialDisableTagged(header BACnetTagHeader, value BACnetAccessCredentialDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessCredentialDisableTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessCredentialDisableTagged must not be nil")
+	}
+	return &_BACnetAccessCredentialDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetAccessCredentialDisableTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessCredentialDisableTagged factory function for _BACnetAccessCredentialDisableTagged
-func NewBACnetAccessCredentialDisableTagged(header BACnetTagHeader, value BACnetAccessCredentialDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessCredentialDisableTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessCredentialDisableTagged must not be nil")
-	}
-	return &_BACnetAccessCredentialDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessCredentialDisableTagged(structType any) BACnetAccessCredentialDisableTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetAccessCredentialDisableTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAccessCredentialDisableTagged) IsBACnetAccessCredentialDisableTagged() {}
+
+func (m *_BACnetAccessCredentialDisableTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessCredentialDisableTagged) deepCopy() *_BACnetAccessCredentialDisableTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessCredentialDisableTaggedCopy := &_BACnetAccessCredentialDisableTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessCredentialDisableTaggedCopy
+}
 
 func (m *_BACnetAccessCredentialDisableTagged) String() string {
 	if m == nil {

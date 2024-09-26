@@ -38,6 +38,7 @@ type S7VarPayloadStatusItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// IsS7VarPayloadStatusItem is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _S7VarPayloadStatusItem struct {
 }
 
 var _ S7VarPayloadStatusItem = (*_S7VarPayloadStatusItem)(nil)
+
+// NewS7VarPayloadStatusItem factory function for _S7VarPayloadStatusItem
+func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *_S7VarPayloadStatusItem {
+	return &_S7VarPayloadStatusItem{ReturnCode: returnCode}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_S7VarPayloadStatusItem) GetReturnCode() DataTransportErrorCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7VarPayloadStatusItem factory function for _S7VarPayloadStatusItem
-func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *_S7VarPayloadStatusItem {
-	return &_S7VarPayloadStatusItem{ReturnCode: returnCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7VarPayloadStatusItem(structType any) S7VarPayloadStatusItem {
@@ -166,6 +167,20 @@ func (m *_S7VarPayloadStatusItem) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_S7VarPayloadStatusItem) IsS7VarPayloadStatusItem() {}
+
+func (m *_S7VarPayloadStatusItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7VarPayloadStatusItem) deepCopy() *_S7VarPayloadStatusItem {
+	if m == nil {
+		return nil
+	}
+	_S7VarPayloadStatusItemCopy := &_S7VarPayloadStatusItem{
+		m.ReturnCode,
+	}
+	return _S7VarPayloadStatusItemCopy
+}
 
 func (m *_S7VarPayloadStatusItem) String() string {
 	if m == nil {

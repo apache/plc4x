@@ -38,6 +38,7 @@ type HistoryReadRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -70,6 +71,27 @@ type _HistoryReadRequest struct {
 
 var _ HistoryReadRequest = (*_HistoryReadRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadRequest)(nil)
+
+// NewHistoryReadRequest factory function for _HistoryReadRequest
+func NewHistoryReadRequest(requestHeader ExtensionObjectDefinition, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_HistoryReadRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for HistoryReadRequest must not be nil")
+	}
+	if historyReadDetails == nil {
+		panic("historyReadDetails of type ExtensionObject for HistoryReadRequest must not be nil")
+	}
+	_result := &_HistoryReadRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		HistoryReadDetails:                historyReadDetails,
+		TimestampsToReturn:                timestampsToReturn,
+		ReleaseContinuationPoints:         releaseContinuationPoints,
+		NoOfNodesToRead:                   noOfNodesToRead,
+		NodesToRead:                       nodesToRead,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -122,27 +144,6 @@ func (m *_HistoryReadRequest) GetNodesToRead() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryReadRequest factory function for _HistoryReadRequest
-func NewHistoryReadRequest(requestHeader ExtensionObjectDefinition, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_HistoryReadRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for HistoryReadRequest must not be nil")
-	}
-	if historyReadDetails == nil {
-		panic("historyReadDetails of type ExtensionObject for HistoryReadRequest must not be nil")
-	}
-	_result := &_HistoryReadRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		HistoryReadDetails:                historyReadDetails,
-		TimestampsToReturn:                timestampsToReturn,
-		ReleaseContinuationPoints:         releaseContinuationPoints,
-		NoOfNodesToRead:                   noOfNodesToRead,
-		NodesToRead:                       nodesToRead,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryReadRequest(structType any) HistoryReadRequest {
@@ -312,6 +313,28 @@ func (m *_HistoryReadRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_HistoryReadRequest) IsHistoryReadRequest() {}
+
+func (m *_HistoryReadRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadRequest) deepCopy() *_HistoryReadRequest {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadRequestCopy := &_HistoryReadRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.HistoryReadDetails.DeepCopy().(ExtensionObject),
+		m.TimestampsToReturn,
+		m.ReleaseContinuationPoints,
+		m.NoOfNodesToRead,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToRead),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadRequestCopy
+}
 
 func (m *_HistoryReadRequest) String() string {
 	if m == nil {

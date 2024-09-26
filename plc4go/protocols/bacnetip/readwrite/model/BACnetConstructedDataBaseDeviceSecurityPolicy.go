@@ -38,6 +38,7 @@ type BACnetConstructedDataBaseDeviceSecurityPolicy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBaseDeviceSecurityPolicy returns BaseDeviceSecurityPolicy (property field)
 	GetBaseDeviceSecurityPolicy() BACnetSecurityLevelTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBaseDeviceSecurityPolicy struct {
 
 var _ BACnetConstructedDataBaseDeviceSecurityPolicy = (*_BACnetConstructedDataBaseDeviceSecurityPolicy)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBaseDeviceSecurityPolicy)(nil)
+
+// NewBACnetConstructedDataBaseDeviceSecurityPolicy factory function for _BACnetConstructedDataBaseDeviceSecurityPolicy
+func NewBACnetConstructedDataBaseDeviceSecurityPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, baseDeviceSecurityPolicy BACnetSecurityLevelTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
+	if baseDeviceSecurityPolicy == nil {
+		panic("baseDeviceSecurityPolicy of type BACnetSecurityLevelTagged for BACnetConstructedDataBaseDeviceSecurityPolicy must not be nil")
+	}
+	_result := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BaseDeviceSecurityPolicy:      baseDeviceSecurityPolicy,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBaseDeviceSecurityPolicy factory function for _BACnetConstructedDataBaseDeviceSecurityPolicy
-func NewBACnetConstructedDataBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy BACnetSecurityLevelTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
-	if baseDeviceSecurityPolicy == nil {
-		panic("baseDeviceSecurityPolicy of type BACnetSecurityLevelTagged for BACnetConstructedDataBaseDeviceSecurityPolicy must not be nil")
-	}
-	_result := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BaseDeviceSecurityPolicy:      baseDeviceSecurityPolicy,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBaseDeviceSecurityPolicy(structType any) BACnetConstructedDataBaseDeviceSecurityPolicy {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) IsBACnetConstructedDataBaseDeviceSecurityPolicy() {
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) deepCopy() *_BACnetConstructedDataBaseDeviceSecurityPolicy {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBaseDeviceSecurityPolicyCopy := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BaseDeviceSecurityPolicy.DeepCopy().(BACnetSecurityLevelTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBaseDeviceSecurityPolicyCopy
 }
 
 func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) String() string {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLowLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLowLimit returns LowLimit (property field)
 	GetLowLimit() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLowLimit struct {
 
 var _ BACnetConstructedDataLowLimit = (*_BACnetConstructedDataLowLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLowLimit)(nil)
+
+// NewBACnetConstructedDataLowLimit factory function for _BACnetConstructedDataLowLimit
+func NewBACnetConstructedDataLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLowLimit {
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetApplicationTagReal for BACnetConstructedDataLowLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataLowLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LowLimit:                      lowLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLowLimit) GetActualValue() BACnetApplicationTagRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLowLimit factory function for _BACnetConstructedDataLowLimit
-func NewBACnetConstructedDataLowLimit(lowLimit BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLowLimit {
-	if lowLimit == nil {
-		panic("lowLimit of type BACnetApplicationTagReal for BACnetConstructedDataLowLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LowLimit:                      lowLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLowLimit(structType any) BACnetConstructedDataLowLimit {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLowLimit) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataLowLimit) IsBACnetConstructedDataLowLimit() {}
+
+func (m *_BACnetConstructedDataLowLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLowLimit) deepCopy() *_BACnetConstructedDataLowLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLowLimitCopy := &_BACnetConstructedDataLowLimit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LowLimit.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLowLimitCopy
+}
 
 func (m *_BACnetConstructedDataLowLimit) String() string {
 	if m == nil {

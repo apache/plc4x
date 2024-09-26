@@ -38,6 +38,7 @@ type BACnetPropertyStatesReasonForHalt interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetReasonForHalt returns ReasonForHalt (property field)
 	GetReasonForHalt() BACnetProgramErrorTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesReasonForHalt struct {
 
 var _ BACnetPropertyStatesReasonForHalt = (*_BACnetPropertyStatesReasonForHalt)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesReasonForHalt)(nil)
+
+// NewBACnetPropertyStatesReasonForHalt factory function for _BACnetPropertyStatesReasonForHalt
+func NewBACnetPropertyStatesReasonForHalt(peekedTagHeader BACnetTagHeader, reasonForHalt BACnetProgramErrorTagged) *_BACnetPropertyStatesReasonForHalt {
+	if reasonForHalt == nil {
+		panic("reasonForHalt of type BACnetProgramErrorTagged for BACnetPropertyStatesReasonForHalt must not be nil")
+	}
+	_result := &_BACnetPropertyStatesReasonForHalt{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ReasonForHalt:                reasonForHalt,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetReasonForHalt() BACnetProgramErr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesReasonForHalt factory function for _BACnetPropertyStatesReasonForHalt
-func NewBACnetPropertyStatesReasonForHalt(reasonForHalt BACnetProgramErrorTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesReasonForHalt {
-	if reasonForHalt == nil {
-		panic("reasonForHalt of type BACnetProgramErrorTagged for BACnetPropertyStatesReasonForHalt must not be nil")
-	}
-	_result := &_BACnetPropertyStatesReasonForHalt{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ReasonForHalt:                reasonForHalt,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesReasonForHalt(structType any) BACnetPropertyStatesReasonForHalt {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesReasonForHalt) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesReasonForHalt) IsBACnetPropertyStatesReasonForHalt() {}
+
+func (m *_BACnetPropertyStatesReasonForHalt) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesReasonForHalt) deepCopy() *_BACnetPropertyStatesReasonForHalt {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesReasonForHaltCopy := &_BACnetPropertyStatesReasonForHalt{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.ReasonForHalt.DeepCopy().(BACnetProgramErrorTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesReasonForHaltCopy
+}
 
 func (m *_BACnetPropertyStatesReasonForHalt) String() string {
 	if m == nil {

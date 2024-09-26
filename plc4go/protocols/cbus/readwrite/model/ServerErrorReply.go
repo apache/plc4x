@@ -41,6 +41,7 @@ type ServerErrorReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ReplyOrConfirmation
 	// IsServerErrorReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServerErrorReply()
@@ -53,6 +54,15 @@ type _ServerErrorReply struct {
 
 var _ ServerErrorReply = (*_ServerErrorReply)(nil)
 var _ ReplyOrConfirmationRequirements = (*_ServerErrorReply)(nil)
+
+// NewServerErrorReply factory function for _ServerErrorReply
+func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
+	_result := &_ServerErrorReply{
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+	}
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,15 +91,6 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
-	_result := &_ServerErrorReply{
-		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
-	}
-	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServerErrorReply(structType any) ServerErrorReply {
@@ -174,6 +175,21 @@ func (m *_ServerErrorReply) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_ServerErrorReply) IsServerErrorReply() {}
+
+func (m *_ServerErrorReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServerErrorReply) deepCopy() *_ServerErrorReply {
+	if m == nil {
+		return nil
+	}
+	_ServerErrorReplyCopy := &_ServerErrorReply{
+		m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).deepCopy(),
+	}
+	m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = m
+	return _ServerErrorReplyCopy
+}
 
 func (m *_ServerErrorReply) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type BACnetOptionalUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetOptionalUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalUnsigned()
 }
@@ -70,6 +71,14 @@ type _BACnetOptionalUnsigned struct {
 
 var _ BACnetOptionalUnsignedContract = (*_BACnetOptionalUnsigned)(nil)
 
+// NewBACnetOptionalUnsigned factory function for _BACnetOptionalUnsigned
+func NewBACnetOptionalUnsigned(peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsigned {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalUnsigned must not be nil")
+	}
+	return &_BACnetOptionalUnsigned{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetOptionalUnsigned) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalUnsigned factory function for _BACnetOptionalUnsigned
-func NewBACnetOptionalUnsigned(peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsigned {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalUnsigned must not be nil")
-	}
-	return &_BACnetOptionalUnsigned{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalUnsigned(structType any) BACnetOptionalUnsigned {
@@ -189,11 +190,11 @@ func (m *_BACnetOptionalUnsigned) parse(ctx context.Context, readBuffer utils.Re
 	var _child BACnetOptionalUnsigned
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalUnsignedNull
-		if _child, err = (&_BACnetOptionalUnsignedNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalUnsignedNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalUnsignedNull for type-switch of BACnetOptionalUnsigned")
 		}
 	case 0 == 0: // BACnetOptionalUnsignedValue
-		if _child, err = (&_BACnetOptionalUnsignedValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalUnsignedValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalUnsignedValue for type-switch of BACnetOptionalUnsigned")
 		}
 	default:
@@ -237,3 +238,18 @@ func (pm *_BACnetOptionalUnsigned) serializeParent(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetOptionalUnsigned) IsBACnetOptionalUnsigned() {}
+
+func (m *_BACnetOptionalUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalUnsigned) deepCopy() *_BACnetOptionalUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalUnsignedCopy := &_BACnetOptionalUnsigned{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetOptionalUnsignedCopy
+}

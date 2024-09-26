@@ -38,6 +38,7 @@ type BACnetPropertyStatesAccessEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetAccessEvent returns AccessEvent (property field)
 	GetAccessEvent() BACnetAccessEventTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesAccessEvent struct {
 
 var _ BACnetPropertyStatesAccessEvent = (*_BACnetPropertyStatesAccessEvent)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAccessEvent)(nil)
+
+// NewBACnetPropertyStatesAccessEvent factory function for _BACnetPropertyStatesAccessEvent
+func NewBACnetPropertyStatesAccessEvent(peekedTagHeader BACnetTagHeader, accessEvent BACnetAccessEventTagged) *_BACnetPropertyStatesAccessEvent {
+	if accessEvent == nil {
+		panic("accessEvent of type BACnetAccessEventTagged for BACnetPropertyStatesAccessEvent must not be nil")
+	}
+	_result := &_BACnetPropertyStatesAccessEvent{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		AccessEvent:                  accessEvent,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesAccessEvent) GetAccessEvent() BACnetAccessEventTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesAccessEvent factory function for _BACnetPropertyStatesAccessEvent
-func NewBACnetPropertyStatesAccessEvent(accessEvent BACnetAccessEventTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAccessEvent {
-	if accessEvent == nil {
-		panic("accessEvent of type BACnetAccessEventTagged for BACnetPropertyStatesAccessEvent must not be nil")
-	}
-	_result := &_BACnetPropertyStatesAccessEvent{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		AccessEvent:                  accessEvent,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesAccessEvent(structType any) BACnetPropertyStatesAccessEvent {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesAccessEvent) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesAccessEvent) IsBACnetPropertyStatesAccessEvent() {}
+
+func (m *_BACnetPropertyStatesAccessEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesAccessEvent) deepCopy() *_BACnetPropertyStatesAccessEvent {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesAccessEventCopy := &_BACnetPropertyStatesAccessEvent{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.AccessEvent.DeepCopy().(BACnetAccessEventTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesAccessEventCopy
+}
 
 func (m *_BACnetPropertyStatesAccessEvent) String() string {
 	if m == nil {

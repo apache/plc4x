@@ -38,6 +38,7 @@ type ComObjectTableRealisationType6 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ComObjectTable
 	// GetComObjectDescriptors returns ComObjectDescriptors (property field)
 	GetComObjectDescriptors() GroupObjectDescriptorRealisationType6
@@ -53,6 +54,19 @@ type _ComObjectTableRealisationType6 struct {
 
 var _ ComObjectTableRealisationType6 = (*_ComObjectTableRealisationType6)(nil)
 var _ ComObjectTableRequirements = (*_ComObjectTableRealisationType6)(nil)
+
+// NewComObjectTableRealisationType6 factory function for _ComObjectTableRealisationType6
+func NewComObjectTableRealisationType6(comObjectDescriptors GroupObjectDescriptorRealisationType6) *_ComObjectTableRealisationType6 {
+	if comObjectDescriptors == nil {
+		panic("comObjectDescriptors of type GroupObjectDescriptorRealisationType6 for ComObjectTableRealisationType6 must not be nil")
+	}
+	_result := &_ComObjectTableRealisationType6{
+		ComObjectTableContract: NewComObjectTable(),
+		ComObjectDescriptors:   comObjectDescriptors,
+	}
+	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_ComObjectTableRealisationType6) GetComObjectDescriptors() GroupObjectD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewComObjectTableRealisationType6 factory function for _ComObjectTableRealisationType6
-func NewComObjectTableRealisationType6(comObjectDescriptors GroupObjectDescriptorRealisationType6) *_ComObjectTableRealisationType6 {
-	if comObjectDescriptors == nil {
-		panic("comObjectDescriptors of type GroupObjectDescriptorRealisationType6 for ComObjectTableRealisationType6 must not be nil")
-	}
-	_result := &_ComObjectTableRealisationType6{
-		ComObjectTableContract: NewComObjectTable(),
-		ComObjectDescriptors:   comObjectDescriptors,
-	}
-	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastComObjectTableRealisationType6(structType any) ComObjectTableRealisationType6 {
@@ -182,6 +183,22 @@ func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ComObjectTableRealisationType6) IsComObjectTableRealisationType6() {}
+
+func (m *_ComObjectTableRealisationType6) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ComObjectTableRealisationType6) deepCopy() *_ComObjectTableRealisationType6 {
+	if m == nil {
+		return nil
+	}
+	_ComObjectTableRealisationType6Copy := &_ComObjectTableRealisationType6{
+		m.ComObjectTableContract.(*_ComObjectTable).deepCopy(),
+		m.ComObjectDescriptors.DeepCopy().(GroupObjectDescriptorRealisationType6),
+	}
+	m.ComObjectTableContract.(*_ComObjectTable)._SubType = m
+	return _ComObjectTableRealisationType6Copy
+}
 
 func (m *_ComObjectTableRealisationType6) String() string {
 	if m == nil {

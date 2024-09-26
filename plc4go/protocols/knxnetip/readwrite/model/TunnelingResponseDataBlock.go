@@ -38,6 +38,7 @@ type TunnelingResponseDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
@@ -56,6 +57,11 @@ type _TunnelingResponseDataBlock struct {
 }
 
 var _ TunnelingResponseDataBlock = (*_TunnelingResponseDataBlock)(nil)
+
+// NewTunnelingResponseDataBlock factory function for _TunnelingResponseDataBlock
+func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_TunnelingResponseDataBlock {
+	return &_TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +84,6 @@ func (m *_TunnelingResponseDataBlock) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingResponseDataBlock factory function for _TunnelingResponseDataBlock
-func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_TunnelingResponseDataBlock {
-	return &_TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingResponseDataBlock(structType any) TunnelingResponseDataBlock {
@@ -219,6 +220,22 @@ func (m *_TunnelingResponseDataBlock) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_TunnelingResponseDataBlock) IsTunnelingResponseDataBlock() {}
+
+func (m *_TunnelingResponseDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TunnelingResponseDataBlock) deepCopy() *_TunnelingResponseDataBlock {
+	if m == nil {
+		return nil
+	}
+	_TunnelingResponseDataBlockCopy := &_TunnelingResponseDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.Status,
+	}
+	return _TunnelingResponseDataBlockCopy
+}
 
 func (m *_TunnelingResponseDataBlock) String() string {
 	if m == nil {

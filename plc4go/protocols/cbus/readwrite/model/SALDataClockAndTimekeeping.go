@@ -38,6 +38,7 @@ type SALDataClockAndTimekeeping interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetClockAndTimekeepingData returns ClockAndTimekeepingData (property field)
 	GetClockAndTimekeepingData() ClockAndTimekeepingData
@@ -53,6 +54,19 @@ type _SALDataClockAndTimekeeping struct {
 
 var _ SALDataClockAndTimekeeping = (*_SALDataClockAndTimekeeping)(nil)
 var _ SALDataRequirements = (*_SALDataClockAndTimekeeping)(nil)
+
+// NewSALDataClockAndTimekeeping factory function for _SALDataClockAndTimekeeping
+func NewSALDataClockAndTimekeeping(salData SALData, clockAndTimekeepingData ClockAndTimekeepingData) *_SALDataClockAndTimekeeping {
+	if clockAndTimekeepingData == nil {
+		panic("clockAndTimekeepingData of type ClockAndTimekeepingData for SALDataClockAndTimekeeping must not be nil")
+	}
+	_result := &_SALDataClockAndTimekeeping{
+		SALDataContract:         NewSALData(salData),
+		ClockAndTimekeepingData: clockAndTimekeepingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataClockAndTimekeeping) GetClockAndTimekeepingData() ClockAndTimek
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataClockAndTimekeeping factory function for _SALDataClockAndTimekeeping
-func NewSALDataClockAndTimekeeping(clockAndTimekeepingData ClockAndTimekeepingData, salData SALData) *_SALDataClockAndTimekeeping {
-	if clockAndTimekeepingData == nil {
-		panic("clockAndTimekeepingData of type ClockAndTimekeepingData for SALDataClockAndTimekeeping must not be nil")
-	}
-	_result := &_SALDataClockAndTimekeeping{
-		SALDataContract:         NewSALData(salData),
-		ClockAndTimekeepingData: clockAndTimekeepingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataClockAndTimekeeping(structType any) SALDataClockAndTimekeeping {
@@ -182,6 +183,22 @@ func (m *_SALDataClockAndTimekeeping) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SALDataClockAndTimekeeping) IsSALDataClockAndTimekeeping() {}
+
+func (m *_SALDataClockAndTimekeeping) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataClockAndTimekeeping) deepCopy() *_SALDataClockAndTimekeeping {
+	if m == nil {
+		return nil
+	}
+	_SALDataClockAndTimekeepingCopy := &_SALDataClockAndTimekeeping{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.ClockAndTimekeepingData.DeepCopy().(ClockAndTimekeepingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataClockAndTimekeepingCopy
+}
 
 func (m *_SALDataClockAndTimekeeping) String() string {
 	if m == nil {

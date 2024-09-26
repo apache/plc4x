@@ -38,6 +38,7 @@ type StatusChangeNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatus returns Status (property field)
 	GetStatus() StatusCode
@@ -56,6 +57,23 @@ type _StatusChangeNotification struct {
 
 var _ StatusChangeNotification = (*_StatusChangeNotification)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_StatusChangeNotification)(nil)
+
+// NewStatusChangeNotification factory function for _StatusChangeNotification
+func NewStatusChangeNotification(status StatusCode, diagnosticInfo DiagnosticInfo) *_StatusChangeNotification {
+	if status == nil {
+		panic("status of type StatusCode for StatusChangeNotification must not be nil")
+	}
+	if diagnosticInfo == nil {
+		panic("diagnosticInfo of type DiagnosticInfo for StatusChangeNotification must not be nil")
+	}
+	_result := &_StatusChangeNotification{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Status:                            status,
+		DiagnosticInfo:                    diagnosticInfo,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_StatusChangeNotification) GetDiagnosticInfo() DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusChangeNotification factory function for _StatusChangeNotification
-func NewStatusChangeNotification(status StatusCode, diagnosticInfo DiagnosticInfo) *_StatusChangeNotification {
-	if status == nil {
-		panic("status of type StatusCode for StatusChangeNotification must not be nil")
-	}
-	if diagnosticInfo == nil {
-		panic("diagnosticInfo of type DiagnosticInfo for StatusChangeNotification must not be nil")
-	}
-	_result := &_StatusChangeNotification{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Status:                            status,
-		DiagnosticInfo:                    diagnosticInfo,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusChangeNotification(structType any) StatusChangeNotification {
@@ -219,6 +220,23 @@ func (m *_StatusChangeNotification) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_StatusChangeNotification) IsStatusChangeNotification() {}
+
+func (m *_StatusChangeNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusChangeNotification) deepCopy() *_StatusChangeNotification {
+	if m == nil {
+		return nil
+	}
+	_StatusChangeNotificationCopy := &_StatusChangeNotification{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Status.DeepCopy().(StatusCode),
+		m.DiagnosticInfo.DeepCopy().(DiagnosticInfo),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _StatusChangeNotificationCopy
+}
 
 func (m *_StatusChangeNotification) String() string {
 	if m == nil {

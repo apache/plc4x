@@ -38,6 +38,7 @@ type MemberID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LogicalSegmentType
 	// GetFormat returns Format (property field)
 	GetFormat() uint8
@@ -56,6 +57,17 @@ type _MemberID struct {
 
 var _ MemberID = (*_MemberID)(nil)
 var _ LogicalSegmentTypeRequirements = (*_MemberID)(nil)
+
+// NewMemberID factory function for _MemberID
+func NewMemberID(format uint8, instance uint8) *_MemberID {
+	_result := &_MemberID{
+		LogicalSegmentTypeContract: NewLogicalSegmentType(),
+		Format:                     format,
+		Instance:                   instance,
+	}
+	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_MemberID) GetInstance() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMemberID factory function for _MemberID
-func NewMemberID(format uint8, instance uint8) *_MemberID {
-	_result := &_MemberID{
-		LogicalSegmentTypeContract: NewLogicalSegmentType(),
-		Format:                     format,
-		Instance:                   instance,
-	}
-	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMemberID(structType any) MemberID {
@@ -200,6 +201,23 @@ func (m *_MemberID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_MemberID) IsMemberID() {}
+
+func (m *_MemberID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MemberID) deepCopy() *_MemberID {
+	if m == nil {
+		return nil
+	}
+	_MemberIDCopy := &_MemberID{
+		m.LogicalSegmentTypeContract.(*_LogicalSegmentType).deepCopy(),
+		m.Format,
+		m.Instance,
+	}
+	m.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
+	return _MemberIDCopy
+}
 
 func (m *_MemberID) String() string {
 	if m == nil {

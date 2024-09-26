@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6ZoneIndex interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6ZoneIndex returns Ipv6ZoneIndex (property field)
 	GetIpv6ZoneIndex() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataIPv6ZoneIndex struct {
 
 var _ BACnetConstructedDataIPv6ZoneIndex = (*_BACnetConstructedDataIPv6ZoneIndex)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6ZoneIndex)(nil)
+
+// NewBACnetConstructedDataIPv6ZoneIndex factory function for _BACnetConstructedDataIPv6ZoneIndex
+func NewBACnetConstructedDataIPv6ZoneIndex(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6ZoneIndex BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6ZoneIndex {
+	if ipv6ZoneIndex == nil {
+		panic("ipv6ZoneIndex of type BACnetApplicationTagCharacterString for BACnetConstructedDataIPv6ZoneIndex must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPv6ZoneIndex{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Ipv6ZoneIndex:                 ipv6ZoneIndex,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPv6ZoneIndex factory function for _BACnetConstructedDataIPv6ZoneIndex
-func NewBACnetConstructedDataIPv6ZoneIndex(ipv6ZoneIndex BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6ZoneIndex {
-	if ipv6ZoneIndex == nil {
-		panic("ipv6ZoneIndex of type BACnetApplicationTagCharacterString for BACnetConstructedDataIPv6ZoneIndex must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPv6ZoneIndex{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Ipv6ZoneIndex:                 ipv6ZoneIndex,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPv6ZoneIndex(structType any) BACnetConstructedDataIPv6ZoneIndex {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) IsBACnetConstructedDataIPv6ZoneIndex() {}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndex) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndex) deepCopy() *_BACnetConstructedDataIPv6ZoneIndex {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6ZoneIndexCopy := &_BACnetConstructedDataIPv6ZoneIndex{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Ipv6ZoneIndex.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6ZoneIndexCopy
+}
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfValueCivCriteriaBitmask interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventParameterChangeOfValueCivCriteria
 	// GetBitmask returns Bitmask (property field)
 	GetBitmask() BACnetContextTagBitString
@@ -53,6 +54,19 @@ type _BACnetEventParameterChangeOfValueCivCriteriaBitmask struct {
 
 var _ BACnetEventParameterChangeOfValueCivCriteriaBitmask = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
 var _ BACnetEventParameterChangeOfValueCivCriteriaRequirements = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
+
+// NewBACnetEventParameterChangeOfValueCivCriteriaBitmask factory function for _BACnetEventParameterChangeOfValueCivCriteriaBitmask
+func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitmask BACnetContextTagBitString, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
+	if bitmask == nil {
+		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfValueCivCriteriaBitmask must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
+		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
+		Bitmask: bitmask,
+	}
+	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetBitmask() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfValueCivCriteriaBitmask factory function for _BACnetEventParameterChangeOfValueCivCriteriaBitmask
-func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(bitmask BACnetContextTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
-	if bitmask == nil {
-		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfValueCivCriteriaBitmask must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
-		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
-		Bitmask: bitmask,
-	}
-	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfValueCivCriteriaBitmask(structType any) BACnetEventParameterChangeOfValueCivCriteriaBitmask {
@@ -178,6 +179,22 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) SerializeWithWrit
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) IsBACnetEventParameterChangeOfValueCivCriteriaBitmask() {
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) deepCopy() *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfValueCivCriteriaBitmaskCopy := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
+		m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).deepCopy(),
+		m.Bitmask.DeepCopy().(BACnetContextTagBitString),
+	}
+	m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = m
+	return _BACnetEventParameterChangeOfValueCivCriteriaBitmaskCopy
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) String() string {

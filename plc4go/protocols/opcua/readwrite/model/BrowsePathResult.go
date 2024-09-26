@@ -38,6 +38,7 @@ type BrowsePathResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -59,6 +60,21 @@ type _BrowsePathResult struct {
 
 var _ BrowsePathResult = (*_BrowsePathResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowsePathResult)(nil)
+
+// NewBrowsePathResult factory function for _BrowsePathResult
+func NewBrowsePathResult(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) *_BrowsePathResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for BrowsePathResult must not be nil")
+	}
+	_result := &_BrowsePathResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfTargets:                       noOfTargets,
+		Targets:                           targets,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_BrowsePathResult) GetTargets() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowsePathResult factory function for _BrowsePathResult
-func NewBrowsePathResult(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) *_BrowsePathResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for BrowsePathResult must not be nil")
-	}
-	_result := &_BrowsePathResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfTargets:                       noOfTargets,
-		Targets:                           targets,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowsePathResult(structType any) BrowsePathResult {
@@ -231,6 +232,24 @@ func (m *_BrowsePathResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_BrowsePathResult) IsBrowsePathResult() {}
+
+func (m *_BrowsePathResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowsePathResult) deepCopy() *_BrowsePathResult {
+	if m == nil {
+		return nil
+	}
+	_BrowsePathResultCopy := &_BrowsePathResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfTargets,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Targets),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowsePathResultCopy
+}
 
 func (m *_BrowsePathResult) String() string {
 	if m == nil {

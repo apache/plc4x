@@ -38,6 +38,7 @@ type Alpha interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCharacter returns Character (property field)
 	GetCharacter() byte
 	// IsAlpha is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _Alpha struct {
 }
 
 var _ Alpha = (*_Alpha)(nil)
+
+// NewAlpha factory function for _Alpha
+func NewAlpha(character byte) *_Alpha {
+	return &_Alpha{Character: character}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_Alpha) GetCharacter() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlpha factory function for _Alpha
-func NewAlpha(character byte) *_Alpha {
-	return &_Alpha{Character: character}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlpha(structType any) Alpha {
@@ -171,6 +172,20 @@ func (m *_Alpha) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_Alpha) IsAlpha() {}
+
+func (m *_Alpha) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Alpha) deepCopy() *_Alpha {
+	if m == nil {
+		return nil
+	}
+	_AlphaCopy := &_Alpha{
+		m.Character,
+	}
+	return _AlphaCopy
+}
 
 func (m *_Alpha) String() string {
 	if m == nil {

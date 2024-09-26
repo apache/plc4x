@@ -38,6 +38,7 @@ type BACnetPropertyAccessResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
@@ -62,6 +63,20 @@ type _BACnetPropertyAccessResult struct {
 }
 
 var _ BACnetPropertyAccessResult = (*_BACnetPropertyAccessResult)(nil)
+
+// NewBACnetPropertyAccessResult factory function for _BACnetPropertyAccessResult
+func NewBACnetPropertyAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, deviceIdentifier BACnetContextTagObjectIdentifier, accessResult BACnetPropertyAccessResultAccessResult) *_BACnetPropertyAccessResult {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetPropertyAccessResult must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyAccessResult must not be nil")
+	}
+	if accessResult == nil {
+		panic("accessResult of type BACnetPropertyAccessResultAccessResult for BACnetPropertyAccessResult must not be nil")
+	}
+	return &_BACnetPropertyAccessResult{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, DeviceIdentifier: deviceIdentifier, AccessResult: accessResult}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_BACnetPropertyAccessResult) GetAccessResult() BACnetPropertyAccessResu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyAccessResult factory function for _BACnetPropertyAccessResult
-func NewBACnetPropertyAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, deviceIdentifier BACnetContextTagObjectIdentifier, accessResult BACnetPropertyAccessResultAccessResult) *_BACnetPropertyAccessResult {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetPropertyAccessResult must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyAccessResult must not be nil")
-	}
-	if accessResult == nil {
-		panic("accessResult of type BACnetPropertyAccessResultAccessResult for BACnetPropertyAccessResult must not be nil")
-	}
-	return &_BACnetPropertyAccessResult{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, DeviceIdentifier: deviceIdentifier, AccessResult: accessResult}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyAccessResult(structType any) BACnetPropertyAccessResult {
@@ -267,6 +268,24 @@ func (m *_BACnetPropertyAccessResult) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetPropertyAccessResult) IsBACnetPropertyAccessResult() {}
+
+func (m *_BACnetPropertyAccessResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyAccessResult) deepCopy() *_BACnetPropertyAccessResult {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyAccessResultCopy := &_BACnetPropertyAccessResult{
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.PropertyArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.DeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.AccessResult.DeepCopy().(BACnetPropertyAccessResultAccessResult),
+	}
+	return _BACnetPropertyAccessResultCopy
+}
 
 func (m *_BACnetPropertyAccessResult) String() string {
 	if m == nil {

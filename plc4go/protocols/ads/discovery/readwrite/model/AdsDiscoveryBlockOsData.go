@@ -38,6 +38,7 @@ type AdsDiscoveryBlockOsData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetOsData returns OsData (property field)
 	GetOsData() []byte
@@ -53,6 +54,16 @@ type _AdsDiscoveryBlockOsData struct {
 
 var _ AdsDiscoveryBlockOsData = (*_AdsDiscoveryBlockOsData)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockOsData)(nil)
+
+// NewAdsDiscoveryBlockOsData factory function for _AdsDiscoveryBlockOsData
+func NewAdsDiscoveryBlockOsData(osData []byte) *_AdsDiscoveryBlockOsData {
+	_result := &_AdsDiscoveryBlockOsData{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		OsData:                    osData,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_AdsDiscoveryBlockOsData) GetOsData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockOsData factory function for _AdsDiscoveryBlockOsData
-func NewAdsDiscoveryBlockOsData(osData []byte) *_AdsDiscoveryBlockOsData {
-	_result := &_AdsDiscoveryBlockOsData{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		OsData:                    osData,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockOsData(structType any) AdsDiscoveryBlockOsData {
@@ -194,6 +195,22 @@ func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_AdsDiscoveryBlockOsData) IsAdsDiscoveryBlockOsData() {}
+
+func (m *_AdsDiscoveryBlockOsData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockOsData) deepCopy() *_AdsDiscoveryBlockOsData {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockOsDataCopy := &_AdsDiscoveryBlockOsData{
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.OsData),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockOsDataCopy
+}
 
 func (m *_AdsDiscoveryBlockOsData) String() string {
 	if m == nil {

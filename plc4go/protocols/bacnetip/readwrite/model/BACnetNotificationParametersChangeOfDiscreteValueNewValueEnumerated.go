@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated interfa
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
@@ -53,6 +54,19 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated struct
 
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated)(nil)
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated)(nil)
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enumeratedValue BACnetApplicationTagEnumerated, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated{
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		EnumeratedValue: enumeratedValue,
+	}
+	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) G
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated{
-		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		EnumeratedValue: enumeratedValue,
-	}
-	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
@@ -178,6 +179,22 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) S
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) deepCopy() *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated{
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).deepCopy(),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+	}
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedCopy
 }
 
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) String() string {

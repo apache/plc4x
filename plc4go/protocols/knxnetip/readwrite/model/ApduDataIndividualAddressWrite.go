@@ -36,6 +36,7 @@ type ApduDataIndividualAddressWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataIndividualAddressWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataIndividualAddressWrite()
@@ -48,6 +49,15 @@ type _ApduDataIndividualAddressWrite struct {
 
 var _ ApduDataIndividualAddressWrite = (*_ApduDataIndividualAddressWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataIndividualAddressWrite)(nil)
+
+// NewApduDataIndividualAddressWrite factory function for _ApduDataIndividualAddressWrite
+func NewApduDataIndividualAddressWrite(dataLength uint8) *_ApduDataIndividualAddressWrite {
+	_result := &_ApduDataIndividualAddressWrite{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataIndividualAddressWrite) GetApciType() uint8 {
 
 func (m *_ApduDataIndividualAddressWrite) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataIndividualAddressWrite factory function for _ApduDataIndividualAddressWrite
-func NewApduDataIndividualAddressWrite(dataLength uint8) *_ApduDataIndividualAddressWrite {
-	_result := &_ApduDataIndividualAddressWrite{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataIndividualAddressWrite) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ApduDataIndividualAddressWrite) IsApduDataIndividualAddressWrite() {}
+
+func (m *_ApduDataIndividualAddressWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataIndividualAddressWrite) deepCopy() *_ApduDataIndividualAddressWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataIndividualAddressWriteCopy := &_ApduDataIndividualAddressWrite{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataIndividualAddressWriteCopy
+}
 
 func (m *_ApduDataIndividualAddressWrite) String() string {
 	if m == nil {

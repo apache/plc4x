@@ -40,6 +40,7 @@ type BVLCReadForeignDeviceTableAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCForeignDeviceTableEntry
@@ -58,6 +59,16 @@ type _BVLCReadForeignDeviceTableAck struct {
 
 var _ BVLCReadForeignDeviceTableAck = (*_BVLCReadForeignDeviceTableAck)(nil)
 var _ BVLCRequirements = (*_BVLCReadForeignDeviceTableAck)(nil)
+
+// NewBVLCReadForeignDeviceTableAck factory function for _BVLCReadForeignDeviceTableAck
+func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *_BVLCReadForeignDeviceTableAck {
+	_result := &_BVLCReadForeignDeviceTableAck{
+		BVLCContract: NewBVLC(),
+		Table:        table,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,16 +101,6 @@ func (m *_BVLCReadForeignDeviceTableAck) GetTable() []BVLCForeignDeviceTableEntr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCReadForeignDeviceTableAck factory function for _BVLCReadForeignDeviceTableAck
-func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *_BVLCReadForeignDeviceTableAck {
-	_result := &_BVLCReadForeignDeviceTableAck{
-		BVLCContract: NewBVLC(),
-		Table:        table,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCReadForeignDeviceTableAck(structType any) BVLCReadForeignDeviceTableAck {
@@ -198,6 +199,23 @@ func (m *_BVLCReadForeignDeviceTableAck) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCReadForeignDeviceTableAck) IsBVLCReadForeignDeviceTableAck() {}
+
+func (m *_BVLCReadForeignDeviceTableAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCReadForeignDeviceTableAck) deepCopy() *_BVLCReadForeignDeviceTableAck {
+	if m == nil {
+		return nil
+	}
+	_BVLCReadForeignDeviceTableAckCopy := &_BVLCReadForeignDeviceTableAck{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		utils.DeepCopySlice[BVLCForeignDeviceTableEntry, BVLCForeignDeviceTableEntry](m.Table),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCReadForeignDeviceTableAckCopy
+}
 
 func (m *_BVLCReadForeignDeviceTableAck) String() string {
 	if m == nil {

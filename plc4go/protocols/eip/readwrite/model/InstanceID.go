@@ -38,6 +38,7 @@ type InstanceID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LogicalSegmentType
 	// GetFormat returns Format (property field)
 	GetFormat() uint8
@@ -56,6 +57,17 @@ type _InstanceID struct {
 
 var _ InstanceID = (*_InstanceID)(nil)
 var _ LogicalSegmentTypeRequirements = (*_InstanceID)(nil)
+
+// NewInstanceID factory function for _InstanceID
+func NewInstanceID(format uint8, instance uint8) *_InstanceID {
+	_result := &_InstanceID{
+		LogicalSegmentTypeContract: NewLogicalSegmentType(),
+		Format:                     format,
+		Instance:                   instance,
+	}
+	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_InstanceID) GetInstance() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewInstanceID factory function for _InstanceID
-func NewInstanceID(format uint8, instance uint8) *_InstanceID {
-	_result := &_InstanceID{
-		LogicalSegmentTypeContract: NewLogicalSegmentType(),
-		Format:                     format,
-		Instance:                   instance,
-	}
-	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastInstanceID(structType any) InstanceID {
@@ -200,6 +201,23 @@ func (m *_InstanceID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_InstanceID) IsInstanceID() {}
+
+func (m *_InstanceID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InstanceID) deepCopy() *_InstanceID {
+	if m == nil {
+		return nil
+	}
+	_InstanceIDCopy := &_InstanceID{
+		m.LogicalSegmentTypeContract.(*_LogicalSegmentType).deepCopy(),
+		m.Format,
+		m.Instance,
+	}
+	m.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
+	return _InstanceIDCopy
+}
 
 func (m *_InstanceID) String() string {
 	if m == nil {

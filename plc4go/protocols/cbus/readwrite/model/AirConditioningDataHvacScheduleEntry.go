@@ -38,6 +38,7 @@ type AirConditioningDataHvacScheduleEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -74,6 +75,32 @@ type _AirConditioningDataHvacScheduleEntry struct {
 
 var _ AirConditioningDataHvacScheduleEntry = (*_AirConditioningDataHvacScheduleEntry)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataHvacScheduleEntry)(nil)
+
+// NewAirConditioningDataHvacScheduleEntry factory function for _AirConditioningDataHvacScheduleEntry
+func NewAirConditioningDataHvacScheduleEntry(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, hvacModeAndFlags HVACModeAndFlags, startTime HVACStartTime, level HVACTemperature, rawLevel HVACRawLevels) *_AirConditioningDataHvacScheduleEntry {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataHvacScheduleEntry must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataHvacScheduleEntry must not be nil")
+	}
+	if startTime == nil {
+		panic("startTime of type HVACStartTime for AirConditioningDataHvacScheduleEntry must not be nil")
+	}
+	_result := &_AirConditioningDataHvacScheduleEntry{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Entry:                       entry,
+		Format:                      format,
+		HvacModeAndFlags:            hvacModeAndFlags,
+		StartTime:                   startTime,
+		Level:                       level,
+		RawLevel:                    rawLevel,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,32 +157,6 @@ func (m *_AirConditioningDataHvacScheduleEntry) GetRawLevel() HVACRawLevels {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataHvacScheduleEntry factory function for _AirConditioningDataHvacScheduleEntry
-func NewAirConditioningDataHvacScheduleEntry(zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, hvacModeAndFlags HVACModeAndFlags, startTime HVACStartTime, level HVACTemperature, rawLevel HVACRawLevels, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataHvacScheduleEntry {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataHvacScheduleEntry must not be nil")
-	}
-	if hvacModeAndFlags == nil {
-		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataHvacScheduleEntry must not be nil")
-	}
-	if startTime == nil {
-		panic("startTime of type HVACStartTime for AirConditioningDataHvacScheduleEntry must not be nil")
-	}
-	_result := &_AirConditioningDataHvacScheduleEntry{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Entry:                       entry,
-		Format:                      format,
-		HvacModeAndFlags:            hvacModeAndFlags,
-		StartTime:                   startTime,
-		Level:                       level,
-		RawLevel:                    rawLevel,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataHvacScheduleEntry(structType any) AirConditioningDataHvacScheduleEntry {
@@ -343,6 +344,29 @@ func (m *_AirConditioningDataHvacScheduleEntry) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_AirConditioningDataHvacScheduleEntry) IsAirConditioningDataHvacScheduleEntry() {}
+
+func (m *_AirConditioningDataHvacScheduleEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataHvacScheduleEntry) deepCopy() *_AirConditioningDataHvacScheduleEntry {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataHvacScheduleEntryCopy := &_AirConditioningDataHvacScheduleEntry{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Entry,
+		m.Format,
+		m.HvacModeAndFlags.DeepCopy().(HVACModeAndFlags),
+		m.StartTime.DeepCopy().(HVACStartTime),
+		m.Level.DeepCopy().(HVACTemperature),
+		m.RawLevel.DeepCopy().(HVACRawLevels),
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataHvacScheduleEntryCopy
+}
 
 func (m *_AirConditioningDataHvacScheduleEntry) String() string {
 	if m == nil {

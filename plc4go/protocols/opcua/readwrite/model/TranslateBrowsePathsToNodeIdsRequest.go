@@ -38,6 +38,7 @@ type TranslateBrowsePathsToNodeIdsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _TranslateBrowsePathsToNodeIdsRequest struct {
 
 var _ TranslateBrowsePathsToNodeIdsRequest = (*_TranslateBrowsePathsToNodeIdsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TranslateBrowsePathsToNodeIdsRequest)(nil)
+
+// NewTranslateBrowsePathsToNodeIdsRequest factory function for _TranslateBrowsePathsToNodeIdsRequest
+func NewTranslateBrowsePathsToNodeIdsRequest(requestHeader ExtensionObjectDefinition, noOfBrowsePaths int32, browsePaths []ExtensionObjectDefinition) *_TranslateBrowsePathsToNodeIdsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsRequest must not be nil")
+	}
+	_result := &_TranslateBrowsePathsToNodeIdsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfBrowsePaths:                   noOfBrowsePaths,
+		BrowsePaths:                       browsePaths,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) GetBrowsePaths() []ExtensionObje
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTranslateBrowsePathsToNodeIdsRequest factory function for _TranslateBrowsePathsToNodeIdsRequest
-func NewTranslateBrowsePathsToNodeIdsRequest(requestHeader ExtensionObjectDefinition, noOfBrowsePaths int32, browsePaths []ExtensionObjectDefinition) *_TranslateBrowsePathsToNodeIdsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsRequest must not be nil")
-	}
-	_result := &_TranslateBrowsePathsToNodeIdsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfBrowsePaths:                   noOfBrowsePaths,
-		BrowsePaths:                       browsePaths,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTranslateBrowsePathsToNodeIdsRequest(structType any) TranslateBrowsePathsToNodeIdsRequest {
@@ -231,6 +232,24 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_TranslateBrowsePathsToNodeIdsRequest) IsTranslateBrowsePathsToNodeIdsRequest() {}
+
+func (m *_TranslateBrowsePathsToNodeIdsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsRequest) deepCopy() *_TranslateBrowsePathsToNodeIdsRequest {
+	if m == nil {
+		return nil
+	}
+	_TranslateBrowsePathsToNodeIdsRequestCopy := &_TranslateBrowsePathsToNodeIdsRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfBrowsePaths,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.BrowsePaths),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TranslateBrowsePathsToNodeIdsRequestCopy
+}
 
 func (m *_TranslateBrowsePathsToNodeIdsRequest) String() string {
 	if m == nil {

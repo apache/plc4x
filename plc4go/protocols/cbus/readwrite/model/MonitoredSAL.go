@@ -40,6 +40,7 @@ type MonitoredSAL interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSAL()
 }
@@ -73,6 +74,11 @@ type _MonitoredSAL struct {
 
 var _ MonitoredSALContract = (*_MonitoredSAL)(nil)
 
+// NewMonitoredSAL factory function for _MonitoredSAL
+func NewMonitoredSAL(salType byte, cBusOptions CBusOptions) *_MonitoredSAL {
+	return &_MonitoredSAL{SalType: salType, CBusOptions: cBusOptions}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -86,11 +92,6 @@ func (m *_MonitoredSAL) GetSalType() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSAL factory function for _MonitoredSAL
-func NewMonitoredSAL(salType byte, cBusOptions CBusOptions) *_MonitoredSAL {
-	return &_MonitoredSAL{SalType: salType, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSAL(structType any) MonitoredSAL {
@@ -165,11 +166,11 @@ func (m *_MonitoredSAL) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	var _child MonitoredSAL
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
-		if _child, err = (&_MonitoredSALLongFormSmartMode{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_MonitoredSALLongFormSmartMode).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALLongFormSmartMode for type-switch of MonitoredSAL")
 		}
 	case 0 == 0: // MonitoredSALShortFormBasicMode
-		if _child, err = (&_MonitoredSALShortFormBasicMode{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_MonitoredSALShortFormBasicMode).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALShortFormBasicMode for type-switch of MonitoredSAL")
 		}
 	default:
@@ -217,3 +218,19 @@ func (m *_MonitoredSAL) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_MonitoredSAL) IsMonitoredSAL() {}
+
+func (m *_MonitoredSAL) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSAL) deepCopy() *_MonitoredSAL {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALCopy := &_MonitoredSAL{
+		nil, // will be set by child
+		m.SalType,
+		m.CBusOptions,
+	}
+	return _MonitoredSALCopy
+}

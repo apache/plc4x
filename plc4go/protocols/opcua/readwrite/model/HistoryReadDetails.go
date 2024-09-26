@@ -36,6 +36,7 @@ type HistoryReadDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsHistoryReadDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryReadDetails()
@@ -48,6 +49,15 @@ type _HistoryReadDetails struct {
 
 var _ HistoryReadDetails = (*_HistoryReadDetails)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadDetails)(nil)
+
+// NewHistoryReadDetails factory function for _HistoryReadDetails
+func NewHistoryReadDetails() *_HistoryReadDetails {
+	_result := &_HistoryReadDetails{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_HistoryReadDetails) GetIdentifier() string {
 
 func (m *_HistoryReadDetails) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewHistoryReadDetails factory function for _HistoryReadDetails
-func NewHistoryReadDetails() *_HistoryReadDetails {
-	_result := &_HistoryReadDetails{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_HistoryReadDetails) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_HistoryReadDetails) IsHistoryReadDetails() {}
+
+func (m *_HistoryReadDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadDetails) deepCopy() *_HistoryReadDetails {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadDetailsCopy := &_HistoryReadDetails{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadDetailsCopy
+}
 
 func (m *_HistoryReadDetails) String() string {
 	if m == nil {

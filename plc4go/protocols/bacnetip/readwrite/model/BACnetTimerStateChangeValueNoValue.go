@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueNoValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetNoValue returns NoValue (property field)
 	GetNoValue() BACnetContextTagNull
@@ -53,6 +54,19 @@ type _BACnetTimerStateChangeValueNoValue struct {
 
 var _ BACnetTimerStateChangeValueNoValue = (*_BACnetTimerStateChangeValueNoValue)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueNoValue)(nil)
+
+// NewBACnetTimerStateChangeValueNoValue factory function for _BACnetTimerStateChangeValueNoValue
+func NewBACnetTimerStateChangeValueNoValue(peekedTagHeader BACnetTagHeader, noValue BACnetContextTagNull, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueNoValue {
+	if noValue == nil {
+		panic("noValue of type BACnetContextTagNull for BACnetTimerStateChangeValueNoValue must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueNoValue{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		NoValue:                             noValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetTimerStateChangeValueNoValue) GetNoValue() BACnetContextTagNull 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueNoValue factory function for _BACnetTimerStateChangeValueNoValue
-func NewBACnetTimerStateChangeValueNoValue(noValue BACnetContextTagNull, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueNoValue {
-	if noValue == nil {
-		panic("noValue of type BACnetContextTagNull for BACnetTimerStateChangeValueNoValue must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueNoValue{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		NoValue:                             noValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueNoValue(structType any) BACnetTimerStateChangeValueNoValue {
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueNoValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetTimerStateChangeValueNoValue) IsBACnetTimerStateChangeValueNoValue() {}
+
+func (m *_BACnetTimerStateChangeValueNoValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueNoValue) deepCopy() *_BACnetTimerStateChangeValueNoValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueNoValueCopy := &_BACnetTimerStateChangeValueNoValue{
+		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
+		m.NoValue.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueNoValueCopy
+}
 
 func (m *_BACnetTimerStateChangeValueNoValue) String() string {
 	if m == nil {

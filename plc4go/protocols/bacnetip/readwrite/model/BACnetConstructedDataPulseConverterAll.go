@@ -36,6 +36,7 @@ type BACnetConstructedDataPulseConverterAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataPulseConverterAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPulseConverterAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataPulseConverterAll struct {
 
 var _ BACnetConstructedDataPulseConverterAll = (*_BACnetConstructedDataPulseConverterAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPulseConverterAll)(nil)
+
+// NewBACnetConstructedDataPulseConverterAll factory function for _BACnetConstructedDataPulseConverterAll
+func NewBACnetConstructedDataPulseConverterAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAll {
+	_result := &_BACnetConstructedDataPulseConverterAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataPulseConverterAll) GetPropertyIdentifierArgument(
 
 func (m *_BACnetConstructedDataPulseConverterAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataPulseConverterAll factory function for _BACnetConstructedDataPulseConverterAll
-func NewBACnetConstructedDataPulseConverterAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAll {
-	_result := &_BACnetConstructedDataPulseConverterAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataPulseConverterAll) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataPulseConverterAll) IsBACnetConstructedDataPulseConverterAll() {}
+
+func (m *_BACnetConstructedDataPulseConverterAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPulseConverterAll) deepCopy() *_BACnetConstructedDataPulseConverterAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPulseConverterAllCopy := &_BACnetConstructedDataPulseConverterAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPulseConverterAllCopy
+}
 
 func (m *_BACnetConstructedDataPulseConverterAll) String() string {
 	if m == nil {

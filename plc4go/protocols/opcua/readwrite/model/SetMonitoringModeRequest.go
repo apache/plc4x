@@ -38,6 +38,7 @@ type SetMonitoringModeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _SetMonitoringModeRequest struct {
 
 var _ SetMonitoringModeRequest = (*_SetMonitoringModeRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetMonitoringModeRequest)(nil)
+
+// NewSetMonitoringModeRequest factory function for _SetMonitoringModeRequest
+func NewSetMonitoringModeRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, monitoringMode MonitoringMode, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_SetMonitoringModeRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetMonitoringModeRequest must not be nil")
+	}
+	_result := &_SetMonitoringModeRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		MonitoringMode:                    monitoringMode,
+		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
+		MonitoredItemIds:                  monitoredItemIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_SetMonitoringModeRequest) GetMonitoredItemIds() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetMonitoringModeRequest factory function for _SetMonitoringModeRequest
-func NewSetMonitoringModeRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, monitoringMode MonitoringMode, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_SetMonitoringModeRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for SetMonitoringModeRequest must not be nil")
-	}
-	_result := &_SetMonitoringModeRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		MonitoringMode:                    monitoringMode,
-		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
-		MonitoredItemIds:                  monitoredItemIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetMonitoringModeRequest(structType any) SetMonitoringModeRequest {
@@ -268,6 +269,26 @@ func (m *_SetMonitoringModeRequest) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_SetMonitoringModeRequest) IsSetMonitoringModeRequest() {}
+
+func (m *_SetMonitoringModeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetMonitoringModeRequest) deepCopy() *_SetMonitoringModeRequest {
+	if m == nil {
+		return nil
+	}
+	_SetMonitoringModeRequestCopy := &_SetMonitoringModeRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.MonitoringMode,
+		m.NoOfMonitoredItemIds,
+		utils.DeepCopySlice[uint32, uint32](m.MonitoredItemIds),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetMonitoringModeRequestCopy
+}
 
 func (m *_SetMonitoringModeRequest) String() string {
 	if m == nil {

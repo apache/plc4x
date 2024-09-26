@@ -36,6 +36,7 @@ type ApduDataExtWriteRoutingTableRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtWriteRoutingTableRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtWriteRoutingTableRequest()
@@ -48,6 +49,15 @@ type _ApduDataExtWriteRoutingTableRequest struct {
 
 var _ ApduDataExtWriteRoutingTableRequest = (*_ApduDataExtWriteRoutingTableRequest)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtWriteRoutingTableRequest)(nil)
+
+// NewApduDataExtWriteRoutingTableRequest factory function for _ApduDataExtWriteRoutingTableRequest
+func NewApduDataExtWriteRoutingTableRequest(length uint8) *_ApduDataExtWriteRoutingTableRequest {
+	_result := &_ApduDataExtWriteRoutingTableRequest{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtWriteRoutingTableRequest) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtWriteRoutingTableRequest) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtWriteRoutingTableRequest factory function for _ApduDataExtWriteRoutingTableRequest
-func NewApduDataExtWriteRoutingTableRequest(length uint8) *_ApduDataExtWriteRoutingTableRequest {
-	_result := &_ApduDataExtWriteRoutingTableRequest{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtWriteRoutingTableRequest) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ApduDataExtWriteRoutingTableRequest) IsApduDataExtWriteRoutingTableRequest() {}
+
+func (m *_ApduDataExtWriteRoutingTableRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtWriteRoutingTableRequest) deepCopy() *_ApduDataExtWriteRoutingTableRequest {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtWriteRoutingTableRequestCopy := &_ApduDataExtWriteRoutingTableRequest{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtWriteRoutingTableRequestCopy
+}
 
 func (m *_ApduDataExtWriteRoutingTableRequest) String() string {
 	if m == nil {

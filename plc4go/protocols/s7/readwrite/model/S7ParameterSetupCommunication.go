@@ -38,6 +38,7 @@ type S7ParameterSetupCommunication interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetMaxAmqCaller returns MaxAmqCaller (property field)
 	GetMaxAmqCaller() uint16
@@ -61,6 +62,18 @@ type _S7ParameterSetupCommunication struct {
 
 var _ S7ParameterSetupCommunication = (*_S7ParameterSetupCommunication)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterSetupCommunication)(nil)
+
+// NewS7ParameterSetupCommunication factory function for _S7ParameterSetupCommunication
+func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *_S7ParameterSetupCommunication {
+	_result := &_S7ParameterSetupCommunication{
+		S7ParameterContract: NewS7Parameter(),
+		MaxAmqCaller:        maxAmqCaller,
+		MaxAmqCallee:        maxAmqCallee,
+		PduLength:           pduLength,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -105,18 +118,6 @@ func (m *_S7ParameterSetupCommunication) GetPduLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterSetupCommunication factory function for _S7ParameterSetupCommunication
-func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *_S7ParameterSetupCommunication {
-	_result := &_S7ParameterSetupCommunication{
-		S7ParameterContract: NewS7Parameter(),
-		MaxAmqCaller:        maxAmqCaller,
-		MaxAmqCallee:        maxAmqCallee,
-		PduLength:           pduLength,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterSetupCommunication(structType any) S7ParameterSetupCommunication {
@@ -240,6 +241,25 @@ func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_S7ParameterSetupCommunication) IsS7ParameterSetupCommunication() {}
+
+func (m *_S7ParameterSetupCommunication) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterSetupCommunication) deepCopy() *_S7ParameterSetupCommunication {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterSetupCommunicationCopy := &_S7ParameterSetupCommunication{
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
+		m.MaxAmqCaller,
+		m.MaxAmqCallee,
+		m.PduLength,
+		m.reservedField0,
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterSetupCommunicationCopy
+}
 
 func (m *_S7ParameterSetupCommunication) String() string {
 	if m == nil {

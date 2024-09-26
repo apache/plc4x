@@ -38,6 +38,7 @@ type ModbusPDUReportServerIdResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetValue returns Value (property field)
 	GetValue() []byte
@@ -53,6 +54,16 @@ type _ModbusPDUReportServerIdResponse struct {
 
 var _ ModbusPDUReportServerIdResponse = (*_ModbusPDUReportServerIdResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReportServerIdResponse)(nil)
+
+// NewModbusPDUReportServerIdResponse factory function for _ModbusPDUReportServerIdResponse
+func NewModbusPDUReportServerIdResponse(value []byte) *_ModbusPDUReportServerIdResponse {
+	_result := &_ModbusPDUReportServerIdResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ModbusPDUReportServerIdResponse) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReportServerIdResponse factory function for _ModbusPDUReportServerIdResponse
-func NewModbusPDUReportServerIdResponse(value []byte) *_ModbusPDUReportServerIdResponse {
-	_result := &_ModbusPDUReportServerIdResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReportServerIdResponse(structType any) ModbusPDUReportServerIdResponse {
@@ -202,6 +203,22 @@ func (m *_ModbusPDUReportServerIdResponse) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ModbusPDUReportServerIdResponse) IsModbusPDUReportServerIdResponse() {}
+
+func (m *_ModbusPDUReportServerIdResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReportServerIdResponse) deepCopy() *_ModbusPDUReportServerIdResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReportServerIdResponseCopy := &_ModbusPDUReportServerIdResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReportServerIdResponseCopy
+}
 
 func (m *_ModbusPDUReportServerIdResponse) String() string {
 	if m == nil {

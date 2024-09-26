@@ -38,6 +38,7 @@ type BACnetOptionalUnsignedNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalUnsigned
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -53,6 +54,19 @@ type _BACnetOptionalUnsignedNull struct {
 
 var _ BACnetOptionalUnsignedNull = (*_BACnetOptionalUnsignedNull)(nil)
 var _ BACnetOptionalUnsignedRequirements = (*_BACnetOptionalUnsignedNull)(nil)
+
+// NewBACnetOptionalUnsignedNull factory function for _BACnetOptionalUnsignedNull
+func NewBACnetOptionalUnsignedNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalUnsignedNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalUnsignedNull must not be nil")
+	}
+	_result := &_BACnetOptionalUnsignedNull{
+		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
+		NullValue:                      nullValue,
+	}
+	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetOptionalUnsignedNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalUnsignedNull factory function for _BACnetOptionalUnsignedNull
-func NewBACnetOptionalUnsignedNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsignedNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalUnsignedNull must not be nil")
-	}
-	_result := &_BACnetOptionalUnsignedNull{
-		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
-		NullValue:                      nullValue,
-	}
-	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalUnsignedNull(structType any) BACnetOptionalUnsignedNull {
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalUnsignedNull) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetOptionalUnsignedNull) IsBACnetOptionalUnsignedNull() {}
+
+func (m *_BACnetOptionalUnsignedNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalUnsignedNull) deepCopy() *_BACnetOptionalUnsignedNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalUnsignedNullCopy := &_BACnetOptionalUnsignedNull{
+		m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned).deepCopy(),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = m
+	return _BACnetOptionalUnsignedNullCopy
+}
 
 func (m *_BACnetOptionalUnsignedNull) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type MediaTransportControlDataEnumerationsSize interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetSizeType returns SizeType (property field)
 	GetSizeType() byte
@@ -67,6 +68,18 @@ type _MediaTransportControlDataEnumerationsSize struct {
 
 var _ MediaTransportControlDataEnumerationsSize = (*_MediaTransportControlDataEnumerationsSize)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataEnumerationsSize)(nil)
+
+// NewMediaTransportControlDataEnumerationsSize factory function for _MediaTransportControlDataEnumerationsSize
+func NewMediaTransportControlDataEnumerationsSize(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, sizeType byte, start uint8, size uint8) *_MediaTransportControlDataEnumerationsSize {
+	_result := &_MediaTransportControlDataEnumerationsSize{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		SizeType:                          sizeType,
+		Start:                             start,
+		Size:                              size,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,18 +149,6 @@ func (m *_MediaTransportControlDataEnumerationsSize) GetIsReserved() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataEnumerationsSize factory function for _MediaTransportControlDataEnumerationsSize
-func NewMediaTransportControlDataEnumerationsSize(sizeType byte, start uint8, size uint8, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataEnumerationsSize {
-	_result := &_MediaTransportControlDataEnumerationsSize{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		SizeType:                          sizeType,
-		Start:                             start,
-		Size:                              size,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataEnumerationsSize(structType any) MediaTransportControlDataEnumerationsSize {
@@ -314,6 +315,24 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 }
 
 func (m *_MediaTransportControlDataEnumerationsSize) IsMediaTransportControlDataEnumerationsSize() {}
+
+func (m *_MediaTransportControlDataEnumerationsSize) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataEnumerationsSize) deepCopy() *_MediaTransportControlDataEnumerationsSize {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataEnumerationsSizeCopy := &_MediaTransportControlDataEnumerationsSize{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.SizeType,
+		m.Start,
+		m.Size,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataEnumerationsSizeCopy
+}
 
 func (m *_MediaTransportControlDataEnumerationsSize) String() string {
 	if m == nil {

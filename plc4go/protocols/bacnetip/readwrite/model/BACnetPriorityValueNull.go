@@ -38,6 +38,7 @@ type BACnetPriorityValueNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -53,6 +54,19 @@ type _BACnetPriorityValueNull struct {
 
 var _ BACnetPriorityValueNull = (*_BACnetPriorityValueNull)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueNull)(nil)
+
+// NewBACnetPriorityValueNull factory function for _BACnetPriorityValueNull
+func NewBACnetPriorityValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetPriorityValueNull must not be nil")
+	}
+	_result := &_BACnetPriorityValueNull{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		NullValue:                   nullValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueNull factory function for _BACnetPriorityValueNull
-func NewBACnetPriorityValueNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetPriorityValueNull must not be nil")
-	}
-	_result := &_BACnetPriorityValueNull{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		NullValue:                   nullValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueNull(structType any) BACnetPriorityValueNull {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueNull) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetPriorityValueNull) IsBACnetPriorityValueNull() {}
+
+func (m *_BACnetPriorityValueNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueNull) deepCopy() *_BACnetPriorityValueNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueNullCopy := &_BACnetPriorityValueNull{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueNullCopy
+}
 
 func (m *_BACnetPriorityValueNull) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type IdentifyReplyCommandFirmwareVersion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetFirmwareVersion returns FirmwareVersion (property field)
 	GetFirmwareVersion() string
@@ -53,6 +54,16 @@ type _IdentifyReplyCommandFirmwareVersion struct {
 
 var _ IdentifyReplyCommandFirmwareVersion = (*_IdentifyReplyCommandFirmwareVersion)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandFirmwareVersion)(nil)
+
+// NewIdentifyReplyCommandFirmwareVersion factory function for _IdentifyReplyCommandFirmwareVersion
+func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uint8) *_IdentifyReplyCommandFirmwareVersion {
+	_result := &_IdentifyReplyCommandFirmwareVersion{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		FirmwareVersion:              firmwareVersion,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetFirmwareVersion() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandFirmwareVersion factory function for _IdentifyReplyCommandFirmwareVersion
-func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uint8) *_IdentifyReplyCommandFirmwareVersion {
-	_result := &_IdentifyReplyCommandFirmwareVersion{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		FirmwareVersion:              firmwareVersion,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandFirmwareVersion(structType any) IdentifyReplyCommandFirmwareVersion {
@@ -179,6 +180,22 @@ func (m *_IdentifyReplyCommandFirmwareVersion) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_IdentifyReplyCommandFirmwareVersion) IsIdentifyReplyCommandFirmwareVersion() {}
+
+func (m *_IdentifyReplyCommandFirmwareVersion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandFirmwareVersion) deepCopy() *_IdentifyReplyCommandFirmwareVersion {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandFirmwareVersionCopy := &_IdentifyReplyCommandFirmwareVersion{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		m.FirmwareVersion,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandFirmwareVersionCopy
+}
 
 func (m *_IdentifyReplyCommandFirmwareVersion) String() string {
 	if m == nil {

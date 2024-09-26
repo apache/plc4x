@@ -38,6 +38,7 @@ type BACnetTagPayloadEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetData returns Data (property field)
 	GetData() []byte
 	// GetActualValue returns ActualValue (virtual field)
@@ -55,6 +56,11 @@ type _BACnetTagPayloadEnumerated struct {
 }
 
 var _ BACnetTagPayloadEnumerated = (*_BACnetTagPayloadEnumerated)(nil)
+
+// NewBACnetTagPayloadEnumerated factory function for _BACnetTagPayloadEnumerated
+func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *_BACnetTagPayloadEnumerated {
+	return &_BACnetTagPayloadEnumerated{Data: data, ActualLength: actualLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -84,11 +90,6 @@ func (m *_BACnetTagPayloadEnumerated) GetActualValue() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadEnumerated factory function for _BACnetTagPayloadEnumerated
-func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *_BACnetTagPayloadEnumerated {
-	return &_BACnetTagPayloadEnumerated{Data: data, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadEnumerated(structType any) BACnetTagPayloadEnumerated {
@@ -212,6 +213,21 @@ func (m *_BACnetTagPayloadEnumerated) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetTagPayloadEnumerated) IsBACnetTagPayloadEnumerated() {}
+
+func (m *_BACnetTagPayloadEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadEnumerated) deepCopy() *_BACnetTagPayloadEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadEnumeratedCopy := &_BACnetTagPayloadEnumerated{
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadEnumeratedCopy
+}
 
 func (m *_BACnetTagPayloadEnumerated) String() string {
 	if m == nil {

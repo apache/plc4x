@@ -38,6 +38,7 @@ type BACnetConstructedDataPulseConverterAdjustValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataPulseConverterAdjustValue struct {
 
 var _ BACnetConstructedDataPulseConverterAdjustValue = (*_BACnetConstructedDataPulseConverterAdjustValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPulseConverterAdjustValue)(nil)
+
+// NewBACnetConstructedDataPulseConverterAdjustValue factory function for _BACnetConstructedDataPulseConverterAdjustValue
+func NewBACnetConstructedDataPulseConverterAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAdjustValue {
+	if adjustValue == nil {
+		panic("adjustValue of type BACnetApplicationTagReal for BACnetConstructedDataPulseConverterAdjustValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataPulseConverterAdjustValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AdjustValue:                   adjustValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPulseConverterAdjustValue factory function for _BACnetConstructedDataPulseConverterAdjustValue
-func NewBACnetConstructedDataPulseConverterAdjustValue(adjustValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAdjustValue {
-	if adjustValue == nil {
-		panic("adjustValue of type BACnetApplicationTagReal for BACnetConstructedDataPulseConverterAdjustValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataPulseConverterAdjustValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AdjustValue:                   adjustValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPulseConverterAdjustValue(structType any) BACnetConstructedDataPulseConverterAdjustValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataPulseConverterAdjustValue) IsBACnetConstructedDataPulseConverterAdjustValue() {
+}
+
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) deepCopy() *_BACnetConstructedDataPulseConverterAdjustValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPulseConverterAdjustValueCopy := &_BACnetConstructedDataPulseConverterAdjustValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AdjustValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPulseConverterAdjustValueCopy
 }
 
 func (m *_BACnetConstructedDataPulseConverterAdjustValue) String() string {

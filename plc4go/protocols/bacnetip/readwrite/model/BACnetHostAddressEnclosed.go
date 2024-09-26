@@ -38,6 +38,7 @@ type BACnetHostAddressEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetHostAddress returns HostAddress (property field)
@@ -60,6 +61,20 @@ type _BACnetHostAddressEnclosed struct {
 
 var _ BACnetHostAddressEnclosed = (*_BACnetHostAddressEnclosed)(nil)
 
+// NewBACnetHostAddressEnclosed factory function for _BACnetHostAddressEnclosed
+func NewBACnetHostAddressEnclosed(openingTag BACnetOpeningTag, hostAddress BACnetHostAddress, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetHostAddressEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetHostAddressEnclosed must not be nil")
+	}
+	if hostAddress == nil {
+		panic("hostAddress of type BACnetHostAddress for BACnetHostAddressEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetHostAddressEnclosed must not be nil")
+	}
+	return &_BACnetHostAddressEnclosed{OpeningTag: openingTag, HostAddress: hostAddress, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +96,6 @@ func (m *_BACnetHostAddressEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddressEnclosed factory function for _BACnetHostAddressEnclosed
-func NewBACnetHostAddressEnclosed(openingTag BACnetOpeningTag, hostAddress BACnetHostAddress, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetHostAddressEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetHostAddressEnclosed must not be nil")
-	}
-	if hostAddress == nil {
-		panic("hostAddress of type BACnetHostAddress for BACnetHostAddressEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetHostAddressEnclosed must not be nil")
-	}
-	return &_BACnetHostAddressEnclosed{OpeningTag: openingTag, HostAddress: hostAddress, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddressEnclosed(structType any) BACnetHostAddressEnclosed {
@@ -228,6 +229,23 @@ func (m *_BACnetHostAddressEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetHostAddressEnclosed) IsBACnetHostAddressEnclosed() {}
+
+func (m *_BACnetHostAddressEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddressEnclosed) deepCopy() *_BACnetHostAddressEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressEnclosedCopy := &_BACnetHostAddressEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.HostAddress.DeepCopy().(BACnetHostAddress),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetHostAddressEnclosedCopy
+}
 
 func (m *_BACnetHostAddressEnclosed) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ListOfCovNotifications interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
 	GetMonitoredObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetOpeningTag returns OpeningTag (property field)
@@ -59,6 +60,20 @@ type _ListOfCovNotifications struct {
 }
 
 var _ ListOfCovNotifications = (*_ListOfCovNotifications)(nil)
+
+// NewListOfCovNotifications factory function for _ListOfCovNotifications
+func NewListOfCovNotifications(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfValues []ListOfCovNotificationsValue, closingTag BACnetClosingTag) *_ListOfCovNotifications {
+	if monitoredObjectIdentifier == nil {
+		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for ListOfCovNotifications must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ListOfCovNotifications must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ListOfCovNotifications must not be nil")
+	}
+	return &_ListOfCovNotifications{MonitoredObjectIdentifier: monitoredObjectIdentifier, OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,20 +100,6 @@ func (m *_ListOfCovNotifications) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewListOfCovNotifications factory function for _ListOfCovNotifications
-func NewListOfCovNotifications(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfValues []ListOfCovNotificationsValue, closingTag BACnetClosingTag) *_ListOfCovNotifications {
-	if monitoredObjectIdentifier == nil {
-		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for ListOfCovNotifications must not be nil")
-	}
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for ListOfCovNotifications must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for ListOfCovNotifications must not be nil")
-	}
-	return &_ListOfCovNotifications{MonitoredObjectIdentifier: monitoredObjectIdentifier, OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastListOfCovNotifications(structType any) ListOfCovNotifications {
@@ -239,6 +240,23 @@ func (m *_ListOfCovNotifications) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ListOfCovNotifications) IsListOfCovNotifications() {}
+
+func (m *_ListOfCovNotifications) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListOfCovNotifications) deepCopy() *_ListOfCovNotifications {
+	if m == nil {
+		return nil
+	}
+	_ListOfCovNotificationsCopy := &_ListOfCovNotifications{
+		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[ListOfCovNotificationsValue, ListOfCovNotificationsValue](m.ListOfValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _ListOfCovNotificationsCopy
+}
 
 func (m *_ListOfCovNotifications) String() string {
 	if m == nil {

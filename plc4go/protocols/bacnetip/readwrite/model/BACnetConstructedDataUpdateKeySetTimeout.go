@@ -38,6 +38,7 @@ type BACnetConstructedDataUpdateKeySetTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUpdateKeySetTimeout returns UpdateKeySetTimeout (property field)
 	GetUpdateKeySetTimeout() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataUpdateKeySetTimeout struct {
 
 var _ BACnetConstructedDataUpdateKeySetTimeout = (*_BACnetConstructedDataUpdateKeySetTimeout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUpdateKeySetTimeout)(nil)
+
+// NewBACnetConstructedDataUpdateKeySetTimeout factory function for _BACnetConstructedDataUpdateKeySetTimeout
+func NewBACnetConstructedDataUpdateKeySetTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateKeySetTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateKeySetTimeout {
+	if updateKeySetTimeout == nil {
+		panic("updateKeySetTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataUpdateKeySetTimeout must not be nil")
+	}
+	_result := &_BACnetConstructedDataUpdateKeySetTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UpdateKeySetTimeout:           updateKeySetTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetActualValue() BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUpdateKeySetTimeout factory function for _BACnetConstructedDataUpdateKeySetTimeout
-func NewBACnetConstructedDataUpdateKeySetTimeout(updateKeySetTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateKeySetTimeout {
-	if updateKeySetTimeout == nil {
-		panic("updateKeySetTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataUpdateKeySetTimeout must not be nil")
-	}
-	_result := &_BACnetConstructedDataUpdateKeySetTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UpdateKeySetTimeout:           updateKeySetTimeout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUpdateKeySetTimeout(structType any) BACnetConstructedDataUpdateKeySetTimeout {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) IsBACnetConstructedDataUpdateKeySetTimeout() {}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) deepCopy() *_BACnetConstructedDataUpdateKeySetTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUpdateKeySetTimeoutCopy := &_BACnetConstructedDataUpdateKeySetTimeout{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.UpdateKeySetTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUpdateKeySetTimeoutCopy
+}
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) String() string {
 	if m == nil {

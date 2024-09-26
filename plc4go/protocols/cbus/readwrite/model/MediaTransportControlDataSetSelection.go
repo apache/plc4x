@@ -38,6 +38,7 @@ type MediaTransportControlDataSetSelection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetSelectionHi returns SelectionHi (property field)
 	GetSelectionHi() byte
@@ -56,6 +57,17 @@ type _MediaTransportControlDataSetSelection struct {
 
 var _ MediaTransportControlDataSetSelection = (*_MediaTransportControlDataSetSelection)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSetSelection)(nil)
+
+// NewMediaTransportControlDataSetSelection factory function for _MediaTransportControlDataSetSelection
+func NewMediaTransportControlDataSetSelection(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, selectionHi byte, selectionLo byte) *_MediaTransportControlDataSetSelection {
+	_result := &_MediaTransportControlDataSetSelection{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		SelectionHi:                       selectionHi,
+		SelectionLo:                       selectionLo,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +100,6 @@ func (m *_MediaTransportControlDataSetSelection) GetSelectionLo() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSetSelection factory function for _MediaTransportControlDataSetSelection
-func NewMediaTransportControlDataSetSelection(selectionHi byte, selectionLo byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSetSelection {
-	_result := &_MediaTransportControlDataSetSelection{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		SelectionHi:                       selectionHi,
-		SelectionLo:                       selectionLo,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSetSelection(structType any) MediaTransportControlDataSetSelection {
@@ -196,6 +197,23 @@ func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_MediaTransportControlDataSetSelection) IsMediaTransportControlDataSetSelection() {}
+
+func (m *_MediaTransportControlDataSetSelection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSetSelection) deepCopy() *_MediaTransportControlDataSetSelection {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSetSelectionCopy := &_MediaTransportControlDataSetSelection{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.SelectionHi,
+		m.SelectionLo,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSetSelectionCopy
+}
 
 func (m *_MediaTransportControlDataSetSelection) String() string {
 	if m == nil {

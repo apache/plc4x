@@ -38,6 +38,7 @@ type KnxNetObjectServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -53,6 +54,16 @@ type _KnxNetObjectServer struct {
 
 var _ KnxNetObjectServer = (*_KnxNetObjectServer)(nil)
 var _ ServiceIdRequirements = (*_KnxNetObjectServer)(nil)
+
+// NewKnxNetObjectServer factory function for _KnxNetObjectServer
+func NewKnxNetObjectServer(version uint8) *_KnxNetObjectServer {
+	_result := &_KnxNetObjectServer{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_KnxNetObjectServer) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetObjectServer factory function for _KnxNetObjectServer
-func NewKnxNetObjectServer(version uint8) *_KnxNetObjectServer {
-	_result := &_KnxNetObjectServer{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetObjectServer(structType any) KnxNetObjectServer {
@@ -179,6 +180,22 @@ func (m *_KnxNetObjectServer) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_KnxNetObjectServer) IsKnxNetObjectServer() {}
+
+func (m *_KnxNetObjectServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetObjectServer) deepCopy() *_KnxNetObjectServer {
+	if m == nil {
+		return nil
+	}
+	_KnxNetObjectServerCopy := &_KnxNetObjectServer{
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetObjectServerCopy
+}
 
 func (m *_KnxNetObjectServer) String() string {
 	if m == nil {

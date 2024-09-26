@@ -38,6 +38,7 @@ type ConnectedDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetSequenceCount returns SequenceCount (property field)
 	GetSequenceCount() uint16
@@ -56,6 +57,20 @@ type _ConnectedDataItem struct {
 
 var _ ConnectedDataItem = (*_ConnectedDataItem)(nil)
 var _ TypeIdRequirements = (*_ConnectedDataItem)(nil)
+
+// NewConnectedDataItem factory function for _ConnectedDataItem
+func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedDataItem {
+	if service == nil {
+		panic("service of type CipService for ConnectedDataItem must not be nil")
+	}
+	_result := &_ConnectedDataItem{
+		TypeIdContract: NewTypeId(),
+		SequenceCount:  sequenceCount,
+		Service:        service,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_ConnectedDataItem) GetService() CipService {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectedDataItem factory function for _ConnectedDataItem
-func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedDataItem {
-	if service == nil {
-		panic("service of type CipService for ConnectedDataItem must not be nil")
-	}
-	_result := &_ConnectedDataItem{
-		TypeIdContract: NewTypeId(),
-		SequenceCount:  sequenceCount,
-		Service:        service,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectedDataItem(structType any) ConnectedDataItem {
@@ -216,6 +217,23 @@ func (m *_ConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ConnectedDataItem) IsConnectedDataItem() {}
+
+func (m *_ConnectedDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectedDataItem) deepCopy() *_ConnectedDataItem {
+	if m == nil {
+		return nil
+	}
+	_ConnectedDataItemCopy := &_ConnectedDataItem{
+		m.TypeIdContract.(*_TypeId).deepCopy(),
+		m.SequenceCount,
+		m.Service.DeepCopy().(CipService),
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _ConnectedDataItemCopy
+}
 
 func (m *_ConnectedDataItem) String() string {
 	if m == nil {

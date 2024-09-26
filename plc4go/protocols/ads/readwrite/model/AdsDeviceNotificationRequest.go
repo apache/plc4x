@@ -38,6 +38,7 @@ type AdsDeviceNotificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetLength returns Length (property field)
 	GetLength() uint32
@@ -59,6 +60,18 @@ type _AdsDeviceNotificationRequest struct {
 
 var _ AdsDeviceNotificationRequest = (*_AdsDeviceNotificationRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsDeviceNotificationRequest)(nil)
+
+// NewAdsDeviceNotificationRequest factory function for _AdsDeviceNotificationRequest
+func NewAdsDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, length uint32, stamps uint32, adsStampHeaders []AdsStampHeader) *_AdsDeviceNotificationRequest {
+	_result := &_AdsDeviceNotificationRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Length:            length,
+		Stamps:            stamps,
+		AdsStampHeaders:   adsStampHeaders,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,18 +116,6 @@ func (m *_AdsDeviceNotificationRequest) GetAdsStampHeaders() []AdsStampHeader {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDeviceNotificationRequest factory function for _AdsDeviceNotificationRequest
-func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []AdsStampHeader, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeviceNotificationRequest {
-	_result := &_AdsDeviceNotificationRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Length:            length,
-		Stamps:            stamps,
-		AdsStampHeaders:   adsStampHeaders,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDeviceNotificationRequest(structType any) AdsDeviceNotificationRequest {
@@ -232,6 +233,24 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_AdsDeviceNotificationRequest) IsAdsDeviceNotificationRequest() {}
+
+func (m *_AdsDeviceNotificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDeviceNotificationRequest) deepCopy() *_AdsDeviceNotificationRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsDeviceNotificationRequestCopy := &_AdsDeviceNotificationRequest{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Length,
+		m.Stamps,
+		utils.DeepCopySlice[AdsStampHeader, AdsStampHeader](m.AdsStampHeaders),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsDeviceNotificationRequestCopy
+}
 
 func (m *_AdsDeviceNotificationRequest) String() string {
 	if m == nil {

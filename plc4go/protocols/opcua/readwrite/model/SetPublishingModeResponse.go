@@ -38,6 +38,7 @@ type SetPublishingModeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _SetPublishingModeResponse struct {
 
 var _ SetPublishingModeResponse = (*_SetPublishingModeResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetPublishingModeResponse)(nil)
+
+// NewSetPublishingModeResponse factory function for _SetPublishingModeResponse
+func NewSetPublishingModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetPublishingModeResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetPublishingModeResponse must not be nil")
+	}
+	_result := &_SetPublishingModeResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_SetPublishingModeResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetPublishingModeResponse factory function for _SetPublishingModeResponse
-func NewSetPublishingModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetPublishingModeResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for SetPublishingModeResponse must not be nil")
-	}
-	_result := &_SetPublishingModeResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetPublishingModeResponse(structType any) SetPublishingModeResponse {
@@ -280,6 +281,26 @@ func (m *_SetPublishingModeResponse) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SetPublishingModeResponse) IsSetPublishingModeResponse() {}
+
+func (m *_SetPublishingModeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetPublishingModeResponse) deepCopy() *_SetPublishingModeResponse {
+	if m == nil {
+		return nil
+	}
+	_SetPublishingModeResponseCopy := &_SetPublishingModeResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetPublishingModeResponseCopy
+}
 
 func (m *_SetPublishingModeResponse) String() string {
 	if m == nil {

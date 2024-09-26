@@ -38,6 +38,7 @@ type AliasNameDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAliasName returns AliasName (property field)
 	GetAliasName() QualifiedName
@@ -59,6 +60,21 @@ type _AliasNameDataType struct {
 
 var _ AliasNameDataType = (*_AliasNameDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AliasNameDataType)(nil)
+
+// NewAliasNameDataType factory function for _AliasNameDataType
+func NewAliasNameDataType(aliasName QualifiedName, noOfReferencedNodes int32, referencedNodes []ExpandedNodeId) *_AliasNameDataType {
+	if aliasName == nil {
+		panic("aliasName of type QualifiedName for AliasNameDataType must not be nil")
+	}
+	_result := &_AliasNameDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		AliasName:                         aliasName,
+		NoOfReferencedNodes:               noOfReferencedNodes,
+		ReferencedNodes:                   referencedNodes,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_AliasNameDataType) GetReferencedNodes() []ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAliasNameDataType factory function for _AliasNameDataType
-func NewAliasNameDataType(aliasName QualifiedName, noOfReferencedNodes int32, referencedNodes []ExpandedNodeId) *_AliasNameDataType {
-	if aliasName == nil {
-		panic("aliasName of type QualifiedName for AliasNameDataType must not be nil")
-	}
-	_result := &_AliasNameDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		AliasName:                         aliasName,
-		NoOfReferencedNodes:               noOfReferencedNodes,
-		ReferencedNodes:                   referencedNodes,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAliasNameDataType(structType any) AliasNameDataType {
@@ -231,6 +232,24 @@ func (m *_AliasNameDataType) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_AliasNameDataType) IsAliasNameDataType() {}
+
+func (m *_AliasNameDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AliasNameDataType) deepCopy() *_AliasNameDataType {
+	if m == nil {
+		return nil
+	}
+	_AliasNameDataTypeCopy := &_AliasNameDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.AliasName.DeepCopy().(QualifiedName),
+		m.NoOfReferencedNodes,
+		utils.DeepCopySlice[ExpandedNodeId, ExpandedNodeId](m.ReferencedNodes),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AliasNameDataTypeCopy
+}
 
 func (m *_AliasNameDataType) String() string {
 	if m == nil {

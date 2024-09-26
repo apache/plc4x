@@ -36,6 +36,7 @@ type MeteringDataMeasureElectricity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// IsMeteringDataMeasureElectricity is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureElectricity()
@@ -49,6 +50,15 @@ type _MeteringDataMeasureElectricity struct {
 var _ MeteringDataMeasureElectricity = (*_MeteringDataMeasureElectricity)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataMeasureElectricity)(nil)
 
+// NewMeteringDataMeasureElectricity factory function for _MeteringDataMeasureElectricity
+func NewMeteringDataMeasureElectricity(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureElectricity {
+	_result := &_MeteringDataMeasureElectricity{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ MeteringDataRequirements = (*_MeteringDataMeasureElectricity)(nil)
 
 func (m *_MeteringDataMeasureElectricity) GetParent() MeteringDataContract {
 	return m.MeteringDataContract
-}
-
-// NewMeteringDataMeasureElectricity factory function for _MeteringDataMeasureElectricity
-func NewMeteringDataMeasureElectricity(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureElectricity {
-	_result := &_MeteringDataMeasureElectricity{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_MeteringDataMeasureElectricity) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_MeteringDataMeasureElectricity) IsMeteringDataMeasureElectricity() {}
+
+func (m *_MeteringDataMeasureElectricity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataMeasureElectricity) deepCopy() *_MeteringDataMeasureElectricity {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataMeasureElectricityCopy := &_MeteringDataMeasureElectricity{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataMeasureElectricityCopy
+}
 
 func (m *_MeteringDataMeasureElectricity) String() string {
 	if m == nil {

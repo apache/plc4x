@@ -38,6 +38,7 @@ type NLMUpdateKeyDistributionKey interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetKeyRevision returns KeyRevision (property field)
 	GetKeyRevision() byte
@@ -56,6 +57,20 @@ type _NLMUpdateKeyDistributionKey struct {
 
 var _ NLMUpdateKeyDistributionKey = (*_NLMUpdateKeyDistributionKey)(nil)
 var _ NLMRequirements = (*_NLMUpdateKeyDistributionKey)(nil)
+
+// NewNLMUpdateKeyDistributionKey factory function for _NLMUpdateKeyDistributionKey
+func NewNLMUpdateKeyDistributionKey(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyDistributionKey {
+	if key == nil {
+		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMUpdateKeyDistributionKey must not be nil")
+	}
+	_result := &_NLMUpdateKeyDistributionKey{
+		NLMContract: NewNLM(apduLength),
+		KeyRevision: keyRevision,
+		Key:         key,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_NLMUpdateKeyDistributionKey) GetKey() NLMUpdateKeyUpdateKeyEntry {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMUpdateKeyDistributionKey factory function for _NLMUpdateKeyDistributionKey
-func NewNLMUpdateKeyDistributionKey(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyDistributionKey {
-	if key == nil {
-		panic("key of type NLMUpdateKeyUpdateKeyEntry for NLMUpdateKeyDistributionKey must not be nil")
-	}
-	_result := &_NLMUpdateKeyDistributionKey{
-		NLMContract: NewNLM(apduLength),
-		KeyRevision: keyRevision,
-		Key:         key,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMUpdateKeyDistributionKey(structType any) NLMUpdateKeyDistributionKey {
@@ -203,6 +204,23 @@ func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_NLMUpdateKeyDistributionKey) IsNLMUpdateKeyDistributionKey() {}
+
+func (m *_NLMUpdateKeyDistributionKey) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMUpdateKeyDistributionKey) deepCopy() *_NLMUpdateKeyDistributionKey {
+	if m == nil {
+		return nil
+	}
+	_NLMUpdateKeyDistributionKeyCopy := &_NLMUpdateKeyDistributionKey{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.KeyRevision,
+		m.Key.DeepCopy().(NLMUpdateKeyUpdateKeyEntry),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMUpdateKeyDistributionKeyCopy
+}
 
 func (m *_NLMUpdateKeyDistributionKey) String() string {
 	if m == nil {

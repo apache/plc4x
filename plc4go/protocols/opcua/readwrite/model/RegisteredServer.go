@@ -38,6 +38,7 @@ type RegisteredServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetServerUri returns ServerUri (property field)
 	GetServerUri() PascalString
@@ -82,6 +83,37 @@ type _RegisteredServer struct {
 
 var _ RegisteredServer = (*_RegisteredServer)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisteredServer)(nil)
+
+// NewRegisteredServer factory function for _RegisteredServer
+func NewRegisteredServer(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) *_RegisteredServer {
+	if serverUri == nil {
+		panic("serverUri of type PascalString for RegisteredServer must not be nil")
+	}
+	if productUri == nil {
+		panic("productUri of type PascalString for RegisteredServer must not be nil")
+	}
+	if gatewayServerUri == nil {
+		panic("gatewayServerUri of type PascalString for RegisteredServer must not be nil")
+	}
+	if semaphoreFilePath == nil {
+		panic("semaphoreFilePath of type PascalString for RegisteredServer must not be nil")
+	}
+	_result := &_RegisteredServer{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ServerUri:                         serverUri,
+		ProductUri:                        productUri,
+		NoOfServerNames:                   noOfServerNames,
+		ServerNames:                       serverNames,
+		ServerType:                        serverType,
+		GatewayServerUri:                  gatewayServerUri,
+		NoOfDiscoveryUrls:                 noOfDiscoveryUrls,
+		DiscoveryUrls:                     discoveryUrls,
+		SemaphoreFilePath:                 semaphoreFilePath,
+		IsOnline:                          isOnline,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -150,37 +182,6 @@ func (m *_RegisteredServer) GetIsOnline() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisteredServer factory function for _RegisteredServer
-func NewRegisteredServer(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) *_RegisteredServer {
-	if serverUri == nil {
-		panic("serverUri of type PascalString for RegisteredServer must not be nil")
-	}
-	if productUri == nil {
-		panic("productUri of type PascalString for RegisteredServer must not be nil")
-	}
-	if gatewayServerUri == nil {
-		panic("gatewayServerUri of type PascalString for RegisteredServer must not be nil")
-	}
-	if semaphoreFilePath == nil {
-		panic("semaphoreFilePath of type PascalString for RegisteredServer must not be nil")
-	}
-	_result := &_RegisteredServer{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ServerUri:                         serverUri,
-		ProductUri:                        productUri,
-		NoOfServerNames:                   noOfServerNames,
-		ServerNames:                       serverNames,
-		ServerType:                        serverType,
-		GatewayServerUri:                  gatewayServerUri,
-		NoOfDiscoveryUrls:                 noOfDiscoveryUrls,
-		DiscoveryUrls:                     discoveryUrls,
-		SemaphoreFilePath:                 semaphoreFilePath,
-		IsOnline:                          isOnline,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisteredServer(structType any) RegisteredServer {
@@ -409,6 +410,32 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_RegisteredServer) IsRegisteredServer() {}
+
+func (m *_RegisteredServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisteredServer) deepCopy() *_RegisteredServer {
+	if m == nil {
+		return nil
+	}
+	_RegisteredServerCopy := &_RegisteredServer{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ServerUri.DeepCopy().(PascalString),
+		m.ProductUri.DeepCopy().(PascalString),
+		m.NoOfServerNames,
+		utils.DeepCopySlice[LocalizedText, LocalizedText](m.ServerNames),
+		m.ServerType,
+		m.GatewayServerUri.DeepCopy().(PascalString),
+		m.NoOfDiscoveryUrls,
+		utils.DeepCopySlice[PascalString, PascalString](m.DiscoveryUrls),
+		m.SemaphoreFilePath.DeepCopy().(PascalString),
+		m.IsOnline,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisteredServerCopy
+}
 
 func (m *_RegisteredServer) String() string {
 	if m == nil {

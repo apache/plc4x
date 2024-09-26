@@ -40,6 +40,7 @@ type BVLCOriginalBroadcastNPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
@@ -58,6 +59,19 @@ type _BVLCOriginalBroadcastNPDU struct {
 
 var _ BVLCOriginalBroadcastNPDU = (*_BVLCOriginalBroadcastNPDU)(nil)
 var _ BVLCRequirements = (*_BVLCOriginalBroadcastNPDU)(nil)
+
+// NewBVLCOriginalBroadcastNPDU factory function for _BVLCOriginalBroadcastNPDU
+func NewBVLCOriginalBroadcastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalBroadcastNPDU {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCOriginalBroadcastNPDU must not be nil")
+	}
+	_result := &_BVLCOriginalBroadcastNPDU{
+		BVLCContract: NewBVLC(),
+		Npdu:         npdu,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,19 +104,6 @@ func (m *_BVLCOriginalBroadcastNPDU) GetNpdu() NPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCOriginalBroadcastNPDU factory function for _BVLCOriginalBroadcastNPDU
-func NewBVLCOriginalBroadcastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalBroadcastNPDU {
-	if npdu == nil {
-		panic("npdu of type NPDU for BVLCOriginalBroadcastNPDU must not be nil")
-	}
-	_result := &_BVLCOriginalBroadcastNPDU{
-		BVLCContract: NewBVLC(),
-		Npdu:         npdu,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCOriginalBroadcastNPDU(structType any) BVLCOriginalBroadcastNPDU {
@@ -197,6 +198,23 @@ func (m *_BVLCOriginalBroadcastNPDU) GetBvlcPayloadLength() uint16 {
 ////
 
 func (m *_BVLCOriginalBroadcastNPDU) IsBVLCOriginalBroadcastNPDU() {}
+
+func (m *_BVLCOriginalBroadcastNPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCOriginalBroadcastNPDU) deepCopy() *_BVLCOriginalBroadcastNPDU {
+	if m == nil {
+		return nil
+	}
+	_BVLCOriginalBroadcastNPDUCopy := &_BVLCOriginalBroadcastNPDU{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		m.Npdu.DeepCopy().(NPDU),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCOriginalBroadcastNPDUCopy
+}
 
 func (m *_BVLCOriginalBroadcastNPDU) String() string {
 	if m == nil {

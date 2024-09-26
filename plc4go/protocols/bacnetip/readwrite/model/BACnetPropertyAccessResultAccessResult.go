@@ -40,6 +40,7 @@ type BACnetPropertyAccessResultAccessResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetPropertyAccessResultAccessResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyAccessResultAccessResult()
 }
@@ -81,6 +82,14 @@ type _BACnetPropertyAccessResultAccessResult struct {
 
 var _ BACnetPropertyAccessResultAccessResultContract = (*_BACnetPropertyAccessResultAccessResult)(nil)
 
+// NewBACnetPropertyAccessResultAccessResult factory function for _BACnetPropertyAccessResultAccessResult
+func NewBACnetPropertyAccessResultAccessResult(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResult {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetPropertyAccessResultAccessResult must not be nil")
+	}
+	return &_BACnetPropertyAccessResultAccessResult{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, PropertyArrayIndexArgument: propertyArrayIndexArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -110,14 +119,6 @@ func (pm *_BACnetPropertyAccessResultAccessResult) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyAccessResultAccessResult factory function for _BACnetPropertyAccessResultAccessResult
-func NewBACnetPropertyAccessResultAccessResult(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResult {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetPropertyAccessResultAccessResult must not be nil")
-	}
-	return &_BACnetPropertyAccessResultAccessResult{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, PropertyArrayIndexArgument: propertyArrayIndexArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyAccessResultAccessResult(structType any) BACnetPropertyAccessResultAccessResult {
@@ -200,11 +201,11 @@ func (m *_BACnetPropertyAccessResultAccessResult) parse(ctx context.Context, rea
 	var _child BACnetPropertyAccessResultAccessResult
 	switch {
 	case peekedTagNumber == uint8(4): // BACnetPropertyAccessResultAccessResultPropertyValue
-		if _child, err = (&_BACnetPropertyAccessResultAccessResultPropertyValue{}).parse(ctx, readBuffer, m, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetPropertyAccessResultAccessResultPropertyValue).parse(ctx, readBuffer, m, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyAccessResultAccessResultPropertyValue for type-switch of BACnetPropertyAccessResultAccessResult")
 		}
 	case peekedTagNumber == uint8(5): // BACnetPropertyAccessResultAccessResultPropertyAccessError
-		if _child, err = (&_BACnetPropertyAccessResultAccessResultPropertyAccessError{}).parse(ctx, readBuffer, m, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument); err != nil {
+		if _child, err = new(_BACnetPropertyAccessResultAccessResultPropertyAccessError).parse(ctx, readBuffer, m, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPropertyAccessResultAccessResultPropertyAccessError for type-switch of BACnetPropertyAccessResultAccessResult")
 		}
 	default:
@@ -264,3 +265,21 @@ func (m *_BACnetPropertyAccessResultAccessResult) GetPropertyArrayIndexArgument(
 ////
 
 func (m *_BACnetPropertyAccessResultAccessResult) IsBACnetPropertyAccessResultAccessResult() {}
+
+func (m *_BACnetPropertyAccessResultAccessResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyAccessResultAccessResult) deepCopy() *_BACnetPropertyAccessResultAccessResult {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyAccessResultAccessResultCopy := &_BACnetPropertyAccessResultAccessResult{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ObjectTypeArgument,
+		m.PropertyIdentifierArgument,
+		m.PropertyArrayIndexArgument,
+	}
+	return _BACnetPropertyAccessResultAccessResultCopy
+}

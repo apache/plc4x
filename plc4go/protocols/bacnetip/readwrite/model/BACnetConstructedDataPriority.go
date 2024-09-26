@@ -38,6 +38,7 @@ type BACnetConstructedDataPriority interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataPriority struct {
 
 var _ BACnetConstructedDataPriority = (*_BACnetConstructedDataPriority)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPriority)(nil)
+
+// NewBACnetConstructedDataPriority factory function for _BACnetConstructedDataPriority
+func NewBACnetConstructedDataPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, priority []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriority {
+	_result := &_BACnetConstructedDataPriority{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		Priority:                      priority,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataPriority) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPriority factory function for _BACnetConstructedDataPriority
-func NewBACnetConstructedDataPriority(numberOfDataElements BACnetApplicationTagUnsignedInteger, priority []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriority {
-	_result := &_BACnetConstructedDataPriority{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		Priority:                      priority,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPriority(structType any) BACnetConstructedDataPriority {
@@ -252,6 +253,23 @@ func (m *_BACnetConstructedDataPriority) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataPriority) IsBACnetConstructedDataPriority() {}
+
+func (m *_BACnetConstructedDataPriority) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPriority) deepCopy() *_BACnetConstructedDataPriority {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPriorityCopy := &_BACnetConstructedDataPriority{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.Priority),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPriorityCopy
+}
 
 func (m *_BACnetConstructedDataPriority) String() string {
 	if m == nil {

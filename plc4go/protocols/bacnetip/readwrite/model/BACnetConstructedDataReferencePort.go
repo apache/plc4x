@@ -38,6 +38,7 @@ type BACnetConstructedDataReferencePort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReferencePort returns ReferencePort (property field)
 	GetReferencePort() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataReferencePort struct {
 
 var _ BACnetConstructedDataReferencePort = (*_BACnetConstructedDataReferencePort)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReferencePort)(nil)
+
+// NewBACnetConstructedDataReferencePort factory function for _BACnetConstructedDataReferencePort
+func NewBACnetConstructedDataReferencePort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencePort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReferencePort {
+	if referencePort == nil {
+		panic("referencePort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataReferencePort must not be nil")
+	}
+	_result := &_BACnetConstructedDataReferencePort{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ReferencePort:                 referencePort,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataReferencePort) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReferencePort factory function for _BACnetConstructedDataReferencePort
-func NewBACnetConstructedDataReferencePort(referencePort BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReferencePort {
-	if referencePort == nil {
-		panic("referencePort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataReferencePort must not be nil")
-	}
-	_result := &_BACnetConstructedDataReferencePort{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ReferencePort:                 referencePort,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReferencePort(structType any) BACnetConstructedDataReferencePort {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataReferencePort) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataReferencePort) IsBACnetConstructedDataReferencePort() {}
+
+func (m *_BACnetConstructedDataReferencePort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReferencePort) deepCopy() *_BACnetConstructedDataReferencePort {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReferencePortCopy := &_BACnetConstructedDataReferencePort{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ReferencePort.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReferencePortCopy
+}
 
 func (m *_BACnetConstructedDataReferencePort) String() string {
 	if m == nil {

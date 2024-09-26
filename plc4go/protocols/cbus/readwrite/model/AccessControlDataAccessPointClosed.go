@@ -36,6 +36,7 @@ type AccessControlDataAccessPointClosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AccessControlData
 	// IsAccessControlDataAccessPointClosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataAccessPointClosed()
@@ -49,6 +50,15 @@ type _AccessControlDataAccessPointClosed struct {
 var _ AccessControlDataAccessPointClosed = (*_AccessControlDataAccessPointClosed)(nil)
 var _ AccessControlDataRequirements = (*_AccessControlDataAccessPointClosed)(nil)
 
+// NewAccessControlDataAccessPointClosed factory function for _AccessControlDataAccessPointClosed
+func NewAccessControlDataAccessPointClosed(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataAccessPointClosed {
+	_result := &_AccessControlDataAccessPointClosed{
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ AccessControlDataRequirements = (*_AccessControlDataAccessPointClosed)(nil
 
 func (m *_AccessControlDataAccessPointClosed) GetParent() AccessControlDataContract {
 	return m.AccessControlDataContract
-}
-
-// NewAccessControlDataAccessPointClosed factory function for _AccessControlDataAccessPointClosed
-func NewAccessControlDataAccessPointClosed(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataAccessPointClosed {
-	_result := &_AccessControlDataAccessPointClosed{
-		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
-	}
-	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_AccessControlDataAccessPointClosed) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_AccessControlDataAccessPointClosed) IsAccessControlDataAccessPointClosed() {}
+
+func (m *_AccessControlDataAccessPointClosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlDataAccessPointClosed) deepCopy() *_AccessControlDataAccessPointClosed {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataAccessPointClosedCopy := &_AccessControlDataAccessPointClosed{
+		m.AccessControlDataContract.(*_AccessControlData).deepCopy(),
+	}
+	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	return _AccessControlDataAccessPointClosedCopy
+}
 
 func (m *_AccessControlDataAccessPointClosed) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type BACnetOptionalREAL interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetOptionalREAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalREAL()
 }
@@ -70,6 +71,14 @@ type _BACnetOptionalREAL struct {
 
 var _ BACnetOptionalREALContract = (*_BACnetOptionalREAL)(nil)
 
+// NewBACnetOptionalREAL factory function for _BACnetOptionalREAL
+func NewBACnetOptionalREAL(peekedTagHeader BACnetTagHeader) *_BACnetOptionalREAL {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalREAL must not be nil")
+	}
+	return &_BACnetOptionalREAL{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetOptionalREAL) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalREAL factory function for _BACnetOptionalREAL
-func NewBACnetOptionalREAL(peekedTagHeader BACnetTagHeader) *_BACnetOptionalREAL {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalREAL must not be nil")
-	}
-	return &_BACnetOptionalREAL{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalREAL(structType any) BACnetOptionalREAL {
@@ -189,11 +190,11 @@ func (m *_BACnetOptionalREAL) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child BACnetOptionalREAL
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalREALNull
-		if _child, err = (&_BACnetOptionalREALNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalREALNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalREALNull for type-switch of BACnetOptionalREAL")
 		}
 	case 0 == 0: // BACnetOptionalREALValue
-		if _child, err = (&_BACnetOptionalREALValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalREALValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalREALValue for type-switch of BACnetOptionalREAL")
 		}
 	default:
@@ -237,3 +238,18 @@ func (pm *_BACnetOptionalREAL) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_BACnetOptionalREAL) IsBACnetOptionalREAL() {}
+
+func (m *_BACnetOptionalREAL) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalREAL) deepCopy() *_BACnetOptionalREAL {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalREALCopy := &_BACnetOptionalREAL{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetOptionalREALCopy
+}

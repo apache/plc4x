@@ -38,6 +38,7 @@ type BACnetConstructedDataEventEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEventEnable returns EventEnable (property field)
 	GetEventEnable() BACnetEventTransitionBitsTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataEventEnable struct {
 
 var _ BACnetConstructedDataEventEnable = (*_BACnetConstructedDataEventEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventEnable)(nil)
+
+// NewBACnetConstructedDataEventEnable factory function for _BACnetConstructedDataEventEnable
+func NewBACnetConstructedDataEventEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventEnable BACnetEventTransitionBitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventEnable {
+	if eventEnable == nil {
+		panic("eventEnable of type BACnetEventTransitionBitsTagged for BACnetConstructedDataEventEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataEventEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventEnable:                   eventEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataEventEnable) GetActualValue() BACnetEventTransiti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventEnable factory function for _BACnetConstructedDataEventEnable
-func NewBACnetConstructedDataEventEnable(eventEnable BACnetEventTransitionBitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventEnable {
-	if eventEnable == nil {
-		panic("eventEnable of type BACnetEventTransitionBitsTagged for BACnetConstructedDataEventEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataEventEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EventEnable:                   eventEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventEnable(structType any) BACnetConstructedDataEventEnable {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEventEnable) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataEventEnable) IsBACnetConstructedDataEventEnable() {}
+
+func (m *_BACnetConstructedDataEventEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventEnable) deepCopy() *_BACnetConstructedDataEventEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventEnableCopy := &_BACnetConstructedDataEventEnable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EventEnable.DeepCopy().(BACnetEventTransitionBitsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventEnableCopy
+}
 
 func (m *_BACnetConstructedDataEventEnable) String() string {
 	if m == nil {

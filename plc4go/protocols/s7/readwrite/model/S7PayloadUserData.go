@@ -38,6 +38,7 @@ type S7PayloadUserData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7PayloadUserDataItem
@@ -53,6 +54,16 @@ type _S7PayloadUserData struct {
 
 var _ S7PayloadUserData = (*_S7PayloadUserData)(nil)
 var _ S7PayloadRequirements = (*_S7PayloadUserData)(nil)
+
+// NewS7PayloadUserData factory function for _S7PayloadUserData
+func NewS7PayloadUserData(items []S7PayloadUserDataItem, parameter S7Parameter) *_S7PayloadUserData {
+	_result := &_S7PayloadUserData{
+		S7PayloadContract: NewS7Payload(parameter),
+		Items:             items,
+	}
+	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_S7PayloadUserData) GetItems() []S7PayloadUserDataItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserData factory function for _S7PayloadUserData
-func NewS7PayloadUserData(items []S7PayloadUserDataItem, parameter S7Parameter) *_S7PayloadUserData {
-	_result := &_S7PayloadUserData{
-		S7PayloadContract: NewS7Payload(parameter),
-		Items:             items,
-	}
-	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserData(structType any) S7PayloadUserData {
@@ -190,6 +191,22 @@ func (m *_S7PayloadUserData) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_S7PayloadUserData) IsS7PayloadUserData() {}
+
+func (m *_S7PayloadUserData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserData) deepCopy() *_S7PayloadUserData {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataCopy := &_S7PayloadUserData{
+		m.S7PayloadContract.(*_S7Payload).deepCopy(),
+		utils.DeepCopySlice[S7PayloadUserDataItem, S7PayloadUserDataItem](m.Items),
+	}
+	m.S7PayloadContract.(*_S7Payload)._SubType = m
+	return _S7PayloadUserDataCopy
+}
 
 func (m *_S7PayloadUserData) String() string {
 	if m == nil {

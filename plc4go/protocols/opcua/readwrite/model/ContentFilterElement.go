@@ -38,6 +38,7 @@ type ContentFilterElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetFilterOperator returns FilterOperator (property field)
 	GetFilterOperator() FilterOperator
@@ -59,6 +60,18 @@ type _ContentFilterElement struct {
 
 var _ ContentFilterElement = (*_ContentFilterElement)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterElement)(nil)
+
+// NewContentFilterElement factory function for _ContentFilterElement
+func NewContentFilterElement(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) *_ContentFilterElement {
+	_result := &_ContentFilterElement{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		FilterOperator:                    filterOperator,
+		NoOfFilterOperands:                noOfFilterOperands,
+		FilterOperands:                    filterOperands,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +112,6 @@ func (m *_ContentFilterElement) GetFilterOperands() []ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewContentFilterElement factory function for _ContentFilterElement
-func NewContentFilterElement(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) *_ContentFilterElement {
-	_result := &_ContentFilterElement{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		FilterOperator:                    filterOperator,
-		NoOfFilterOperands:                noOfFilterOperands,
-		FilterOperands:                    filterOperands,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastContentFilterElement(structType any) ContentFilterElement {
@@ -228,6 +229,24 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ContentFilterElement) IsContentFilterElement() {}
+
+func (m *_ContentFilterElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ContentFilterElement) deepCopy() *_ContentFilterElement {
+	if m == nil {
+		return nil
+	}
+	_ContentFilterElementCopy := &_ContentFilterElement{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.FilterOperator,
+		m.NoOfFilterOperands,
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.FilterOperands),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ContentFilterElementCopy
+}
 
 func (m *_ContentFilterElement) String() string {
 	if m == nil {

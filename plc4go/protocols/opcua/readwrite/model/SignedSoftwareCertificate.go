@@ -38,6 +38,7 @@ type SignedSoftwareCertificate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetCertificateData returns CertificateData (property field)
 	GetCertificateData() PascalByteString
@@ -56,6 +57,23 @@ type _SignedSoftwareCertificate struct {
 
 var _ SignedSoftwareCertificate = (*_SignedSoftwareCertificate)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SignedSoftwareCertificate)(nil)
+
+// NewSignedSoftwareCertificate factory function for _SignedSoftwareCertificate
+func NewSignedSoftwareCertificate(certificateData PascalByteString, signature PascalByteString) *_SignedSoftwareCertificate {
+	if certificateData == nil {
+		panic("certificateData of type PascalByteString for SignedSoftwareCertificate must not be nil")
+	}
+	if signature == nil {
+		panic("signature of type PascalByteString for SignedSoftwareCertificate must not be nil")
+	}
+	_result := &_SignedSoftwareCertificate{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		CertificateData:                   certificateData,
+		Signature:                         signature,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_SignedSoftwareCertificate) GetSignature() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSignedSoftwareCertificate factory function for _SignedSoftwareCertificate
-func NewSignedSoftwareCertificate(certificateData PascalByteString, signature PascalByteString) *_SignedSoftwareCertificate {
-	if certificateData == nil {
-		panic("certificateData of type PascalByteString for SignedSoftwareCertificate must not be nil")
-	}
-	if signature == nil {
-		panic("signature of type PascalByteString for SignedSoftwareCertificate must not be nil")
-	}
-	_result := &_SignedSoftwareCertificate{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		CertificateData:                   certificateData,
-		Signature:                         signature,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSignedSoftwareCertificate(structType any) SignedSoftwareCertificate {
@@ -206,6 +207,23 @@ func (m *_SignedSoftwareCertificate) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SignedSoftwareCertificate) IsSignedSoftwareCertificate() {}
+
+func (m *_SignedSoftwareCertificate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SignedSoftwareCertificate) deepCopy() *_SignedSoftwareCertificate {
+	if m == nil {
+		return nil
+	}
+	_SignedSoftwareCertificateCopy := &_SignedSoftwareCertificate{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.CertificateData.DeepCopy().(PascalByteString),
+		m.Signature.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SignedSoftwareCertificateCopy
+}
 
 func (m *_SignedSoftwareCertificate) String() string {
 	if m == nil {

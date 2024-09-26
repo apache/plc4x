@@ -38,6 +38,7 @@ type BACnetNotificationParametersExtendedParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -107,6 +108,20 @@ type _BACnetNotificationParametersExtendedParameters struct {
 }
 
 var _ BACnetNotificationParametersExtendedParameters = (*_BACnetNotificationParametersExtendedParameters)(nil)
+
+// NewBACnetNotificationParametersExtendedParameters factory function for _BACnetNotificationParametersExtendedParameters
+func NewBACnetNotificationParametersExtendedParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, realValue BACnetApplicationTagReal, unsignedValue BACnetApplicationTagUnsignedInteger, booleanValue BACnetApplicationTagBoolean, integerValue BACnetApplicationTagSignedInteger, doubleValue BACnetApplicationTagDouble, octetStringValue BACnetApplicationTagOctetString, characterStringValue BACnetApplicationTagCharacterString, bitStringValue BACnetApplicationTagBitString, enumeratedValue BACnetApplicationTagEnumerated, dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime, objectIdentifier BACnetApplicationTagObjectIdentifier, reference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersExtendedParameters {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetNotificationParametersExtendedParameters must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetNotificationParametersExtendedParameters must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetNotificationParametersExtendedParameters must not be nil")
+	}
+	return &_BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -296,20 +311,6 @@ func (m *_BACnetNotificationParametersExtendedParameters) GetIsClosingTag() bool
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersExtendedParameters factory function for _BACnetNotificationParametersExtendedParameters
-func NewBACnetNotificationParametersExtendedParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, realValue BACnetApplicationTagReal, unsignedValue BACnetApplicationTagUnsignedInteger, booleanValue BACnetApplicationTagBoolean, integerValue BACnetApplicationTagSignedInteger, doubleValue BACnetApplicationTagDouble, octetStringValue BACnetApplicationTagOctetString, characterStringValue BACnetApplicationTagCharacterString, bitStringValue BACnetApplicationTagBitString, enumeratedValue BACnetApplicationTagEnumerated, dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime, objectIdentifier BACnetApplicationTagObjectIdentifier, reference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersExtendedParameters {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetNotificationParametersExtendedParameters must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetNotificationParametersExtendedParameters must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetNotificationParametersExtendedParameters must not be nil")
-	}
-	return &_BACnetNotificationParametersExtendedParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersExtendedParameters(structType any) BACnetNotificationParametersExtendedParameters {
@@ -744,6 +745,37 @@ func (m *_BACnetNotificationParametersExtendedParameters) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetNotificationParametersExtendedParameters) IsBACnetNotificationParametersExtendedParameters() {
+}
+
+func (m *_BACnetNotificationParametersExtendedParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersExtendedParameters) deepCopy() *_BACnetNotificationParametersExtendedParameters {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersExtendedParametersCopy := &_BACnetNotificationParametersExtendedParameters{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.Reference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetNotificationParametersExtendedParametersCopy
 }
 
 func (m *_BACnetNotificationParametersExtendedParameters) String() string {

@@ -38,6 +38,7 @@ type ModifyMonitoredItemsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _ModifyMonitoredItemsRequest struct {
 
 var _ ModifyMonitoredItemsRequest = (*_ModifyMonitoredItemsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModifyMonitoredItemsRequest)(nil)
+
+// NewModifyMonitoredItemsRequest factory function for _ModifyMonitoredItemsRequest
+func NewModifyMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToModify int32, itemsToModify []ExtensionObjectDefinition) *_ModifyMonitoredItemsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ModifyMonitoredItemsRequest must not be nil")
+	}
+	_result := &_ModifyMonitoredItemsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		TimestampsToReturn:                timestampsToReturn,
+		NoOfItemsToModify:                 noOfItemsToModify,
+		ItemsToModify:                     itemsToModify,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_ModifyMonitoredItemsRequest) GetItemsToModify() []ExtensionObjectDefin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModifyMonitoredItemsRequest factory function for _ModifyMonitoredItemsRequest
-func NewModifyMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToModify int32, itemsToModify []ExtensionObjectDefinition) *_ModifyMonitoredItemsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ModifyMonitoredItemsRequest must not be nil")
-	}
-	_result := &_ModifyMonitoredItemsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		TimestampsToReturn:                timestampsToReturn,
-		NoOfItemsToModify:                 noOfItemsToModify,
-		ItemsToModify:                     itemsToModify,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModifyMonitoredItemsRequest(structType any) ModifyMonitoredItemsRequest {
@@ -273,6 +274,26 @@ func (m *_ModifyMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_ModifyMonitoredItemsRequest) IsModifyMonitoredItemsRequest() {}
+
+func (m *_ModifyMonitoredItemsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModifyMonitoredItemsRequest) deepCopy() *_ModifyMonitoredItemsRequest {
+	if m == nil {
+		return nil
+	}
+	_ModifyMonitoredItemsRequestCopy := &_ModifyMonitoredItemsRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.TimestampsToReturn,
+		m.NoOfItemsToModify,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ItemsToModify),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModifyMonitoredItemsRequestCopy
+}
 
 func (m *_ModifyMonitoredItemsRequest) String() string {
 	if m == nil {

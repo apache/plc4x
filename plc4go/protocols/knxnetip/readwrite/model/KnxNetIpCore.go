@@ -38,6 +38,7 @@ type KnxNetIpCore interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -53,6 +54,16 @@ type _KnxNetIpCore struct {
 
 var _ KnxNetIpCore = (*_KnxNetIpCore)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpCore)(nil)
+
+// NewKnxNetIpCore factory function for _KnxNetIpCore
+func NewKnxNetIpCore(version uint8) *_KnxNetIpCore {
+	_result := &_KnxNetIpCore{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_KnxNetIpCore) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpCore factory function for _KnxNetIpCore
-func NewKnxNetIpCore(version uint8) *_KnxNetIpCore {
-	_result := &_KnxNetIpCore{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpCore(structType any) KnxNetIpCore {
@@ -179,6 +180,22 @@ func (m *_KnxNetIpCore) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_KnxNetIpCore) IsKnxNetIpCore() {}
+
+func (m *_KnxNetIpCore) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpCore) deepCopy() *_KnxNetIpCore {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpCoreCopy := &_KnxNetIpCore{
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpCoreCopy
+}
 
 func (m *_KnxNetIpCore) String() string {
 	if m == nil {

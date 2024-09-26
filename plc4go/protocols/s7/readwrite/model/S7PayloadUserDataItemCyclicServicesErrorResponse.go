@@ -36,6 +36,7 @@ type S7PayloadUserDataItemCyclicServicesErrorResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCyclicServicesErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesErrorResponse()
@@ -48,6 +49,15 @@ type _S7PayloadUserDataItemCyclicServicesErrorResponse struct {
 
 var _ S7PayloadUserDataItemCyclicServicesErrorResponse = (*_S7PayloadUserDataItemCyclicServicesErrorResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesErrorResponse)(nil)
+
+// NewS7PayloadUserDataItemCyclicServicesErrorResponse factory function for _S7PayloadUserDataItemCyclicServicesErrorResponse
+func NewS7PayloadUserDataItemCyclicServicesErrorResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesErrorResponse {
+	_result := &_S7PayloadUserDataItemCyclicServicesErrorResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetCpuSubfunction() 
 
 func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemCyclicServicesErrorResponse factory function for _S7PayloadUserDataItemCyclicServicesErrorResponse
-func NewS7PayloadUserDataItemCyclicServicesErrorResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesErrorResponse {
-	_result := &_S7PayloadUserDataItemCyclicServicesErrorResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) SerializeWithWriteBu
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) IsS7PayloadUserDataItemCyclicServicesErrorResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) deepCopy() *_S7PayloadUserDataItemCyclicServicesErrorResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCyclicServicesErrorResponseCopy := &_S7PayloadUserDataItemCyclicServicesErrorResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCyclicServicesErrorResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) String() string {

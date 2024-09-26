@@ -38,6 +38,7 @@ type IdentifyReplyCommandOutputUnitSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetUnitFlags returns UnitFlags (property field)
 	GetUnitFlags() IdentifyReplyCommandUnitSummary
@@ -62,6 +63,22 @@ type _IdentifyReplyCommandOutputUnitSummary struct {
 
 var _ IdentifyReplyCommandOutputUnitSummary = (*_IdentifyReplyCommandOutputUnitSummary)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandOutputUnitSummary)(nil)
+
+// NewIdentifyReplyCommandOutputUnitSummary factory function for _IdentifyReplyCommandOutputUnitSummary
+func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
+	if unitFlags == nil {
+		panic("unitFlags of type IdentifyReplyCommandUnitSummary for IdentifyReplyCommandOutputUnitSummary must not be nil")
+	}
+	_result := &_IdentifyReplyCommandOutputUnitSummary{
+		IdentifyReplyCommandContract:        NewIdentifyReplyCommand(numBytes),
+		UnitFlags:                           unitFlags,
+		GavStoreEnabledByte1:                gavStoreEnabledByte1,
+		GavStoreEnabledByte2:                gavStoreEnabledByte2,
+		TimeFromLastRecoverOfMainsInSeconds: timeFromLastRecoverOfMainsInSeconds,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,22 +123,6 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetTimeFromLastRecoverOfMainsIn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandOutputUnitSummary factory function for _IdentifyReplyCommandOutputUnitSummary
-func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
-	if unitFlags == nil {
-		panic("unitFlags of type IdentifyReplyCommandUnitSummary for IdentifyReplyCommandOutputUnitSummary must not be nil")
-	}
-	_result := &_IdentifyReplyCommandOutputUnitSummary{
-		IdentifyReplyCommandContract:        NewIdentifyReplyCommand(numBytes),
-		UnitFlags:                           unitFlags,
-		GavStoreEnabledByte1:                gavStoreEnabledByte1,
-		GavStoreEnabledByte2:                gavStoreEnabledByte2,
-		TimeFromLastRecoverOfMainsInSeconds: timeFromLastRecoverOfMainsInSeconds,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandOutputUnitSummary(structType any) IdentifyReplyCommandOutputUnitSummary {
@@ -251,6 +252,25 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) IsIdentifyReplyCommandOutputUnitSummary() {}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummary) deepCopy() *_IdentifyReplyCommandOutputUnitSummary {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandOutputUnitSummaryCopy := &_IdentifyReplyCommandOutputUnitSummary{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		m.UnitFlags.DeepCopy().(IdentifyReplyCommandUnitSummary),
+		utils.CopyPtr[byte](m.GavStoreEnabledByte1),
+		utils.CopyPtr[byte](m.GavStoreEnabledByte2),
+		m.TimeFromLastRecoverOfMainsInSeconds,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandOutputUnitSummaryCopy
+}
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type DeviceStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetProgramMode returns ProgramMode (property field)
 	GetProgramMode() bool
 	// IsDeviceStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -53,6 +54,11 @@ type _DeviceStatus struct {
 
 var _ DeviceStatus = (*_DeviceStatus)(nil)
 
+// NewDeviceStatus factory function for _DeviceStatus
+func NewDeviceStatus(programMode bool) *_DeviceStatus {
+	return &_DeviceStatus{ProgramMode: programMode}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -66,11 +72,6 @@ func (m *_DeviceStatus) GetProgramMode() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceStatus factory function for _DeviceStatus
-func NewDeviceStatus(programMode bool) *_DeviceStatus {
-	return &_DeviceStatus{ProgramMode: programMode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceStatus(structType any) DeviceStatus {
@@ -181,6 +182,21 @@ func (m *_DeviceStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_DeviceStatus) IsDeviceStatus() {}
+
+func (m *_DeviceStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceStatus) deepCopy() *_DeviceStatus {
+	if m == nil {
+		return nil
+	}
+	_DeviceStatusCopy := &_DeviceStatus{
+		m.ProgramMode,
+		m.reservedField0,
+	}
+	return _DeviceStatusCopy
+}
 
 func (m *_DeviceStatus) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type PubSubConfigurationRefDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetConfigurationMask returns ConfigurationMask (property field)
 	GetConfigurationMask() PubSubConfigurationRefMask
@@ -62,6 +63,19 @@ type _PubSubConfigurationRefDataType struct {
 
 var _ PubSubConfigurationRefDataType = (*_PubSubConfigurationRefDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubConfigurationRefDataType)(nil)
+
+// NewPubSubConfigurationRefDataType factory function for _PubSubConfigurationRefDataType
+func NewPubSubConfigurationRefDataType(configurationMask PubSubConfigurationRefMask, elementIndex uint16, connectionIndex uint16, groupIndex uint16) *_PubSubConfigurationRefDataType {
+	_result := &_PubSubConfigurationRefDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ConfigurationMask:                 configurationMask,
+		ElementIndex:                      elementIndex,
+		ConnectionIndex:                   connectionIndex,
+		GroupIndex:                        groupIndex,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_PubSubConfigurationRefDataType) GetGroupIndex() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPubSubConfigurationRefDataType factory function for _PubSubConfigurationRefDataType
-func NewPubSubConfigurationRefDataType(configurationMask PubSubConfigurationRefMask, elementIndex uint16, connectionIndex uint16, groupIndex uint16) *_PubSubConfigurationRefDataType {
-	_result := &_PubSubConfigurationRefDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ConfigurationMask:                 configurationMask,
-		ElementIndex:                      elementIndex,
-		ConnectionIndex:                   connectionIndex,
-		GroupIndex:                        groupIndex,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPubSubConfigurationRefDataType(structType any) PubSubConfigurationRefDataType {
@@ -242,6 +243,25 @@ func (m *_PubSubConfigurationRefDataType) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_PubSubConfigurationRefDataType) IsPubSubConfigurationRefDataType() {}
+
+func (m *_PubSubConfigurationRefDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PubSubConfigurationRefDataType) deepCopy() *_PubSubConfigurationRefDataType {
+	if m == nil {
+		return nil
+	}
+	_PubSubConfigurationRefDataTypeCopy := &_PubSubConfigurationRefDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ConfigurationMask,
+		m.ElementIndex,
+		m.ConnectionIndex,
+		m.GroupIndex,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PubSubConfigurationRefDataTypeCopy
+}
 
 func (m *_PubSubConfigurationRefDataType) String() string {
 	if m == nil {

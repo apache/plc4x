@@ -38,6 +38,7 @@ type BACnetConstructedDataMultiStateValueAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,16 @@ type _BACnetConstructedDataMultiStateValueAlarmValues struct {
 
 var _ BACnetConstructedDataMultiStateValueAlarmValues = (*_BACnetConstructedDataMultiStateValueAlarmValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateValueAlarmValues)(nil)
+
+// NewBACnetConstructedDataMultiStateValueAlarmValues factory function for _BACnetConstructedDataMultiStateValueAlarmValues
+func NewBACnetConstructedDataMultiStateValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateValueAlarmValues {
+	_result := &_BACnetConstructedDataMultiStateValueAlarmValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AlarmValues:                   alarmValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataMultiStateValueAlarmValues) GetAlarmValues() []BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMultiStateValueAlarmValues factory function for _BACnetConstructedDataMultiStateValueAlarmValues
-func NewBACnetConstructedDataMultiStateValueAlarmValues(alarmValues []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateValueAlarmValues {
-	_result := &_BACnetConstructedDataMultiStateValueAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AlarmValues:                   alarmValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMultiStateValueAlarmValues(structType any) BACnetConstructedDataMultiStateValueAlarmValues {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataMultiStateValueAlarmValues) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataMultiStateValueAlarmValues) IsBACnetConstructedDataMultiStateValueAlarmValues() {
+}
+
+func (m *_BACnetConstructedDataMultiStateValueAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMultiStateValueAlarmValues) deepCopy() *_BACnetConstructedDataMultiStateValueAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMultiStateValueAlarmValuesCopy := &_BACnetConstructedDataMultiStateValueAlarmValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMultiStateValueAlarmValuesCopy
 }
 
 func (m *_BACnetConstructedDataMultiStateValueAlarmValues) String() string {

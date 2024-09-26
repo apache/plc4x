@@ -38,6 +38,7 @@ type BACnetLiftGroupModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetLiftGroupModeTagged struct {
 
 var _ BACnetLiftGroupModeTagged = (*_BACnetLiftGroupModeTagged)(nil)
 
+// NewBACnetLiftGroupModeTagged factory function for _BACnetLiftGroupModeTagged
+func NewBACnetLiftGroupModeTagged(header BACnetTagHeader, value BACnetLiftGroupMode, tagNumber uint8, tagClass TagClass) *_BACnetLiftGroupModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftGroupModeTagged must not be nil")
+	}
+	return &_BACnetLiftGroupModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetLiftGroupModeTagged) GetValue() BACnetLiftGroupMode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftGroupModeTagged factory function for _BACnetLiftGroupModeTagged
-func NewBACnetLiftGroupModeTagged(header BACnetTagHeader, value BACnetLiftGroupMode, tagNumber uint8, tagClass TagClass) *_BACnetLiftGroupModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLiftGroupModeTagged must not be nil")
-	}
-	return &_BACnetLiftGroupModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftGroupModeTagged(structType any) BACnetLiftGroupModeTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetLiftGroupModeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLiftGroupModeTagged) IsBACnetLiftGroupModeTagged() {}
+
+func (m *_BACnetLiftGroupModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftGroupModeTagged) deepCopy() *_BACnetLiftGroupModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftGroupModeTaggedCopy := &_BACnetLiftGroupModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLiftGroupModeTaggedCopy
+}
 
 func (m *_BACnetLiftGroupModeTagged) String() string {
 	if m == nil {

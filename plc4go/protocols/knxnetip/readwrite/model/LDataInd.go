@@ -38,6 +38,7 @@ type LDataInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
@@ -59,6 +60,21 @@ type _LDataInd struct {
 
 var _ LDataInd = (*_LDataInd)(nil)
 var _ CEMIRequirements = (*_LDataInd)(nil)
+
+// NewLDataInd factory function for _LDataInd
+func NewLDataInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataInd {
+	if dataFrame == nil {
+		panic("dataFrame of type LDataFrame for LDataInd must not be nil")
+	}
+	_result := &_LDataInd{
+		CEMIContract:                NewCEMI(size),
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_LDataInd) GetDataFrame() LDataFrame {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataInd factory function for _LDataInd
-func NewLDataInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataInd {
-	if dataFrame == nil {
-		panic("dataFrame of type LDataFrame for LDataInd must not be nil")
-	}
-	_result := &_LDataInd{
-		CEMIContract:                NewCEMI(size),
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataInd(structType any) LDataInd {
@@ -228,6 +229,24 @@ func (m *_LDataInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_LDataInd) IsLDataInd() {}
+
+func (m *_LDataInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataInd) deepCopy() *_LDataInd {
+	if m == nil {
+		return nil
+	}
+	_LDataIndCopy := &_LDataInd{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+		m.AdditionalInformationLength,
+		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
+		m.DataFrame.DeepCopy().(LDataFrame),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LDataIndCopy
+}
 
 func (m *_LDataInd) String() string {
 	if m == nil {

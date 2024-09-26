@@ -38,6 +38,7 @@ type DeleteReferencesItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSourceNodeId returns SourceNodeId (property field)
 	GetSourceNodeId() NodeId
@@ -68,6 +69,29 @@ type _DeleteReferencesItem struct {
 
 var _ DeleteReferencesItem = (*_DeleteReferencesItem)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteReferencesItem)(nil)
+
+// NewDeleteReferencesItem factory function for _DeleteReferencesItem
+func NewDeleteReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetNodeId ExpandedNodeId, deleteBidirectional bool) *_DeleteReferencesItem {
+	if sourceNodeId == nil {
+		panic("sourceNodeId of type NodeId for DeleteReferencesItem must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for DeleteReferencesItem must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type ExpandedNodeId for DeleteReferencesItem must not be nil")
+	}
+	_result := &_DeleteReferencesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SourceNodeId:                      sourceNodeId,
+		ReferenceTypeId:                   referenceTypeId,
+		IsForward:                         isForward,
+		TargetNodeId:                      targetNodeId,
+		DeleteBidirectional:               deleteBidirectional,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,29 +140,6 @@ func (m *_DeleteReferencesItem) GetDeleteBidirectional() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteReferencesItem factory function for _DeleteReferencesItem
-func NewDeleteReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetNodeId ExpandedNodeId, deleteBidirectional bool) *_DeleteReferencesItem {
-	if sourceNodeId == nil {
-		panic("sourceNodeId of type NodeId for DeleteReferencesItem must not be nil")
-	}
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for DeleteReferencesItem must not be nil")
-	}
-	if targetNodeId == nil {
-		panic("targetNodeId of type ExpandedNodeId for DeleteReferencesItem must not be nil")
-	}
-	_result := &_DeleteReferencesItem{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SourceNodeId:                      sourceNodeId,
-		ReferenceTypeId:                   referenceTypeId,
-		IsForward:                         isForward,
-		TargetNodeId:                      targetNodeId,
-		DeleteBidirectional:               deleteBidirectional,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteReferencesItem(structType any) DeleteReferencesItem {
@@ -301,6 +302,28 @@ func (m *_DeleteReferencesItem) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_DeleteReferencesItem) IsDeleteReferencesItem() {}
+
+func (m *_DeleteReferencesItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteReferencesItem) deepCopy() *_DeleteReferencesItem {
+	if m == nil {
+		return nil
+	}
+	_DeleteReferencesItemCopy := &_DeleteReferencesItem{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SourceNodeId.DeepCopy().(NodeId),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IsForward,
+		m.TargetNodeId.DeepCopy().(ExpandedNodeId),
+		m.DeleteBidirectional,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteReferencesItemCopy
+}
 
 func (m *_DeleteReferencesItem) String() string {
 	if m == nil {

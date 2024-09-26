@@ -38,6 +38,7 @@ type BACnetConstructedDataExtendedTimeEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetExtendedTimeEnable returns ExtendedTimeEnable (property field)
 	GetExtendedTimeEnable() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataExtendedTimeEnable struct {
 
 var _ BACnetConstructedDataExtendedTimeEnable = (*_BACnetConstructedDataExtendedTimeEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExtendedTimeEnable)(nil)
+
+// NewBACnetConstructedDataExtendedTimeEnable factory function for _BACnetConstructedDataExtendedTimeEnable
+func NewBACnetConstructedDataExtendedTimeEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, extendedTimeEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExtendedTimeEnable {
+	if extendedTimeEnable == nil {
+		panic("extendedTimeEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataExtendedTimeEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataExtendedTimeEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ExtendedTimeEnable:            extendedTimeEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataExtendedTimeEnable factory function for _BACnetConstructedDataExtendedTimeEnable
-func NewBACnetConstructedDataExtendedTimeEnable(extendedTimeEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExtendedTimeEnable {
-	if extendedTimeEnable == nil {
-		panic("extendedTimeEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataExtendedTimeEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataExtendedTimeEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ExtendedTimeEnable:            extendedTimeEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataExtendedTimeEnable(structType any) BACnetConstructedDataExtendedTimeEnable {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) IsBACnetConstructedDataExtendedTimeEnable() {}
+
+func (m *_BACnetConstructedDataExtendedTimeEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExtendedTimeEnable) deepCopy() *_BACnetConstructedDataExtendedTimeEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExtendedTimeEnableCopy := &_BACnetConstructedDataExtendedTimeEnable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ExtendedTimeEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExtendedTimeEnableCopy
+}
 
 func (m *_BACnetConstructedDataExtendedTimeEnable) String() string {
 	if m == nil {

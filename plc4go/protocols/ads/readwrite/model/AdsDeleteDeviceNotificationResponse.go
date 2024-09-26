@@ -38,6 +38,7 @@ type AdsDeleteDeviceNotificationResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -53,6 +54,16 @@ type _AdsDeleteDeviceNotificationResponse struct {
 
 var _ AdsDeleteDeviceNotificationResponse = (*_AdsDeleteDeviceNotificationResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsDeleteDeviceNotificationResponse)(nil)
+
+// NewAdsDeleteDeviceNotificationResponse factory function for _AdsDeleteDeviceNotificationResponse
+func NewAdsDeleteDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsDeleteDeviceNotificationResponse {
+	_result := &_AdsDeleteDeviceNotificationResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:            result,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_AdsDeleteDeviceNotificationResponse) GetResult() ReturnCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDeleteDeviceNotificationResponse factory function for _AdsDeleteDeviceNotificationResponse
-func NewAdsDeleteDeviceNotificationResponse(result ReturnCode, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeleteDeviceNotificationResponse {
-	_result := &_AdsDeleteDeviceNotificationResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:            result,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDeleteDeviceNotificationResponse(structType any) AdsDeleteDeviceNotificationResponse {
@@ -183,6 +184,22 @@ func (m *_AdsDeleteDeviceNotificationResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_AdsDeleteDeviceNotificationResponse) IsAdsDeleteDeviceNotificationResponse() {}
+
+func (m *_AdsDeleteDeviceNotificationResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDeleteDeviceNotificationResponse) deepCopy() *_AdsDeleteDeviceNotificationResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsDeleteDeviceNotificationResponseCopy := &_AdsDeleteDeviceNotificationResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Result,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsDeleteDeviceNotificationResponseCopy
+}
 
 func (m *_AdsDeleteDeviceNotificationResponse) String() string {
 	if m == nil {

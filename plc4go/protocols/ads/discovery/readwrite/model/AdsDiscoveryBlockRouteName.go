@@ -38,6 +38,7 @@ type AdsDiscoveryBlockRouteName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetRouteName returns RouteName (property field)
 	GetRouteName() AmsString
@@ -53,6 +54,19 @@ type _AdsDiscoveryBlockRouteName struct {
 
 var _ AdsDiscoveryBlockRouteName = (*_AdsDiscoveryBlockRouteName)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockRouteName)(nil)
+
+// NewAdsDiscoveryBlockRouteName factory function for _AdsDiscoveryBlockRouteName
+func NewAdsDiscoveryBlockRouteName(routeName AmsString) *_AdsDiscoveryBlockRouteName {
+	if routeName == nil {
+		panic("routeName of type AmsString for AdsDiscoveryBlockRouteName must not be nil")
+	}
+	_result := &_AdsDiscoveryBlockRouteName{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		RouteName:                 routeName,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_AdsDiscoveryBlockRouteName) GetRouteName() AmsString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockRouteName factory function for _AdsDiscoveryBlockRouteName
-func NewAdsDiscoveryBlockRouteName(routeName AmsString) *_AdsDiscoveryBlockRouteName {
-	if routeName == nil {
-		panic("routeName of type AmsString for AdsDiscoveryBlockRouteName must not be nil")
-	}
-	_result := &_AdsDiscoveryBlockRouteName{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		RouteName:                 routeName,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockRouteName(structType any) AdsDiscoveryBlockRouteName {
@@ -182,6 +183,22 @@ func (m *_AdsDiscoveryBlockRouteName) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_AdsDiscoveryBlockRouteName) IsAdsDiscoveryBlockRouteName() {}
+
+func (m *_AdsDiscoveryBlockRouteName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockRouteName) deepCopy() *_AdsDiscoveryBlockRouteName {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockRouteNameCopy := &_AdsDiscoveryBlockRouteName{
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
+		m.RouteName.DeepCopy().(AmsString),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockRouteNameCopy
+}
 
 func (m *_AdsDiscoveryBlockRouteName) String() string {
 	if m == nil {

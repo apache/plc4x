@@ -38,6 +38,7 @@ type BACnetConstructedDataDerivativeConstant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDerivativeConstant returns DerivativeConstant (property field)
 	GetDerivativeConstant() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDerivativeConstant struct {
 
 var _ BACnetConstructedDataDerivativeConstant = (*_BACnetConstructedDataDerivativeConstant)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDerivativeConstant)(nil)
+
+// NewBACnetConstructedDataDerivativeConstant factory function for _BACnetConstructedDataDerivativeConstant
+func NewBACnetConstructedDataDerivativeConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, derivativeConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstant {
+	if derivativeConstant == nil {
+		panic("derivativeConstant of type BACnetApplicationTagReal for BACnetConstructedDataDerivativeConstant must not be nil")
+	}
+	_result := &_BACnetConstructedDataDerivativeConstant{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DerivativeConstant:            derivativeConstant,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDerivativeConstant) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDerivativeConstant factory function for _BACnetConstructedDataDerivativeConstant
-func NewBACnetConstructedDataDerivativeConstant(derivativeConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstant {
-	if derivativeConstant == nil {
-		panic("derivativeConstant of type BACnetApplicationTagReal for BACnetConstructedDataDerivativeConstant must not be nil")
-	}
-	_result := &_BACnetConstructedDataDerivativeConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DerivativeConstant:            derivativeConstant,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDerivativeConstant(structType any) BACnetConstructedDataDerivativeConstant {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDerivativeConstant) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataDerivativeConstant) IsBACnetConstructedDataDerivativeConstant() {}
+
+func (m *_BACnetConstructedDataDerivativeConstant) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDerivativeConstant) deepCopy() *_BACnetConstructedDataDerivativeConstant {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDerivativeConstantCopy := &_BACnetConstructedDataDerivativeConstant{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DerivativeConstant.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDerivativeConstantCopy
+}
 
 func (m *_BACnetConstructedDataDerivativeConstant) String() string {
 	if m == nil {

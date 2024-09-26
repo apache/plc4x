@@ -38,6 +38,7 @@ type BACnetTagHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTagNumber returns TagNumber (property field)
 	GetTagNumber() uint8
 	// GetTagClass returns TagClass (property field)
@@ -78,6 +79,11 @@ type _BACnetTagHeader struct {
 }
 
 var _ BACnetTagHeader = (*_BACnetTagHeader)(nil)
+
+// NewBACnetTagHeader factory function for _BACnetTagHeader
+func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *_BACnetTagHeader {
+	return &_BACnetTagHeader{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -199,11 +205,6 @@ func (m *_BACnetTagHeader) GetActualLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagHeader factory function for _BACnetTagHeader
-func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *_BACnetTagHeader {
-	return &_BACnetTagHeader{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagHeader(structType any) BACnetTagHeader {
@@ -465,6 +466,26 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_BACnetTagHeader) IsBACnetTagHeader() {}
+
+func (m *_BACnetTagHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagHeader) deepCopy() *_BACnetTagHeader {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagHeaderCopy := &_BACnetTagHeader{
+		m.TagNumber,
+		m.TagClass,
+		m.LengthValueType,
+		utils.CopyPtr[uint8](m.ExtTagNumber),
+		utils.CopyPtr[uint8](m.ExtLength),
+		utils.CopyPtr[uint16](m.ExtExtLength),
+		utils.CopyPtr[uint32](m.ExtExtExtLength),
+	}
+	return _BACnetTagHeaderCopy
+}
 
 func (m *_BACnetTagHeader) String() string {
 	if m == nil {

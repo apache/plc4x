@@ -36,6 +36,7 @@ type PublishedDataSetSourceDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsPublishedDataSetSourceDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishedDataSetSourceDataType()
@@ -48,6 +49,15 @@ type _PublishedDataSetSourceDataType struct {
 
 var _ PublishedDataSetSourceDataType = (*_PublishedDataSetSourceDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishedDataSetSourceDataType)(nil)
+
+// NewPublishedDataSetSourceDataType factory function for _PublishedDataSetSourceDataType
+func NewPublishedDataSetSourceDataType() *_PublishedDataSetSourceDataType {
+	_result := &_PublishedDataSetSourceDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_PublishedDataSetSourceDataType) GetIdentifier() string {
 
 func (m *_PublishedDataSetSourceDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewPublishedDataSetSourceDataType factory function for _PublishedDataSetSourceDataType
-func NewPublishedDataSetSourceDataType() *_PublishedDataSetSourceDataType {
-	_result := &_PublishedDataSetSourceDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_PublishedDataSetSourceDataType) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_PublishedDataSetSourceDataType) IsPublishedDataSetSourceDataType() {}
+
+func (m *_PublishedDataSetSourceDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishedDataSetSourceDataType) deepCopy() *_PublishedDataSetSourceDataType {
+	if m == nil {
+		return nil
+	}
+	_PublishedDataSetSourceDataTypeCopy := &_PublishedDataSetSourceDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishedDataSetSourceDataTypeCopy
+}
 
 func (m *_PublishedDataSetSourceDataType) String() string {
 	if m == nil {

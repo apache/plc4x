@@ -38,6 +38,7 @@ type BACnetConstructedDataDeployedProfileLocation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeployedProfileLocation returns DeployedProfileLocation (property field)
 	GetDeployedProfileLocation() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDeployedProfileLocation struct {
 
 var _ BACnetConstructedDataDeployedProfileLocation = (*_BACnetConstructedDataDeployedProfileLocation)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeployedProfileLocation)(nil)
+
+// NewBACnetConstructedDataDeployedProfileLocation factory function for _BACnetConstructedDataDeployedProfileLocation
+func NewBACnetConstructedDataDeployedProfileLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deployedProfileLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeployedProfileLocation {
+	if deployedProfileLocation == nil {
+		panic("deployedProfileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeployedProfileLocation must not be nil")
+	}
+	_result := &_BACnetConstructedDataDeployedProfileLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DeployedProfileLocation:       deployedProfileLocation,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetActualValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeployedProfileLocation factory function for _BACnetConstructedDataDeployedProfileLocation
-func NewBACnetConstructedDataDeployedProfileLocation(deployedProfileLocation BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeployedProfileLocation {
-	if deployedProfileLocation == nil {
-		panic("deployedProfileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeployedProfileLocation must not be nil")
-	}
-	_result := &_BACnetConstructedDataDeployedProfileLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DeployedProfileLocation:       deployedProfileLocation,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeployedProfileLocation(structType any) BACnetConstructedDataDeployedProfileLocation {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) SerializeWithWriteBuffer
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) IsBACnetConstructedDataDeployedProfileLocation() {
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocation) deepCopy() *_BACnetConstructedDataDeployedProfileLocation {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDeployedProfileLocationCopy := &_BACnetConstructedDataDeployedProfileLocation{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DeployedProfileLocation.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDeployedProfileLocationCopy
 }
 
 func (m *_BACnetConstructedDataDeployedProfileLocation) String() string {

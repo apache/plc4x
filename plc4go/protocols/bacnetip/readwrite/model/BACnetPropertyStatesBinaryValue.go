@@ -38,6 +38,7 @@ type BACnetPropertyStatesBinaryValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBinaryValue returns BinaryValue (property field)
 	GetBinaryValue() BACnetBinaryPVTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesBinaryValue struct {
 
 var _ BACnetPropertyStatesBinaryValue = (*_BACnetPropertyStatesBinaryValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBinaryValue)(nil)
+
+// NewBACnetPropertyStatesBinaryValue factory function for _BACnetPropertyStatesBinaryValue
+func NewBACnetPropertyStatesBinaryValue(peekedTagHeader BACnetTagHeader, binaryValue BACnetBinaryPVTagged) *_BACnetPropertyStatesBinaryValue {
+	if binaryValue == nil {
+		panic("binaryValue of type BACnetBinaryPVTagged for BACnetPropertyStatesBinaryValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBinaryValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BinaryValue:                  binaryValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesBinaryValue) GetBinaryValue() BACnetBinaryPVTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBinaryValue factory function for _BACnetPropertyStatesBinaryValue
-func NewBACnetPropertyStatesBinaryValue(binaryValue BACnetBinaryPVTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBinaryValue {
-	if binaryValue == nil {
-		panic("binaryValue of type BACnetBinaryPVTagged for BACnetPropertyStatesBinaryValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBinaryValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BinaryValue:                  binaryValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBinaryValue(structType any) BACnetPropertyStatesBinaryValue {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBinaryValue) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesBinaryValue) IsBACnetPropertyStatesBinaryValue() {}
+
+func (m *_BACnetPropertyStatesBinaryValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBinaryValue) deepCopy() *_BACnetPropertyStatesBinaryValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBinaryValueCopy := &_BACnetPropertyStatesBinaryValue{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.BinaryValue.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBinaryValueCopy
+}
 
 func (m *_BACnetPropertyStatesBinaryValue) String() string {
 	if m == nil {

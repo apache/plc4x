@@ -38,6 +38,7 @@ type ContentFilterResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfElementResults returns NoOfElementResults (property field)
 	GetNoOfElementResults() int32
@@ -62,6 +63,19 @@ type _ContentFilterResult struct {
 
 var _ ContentFilterResult = (*_ContentFilterResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterResult)(nil)
+
+// NewContentFilterResult factory function for _ContentFilterResult
+func NewContentFilterResult(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) *_ContentFilterResult {
+	_result := &_ContentFilterResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfElementResults:                noOfElementResults,
+		ElementResults:                    elementResults,
+		NoOfElementDiagnosticInfos:        noOfElementDiagnosticInfos,
+		ElementDiagnosticInfos:            elementDiagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_ContentFilterResult) GetElementDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewContentFilterResult factory function for _ContentFilterResult
-func NewContentFilterResult(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) *_ContentFilterResult {
-	_result := &_ContentFilterResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfElementResults:                noOfElementResults,
-		ElementResults:                    elementResults,
-		NoOfElementDiagnosticInfos:        noOfElementDiagnosticInfos,
-		ElementDiagnosticInfos:            elementDiagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastContentFilterResult(structType any) ContentFilterResult {
@@ -256,6 +257,25 @@ func (m *_ContentFilterResult) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ContentFilterResult) IsContentFilterResult() {}
+
+func (m *_ContentFilterResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ContentFilterResult) deepCopy() *_ContentFilterResult {
+	if m == nil {
+		return nil
+	}
+	_ContentFilterResultCopy := &_ContentFilterResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfElementResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ElementResults),
+		m.NoOfElementDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.ElementDiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ContentFilterResultCopy
+}
 
 func (m *_ContentFilterResult) String() string {
 	if m == nil {

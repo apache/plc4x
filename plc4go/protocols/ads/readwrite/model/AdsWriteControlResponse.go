@@ -38,6 +38,7 @@ type AdsWriteControlResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -53,6 +54,16 @@ type _AdsWriteControlResponse struct {
 
 var _ AdsWriteControlResponse = (*_AdsWriteControlResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsWriteControlResponse)(nil)
+
+// NewAdsWriteControlResponse factory function for _AdsWriteControlResponse
+func NewAdsWriteControlResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsWriteControlResponse {
+	_result := &_AdsWriteControlResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:            result,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_AdsWriteControlResponse) GetResult() ReturnCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsWriteControlResponse factory function for _AdsWriteControlResponse
-func NewAdsWriteControlResponse(result ReturnCode, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteControlResponse {
-	_result := &_AdsWriteControlResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:            result,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsWriteControlResponse(structType any) AdsWriteControlResponse {
@@ -183,6 +184,22 @@ func (m *_AdsWriteControlResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_AdsWriteControlResponse) IsAdsWriteControlResponse() {}
+
+func (m *_AdsWriteControlResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsWriteControlResponse) deepCopy() *_AdsWriteControlResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsWriteControlResponseCopy := &_AdsWriteControlResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Result,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsWriteControlResponseCopy
+}
 
 func (m *_AdsWriteControlResponse) String() string {
 	if m == nil {

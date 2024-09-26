@@ -36,6 +36,7 @@ type MFuncPropCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMFuncPropCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropCon()
@@ -48,6 +49,15 @@ type _MFuncPropCon struct {
 
 var _ MFuncPropCon = (*_MFuncPropCon)(nil)
 var _ CEMIRequirements = (*_MFuncPropCon)(nil)
+
+// NewMFuncPropCon factory function for _MFuncPropCon
+func NewMFuncPropCon(size uint16) *_MFuncPropCon {
+	_result := &_MFuncPropCon{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_MFuncPropCon) GetMessageCode() uint8 {
 
 func (m *_MFuncPropCon) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMFuncPropCon factory function for _MFuncPropCon
-func NewMFuncPropCon(size uint16) *_MFuncPropCon {
-	_result := &_MFuncPropCon{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_MFuncPropCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_MFuncPropCon) IsMFuncPropCon() {}
+
+func (m *_MFuncPropCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MFuncPropCon) deepCopy() *_MFuncPropCon {
+	if m == nil {
+		return nil
+	}
+	_MFuncPropConCopy := &_MFuncPropCon{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MFuncPropConCopy
+}
 
 func (m *_MFuncPropCon) String() string {
 	if m == nil {

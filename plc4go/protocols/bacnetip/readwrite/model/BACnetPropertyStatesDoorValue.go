@@ -38,6 +38,7 @@ type BACnetPropertyStatesDoorValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetDoorValue returns DoorValue (property field)
 	GetDoorValue() BACnetDoorValueTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesDoorValue struct {
 
 var _ BACnetPropertyStatesDoorValue = (*_BACnetPropertyStatesDoorValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorValue)(nil)
+
+// NewBACnetPropertyStatesDoorValue factory function for _BACnetPropertyStatesDoorValue
+func NewBACnetPropertyStatesDoorValue(peekedTagHeader BACnetTagHeader, doorValue BACnetDoorValueTagged) *_BACnetPropertyStatesDoorValue {
+	if doorValue == nil {
+		panic("doorValue of type BACnetDoorValueTagged for BACnetPropertyStatesDoorValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesDoorValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		DoorValue:                    doorValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesDoorValue) GetDoorValue() BACnetDoorValueTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesDoorValue factory function for _BACnetPropertyStatesDoorValue
-func NewBACnetPropertyStatesDoorValue(doorValue BACnetDoorValueTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesDoorValue {
-	if doorValue == nil {
-		panic("doorValue of type BACnetDoorValueTagged for BACnetPropertyStatesDoorValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesDoorValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		DoorValue:                    doorValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesDoorValue(structType any) BACnetPropertyStatesDoorValue {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesDoorValue) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetPropertyStatesDoorValue) IsBACnetPropertyStatesDoorValue() {}
+
+func (m *_BACnetPropertyStatesDoorValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesDoorValue) deepCopy() *_BACnetPropertyStatesDoorValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesDoorValueCopy := &_BACnetPropertyStatesDoorValue{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.DoorValue.DeepCopy().(BACnetDoorValueTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesDoorValueCopy
+}
 
 func (m *_BACnetPropertyStatesDoorValue) String() string {
 	if m == nil {

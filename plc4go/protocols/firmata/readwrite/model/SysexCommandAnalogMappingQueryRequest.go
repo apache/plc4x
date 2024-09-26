@@ -36,6 +36,7 @@ type SysexCommandAnalogMappingQueryRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandAnalogMappingQueryRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandAnalogMappingQueryRequest()
@@ -48,6 +49,15 @@ type _SysexCommandAnalogMappingQueryRequest struct {
 
 var _ SysexCommandAnalogMappingQueryRequest = (*_SysexCommandAnalogMappingQueryRequest)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandAnalogMappingQueryRequest)(nil)
+
+// NewSysexCommandAnalogMappingQueryRequest factory function for _SysexCommandAnalogMappingQueryRequest
+func NewSysexCommandAnalogMappingQueryRequest() *_SysexCommandAnalogMappingQueryRequest {
+	_result := &_SysexCommandAnalogMappingQueryRequest{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_SysexCommandAnalogMappingQueryRequest) GetResponse() bool {
 
 func (m *_SysexCommandAnalogMappingQueryRequest) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandAnalogMappingQueryRequest factory function for _SysexCommandAnalogMappingQueryRequest
-func NewSysexCommandAnalogMappingQueryRequest() *_SysexCommandAnalogMappingQueryRequest {
-	_result := &_SysexCommandAnalogMappingQueryRequest{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_SysexCommandAnalogMappingQueryRequest) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_SysexCommandAnalogMappingQueryRequest) IsSysexCommandAnalogMappingQueryRequest() {}
+
+func (m *_SysexCommandAnalogMappingQueryRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandAnalogMappingQueryRequest) deepCopy() *_SysexCommandAnalogMappingQueryRequest {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandAnalogMappingQueryRequestCopy := &_SysexCommandAnalogMappingQueryRequest{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandAnalogMappingQueryRequestCopy
+}
 
 func (m *_SysexCommandAnalogMappingQueryRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentialStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCredentialStatus struct {
 
 var _ BACnetConstructedDataCredentialStatus = (*_BACnetConstructedDataCredentialStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialStatus)(nil)
+
+// NewBACnetConstructedDataCredentialStatus factory function for _BACnetConstructedDataCredentialStatus
+func NewBACnetConstructedDataCredentialStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, binaryPv BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialStatus {
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataCredentialStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataCredentialStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BinaryPv:                      binaryPv,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCredentialStatus) GetActualValue() BACnetBinaryPV
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentialStatus factory function for _BACnetConstructedDataCredentialStatus
-func NewBACnetConstructedDataCredentialStatus(binaryPv BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialStatus {
-	if binaryPv == nil {
-		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataCredentialStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataCredentialStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BinaryPv:                      binaryPv,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentialStatus(structType any) BACnetConstructedDataCredentialStatus {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCredentialStatus) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataCredentialStatus) IsBACnetConstructedDataCredentialStatus() {}
+
+func (m *_BACnetConstructedDataCredentialStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentialStatus) deepCopy() *_BACnetConstructedDataCredentialStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialStatusCopy := &_BACnetConstructedDataCredentialStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialStatusCopy
+}
 
 func (m *_BACnetConstructedDataCredentialStatus) String() string {
 	if m == nil {

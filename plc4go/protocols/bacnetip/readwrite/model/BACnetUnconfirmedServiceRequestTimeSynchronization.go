@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestTimeSynchronization interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetSynchronizedDate returns SynchronizedDate (property field)
 	GetSynchronizedDate() BACnetApplicationTagDate
@@ -56,6 +57,23 @@ type _BACnetUnconfirmedServiceRequestTimeSynchronization struct {
 
 var _ BACnetUnconfirmedServiceRequestTimeSynchronization = (*_BACnetUnconfirmedServiceRequestTimeSynchronization)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestTimeSynchronization)(nil)
+
+// NewBACnetUnconfirmedServiceRequestTimeSynchronization factory function for _BACnetUnconfirmedServiceRequestTimeSynchronization
+func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestTimeSynchronization {
+	if synchronizedDate == nil {
+		panic("synchronizedDate of type BACnetApplicationTagDate for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
+	}
+	if synchronizedTime == nil {
+		panic("synchronizedTime of type BACnetApplicationTagTime for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		SynchronizedDate:                        synchronizedDate,
+		SynchronizedTime:                        synchronizedTime,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetSynchronizedTim
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestTimeSynchronization factory function for _BACnetUnconfirmedServiceRequestTimeSynchronization
-func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestTimeSynchronization {
-	if synchronizedDate == nil {
-		panic("synchronizedDate of type BACnetApplicationTagDate for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
-	}
-	if synchronizedTime == nil {
-		panic("synchronizedTime of type BACnetApplicationTagTime for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		SynchronizedDate:                        synchronizedDate,
-		SynchronizedTime:                        synchronizedTime,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType any) BACnetUnconfirmedServiceRequestTimeSynchronization {
@@ -206,6 +207,23 @@ func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) SerializeWithWrite
 }
 
 func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) IsBACnetUnconfirmedServiceRequestTimeSynchronization() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) deepCopy() *_BACnetUnconfirmedServiceRequestTimeSynchronization {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestTimeSynchronizationCopy := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
+		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
+		m.SynchronizedDate.DeepCopy().(BACnetApplicationTagDate),
+		m.SynchronizedTime.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestTimeSynchronizationCopy
 }
 
 func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) String() string {

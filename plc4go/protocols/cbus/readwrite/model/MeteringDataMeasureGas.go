@@ -36,6 +36,7 @@ type MeteringDataMeasureGas interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// IsMeteringDataMeasureGas is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureGas()
@@ -49,6 +50,15 @@ type _MeteringDataMeasureGas struct {
 var _ MeteringDataMeasureGas = (*_MeteringDataMeasureGas)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataMeasureGas)(nil)
 
+// NewMeteringDataMeasureGas factory function for _MeteringDataMeasureGas
+func NewMeteringDataMeasureGas(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureGas {
+	_result := &_MeteringDataMeasureGas{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ MeteringDataRequirements = (*_MeteringDataMeasureGas)(nil)
 
 func (m *_MeteringDataMeasureGas) GetParent() MeteringDataContract {
 	return m.MeteringDataContract
-}
-
-// NewMeteringDataMeasureGas factory function for _MeteringDataMeasureGas
-func NewMeteringDataMeasureGas(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureGas {
-	_result := &_MeteringDataMeasureGas{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_MeteringDataMeasureGas) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_MeteringDataMeasureGas) IsMeteringDataMeasureGas() {}
+
+func (m *_MeteringDataMeasureGas) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataMeasureGas) deepCopy() *_MeteringDataMeasureGas {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataMeasureGasCopy := &_MeteringDataMeasureGas{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataMeasureGasCopy
+}
 
 func (m *_MeteringDataMeasureGas) String() string {
 	if m == nil {

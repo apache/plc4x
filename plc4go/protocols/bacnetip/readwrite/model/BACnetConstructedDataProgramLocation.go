@@ -38,6 +38,7 @@ type BACnetConstructedDataProgramLocation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProgramLocation returns ProgramLocation (property field)
 	GetProgramLocation() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProgramLocation struct {
 
 var _ BACnetConstructedDataProgramLocation = (*_BACnetConstructedDataProgramLocation)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramLocation)(nil)
+
+// NewBACnetConstructedDataProgramLocation factory function for _BACnetConstructedDataProgramLocation
+func NewBACnetConstructedDataProgramLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramLocation {
+	if programLocation == nil {
+		panic("programLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProgramLocation must not be nil")
+	}
+	_result := &_BACnetConstructedDataProgramLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramLocation:               programLocation,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProgramLocation) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProgramLocation factory function for _BACnetConstructedDataProgramLocation
-func NewBACnetConstructedDataProgramLocation(programLocation BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramLocation {
-	if programLocation == nil {
-		panic("programLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProgramLocation must not be nil")
-	}
-	_result := &_BACnetConstructedDataProgramLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProgramLocation:               programLocation,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProgramLocation(structType any) BACnetConstructedDataProgramLocation {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProgramLocation) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataProgramLocation) IsBACnetConstructedDataProgramLocation() {}
+
+func (m *_BACnetConstructedDataProgramLocation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProgramLocation) deepCopy() *_BACnetConstructedDataProgramLocation {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProgramLocationCopy := &_BACnetConstructedDataProgramLocation{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProgramLocation.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProgramLocationCopy
+}
 
 func (m *_BACnetConstructedDataProgramLocation) String() string {
 	if m == nil {

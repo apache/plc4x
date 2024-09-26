@@ -36,6 +36,7 @@ type GroupObjectDescriptorRealisationType6 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsGroupObjectDescriptorRealisationType6 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGroupObjectDescriptorRealisationType6()
 }
@@ -134,6 +135,18 @@ func (m *_GroupObjectDescriptorRealisationType6) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_GroupObjectDescriptorRealisationType6) IsGroupObjectDescriptorRealisationType6() {}
+
+func (m *_GroupObjectDescriptorRealisationType6) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GroupObjectDescriptorRealisationType6) deepCopy() *_GroupObjectDescriptorRealisationType6 {
+	if m == nil {
+		return nil
+	}
+	_GroupObjectDescriptorRealisationType6Copy := &_GroupObjectDescriptorRealisationType6{}
+	return _GroupObjectDescriptorRealisationType6Copy
+}
 
 func (m *_GroupObjectDescriptorRealisationType6) String() string {
 	if m == nil {

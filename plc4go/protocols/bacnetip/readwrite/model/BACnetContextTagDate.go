@@ -38,6 +38,7 @@ type BACnetContextTagDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadDate
@@ -53,6 +54,19 @@ type _BACnetContextTagDate struct {
 
 var _ BACnetContextTagDate = (*_BACnetContextTagDate)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagDate)(nil)
+
+// NewBACnetContextTagDate factory function for _BACnetContextTagDate
+func NewBACnetContextTagDate(header BACnetTagHeader, payload BACnetTagPayloadDate, tagNumberArgument uint8) *_BACnetContextTagDate {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadDate for BACnetContextTagDate must not be nil")
+	}
+	_result := &_BACnetContextTagDate{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_BACnetContextTagDate) GetPayload() BACnetTagPayloadDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagDate factory function for _BACnetContextTagDate
-func NewBACnetContextTagDate(payload BACnetTagPayloadDate, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagDate {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadDate for BACnetContextTagDate must not be nil")
-	}
-	_result := &_BACnetContextTagDate{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagDate(structType any) BACnetContextTagDate {
@@ -182,6 +183,22 @@ func (m *_BACnetContextTagDate) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetContextTagDate) IsBACnetContextTagDate() {}
+
+func (m *_BACnetContextTagDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagDate) deepCopy() *_BACnetContextTagDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagDateCopy := &_BACnetContextTagDate{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadDate),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagDateCopy
+}
 
 func (m *_BACnetContextTagDate) String() string {
 	if m == nil {

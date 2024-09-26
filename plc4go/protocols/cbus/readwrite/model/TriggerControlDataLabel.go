@@ -38,6 +38,7 @@ type TriggerControlDataLabel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// GetTriggerControlOptions returns TriggerControlOptions (property field)
 	GetTriggerControlOptions() TriggerControlLabelOptions
@@ -62,6 +63,22 @@ type _TriggerControlDataLabel struct {
 
 var _ TriggerControlDataLabel = (*_TriggerControlDataLabel)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataLabel)(nil)
+
+// NewTriggerControlDataLabel factory function for _TriggerControlDataLabel
+func NewTriggerControlDataLabel(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte, triggerControlOptions TriggerControlLabelOptions, actionSelector byte, language *Language, data []byte) *_TriggerControlDataLabel {
+	if triggerControlOptions == nil {
+		panic("triggerControlOptions of type TriggerControlLabelOptions for TriggerControlDataLabel must not be nil")
+	}
+	_result := &_TriggerControlDataLabel{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+		TriggerControlOptions:      triggerControlOptions,
+		ActionSelector:             actionSelector,
+		Language:                   language,
+		Data:                       data,
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,22 +119,6 @@ func (m *_TriggerControlDataLabel) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTriggerControlDataLabel factory function for _TriggerControlDataLabel
-func NewTriggerControlDataLabel(triggerControlOptions TriggerControlLabelOptions, actionSelector byte, language *Language, data []byte, commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataLabel {
-	if triggerControlOptions == nil {
-		panic("triggerControlOptions of type TriggerControlLabelOptions for TriggerControlDataLabel must not be nil")
-	}
-	_result := &_TriggerControlDataLabel{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-		TriggerControlOptions:      triggerControlOptions,
-		ActionSelector:             actionSelector,
-		Language:                   language,
-		Data:                       data,
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTriggerControlDataLabel(structType any) TriggerControlDataLabel {
@@ -246,6 +247,25 @@ func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_TriggerControlDataLabel) IsTriggerControlDataLabel() {}
+
+func (m *_TriggerControlDataLabel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataLabel) deepCopy() *_TriggerControlDataLabel {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataLabelCopy := &_TriggerControlDataLabel{
+		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
+		m.TriggerControlOptions.DeepCopy().(TriggerControlLabelOptions),
+		m.ActionSelector,
+		utils.CopyPtr[Language](m.Language),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataLabelCopy
+}
 
 func (m *_TriggerControlDataLabel) String() string {
 	if m == nil {

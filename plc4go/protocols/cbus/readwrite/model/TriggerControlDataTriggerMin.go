@@ -36,6 +36,7 @@ type TriggerControlDataTriggerMin interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// IsTriggerControlDataTriggerMin is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlDataTriggerMin()
@@ -49,6 +50,15 @@ type _TriggerControlDataTriggerMin struct {
 var _ TriggerControlDataTriggerMin = (*_TriggerControlDataTriggerMin)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMin)(nil)
 
+// NewTriggerControlDataTriggerMin factory function for _TriggerControlDataTriggerMin
+func NewTriggerControlDataTriggerMin(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMin {
+	_result := &_TriggerControlDataTriggerMin{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMin)(nil)
 
 func (m *_TriggerControlDataTriggerMin) GetParent() TriggerControlDataContract {
 	return m.TriggerControlDataContract
-}
-
-// NewTriggerControlDataTriggerMin factory function for _TriggerControlDataTriggerMin
-func NewTriggerControlDataTriggerMin(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMin {
-	_result := &_TriggerControlDataTriggerMin{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_TriggerControlDataTriggerMin) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_TriggerControlDataTriggerMin) IsTriggerControlDataTriggerMin() {}
+
+func (m *_TriggerControlDataTriggerMin) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataTriggerMin) deepCopy() *_TriggerControlDataTriggerMin {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataTriggerMinCopy := &_TriggerControlDataTriggerMin{
+		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataTriggerMinCopy
+}
 
 func (m *_TriggerControlDataTriggerMin) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataNetworkNumber struct {
 
 var _ BACnetConstructedDataNetworkNumber = (*_BACnetConstructedDataNetworkNumber)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkNumber)(nil)
+
+// NewBACnetConstructedDataNetworkNumber factory function for _BACnetConstructedDataNetworkNumber
+func NewBACnetConstructedDataNetworkNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkNumber BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkNumber {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkNumber must not be nil")
+	}
+	_result := &_BACnetConstructedDataNetworkNumber{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NetworkNumber:                 networkNumber,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataNetworkNumber) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNetworkNumber factory function for _BACnetConstructedDataNetworkNumber
-func NewBACnetConstructedDataNetworkNumber(networkNumber BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkNumber {
-	if networkNumber == nil {
-		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkNumber must not be nil")
-	}
-	_result := &_BACnetConstructedDataNetworkNumber{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NetworkNumber:                 networkNumber,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNetworkNumber(structType any) BACnetConstructedDataNetworkNumber {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNetworkNumber) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataNetworkNumber) IsBACnetConstructedDataNetworkNumber() {}
+
+func (m *_BACnetConstructedDataNetworkNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkNumber) deepCopy() *_BACnetConstructedDataNetworkNumber {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkNumberCopy := &_BACnetConstructedDataNetworkNumber{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NetworkNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkNumberCopy
+}
 
 func (m *_BACnetConstructedDataNetworkNumber) String() string {
 	if m == nil {

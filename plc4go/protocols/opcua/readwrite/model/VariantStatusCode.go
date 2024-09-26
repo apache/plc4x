@@ -38,6 +38,7 @@ type VariantStatusCode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantStatusCode struct {
 
 var _ VariantStatusCode = (*_VariantStatusCode)(nil)
 var _ VariantRequirements = (*_VariantStatusCode)(nil)
+
+// NewVariantStatusCode factory function for _VariantStatusCode
+func NewVariantStatusCode(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []StatusCode) *_VariantStatusCode {
+	_result := &_VariantStatusCode{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantStatusCode) GetValue() []StatusCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantStatusCode factory function for _VariantStatusCode
-func NewVariantStatusCode(arrayLength *int32, value []StatusCode, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantStatusCode {
-	_result := &_VariantStatusCode{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantStatusCode(structType any) VariantStatusCode {
@@ -210,6 +211,23 @@ func (m *_VariantStatusCode) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_VariantStatusCode) IsVariantStatusCode() {}
+
+func (m *_VariantStatusCode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantStatusCode) deepCopy() *_VariantStatusCode {
+	if m == nil {
+		return nil
+	}
+	_VariantStatusCodeCopy := &_VariantStatusCode{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantStatusCodeCopy
+}
 
 func (m *_VariantStatusCode) String() string {
 	if m == nil {

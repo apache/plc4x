@@ -38,6 +38,7 @@ type BACnetConstructedDataIPAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpAddress returns IpAddress (property field)
 	GetIpAddress() BACnetApplicationTagOctetString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataIPAddress struct {
 
 var _ BACnetConstructedDataIPAddress = (*_BACnetConstructedDataIPAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPAddress)(nil)
+
+// NewBACnetConstructedDataIPAddress factory function for _BACnetConstructedDataIPAddress
+func NewBACnetConstructedDataIPAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPAddress {
+	if ipAddress == nil {
+		panic("ipAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataIPAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpAddress:                     ipAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataIPAddress) GetActualValue() BACnetApplicationTagO
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPAddress factory function for _BACnetConstructedDataIPAddress
-func NewBACnetConstructedDataIPAddress(ipAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPAddress {
-	if ipAddress == nil {
-		panic("ipAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataIPAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpAddress:                     ipAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPAddress(structType any) BACnetConstructedDataIPAddress {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIPAddress) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataIPAddress) IsBACnetConstructedDataIPAddress() {}
+
+func (m *_BACnetConstructedDataIPAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPAddress) deepCopy() *_BACnetConstructedDataIPAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPAddressCopy := &_BACnetConstructedDataIPAddress{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.IpAddress.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPAddressCopy
+}
 
 func (m *_BACnetConstructedDataIPAddress) String() string {
 	if m == nil {

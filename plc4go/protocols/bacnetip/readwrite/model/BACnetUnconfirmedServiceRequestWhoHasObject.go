@@ -40,6 +40,7 @@ type BACnetUnconfirmedServiceRequestWhoHasObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetUnconfirmedServiceRequestWhoHasObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestWhoHasObject()
 }
@@ -70,6 +71,14 @@ type _BACnetUnconfirmedServiceRequestWhoHasObject struct {
 
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectContract = (*_BACnetUnconfirmedServiceRequestWhoHasObject)(nil)
 
+// NewBACnetUnconfirmedServiceRequestWhoHasObject factory function for _BACnetUnconfirmedServiceRequestWhoHasObject
+func NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObject {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetUnconfirmedServiceRequestWhoHasObject must not be nil")
+	}
+	return &_BACnetUnconfirmedServiceRequestWhoHasObject{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) GetPeekedTagNumber() uin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWhoHasObject factory function for _BACnetUnconfirmedServiceRequestWhoHasObject
-func NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObject {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetUnconfirmedServiceRequestWhoHasObject must not be nil")
-	}
-	return &_BACnetUnconfirmedServiceRequestWhoHasObject{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWhoHasObject(structType any) BACnetUnconfirmedServiceRequestWhoHasObject {
@@ -189,11 +190,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) parse(ctx context.Context
 	var _child BACnetUnconfirmedServiceRequestWhoHasObject
 	switch {
 	case peekedTagNumber == uint8(2): // BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
-		if _child, err = (&_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier for type-switch of BACnetUnconfirmedServiceRequestWhoHasObject")
 		}
 	case peekedTagNumber == uint8(3): // BACnetUnconfirmedServiceRequestWhoHasObjectName
-		if _child, err = (&_BACnetUnconfirmedServiceRequestWhoHasObjectName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoHasObjectName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoHasObjectName for type-switch of BACnetUnconfirmedServiceRequestWhoHasObject")
 		}
 	default:
@@ -237,4 +238,19 @@ func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) serializeParent(ctx cont
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) IsBACnetUnconfirmedServiceRequestWhoHasObject() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) deepCopy() *_BACnetUnconfirmedServiceRequestWhoHasObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestWhoHasObjectCopy := &_BACnetUnconfirmedServiceRequestWhoHasObject{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetUnconfirmedServiceRequestWhoHasObjectCopy
 }

@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryNullValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetContextTagNull
@@ -53,6 +54,19 @@ type _BACnetLogDataLogDataEntryNullValue struct {
 
 var _ BACnetLogDataLogDataEntryNullValue = (*_BACnetLogDataLogDataEntryNullValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryNullValue)(nil)
+
+// NewBACnetLogDataLogDataEntryNullValue factory function for _BACnetLogDataLogDataEntryNullValue
+func NewBACnetLogDataLogDataEntryNullValue(peekedTagHeader BACnetTagHeader, nullValue BACnetContextTagNull) *_BACnetLogDataLogDataEntryNullValue {
+	if nullValue == nil {
+		panic("nullValue of type BACnetContextTagNull for BACnetLogDataLogDataEntryNullValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryNullValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		NullValue:                         nullValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogDataLogDataEntryNullValue) GetNullValue() BACnetContextTagNul
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryNullValue factory function for _BACnetLogDataLogDataEntryNullValue
-func NewBACnetLogDataLogDataEntryNullValue(nullValue BACnetContextTagNull, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryNullValue {
-	if nullValue == nil {
-		panic("nullValue of type BACnetContextTagNull for BACnetLogDataLogDataEntryNullValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryNullValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		NullValue:                         nullValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryNullValue(structType any) BACnetLogDataLogDataEntryNullValue {
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryNullValue) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetLogDataLogDataEntryNullValue) IsBACnetLogDataLogDataEntryNullValue() {}
+
+func (m *_BACnetLogDataLogDataEntryNullValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryNullValue) deepCopy() *_BACnetLogDataLogDataEntryNullValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryNullValueCopy := &_BACnetLogDataLogDataEntryNullValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.NullValue.DeepCopy().(BACnetContextTagNull),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryNullValueCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryNullValue) String() string {
 	if m == nil {

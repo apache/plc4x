@@ -36,6 +36,7 @@ type ApduDataExtNetworkParameterResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtNetworkParameterResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtNetworkParameterResponse()
@@ -48,6 +49,15 @@ type _ApduDataExtNetworkParameterResponse struct {
 
 var _ ApduDataExtNetworkParameterResponse = (*_ApduDataExtNetworkParameterResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtNetworkParameterResponse)(nil)
+
+// NewApduDataExtNetworkParameterResponse factory function for _ApduDataExtNetworkParameterResponse
+func NewApduDataExtNetworkParameterResponse(length uint8) *_ApduDataExtNetworkParameterResponse {
+	_result := &_ApduDataExtNetworkParameterResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtNetworkParameterResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtNetworkParameterResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtNetworkParameterResponse factory function for _ApduDataExtNetworkParameterResponse
-func NewApduDataExtNetworkParameterResponse(length uint8) *_ApduDataExtNetworkParameterResponse {
-	_result := &_ApduDataExtNetworkParameterResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtNetworkParameterResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ApduDataExtNetworkParameterResponse) IsApduDataExtNetworkParameterResponse() {}
+
+func (m *_ApduDataExtNetworkParameterResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtNetworkParameterResponse) deepCopy() *_ApduDataExtNetworkParameterResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtNetworkParameterResponseCopy := &_ApduDataExtNetworkParameterResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtNetworkParameterResponseCopy
+}
 
 func (m *_ApduDataExtNetworkParameterResponse) String() string {
 	if m == nil {

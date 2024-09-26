@@ -38,6 +38,7 @@ type HVACStatusFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetExpansion returns Expansion (property field)
 	GetExpansion() bool
 	// GetError returns Error (property field)
@@ -74,6 +75,11 @@ type _HVACStatusFlags struct {
 }
 
 var _ HVACStatusFlags = (*_HVACStatusFlags)(nil)
+
+// NewHVACStatusFlags factory function for _HVACStatusFlags
+func NewHVACStatusFlags(expansion bool, error bool, busy bool, damperState bool, fanActive bool, heatingPlant bool, coolingPlant bool) *_HVACStatusFlags {
+	return &_HVACStatusFlags{Expansion: expansion, Error: error, Busy: busy, DamperState: damperState, FanActive: fanActive, HeatingPlant: heatingPlant, CoolingPlant: coolingPlant}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -133,11 +139,6 @@ func (m *_HVACStatusFlags) GetIsDamperStateOpen() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACStatusFlags factory function for _HVACStatusFlags
-func NewHVACStatusFlags(expansion bool, error bool, busy bool, damperState bool, fanActive bool, heatingPlant bool, coolingPlant bool) *_HVACStatusFlags {
-	return &_HVACStatusFlags{Expansion: expansion, Error: error, Busy: busy, DamperState: damperState, FanActive: fanActive, HeatingPlant: heatingPlant, CoolingPlant: coolingPlant}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACStatusFlags(structType any) HVACStatusFlags {
@@ -354,6 +355,27 @@ func (m *_HVACStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_HVACStatusFlags) IsHVACStatusFlags() {}
+
+func (m *_HVACStatusFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACStatusFlags) deepCopy() *_HVACStatusFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACStatusFlagsCopy := &_HVACStatusFlags{
+		m.Expansion,
+		m.Error,
+		m.Busy,
+		m.DamperState,
+		m.FanActive,
+		m.HeatingPlant,
+		m.CoolingPlant,
+		m.reservedField0,
+	}
+	return _HVACStatusFlagsCopy
+}
 
 func (m *_HVACStatusFlags) String() string {
 	if m == nil {

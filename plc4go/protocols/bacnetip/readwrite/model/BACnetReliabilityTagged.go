@@ -38,6 +38,7 @@ type BACnetReliabilityTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetReliabilityTagged struct {
 }
 
 var _ BACnetReliabilityTagged = (*_BACnetReliabilityTagged)(nil)
+
+// NewBACnetReliabilityTagged factory function for _BACnetReliabilityTagged
+func NewBACnetReliabilityTagged(header BACnetTagHeader, value BACnetReliability, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetReliabilityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetReliabilityTagged must not be nil")
+	}
+	return &_BACnetReliabilityTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetReliabilityTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReliabilityTagged factory function for _BACnetReliabilityTagged
-func NewBACnetReliabilityTagged(header BACnetTagHeader, value BACnetReliability, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetReliabilityTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetReliabilityTagged must not be nil")
-	}
-	return &_BACnetReliabilityTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReliabilityTagged(structType any) BACnetReliabilityTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetReliabilityTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetReliabilityTagged) IsBACnetReliabilityTagged() {}
+
+func (m *_BACnetReliabilityTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReliabilityTagged) deepCopy() *_BACnetReliabilityTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetReliabilityTaggedCopy := &_BACnetReliabilityTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetReliabilityTaggedCopy
+}
 
 func (m *_BACnetReliabilityTagged) String() string {
 	if m == nil {

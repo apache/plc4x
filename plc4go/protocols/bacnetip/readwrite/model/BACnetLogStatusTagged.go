@@ -38,6 +38,7 @@ type BACnetLogStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -63,6 +64,17 @@ type _BACnetLogStatusTagged struct {
 }
 
 var _ BACnetLogStatusTagged = (*_BACnetLogStatusTagged)(nil)
+
+// NewBACnetLogStatusTagged factory function for _BACnetLogStatusTagged
+func NewBACnetLogStatusTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetLogStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLogStatusTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetLogStatusTagged must not be nil")
+	}
+	return &_BACnetLogStatusTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,17 +120,6 @@ func (m *_BACnetLogStatusTagged) GetLogInterrupted() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogStatusTagged factory function for _BACnetLogStatusTagged
-func NewBACnetLogStatusTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetLogStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLogStatusTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetLogStatusTagged must not be nil")
-	}
-	return &_BACnetLogStatusTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogStatusTagged(structType any) BACnetLogStatusTagged {
@@ -294,6 +295,23 @@ func (m *_BACnetLogStatusTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLogStatusTagged) IsBACnetLogStatusTagged() {}
+
+func (m *_BACnetLogStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogStatusTagged) deepCopy() *_BACnetLogStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogStatusTaggedCopy := &_BACnetLogStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLogStatusTaggedCopy
+}
 
 func (m *_BACnetLogStatusTagged) String() string {
 	if m == nil {

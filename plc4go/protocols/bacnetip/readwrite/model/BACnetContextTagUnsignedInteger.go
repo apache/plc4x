@@ -38,6 +38,7 @@ type BACnetContextTagUnsignedInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetContextTagUnsignedInteger struct {
 
 var _ BACnetContextTagUnsignedInteger = (*_BACnetContextTagUnsignedInteger)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagUnsignedInteger)(nil)
+
+// NewBACnetContextTagUnsignedInteger factory function for _BACnetContextTagUnsignedInteger
+func NewBACnetContextTagUnsignedInteger(header BACnetTagHeader, payload BACnetTagPayloadUnsignedInteger, tagNumberArgument uint8) *_BACnetContextTagUnsignedInteger {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetContextTagUnsignedInteger must not be nil")
+	}
+	_result := &_BACnetContextTagUnsignedInteger{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,19 +116,6 @@ func (m *_BACnetContextTagUnsignedInteger) GetActualValue() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagUnsignedInteger factory function for _BACnetContextTagUnsignedInteger
-func NewBACnetContextTagUnsignedInteger(payload BACnetTagPayloadUnsignedInteger, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagUnsignedInteger {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetContextTagUnsignedInteger must not be nil")
-	}
-	_result := &_BACnetContextTagUnsignedInteger{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagUnsignedInteger(structType any) BACnetContextTagUnsignedInteger {
@@ -213,6 +214,22 @@ func (m *_BACnetContextTagUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetContextTagUnsignedInteger) IsBACnetContextTagUnsignedInteger() {}
+
+func (m *_BACnetContextTagUnsignedInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagUnsignedInteger) deepCopy() *_BACnetContextTagUnsignedInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagUnsignedIntegerCopy := &_BACnetContextTagUnsignedInteger{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadUnsignedInteger),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagUnsignedIntegerCopy
+}
 
 func (m *_BACnetContextTagUnsignedInteger) String() string {
 	if m == nil {

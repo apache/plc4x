@@ -38,6 +38,7 @@ type SerialNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOctet1 returns Octet1 (property field)
 	GetOctet1() byte
 	// GetOctet2 returns Octet2 (property field)
@@ -59,6 +60,11 @@ type _SerialNumber struct {
 }
 
 var _ SerialNumber = (*_SerialNumber)(nil)
+
+// NewSerialNumber factory function for _SerialNumber
+func NewSerialNumber(octet1 byte, octet2 byte, octet3 byte, octet4 byte) *_SerialNumber {
+	return &_SerialNumber{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +91,6 @@ func (m *_SerialNumber) GetOctet4() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSerialNumber factory function for _SerialNumber
-func NewSerialNumber(octet1 byte, octet2 byte, octet3 byte, octet4 byte) *_SerialNumber {
-	return &_SerialNumber{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSerialNumber(structType any) SerialNumber {
@@ -226,6 +227,23 @@ func (m *_SerialNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_SerialNumber) IsSerialNumber() {}
+
+func (m *_SerialNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SerialNumber) deepCopy() *_SerialNumber {
+	if m == nil {
+		return nil
+	}
+	_SerialNumberCopy := &_SerialNumber{
+		m.Octet1,
+		m.Octet2,
+		m.Octet3,
+		m.Octet4,
+	}
+	return _SerialNumberCopy
+}
 
 func (m *_SerialNumber) String() string {
 	if m == nil {

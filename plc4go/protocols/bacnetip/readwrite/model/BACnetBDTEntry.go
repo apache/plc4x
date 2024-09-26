@@ -38,6 +38,7 @@ type BACnetBDTEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetBbmdAddress returns BbmdAddress (property field)
 	GetBbmdAddress() BACnetHostNPortEnclosed
 	// GetBroadcastMask returns BroadcastMask (property field)
@@ -53,6 +54,14 @@ type _BACnetBDTEntry struct {
 }
 
 var _ BACnetBDTEntry = (*_BACnetBDTEntry)(nil)
+
+// NewBACnetBDTEntry factory function for _BACnetBDTEntry
+func NewBACnetBDTEntry(bbmdAddress BACnetHostNPortEnclosed, broadcastMask BACnetContextTagOctetString) *_BACnetBDTEntry {
+	if bbmdAddress == nil {
+		panic("bbmdAddress of type BACnetHostNPortEnclosed for BACnetBDTEntry must not be nil")
+	}
+	return &_BACnetBDTEntry{BbmdAddress: bbmdAddress, BroadcastMask: broadcastMask}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_BACnetBDTEntry) GetBroadcastMask() BACnetContextTagOctetString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetBDTEntry factory function for _BACnetBDTEntry
-func NewBACnetBDTEntry(bbmdAddress BACnetHostNPortEnclosed, broadcastMask BACnetContextTagOctetString) *_BACnetBDTEntry {
-	if bbmdAddress == nil {
-		panic("bbmdAddress of type BACnetHostNPortEnclosed for BACnetBDTEntry must not be nil")
-	}
-	return &_BACnetBDTEntry{BbmdAddress: bbmdAddress, BroadcastMask: broadcastMask}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetBDTEntry(structType any) BACnetBDTEntry {
@@ -195,6 +196,21 @@ func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetBDTEntry) IsBACnetBDTEntry() {}
+
+func (m *_BACnetBDTEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetBDTEntry) deepCopy() *_BACnetBDTEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetBDTEntryCopy := &_BACnetBDTEntry{
+		m.BbmdAddress.DeepCopy().(BACnetHostNPortEnclosed),
+		m.BroadcastMask.DeepCopy().(BACnetContextTagOctetString),
+	}
+	return _BACnetBDTEntryCopy
+}
 
 func (m *_BACnetBDTEntry) String() string {
 	if m == nil {

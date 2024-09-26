@@ -38,6 +38,7 @@ type StatusRequestBinaryStateDeprecated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -56,6 +57,16 @@ type _StatusRequestBinaryStateDeprecated struct {
 
 var _ StatusRequestBinaryStateDeprecated = (*_StatusRequestBinaryStateDeprecated)(nil)
 var _ StatusRequestRequirements = (*_StatusRequestBinaryStateDeprecated)(nil)
+
+// NewStatusRequestBinaryStateDeprecated factory function for _StatusRequestBinaryStateDeprecated
+func NewStatusRequestBinaryStateDeprecated(statusType byte, application ApplicationIdContainer) *_StatusRequestBinaryStateDeprecated {
+	_result := &_StatusRequestBinaryStateDeprecated{
+		StatusRequestContract: NewStatusRequest(statusType),
+		Application:           application,
+	}
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -84,16 +95,6 @@ func (m *_StatusRequestBinaryStateDeprecated) GetApplication() ApplicationIdCont
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusRequestBinaryStateDeprecated factory function for _StatusRequestBinaryStateDeprecated
-func NewStatusRequestBinaryStateDeprecated(application ApplicationIdContainer, statusType byte) *_StatusRequestBinaryStateDeprecated {
-	_result := &_StatusRequestBinaryStateDeprecated{
-		StatusRequestContract: NewStatusRequest(statusType),
-		Application:           application,
-	}
-	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusRequestBinaryStateDeprecated(structType any) StatusRequestBinaryStateDeprecated {
@@ -204,6 +205,24 @@ func (m *_StatusRequestBinaryStateDeprecated) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_StatusRequestBinaryStateDeprecated) IsStatusRequestBinaryStateDeprecated() {}
+
+func (m *_StatusRequestBinaryStateDeprecated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusRequestBinaryStateDeprecated) deepCopy() *_StatusRequestBinaryStateDeprecated {
+	if m == nil {
+		return nil
+	}
+	_StatusRequestBinaryStateDeprecatedCopy := &_StatusRequestBinaryStateDeprecated{
+		m.StatusRequestContract.(*_StatusRequest).deepCopy(),
+		m.Application,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.StatusRequestContract.(*_StatusRequest)._SubType = m
+	return _StatusRequestBinaryStateDeprecatedCopy
+}
 
 func (m *_StatusRequestBinaryStateDeprecated) String() string {
 	if m == nil {

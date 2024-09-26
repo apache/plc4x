@@ -38,6 +38,7 @@ type BACnetPropertyStatesNodeType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetNodeType returns NodeType (property field)
 	GetNodeType() BACnetNodeTypeTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesNodeType struct {
 
 var _ BACnetPropertyStatesNodeType = (*_BACnetPropertyStatesNodeType)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNodeType)(nil)
+
+// NewBACnetPropertyStatesNodeType factory function for _BACnetPropertyStatesNodeType
+func NewBACnetPropertyStatesNodeType(peekedTagHeader BACnetTagHeader, nodeType BACnetNodeTypeTagged) *_BACnetPropertyStatesNodeType {
+	if nodeType == nil {
+		panic("nodeType of type BACnetNodeTypeTagged for BACnetPropertyStatesNodeType must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNodeType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NodeType:                     nodeType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesNodeType) GetNodeType() BACnetNodeTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNodeType factory function for _BACnetPropertyStatesNodeType
-func NewBACnetPropertyStatesNodeType(nodeType BACnetNodeTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNodeType {
-	if nodeType == nil {
-		panic("nodeType of type BACnetNodeTypeTagged for BACnetPropertyStatesNodeType must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNodeType{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NodeType:                     nodeType,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNodeType(structType any) BACnetPropertyStatesNodeType {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesNodeType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetPropertyStatesNodeType) IsBACnetPropertyStatesNodeType() {}
+
+func (m *_BACnetPropertyStatesNodeType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesNodeType) deepCopy() *_BACnetPropertyStatesNodeType {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesNodeTypeCopy := &_BACnetPropertyStatesNodeType{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.NodeType.DeepCopy().(BACnetNodeTypeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesNodeTypeCopy
+}
 
 func (m *_BACnetPropertyStatesNodeType) String() string {
 	if m == nil {

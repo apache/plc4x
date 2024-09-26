@@ -38,6 +38,7 @@ type BACnetConstructedDataPulseRate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPulseRate returns PulseRate (property field)
 	GetPulseRate() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataPulseRate struct {
 
 var _ BACnetConstructedDataPulseRate = (*_BACnetConstructedDataPulseRate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPulseRate)(nil)
+
+// NewBACnetConstructedDataPulseRate factory function for _BACnetConstructedDataPulseRate
+func NewBACnetConstructedDataPulseRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, pulseRate BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseRate {
+	if pulseRate == nil {
+		panic("pulseRate of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPulseRate must not be nil")
+	}
+	_result := &_BACnetConstructedDataPulseRate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PulseRate:                     pulseRate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataPulseRate) GetActualValue() BACnetApplicationTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPulseRate factory function for _BACnetConstructedDataPulseRate
-func NewBACnetConstructedDataPulseRate(pulseRate BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseRate {
-	if pulseRate == nil {
-		panic("pulseRate of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPulseRate must not be nil")
-	}
-	_result := &_BACnetConstructedDataPulseRate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PulseRate:                     pulseRate,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPulseRate(structType any) BACnetConstructedDataPulseRate {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPulseRate) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataPulseRate) IsBACnetConstructedDataPulseRate() {}
+
+func (m *_BACnetConstructedDataPulseRate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPulseRate) deepCopy() *_BACnetConstructedDataPulseRate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPulseRateCopy := &_BACnetConstructedDataPulseRate{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PulseRate.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPulseRateCopy
+}
 
 func (m *_BACnetConstructedDataPulseRate) String() string {
 	if m == nil {

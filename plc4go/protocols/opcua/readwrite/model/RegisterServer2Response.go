@@ -38,6 +38,7 @@ type RegisterServer2Response interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _RegisterServer2Response struct {
 
 var _ RegisterServer2Response = (*_RegisterServer2Response)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServer2Response)(nil)
+
+// NewRegisterServer2Response factory function for _RegisterServer2Response
+func NewRegisterServer2Response(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_RegisterServer2Response {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterServer2Response must not be nil")
+	}
+	_result := &_RegisterServer2Response{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfConfigurationResults:          noOfConfigurationResults,
+		ConfigurationResults:              configurationResults,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_RegisterServer2Response) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterServer2Response factory function for _RegisterServer2Response
-func NewRegisterServer2Response(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_RegisterServer2Response {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterServer2Response must not be nil")
-	}
-	_result := &_RegisterServer2Response{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfConfigurationResults:          noOfConfigurationResults,
-		ConfigurationResults:              configurationResults,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterServer2Response(structType any) RegisterServer2Response {
@@ -280,6 +281,26 @@ func (m *_RegisterServer2Response) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_RegisterServer2Response) IsRegisterServer2Response() {}
+
+func (m *_RegisterServer2Response) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterServer2Response) deepCopy() *_RegisterServer2Response {
+	if m == nil {
+		return nil
+	}
+	_RegisterServer2ResponseCopy := &_RegisterServer2Response{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfConfigurationResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.ConfigurationResults),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterServer2ResponseCopy
+}
 
 func (m *_RegisterServer2Response) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CipWriteResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -58,6 +59,17 @@ type _CipWriteResponse struct {
 
 var _ CipWriteResponse = (*_CipWriteResponse)(nil)
 var _ CipServiceRequirements = (*_CipWriteResponse)(nil)
+
+// NewCipWriteResponse factory function for _CipWriteResponse
+func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_CipWriteResponse {
+	_result := &_CipWriteResponse{
+		CipServiceContract: NewCipService(serviceLen),
+		Status:             status,
+		ExtStatus:          extStatus,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,17 +114,6 @@ func (m *_CipWriteResponse) GetExtStatus() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipWriteResponse factory function for _CipWriteResponse
-func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_CipWriteResponse {
-	_result := &_CipWriteResponse{
-		CipServiceContract: NewCipService(serviceLen),
-		Status:             status,
-		ExtStatus:          extStatus,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipWriteResponse(structType any) CipWriteResponse {
@@ -223,6 +224,24 @@ func (m *_CipWriteResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_CipWriteResponse) IsCipWriteResponse() {}
+
+func (m *_CipWriteResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipWriteResponse) deepCopy() *_CipWriteResponse {
+	if m == nil {
+		return nil
+	}
+	_CipWriteResponseCopy := &_CipWriteResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.Status,
+		m.ExtStatus,
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipWriteResponseCopy
+}
 
 func (m *_CipWriteResponse) String() string {
 	if m == nil {

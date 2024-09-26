@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetReference returns Reference (property field)
 	GetReference() BACnetDeviceObjectPropertyReferenceEnclosed
@@ -53,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryReference struct {
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryReference = (*_BACnetFaultParameterFaultExtendedParametersEntryReference)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryReference)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryReference factory function for _BACnetFaultParameterFaultExtendedParametersEntryReference
+func NewBACnetFaultParameterFaultExtendedParametersEntryReference(peekedTagHeader BACnetTagHeader, reference BACnetDeviceObjectPropertyReferenceEnclosed) *_BACnetFaultParameterFaultExtendedParametersEntryReference {
+	if reference == nil {
+		panic("reference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultExtendedParametersEntryReference must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		Reference: reference,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetReferenc
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryReference factory function for _BACnetFaultParameterFaultExtendedParametersEntryReference
-func NewBACnetFaultParameterFaultExtendedParametersEntryReference(reference BACnetDeviceObjectPropertyReferenceEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryReference {
-	if reference == nil {
-		panic("reference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultExtendedParametersEntryReference must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		Reference: reference,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryReference(structType any) BACnetFaultParameterFaultExtendedParametersEntryReference {
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) SerializeWi
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) IsBACnetFaultParameterFaultExtendedParametersEntryReference() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryReferenceCopy := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
+		m.Reference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryReferenceCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) String() string {

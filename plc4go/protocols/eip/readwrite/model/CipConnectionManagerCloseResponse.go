@@ -38,6 +38,7 @@ type CipConnectionManagerCloseResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -71,6 +72,21 @@ type _CipConnectionManagerCloseResponse struct {
 
 var _ CipConnectionManagerCloseResponse = (*_CipConnectionManagerCloseResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectionManagerCloseResponse)(nil)
+
+// NewCipConnectionManagerCloseResponse factory function for _CipConnectionManagerCloseResponse
+func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8, serviceLen uint16) *_CipConnectionManagerCloseResponse {
+	_result := &_CipConnectionManagerCloseResponse{
+		CipServiceContract:     NewCipService(serviceLen),
+		Status:                 status,
+		AdditionalStatusWords:  additionalStatusWords,
+		ConnectionSerialNumber: connectionSerialNumber,
+		OriginatorVendorId:     originatorVendorId,
+		OriginatorSerialNumber: originatorSerialNumber,
+		ApplicationReplySize:   applicationReplySize,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,21 +147,6 @@ func (m *_CipConnectionManagerCloseResponse) GetApplicationReplySize() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectionManagerCloseResponse factory function for _CipConnectionManagerCloseResponse
-func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8, serviceLen uint16) *_CipConnectionManagerCloseResponse {
-	_result := &_CipConnectionManagerCloseResponse{
-		CipServiceContract:     NewCipService(serviceLen),
-		Status:                 status,
-		AdditionalStatusWords:  additionalStatusWords,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		ApplicationReplySize:   applicationReplySize,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectionManagerCloseResponse(structType any) CipConnectionManagerCloseResponse {
@@ -321,6 +322,29 @@ func (m *_CipConnectionManagerCloseResponse) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_CipConnectionManagerCloseResponse) IsCipConnectionManagerCloseResponse() {}
+
+func (m *_CipConnectionManagerCloseResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectionManagerCloseResponse) deepCopy() *_CipConnectionManagerCloseResponse {
+	if m == nil {
+		return nil
+	}
+	_CipConnectionManagerCloseResponseCopy := &_CipConnectionManagerCloseResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.Status,
+		m.AdditionalStatusWords,
+		m.ConnectionSerialNumber,
+		m.OriginatorVendorId,
+		m.OriginatorSerialNumber,
+		m.ApplicationReplySize,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectionManagerCloseResponseCopy
+}
 
 func (m *_CipConnectionManagerCloseResponse) String() string {
 	if m == nil {

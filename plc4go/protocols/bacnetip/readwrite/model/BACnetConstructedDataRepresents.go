@@ -38,6 +38,7 @@ type BACnetConstructedDataRepresents interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRepresents returns Represents (property field)
 	GetRepresents() BACnetDeviceObjectReference
@@ -55,6 +56,19 @@ type _BACnetConstructedDataRepresents struct {
 
 var _ BACnetConstructedDataRepresents = (*_BACnetConstructedDataRepresents)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRepresents)(nil)
+
+// NewBACnetConstructedDataRepresents factory function for _BACnetConstructedDataRepresents
+func NewBACnetConstructedDataRepresents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, represents BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRepresents {
+	if represents == nil {
+		panic("represents of type BACnetDeviceObjectReference for BACnetConstructedDataRepresents must not be nil")
+	}
+	_result := &_BACnetConstructedDataRepresents{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Represents:                    represents,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataRepresents) GetActualValue() BACnetDeviceObjectRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRepresents factory function for _BACnetConstructedDataRepresents
-func NewBACnetConstructedDataRepresents(represents BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRepresents {
-	if represents == nil {
-		panic("represents of type BACnetDeviceObjectReference for BACnetConstructedDataRepresents must not be nil")
-	}
-	_result := &_BACnetConstructedDataRepresents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Represents:                    represents,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRepresents(structType any) BACnetConstructedDataRepresents {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRepresents) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataRepresents) IsBACnetConstructedDataRepresents() {}
+
+func (m *_BACnetConstructedDataRepresents) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRepresents) deepCopy() *_BACnetConstructedDataRepresents {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRepresentsCopy := &_BACnetConstructedDataRepresents{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Represents.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRepresentsCopy
+}
 
 func (m *_BACnetConstructedDataRepresents) String() string {
 	if m == nil {

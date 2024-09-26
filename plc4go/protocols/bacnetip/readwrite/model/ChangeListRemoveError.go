@@ -38,6 +38,7 @@ type ChangeListRemoveError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -56,6 +57,23 @@ type _ChangeListRemoveError struct {
 
 var _ ChangeListRemoveError = (*_ChangeListRemoveError)(nil)
 var _ BACnetErrorRequirements = (*_ChangeListRemoveError)(nil)
+
+// NewChangeListRemoveError factory function for _ChangeListRemoveError
+func NewChangeListRemoveError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_ChangeListRemoveError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for ChangeListRemoveError must not be nil")
+	}
+	if firstFailedElementNumber == nil {
+		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for ChangeListRemoveError must not be nil")
+	}
+	_result := &_ChangeListRemoveError{
+		BACnetErrorContract:      NewBACnetError(),
+		ErrorType:                errorType,
+		FirstFailedElementNumber: firstFailedElementNumber,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_ChangeListRemoveError) GetFirstFailedElementNumber() BACnetContextTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChangeListRemoveError factory function for _ChangeListRemoveError
-func NewChangeListRemoveError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_ChangeListRemoveError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for ChangeListRemoveError must not be nil")
-	}
-	if firstFailedElementNumber == nil {
-		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for ChangeListRemoveError must not be nil")
-	}
-	_result := &_ChangeListRemoveError{
-		BACnetErrorContract:      NewBACnetError(),
-		ErrorType:                errorType,
-		FirstFailedElementNumber: firstFailedElementNumber,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastChangeListRemoveError(structType any) ChangeListRemoveError {
@@ -206,6 +207,23 @@ func (m *_ChangeListRemoveError) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_ChangeListRemoveError) IsChangeListRemoveError() {}
+
+func (m *_ChangeListRemoveError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ChangeListRemoveError) deepCopy() *_ChangeListRemoveError {
+	if m == nil {
+		return nil
+	}
+	_ChangeListRemoveErrorCopy := &_ChangeListRemoveError{
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.FirstFailedElementNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _ChangeListRemoveErrorCopy
+}
 
 func (m *_ChangeListRemoveError) String() string {
 	if m == nil {

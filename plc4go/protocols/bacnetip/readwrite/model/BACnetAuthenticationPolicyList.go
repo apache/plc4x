@@ -38,6 +38,7 @@ type BACnetAuthenticationPolicyList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetEntries returns Entries (property field)
@@ -60,6 +61,17 @@ type _BACnetAuthenticationPolicyList struct {
 
 var _ BACnetAuthenticationPolicyList = (*_BACnetAuthenticationPolicyList)(nil)
 
+// NewBACnetAuthenticationPolicyList factory function for _BACnetAuthenticationPolicyList
+func NewBACnetAuthenticationPolicyList(openingTag BACnetOpeningTag, entries []BACnetAuthenticationPolicyListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAuthenticationPolicyList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetAuthenticationPolicyList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetAuthenticationPolicyList must not be nil")
+	}
+	return &_BACnetAuthenticationPolicyList{OpeningTag: openingTag, Entries: entries, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +93,6 @@ func (m *_BACnetAuthenticationPolicyList) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationPolicyList factory function for _BACnetAuthenticationPolicyList
-func NewBACnetAuthenticationPolicyList(openingTag BACnetOpeningTag, entries []BACnetAuthenticationPolicyListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAuthenticationPolicyList {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetAuthenticationPolicyList must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetAuthenticationPolicyList must not be nil")
-	}
-	return &_BACnetAuthenticationPolicyList{OpeningTag: openingTag, Entries: entries, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationPolicyList(structType any) BACnetAuthenticationPolicyList {
@@ -229,6 +230,23 @@ func (m *_BACnetAuthenticationPolicyList) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetAuthenticationPolicyList) IsBACnetAuthenticationPolicyList() {}
+
+func (m *_BACnetAuthenticationPolicyList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationPolicyList) deepCopy() *_BACnetAuthenticationPolicyList {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationPolicyListCopy := &_BACnetAuthenticationPolicyList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetAuthenticationPolicyListEntry, BACnetAuthenticationPolicyListEntry](m.Entries),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetAuthenticationPolicyListCopy
+}
 
 func (m *_BACnetAuthenticationPolicyList) String() string {
 	if m == nil {

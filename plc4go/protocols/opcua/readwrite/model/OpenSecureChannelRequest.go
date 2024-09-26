@@ -38,6 +38,7 @@ type OpenSecureChannelRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -68,6 +69,27 @@ type _OpenSecureChannelRequest struct {
 
 var _ OpenSecureChannelRequest = (*_OpenSecureChannelRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_OpenSecureChannelRequest)(nil)
+
+// NewOpenSecureChannelRequest factory function for _OpenSecureChannelRequest
+func NewOpenSecureChannelRequest(requestHeader ExtensionObjectDefinition, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) *_OpenSecureChannelRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for OpenSecureChannelRequest must not be nil")
+	}
+	if clientNonce == nil {
+		panic("clientNonce of type PascalByteString for OpenSecureChannelRequest must not be nil")
+	}
+	_result := &_OpenSecureChannelRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ClientProtocolVersion:             clientProtocolVersion,
+		RequestType:                       requestType,
+		SecurityMode:                      securityMode,
+		ClientNonce:                       clientNonce,
+		RequestedLifetime:                 requestedLifetime,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,27 +142,6 @@ func (m *_OpenSecureChannelRequest) GetRequestedLifetime() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpenSecureChannelRequest factory function for _OpenSecureChannelRequest
-func NewOpenSecureChannelRequest(requestHeader ExtensionObjectDefinition, clientProtocolVersion uint32, requestType SecurityTokenRequestType, securityMode MessageSecurityMode, clientNonce PascalByteString, requestedLifetime uint32) *_OpenSecureChannelRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for OpenSecureChannelRequest must not be nil")
-	}
-	if clientNonce == nil {
-		panic("clientNonce of type PascalByteString for OpenSecureChannelRequest must not be nil")
-	}
-	_result := &_OpenSecureChannelRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		ClientProtocolVersion:             clientProtocolVersion,
-		RequestType:                       requestType,
-		SecurityMode:                      securityMode,
-		ClientNonce:                       clientNonce,
-		RequestedLifetime:                 requestedLifetime,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpenSecureChannelRequest(structType any) OpenSecureChannelRequest {
@@ -290,6 +291,27 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_OpenSecureChannelRequest) IsOpenSecureChannelRequest() {}
+
+func (m *_OpenSecureChannelRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpenSecureChannelRequest) deepCopy() *_OpenSecureChannelRequest {
+	if m == nil {
+		return nil
+	}
+	_OpenSecureChannelRequestCopy := &_OpenSecureChannelRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ClientProtocolVersion,
+		m.RequestType,
+		m.SecurityMode,
+		m.ClientNonce.DeepCopy().(PascalByteString),
+		m.RequestedLifetime,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _OpenSecureChannelRequestCopy
+}
 
 func (m *_OpenSecureChannelRequest) String() string {
 	if m == nil {

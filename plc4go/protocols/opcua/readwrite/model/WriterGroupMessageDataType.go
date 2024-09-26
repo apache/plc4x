@@ -36,6 +36,7 @@ type WriterGroupMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsWriterGroupMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsWriterGroupMessageDataType()
@@ -48,6 +49,15 @@ type _WriterGroupMessageDataType struct {
 
 var _ WriterGroupMessageDataType = (*_WriterGroupMessageDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_WriterGroupMessageDataType)(nil)
+
+// NewWriterGroupMessageDataType factory function for _WriterGroupMessageDataType
+func NewWriterGroupMessageDataType() *_WriterGroupMessageDataType {
+	_result := &_WriterGroupMessageDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_WriterGroupMessageDataType) GetIdentifier() string {
 
 func (m *_WriterGroupMessageDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewWriterGroupMessageDataType factory function for _WriterGroupMessageDataType
-func NewWriterGroupMessageDataType() *_WriterGroupMessageDataType {
-	_result := &_WriterGroupMessageDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_WriterGroupMessageDataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_WriterGroupMessageDataType) IsWriterGroupMessageDataType() {}
+
+func (m *_WriterGroupMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WriterGroupMessageDataType) deepCopy() *_WriterGroupMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_WriterGroupMessageDataTypeCopy := &_WriterGroupMessageDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _WriterGroupMessageDataTypeCopy
+}
 
 func (m *_WriterGroupMessageDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type KnxGroupAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsKnxGroupAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxGroupAddress()
 }
@@ -135,15 +136,15 @@ func (m *_KnxGroupAddress) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child KnxGroupAddress
 	switch {
 	case numLevels == uint8(1): // KnxGroupAddressFreeLevel
-		if _child, err = (&_KnxGroupAddressFreeLevel{}).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddressFreeLevel).parse(ctx, readBuffer, m, numLevels); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddressFreeLevel for type-switch of KnxGroupAddress")
 		}
 	case numLevels == uint8(2): // KnxGroupAddress2Level
-		if _child, err = (&_KnxGroupAddress2Level{}).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddress2Level).parse(ctx, readBuffer, m, numLevels); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddress2Level for type-switch of KnxGroupAddress")
 		}
 	case numLevels == uint8(3): // KnxGroupAddress3Level
-		if _child, err = (&_KnxGroupAddress3Level{}).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddress3Level).parse(ctx, readBuffer, m, numLevels); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddress3Level for type-switch of KnxGroupAddress")
 		}
 	default:
@@ -181,3 +182,17 @@ func (pm *_KnxGroupAddress) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_KnxGroupAddress) IsKnxGroupAddress() {}
+
+func (m *_KnxGroupAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxGroupAddress) deepCopy() *_KnxGroupAddress {
+	if m == nil {
+		return nil
+	}
+	_KnxGroupAddressCopy := &_KnxGroupAddress{
+		nil, // will be set by child
+	}
+	return _KnxGroupAddressCopy
+}

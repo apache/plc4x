@@ -38,6 +38,7 @@ type QualifiedName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetName returns Name (property field)
@@ -53,6 +54,14 @@ type _QualifiedName struct {
 }
 
 var _ QualifiedName = (*_QualifiedName)(nil)
+
+// NewQualifiedName factory function for _QualifiedName
+func NewQualifiedName(namespaceIndex uint16, name PascalString) *_QualifiedName {
+	if name == nil {
+		panic("name of type PascalString for QualifiedName must not be nil")
+	}
+	return &_QualifiedName{NamespaceIndex: namespaceIndex, Name: name}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_QualifiedName) GetName() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQualifiedName factory function for _QualifiedName
-func NewQualifiedName(namespaceIndex uint16, name PascalString) *_QualifiedName {
-	if name == nil {
-		panic("name of type PascalString for QualifiedName must not be nil")
-	}
-	return &_QualifiedName{NamespaceIndex: namespaceIndex, Name: name}
-}
 
 // Deprecated: use the interface for direct cast
 func CastQualifiedName(structType any) QualifiedName {
@@ -189,6 +190,21 @@ func (m *_QualifiedName) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_QualifiedName) IsQualifiedName() {}
+
+func (m *_QualifiedName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QualifiedName) deepCopy() *_QualifiedName {
+	if m == nil {
+		return nil
+	}
+	_QualifiedNameCopy := &_QualifiedName{
+		m.NamespaceIndex,
+		m.Name.DeepCopy().(PascalString),
+	}
+	return _QualifiedNameCopy
+}
 
 func (m *_QualifiedName) String() string {
 	if m == nil {

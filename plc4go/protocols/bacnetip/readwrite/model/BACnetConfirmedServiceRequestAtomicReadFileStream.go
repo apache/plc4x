@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestAtomicReadFileStream interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetApplicationTagSignedInteger
@@ -56,6 +57,23 @@ type _BACnetConfirmedServiceRequestAtomicReadFileStream struct {
 
 var _ BACnetConfirmedServiceRequestAtomicReadFileStream = (*_BACnetConfirmedServiceRequestAtomicReadFileStream)(nil)
 var _ BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordRequirements = (*_BACnetConfirmedServiceRequestAtomicReadFileStream)(nil)
+
+// NewBACnetConfirmedServiceRequestAtomicReadFileStream factory function for _BACnetConfirmedServiceRequestAtomicReadFileStream
+func NewBACnetConfirmedServiceRequestAtomicReadFileStream(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, fileStartPosition BACnetApplicationTagSignedInteger, requestOctetCount BACnetApplicationTagUnsignedInteger) *_BACnetConfirmedServiceRequestAtomicReadFileStream {
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestAtomicReadFileStream must not be nil")
+	}
+	if requestOctetCount == nil {
+		panic("requestOctetCount of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestAtomicReadFileStream must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestAtomicReadFileStream{
+		BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract: NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
+		FileStartPosition: fileStartPosition,
+		RequestOctetCount: requestOctetCount,
+	}
+	_result.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,23 +106,6 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) GetRequestOctetCoun
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestAtomicReadFileStream factory function for _BACnetConfirmedServiceRequestAtomicReadFileStream
-func NewBACnetConfirmedServiceRequestAtomicReadFileStream(fileStartPosition BACnetApplicationTagSignedInteger, requestOctetCount BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestAtomicReadFileStream {
-	if fileStartPosition == nil {
-		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestAtomicReadFileStream must not be nil")
-	}
-	if requestOctetCount == nil {
-		panic("requestOctetCount of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestAtomicReadFileStream must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestAtomicReadFileStream{
-		BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract: NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
-		FileStartPosition: fileStartPosition,
-		RequestOctetCount: requestOctetCount,
-	}
-	_result.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestAtomicReadFileStream(structType any) BACnetConfirmedServiceRequestAtomicReadFileStream {
@@ -202,6 +203,23 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) SerializeWithWriteB
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) IsBACnetConfirmedServiceRequestAtomicReadFileStream() {
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) deepCopy() *_BACnetConfirmedServiceRequestAtomicReadFileStream {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestAtomicReadFileStreamCopy := &_BACnetConfirmedServiceRequestAtomicReadFileStream{
+		m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord).deepCopy(),
+		m.FileStartPosition.DeepCopy().(BACnetApplicationTagSignedInteger),
+		m.RequestOctetCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)._SubType = m
+	return _BACnetConfirmedServiceRequestAtomicReadFileStreamCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) String() string {

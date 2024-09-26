@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReinitializeDevice interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetReinitializedStateOfDevice returns ReinitializedStateOfDevice (property field)
 	GetReinitializedStateOfDevice() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
@@ -56,6 +57,20 @@ type _BACnetConfirmedServiceRequestReinitializeDevice struct {
 
 var _ BACnetConfirmedServiceRequestReinitializeDevice = (*_BACnetConfirmedServiceRequestReinitializeDevice)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReinitializeDevice)(nil)
+
+// NewBACnetConfirmedServiceRequestReinitializeDevice factory function for _BACnetConfirmedServiceRequestReinitializeDevice
+func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReinitializeDevice {
+	if reinitializedStateOfDevice == nil {
+		panic("reinitializedStateOfDevice of type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged for BACnetConfirmedServiceRequestReinitializeDevice must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestReinitializeDevice{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ReinitializedStateOfDevice:            reinitializedStateOfDevice,
+		Password:                              password,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetPassword() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestReinitializeDevice factory function for _BACnetConfirmedServiceRequestReinitializeDevice
-func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReinitializeDevice {
-	if reinitializedStateOfDevice == nil {
-		panic("reinitializedStateOfDevice of type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged for BACnetConfirmedServiceRequestReinitializeDevice must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestReinitializeDevice{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		ReinitializedStateOfDevice:            reinitializedStateOfDevice,
-		Password:                              password,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestReinitializeDevice(structType any) BACnetConfirmedServiceRequestReinitializeDevice {
@@ -209,6 +210,23 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDevice) IsBACnetConfirmedServiceRequestReinitializeDevice() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) deepCopy() *_BACnetConfirmedServiceRequestReinitializeDevice {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReinitializeDeviceCopy := &_BACnetConfirmedServiceRequestReinitializeDevice{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.ReinitializedStateOfDevice.DeepCopy().(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged),
+		m.Password.DeepCopy().(BACnetContextTagCharacterString),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestReinitializeDeviceCopy
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDevice) String() string {

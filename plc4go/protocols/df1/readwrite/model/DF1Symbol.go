@@ -45,6 +45,7 @@ type DF1Symbol interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1Symbol is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1Symbol()
 }
@@ -70,6 +71,11 @@ type _DF1Symbol struct {
 
 var _ DF1SymbolContract = (*_DF1Symbol)(nil)
 
+// NewDF1Symbol factory function for _DF1Symbol
+func NewDF1Symbol() *_DF1Symbol {
+	return &_DF1Symbol{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -83,11 +89,6 @@ func (m *_DF1Symbol) GetMessageStart() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1Symbol factory function for _DF1Symbol
-func NewDF1Symbol() *_DF1Symbol {
-	return &_DF1Symbol{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1Symbol(structType any) DF1Symbol {
@@ -172,15 +173,15 @@ func (m *_DF1Symbol) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child DF1Symbol
 	switch {
 	case symbolType == 0x02: // DF1SymbolMessageFrame
-		if _child, err = (&_DF1SymbolMessageFrame{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1SymbolMessageFrame).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrame for type-switch of DF1Symbol")
 		}
 	case symbolType == 0x06: // DF1SymbolMessageFrameACK
-		if _child, err = (&_DF1SymbolMessageFrameACK{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1SymbolMessageFrameACK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrameACK for type-switch of DF1Symbol")
 		}
 	case symbolType == 0x15: // DF1SymbolMessageFrameNAK
-		if _child, err = (&_DF1SymbolMessageFrameNAK{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1SymbolMessageFrameNAK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrameNAK for type-switch of DF1Symbol")
 		}
 	default:
@@ -226,3 +227,17 @@ func (pm *_DF1Symbol) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_DF1Symbol) IsDF1Symbol() {}
+
+func (m *_DF1Symbol) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1Symbol) deepCopy() *_DF1Symbol {
+	if m == nil {
+		return nil
+	}
+	_DF1SymbolCopy := &_DF1Symbol{
+		nil, // will be set by child
+	}
+	return _DF1SymbolCopy
+}

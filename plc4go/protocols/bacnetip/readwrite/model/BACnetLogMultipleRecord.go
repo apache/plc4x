@@ -38,6 +38,7 @@ type BACnetLogMultipleRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetLogData returns LogData (property field)
@@ -53,6 +54,17 @@ type _BACnetLogMultipleRecord struct {
 }
 
 var _ BACnetLogMultipleRecord = (*_BACnetLogMultipleRecord)(nil)
+
+// NewBACnetLogMultipleRecord factory function for _BACnetLogMultipleRecord
+func NewBACnetLogMultipleRecord(timestamp BACnetDateTimeEnclosed, logData BACnetLogData) *_BACnetLogMultipleRecord {
+	if timestamp == nil {
+		panic("timestamp of type BACnetDateTimeEnclosed for BACnetLogMultipleRecord must not be nil")
+	}
+	if logData == nil {
+		panic("logData of type BACnetLogData for BACnetLogMultipleRecord must not be nil")
+	}
+	return &_BACnetLogMultipleRecord{Timestamp: timestamp, LogData: logData}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetLogMultipleRecord) GetLogData() BACnetLogData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogMultipleRecord factory function for _BACnetLogMultipleRecord
-func NewBACnetLogMultipleRecord(timestamp BACnetDateTimeEnclosed, logData BACnetLogData) *_BACnetLogMultipleRecord {
-	if timestamp == nil {
-		panic("timestamp of type BACnetDateTimeEnclosed for BACnetLogMultipleRecord must not be nil")
-	}
-	if logData == nil {
-		panic("logData of type BACnetLogData for BACnetLogMultipleRecord must not be nil")
-	}
-	return &_BACnetLogMultipleRecord{Timestamp: timestamp, LogData: logData}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogMultipleRecord(structType any) BACnetLogMultipleRecord {
@@ -192,6 +193,21 @@ func (m *_BACnetLogMultipleRecord) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetLogMultipleRecord) IsBACnetLogMultipleRecord() {}
+
+func (m *_BACnetLogMultipleRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogMultipleRecord) deepCopy() *_BACnetLogMultipleRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogMultipleRecordCopy := &_BACnetLogMultipleRecord{
+		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
+		m.LogData.DeepCopy().(BACnetLogData),
+	}
+	return _BACnetLogMultipleRecordCopy
+}
 
 func (m *_BACnetLogMultipleRecord) String() string {
 	if m == nil {

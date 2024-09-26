@@ -38,6 +38,7 @@ type UnsignedRationalNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNumerator returns Numerator (property field)
 	GetNumerator() uint32
@@ -56,6 +57,17 @@ type _UnsignedRationalNumber struct {
 
 var _ UnsignedRationalNumber = (*_UnsignedRationalNumber)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UnsignedRationalNumber)(nil)
+
+// NewUnsignedRationalNumber factory function for _UnsignedRationalNumber
+func NewUnsignedRationalNumber(numerator uint32, denominator uint32) *_UnsignedRationalNumber {
+	_result := &_UnsignedRationalNumber{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Numerator:                         numerator,
+		Denominator:                       denominator,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_UnsignedRationalNumber) GetDenominator() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnsignedRationalNumber factory function for _UnsignedRationalNumber
-func NewUnsignedRationalNumber(numerator uint32, denominator uint32) *_UnsignedRationalNumber {
-	_result := &_UnsignedRationalNumber{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Numerator:                         numerator,
-		Denominator:                       denominator,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnsignedRationalNumber(structType any) UnsignedRationalNumber {
@@ -200,6 +201,23 @@ func (m *_UnsignedRationalNumber) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_UnsignedRationalNumber) IsUnsignedRationalNumber() {}
+
+func (m *_UnsignedRationalNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnsignedRationalNumber) deepCopy() *_UnsignedRationalNumber {
+	if m == nil {
+		return nil
+	}
+	_UnsignedRationalNumberCopy := &_UnsignedRationalNumber{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Numerator,
+		m.Denominator,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UnsignedRationalNumberCopy
+}
 
 func (m *_UnsignedRationalNumber) String() string {
 	if m == nil {

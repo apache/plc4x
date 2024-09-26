@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
@@ -53,6 +54,19 @@ type _BACnetTimerStateChangeValueDate struct {
 
 var _ BACnetTimerStateChangeValueDate = (*_BACnetTimerStateChangeValueDate)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueDate)(nil)
+
+// NewBACnetTimerStateChangeValueDate factory function for _BACnetTimerStateChangeValueDate
+func NewBACnetTimerStateChangeValueDate(peekedTagHeader BACnetTagHeader, dateValue BACnetApplicationTagDate, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetTimerStateChangeValueDate must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueDate{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		DateValue:                           dateValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetTimerStateChangeValueDate) GetDateValue() BACnetApplicationTagDa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueDate factory function for _BACnetTimerStateChangeValueDate
-func NewBACnetTimerStateChangeValueDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueDate {
-	if dateValue == nil {
-		panic("dateValue of type BACnetApplicationTagDate for BACnetTimerStateChangeValueDate must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueDate{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		DateValue:                           dateValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueDate(structType any) BACnetTimerStateChangeValueDate {
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueDate) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetTimerStateChangeValueDate) IsBACnetTimerStateChangeValueDate() {}
+
+func (m *_BACnetTimerStateChangeValueDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueDate) deepCopy() *_BACnetTimerStateChangeValueDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueDateCopy := &_BACnetTimerStateChangeValueDate{
+		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueDateCopy
+}
 
 func (m *_BACnetTimerStateChangeValueDate) String() string {
 	if m == nil {

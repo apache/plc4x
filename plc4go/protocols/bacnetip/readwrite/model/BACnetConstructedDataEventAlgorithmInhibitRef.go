@@ -38,6 +38,7 @@ type BACnetConstructedDataEventAlgorithmInhibitRef interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEventAlgorithmInhibitRef returns EventAlgorithmInhibitRef (property field)
 	GetEventAlgorithmInhibitRef() BACnetObjectPropertyReference
@@ -55,6 +56,19 @@ type _BACnetConstructedDataEventAlgorithmInhibitRef struct {
 
 var _ BACnetConstructedDataEventAlgorithmInhibitRef = (*_BACnetConstructedDataEventAlgorithmInhibitRef)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventAlgorithmInhibitRef)(nil)
+
+// NewBACnetConstructedDataEventAlgorithmInhibitRef factory function for _BACnetConstructedDataEventAlgorithmInhibitRef
+func NewBACnetConstructedDataEventAlgorithmInhibitRef(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibitRef BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibitRef {
+	if eventAlgorithmInhibitRef == nil {
+		panic("eventAlgorithmInhibitRef of type BACnetObjectPropertyReference for BACnetConstructedDataEventAlgorithmInhibitRef must not be nil")
+	}
+	_result := &_BACnetConstructedDataEventAlgorithmInhibitRef{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventAlgorithmInhibitRef:      eventAlgorithmInhibitRef,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventAlgorithmInhibitRef factory function for _BACnetConstructedDataEventAlgorithmInhibitRef
-func NewBACnetConstructedDataEventAlgorithmInhibitRef(eventAlgorithmInhibitRef BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibitRef {
-	if eventAlgorithmInhibitRef == nil {
-		panic("eventAlgorithmInhibitRef of type BACnetObjectPropertyReference for BACnetConstructedDataEventAlgorithmInhibitRef must not be nil")
-	}
-	_result := &_BACnetConstructedDataEventAlgorithmInhibitRef{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EventAlgorithmInhibitRef:      eventAlgorithmInhibitRef,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventAlgorithmInhibitRef(structType any) BACnetConstructedDataEventAlgorithmInhibitRef {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) IsBACnetConstructedDataEventAlgorithmInhibitRef() {
+}
+
+func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) deepCopy() *_BACnetConstructedDataEventAlgorithmInhibitRef {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventAlgorithmInhibitRefCopy := &_BACnetConstructedDataEventAlgorithmInhibitRef{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EventAlgorithmInhibitRef.DeepCopy().(BACnetObjectPropertyReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventAlgorithmInhibitRefCopy
 }
 
 func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) String() string {

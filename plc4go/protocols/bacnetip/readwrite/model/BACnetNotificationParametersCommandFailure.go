@@ -38,6 +38,7 @@ type BACnetNotificationParametersCommandFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -65,6 +66,35 @@ type _BACnetNotificationParametersCommandFailure struct {
 
 var _ BACnetNotificationParametersCommandFailure = (*_BACnetNotificationParametersCommandFailure)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersCommandFailure)(nil)
+
+// NewBACnetNotificationParametersCommandFailure factory function for _BACnetNotificationParametersCommandFailure
+func NewBACnetNotificationParametersCommandFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, commandValue BACnetConstructedData, statusFlags BACnetStatusFlagsTagged, feedbackValue BACnetConstructedData, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersCommandFailure {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersCommandFailure must not be nil")
+	}
+	if commandValue == nil {
+		panic("commandValue of type BACnetConstructedData for BACnetNotificationParametersCommandFailure must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersCommandFailure must not be nil")
+	}
+	if feedbackValue == nil {
+		panic("feedbackValue of type BACnetConstructedData for BACnetNotificationParametersCommandFailure must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersCommandFailure must not be nil")
+	}
+	_result := &_BACnetNotificationParametersCommandFailure{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		CommandValue:                         commandValue,
+		StatusFlags:                          statusFlags,
+		FeedbackValue:                        feedbackValue,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,35 +139,6 @@ func (m *_BACnetNotificationParametersCommandFailure) GetInnerClosingTag() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersCommandFailure factory function for _BACnetNotificationParametersCommandFailure
-func NewBACnetNotificationParametersCommandFailure(innerOpeningTag BACnetOpeningTag, commandValue BACnetConstructedData, statusFlags BACnetStatusFlagsTagged, feedbackValue BACnetConstructedData, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersCommandFailure {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersCommandFailure must not be nil")
-	}
-	if commandValue == nil {
-		panic("commandValue of type BACnetConstructedData for BACnetNotificationParametersCommandFailure must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersCommandFailure must not be nil")
-	}
-	if feedbackValue == nil {
-		panic("feedbackValue of type BACnetConstructedData for BACnetNotificationParametersCommandFailure must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersCommandFailure must not be nil")
-	}
-	_result := &_BACnetNotificationParametersCommandFailure{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		CommandValue:                         commandValue,
-		StatusFlags:                          statusFlags,
-		FeedbackValue:                        feedbackValue,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersCommandFailure(structType any) BACnetNotificationParametersCommandFailure {
@@ -274,6 +275,26 @@ func (m *_BACnetNotificationParametersCommandFailure) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetNotificationParametersCommandFailure) IsBACnetNotificationParametersCommandFailure() {
+}
+
+func (m *_BACnetNotificationParametersCommandFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersCommandFailure) deepCopy() *_BACnetNotificationParametersCommandFailure {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersCommandFailureCopy := &_BACnetNotificationParametersCommandFailure{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.CommandValue.DeepCopy().(BACnetConstructedData),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.FeedbackValue.DeepCopy().(BACnetConstructedData),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersCommandFailureCopy
 }
 
 func (m *_BACnetNotificationParametersCommandFailure) String() string {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLogInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLogInterval returns LogInterval (property field)
 	GetLogInterval() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLogInterval struct {
 
 var _ BACnetConstructedDataLogInterval = (*_BACnetConstructedDataLogInterval)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLogInterval)(nil)
+
+// NewBACnetConstructedDataLogInterval factory function for _BACnetConstructedDataLogInterval
+func NewBACnetConstructedDataLogInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogInterval {
+	if logInterval == nil {
+		panic("logInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLogInterval must not be nil")
+	}
+	_result := &_BACnetConstructedDataLogInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LogInterval:                   logInterval,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLogInterval) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLogInterval factory function for _BACnetConstructedDataLogInterval
-func NewBACnetConstructedDataLogInterval(logInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogInterval {
-	if logInterval == nil {
-		panic("logInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLogInterval must not be nil")
-	}
-	_result := &_BACnetConstructedDataLogInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LogInterval:                   logInterval,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLogInterval(structType any) BACnetConstructedDataLogInterval {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLogInterval) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataLogInterval) IsBACnetConstructedDataLogInterval() {}
+
+func (m *_BACnetConstructedDataLogInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLogInterval) deepCopy() *_BACnetConstructedDataLogInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLogIntervalCopy := &_BACnetConstructedDataLogInterval{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LogInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLogIntervalCopy
+}
 
 func (m *_BACnetConstructedDataLogInterval) String() string {
 	if m == nil {

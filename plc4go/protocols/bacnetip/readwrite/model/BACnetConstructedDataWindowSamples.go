@@ -38,6 +38,7 @@ type BACnetConstructedDataWindowSamples interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetWindowSamples returns WindowSamples (property field)
 	GetWindowSamples() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataWindowSamples struct {
 
 var _ BACnetConstructedDataWindowSamples = (*_BACnetConstructedDataWindowSamples)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWindowSamples)(nil)
+
+// NewBACnetConstructedDataWindowSamples factory function for _BACnetConstructedDataWindowSamples
+func NewBACnetConstructedDataWindowSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, windowSamples BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWindowSamples {
+	if windowSamples == nil {
+		panic("windowSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataWindowSamples must not be nil")
+	}
+	_result := &_BACnetConstructedDataWindowSamples{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		WindowSamples:                 windowSamples,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataWindowSamples) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataWindowSamples factory function for _BACnetConstructedDataWindowSamples
-func NewBACnetConstructedDataWindowSamples(windowSamples BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWindowSamples {
-	if windowSamples == nil {
-		panic("windowSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataWindowSamples must not be nil")
-	}
-	_result := &_BACnetConstructedDataWindowSamples{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		WindowSamples:                 windowSamples,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataWindowSamples(structType any) BACnetConstructedDataWindowSamples {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataWindowSamples) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataWindowSamples) IsBACnetConstructedDataWindowSamples() {}
+
+func (m *_BACnetConstructedDataWindowSamples) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataWindowSamples) deepCopy() *_BACnetConstructedDataWindowSamples {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataWindowSamplesCopy := &_BACnetConstructedDataWindowSamples{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.WindowSamples.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataWindowSamplesCopy
+}
 
 func (m *_BACnetConstructedDataWindowSamples) String() string {
 	if m == nil {

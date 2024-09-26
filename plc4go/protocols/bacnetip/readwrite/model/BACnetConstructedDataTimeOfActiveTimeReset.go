@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeOfActiveTimeReset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeOfActiveTimeReset returns TimeOfActiveTimeReset (property field)
 	GetTimeOfActiveTimeReset() BACnetDateTime
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTimeOfActiveTimeReset struct {
 
 var _ BACnetConstructedDataTimeOfActiveTimeReset = (*_BACnetConstructedDataTimeOfActiveTimeReset)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeOfActiveTimeReset)(nil)
+
+// NewBACnetConstructedDataTimeOfActiveTimeReset factory function for _BACnetConstructedDataTimeOfActiveTimeReset
+func NewBACnetConstructedDataTimeOfActiveTimeReset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfActiveTimeReset BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfActiveTimeReset {
+	if timeOfActiveTimeReset == nil {
+		panic("timeOfActiveTimeReset of type BACnetDateTime for BACnetConstructedDataTimeOfActiveTimeReset must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimeOfActiveTimeReset{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeOfActiveTimeReset:         timeOfActiveTimeReset,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTimeOfActiveTimeReset) GetActualValue() BACnetDat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimeOfActiveTimeReset factory function for _BACnetConstructedDataTimeOfActiveTimeReset
-func NewBACnetConstructedDataTimeOfActiveTimeReset(timeOfActiveTimeReset BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfActiveTimeReset {
-	if timeOfActiveTimeReset == nil {
-		panic("timeOfActiveTimeReset of type BACnetDateTime for BACnetConstructedDataTimeOfActiveTimeReset must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimeOfActiveTimeReset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimeOfActiveTimeReset:         timeOfActiveTimeReset,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimeOfActiveTimeReset(structType any) BACnetConstructedDataTimeOfActiveTimeReset {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimeOfActiveTimeReset) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataTimeOfActiveTimeReset) IsBACnetConstructedDataTimeOfActiveTimeReset() {
+}
+
+func (m *_BACnetConstructedDataTimeOfActiveTimeReset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeOfActiveTimeReset) deepCopy() *_BACnetConstructedDataTimeOfActiveTimeReset {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeOfActiveTimeResetCopy := &_BACnetConstructedDataTimeOfActiveTimeReset{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TimeOfActiveTimeReset.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeOfActiveTimeResetCopy
 }
 
 func (m *_BACnetConstructedDataTimeOfActiveTimeReset) String() string {

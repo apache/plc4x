@@ -38,6 +38,7 @@ type BACnetConstructedDataLandingCallControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLandingCallControl returns LandingCallControl (property field)
 	GetLandingCallControl() BACnetLandingCallStatus
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLandingCallControl struct {
 
 var _ BACnetConstructedDataLandingCallControl = (*_BACnetConstructedDataLandingCallControl)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLandingCallControl)(nil)
+
+// NewBACnetConstructedDataLandingCallControl factory function for _BACnetConstructedDataLandingCallControl
+func NewBACnetConstructedDataLandingCallControl(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallControl BACnetLandingCallStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCallControl {
+	if landingCallControl == nil {
+		panic("landingCallControl of type BACnetLandingCallStatus for BACnetConstructedDataLandingCallControl must not be nil")
+	}
+	_result := &_BACnetConstructedDataLandingCallControl{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LandingCallControl:            landingCallControl,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLandingCallControl) GetActualValue() BACnetLandin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLandingCallControl factory function for _BACnetConstructedDataLandingCallControl
-func NewBACnetConstructedDataLandingCallControl(landingCallControl BACnetLandingCallStatus, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCallControl {
-	if landingCallControl == nil {
-		panic("landingCallControl of type BACnetLandingCallStatus for BACnetConstructedDataLandingCallControl must not be nil")
-	}
-	_result := &_BACnetConstructedDataLandingCallControl{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LandingCallControl:            landingCallControl,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLandingCallControl(structType any) BACnetConstructedDataLandingCallControl {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLandingCallControl) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataLandingCallControl) IsBACnetConstructedDataLandingCallControl() {}
+
+func (m *_BACnetConstructedDataLandingCallControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLandingCallControl) deepCopy() *_BACnetConstructedDataLandingCallControl {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLandingCallControlCopy := &_BACnetConstructedDataLandingCallControl{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LandingCallControl.DeepCopy().(BACnetLandingCallStatus),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLandingCallControlCopy
+}
 
 func (m *_BACnetConstructedDataLandingCallControl) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataFileAccessMethod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFileAccessMethod returns FileAccessMethod (property field)
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataFileAccessMethod struct {
 
 var _ BACnetConstructedDataFileAccessMethod = (*_BACnetConstructedDataFileAccessMethod)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileAccessMethod)(nil)
+
+// NewBACnetConstructedDataFileAccessMethod factory function for _BACnetConstructedDataFileAccessMethod
+func NewBACnetConstructedDataFileAccessMethod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileAccessMethod BACnetFileAccessMethodTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAccessMethod {
+	if fileAccessMethod == nil {
+		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetConstructedDataFileAccessMethod must not be nil")
+	}
+	_result := &_BACnetConstructedDataFileAccessMethod{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FileAccessMethod:              fileAccessMethod,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetActualValue() BACnetFileAcce
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFileAccessMethod factory function for _BACnetConstructedDataFileAccessMethod
-func NewBACnetConstructedDataFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAccessMethod {
-	if fileAccessMethod == nil {
-		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetConstructedDataFileAccessMethod must not be nil")
-	}
-	_result := &_BACnetConstructedDataFileAccessMethod{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FileAccessMethod:              fileAccessMethod,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFileAccessMethod(structType any) BACnetConstructedDataFileAccessMethod {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFileAccessMethod) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataFileAccessMethod) IsBACnetConstructedDataFileAccessMethod() {}
+
+func (m *_BACnetConstructedDataFileAccessMethod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFileAccessMethod) deepCopy() *_BACnetConstructedDataFileAccessMethod {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFileAccessMethodCopy := &_BACnetConstructedDataFileAccessMethod{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FileAccessMethod.DeepCopy().(BACnetFileAccessMethodTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFileAccessMethodCopy
+}
 
 func (m *_BACnetConstructedDataFileAccessMethod) String() string {
 	if m == nil {

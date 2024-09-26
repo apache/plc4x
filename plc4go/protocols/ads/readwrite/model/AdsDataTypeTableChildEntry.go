@@ -45,6 +45,7 @@ type AdsDataTypeTableChildEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetEntryLength returns EntryLength (property field)
 	GetEntryLength() uint32
 	// GetVersion returns Version (property field)
@@ -102,6 +103,11 @@ type _AdsDataTypeTableChildEntry struct {
 }
 
 var _ AdsDataTypeTableChildEntry = (*_AdsDataTypeTableChildEntry)(nil)
+
+// NewAdsDataTypeTableChildEntry factory function for _AdsDataTypeTableChildEntry
+func NewAdsDataTypeTableChildEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, propertyName string, dataTypeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, rest []byte) *_AdsDataTypeTableChildEntry {
+	return &_AdsDataTypeTableChildEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offset: offset, DataType: dataType, Flags: flags, ArrayDimensions: arrayDimensions, NumChildren: numChildren, PropertyName: propertyName, DataTypeName: dataTypeName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Rest: rest}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -197,11 +203,6 @@ func (m *_AdsDataTypeTableChildEntry) GetCommentTerminator() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDataTypeTableChildEntry factory function for _AdsDataTypeTableChildEntry
-func NewAdsDataTypeTableChildEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, propertyName string, dataTypeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableEntry, rest []byte) *_AdsDataTypeTableChildEntry {
-	return &_AdsDataTypeTableChildEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offset: offset, DataType: dataType, Flags: flags, ArrayDimensions: arrayDimensions, NumChildren: numChildren, PropertyName: propertyName, DataTypeName: dataTypeName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Rest: rest}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDataTypeTableChildEntry(structType any) AdsDataTypeTableChildEntry {
@@ -590,6 +591,35 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_AdsDataTypeTableChildEntry) IsAdsDataTypeTableChildEntry() {}
+
+func (m *_AdsDataTypeTableChildEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDataTypeTableChildEntry) deepCopy() *_AdsDataTypeTableChildEntry {
+	if m == nil {
+		return nil
+	}
+	_AdsDataTypeTableChildEntryCopy := &_AdsDataTypeTableChildEntry{
+		m.EntryLength,
+		m.Version,
+		m.HashValue,
+		m.TypeHashValue,
+		m.Size,
+		m.Offset,
+		m.DataType,
+		m.Flags,
+		m.ArrayDimensions,
+		m.NumChildren,
+		m.PropertyName,
+		m.DataTypeName,
+		m.Comment,
+		utils.DeepCopySlice[AdsDataTypeArrayInfo, AdsDataTypeArrayInfo](m.ArrayInfo),
+		utils.DeepCopySlice[AdsDataTypeTableEntry, AdsDataTypeTableEntry](m.Children),
+		utils.DeepCopySlice[byte, byte](m.Rest),
+	}
+	return _AdsDataTypeTableChildEntryCopy
+}
 
 func (m *_AdsDataTypeTableChildEntry) String() string {
 	if m == nil {

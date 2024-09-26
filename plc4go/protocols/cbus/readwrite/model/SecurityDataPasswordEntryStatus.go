@@ -38,6 +38,7 @@ type SecurityDataPasswordEntryStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetCode returns Code (property field)
 	GetCode() byte
@@ -63,6 +64,16 @@ type _SecurityDataPasswordEntryStatus struct {
 
 var _ SecurityDataPasswordEntryStatus = (*_SecurityDataPasswordEntryStatus)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataPasswordEntryStatus)(nil)
+
+// NewSecurityDataPasswordEntryStatus factory function for _SecurityDataPasswordEntryStatus
+func NewSecurityDataPasswordEntryStatus(commandTypeContainer SecurityCommandTypeContainer, argument byte, code byte) *_SecurityDataPasswordEntryStatus {
+	_result := &_SecurityDataPasswordEntryStatus{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Code:                 code,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,16 +141,6 @@ func (m *_SecurityDataPasswordEntryStatus) GetIsReserved() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataPasswordEntryStatus factory function for _SecurityDataPasswordEntryStatus
-func NewSecurityDataPasswordEntryStatus(code byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataPasswordEntryStatus {
-	_result := &_SecurityDataPasswordEntryStatus{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Code:                 code,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataPasswordEntryStatus(structType any) SecurityDataPasswordEntryStatus {
@@ -294,6 +295,22 @@ func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_SecurityDataPasswordEntryStatus) IsSecurityDataPasswordEntryStatus() {}
+
+func (m *_SecurityDataPasswordEntryStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataPasswordEntryStatus) deepCopy() *_SecurityDataPasswordEntryStatus {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataPasswordEntryStatusCopy := &_SecurityDataPasswordEntryStatus{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.Code,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataPasswordEntryStatusCopy
+}
 
 func (m *_SecurityDataPasswordEntryStatus) String() string {
 	if m == nil {

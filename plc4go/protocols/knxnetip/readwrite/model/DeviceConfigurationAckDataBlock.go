@@ -38,6 +38,7 @@ type DeviceConfigurationAckDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
@@ -56,6 +57,11 @@ type _DeviceConfigurationAckDataBlock struct {
 }
 
 var _ DeviceConfigurationAckDataBlock = (*_DeviceConfigurationAckDataBlock)(nil)
+
+// NewDeviceConfigurationAckDataBlock factory function for _DeviceConfigurationAckDataBlock
+func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_DeviceConfigurationAckDataBlock {
+	return &_DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +84,6 @@ func (m *_DeviceConfigurationAckDataBlock) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceConfigurationAckDataBlock factory function for _DeviceConfigurationAckDataBlock
-func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_DeviceConfigurationAckDataBlock {
-	return &_DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceConfigurationAckDataBlock(structType any) DeviceConfigurationAckDataBlock {
@@ -219,6 +220,22 @@ func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_DeviceConfigurationAckDataBlock) IsDeviceConfigurationAckDataBlock() {}
+
+func (m *_DeviceConfigurationAckDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationAckDataBlock) deepCopy() *_DeviceConfigurationAckDataBlock {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationAckDataBlockCopy := &_DeviceConfigurationAckDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.Status,
+	}
+	return _DeviceConfigurationAckDataBlockCopy
+}
 
 func (m *_DeviceConfigurationAckDataBlock) String() string {
 	if m == nil {

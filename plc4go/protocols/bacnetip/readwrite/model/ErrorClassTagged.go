@@ -38,6 +38,7 @@ type ErrorClassTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _ErrorClassTagged struct {
 }
 
 var _ ErrorClassTagged = (*_ErrorClassTagged)(nil)
+
+// NewErrorClassTagged factory function for _ErrorClassTagged
+func NewErrorClassTagged(header BACnetTagHeader, value ErrorClass, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_ErrorClassTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for ErrorClassTagged must not be nil")
+	}
+	return &_ErrorClassTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_ErrorClassTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorClassTagged factory function for _ErrorClassTagged
-func NewErrorClassTagged(header BACnetTagHeader, value ErrorClass, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_ErrorClassTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for ErrorClassTagged must not be nil")
-	}
-	return &_ErrorClassTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorClassTagged(structType any) ErrorClassTagged {
@@ -269,6 +270,24 @@ func (m *_ErrorClassTagged) GetTagClass() TagClass {
 ////
 
 func (m *_ErrorClassTagged) IsErrorClassTagged() {}
+
+func (m *_ErrorClassTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorClassTagged) deepCopy() *_ErrorClassTagged {
+	if m == nil {
+		return nil
+	}
+	_ErrorClassTaggedCopy := &_ErrorClassTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _ErrorClassTaggedCopy
+}
 
 func (m *_ErrorClassTagged) String() string {
 	if m == nil {

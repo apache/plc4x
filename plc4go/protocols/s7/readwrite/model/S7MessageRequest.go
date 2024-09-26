@@ -36,6 +36,7 @@ type S7MessageRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Message
 	// IsS7MessageRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7MessageRequest()
@@ -48,6 +49,15 @@ type _S7MessageRequest struct {
 
 var _ S7MessageRequest = (*_S7MessageRequest)(nil)
 var _ S7MessageRequirements = (*_S7MessageRequest)(nil)
+
+// NewS7MessageRequest factory function for _S7MessageRequest
+func NewS7MessageRequest(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageRequest {
+	_result := &_S7MessageRequest{
+		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
+	}
+	_result.S7MessageContract.(*_S7Message)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_S7MessageRequest) GetMessageType() uint8 {
 
 func (m *_S7MessageRequest) GetParent() S7MessageContract {
 	return m.S7MessageContract
-}
-
-// NewS7MessageRequest factory function for _S7MessageRequest
-func NewS7MessageRequest(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageRequest {
-	_result := &_S7MessageRequest{
-		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
-	}
-	_result.S7MessageContract.(*_S7Message)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_S7MessageRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_S7MessageRequest) IsS7MessageRequest() {}
+
+func (m *_S7MessageRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageRequest) deepCopy() *_S7MessageRequest {
+	if m == nil {
+		return nil
+	}
+	_S7MessageRequestCopy := &_S7MessageRequest{
+		m.S7MessageContract.(*_S7Message).deepCopy(),
+	}
+	m.S7MessageContract.(*_S7Message)._SubType = m
+	return _S7MessageRequestCopy
+}
 
 func (m *_S7MessageRequest) String() string {
 	if m == nil {

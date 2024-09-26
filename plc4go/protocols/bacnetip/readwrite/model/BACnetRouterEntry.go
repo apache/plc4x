@@ -38,6 +38,7 @@ type BACnetRouterEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetContextTagUnsignedInteger
 	// GetMacAddress returns MacAddress (property field)
@@ -59,6 +60,20 @@ type _BACnetRouterEntry struct {
 }
 
 var _ BACnetRouterEntry = (*_BACnetRouterEntry)(nil)
+
+// NewBACnetRouterEntry factory function for _BACnetRouterEntry
+func NewBACnetRouterEntry(networkNumber BACnetContextTagUnsignedInteger, macAddress BACnetContextTagOctetString, status BACnetRouterEntryStatusTagged, performanceIndex BACnetContextTagOctetString) *_BACnetRouterEntry {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetContextTagUnsignedInteger for BACnetRouterEntry must not be nil")
+	}
+	if macAddress == nil {
+		panic("macAddress of type BACnetContextTagOctetString for BACnetRouterEntry must not be nil")
+	}
+	if status == nil {
+		panic("status of type BACnetRouterEntryStatusTagged for BACnetRouterEntry must not be nil")
+	}
+	return &_BACnetRouterEntry{NetworkNumber: networkNumber, MacAddress: macAddress, Status: status, PerformanceIndex: performanceIndex}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,20 +100,6 @@ func (m *_BACnetRouterEntry) GetPerformanceIndex() BACnetContextTagOctetString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRouterEntry factory function for _BACnetRouterEntry
-func NewBACnetRouterEntry(networkNumber BACnetContextTagUnsignedInteger, macAddress BACnetContextTagOctetString, status BACnetRouterEntryStatusTagged, performanceIndex BACnetContextTagOctetString) *_BACnetRouterEntry {
-	if networkNumber == nil {
-		panic("networkNumber of type BACnetContextTagUnsignedInteger for BACnetRouterEntry must not be nil")
-	}
-	if macAddress == nil {
-		panic("macAddress of type BACnetContextTagOctetString for BACnetRouterEntry must not be nil")
-	}
-	if status == nil {
-		panic("status of type BACnetRouterEntryStatusTagged for BACnetRouterEntry must not be nil")
-	}
-	return &_BACnetRouterEntry{NetworkNumber: networkNumber, MacAddress: macAddress, Status: status, PerformanceIndex: performanceIndex}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRouterEntry(structType any) BACnetRouterEntry {
@@ -241,6 +242,23 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_BACnetRouterEntry) IsBACnetRouterEntry() {}
+
+func (m *_BACnetRouterEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRouterEntry) deepCopy() *_BACnetRouterEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetRouterEntryCopy := &_BACnetRouterEntry{
+		m.NetworkNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.MacAddress.DeepCopy().(BACnetContextTagOctetString),
+		m.Status.DeepCopy().(BACnetRouterEntryStatusTagged),
+		m.PerformanceIndex.DeepCopy().(BACnetContextTagOctetString),
+	}
+	return _BACnetRouterEntryCopy
+}
 
 func (m *_BACnetRouterEntry) String() string {
 	if m == nil {

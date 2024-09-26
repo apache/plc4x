@@ -36,6 +36,7 @@ type SecurityDataLowBatteryDetected interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataLowBatteryDetected is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLowBatteryDetected()
@@ -49,6 +50,15 @@ type _SecurityDataLowBatteryDetected struct {
 var _ SecurityDataLowBatteryDetected = (*_SecurityDataLowBatteryDetected)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataLowBatteryDetected)(nil)
 
+// NewSecurityDataLowBatteryDetected factory function for _SecurityDataLowBatteryDetected
+func NewSecurityDataLowBatteryDetected(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLowBatteryDetected {
+	_result := &_SecurityDataLowBatteryDetected{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataLowBatteryDetected)(nil)
 
 func (m *_SecurityDataLowBatteryDetected) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataLowBatteryDetected factory function for _SecurityDataLowBatteryDetected
-func NewSecurityDataLowBatteryDetected(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLowBatteryDetected {
-	_result := &_SecurityDataLowBatteryDetected{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataLowBatteryDetected) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_SecurityDataLowBatteryDetected) IsSecurityDataLowBatteryDetected() {}
+
+func (m *_SecurityDataLowBatteryDetected) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataLowBatteryDetected) deepCopy() *_SecurityDataLowBatteryDetected {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataLowBatteryDetectedCopy := &_SecurityDataLowBatteryDetected{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataLowBatteryDetectedCopy
+}
 
 func (m *_SecurityDataLowBatteryDetected) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type BACnetFaultParameterFaultExtendedParametersEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetFaultParameterFaultExtendedParametersEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntry()
 }
@@ -73,6 +74,14 @@ type _BACnetFaultParameterFaultExtendedParametersEntry struct {
 }
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryContract = (*_BACnetFaultParameterFaultExtendedParametersEntry)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntry factory function for _BACnetFaultParameterFaultExtendedParametersEntry
+func NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntry {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetFaultParameterFaultExtendedParametersEntry must not be nil")
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntry{PeekedTagHeader: peekedTagHeader}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,14 +119,6 @@ func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedIsContextT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntry factory function for _BACnetFaultParameterFaultExtendedParametersEntry
-func NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntry {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetFaultParameterFaultExtendedParametersEntry must not be nil")
-	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntry{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntry(structType any) BACnetFaultParameterFaultExtendedParametersEntry {
@@ -213,59 +214,59 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) parse(ctx context.Co
 	var _child BACnetFaultParameterFaultExtendedParametersEntry
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryNull
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryNull for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryReal
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryReal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryReal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryReal for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryUnsigned
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryUnsigned).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryUnsigned for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBoolean
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryBoolean{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryBoolean).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryBoolean for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryInteger
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryInteger{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryInteger).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryInteger for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDouble
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryDouble{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryDouble).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryDouble for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryOctetString
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryOctetString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryOctetString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryOctetString for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryCharacterString
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryCharacterString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryCharacterString for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBitString
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryBitString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryBitString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryBitString for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryEnumerated
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryEnumerated).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryEnumerated for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDate
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryDate{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryDate).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryDate for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryTime
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryTime for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetFaultParameterFaultExtendedParametersEntryReference
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryReference{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryReference).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryReference for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	default:
@@ -315,4 +316,19 @@ func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) serializeParent(ctx
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntry) IsBACnetFaultParameterFaultExtendedParametersEntry() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryCopy := &_BACnetFaultParameterFaultExtendedParametersEntry{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetFaultParameterFaultExtendedParametersEntryCopy
 }

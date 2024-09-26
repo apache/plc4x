@@ -38,6 +38,7 @@ type ApduDataExtPropertyValueResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -65,6 +66,20 @@ type _ApduDataExtPropertyValueResponse struct {
 
 var _ ApduDataExtPropertyValueResponse = (*_ApduDataExtPropertyValueResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueResponse)(nil)
+
+// NewApduDataExtPropertyValueResponse factory function for _ApduDataExtPropertyValueResponse
+func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueResponse {
+	_result := &_ApduDataExtPropertyValueResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Count:               count,
+		Index:               index,
+		Data:                data,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,20 +128,6 @@ func (m *_ApduDataExtPropertyValueResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyValueResponse factory function for _ApduDataExtPropertyValueResponse
-func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueResponse {
-	_result := &_ApduDataExtPropertyValueResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Count:               count,
-		Index:               index,
-		Data:                data,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyValueResponse(structType any) ApduDataExtPropertyValueResponse {
@@ -265,6 +266,26 @@ func (m *_ApduDataExtPropertyValueResponse) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_ApduDataExtPropertyValueResponse) IsApduDataExtPropertyValueResponse() {}
+
+func (m *_ApduDataExtPropertyValueResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtPropertyValueResponse) deepCopy() *_ApduDataExtPropertyValueResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtPropertyValueResponseCopy := &_ApduDataExtPropertyValueResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.ObjectIndex,
+		m.PropertyId,
+		m.Count,
+		m.Index,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtPropertyValueResponseCopy
+}
 
 func (m *_ApduDataExtPropertyValueResponse) String() string {
 	if m == nil {

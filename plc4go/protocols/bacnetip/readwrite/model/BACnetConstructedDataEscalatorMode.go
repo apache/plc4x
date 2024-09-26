@@ -38,6 +38,7 @@ type BACnetConstructedDataEscalatorMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEscalatorMode returns EscalatorMode (property field)
 	GetEscalatorMode() BACnetEscalatorModeTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataEscalatorMode struct {
 
 var _ BACnetConstructedDataEscalatorMode = (*_BACnetConstructedDataEscalatorMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEscalatorMode)(nil)
+
+// NewBACnetConstructedDataEscalatorMode factory function for _BACnetConstructedDataEscalatorMode
+func NewBACnetConstructedDataEscalatorMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, escalatorMode BACnetEscalatorModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
+	if escalatorMode == nil {
+		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetConstructedDataEscalatorMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataEscalatorMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EscalatorMode:                 escalatorMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataEscalatorMode) GetActualValue() BACnetEscalatorMo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEscalatorMode factory function for _BACnetConstructedDataEscalatorMode
-func NewBACnetConstructedDataEscalatorMode(escalatorMode BACnetEscalatorModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
-	if escalatorMode == nil {
-		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetConstructedDataEscalatorMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataEscalatorMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EscalatorMode:                 escalatorMode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEscalatorMode(structType any) BACnetConstructedDataEscalatorMode {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEscalatorMode) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataEscalatorMode) IsBACnetConstructedDataEscalatorMode() {}
+
+func (m *_BACnetConstructedDataEscalatorMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEscalatorMode) deepCopy() *_BACnetConstructedDataEscalatorMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEscalatorModeCopy := &_BACnetConstructedDataEscalatorMode{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EscalatorMode.DeepCopy().(BACnetEscalatorModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEscalatorModeCopy
+}
 
 func (m *_BACnetConstructedDataEscalatorMode) String() string {
 	if m == nil {

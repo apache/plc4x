@@ -36,6 +36,7 @@ type BACnetConstructedDataEventEnrollmentAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataEventEnrollmentAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventEnrollmentAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataEventEnrollmentAll struct {
 
 var _ BACnetConstructedDataEventEnrollmentAll = (*_BACnetConstructedDataEventEnrollmentAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventEnrollmentAll)(nil)
+
+// NewBACnetConstructedDataEventEnrollmentAll factory function for _BACnetConstructedDataEventEnrollmentAll
+func NewBACnetConstructedDataEventEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventEnrollmentAll {
+	_result := &_BACnetConstructedDataEventEnrollmentAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataEventEnrollmentAll) GetPropertyIdentifierArgument
 
 func (m *_BACnetConstructedDataEventEnrollmentAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataEventEnrollmentAll factory function for _BACnetConstructedDataEventEnrollmentAll
-func NewBACnetConstructedDataEventEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventEnrollmentAll {
-	_result := &_BACnetConstructedDataEventEnrollmentAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataEventEnrollmentAll) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataEventEnrollmentAll) IsBACnetConstructedDataEventEnrollmentAll() {}
+
+func (m *_BACnetConstructedDataEventEnrollmentAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventEnrollmentAll) deepCopy() *_BACnetConstructedDataEventEnrollmentAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventEnrollmentAllCopy := &_BACnetConstructedDataEventEnrollmentAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventEnrollmentAllCopy
+}
 
 func (m *_BACnetConstructedDataEventEnrollmentAll) String() string {
 	if m == nil {

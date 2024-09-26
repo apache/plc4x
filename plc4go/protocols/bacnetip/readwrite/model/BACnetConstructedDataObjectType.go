@@ -38,6 +38,7 @@ type BACnetConstructedDataObjectType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetObjectType returns ObjectType (property field)
 	GetObjectType() BACnetObjectTypeTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataObjectType struct {
 
 var _ BACnetConstructedDataObjectType = (*_BACnetConstructedDataObjectType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectType)(nil)
+
+// NewBACnetConstructedDataObjectType factory function for _BACnetConstructedDataObjectType
+func NewBACnetConstructedDataObjectType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectType BACnetObjectTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectType {
+	if objectType == nil {
+		panic("objectType of type BACnetObjectTypeTagged for BACnetConstructedDataObjectType must not be nil")
+	}
+	_result := &_BACnetConstructedDataObjectType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ObjectType:                    objectType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataObjectType) GetActualValue() BACnetObjectTypeTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataObjectType factory function for _BACnetConstructedDataObjectType
-func NewBACnetConstructedDataObjectType(objectType BACnetObjectTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectType {
-	if objectType == nil {
-		panic("objectType of type BACnetObjectTypeTagged for BACnetConstructedDataObjectType must not be nil")
-	}
-	_result := &_BACnetConstructedDataObjectType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ObjectType:                    objectType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataObjectType(structType any) BACnetConstructedDataObjectType {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataObjectType) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataObjectType) IsBACnetConstructedDataObjectType() {}
+
+func (m *_BACnetConstructedDataObjectType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataObjectType) deepCopy() *_BACnetConstructedDataObjectType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataObjectTypeCopy := &_BACnetConstructedDataObjectType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ObjectType.DeepCopy().(BACnetObjectTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataObjectTypeCopy
+}
 
 func (m *_BACnetConstructedDataObjectType) String() string {
 	if m == nil {

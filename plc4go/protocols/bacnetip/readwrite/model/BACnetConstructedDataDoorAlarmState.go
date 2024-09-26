@@ -38,6 +38,7 @@ type BACnetConstructedDataDoorAlarmState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoorAlarmState returns DoorAlarmState (property field)
 	GetDoorAlarmState() BACnetDoorAlarmStateTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDoorAlarmState struct {
 
 var _ BACnetConstructedDataDoorAlarmState = (*_BACnetConstructedDataDoorAlarmState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorAlarmState)(nil)
+
+// NewBACnetConstructedDataDoorAlarmState factory function for _BACnetConstructedDataDoorAlarmState
+func NewBACnetConstructedDataDoorAlarmState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorAlarmState BACnetDoorAlarmStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorAlarmState {
+	if doorAlarmState == nil {
+		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetConstructedDataDoorAlarmState must not be nil")
+	}
+	_result := &_BACnetConstructedDataDoorAlarmState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorAlarmState:                doorAlarmState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDoorAlarmState) GetActualValue() BACnetDoorAlarmS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDoorAlarmState factory function for _BACnetConstructedDataDoorAlarmState
-func NewBACnetConstructedDataDoorAlarmState(doorAlarmState BACnetDoorAlarmStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorAlarmState {
-	if doorAlarmState == nil {
-		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetConstructedDataDoorAlarmState must not be nil")
-	}
-	_result := &_BACnetConstructedDataDoorAlarmState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DoorAlarmState:                doorAlarmState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDoorAlarmState(structType any) BACnetConstructedDataDoorAlarmState {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDoorAlarmState) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataDoorAlarmState) IsBACnetConstructedDataDoorAlarmState() {}
+
+func (m *_BACnetConstructedDataDoorAlarmState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoorAlarmState) deepCopy() *_BACnetConstructedDataDoorAlarmState {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoorAlarmStateCopy := &_BACnetConstructedDataDoorAlarmState{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DoorAlarmState.DeepCopy().(BACnetDoorAlarmStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoorAlarmStateCopy
+}
 
 func (m *_BACnetConstructedDataDoorAlarmState) String() string {
 	if m == nil {

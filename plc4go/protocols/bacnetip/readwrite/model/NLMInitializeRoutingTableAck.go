@@ -38,6 +38,7 @@ type NLMInitializeRoutingTableAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetNumberOfPorts returns NumberOfPorts (property field)
 	GetNumberOfPorts() uint8
@@ -56,6 +57,17 @@ type _NLMInitializeRoutingTableAck struct {
 
 var _ NLMInitializeRoutingTableAck = (*_NLMInitializeRoutingTableAck)(nil)
 var _ NLMRequirements = (*_NLMInitializeRoutingTableAck)(nil)
+
+// NewNLMInitializeRoutingTableAck factory function for _NLMInitializeRoutingTableAck
+func NewNLMInitializeRoutingTableAck(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTableAck {
+	_result := &_NLMInitializeRoutingTableAck{
+		NLMContract:   NewNLM(apduLength),
+		NumberOfPorts: numberOfPorts,
+		PortMappings:  portMappings,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_NLMInitializeRoutingTableAck) GetPortMappings() []NLMInitializeRouting
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMInitializeRoutingTableAck factory function for _NLMInitializeRoutingTableAck
-func NewNLMInitializeRoutingTableAck(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTableAck {
-	_result := &_NLMInitializeRoutingTableAck{
-		NLMContract:   NewNLM(apduLength),
-		NumberOfPorts: numberOfPorts,
-		PortMappings:  portMappings,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMInitializeRoutingTableAck(structType any) NLMInitializeRoutingTableAck {
@@ -207,6 +208,23 @@ func (m *_NLMInitializeRoutingTableAck) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_NLMInitializeRoutingTableAck) IsNLMInitializeRoutingTableAck() {}
+
+func (m *_NLMInitializeRoutingTableAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMInitializeRoutingTableAck) deepCopy() *_NLMInitializeRoutingTableAck {
+	if m == nil {
+		return nil
+	}
+	_NLMInitializeRoutingTableAckCopy := &_NLMInitializeRoutingTableAck{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.NumberOfPorts,
+		utils.DeepCopySlice[NLMInitializeRoutingTablePortMapping, NLMInitializeRoutingTablePortMapping](m.PortMappings),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMInitializeRoutingTableAckCopy
+}
 
 func (m *_NLMInitializeRoutingTableAck) String() string {
 	if m == nil {

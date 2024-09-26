@@ -36,6 +36,7 @@ type FirmataCommandSystemReset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// IsFirmataCommandSystemReset is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommandSystemReset()
@@ -48,6 +49,15 @@ type _FirmataCommandSystemReset struct {
 
 var _ FirmataCommandSystemReset = (*_FirmataCommandSystemReset)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSystemReset)(nil)
+
+// NewFirmataCommandSystemReset factory function for _FirmataCommandSystemReset
+func NewFirmataCommandSystemReset(response bool) *_FirmataCommandSystemReset {
+	_result := &_FirmataCommandSystemReset{
+		FirmataCommandContract: NewFirmataCommand(response),
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_FirmataCommandSystemReset) GetCommandCode() uint8 {
 
 func (m *_FirmataCommandSystemReset) GetParent() FirmataCommandContract {
 	return m.FirmataCommandContract
-}
-
-// NewFirmataCommandSystemReset factory function for _FirmataCommandSystemReset
-func NewFirmataCommandSystemReset(response bool) *_FirmataCommandSystemReset {
-	_result := &_FirmataCommandSystemReset{
-		FirmataCommandContract: NewFirmataCommand(response),
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_FirmataCommandSystemReset) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_FirmataCommandSystemReset) IsFirmataCommandSystemReset() {}
+
+func (m *_FirmataCommandSystemReset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandSystemReset) deepCopy() *_FirmataCommandSystemReset {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandSystemResetCopy := &_FirmataCommandSystemReset{
+		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandSystemResetCopy
+}
 
 func (m *_FirmataCommandSystemReset) String() string {
 	if m == nil {

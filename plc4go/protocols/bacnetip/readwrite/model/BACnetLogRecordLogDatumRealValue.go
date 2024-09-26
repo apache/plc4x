@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumRealValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetContextTagReal
@@ -53,6 +54,19 @@ type _BACnetLogRecordLogDatumRealValue struct {
 
 var _ BACnetLogRecordLogDatumRealValue = (*_BACnetLogRecordLogDatumRealValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumRealValue)(nil)
+
+// NewBACnetLogRecordLogDatumRealValue factory function for _BACnetLogRecordLogDatumRealValue
+func NewBACnetLogRecordLogDatumRealValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, realValue BACnetContextTagReal, tagNumber uint8) *_BACnetLogRecordLogDatumRealValue {
+	if realValue == nil {
+		panic("realValue of type BACnetContextTagReal for BACnetLogRecordLogDatumRealValue must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumRealValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		RealValue:                       realValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogRecordLogDatumRealValue) GetRealValue() BACnetContextTagReal 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumRealValue factory function for _BACnetLogRecordLogDatumRealValue
-func NewBACnetLogRecordLogDatumRealValue(realValue BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumRealValue {
-	if realValue == nil {
-		panic("realValue of type BACnetContextTagReal for BACnetLogRecordLogDatumRealValue must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumRealValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		RealValue:                       realValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumRealValue(structType any) BACnetLogRecordLogDatumRealValue {
@@ -178,6 +179,22 @@ func (m *_BACnetLogRecordLogDatumRealValue) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetLogRecordLogDatumRealValue) IsBACnetLogRecordLogDatumRealValue() {}
+
+func (m *_BACnetLogRecordLogDatumRealValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumRealValue) deepCopy() *_BACnetLogRecordLogDatumRealValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumRealValueCopy := &_BACnetLogRecordLogDatumRealValue{
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
+		m.RealValue.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumRealValueCopy
+}
 
 func (m *_BACnetLogRecordLogDatumRealValue) String() string {
 	if m == nil {

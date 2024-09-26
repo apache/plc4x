@@ -38,6 +38,7 @@ type BACnetConstructedDataElevatorGroup interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetElevatorGroup returns ElevatorGroup (property field)
 	GetElevatorGroup() BACnetApplicationTagObjectIdentifier
@@ -55,6 +56,19 @@ type _BACnetConstructedDataElevatorGroup struct {
 
 var _ BACnetConstructedDataElevatorGroup = (*_BACnetConstructedDataElevatorGroup)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataElevatorGroup)(nil)
+
+// NewBACnetConstructedDataElevatorGroup factory function for _BACnetConstructedDataElevatorGroup
+func NewBACnetConstructedDataElevatorGroup(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elevatorGroup BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElevatorGroup {
+	if elevatorGroup == nil {
+		panic("elevatorGroup of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataElevatorGroup must not be nil")
+	}
+	_result := &_BACnetConstructedDataElevatorGroup{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ElevatorGroup:                 elevatorGroup,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataElevatorGroup) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataElevatorGroup factory function for _BACnetConstructedDataElevatorGroup
-func NewBACnetConstructedDataElevatorGroup(elevatorGroup BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElevatorGroup {
-	if elevatorGroup == nil {
-		panic("elevatorGroup of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataElevatorGroup must not be nil")
-	}
-	_result := &_BACnetConstructedDataElevatorGroup{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ElevatorGroup:                 elevatorGroup,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataElevatorGroup(structType any) BACnetConstructedDataElevatorGroup {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataElevatorGroup) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataElevatorGroup) IsBACnetConstructedDataElevatorGroup() {}
+
+func (m *_BACnetConstructedDataElevatorGroup) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataElevatorGroup) deepCopy() *_BACnetConstructedDataElevatorGroup {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataElevatorGroupCopy := &_BACnetConstructedDataElevatorGroup{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ElevatorGroup.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataElevatorGroupCopy
+}
 
 func (m *_BACnetConstructedDataElevatorGroup) String() string {
 	if m == nil {

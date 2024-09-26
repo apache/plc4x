@@ -40,6 +40,7 @@ type FirmataMessageSubscribeAnalogPinValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -60,6 +61,17 @@ type _FirmataMessageSubscribeAnalogPinValue struct {
 
 var _ FirmataMessageSubscribeAnalogPinValue = (*_FirmataMessageSubscribeAnalogPinValue)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageSubscribeAnalogPinValue)(nil)
+
+// NewFirmataMessageSubscribeAnalogPinValue factory function for _FirmataMessageSubscribeAnalogPinValue
+func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response bool) *_FirmataMessageSubscribeAnalogPinValue {
+	_result := &_FirmataMessageSubscribeAnalogPinValue{
+		FirmataMessageContract: NewFirmataMessage(response),
+		Pin:                    pin,
+		Enable:                 enable,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,17 +108,6 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) GetEnable() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataMessageSubscribeAnalogPinValue factory function for _FirmataMessageSubscribeAnalogPinValue
-func NewFirmataMessageSubscribeAnalogPinValue(pin uint8, enable bool, response bool) *_FirmataMessageSubscribeAnalogPinValue {
-	_result := &_FirmataMessageSubscribeAnalogPinValue{
-		FirmataMessageContract: NewFirmataMessage(response),
-		Pin:                    pin,
-		Enable:                 enable,
-	}
-	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessageSubscribeAnalogPinValue(structType any) FirmataMessageSubscribeAnalogPinValue {
@@ -217,6 +218,24 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_FirmataMessageSubscribeAnalogPinValue) IsFirmataMessageSubscribeAnalogPinValue() {}
+
+func (m *_FirmataMessageSubscribeAnalogPinValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessageSubscribeAnalogPinValue) deepCopy() *_FirmataMessageSubscribeAnalogPinValue {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageSubscribeAnalogPinValueCopy := &_FirmataMessageSubscribeAnalogPinValue{
+		m.FirmataMessageContract.(*_FirmataMessage).deepCopy(),
+		m.Pin,
+		m.Enable,
+		m.reservedField0,
+	}
+	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	return _FirmataMessageSubscribeAnalogPinValueCopy
+}
 
 func (m *_FirmataMessageSubscribeAnalogPinValue) String() string {
 	if m == nil {

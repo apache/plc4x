@@ -38,6 +38,7 @@ type TelephonyDataDialInFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetReason returns Reason (property field)
 	GetReason() DialInFailureReason
@@ -53,6 +54,16 @@ type _TelephonyDataDialInFailure struct {
 
 var _ TelephonyDataDialInFailure = (*_TelephonyDataDialInFailure)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataDialInFailure)(nil)
+
+// NewTelephonyDataDialInFailure factory function for _TelephonyDataDialInFailure
+func NewTelephonyDataDialInFailure(commandTypeContainer TelephonyCommandTypeContainer, argument byte, reason DialInFailureReason) *_TelephonyDataDialInFailure {
+	_result := &_TelephonyDataDialInFailure{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Reason:                reason,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_TelephonyDataDialInFailure) GetReason() DialInFailureReason {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataDialInFailure factory function for _TelephonyDataDialInFailure
-func NewTelephonyDataDialInFailure(reason DialInFailureReason, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataDialInFailure {
-	_result := &_TelephonyDataDialInFailure{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		Reason:                reason,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataDialInFailure(structType any) TelephonyDataDialInFailure {
@@ -175,6 +176,22 @@ func (m *_TelephonyDataDialInFailure) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_TelephonyDataDialInFailure) IsTelephonyDataDialInFailure() {}
+
+func (m *_TelephonyDataDialInFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataDialInFailure) deepCopy() *_TelephonyDataDialInFailure {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataDialInFailureCopy := &_TelephonyDataDialInFailure{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+		m.Reason,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataDialInFailureCopy
+}
 
 func (m *_TelephonyDataDialInFailure) String() string {
 	if m == nil {

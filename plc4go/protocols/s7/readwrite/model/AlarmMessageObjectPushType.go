@@ -41,6 +41,7 @@ type AlarmMessageObjectPushType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLengthSpec returns LengthSpec (property field)
 	GetLengthSpec() uint8
 	// GetSyntaxId returns SyntaxId (property field)
@@ -77,6 +78,23 @@ type _AlarmMessageObjectPushType struct {
 }
 
 var _ AlarmMessageObjectPushType = (*_AlarmMessageObjectPushType)(nil)
+
+// NewAlarmMessageObjectPushType factory function for _AlarmMessageObjectPushType
+func NewAlarmMessageObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, eventState State, localState State, ackStateGoing State, ackStateComing State, AssociatedValues []AssociatedValueType) *_AlarmMessageObjectPushType {
+	if eventState == nil {
+		panic("eventState of type State for AlarmMessageObjectPushType must not be nil")
+	}
+	if localState == nil {
+		panic("localState of type State for AlarmMessageObjectPushType must not be nil")
+	}
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageObjectPushType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageObjectPushType must not be nil")
+	}
+	return &_AlarmMessageObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, EventState: eventState, LocalState: localState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, AssociatedValues: AssociatedValues}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,23 +154,6 @@ func (m *_AlarmMessageObjectPushType) GetVariableSpec() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageObjectPushType factory function for _AlarmMessageObjectPushType
-func NewAlarmMessageObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, eventState State, localState State, ackStateGoing State, ackStateComing State, AssociatedValues []AssociatedValueType) *_AlarmMessageObjectPushType {
-	if eventState == nil {
-		panic("eventState of type State for AlarmMessageObjectPushType must not be nil")
-	}
-	if localState == nil {
-		panic("localState of type State for AlarmMessageObjectPushType must not be nil")
-	}
-	if ackStateGoing == nil {
-		panic("ackStateGoing of type State for AlarmMessageObjectPushType must not be nil")
-	}
-	if ackStateComing == nil {
-		panic("ackStateComing of type State for AlarmMessageObjectPushType must not be nil")
-	}
-	return &_AlarmMessageObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, EventState: eventState, LocalState: localState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, AssociatedValues: AssociatedValues}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageObjectPushType(structType any) AlarmMessageObjectPushType {
@@ -374,6 +375,28 @@ func (m *_AlarmMessageObjectPushType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_AlarmMessageObjectPushType) IsAlarmMessageObjectPushType() {}
+
+func (m *_AlarmMessageObjectPushType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageObjectPushType) deepCopy() *_AlarmMessageObjectPushType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageObjectPushTypeCopy := &_AlarmMessageObjectPushType{
+		m.LengthSpec,
+		m.SyntaxId,
+		m.NumberOfValues,
+		m.EventId,
+		m.EventState.DeepCopy().(State),
+		m.LocalState.DeepCopy().(State),
+		m.AckStateGoing.DeepCopy().(State),
+		m.AckStateComing.DeepCopy().(State),
+		utils.DeepCopySlice[AssociatedValueType, AssociatedValueType](m.AssociatedValues),
+	}
+	return _AlarmMessageObjectPushTypeCopy
+}
 
 func (m *_AlarmMessageObjectPushType) String() string {
 	if m == nil {

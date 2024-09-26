@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestVTClose interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetListOfRemoteVtSessionIdentifiers returns ListOfRemoteVtSessionIdentifiers (property field)
 	GetListOfRemoteVtSessionIdentifiers() []BACnetApplicationTagUnsignedInteger
@@ -56,6 +57,16 @@ type _BACnetConfirmedServiceRequestVTClose struct {
 
 var _ BACnetConfirmedServiceRequestVTClose = (*_BACnetConfirmedServiceRequestVTClose)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestVTClose)(nil)
+
+// NewBACnetConfirmedServiceRequestVTClose factory function for _BACnetConfirmedServiceRequestVTClose
+func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTClose {
+	_result := &_BACnetConfirmedServiceRequestVTClose{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ListOfRemoteVtSessionIdentifiers:      listOfRemoteVtSessionIdentifiers,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,16 +99,6 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetListOfRemoteVtSessionIdentifi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestVTClose factory function for _BACnetConfirmedServiceRequestVTClose
-func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTClose {
-	_result := &_BACnetConfirmedServiceRequestVTClose{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		ListOfRemoteVtSessionIdentifiers:      listOfRemoteVtSessionIdentifiers,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestVTClose(structType any) BACnetConfirmedServiceRequestVTClose {
@@ -196,6 +197,23 @@ func (m *_BACnetConfirmedServiceRequestVTClose) GetServiceRequestPayloadLength()
 ////
 
 func (m *_BACnetConfirmedServiceRequestVTClose) IsBACnetConfirmedServiceRequestVTClose() {}
+
+func (m *_BACnetConfirmedServiceRequestVTClose) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestVTClose) deepCopy() *_BACnetConfirmedServiceRequestVTClose {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestVTCloseCopy := &_BACnetConfirmedServiceRequestVTClose{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ListOfRemoteVtSessionIdentifiers),
+		m.ServiceRequestPayloadLength,
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestVTCloseCopy
+}
 
 func (m *_BACnetConfirmedServiceRequestVTClose) String() string {
 	if m == nil {

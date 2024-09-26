@@ -38,6 +38,7 @@ type BACnetConstructedDataRecordsSinceNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRecordsSinceNotifications returns RecordsSinceNotifications (property field)
 	GetRecordsSinceNotifications() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataRecordsSinceNotification struct {
 
 var _ BACnetConstructedDataRecordsSinceNotification = (*_BACnetConstructedDataRecordsSinceNotification)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRecordsSinceNotification)(nil)
+
+// NewBACnetConstructedDataRecordsSinceNotification factory function for _BACnetConstructedDataRecordsSinceNotification
+func NewBACnetConstructedDataRecordsSinceNotification(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recordsSinceNotifications BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecordsSinceNotification {
+	if recordsSinceNotifications == nil {
+		panic("recordsSinceNotifications of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRecordsSinceNotification must not be nil")
+	}
+	_result := &_BACnetConstructedDataRecordsSinceNotification{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RecordsSinceNotifications:     recordsSinceNotifications,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRecordsSinceNotification factory function for _BACnetConstructedDataRecordsSinceNotification
-func NewBACnetConstructedDataRecordsSinceNotification(recordsSinceNotifications BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecordsSinceNotification {
-	if recordsSinceNotifications == nil {
-		panic("recordsSinceNotifications of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRecordsSinceNotification must not be nil")
-	}
-	_result := &_BACnetConstructedDataRecordsSinceNotification{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RecordsSinceNotifications:     recordsSinceNotifications,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRecordsSinceNotification(structType any) BACnetConstructedDataRecordsSinceNotification {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) SerializeWithWriteBuffe
 }
 
 func (m *_BACnetConstructedDataRecordsSinceNotification) IsBACnetConstructedDataRecordsSinceNotification() {
+}
+
+func (m *_BACnetConstructedDataRecordsSinceNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRecordsSinceNotification) deepCopy() *_BACnetConstructedDataRecordsSinceNotification {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRecordsSinceNotificationCopy := &_BACnetConstructedDataRecordsSinceNotification{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RecordsSinceNotifications.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRecordsSinceNotificationCopy
 }
 
 func (m *_BACnetConstructedDataRecordsSinceNotification) String() string {

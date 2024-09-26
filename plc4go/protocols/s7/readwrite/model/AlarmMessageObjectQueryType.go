@@ -41,6 +41,7 @@ type AlarmMessageObjectQueryType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLengthDataset returns LengthDataset (property field)
 	GetLengthDataset() uint8
 	// GetEventState returns EventState (property field)
@@ -76,6 +77,32 @@ type _AlarmMessageObjectQueryType struct {
 }
 
 var _ AlarmMessageObjectQueryType = (*_AlarmMessageObjectQueryType)(nil)
+
+// NewAlarmMessageObjectQueryType factory function for _AlarmMessageObjectQueryType
+func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState State, ackStateGoing State, ackStateComing State, timeComing DateAndTime, valueComing AssociatedValueType, timeGoing DateAndTime, valueGoing AssociatedValueType) *_AlarmMessageObjectQueryType {
+	if eventState == nil {
+		panic("eventState of type State for AlarmMessageObjectQueryType must not be nil")
+	}
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageObjectQueryType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageObjectQueryType must not be nil")
+	}
+	if timeComing == nil {
+		panic("timeComing of type DateAndTime for AlarmMessageObjectQueryType must not be nil")
+	}
+	if valueComing == nil {
+		panic("valueComing of type AssociatedValueType for AlarmMessageObjectQueryType must not be nil")
+	}
+	if timeGoing == nil {
+		panic("timeGoing of type DateAndTime for AlarmMessageObjectQueryType must not be nil")
+	}
+	if valueGoing == nil {
+		panic("valueGoing of type AssociatedValueType for AlarmMessageObjectQueryType must not be nil")
+	}
+	return &_AlarmMessageObjectQueryType{LengthDataset: lengthDataset, EventState: eventState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, TimeComing: timeComing, ValueComing: valueComing, TimeGoing: timeGoing, ValueGoing: valueGoing}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -131,32 +158,6 @@ func (m *_AlarmMessageObjectQueryType) GetVariableSpec() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageObjectQueryType factory function for _AlarmMessageObjectQueryType
-func NewAlarmMessageObjectQueryType(lengthDataset uint8, eventState State, ackStateGoing State, ackStateComing State, timeComing DateAndTime, valueComing AssociatedValueType, timeGoing DateAndTime, valueGoing AssociatedValueType) *_AlarmMessageObjectQueryType {
-	if eventState == nil {
-		panic("eventState of type State for AlarmMessageObjectQueryType must not be nil")
-	}
-	if ackStateGoing == nil {
-		panic("ackStateGoing of type State for AlarmMessageObjectQueryType must not be nil")
-	}
-	if ackStateComing == nil {
-		panic("ackStateComing of type State for AlarmMessageObjectQueryType must not be nil")
-	}
-	if timeComing == nil {
-		panic("timeComing of type DateAndTime for AlarmMessageObjectQueryType must not be nil")
-	}
-	if valueComing == nil {
-		panic("valueComing of type AssociatedValueType for AlarmMessageObjectQueryType must not be nil")
-	}
-	if timeGoing == nil {
-		panic("timeGoing of type DateAndTime for AlarmMessageObjectQueryType must not be nil")
-	}
-	if valueGoing == nil {
-		panic("valueGoing of type AssociatedValueType for AlarmMessageObjectQueryType must not be nil")
-	}
-	return &_AlarmMessageObjectQueryType{LengthDataset: lengthDataset, EventState: eventState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, TimeComing: timeComing, ValueComing: valueComing, TimeGoing: timeGoing, ValueGoing: valueGoing}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageObjectQueryType(structType any) AlarmMessageObjectQueryType {
@@ -371,6 +372,28 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_AlarmMessageObjectQueryType) IsAlarmMessageObjectQueryType() {}
+
+func (m *_AlarmMessageObjectQueryType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageObjectQueryType) deepCopy() *_AlarmMessageObjectQueryType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageObjectQueryTypeCopy := &_AlarmMessageObjectQueryType{
+		m.LengthDataset,
+		m.EventState.DeepCopy().(State),
+		m.AckStateGoing.DeepCopy().(State),
+		m.AckStateComing.DeepCopy().(State),
+		m.TimeComing.DeepCopy().(DateAndTime),
+		m.ValueComing.DeepCopy().(AssociatedValueType),
+		m.TimeGoing.DeepCopy().(DateAndTime),
+		m.ValueGoing.DeepCopy().(AssociatedValueType),
+		m.reservedField0,
+	}
+	return _AlarmMessageObjectQueryTypeCopy
+}
 
 func (m *_AlarmMessageObjectQueryType) String() string {
 	if m == nil {

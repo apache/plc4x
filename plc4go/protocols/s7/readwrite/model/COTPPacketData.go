@@ -38,6 +38,7 @@ type COTPPacketData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPPacket
 	// GetEot returns Eot (property field)
 	GetEot() bool
@@ -56,6 +57,17 @@ type _COTPPacketData struct {
 
 var _ COTPPacketData = (*_COTPPacketData)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketData)(nil)
+
+// NewCOTPPacketData factory function for _COTPPacketData
+func NewCOTPPacketData(parameters []COTPParameter, payload S7Message, eot bool, tpduRef uint8, cotpLen uint16) *_COTPPacketData {
+	_result := &_COTPPacketData{
+		COTPPacketContract: NewCOTPPacket(parameters, payload, cotpLen),
+		Eot:                eot,
+		TpduRef:            tpduRef,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_COTPPacketData) GetTpduRef() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketData factory function for _COTPPacketData
-func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketData {
-	_result := &_COTPPacketData{
-		COTPPacketContract: NewCOTPPacket(parameters, payload, cotpLen),
-		Eot:                eot,
-		TpduRef:            tpduRef,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketData(structType any) COTPPacketData {
@@ -200,6 +201,23 @@ func (m *_COTPPacketData) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_COTPPacketData) IsCOTPPacketData() {}
+
+func (m *_COTPPacketData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPPacketData) deepCopy() *_COTPPacketData {
+	if m == nil {
+		return nil
+	}
+	_COTPPacketDataCopy := &_COTPPacketData{
+		m.COTPPacketContract.(*_COTPPacket).deepCopy(),
+		m.Eot,
+		m.TpduRef,
+	}
+	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	return _COTPPacketDataCopy
+}
 
 func (m *_COTPPacketData) String() string {
 	if m == nil {

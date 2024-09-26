@@ -38,6 +38,7 @@ type RedundantServerDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetServerId returns ServerId (property field)
 	GetServerId() PascalString
@@ -59,6 +60,21 @@ type _RedundantServerDataType struct {
 
 var _ RedundantServerDataType = (*_RedundantServerDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RedundantServerDataType)(nil)
+
+// NewRedundantServerDataType factory function for _RedundantServerDataType
+func NewRedundantServerDataType(serverId PascalString, serviceLevel uint8, serverState ServerState) *_RedundantServerDataType {
+	if serverId == nil {
+		panic("serverId of type PascalString for RedundantServerDataType must not be nil")
+	}
+	_result := &_RedundantServerDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ServerId:                          serverId,
+		ServiceLevel:                      serviceLevel,
+		ServerState:                       serverState,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_RedundantServerDataType) GetServerState() ServerState {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRedundantServerDataType factory function for _RedundantServerDataType
-func NewRedundantServerDataType(serverId PascalString, serviceLevel uint8, serverState ServerState) *_RedundantServerDataType {
-	if serverId == nil {
-		panic("serverId of type PascalString for RedundantServerDataType must not be nil")
-	}
-	_result := &_RedundantServerDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ServerId:                          serverId,
-		ServiceLevel:                      serviceLevel,
-		ServerState:                       serverState,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRedundantServerDataType(structType any) RedundantServerDataType {
@@ -224,6 +225,24 @@ func (m *_RedundantServerDataType) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_RedundantServerDataType) IsRedundantServerDataType() {}
+
+func (m *_RedundantServerDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RedundantServerDataType) deepCopy() *_RedundantServerDataType {
+	if m == nil {
+		return nil
+	}
+	_RedundantServerDataTypeCopy := &_RedundantServerDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ServerId.DeepCopy().(PascalString),
+		m.ServiceLevel,
+		m.ServerState,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RedundantServerDataTypeCopy
+}
 
 func (m *_RedundantServerDataType) String() string {
 	if m == nil {

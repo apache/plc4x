@@ -38,6 +38,7 @@ type BACnetConstructedDataSilenced interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSilenced returns Silenced (property field)
 	GetSilenced() BACnetSilencedStateTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataSilenced struct {
 
 var _ BACnetConstructedDataSilenced = (*_BACnetConstructedDataSilenced)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSilenced)(nil)
+
+// NewBACnetConstructedDataSilenced factory function for _BACnetConstructedDataSilenced
+func NewBACnetConstructedDataSilenced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, silenced BACnetSilencedStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSilenced {
+	if silenced == nil {
+		panic("silenced of type BACnetSilencedStateTagged for BACnetConstructedDataSilenced must not be nil")
+	}
+	_result := &_BACnetConstructedDataSilenced{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Silenced:                      silenced,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataSilenced) GetActualValue() BACnetSilencedStateTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSilenced factory function for _BACnetConstructedDataSilenced
-func NewBACnetConstructedDataSilenced(silenced BACnetSilencedStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSilenced {
-	if silenced == nil {
-		panic("silenced of type BACnetSilencedStateTagged for BACnetConstructedDataSilenced must not be nil")
-	}
-	_result := &_BACnetConstructedDataSilenced{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Silenced:                      silenced,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSilenced(structType any) BACnetConstructedDataSilenced {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSilenced) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataSilenced) IsBACnetConstructedDataSilenced() {}
+
+func (m *_BACnetConstructedDataSilenced) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSilenced) deepCopy() *_BACnetConstructedDataSilenced {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSilencedCopy := &_BACnetConstructedDataSilenced{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Silenced.DeepCopy().(BACnetSilencedStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSilencedCopy
+}
 
 func (m *_BACnetConstructedDataSilenced) String() string {
 	if m == nil {

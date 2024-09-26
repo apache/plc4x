@@ -38,6 +38,7 @@ type BACnetConstructedDataBufferSize interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBufferSize returns BufferSize (property field)
 	GetBufferSize() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBufferSize struct {
 
 var _ BACnetConstructedDataBufferSize = (*_BACnetConstructedDataBufferSize)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBufferSize)(nil)
+
+// NewBACnetConstructedDataBufferSize factory function for _BACnetConstructedDataBufferSize
+func NewBACnetConstructedDataBufferSize(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bufferSize BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBufferSize {
+	if bufferSize == nil {
+		panic("bufferSize of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBufferSize must not be nil")
+	}
+	_result := &_BACnetConstructedDataBufferSize{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BufferSize:                    bufferSize,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBufferSize) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBufferSize factory function for _BACnetConstructedDataBufferSize
-func NewBACnetConstructedDataBufferSize(bufferSize BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBufferSize {
-	if bufferSize == nil {
-		panic("bufferSize of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBufferSize must not be nil")
-	}
-	_result := &_BACnetConstructedDataBufferSize{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BufferSize:                    bufferSize,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBufferSize(structType any) BACnetConstructedDataBufferSize {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBufferSize) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataBufferSize) IsBACnetConstructedDataBufferSize() {}
+
+func (m *_BACnetConstructedDataBufferSize) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBufferSize) deepCopy() *_BACnetConstructedDataBufferSize {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBufferSizeCopy := &_BACnetConstructedDataBufferSize{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BufferSize.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBufferSizeCopy
+}
 
 func (m *_BACnetConstructedDataBufferSize) String() string {
 	if m == nil {

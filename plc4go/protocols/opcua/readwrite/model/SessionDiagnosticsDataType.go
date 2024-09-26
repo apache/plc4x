@@ -38,6 +38,7 @@ type SessionDiagnosticsDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSessionId returns SessionId (property field)
 	GetSessionId() NodeId
@@ -182,6 +183,161 @@ type _SessionDiagnosticsDataType struct {
 
 var _ SessionDiagnosticsDataType = (*_SessionDiagnosticsDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SessionDiagnosticsDataType)(nil)
+
+// NewSessionDiagnosticsDataType factory function for _SessionDiagnosticsDataType
+func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ExtensionObjectDefinition, unauthorizedRequestCount uint32, readCount ExtensionObjectDefinition, historyReadCount ExtensionObjectDefinition, writeCount ExtensionObjectDefinition, historyUpdateCount ExtensionObjectDefinition, callCount ExtensionObjectDefinition, createMonitoredItemsCount ExtensionObjectDefinition, modifyMonitoredItemsCount ExtensionObjectDefinition, setMonitoringModeCount ExtensionObjectDefinition, setTriggeringCount ExtensionObjectDefinition, deleteMonitoredItemsCount ExtensionObjectDefinition, createSubscriptionCount ExtensionObjectDefinition, modifySubscriptionCount ExtensionObjectDefinition, setPublishingModeCount ExtensionObjectDefinition, publishCount ExtensionObjectDefinition, republishCount ExtensionObjectDefinition, transferSubscriptionsCount ExtensionObjectDefinition, deleteSubscriptionsCount ExtensionObjectDefinition, addNodesCount ExtensionObjectDefinition, addReferencesCount ExtensionObjectDefinition, deleteNodesCount ExtensionObjectDefinition, deleteReferencesCount ExtensionObjectDefinition, browseCount ExtensionObjectDefinition, browseNextCount ExtensionObjectDefinition, translateBrowsePathsToNodeIdsCount ExtensionObjectDefinition, queryFirstCount ExtensionObjectDefinition, queryNextCount ExtensionObjectDefinition, registerNodesCount ExtensionObjectDefinition, unregisterNodesCount ExtensionObjectDefinition) *_SessionDiagnosticsDataType {
+	if sessionId == nil {
+		panic("sessionId of type NodeId for SessionDiagnosticsDataType must not be nil")
+	}
+	if sessionName == nil {
+		panic("sessionName of type PascalString for SessionDiagnosticsDataType must not be nil")
+	}
+	if clientDescription == nil {
+		panic("clientDescription of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if serverUri == nil {
+		panic("serverUri of type PascalString for SessionDiagnosticsDataType must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for SessionDiagnosticsDataType must not be nil")
+	}
+	if totalRequestCount == nil {
+		panic("totalRequestCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if readCount == nil {
+		panic("readCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if historyReadCount == nil {
+		panic("historyReadCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if writeCount == nil {
+		panic("writeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if historyUpdateCount == nil {
+		panic("historyUpdateCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if callCount == nil {
+		panic("callCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if createMonitoredItemsCount == nil {
+		panic("createMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if modifyMonitoredItemsCount == nil {
+		panic("modifyMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if setMonitoringModeCount == nil {
+		panic("setMonitoringModeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if setTriggeringCount == nil {
+		panic("setTriggeringCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if deleteMonitoredItemsCount == nil {
+		panic("deleteMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if createSubscriptionCount == nil {
+		panic("createSubscriptionCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if modifySubscriptionCount == nil {
+		panic("modifySubscriptionCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if setPublishingModeCount == nil {
+		panic("setPublishingModeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if publishCount == nil {
+		panic("publishCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if republishCount == nil {
+		panic("republishCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if transferSubscriptionsCount == nil {
+		panic("transferSubscriptionsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if deleteSubscriptionsCount == nil {
+		panic("deleteSubscriptionsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if addNodesCount == nil {
+		panic("addNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if addReferencesCount == nil {
+		panic("addReferencesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if deleteNodesCount == nil {
+		panic("deleteNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if deleteReferencesCount == nil {
+		panic("deleteReferencesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if browseCount == nil {
+		panic("browseCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if browseNextCount == nil {
+		panic("browseNextCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if translateBrowsePathsToNodeIdsCount == nil {
+		panic("translateBrowsePathsToNodeIdsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if queryFirstCount == nil {
+		panic("queryFirstCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if queryNextCount == nil {
+		panic("queryNextCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if registerNodesCount == nil {
+		panic("registerNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	if unregisterNodesCount == nil {
+		panic("unregisterNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
+	}
+	_result := &_SessionDiagnosticsDataType{
+		ExtensionObjectDefinitionContract:  NewExtensionObjectDefinition(),
+		SessionId:                          sessionId,
+		SessionName:                        sessionName,
+		ClientDescription:                  clientDescription,
+		ServerUri:                          serverUri,
+		EndpointUrl:                        endpointUrl,
+		NoOfLocaleIds:                      noOfLocaleIds,
+		LocaleIds:                          localeIds,
+		ActualSessionTimeout:               actualSessionTimeout,
+		MaxResponseMessageSize:             maxResponseMessageSize,
+		ClientConnectionTime:               clientConnectionTime,
+		ClientLastContactTime:              clientLastContactTime,
+		CurrentSubscriptionsCount:          currentSubscriptionsCount,
+		CurrentMonitoredItemsCount:         currentMonitoredItemsCount,
+		CurrentPublishRequestsInQueue:      currentPublishRequestsInQueue,
+		TotalRequestCount:                  totalRequestCount,
+		UnauthorizedRequestCount:           unauthorizedRequestCount,
+		ReadCount:                          readCount,
+		HistoryReadCount:                   historyReadCount,
+		WriteCount:                         writeCount,
+		HistoryUpdateCount:                 historyUpdateCount,
+		CallCount:                          callCount,
+		CreateMonitoredItemsCount:          createMonitoredItemsCount,
+		ModifyMonitoredItemsCount:          modifyMonitoredItemsCount,
+		SetMonitoringModeCount:             setMonitoringModeCount,
+		SetTriggeringCount:                 setTriggeringCount,
+		DeleteMonitoredItemsCount:          deleteMonitoredItemsCount,
+		CreateSubscriptionCount:            createSubscriptionCount,
+		ModifySubscriptionCount:            modifySubscriptionCount,
+		SetPublishingModeCount:             setPublishingModeCount,
+		PublishCount:                       publishCount,
+		RepublishCount:                     republishCount,
+		TransferSubscriptionsCount:         transferSubscriptionsCount,
+		DeleteSubscriptionsCount:           deleteSubscriptionsCount,
+		AddNodesCount:                      addNodesCount,
+		AddReferencesCount:                 addReferencesCount,
+		DeleteNodesCount:                   deleteNodesCount,
+		DeleteReferencesCount:              deleteReferencesCount,
+		BrowseCount:                        browseCount,
+		BrowseNextCount:                    browseNextCount,
+		TranslateBrowsePathsToNodeIdsCount: translateBrowsePathsToNodeIdsCount,
+		QueryFirstCount:                    queryFirstCount,
+		QueryNextCount:                     queryNextCount,
+		RegisterNodesCount:                 registerNodesCount,
+		UnregisterNodesCount:               unregisterNodesCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -386,161 +542,6 @@ func (m *_SessionDiagnosticsDataType) GetUnregisterNodesCount() ExtensionObjectD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSessionDiagnosticsDataType factory function for _SessionDiagnosticsDataType
-func NewSessionDiagnosticsDataType(sessionId NodeId, sessionName PascalString, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, actualSessionTimeout float64, maxResponseMessageSize uint32, clientConnectionTime int64, clientLastContactTime int64, currentSubscriptionsCount uint32, currentMonitoredItemsCount uint32, currentPublishRequestsInQueue uint32, totalRequestCount ExtensionObjectDefinition, unauthorizedRequestCount uint32, readCount ExtensionObjectDefinition, historyReadCount ExtensionObjectDefinition, writeCount ExtensionObjectDefinition, historyUpdateCount ExtensionObjectDefinition, callCount ExtensionObjectDefinition, createMonitoredItemsCount ExtensionObjectDefinition, modifyMonitoredItemsCount ExtensionObjectDefinition, setMonitoringModeCount ExtensionObjectDefinition, setTriggeringCount ExtensionObjectDefinition, deleteMonitoredItemsCount ExtensionObjectDefinition, createSubscriptionCount ExtensionObjectDefinition, modifySubscriptionCount ExtensionObjectDefinition, setPublishingModeCount ExtensionObjectDefinition, publishCount ExtensionObjectDefinition, republishCount ExtensionObjectDefinition, transferSubscriptionsCount ExtensionObjectDefinition, deleteSubscriptionsCount ExtensionObjectDefinition, addNodesCount ExtensionObjectDefinition, addReferencesCount ExtensionObjectDefinition, deleteNodesCount ExtensionObjectDefinition, deleteReferencesCount ExtensionObjectDefinition, browseCount ExtensionObjectDefinition, browseNextCount ExtensionObjectDefinition, translateBrowsePathsToNodeIdsCount ExtensionObjectDefinition, queryFirstCount ExtensionObjectDefinition, queryNextCount ExtensionObjectDefinition, registerNodesCount ExtensionObjectDefinition, unregisterNodesCount ExtensionObjectDefinition) *_SessionDiagnosticsDataType {
-	if sessionId == nil {
-		panic("sessionId of type NodeId for SessionDiagnosticsDataType must not be nil")
-	}
-	if sessionName == nil {
-		panic("sessionName of type PascalString for SessionDiagnosticsDataType must not be nil")
-	}
-	if clientDescription == nil {
-		panic("clientDescription of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if serverUri == nil {
-		panic("serverUri of type PascalString for SessionDiagnosticsDataType must not be nil")
-	}
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for SessionDiagnosticsDataType must not be nil")
-	}
-	if totalRequestCount == nil {
-		panic("totalRequestCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if readCount == nil {
-		panic("readCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if historyReadCount == nil {
-		panic("historyReadCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if writeCount == nil {
-		panic("writeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if historyUpdateCount == nil {
-		panic("historyUpdateCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if callCount == nil {
-		panic("callCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if createMonitoredItemsCount == nil {
-		panic("createMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if modifyMonitoredItemsCount == nil {
-		panic("modifyMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if setMonitoringModeCount == nil {
-		panic("setMonitoringModeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if setTriggeringCount == nil {
-		panic("setTriggeringCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if deleteMonitoredItemsCount == nil {
-		panic("deleteMonitoredItemsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if createSubscriptionCount == nil {
-		panic("createSubscriptionCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if modifySubscriptionCount == nil {
-		panic("modifySubscriptionCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if setPublishingModeCount == nil {
-		panic("setPublishingModeCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if publishCount == nil {
-		panic("publishCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if republishCount == nil {
-		panic("republishCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if transferSubscriptionsCount == nil {
-		panic("transferSubscriptionsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if deleteSubscriptionsCount == nil {
-		panic("deleteSubscriptionsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if addNodesCount == nil {
-		panic("addNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if addReferencesCount == nil {
-		panic("addReferencesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if deleteNodesCount == nil {
-		panic("deleteNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if deleteReferencesCount == nil {
-		panic("deleteReferencesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if browseCount == nil {
-		panic("browseCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if browseNextCount == nil {
-		panic("browseNextCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if translateBrowsePathsToNodeIdsCount == nil {
-		panic("translateBrowsePathsToNodeIdsCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if queryFirstCount == nil {
-		panic("queryFirstCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if queryNextCount == nil {
-		panic("queryNextCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if registerNodesCount == nil {
-		panic("registerNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	if unregisterNodesCount == nil {
-		panic("unregisterNodesCount of type ExtensionObjectDefinition for SessionDiagnosticsDataType must not be nil")
-	}
-	_result := &_SessionDiagnosticsDataType{
-		ExtensionObjectDefinitionContract:  NewExtensionObjectDefinition(),
-		SessionId:                          sessionId,
-		SessionName:                        sessionName,
-		ClientDescription:                  clientDescription,
-		ServerUri:                          serverUri,
-		EndpointUrl:                        endpointUrl,
-		NoOfLocaleIds:                      noOfLocaleIds,
-		LocaleIds:                          localeIds,
-		ActualSessionTimeout:               actualSessionTimeout,
-		MaxResponseMessageSize:             maxResponseMessageSize,
-		ClientConnectionTime:               clientConnectionTime,
-		ClientLastContactTime:              clientLastContactTime,
-		CurrentSubscriptionsCount:          currentSubscriptionsCount,
-		CurrentMonitoredItemsCount:         currentMonitoredItemsCount,
-		CurrentPublishRequestsInQueue:      currentPublishRequestsInQueue,
-		TotalRequestCount:                  totalRequestCount,
-		UnauthorizedRequestCount:           unauthorizedRequestCount,
-		ReadCount:                          readCount,
-		HistoryReadCount:                   historyReadCount,
-		WriteCount:                         writeCount,
-		HistoryUpdateCount:                 historyUpdateCount,
-		CallCount:                          callCount,
-		CreateMonitoredItemsCount:          createMonitoredItemsCount,
-		ModifyMonitoredItemsCount:          modifyMonitoredItemsCount,
-		SetMonitoringModeCount:             setMonitoringModeCount,
-		SetTriggeringCount:                 setTriggeringCount,
-		DeleteMonitoredItemsCount:          deleteMonitoredItemsCount,
-		CreateSubscriptionCount:            createSubscriptionCount,
-		ModifySubscriptionCount:            modifySubscriptionCount,
-		SetPublishingModeCount:             setPublishingModeCount,
-		PublishCount:                       publishCount,
-		RepublishCount:                     republishCount,
-		TransferSubscriptionsCount:         transferSubscriptionsCount,
-		DeleteSubscriptionsCount:           deleteSubscriptionsCount,
-		AddNodesCount:                      addNodesCount,
-		AddReferencesCount:                 addReferencesCount,
-		DeleteNodesCount:                   deleteNodesCount,
-		DeleteReferencesCount:              deleteReferencesCount,
-		BrowseCount:                        browseCount,
-		BrowseNextCount:                    browseNextCount,
-		TranslateBrowsePathsToNodeIdsCount: translateBrowsePathsToNodeIdsCount,
-		QueryFirstCount:                    queryFirstCount,
-		QueryNextCount:                     queryNextCount,
-		RegisterNodesCount:                 registerNodesCount,
-		UnregisterNodesCount:               unregisterNodesCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSessionDiagnosticsDataType(structType any) SessionDiagnosticsDataType {
@@ -1191,6 +1192,65 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_SessionDiagnosticsDataType) IsSessionDiagnosticsDataType() {}
+
+func (m *_SessionDiagnosticsDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SessionDiagnosticsDataType) deepCopy() *_SessionDiagnosticsDataType {
+	if m == nil {
+		return nil
+	}
+	_SessionDiagnosticsDataTypeCopy := &_SessionDiagnosticsDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SessionId.DeepCopy().(NodeId),
+		m.SessionName.DeepCopy().(PascalString),
+		m.ClientDescription.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerUri.DeepCopy().(PascalString),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.NoOfLocaleIds,
+		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
+		m.ActualSessionTimeout,
+		m.MaxResponseMessageSize,
+		m.ClientConnectionTime,
+		m.ClientLastContactTime,
+		m.CurrentSubscriptionsCount,
+		m.CurrentMonitoredItemsCount,
+		m.CurrentPublishRequestsInQueue,
+		m.TotalRequestCount.DeepCopy().(ExtensionObjectDefinition),
+		m.UnauthorizedRequestCount,
+		m.ReadCount.DeepCopy().(ExtensionObjectDefinition),
+		m.HistoryReadCount.DeepCopy().(ExtensionObjectDefinition),
+		m.WriteCount.DeepCopy().(ExtensionObjectDefinition),
+		m.HistoryUpdateCount.DeepCopy().(ExtensionObjectDefinition),
+		m.CallCount.DeepCopy().(ExtensionObjectDefinition),
+		m.CreateMonitoredItemsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.ModifyMonitoredItemsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.SetMonitoringModeCount.DeepCopy().(ExtensionObjectDefinition),
+		m.SetTriggeringCount.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteMonitoredItemsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.CreateSubscriptionCount.DeepCopy().(ExtensionObjectDefinition),
+		m.ModifySubscriptionCount.DeepCopy().(ExtensionObjectDefinition),
+		m.SetPublishingModeCount.DeepCopy().(ExtensionObjectDefinition),
+		m.PublishCount.DeepCopy().(ExtensionObjectDefinition),
+		m.RepublishCount.DeepCopy().(ExtensionObjectDefinition),
+		m.TransferSubscriptionsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteSubscriptionsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.AddNodesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.AddReferencesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteNodesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteReferencesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.BrowseCount.DeepCopy().(ExtensionObjectDefinition),
+		m.BrowseNextCount.DeepCopy().(ExtensionObjectDefinition),
+		m.TranslateBrowsePathsToNodeIdsCount.DeepCopy().(ExtensionObjectDefinition),
+		m.QueryFirstCount.DeepCopy().(ExtensionObjectDefinition),
+		m.QueryNextCount.DeepCopy().(ExtensionObjectDefinition),
+		m.RegisterNodesCount.DeepCopy().(ExtensionObjectDefinition),
+		m.UnregisterNodesCount.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SessionDiagnosticsDataTypeCopy
+}
 
 func (m *_SessionDiagnosticsDataType) String() string {
 	if m == nil {

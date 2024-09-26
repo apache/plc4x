@@ -38,6 +38,7 @@ type BACnetChannelValueLightingCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetLigthingCommandValue returns LigthingCommandValue (property field)
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
@@ -53,6 +54,19 @@ type _BACnetChannelValueLightingCommand struct {
 
 var _ BACnetChannelValueLightingCommand = (*_BACnetChannelValueLightingCommand)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueLightingCommand)(nil)
+
+// NewBACnetChannelValueLightingCommand factory function for _BACnetChannelValueLightingCommand
+func NewBACnetChannelValueLightingCommand(peekedTagHeader BACnetTagHeader, ligthingCommandValue BACnetLightingCommandEnclosed) *_BACnetChannelValueLightingCommand {
+	if ligthingCommandValue == nil {
+		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetChannelValueLightingCommand must not be nil")
+	}
+	_result := &_BACnetChannelValueLightingCommand{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		LigthingCommandValue:       ligthingCommandValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueLightingCommand) GetLigthingCommandValue() BACnetLig
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueLightingCommand factory function for _BACnetChannelValueLightingCommand
-func NewBACnetChannelValueLightingCommand(ligthingCommandValue BACnetLightingCommandEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueLightingCommand {
-	if ligthingCommandValue == nil {
-		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetChannelValueLightingCommand must not be nil")
-	}
-	_result := &_BACnetChannelValueLightingCommand{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		LigthingCommandValue:       ligthingCommandValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueLightingCommand(structType any) BACnetChannelValueLightingCommand {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueLightingCommand) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetChannelValueLightingCommand) IsBACnetChannelValueLightingCommand() {}
+
+func (m *_BACnetChannelValueLightingCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueLightingCommand) deepCopy() *_BACnetChannelValueLightingCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueLightingCommandCopy := &_BACnetChannelValueLightingCommand{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.LigthingCommandValue.DeepCopy().(BACnetLightingCommandEnclosed),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueLightingCommandCopy
+}
 
 func (m *_BACnetChannelValueLightingCommand) String() string {
 	if m == nil {

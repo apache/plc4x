@@ -38,6 +38,7 @@ type BACnetPropertyStatesEventType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetEventType returns EventType (property field)
 	GetEventType() BACnetEventTypeTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesEventType struct {
 
 var _ BACnetPropertyStatesEventType = (*_BACnetPropertyStatesEventType)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEventType)(nil)
+
+// NewBACnetPropertyStatesEventType factory function for _BACnetPropertyStatesEventType
+func NewBACnetPropertyStatesEventType(peekedTagHeader BACnetTagHeader, eventType BACnetEventTypeTagged) *_BACnetPropertyStatesEventType {
+	if eventType == nil {
+		panic("eventType of type BACnetEventTypeTagged for BACnetPropertyStatesEventType must not be nil")
+	}
+	_result := &_BACnetPropertyStatesEventType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EventType:                    eventType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesEventType) GetEventType() BACnetEventTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesEventType factory function for _BACnetPropertyStatesEventType
-func NewBACnetPropertyStatesEventType(eventType BACnetEventTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEventType {
-	if eventType == nil {
-		panic("eventType of type BACnetEventTypeTagged for BACnetPropertyStatesEventType must not be nil")
-	}
-	_result := &_BACnetPropertyStatesEventType{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		EventType:                    eventType,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesEventType(structType any) BACnetPropertyStatesEventType {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesEventType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetPropertyStatesEventType) IsBACnetPropertyStatesEventType() {}
+
+func (m *_BACnetPropertyStatesEventType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEventType) deepCopy() *_BACnetPropertyStatesEventType {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEventTypeCopy := &_BACnetPropertyStatesEventType{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.EventType.DeepCopy().(BACnetEventTypeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesEventTypeCopy
+}
 
 func (m *_BACnetPropertyStatesEventType) String() string {
 	if m == nil {

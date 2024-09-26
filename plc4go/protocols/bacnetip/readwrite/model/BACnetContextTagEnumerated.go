@@ -38,6 +38,7 @@ type BACnetContextTagEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadEnumerated
@@ -55,6 +56,19 @@ type _BACnetContextTagEnumerated struct {
 
 var _ BACnetContextTagEnumerated = (*_BACnetContextTagEnumerated)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagEnumerated)(nil)
+
+// NewBACnetContextTagEnumerated factory function for _BACnetContextTagEnumerated
+func NewBACnetContextTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated, tagNumberArgument uint8) *_BACnetContextTagEnumerated {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadEnumerated for BACnetContextTagEnumerated must not be nil")
+	}
+	_result := &_BACnetContextTagEnumerated{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,19 +116,6 @@ func (m *_BACnetContextTagEnumerated) GetActualValue() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagEnumerated factory function for _BACnetContextTagEnumerated
-func NewBACnetContextTagEnumerated(payload BACnetTagPayloadEnumerated, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagEnumerated {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadEnumerated for BACnetContextTagEnumerated must not be nil")
-	}
-	_result := &_BACnetContextTagEnumerated{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagEnumerated(structType any) BACnetContextTagEnumerated {
@@ -213,6 +214,22 @@ func (m *_BACnetContextTagEnumerated) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetContextTagEnumerated) IsBACnetContextTagEnumerated() {}
+
+func (m *_BACnetContextTagEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagEnumerated) deepCopy() *_BACnetContextTagEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagEnumeratedCopy := &_BACnetContextTagEnumerated{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadEnumerated),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagEnumeratedCopy
+}
 
 func (m *_BACnetContextTagEnumerated) String() string {
 	if m == nil {

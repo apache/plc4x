@@ -40,6 +40,7 @@ type PortSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPortSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegmentType()
 }
@@ -144,11 +145,11 @@ func (m *_PortSegmentType) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child PortSegmentType
 	switch {
 	case extendedLinkAddress == bool(false): // PortSegmentNormal
-		if _child, err = (&_PortSegmentNormal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_PortSegmentNormal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PortSegmentNormal for type-switch of PortSegmentType")
 		}
 	case extendedLinkAddress == bool(true): // PortSegmentExtended
-		if _child, err = (&_PortSegmentExtended{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_PortSegmentExtended).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PortSegmentExtended for type-switch of PortSegmentType")
 		}
 	default:
@@ -190,3 +191,17 @@ func (pm *_PortSegmentType) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_PortSegmentType) IsPortSegmentType() {}
+
+func (m *_PortSegmentType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegmentType) deepCopy() *_PortSegmentType {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentTypeCopy := &_PortSegmentType{
+		nil, // will be set by child
+	}
+	return _PortSegmentTypeCopy
+}

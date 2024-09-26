@@ -38,6 +38,7 @@ type GenericAttributeValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAttributeId returns AttributeId (property field)
 	GetAttributeId() uint32
@@ -56,6 +57,20 @@ type _GenericAttributeValue struct {
 
 var _ GenericAttributeValue = (*_GenericAttributeValue)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_GenericAttributeValue)(nil)
+
+// NewGenericAttributeValue factory function for _GenericAttributeValue
+func NewGenericAttributeValue(attributeId uint32, value Variant) *_GenericAttributeValue {
+	if value == nil {
+		panic("value of type Variant for GenericAttributeValue must not be nil")
+	}
+	_result := &_GenericAttributeValue{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		AttributeId:                       attributeId,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_GenericAttributeValue) GetValue() Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGenericAttributeValue factory function for _GenericAttributeValue
-func NewGenericAttributeValue(attributeId uint32, value Variant) *_GenericAttributeValue {
-	if value == nil {
-		panic("value of type Variant for GenericAttributeValue must not be nil")
-	}
-	_result := &_GenericAttributeValue{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		AttributeId:                       attributeId,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGenericAttributeValue(structType any) GenericAttributeValue {
@@ -203,6 +204,23 @@ func (m *_GenericAttributeValue) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_GenericAttributeValue) IsGenericAttributeValue() {}
+
+func (m *_GenericAttributeValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GenericAttributeValue) deepCopy() *_GenericAttributeValue {
+	if m == nil {
+		return nil
+	}
+	_GenericAttributeValueCopy := &_GenericAttributeValue{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.AttributeId,
+		m.Value.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _GenericAttributeValueCopy
+}
 
 func (m *_GenericAttributeValue) String() string {
 	if m == nil {

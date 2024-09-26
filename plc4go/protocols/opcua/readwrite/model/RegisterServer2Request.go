@@ -38,6 +38,7 @@ type RegisterServer2Request interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -62,6 +63,25 @@ type _RegisterServer2Request struct {
 
 var _ RegisterServer2Request = (*_RegisterServer2Request)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServer2Request)(nil)
+
+// NewRegisterServer2Request factory function for _RegisterServer2Request
+func NewRegisterServer2Request(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) *_RegisterServer2Request {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
+	}
+	if server == nil {
+		panic("server of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
+	}
+	_result := &_RegisterServer2Request{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		Server:                            server,
+		NoOfDiscoveryConfiguration:        noOfDiscoveryConfiguration,
+		DiscoveryConfiguration:            discoveryConfiguration,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +126,6 @@ func (m *_RegisterServer2Request) GetDiscoveryConfiguration() []ExtensionObject 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterServer2Request factory function for _RegisterServer2Request
-func NewRegisterServer2Request(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) *_RegisterServer2Request {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
-	}
-	if server == nil {
-		panic("server of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
-	}
-	_result := &_RegisterServer2Request{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		Server:                            server,
-		NoOfDiscoveryConfiguration:        noOfDiscoveryConfiguration,
-		DiscoveryConfiguration:            discoveryConfiguration,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterServer2Request(structType any) RegisterServer2Request {
@@ -255,6 +256,25 @@ func (m *_RegisterServer2Request) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_RegisterServer2Request) IsRegisterServer2Request() {}
+
+func (m *_RegisterServer2Request) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterServer2Request) deepCopy() *_RegisterServer2Request {
+	if m == nil {
+		return nil
+	}
+	_RegisterServer2RequestCopy := &_RegisterServer2Request{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.Server.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfDiscoveryConfiguration,
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DiscoveryConfiguration),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterServer2RequestCopy
+}
 
 func (m *_RegisterServer2Request) String() string {
 	if m == nil {

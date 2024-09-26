@@ -36,6 +36,7 @@ type MeteringDataMeasureOtherWater interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// IsMeteringDataMeasureOtherWater is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureOtherWater()
@@ -49,6 +50,15 @@ type _MeteringDataMeasureOtherWater struct {
 var _ MeteringDataMeasureOtherWater = (*_MeteringDataMeasureOtherWater)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataMeasureOtherWater)(nil)
 
+// NewMeteringDataMeasureOtherWater factory function for _MeteringDataMeasureOtherWater
+func NewMeteringDataMeasureOtherWater(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureOtherWater {
+	_result := &_MeteringDataMeasureOtherWater{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ MeteringDataRequirements = (*_MeteringDataMeasureOtherWater)(nil)
 
 func (m *_MeteringDataMeasureOtherWater) GetParent() MeteringDataContract {
 	return m.MeteringDataContract
-}
-
-// NewMeteringDataMeasureOtherWater factory function for _MeteringDataMeasureOtherWater
-func NewMeteringDataMeasureOtherWater(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureOtherWater {
-	_result := &_MeteringDataMeasureOtherWater{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_MeteringDataMeasureOtherWater) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_MeteringDataMeasureOtherWater) IsMeteringDataMeasureOtherWater() {}
+
+func (m *_MeteringDataMeasureOtherWater) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataMeasureOtherWater) deepCopy() *_MeteringDataMeasureOtherWater {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataMeasureOtherWaterCopy := &_MeteringDataMeasureOtherWater{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataMeasureOtherWaterCopy
+}
 
 func (m *_MeteringDataMeasureOtherWater) String() string {
 	if m == nil {

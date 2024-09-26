@@ -38,6 +38,7 @@ type BACnetPropertyStatesLiftCarMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLiftCarMode returns LiftCarMode (property field)
 	GetLiftCarMode() BACnetLiftCarModeTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesLiftCarMode struct {
 
 var _ BACnetPropertyStatesLiftCarMode = (*_BACnetPropertyStatesLiftCarMode)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftCarMode)(nil)
+
+// NewBACnetPropertyStatesLiftCarMode factory function for _BACnetPropertyStatesLiftCarMode
+func NewBACnetPropertyStatesLiftCarMode(peekedTagHeader BACnetTagHeader, liftCarMode BACnetLiftCarModeTagged) *_BACnetPropertyStatesLiftCarMode {
+	if liftCarMode == nil {
+		panic("liftCarMode of type BACnetLiftCarModeTagged for BACnetPropertyStatesLiftCarMode must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLiftCarMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftCarMode:                  liftCarMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesLiftCarMode) GetLiftCarMode() BACnetLiftCarModeTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLiftCarMode factory function for _BACnetPropertyStatesLiftCarMode
-func NewBACnetPropertyStatesLiftCarMode(liftCarMode BACnetLiftCarModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftCarMode {
-	if liftCarMode == nil {
-		panic("liftCarMode of type BACnetLiftCarModeTagged for BACnetPropertyStatesLiftCarMode must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLiftCarMode{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LiftCarMode:                  liftCarMode,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLiftCarMode(structType any) BACnetPropertyStatesLiftCarMode {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLiftCarMode) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesLiftCarMode) IsBACnetPropertyStatesLiftCarMode() {}
+
+func (m *_BACnetPropertyStatesLiftCarMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLiftCarMode) deepCopy() *_BACnetPropertyStatesLiftCarMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLiftCarModeCopy := &_BACnetPropertyStatesLiftCarMode{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LiftCarMode.DeepCopy().(BACnetLiftCarModeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLiftCarModeCopy
+}
 
 func (m *_BACnetPropertyStatesLiftCarMode) String() string {
 	if m == nil {

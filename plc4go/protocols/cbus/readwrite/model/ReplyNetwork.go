@@ -38,6 +38,7 @@ type ReplyNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNetworkRoute returns NetworkRoute (property field)
 	GetNetworkRoute() NetworkRoute
 	// GetUnitAddress returns UnitAddress (property field)
@@ -53,6 +54,17 @@ type _ReplyNetwork struct {
 }
 
 var _ ReplyNetwork = (*_ReplyNetwork)(nil)
+
+// NewReplyNetwork factory function for _ReplyNetwork
+func NewReplyNetwork(networkRoute NetworkRoute, unitAddress UnitAddress) *_ReplyNetwork {
+	if networkRoute == nil {
+		panic("networkRoute of type NetworkRoute for ReplyNetwork must not be nil")
+	}
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for ReplyNetwork must not be nil")
+	}
+	return &_ReplyNetwork{NetworkRoute: networkRoute, UnitAddress: unitAddress}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_ReplyNetwork) GetUnitAddress() UnitAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReplyNetwork factory function for _ReplyNetwork
-func NewReplyNetwork(networkRoute NetworkRoute, unitAddress UnitAddress) *_ReplyNetwork {
-	if networkRoute == nil {
-		panic("networkRoute of type NetworkRoute for ReplyNetwork must not be nil")
-	}
-	if unitAddress == nil {
-		panic("unitAddress of type UnitAddress for ReplyNetwork must not be nil")
-	}
-	return &_ReplyNetwork{NetworkRoute: networkRoute, UnitAddress: unitAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastReplyNetwork(structType any) ReplyNetwork {
@@ -192,6 +193,21 @@ func (m *_ReplyNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_ReplyNetwork) IsReplyNetwork() {}
+
+func (m *_ReplyNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReplyNetwork) deepCopy() *_ReplyNetwork {
+	if m == nil {
+		return nil
+	}
+	_ReplyNetworkCopy := &_ReplyNetwork{
+		m.NetworkRoute.DeepCopy().(NetworkRoute),
+		m.UnitAddress.DeepCopy().(UnitAddress),
+	}
+	return _ReplyNetworkCopy
+}
 
 func (m *_ReplyNetwork) String() string {
 	if m == nil {

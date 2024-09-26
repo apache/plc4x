@@ -38,6 +38,7 @@ type BACnetConstructedDataZoneFrom interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetZoneFrom returns ZoneFrom (property field)
 	GetZoneFrom() BACnetDeviceObjectReference
@@ -55,6 +56,19 @@ type _BACnetConstructedDataZoneFrom struct {
 
 var _ BACnetConstructedDataZoneFrom = (*_BACnetConstructedDataZoneFrom)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneFrom)(nil)
+
+// NewBACnetConstructedDataZoneFrom factory function for _BACnetConstructedDataZoneFrom
+func NewBACnetConstructedDataZoneFrom(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneFrom BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneFrom {
+	if zoneFrom == nil {
+		panic("zoneFrom of type BACnetDeviceObjectReference for BACnetConstructedDataZoneFrom must not be nil")
+	}
+	_result := &_BACnetConstructedDataZoneFrom{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ZoneFrom:                      zoneFrom,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataZoneFrom) GetActualValue() BACnetDeviceObjectRefe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataZoneFrom factory function for _BACnetConstructedDataZoneFrom
-func NewBACnetConstructedDataZoneFrom(zoneFrom BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneFrom {
-	if zoneFrom == nil {
-		panic("zoneFrom of type BACnetDeviceObjectReference for BACnetConstructedDataZoneFrom must not be nil")
-	}
-	_result := &_BACnetConstructedDataZoneFrom{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ZoneFrom:                      zoneFrom,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataZoneFrom(structType any) BACnetConstructedDataZoneFrom {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataZoneFrom) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataZoneFrom) IsBACnetConstructedDataZoneFrom() {}
+
+func (m *_BACnetConstructedDataZoneFrom) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataZoneFrom) deepCopy() *_BACnetConstructedDataZoneFrom {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataZoneFromCopy := &_BACnetConstructedDataZoneFrom{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ZoneFrom.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataZoneFromCopy
+}
 
 func (m *_BACnetConstructedDataZoneFrom) String() string {
 	if m == nil {

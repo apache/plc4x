@@ -38,6 +38,7 @@ type CipSecurityInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CommandSpecificDataItem
 	// GetTodoImplement returns TodoImplement (property field)
 	GetTodoImplement() []uint8
@@ -53,6 +54,16 @@ type _CipSecurityInformation struct {
 
 var _ CipSecurityInformation = (*_CipSecurityInformation)(nil)
 var _ CommandSpecificDataItemRequirements = (*_CipSecurityInformation)(nil)
+
+// NewCipSecurityInformation factory function for _CipSecurityInformation
+func NewCipSecurityInformation(todoImplement []uint8) *_CipSecurityInformation {
+	_result := &_CipSecurityInformation{
+		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
+		TodoImplement:                   todoImplement,
+	}
+	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_CipSecurityInformation) GetTodoImplement() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipSecurityInformation factory function for _CipSecurityInformation
-func NewCipSecurityInformation(todoImplement []uint8) *_CipSecurityInformation {
-	_result := &_CipSecurityInformation{
-		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
-		TodoImplement:                   todoImplement,
-	}
-	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipSecurityInformation(structType any) CipSecurityInformation {
@@ -194,6 +195,22 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_CipSecurityInformation) IsCipSecurityInformation() {}
+
+func (m *_CipSecurityInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipSecurityInformation) deepCopy() *_CipSecurityInformation {
+	if m == nil {
+		return nil
+	}
+	_CipSecurityInformationCopy := &_CipSecurityInformation{
+		m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).deepCopy(),
+		utils.DeepCopySlice[uint8, uint8](m.TodoImplement),
+	}
+	m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = m
+	return _CipSecurityInformationCopy
+}
 
 func (m *_CipSecurityInformation) String() string {
 	if m == nil {

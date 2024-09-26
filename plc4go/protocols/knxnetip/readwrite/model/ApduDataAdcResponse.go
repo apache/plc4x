@@ -36,6 +36,7 @@ type ApduDataAdcResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataAdcResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataAdcResponse()
@@ -48,6 +49,15 @@ type _ApduDataAdcResponse struct {
 
 var _ ApduDataAdcResponse = (*_ApduDataAdcResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataAdcResponse)(nil)
+
+// NewApduDataAdcResponse factory function for _ApduDataAdcResponse
+func NewApduDataAdcResponse(dataLength uint8) *_ApduDataAdcResponse {
+	_result := &_ApduDataAdcResponse{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataAdcResponse) GetApciType() uint8 {
 
 func (m *_ApduDataAdcResponse) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataAdcResponse factory function for _ApduDataAdcResponse
-func NewApduDataAdcResponse(dataLength uint8) *_ApduDataAdcResponse {
-	_result := &_ApduDataAdcResponse{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataAdcResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ApduDataAdcResponse) IsApduDataAdcResponse() {}
+
+func (m *_ApduDataAdcResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataAdcResponse) deepCopy() *_ApduDataAdcResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataAdcResponseCopy := &_ApduDataAdcResponse{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataAdcResponseCopy
+}
 
 func (m *_ApduDataAdcResponse) String() string {
 	if m == nil {

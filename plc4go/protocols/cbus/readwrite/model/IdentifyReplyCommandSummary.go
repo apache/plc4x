@@ -38,6 +38,7 @@ type IdentifyReplyCommandSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetPartName returns PartName (property field)
 	GetPartName() string
@@ -59,6 +60,18 @@ type _IdentifyReplyCommandSummary struct {
 
 var _ IdentifyReplyCommandSummary = (*_IdentifyReplyCommandSummary)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandSummary)(nil)
+
+// NewIdentifyReplyCommandSummary factory function for _IdentifyReplyCommandSummary
+func NewIdentifyReplyCommandSummary(partName string, unitServiceType byte, version string, numBytes uint8) *_IdentifyReplyCommandSummary {
+	_result := &_IdentifyReplyCommandSummary{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		PartName:                     partName,
+		UnitServiceType:              unitServiceType,
+		Version:                      version,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +112,6 @@ func (m *_IdentifyReplyCommandSummary) GetVersion() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandSummary factory function for _IdentifyReplyCommandSummary
-func NewIdentifyReplyCommandSummary(partName string, unitServiceType byte, version string, numBytes uint8) *_IdentifyReplyCommandSummary {
-	_result := &_IdentifyReplyCommandSummary{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		PartName:                     partName,
-		UnitServiceType:              unitServiceType,
-		Version:                      version,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandSummary(structType any) IdentifyReplyCommandSummary {
@@ -221,6 +222,24 @@ func (m *_IdentifyReplyCommandSummary) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_IdentifyReplyCommandSummary) IsIdentifyReplyCommandSummary() {}
+
+func (m *_IdentifyReplyCommandSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandSummary) deepCopy() *_IdentifyReplyCommandSummary {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandSummaryCopy := &_IdentifyReplyCommandSummary{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		m.PartName,
+		m.UnitServiceType,
+		m.Version,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandSummaryCopy
+}
 
 func (m *_IdentifyReplyCommandSummary) String() string {
 	if m == nil {

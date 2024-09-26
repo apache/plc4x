@@ -36,6 +36,7 @@ type MediaTransportControlDataStop interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// IsMediaTransportControlDataStop is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataStop()
@@ -49,6 +50,15 @@ type _MediaTransportControlDataStop struct {
 var _ MediaTransportControlDataStop = (*_MediaTransportControlDataStop)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataStop)(nil)
 
+// NewMediaTransportControlDataStop factory function for _MediaTransportControlDataStop
+func NewMediaTransportControlDataStop(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataStop {
+	_result := &_MediaTransportControlDataStop{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataStop)(
 
 func (m *_MediaTransportControlDataStop) GetParent() MediaTransportControlDataContract {
 	return m.MediaTransportControlDataContract
-}
-
-// NewMediaTransportControlDataStop factory function for _MediaTransportControlDataStop
-func NewMediaTransportControlDataStop(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataStop {
-	_result := &_MediaTransportControlDataStop{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_MediaTransportControlDataStop) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_MediaTransportControlDataStop) IsMediaTransportControlDataStop() {}
+
+func (m *_MediaTransportControlDataStop) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataStop) deepCopy() *_MediaTransportControlDataStop {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataStopCopy := &_MediaTransportControlDataStop{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataStopCopy
+}
 
 func (m *_MediaTransportControlDataStop) String() string {
 	if m == nil {

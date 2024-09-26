@@ -38,6 +38,7 @@ type ModbusPDUDiagnosticResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetSubFunction returns SubFunction (property field)
 	GetSubFunction() uint16
@@ -56,6 +57,17 @@ type _ModbusPDUDiagnosticResponse struct {
 
 var _ ModbusPDUDiagnosticResponse = (*_ModbusPDUDiagnosticResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUDiagnosticResponse)(nil)
+
+// NewModbusPDUDiagnosticResponse factory function for _ModbusPDUDiagnosticResponse
+func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *_ModbusPDUDiagnosticResponse {
+	_result := &_ModbusPDUDiagnosticResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		SubFunction:       subFunction,
+		Data:              data,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_ModbusPDUDiagnosticResponse) GetData() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUDiagnosticResponse factory function for _ModbusPDUDiagnosticResponse
-func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *_ModbusPDUDiagnosticResponse {
-	_result := &_ModbusPDUDiagnosticResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		SubFunction:       subFunction,
-		Data:              data,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUDiagnosticResponse(structType any) ModbusPDUDiagnosticResponse {
@@ -208,6 +209,23 @@ func (m *_ModbusPDUDiagnosticResponse) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_ModbusPDUDiagnosticResponse) IsModbusPDUDiagnosticResponse() {}
+
+func (m *_ModbusPDUDiagnosticResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUDiagnosticResponse) deepCopy() *_ModbusPDUDiagnosticResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUDiagnosticResponseCopy := &_ModbusPDUDiagnosticResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.SubFunction,
+		m.Data,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUDiagnosticResponseCopy
+}
 
 func (m *_ModbusPDUDiagnosticResponse) String() string {
 	if m == nil {

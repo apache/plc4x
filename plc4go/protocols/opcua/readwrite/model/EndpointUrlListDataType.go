@@ -38,6 +38,7 @@ type EndpointUrlListDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfEndpointUrlList returns NoOfEndpointUrlList (property field)
 	GetNoOfEndpointUrlList() int32
@@ -56,6 +57,17 @@ type _EndpointUrlListDataType struct {
 
 var _ EndpointUrlListDataType = (*_EndpointUrlListDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointUrlListDataType)(nil)
+
+// NewEndpointUrlListDataType factory function for _EndpointUrlListDataType
+func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []PascalString) *_EndpointUrlListDataType {
+	_result := &_EndpointUrlListDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEndpointUrlList:               noOfEndpointUrlList,
+		EndpointUrlList:                   endpointUrlList,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_EndpointUrlListDataType) GetEndpointUrlList() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEndpointUrlListDataType factory function for _EndpointUrlListDataType
-func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []PascalString) *_EndpointUrlListDataType {
-	_result := &_EndpointUrlListDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEndpointUrlList:               noOfEndpointUrlList,
-		EndpointUrlList:                   endpointUrlList,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEndpointUrlListDataType(structType any) EndpointUrlListDataType {
@@ -207,6 +208,23 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_EndpointUrlListDataType) IsEndpointUrlListDataType() {}
+
+func (m *_EndpointUrlListDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EndpointUrlListDataType) deepCopy() *_EndpointUrlListDataType {
+	if m == nil {
+		return nil
+	}
+	_EndpointUrlListDataTypeCopy := &_EndpointUrlListDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfEndpointUrlList,
+		utils.DeepCopySlice[PascalString, PascalString](m.EndpointUrlList),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EndpointUrlListDataTypeCopy
+}
 
 func (m *_EndpointUrlListDataType) String() string {
 	if m == nil {

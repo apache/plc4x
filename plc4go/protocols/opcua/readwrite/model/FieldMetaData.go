@@ -38,6 +38,7 @@ type FieldMetaData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -86,6 +87,39 @@ type _FieldMetaData struct {
 
 var _ FieldMetaData = (*_FieldMetaData)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FieldMetaData)(nil)
+
+// NewFieldMetaData factory function for _FieldMetaData
+func NewFieldMetaData(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, noOfProperties int32, properties []ExtensionObjectDefinition) *_FieldMetaData {
+	if name == nil {
+		panic("name of type PascalString for FieldMetaData must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for FieldMetaData must not be nil")
+	}
+	if dataType == nil {
+		panic("dataType of type NodeId for FieldMetaData must not be nil")
+	}
+	if dataSetFieldId == nil {
+		panic("dataSetFieldId of type GuidValue for FieldMetaData must not be nil")
+	}
+	_result := &_FieldMetaData{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Description:                       description,
+		FieldFlags:                        fieldFlags,
+		BuiltInType:                       builtInType,
+		DataType:                          dataType,
+		ValueRank:                         valueRank,
+		NoOfArrayDimensions:               noOfArrayDimensions,
+		ArrayDimensions:                   arrayDimensions,
+		MaxStringLength:                   maxStringLength,
+		DataSetFieldId:                    dataSetFieldId,
+		NoOfProperties:                    noOfProperties,
+		Properties:                        properties,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,39 +196,6 @@ func (m *_FieldMetaData) GetProperties() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFieldMetaData factory function for _FieldMetaData
-func NewFieldMetaData(name PascalString, description LocalizedText, fieldFlags DataSetFieldFlags, builtInType uint8, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, dataSetFieldId GuidValue, noOfProperties int32, properties []ExtensionObjectDefinition) *_FieldMetaData {
-	if name == nil {
-		panic("name of type PascalString for FieldMetaData must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for FieldMetaData must not be nil")
-	}
-	if dataType == nil {
-		panic("dataType of type NodeId for FieldMetaData must not be nil")
-	}
-	if dataSetFieldId == nil {
-		panic("dataSetFieldId of type GuidValue for FieldMetaData must not be nil")
-	}
-	_result := &_FieldMetaData{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Description:                       description,
-		FieldFlags:                        fieldFlags,
-		BuiltInType:                       builtInType,
-		DataType:                          dataType,
-		ValueRank:                         valueRank,
-		NoOfArrayDimensions:               noOfArrayDimensions,
-		ArrayDimensions:                   arrayDimensions,
-		MaxStringLength:                   maxStringLength,
-		DataSetFieldId:                    dataSetFieldId,
-		NoOfProperties:                    noOfProperties,
-		Properties:                        properties,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFieldMetaData(structType any) FieldMetaData {
@@ -431,6 +432,33 @@ func (m *_FieldMetaData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_FieldMetaData) IsFieldMetaData() {}
+
+func (m *_FieldMetaData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FieldMetaData) deepCopy() *_FieldMetaData {
+	if m == nil {
+		return nil
+	}
+	_FieldMetaDataCopy := &_FieldMetaData{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.Description.DeepCopy().(LocalizedText),
+		m.FieldFlags,
+		m.BuiltInType,
+		m.DataType.DeepCopy().(NodeId),
+		m.ValueRank,
+		m.NoOfArrayDimensions,
+		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
+		m.MaxStringLength,
+		m.DataSetFieldId.DeepCopy().(GuidValue),
+		m.NoOfProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Properties),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FieldMetaDataCopy
+}
 
 func (m *_FieldMetaData) String() string {
 	if m == nil {

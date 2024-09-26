@@ -38,6 +38,7 @@ type KnxNetRemoteConfigurationAndDiagnosis interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -53,6 +54,16 @@ type _KnxNetRemoteConfigurationAndDiagnosis struct {
 
 var _ KnxNetRemoteConfigurationAndDiagnosis = (*_KnxNetRemoteConfigurationAndDiagnosis)(nil)
 var _ ServiceIdRequirements = (*_KnxNetRemoteConfigurationAndDiagnosis)(nil)
+
+// NewKnxNetRemoteConfigurationAndDiagnosis factory function for _KnxNetRemoteConfigurationAndDiagnosis
+func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *_KnxNetRemoteConfigurationAndDiagnosis {
+	_result := &_KnxNetRemoteConfigurationAndDiagnosis{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetRemoteConfigurationAndDiagnosis factory function for _KnxNetRemoteConfigurationAndDiagnosis
-func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *_KnxNetRemoteConfigurationAndDiagnosis {
-	_result := &_KnxNetRemoteConfigurationAndDiagnosis{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetRemoteConfigurationAndDiagnosis(structType any) KnxNetRemoteConfigurationAndDiagnosis {
@@ -179,6 +180,22 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_KnxNetRemoteConfigurationAndDiagnosis) IsKnxNetRemoteConfigurationAndDiagnosis() {}
+
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetRemoteConfigurationAndDiagnosis) deepCopy() *_KnxNetRemoteConfigurationAndDiagnosis {
+	if m == nil {
+		return nil
+	}
+	_KnxNetRemoteConfigurationAndDiagnosisCopy := &_KnxNetRemoteConfigurationAndDiagnosis{
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetRemoteConfigurationAndDiagnosisCopy
+}
 
 func (m *_KnxNetRemoteConfigurationAndDiagnosis) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type NLMRequestKeyUpdate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetSet1KeyRevision returns Set1KeyRevision (property field)
 	GetSet1KeyRevision() byte
@@ -71,6 +72,22 @@ type _NLMRequestKeyUpdate struct {
 
 var _ NLMRequestKeyUpdate = (*_NLMRequestKeyUpdate)(nil)
 var _ NLMRequirements = (*_NLMRequestKeyUpdate)(nil)
+
+// NewNLMRequestKeyUpdate factory function for _NLMRequestKeyUpdate
+func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte, apduLength uint16) *_NLMRequestKeyUpdate {
+	_result := &_NLMRequestKeyUpdate{
+		NLMContract:             NewNLM(apduLength),
+		Set1KeyRevision:         set1KeyRevision,
+		Set1ActivationTime:      set1ActivationTime,
+		Set1ExpirationTime:      set1ExpirationTime,
+		Set2KeyRevision:         set2KeyRevision,
+		Set2ActivationTime:      set2ActivationTime,
+		Set2ExpirationTime:      set2ExpirationTime,
+		DistributionKeyRevision: distributionKeyRevision,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,22 +144,6 @@ func (m *_NLMRequestKeyUpdate) GetDistributionKeyRevision() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRequestKeyUpdate factory function for _NLMRequestKeyUpdate
-func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte, apduLength uint16) *_NLMRequestKeyUpdate {
-	_result := &_NLMRequestKeyUpdate{
-		NLMContract:             NewNLM(apduLength),
-		Set1KeyRevision:         set1KeyRevision,
-		Set1ActivationTime:      set1ActivationTime,
-		Set1ExpirationTime:      set1ExpirationTime,
-		Set2KeyRevision:         set2KeyRevision,
-		Set2ActivationTime:      set2ActivationTime,
-		Set2ExpirationTime:      set2ExpirationTime,
-		DistributionKeyRevision: distributionKeyRevision,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRequestKeyUpdate(structType any) NLMRequestKeyUpdate {
@@ -305,6 +306,28 @@ func (m *_NLMRequestKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NLMRequestKeyUpdate) IsNLMRequestKeyUpdate() {}
+
+func (m *_NLMRequestKeyUpdate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRequestKeyUpdate) deepCopy() *_NLMRequestKeyUpdate {
+	if m == nil {
+		return nil
+	}
+	_NLMRequestKeyUpdateCopy := &_NLMRequestKeyUpdate{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.Set1KeyRevision,
+		m.Set1ActivationTime,
+		m.Set1ExpirationTime,
+		m.Set2KeyRevision,
+		m.Set2ActivationTime,
+		m.Set2ExpirationTime,
+		m.DistributionKeyRevision,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRequestKeyUpdateCopy
+}
 
 func (m *_NLMRequestKeyUpdate) String() string {
 	if m == nil {

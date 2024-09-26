@@ -38,6 +38,7 @@ type BACnetPropertyStatesLiftFault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLiftFault returns LiftFault (property field)
 	GetLiftFault() BACnetLiftFaultTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesLiftFault struct {
 
 var _ BACnetPropertyStatesLiftFault = (*_BACnetPropertyStatesLiftFault)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftFault)(nil)
+
+// NewBACnetPropertyStatesLiftFault factory function for _BACnetPropertyStatesLiftFault
+func NewBACnetPropertyStatesLiftFault(peekedTagHeader BACnetTagHeader, liftFault BACnetLiftFaultTagged) *_BACnetPropertyStatesLiftFault {
+	if liftFault == nil {
+		panic("liftFault of type BACnetLiftFaultTagged for BACnetPropertyStatesLiftFault must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLiftFault{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftFault:                    liftFault,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesLiftFault) GetLiftFault() BACnetLiftFaultTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLiftFault factory function for _BACnetPropertyStatesLiftFault
-func NewBACnetPropertyStatesLiftFault(liftFault BACnetLiftFaultTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftFault {
-	if liftFault == nil {
-		panic("liftFault of type BACnetLiftFaultTagged for BACnetPropertyStatesLiftFault must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLiftFault{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LiftFault:                    liftFault,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLiftFault(structType any) BACnetPropertyStatesLiftFault {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLiftFault) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetPropertyStatesLiftFault) IsBACnetPropertyStatesLiftFault() {}
+
+func (m *_BACnetPropertyStatesLiftFault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLiftFault) deepCopy() *_BACnetPropertyStatesLiftFault {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLiftFaultCopy := &_BACnetPropertyStatesLiftFault{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LiftFault.DeepCopy().(BACnetLiftFaultTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLiftFaultCopy
+}
 
 func (m *_BACnetPropertyStatesLiftFault) String() string {
 	if m == nil {

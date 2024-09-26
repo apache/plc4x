@@ -38,6 +38,7 @@ type ZoneStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() ZoneStatusTemp
 	// IsZoneStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _ZoneStatus struct {
 }
 
 var _ ZoneStatus = (*_ZoneStatus)(nil)
+
+// NewZoneStatus factory function for _ZoneStatus
+func NewZoneStatus(value ZoneStatusTemp) *_ZoneStatus {
+	return &_ZoneStatus{Value: value}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_ZoneStatus) GetValue() ZoneStatusTemp {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewZoneStatus factory function for _ZoneStatus
-func NewZoneStatus(value ZoneStatusTemp) *_ZoneStatus {
-	return &_ZoneStatus{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastZoneStatus(structType any) ZoneStatus {
@@ -166,6 +167,20 @@ func (m *_ZoneStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_ZoneStatus) IsZoneStatus() {}
+
+func (m *_ZoneStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ZoneStatus) deepCopy() *_ZoneStatus {
+	if m == nil {
+		return nil
+	}
+	_ZoneStatusCopy := &_ZoneStatus{
+		m.Value,
+	}
+	return _ZoneStatusCopy
+}
 
 func (m *_ZoneStatus) String() string {
 	if m == nil {

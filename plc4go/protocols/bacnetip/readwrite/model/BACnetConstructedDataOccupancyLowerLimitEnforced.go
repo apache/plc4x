@@ -38,6 +38,7 @@ type BACnetConstructedDataOccupancyLowerLimitEnforced interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOccupancyLowerLimitEnforced returns OccupancyLowerLimitEnforced (property field)
 	GetOccupancyLowerLimitEnforced() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataOccupancyLowerLimitEnforced struct {
 
 var _ BACnetConstructedDataOccupancyLowerLimitEnforced = (*_BACnetConstructedDataOccupancyLowerLimitEnforced)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyLowerLimitEnforced)(nil)
+
+// NewBACnetConstructedDataOccupancyLowerLimitEnforced factory function for _BACnetConstructedDataOccupancyLowerLimitEnforced
+func NewBACnetConstructedDataOccupancyLowerLimitEnforced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyLowerLimitEnforced BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyLowerLimitEnforced {
+	if occupancyLowerLimitEnforced == nil {
+		panic("occupancyLowerLimitEnforced of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyLowerLimitEnforced must not be nil")
+	}
+	_result := &_BACnetConstructedDataOccupancyLowerLimitEnforced{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OccupancyLowerLimitEnforced:   occupancyLowerLimitEnforced,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOccupancyLowerLimitEnforced factory function for _BACnetConstructedDataOccupancyLowerLimitEnforced
-func NewBACnetConstructedDataOccupancyLowerLimitEnforced(occupancyLowerLimitEnforced BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyLowerLimitEnforced {
-	if occupancyLowerLimitEnforced == nil {
-		panic("occupancyLowerLimitEnforced of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyLowerLimitEnforced must not be nil")
-	}
-	_result := &_BACnetConstructedDataOccupancyLowerLimitEnforced{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OccupancyLowerLimitEnforced:   occupancyLowerLimitEnforced,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOccupancyLowerLimitEnforced(structType any) BACnetConstructedDataOccupancyLowerLimitEnforced {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) SerializeWithWriteBu
 }
 
 func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) IsBACnetConstructedDataOccupancyLowerLimitEnforced() {
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) deepCopy() *_BACnetConstructedDataOccupancyLowerLimitEnforced {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOccupancyLowerLimitEnforcedCopy := &_BACnetConstructedDataOccupancyLowerLimitEnforced{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.OccupancyLowerLimitEnforced.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOccupancyLowerLimitEnforcedCopy
 }
 
 func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) String() string {

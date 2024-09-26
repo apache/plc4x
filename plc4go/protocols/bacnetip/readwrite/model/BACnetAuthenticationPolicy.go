@@ -38,6 +38,7 @@ type BACnetAuthenticationPolicy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPolicy returns Policy (property field)
 	GetPolicy() BACnetAuthenticationPolicyList
 	// GetOrderEnforced returns OrderEnforced (property field)
@@ -56,6 +57,20 @@ type _BACnetAuthenticationPolicy struct {
 }
 
 var _ BACnetAuthenticationPolicy = (*_BACnetAuthenticationPolicy)(nil)
+
+// NewBACnetAuthenticationPolicy factory function for _BACnetAuthenticationPolicy
+func NewBACnetAuthenticationPolicy(policy BACnetAuthenticationPolicyList, orderEnforced BACnetContextTagBoolean, timeout BACnetContextTagUnsignedInteger) *_BACnetAuthenticationPolicy {
+	if policy == nil {
+		panic("policy of type BACnetAuthenticationPolicyList for BACnetAuthenticationPolicy must not be nil")
+	}
+	if orderEnforced == nil {
+		panic("orderEnforced of type BACnetContextTagBoolean for BACnetAuthenticationPolicy must not be nil")
+	}
+	if timeout == nil {
+		panic("timeout of type BACnetContextTagUnsignedInteger for BACnetAuthenticationPolicy must not be nil")
+	}
+	return &_BACnetAuthenticationPolicy{Policy: policy, OrderEnforced: orderEnforced, Timeout: timeout}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,20 +93,6 @@ func (m *_BACnetAuthenticationPolicy) GetTimeout() BACnetContextTagUnsignedInteg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationPolicy factory function for _BACnetAuthenticationPolicy
-func NewBACnetAuthenticationPolicy(policy BACnetAuthenticationPolicyList, orderEnforced BACnetContextTagBoolean, timeout BACnetContextTagUnsignedInteger) *_BACnetAuthenticationPolicy {
-	if policy == nil {
-		panic("policy of type BACnetAuthenticationPolicyList for BACnetAuthenticationPolicy must not be nil")
-	}
-	if orderEnforced == nil {
-		panic("orderEnforced of type BACnetContextTagBoolean for BACnetAuthenticationPolicy must not be nil")
-	}
-	if timeout == nil {
-		panic("timeout of type BACnetContextTagUnsignedInteger for BACnetAuthenticationPolicy must not be nil")
-	}
-	return &_BACnetAuthenticationPolicy{Policy: policy, OrderEnforced: orderEnforced, Timeout: timeout}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationPolicy(structType any) BACnetAuthenticationPolicy {
@@ -215,6 +216,22 @@ func (m *_BACnetAuthenticationPolicy) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetAuthenticationPolicy) IsBACnetAuthenticationPolicy() {}
+
+func (m *_BACnetAuthenticationPolicy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationPolicy) deepCopy() *_BACnetAuthenticationPolicy {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationPolicyCopy := &_BACnetAuthenticationPolicy{
+		m.Policy.DeepCopy().(BACnetAuthenticationPolicyList),
+		m.OrderEnforced.DeepCopy().(BACnetContextTagBoolean),
+		m.Timeout.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetAuthenticationPolicyCopy
+}
 
 func (m *_BACnetAuthenticationPolicy) String() string {
 	if m == nil {

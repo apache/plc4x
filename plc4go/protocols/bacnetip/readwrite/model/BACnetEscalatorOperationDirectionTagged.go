@@ -38,6 +38,7 @@ type BACnetEscalatorOperationDirectionTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetEscalatorOperationDirectionTagged struct {
 }
 
 var _ BACnetEscalatorOperationDirectionTagged = (*_BACnetEscalatorOperationDirectionTagged)(nil)
+
+// NewBACnetEscalatorOperationDirectionTagged factory function for _BACnetEscalatorOperationDirectionTagged
+func NewBACnetEscalatorOperationDirectionTagged(header BACnetTagHeader, value BACnetEscalatorOperationDirection, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorOperationDirectionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetEscalatorOperationDirectionTagged must not be nil")
+	}
+	return &_BACnetEscalatorOperationDirectionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetEscalatorOperationDirectionTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEscalatorOperationDirectionTagged factory function for _BACnetEscalatorOperationDirectionTagged
-func NewBACnetEscalatorOperationDirectionTagged(header BACnetTagHeader, value BACnetEscalatorOperationDirection, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorOperationDirectionTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetEscalatorOperationDirectionTagged must not be nil")
-	}
-	return &_BACnetEscalatorOperationDirectionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEscalatorOperationDirectionTagged(structType any) BACnetEscalatorOperationDirectionTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetEscalatorOperationDirectionTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetEscalatorOperationDirectionTagged) IsBACnetEscalatorOperationDirectionTagged() {}
+
+func (m *_BACnetEscalatorOperationDirectionTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEscalatorOperationDirectionTagged) deepCopy() *_BACnetEscalatorOperationDirectionTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetEscalatorOperationDirectionTaggedCopy := &_BACnetEscalatorOperationDirectionTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetEscalatorOperationDirectionTaggedCopy
+}
 
 func (m *_BACnetEscalatorOperationDirectionTagged) String() string {
 	if m == nil {

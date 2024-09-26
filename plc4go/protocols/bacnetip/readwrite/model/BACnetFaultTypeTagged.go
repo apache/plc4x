@@ -38,6 +38,7 @@ type BACnetFaultTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetFaultTypeTagged struct {
 
 var _ BACnetFaultTypeTagged = (*_BACnetFaultTypeTagged)(nil)
 
+// NewBACnetFaultTypeTagged factory function for _BACnetFaultTypeTagged
+func NewBACnetFaultTypeTagged(header BACnetTagHeader, value BACnetFaultType, tagNumber uint8, tagClass TagClass) *_BACnetFaultTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetFaultTypeTagged must not be nil")
+	}
+	return &_BACnetFaultTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetFaultTypeTagged) GetValue() BACnetFaultType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultTypeTagged factory function for _BACnetFaultTypeTagged
-func NewBACnetFaultTypeTagged(header BACnetTagHeader, value BACnetFaultType, tagNumber uint8, tagClass TagClass) *_BACnetFaultTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetFaultTypeTagged must not be nil")
-	}
-	return &_BACnetFaultTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultTypeTagged(structType any) BACnetFaultTypeTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetFaultTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetFaultTypeTagged) IsBACnetFaultTypeTagged() {}
+
+func (m *_BACnetFaultTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultTypeTagged) deepCopy() *_BACnetFaultTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultTypeTaggedCopy := &_BACnetFaultTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetFaultTypeTaggedCopy
+}
 
 func (m *_BACnetFaultTypeTagged) String() string {
 	if m == nil {

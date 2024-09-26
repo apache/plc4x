@@ -38,6 +38,7 @@ type BACnetConstructedDataReliabilityEvaluationInhibit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReliabilityEvaluationInhibit returns ReliabilityEvaluationInhibit (property field)
 	GetReliabilityEvaluationInhibit() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataReliabilityEvaluationInhibit struct {
 
 var _ BACnetConstructedDataReliabilityEvaluationInhibit = (*_BACnetConstructedDataReliabilityEvaluationInhibit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReliabilityEvaluationInhibit)(nil)
+
+// NewBACnetConstructedDataReliabilityEvaluationInhibit factory function for _BACnetConstructedDataReliabilityEvaluationInhibit
+func NewBACnetConstructedDataReliabilityEvaluationInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliabilityEvaluationInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliabilityEvaluationInhibit {
+	if reliabilityEvaluationInhibit == nil {
+		panic("reliabilityEvaluationInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataReliabilityEvaluationInhibit must not be nil")
+	}
+	_result := &_BACnetConstructedDataReliabilityEvaluationInhibit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ReliabilityEvaluationInhibit:  reliabilityEvaluationInhibit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReliabilityEvaluationInhibit factory function for _BACnetConstructedDataReliabilityEvaluationInhibit
-func NewBACnetConstructedDataReliabilityEvaluationInhibit(reliabilityEvaluationInhibit BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliabilityEvaluationInhibit {
-	if reliabilityEvaluationInhibit == nil {
-		panic("reliabilityEvaluationInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataReliabilityEvaluationInhibit must not be nil")
-	}
-	_result := &_BACnetConstructedDataReliabilityEvaluationInhibit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ReliabilityEvaluationInhibit:  reliabilityEvaluationInhibit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReliabilityEvaluationInhibit(structType any) BACnetConstructedDataReliabilityEvaluationInhibit {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) SerializeWithWriteB
 }
 
 func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) IsBACnetConstructedDataReliabilityEvaluationInhibit() {
+}
+
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) deepCopy() *_BACnetConstructedDataReliabilityEvaluationInhibit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReliabilityEvaluationInhibitCopy := &_BACnetConstructedDataReliabilityEvaluationInhibit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ReliabilityEvaluationInhibit.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReliabilityEvaluationInhibitCopy
 }
 
 func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) String() string {

@@ -38,6 +38,7 @@ type BACnetConstructedDataLastNotifyRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastNotifyRecord returns LastNotifyRecord (property field)
 	GetLastNotifyRecord() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataLastNotifyRecord struct {
 
 var _ BACnetConstructedDataLastNotifyRecord = (*_BACnetConstructedDataLastNotifyRecord)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastNotifyRecord)(nil)
+
+// NewBACnetConstructedDataLastNotifyRecord factory function for _BACnetConstructedDataLastNotifyRecord
+func NewBACnetConstructedDataLastNotifyRecord(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastNotifyRecord BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastNotifyRecord {
+	if lastNotifyRecord == nil {
+		panic("lastNotifyRecord of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLastNotifyRecord must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastNotifyRecord{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastNotifyRecord:              lastNotifyRecord,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataLastNotifyRecord) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastNotifyRecord factory function for _BACnetConstructedDataLastNotifyRecord
-func NewBACnetConstructedDataLastNotifyRecord(lastNotifyRecord BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastNotifyRecord {
-	if lastNotifyRecord == nil {
-		panic("lastNotifyRecord of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLastNotifyRecord must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastNotifyRecord{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastNotifyRecord:              lastNotifyRecord,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastNotifyRecord(structType any) BACnetConstructedDataLastNotifyRecord {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataLastNotifyRecord) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataLastNotifyRecord) IsBACnetConstructedDataLastNotifyRecord() {}
+
+func (m *_BACnetConstructedDataLastNotifyRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastNotifyRecord) deepCopy() *_BACnetConstructedDataLastNotifyRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastNotifyRecordCopy := &_BACnetConstructedDataLastNotifyRecord{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LastNotifyRecord.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastNotifyRecordCopy
+}
 
 func (m *_BACnetConstructedDataLastNotifyRecord) String() string {
 	if m == nil {

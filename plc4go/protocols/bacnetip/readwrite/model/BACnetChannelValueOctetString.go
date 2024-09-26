@@ -38,6 +38,7 @@ type BACnetChannelValueOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
@@ -53,6 +54,19 @@ type _BACnetChannelValueOctetString struct {
 
 var _ BACnetChannelValueOctetString = (*_BACnetChannelValueOctetString)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueOctetString)(nil)
+
+// NewBACnetChannelValueOctetString factory function for _BACnetChannelValueOctetString
+func NewBACnetChannelValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString) *_BACnetChannelValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetChannelValueOctetString must not be nil")
+	}
+	_result := &_BACnetChannelValueOctetString{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		OctetStringValue:           octetStringValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueOctetString) GetOctetStringValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueOctetString factory function for _BACnetChannelValueOctetString
-func NewBACnetChannelValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueOctetString {
-	if octetStringValue == nil {
-		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetChannelValueOctetString must not be nil")
-	}
-	_result := &_BACnetChannelValueOctetString{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		OctetStringValue:           octetStringValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueOctetString(structType any) BACnetChannelValueOctetString {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueOctetString) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetChannelValueOctetString) IsBACnetChannelValueOctetString() {}
+
+func (m *_BACnetChannelValueOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueOctetString) deepCopy() *_BACnetChannelValueOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueOctetStringCopy := &_BACnetChannelValueOctetString{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueOctetStringCopy
+}
 
 func (m *_BACnetChannelValueOctetString) String() string {
 	if m == nil {

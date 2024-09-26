@@ -38,6 +38,7 @@ type DataTypeDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataTypeId returns DataTypeId (property field)
 	GetDataTypeId() NodeId
@@ -56,6 +57,23 @@ type _DataTypeDescription struct {
 
 var _ DataTypeDescription = (*_DataTypeDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataTypeDescription)(nil)
+
+// NewDataTypeDescription factory function for _DataTypeDescription
+func NewDataTypeDescription(dataTypeId NodeId, name QualifiedName) *_DataTypeDescription {
+	if dataTypeId == nil {
+		panic("dataTypeId of type NodeId for DataTypeDescription must not be nil")
+	}
+	if name == nil {
+		panic("name of type QualifiedName for DataTypeDescription must not be nil")
+	}
+	_result := &_DataTypeDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		DataTypeId:                        dataTypeId,
+		Name:                              name,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_DataTypeDescription) GetName() QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataTypeDescription factory function for _DataTypeDescription
-func NewDataTypeDescription(dataTypeId NodeId, name QualifiedName) *_DataTypeDescription {
-	if dataTypeId == nil {
-		panic("dataTypeId of type NodeId for DataTypeDescription must not be nil")
-	}
-	if name == nil {
-		panic("name of type QualifiedName for DataTypeDescription must not be nil")
-	}
-	_result := &_DataTypeDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		DataTypeId:                        dataTypeId,
-		Name:                              name,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataTypeDescription(structType any) DataTypeDescription {
@@ -206,6 +207,23 @@ func (m *_DataTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_DataTypeDescription) IsDataTypeDescription() {}
+
+func (m *_DataTypeDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataTypeDescription) deepCopy() *_DataTypeDescription {
+	if m == nil {
+		return nil
+	}
+	_DataTypeDescriptionCopy := &_DataTypeDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DataTypeId.DeepCopy().(NodeId),
+		m.Name.DeepCopy().(QualifiedName),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataTypeDescriptionCopy
+}
 
 func (m *_DataTypeDescription) String() string {
 	if m == nil {

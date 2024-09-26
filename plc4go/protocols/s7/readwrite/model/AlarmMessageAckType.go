@@ -38,6 +38,7 @@ type AlarmMessageAckType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
@@ -56,6 +57,11 @@ type _AlarmMessageAckType struct {
 }
 
 var _ AlarmMessageAckType = (*_AlarmMessageAckType)(nil)
+
+// NewAlarmMessageAckType factory function for _AlarmMessageAckType
+func NewAlarmMessageAckType(functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectAckType) *_AlarmMessageAckType {
+	return &_AlarmMessageAckType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +84,6 @@ func (m *_AlarmMessageAckType) GetMessageObjects() []AlarmMessageObjectAckType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageAckType factory function for _AlarmMessageAckType
-func NewAlarmMessageAckType(functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectAckType) *_AlarmMessageAckType {
-	return &_AlarmMessageAckType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageAckType(structType any) AlarmMessageAckType {
@@ -213,6 +214,22 @@ func (m *_AlarmMessageAckType) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_AlarmMessageAckType) IsAlarmMessageAckType() {}
+
+func (m *_AlarmMessageAckType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageAckType) deepCopy() *_AlarmMessageAckType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageAckTypeCopy := &_AlarmMessageAckType{
+		m.FunctionId,
+		m.NumberOfObjects,
+		utils.DeepCopySlice[AlarmMessageObjectAckType, AlarmMessageObjectAckType](m.MessageObjects),
+	}
+	return _AlarmMessageAckTypeCopy
+}
 
 func (m *_AlarmMessageAckType) String() string {
 	if m == nil {

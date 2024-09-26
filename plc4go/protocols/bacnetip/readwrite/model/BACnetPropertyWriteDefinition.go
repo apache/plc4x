@@ -38,6 +38,7 @@ type BACnetPropertyWriteDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -62,6 +63,14 @@ type _BACnetPropertyWriteDefinition struct {
 }
 
 var _ BACnetPropertyWriteDefinition = (*_BACnetPropertyWriteDefinition)(nil)
+
+// NewBACnetPropertyWriteDefinition factory function for _BACnetPropertyWriteDefinition
+func NewBACnetPropertyWriteDefinition(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPropertyWriteDefinition {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyWriteDefinition must not be nil")
+	}
+	return &_BACnetPropertyWriteDefinition{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectTypeArgument: objectTypeArgument}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,14 +97,6 @@ func (m *_BACnetPropertyWriteDefinition) GetPriority() BACnetContextTagUnsignedI
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyWriteDefinition factory function for _BACnetPropertyWriteDefinition
-func NewBACnetPropertyWriteDefinition(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPropertyWriteDefinition {
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyWriteDefinition must not be nil")
-	}
-	return &_BACnetPropertyWriteDefinition{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyWriteDefinition(structType any) BACnetPropertyWriteDefinition {
@@ -260,6 +261,24 @@ func (m *_BACnetPropertyWriteDefinition) GetObjectTypeArgument() BACnetObjectTyp
 ////
 
 func (m *_BACnetPropertyWriteDefinition) IsBACnetPropertyWriteDefinition() {}
+
+func (m *_BACnetPropertyWriteDefinition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyWriteDefinition) deepCopy() *_BACnetPropertyWriteDefinition {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyWriteDefinitionCopy := &_BACnetPropertyWriteDefinition{
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+		m.Priority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ObjectTypeArgument,
+	}
+	return _BACnetPropertyWriteDefinitionCopy
+}
 
 func (m *_BACnetPropertyWriteDefinition) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataProtocolVersion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProtocolVersion returns ProtocolVersion (property field)
 	GetProtocolVersion() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProtocolVersion struct {
 
 var _ BACnetConstructedDataProtocolVersion = (*_BACnetConstructedDataProtocolVersion)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolVersion)(nil)
+
+// NewBACnetConstructedDataProtocolVersion factory function for _BACnetConstructedDataProtocolVersion
+func NewBACnetConstructedDataProtocolVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolVersion BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolVersion {
+	if protocolVersion == nil {
+		panic("protocolVersion of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolVersion must not be nil")
+	}
+	_result := &_BACnetConstructedDataProtocolVersion{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolVersion:               protocolVersion,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProtocolVersion) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProtocolVersion factory function for _BACnetConstructedDataProtocolVersion
-func NewBACnetConstructedDataProtocolVersion(protocolVersion BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolVersion {
-	if protocolVersion == nil {
-		panic("protocolVersion of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolVersion must not be nil")
-	}
-	_result := &_BACnetConstructedDataProtocolVersion{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProtocolVersion:               protocolVersion,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProtocolVersion(structType any) BACnetConstructedDataProtocolVersion {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProtocolVersion) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataProtocolVersion) IsBACnetConstructedDataProtocolVersion() {}
+
+func (m *_BACnetConstructedDataProtocolVersion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProtocolVersion) deepCopy() *_BACnetConstructedDataProtocolVersion {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProtocolVersionCopy := &_BACnetConstructedDataProtocolVersion{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProtocolVersion.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProtocolVersionCopy
+}
 
 func (m *_BACnetConstructedDataProtocolVersion) String() string {
 	if m == nil {

@@ -41,6 +41,7 @@ type AdsDiscoveryBlockStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetStatus returns Status (property field)
 	GetStatus() Status
@@ -56,6 +57,16 @@ type _AdsDiscoveryBlockStatus struct {
 
 var _ AdsDiscoveryBlockStatus = (*_AdsDiscoveryBlockStatus)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockStatus)(nil)
+
+// NewAdsDiscoveryBlockStatus factory function for _AdsDiscoveryBlockStatus
+func NewAdsDiscoveryBlockStatus(status Status) *_AdsDiscoveryBlockStatus {
+	_result := &_AdsDiscoveryBlockStatus{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		Status:                    status,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,16 +112,6 @@ func (m *_AdsDiscoveryBlockStatus) GetStatusLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockStatus factory function for _AdsDiscoveryBlockStatus
-func NewAdsDiscoveryBlockStatus(status Status) *_AdsDiscoveryBlockStatus {
-	_result := &_AdsDiscoveryBlockStatus{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		Status:                    status,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockStatus(structType any) AdsDiscoveryBlockStatus {
@@ -208,6 +209,22 @@ func (m *_AdsDiscoveryBlockStatus) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_AdsDiscoveryBlockStatus) IsAdsDiscoveryBlockStatus() {}
+
+func (m *_AdsDiscoveryBlockStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockStatus) deepCopy() *_AdsDiscoveryBlockStatus {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockStatusCopy := &_AdsDiscoveryBlockStatus{
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
+		m.Status,
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockStatusCopy
+}
 
 func (m *_AdsDiscoveryBlockStatus) String() string {
 	if m == nil {

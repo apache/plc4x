@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -49,6 +47,7 @@ func NewInitializeRoutingTable(args Args, kwArgs KWArgs, options ...Option) (*In
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+	i.AddDebugContents(i, "irtTable++")
 
 	i.npduNetMessage = &i.messageType
 	return i, nil
@@ -57,6 +56,14 @@ func NewInitializeRoutingTable(args Args, kwArgs KWArgs, options ...Option) (*In
 // TODO: check if this is rather a KWArgs
 func WithInitializeRoutingTableIrtTable(irtTable ...*RoutingTableEntry) GenericApplier[*InitializeRoutingTable] {
 	return WrapGenericApplier(func(r *InitializeRoutingTable) { r.irtTable = irtTable })
+}
+
+func (i *InitializeRoutingTable) GetDebugAttr(attr string) any {
+	switch attr {
+	case "irtTable":
+		return i.irtTable
+	}
+	return nil
 }
 
 func (i *InitializeRoutingTable) GetIrtTable() []*RoutingTableEntry {
@@ -129,8 +136,4 @@ func (i *InitializeRoutingTable) Decode(npdu Arg) error {
 		i.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (i *InitializeRoutingTable) String() string {
-	return fmt.Sprintf("InitializeRoutingTable{%s, irtTable: %v}", i._NPDU, i.irtTable)
 }

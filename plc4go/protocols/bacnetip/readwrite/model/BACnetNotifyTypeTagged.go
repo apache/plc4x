@@ -38,6 +38,7 @@ type BACnetNotifyTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetNotifyTypeTagged struct {
 
 var _ BACnetNotifyTypeTagged = (*_BACnetNotifyTypeTagged)(nil)
 
+// NewBACnetNotifyTypeTagged factory function for _BACnetNotifyTypeTagged
+func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType, tagNumber uint8, tagClass TagClass) *_BACnetNotifyTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNotifyTypeTagged must not be nil")
+	}
+	return &_BACnetNotifyTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetNotifyTypeTagged) GetValue() BACnetNotifyType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotifyTypeTagged factory function for _BACnetNotifyTypeTagged
-func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType, tagNumber uint8, tagClass TagClass) *_BACnetNotifyTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetNotifyTypeTagged must not be nil")
-	}
-	return &_BACnetNotifyTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotifyTypeTagged(structType any) BACnetNotifyTypeTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetNotifyTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetNotifyTypeTagged) IsBACnetNotifyTypeTagged() {}
+
+func (m *_BACnetNotifyTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotifyTypeTagged) deepCopy() *_BACnetNotifyTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotifyTypeTaggedCopy := &_BACnetNotifyTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetNotifyTypeTaggedCopy
+}
 
 func (m *_BACnetNotifyTypeTagged) String() string {
 	if m == nil {

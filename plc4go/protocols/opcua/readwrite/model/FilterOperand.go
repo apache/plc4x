@@ -36,6 +36,7 @@ type FilterOperand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsFilterOperand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFilterOperand()
@@ -48,6 +49,15 @@ type _FilterOperand struct {
 
 var _ FilterOperand = (*_FilterOperand)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FilterOperand)(nil)
+
+// NewFilterOperand factory function for _FilterOperand
+func NewFilterOperand() *_FilterOperand {
+	_result := &_FilterOperand{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_FilterOperand) GetIdentifier() string {
 
 func (m *_FilterOperand) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewFilterOperand factory function for _FilterOperand
-func NewFilterOperand() *_FilterOperand {
-	_result := &_FilterOperand{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_FilterOperand) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_FilterOperand) IsFilterOperand() {}
+
+func (m *_FilterOperand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FilterOperand) deepCopy() *_FilterOperand {
+	if m == nil {
+		return nil
+	}
+	_FilterOperandCopy := &_FilterOperand{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FilterOperandCopy
+}
 
 func (m *_FilterOperand) String() string {
 	if m == nil {

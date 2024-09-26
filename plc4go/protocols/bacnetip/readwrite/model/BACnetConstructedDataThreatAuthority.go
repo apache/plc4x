@@ -38,6 +38,7 @@ type BACnetConstructedDataThreatAuthority interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetThreatAuthority returns ThreatAuthority (property field)
 	GetThreatAuthority() BACnetAccessThreatLevel
@@ -55,6 +56,19 @@ type _BACnetConstructedDataThreatAuthority struct {
 
 var _ BACnetConstructedDataThreatAuthority = (*_BACnetConstructedDataThreatAuthority)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataThreatAuthority)(nil)
+
+// NewBACnetConstructedDataThreatAuthority factory function for _BACnetConstructedDataThreatAuthority
+func NewBACnetConstructedDataThreatAuthority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatAuthority BACnetAccessThreatLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatAuthority {
+	if threatAuthority == nil {
+		panic("threatAuthority of type BACnetAccessThreatLevel for BACnetConstructedDataThreatAuthority must not be nil")
+	}
+	_result := &_BACnetConstructedDataThreatAuthority{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ThreatAuthority:               threatAuthority,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataThreatAuthority) GetActualValue() BACnetAccessThr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataThreatAuthority factory function for _BACnetConstructedDataThreatAuthority
-func NewBACnetConstructedDataThreatAuthority(threatAuthority BACnetAccessThreatLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatAuthority {
-	if threatAuthority == nil {
-		panic("threatAuthority of type BACnetAccessThreatLevel for BACnetConstructedDataThreatAuthority must not be nil")
-	}
-	_result := &_BACnetConstructedDataThreatAuthority{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ThreatAuthority:               threatAuthority,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataThreatAuthority(structType any) BACnetConstructedDataThreatAuthority {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataThreatAuthority) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataThreatAuthority) IsBACnetConstructedDataThreatAuthority() {}
+
+func (m *_BACnetConstructedDataThreatAuthority) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataThreatAuthority) deepCopy() *_BACnetConstructedDataThreatAuthority {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataThreatAuthorityCopy := &_BACnetConstructedDataThreatAuthority{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ThreatAuthority.DeepCopy().(BACnetAccessThreatLevel),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataThreatAuthorityCopy
+}
 
 func (m *_BACnetConstructedDataThreatAuthority) String() string {
 	if m == nil {

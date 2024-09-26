@@ -42,6 +42,7 @@ type MultipleServiceRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetData returns Data (property field)
 	GetData() Services
@@ -57,6 +58,19 @@ type _MultipleServiceRequest struct {
 
 var _ MultipleServiceRequest = (*_MultipleServiceRequest)(nil)
 var _ CipServiceRequirements = (*_MultipleServiceRequest)(nil)
+
+// NewMultipleServiceRequest factory function for _MultipleServiceRequest
+func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
+	if data == nil {
+		panic("data of type Services for MultipleServiceRequest must not be nil")
+	}
+	_result := &_MultipleServiceRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		Data:               data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,19 +128,6 @@ func (m *_MultipleServiceRequest) GetRequestPath() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMultipleServiceRequest factory function for _MultipleServiceRequest
-func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
-	if data == nil {
-		panic("data of type Services for MultipleServiceRequest must not be nil")
-	}
-	_result := &_MultipleServiceRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		Data:               data,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMultipleServiceRequest(structType any) MultipleServiceRequest {
@@ -237,6 +238,22 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_MultipleServiceRequest) IsMultipleServiceRequest() {}
+
+func (m *_MultipleServiceRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MultipleServiceRequest) deepCopy() *_MultipleServiceRequest {
+	if m == nil {
+		return nil
+	}
+	_MultipleServiceRequestCopy := &_MultipleServiceRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.Data.DeepCopy().(Services),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _MultipleServiceRequestCopy
+}
 
 func (m *_MultipleServiceRequest) String() string {
 	if m == nil {

@@ -41,6 +41,7 @@ type RequestSmartConnectShortcut interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// GetPipePeek returns PipePeek (property field)
 	GetPipePeek() RequestType
@@ -59,6 +60,17 @@ type _RequestSmartConnectShortcut struct {
 
 var _ RequestSmartConnectShortcut = (*_RequestSmartConnectShortcut)(nil)
 var _ RequestRequirements = (*_RequestSmartConnectShortcut)(nil)
+
+// NewRequestSmartConnectShortcut factory function for _RequestSmartConnectShortcut
+func NewRequestSmartConnectShortcut(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, pipePeek RequestType, secondPipe *byte, cBusOptions CBusOptions) *_RequestSmartConnectShortcut {
+	_result := &_RequestSmartConnectShortcut{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		PipePeek:        pipePeek,
+		SecondPipe:      secondPipe,
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -104,17 +116,6 @@ func (m *_RequestSmartConnectShortcut) GetPipe() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestSmartConnectShortcut factory function for _RequestSmartConnectShortcut
-func NewRequestSmartConnectShortcut(pipePeek RequestType, secondPipe *byte, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestSmartConnectShortcut {
-	_result := &_RequestSmartConnectShortcut{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-		PipePeek:        pipePeek,
-		SecondPipe:      secondPipe,
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestSmartConnectShortcut(structType any) RequestSmartConnectShortcut {
@@ -221,6 +222,23 @@ func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_RequestSmartConnectShortcut) IsRequestSmartConnectShortcut() {}
+
+func (m *_RequestSmartConnectShortcut) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestSmartConnectShortcut) deepCopy() *_RequestSmartConnectShortcut {
+	if m == nil {
+		return nil
+	}
+	_RequestSmartConnectShortcutCopy := &_RequestSmartConnectShortcut{
+		m.RequestContract.(*_Request).deepCopy(),
+		m.PipePeek,
+		utils.CopyPtr[byte](m.SecondPipe),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestSmartConnectShortcutCopy
+}
 
 func (m *_RequestSmartConnectShortcut) String() string {
 	if m == nil {

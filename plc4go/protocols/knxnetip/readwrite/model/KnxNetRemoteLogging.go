@@ -38,6 +38,7 @@ type KnxNetRemoteLogging interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
@@ -53,6 +54,16 @@ type _KnxNetRemoteLogging struct {
 
 var _ KnxNetRemoteLogging = (*_KnxNetRemoteLogging)(nil)
 var _ ServiceIdRequirements = (*_KnxNetRemoteLogging)(nil)
+
+// NewKnxNetRemoteLogging factory function for _KnxNetRemoteLogging
+func NewKnxNetRemoteLogging(version uint8) *_KnxNetRemoteLogging {
+	_result := &_KnxNetRemoteLogging{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_KnxNetRemoteLogging) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetRemoteLogging factory function for _KnxNetRemoteLogging
-func NewKnxNetRemoteLogging(version uint8) *_KnxNetRemoteLogging {
-	_result := &_KnxNetRemoteLogging{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetRemoteLogging(structType any) KnxNetRemoteLogging {
@@ -179,6 +180,22 @@ func (m *_KnxNetRemoteLogging) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_KnxNetRemoteLogging) IsKnxNetRemoteLogging() {}
+
+func (m *_KnxNetRemoteLogging) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetRemoteLogging) deepCopy() *_KnxNetRemoteLogging {
+	if m == nil {
+		return nil
+	}
+	_KnxNetRemoteLoggingCopy := &_KnxNetRemoteLogging{
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetRemoteLoggingCopy
+}
 
 func (m *_KnxNetRemoteLogging) String() string {
 	if m == nil {

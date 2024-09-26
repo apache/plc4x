@@ -36,6 +36,7 @@ type BACnetConstructedDataTrendLogAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataTrendLogAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTrendLogAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataTrendLogAll struct {
 
 var _ BACnetConstructedDataTrendLogAll = (*_BACnetConstructedDataTrendLogAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogAll)(nil)
+
+// NewBACnetConstructedDataTrendLogAll factory function for _BACnetConstructedDataTrendLogAll
+func NewBACnetConstructedDataTrendLogAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogAll {
+	_result := &_BACnetConstructedDataTrendLogAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataTrendLogAll) GetPropertyIdentifierArgument() BACn
 
 func (m *_BACnetConstructedDataTrendLogAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataTrendLogAll factory function for _BACnetConstructedDataTrendLogAll
-func NewBACnetConstructedDataTrendLogAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogAll {
-	_result := &_BACnetConstructedDataTrendLogAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataTrendLogAll) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataTrendLogAll) IsBACnetConstructedDataTrendLogAll() {}
+
+func (m *_BACnetConstructedDataTrendLogAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrendLogAll) deepCopy() *_BACnetConstructedDataTrendLogAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTrendLogAllCopy := &_BACnetConstructedDataTrendLogAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTrendLogAllCopy
+}
 
 func (m *_BACnetConstructedDataTrendLogAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type LinearConversionDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetInitialAddend returns InitialAddend (property field)
 	GetInitialAddend() float32
@@ -62,6 +63,19 @@ type _LinearConversionDataType struct {
 
 var _ LinearConversionDataType = (*_LinearConversionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_LinearConversionDataType)(nil)
+
+// NewLinearConversionDataType factory function for _LinearConversionDataType
+func NewLinearConversionDataType(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) *_LinearConversionDataType {
+	_result := &_LinearConversionDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		InitialAddend:                     initialAddend,
+		Multiplicand:                      multiplicand,
+		Divisor:                           divisor,
+		FinalAddend:                       finalAddend,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_LinearConversionDataType) GetFinalAddend() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLinearConversionDataType factory function for _LinearConversionDataType
-func NewLinearConversionDataType(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) *_LinearConversionDataType {
-	_result := &_LinearConversionDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		InitialAddend:                     initialAddend,
-		Multiplicand:                      multiplicand,
-		Divisor:                           divisor,
-		FinalAddend:                       finalAddend,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLinearConversionDataType(structType any) LinearConversionDataType {
@@ -242,6 +243,25 @@ func (m *_LinearConversionDataType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_LinearConversionDataType) IsLinearConversionDataType() {}
+
+func (m *_LinearConversionDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LinearConversionDataType) deepCopy() *_LinearConversionDataType {
+	if m == nil {
+		return nil
+	}
+	_LinearConversionDataTypeCopy := &_LinearConversionDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.InitialAddend,
+		m.Multiplicand,
+		m.Divisor,
+		m.FinalAddend,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _LinearConversionDataTypeCopy
+}
 
 func (m *_LinearConversionDataType) String() string {
 	if m == nil {

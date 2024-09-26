@@ -38,6 +38,7 @@ type BACnetConstructedDataEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEnable returns Enable (property field)
 	GetEnable() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataEnable struct {
 
 var _ BACnetConstructedDataEnable = (*_BACnetConstructedDataEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEnable)(nil)
+
+// NewBACnetConstructedDataEnable factory function for _BACnetConstructedDataEnable
+func NewBACnetConstructedDataEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnable {
+	if enable == nil {
+		panic("enable of type BACnetApplicationTagBoolean for BACnetConstructedDataEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Enable:                        enable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataEnable) GetActualValue() BACnetApplicationTagBool
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEnable factory function for _BACnetConstructedDataEnable
-func NewBACnetConstructedDataEnable(enable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnable {
-	if enable == nil {
-		panic("enable of type BACnetApplicationTagBoolean for BACnetConstructedDataEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Enable:                        enable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEnable(structType any) BACnetConstructedDataEnable {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEnable) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetConstructedDataEnable) IsBACnetConstructedDataEnable() {}
+
+func (m *_BACnetConstructedDataEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEnable) deepCopy() *_BACnetConstructedDataEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEnableCopy := &_BACnetConstructedDataEnable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Enable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEnableCopy
+}
 
 func (m *_BACnetConstructedDataEnable) String() string {
 	if m == nil {

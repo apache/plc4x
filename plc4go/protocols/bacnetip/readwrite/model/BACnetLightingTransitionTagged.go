@@ -38,6 +38,7 @@ type BACnetLightingTransitionTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetLightingTransitionTagged struct {
 }
 
 var _ BACnetLightingTransitionTagged = (*_BACnetLightingTransitionTagged)(nil)
+
+// NewBACnetLightingTransitionTagged factory function for _BACnetLightingTransitionTagged
+func NewBACnetLightingTransitionTagged(header BACnetTagHeader, value BACnetLightingTransition, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingTransitionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLightingTransitionTagged must not be nil")
+	}
+	return &_BACnetLightingTransitionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetLightingTransitionTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLightingTransitionTagged factory function for _BACnetLightingTransitionTagged
-func NewBACnetLightingTransitionTagged(header BACnetTagHeader, value BACnetLightingTransition, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingTransitionTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLightingTransitionTagged must not be nil")
-	}
-	return &_BACnetLightingTransitionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLightingTransitionTagged(structType any) BACnetLightingTransitionTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetLightingTransitionTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLightingTransitionTagged) IsBACnetLightingTransitionTagged() {}
+
+func (m *_BACnetLightingTransitionTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingTransitionTagged) deepCopy() *_BACnetLightingTransitionTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingTransitionTaggedCopy := &_BACnetLightingTransitionTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLightingTransitionTaggedCopy
+}
 
 func (m *_BACnetLightingTransitionTagged) String() string {
 	if m == nil {

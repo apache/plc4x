@@ -38,6 +38,7 @@ type NLMVendorProprietaryMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorId
@@ -56,6 +57,17 @@ type _NLMVendorProprietaryMessage struct {
 
 var _ NLMVendorProprietaryMessage = (*_NLMVendorProprietaryMessage)(nil)
 var _ NLMRequirements = (*_NLMVendorProprietaryMessage)(nil)
+
+// NewNLMVendorProprietaryMessage factory function for _NLMVendorProprietaryMessage
+func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage []byte, apduLength uint16) *_NLMVendorProprietaryMessage {
+	_result := &_NLMVendorProprietaryMessage{
+		NLMContract:        NewNLM(apduLength),
+		VendorId:           vendorId,
+		ProprietaryMessage: proprietaryMessage,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_NLMVendorProprietaryMessage) GetProprietaryMessage() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMVendorProprietaryMessage factory function for _NLMVendorProprietaryMessage
-func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage []byte, apduLength uint16) *_NLMVendorProprietaryMessage {
-	_result := &_NLMVendorProprietaryMessage{
-		NLMContract:        NewNLM(apduLength),
-		VendorId:           vendorId,
-		ProprietaryMessage: proprietaryMessage,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMVendorProprietaryMessage(structType any) NLMVendorProprietaryMessage {
@@ -202,6 +203,23 @@ func (m *_NLMVendorProprietaryMessage) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_NLMVendorProprietaryMessage) IsNLMVendorProprietaryMessage() {}
+
+func (m *_NLMVendorProprietaryMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMVendorProprietaryMessage) deepCopy() *_NLMVendorProprietaryMessage {
+	if m == nil {
+		return nil
+	}
+	_NLMVendorProprietaryMessageCopy := &_NLMVendorProprietaryMessage{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.VendorId,
+		utils.DeepCopySlice[byte, byte](m.ProprietaryMessage),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMVendorProprietaryMessageCopy
+}
 
 func (m *_NLMVendorProprietaryMessage) String() string {
 	if m == nil {

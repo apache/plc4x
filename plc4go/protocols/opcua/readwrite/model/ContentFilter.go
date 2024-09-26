@@ -38,6 +38,7 @@ type ContentFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfElements returns NoOfElements (property field)
 	GetNoOfElements() int32
@@ -56,6 +57,17 @@ type _ContentFilter struct {
 
 var _ ContentFilter = (*_ContentFilter)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilter)(nil)
+
+// NewContentFilter factory function for _ContentFilter
+func NewContentFilter(noOfElements int32, elements []ExtensionObjectDefinition) *_ContentFilter {
+	_result := &_ContentFilter{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfElements:                      noOfElements,
+		Elements:                          elements,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ContentFilter) GetElements() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewContentFilter factory function for _ContentFilter
-func NewContentFilter(noOfElements int32, elements []ExtensionObjectDefinition) *_ContentFilter {
-	_result := &_ContentFilter{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfElements:                      noOfElements,
-		Elements:                          elements,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastContentFilter(structType any) ContentFilter {
@@ -207,6 +208,23 @@ func (m *_ContentFilter) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_ContentFilter) IsContentFilter() {}
+
+func (m *_ContentFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ContentFilter) deepCopy() *_ContentFilter {
+	if m == nil {
+		return nil
+	}
+	_ContentFilterCopy := &_ContentFilter{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfElements,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Elements),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ContentFilterCopy
+}
 
 func (m *_ContentFilter) String() string {
 	if m == nil {

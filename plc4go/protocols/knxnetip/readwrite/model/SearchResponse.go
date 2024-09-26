@@ -40,6 +40,7 @@ type SearchResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
@@ -61,6 +62,27 @@ type _SearchResponse struct {
 
 var _ SearchResponse = (*_SearchResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_SearchResponse)(nil)
+
+// NewSearchResponse factory function for _SearchResponse
+func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_SearchResponse {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for SearchResponse must not be nil")
+	}
+	if dibDeviceInfo == nil {
+		panic("dibDeviceInfo of type DIBDeviceInfo for SearchResponse must not be nil")
+	}
+	if dibSuppSvcFamilies == nil {
+		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for SearchResponse must not be nil")
+	}
+	_result := &_SearchResponse{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+		DibDeviceInfo:           dibDeviceInfo,
+		DibSuppSvcFamilies:      dibSuppSvcFamilies,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,27 +123,6 @@ func (m *_SearchResponse) GetDibSuppSvcFamilies() DIBSuppSvcFamilies {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSearchResponse factory function for _SearchResponse
-func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_SearchResponse {
-	if hpaiControlEndpoint == nil {
-		panic("hpaiControlEndpoint of type HPAIControlEndpoint for SearchResponse must not be nil")
-	}
-	if dibDeviceInfo == nil {
-		panic("dibDeviceInfo of type DIBDeviceInfo for SearchResponse must not be nil")
-	}
-	if dibSuppSvcFamilies == nil {
-		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for SearchResponse must not be nil")
-	}
-	_result := &_SearchResponse{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		HpaiControlEndpoint:     hpaiControlEndpoint,
-		DibDeviceInfo:           dibDeviceInfo,
-		DibSuppSvcFamilies:      dibSuppSvcFamilies,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSearchResponse(structType any) SearchResponse {
@@ -232,6 +233,24 @@ func (m *_SearchResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SearchResponse) IsSearchResponse() {}
+
+func (m *_SearchResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SearchResponse) deepCopy() *_SearchResponse {
+	if m == nil {
+		return nil
+	}
+	_SearchResponseCopy := &_SearchResponse{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+		m.DibDeviceInfo.DeepCopy().(DIBDeviceInfo),
+		m.DibSuppSvcFamilies.DeepCopy().(DIBSuppSvcFamilies),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _SearchResponseCopy
+}
 
 func (m *_SearchResponse) String() string {
 	if m == nil {

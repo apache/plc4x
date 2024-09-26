@@ -38,6 +38,7 @@ type ConnectionRequestInformationTunnelConnection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ConnectionRequestInformation
 	// GetKnxLayer returns KnxLayer (property field)
 	GetKnxLayer() KnxLayer
@@ -55,6 +56,16 @@ type _ConnectionRequestInformationTunnelConnection struct {
 
 var _ ConnectionRequestInformationTunnelConnection = (*_ConnectionRequestInformationTunnelConnection)(nil)
 var _ ConnectionRequestInformationRequirements = (*_ConnectionRequestInformationTunnelConnection)(nil)
+
+// NewConnectionRequestInformationTunnelConnection factory function for _ConnectionRequestInformationTunnelConnection
+func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *_ConnectionRequestInformationTunnelConnection {
+	_result := &_ConnectionRequestInformationTunnelConnection{
+		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
+		KnxLayer:                             knxLayer,
+	}
+	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,16 +98,6 @@ func (m *_ConnectionRequestInformationTunnelConnection) GetKnxLayer() KnxLayer {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionRequestInformationTunnelConnection factory function for _ConnectionRequestInformationTunnelConnection
-func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *_ConnectionRequestInformationTunnelConnection {
-	_result := &_ConnectionRequestInformationTunnelConnection{
-		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
-		KnxLayer:                             knxLayer,
-	}
-	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionRequestInformationTunnelConnection(structType any) ConnectionRequestInformationTunnelConnection {
@@ -194,6 +195,23 @@ func (m *_ConnectionRequestInformationTunnelConnection) SerializeWithWriteBuffer
 }
 
 func (m *_ConnectionRequestInformationTunnelConnection) IsConnectionRequestInformationTunnelConnection() {
+}
+
+func (m *_ConnectionRequestInformationTunnelConnection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequestInformationTunnelConnection) deepCopy() *_ConnectionRequestInformationTunnelConnection {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestInformationTunnelConnectionCopy := &_ConnectionRequestInformationTunnelConnection{
+		m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).deepCopy(),
+		m.KnxLayer,
+		m.reservedField0,
+	}
+	m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = m
+	return _ConnectionRequestInformationTunnelConnectionCopy
 }
 
 func (m *_ConnectionRequestInformationTunnelConnection) String() string {

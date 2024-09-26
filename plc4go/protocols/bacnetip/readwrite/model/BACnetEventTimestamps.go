@@ -38,6 +38,7 @@ type BACnetEventTimestamps interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetToOffnormal returns ToOffnormal (property field)
 	GetToOffnormal() BACnetTimeStamp
 	// GetToFault returns ToFault (property field)
@@ -56,6 +57,20 @@ type _BACnetEventTimestamps struct {
 }
 
 var _ BACnetEventTimestamps = (*_BACnetEventTimestamps)(nil)
+
+// NewBACnetEventTimestamps factory function for _BACnetEventTimestamps
+func NewBACnetEventTimestamps(toOffnormal BACnetTimeStamp, toFault BACnetTimeStamp, toNormal BACnetTimeStamp) *_BACnetEventTimestamps {
+	if toOffnormal == nil {
+		panic("toOffnormal of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
+	}
+	if toFault == nil {
+		panic("toFault of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
+	}
+	if toNormal == nil {
+		panic("toNormal of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
+	}
+	return &_BACnetEventTimestamps{ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,20 +93,6 @@ func (m *_BACnetEventTimestamps) GetToNormal() BACnetTimeStamp {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventTimestamps factory function for _BACnetEventTimestamps
-func NewBACnetEventTimestamps(toOffnormal BACnetTimeStamp, toFault BACnetTimeStamp, toNormal BACnetTimeStamp) *_BACnetEventTimestamps {
-	if toOffnormal == nil {
-		panic("toOffnormal of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
-	}
-	if toFault == nil {
-		panic("toFault of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
-	}
-	if toNormal == nil {
-		panic("toNormal of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
-	}
-	return &_BACnetEventTimestamps{ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventTimestamps(structType any) BACnetEventTimestamps {
@@ -215,6 +216,22 @@ func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_BACnetEventTimestamps) IsBACnetEventTimestamps() {}
+
+func (m *_BACnetEventTimestamps) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventTimestamps) deepCopy() *_BACnetEventTimestamps {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventTimestampsCopy := &_BACnetEventTimestamps{
+		m.ToOffnormal.DeepCopy().(BACnetTimeStamp),
+		m.ToFault.DeepCopy().(BACnetTimeStamp),
+		m.ToNormal.DeepCopy().(BACnetTimeStamp),
+	}
+	return _BACnetEventTimestampsCopy
+}
 
 func (m *_BACnetEventTimestamps) String() string {
 	if m == nil {

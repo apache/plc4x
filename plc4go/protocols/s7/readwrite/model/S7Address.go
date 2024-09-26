@@ -40,6 +40,7 @@ type S7Address interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7Address is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Address()
 }
@@ -144,7 +145,7 @@ func (m *_S7Address) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child S7Address
 	switch {
 	case addressType == 0x10: // S7AddressAny
-		if _child, err = (&_S7AddressAny{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7AddressAny).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7AddressAny for type-switch of S7Address")
 		}
 	default:
@@ -186,3 +187,17 @@ func (pm *_S7Address) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_S7Address) IsS7Address() {}
+
+func (m *_S7Address) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7Address) deepCopy() *_S7Address {
+	if m == nil {
+		return nil
+	}
+	_S7AddressCopy := &_S7Address{
+		nil, // will be set by child
+	}
+	return _S7AddressCopy
+}

@@ -38,6 +38,7 @@ type COTPPacketConnectionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
@@ -59,6 +60,18 @@ type _COTPPacketConnectionResponse struct {
 
 var _ COTPPacketConnectionResponse = (*_COTPPacketConnectionResponse)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketConnectionResponse)(nil)
+
+// NewCOTPPacketConnectionResponse factory function for _COTPPacketConnectionResponse
+func NewCOTPPacketConnectionResponse(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketConnectionResponse {
+	_result := &_COTPPacketConnectionResponse{
+		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		DestinationReference: destinationReference,
+		SourceReference:      sourceReference,
+		ProtocolClass:        protocolClass,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +112,6 @@ func (m *_COTPPacketConnectionResponse) GetProtocolClass() COTPProtocolClass {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketConnectionResponse factory function for _COTPPacketConnectionResponse
-func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketConnectionResponse {
-	_result := &_COTPPacketConnectionResponse{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
-		DestinationReference: destinationReference,
-		SourceReference:      sourceReference,
-		ProtocolClass:        protocolClass,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketConnectionResponse(structType any) COTPPacketConnectionResponse {
@@ -221,6 +222,24 @@ func (m *_COTPPacketConnectionResponse) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_COTPPacketConnectionResponse) IsCOTPPacketConnectionResponse() {}
+
+func (m *_COTPPacketConnectionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPPacketConnectionResponse) deepCopy() *_COTPPacketConnectionResponse {
+	if m == nil {
+		return nil
+	}
+	_COTPPacketConnectionResponseCopy := &_COTPPacketConnectionResponse{
+		m.COTPPacketContract.(*_COTPPacket).deepCopy(),
+		m.DestinationReference,
+		m.SourceReference,
+		m.ProtocolClass,
+	}
+	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	return _COTPPacketConnectionResponseCopy
+}
 
 func (m *_COTPPacketConnectionResponse) String() string {
 	if m == nil {

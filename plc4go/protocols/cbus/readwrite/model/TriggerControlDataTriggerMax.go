@@ -36,6 +36,7 @@ type TriggerControlDataTriggerMax interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// IsTriggerControlDataTriggerMax is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlDataTriggerMax()
@@ -49,6 +50,15 @@ type _TriggerControlDataTriggerMax struct {
 var _ TriggerControlDataTriggerMax = (*_TriggerControlDataTriggerMax)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMax)(nil)
 
+// NewTriggerControlDataTriggerMax factory function for _TriggerControlDataTriggerMax
+func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMax {
+	_result := &_TriggerControlDataTriggerMax{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMax)(nil)
 
 func (m *_TriggerControlDataTriggerMax) GetParent() TriggerControlDataContract {
 	return m.TriggerControlDataContract
-}
-
-// NewTriggerControlDataTriggerMax factory function for _TriggerControlDataTriggerMax
-func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMax {
-	_result := &_TriggerControlDataTriggerMax{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_TriggerControlDataTriggerMax) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_TriggerControlDataTriggerMax) IsTriggerControlDataTriggerMax() {}
+
+func (m *_TriggerControlDataTriggerMax) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataTriggerMax) deepCopy() *_TriggerControlDataTriggerMax {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataTriggerMaxCopy := &_TriggerControlDataTriggerMax{
+		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataTriggerMaxCopy
+}
 
 func (m *_TriggerControlDataTriggerMax) String() string {
 	if m == nil {

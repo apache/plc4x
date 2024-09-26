@@ -38,6 +38,7 @@ type OpcuaMessageError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetError returns Error (property field)
 	GetError() OpcuaStatusCode
@@ -56,6 +57,20 @@ type _OpcuaMessageError struct {
 
 var _ OpcuaMessageError = (*_OpcuaMessageError)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageError)(nil)
+
+// NewOpcuaMessageError factory function for _OpcuaMessageError
+func NewOpcuaMessageError(chunk ChunkType, error OpcuaStatusCode, reason PascalString) *_OpcuaMessageError {
+	if reason == nil {
+		panic("reason of type PascalString for OpcuaMessageError must not be nil")
+	}
+	_result := &_OpcuaMessageError{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Error:              error,
+		Reason:             reason,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,20 +111,6 @@ func (m *_OpcuaMessageError) GetReason() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaMessageError factory function for _OpcuaMessageError
-func NewOpcuaMessageError(error OpcuaStatusCode, reason PascalString, chunk ChunkType) *_OpcuaMessageError {
-	if reason == nil {
-		panic("reason of type PascalString for OpcuaMessageError must not be nil")
-	}
-	_result := &_OpcuaMessageError{
-		MessagePDUContract: NewMessagePDU(chunk),
-		Error:              error,
-		Reason:             reason,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaMessageError(structType any) OpcuaMessageError {
@@ -207,6 +208,23 @@ func (m *_OpcuaMessageError) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_OpcuaMessageError) IsOpcuaMessageError() {}
+
+func (m *_OpcuaMessageError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaMessageError) deepCopy() *_OpcuaMessageError {
+	if m == nil {
+		return nil
+	}
+	_OpcuaMessageErrorCopy := &_OpcuaMessageError{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.Error,
+		m.Reason.DeepCopy().(PascalString),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaMessageErrorCopy
+}
 
 func (m *_OpcuaMessageError) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetAssignedLandingCalls interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLandingCalls returns LandingCalls (property field)
 	GetLandingCalls() BACnetAssignedLandingCallsLandingCallsList
 	// IsBACnetAssignedLandingCalls is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,14 @@ type _BACnetAssignedLandingCalls struct {
 }
 
 var _ BACnetAssignedLandingCalls = (*_BACnetAssignedLandingCalls)(nil)
+
+// NewBACnetAssignedLandingCalls factory function for _BACnetAssignedLandingCalls
+func NewBACnetAssignedLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) *_BACnetAssignedLandingCalls {
+	if landingCalls == nil {
+		panic("landingCalls of type BACnetAssignedLandingCallsLandingCallsList for BACnetAssignedLandingCalls must not be nil")
+	}
+	return &_BACnetAssignedLandingCalls{LandingCalls: landingCalls}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +73,6 @@ func (m *_BACnetAssignedLandingCalls) GetLandingCalls() BACnetAssignedLandingCal
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAssignedLandingCalls factory function for _BACnetAssignedLandingCalls
-func NewBACnetAssignedLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) *_BACnetAssignedLandingCalls {
-	if landingCalls == nil {
-		panic("landingCalls of type BACnetAssignedLandingCallsLandingCallsList for BACnetAssignedLandingCalls must not be nil")
-	}
-	return &_BACnetAssignedLandingCalls{LandingCalls: landingCalls}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAssignedLandingCalls(structType any) BACnetAssignedLandingCalls {
@@ -169,6 +170,20 @@ func (m *_BACnetAssignedLandingCalls) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetAssignedLandingCalls) IsBACnetAssignedLandingCalls() {}
+
+func (m *_BACnetAssignedLandingCalls) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAssignedLandingCalls) deepCopy() *_BACnetAssignedLandingCalls {
+	if m == nil {
+		return nil
+	}
+	_BACnetAssignedLandingCallsCopy := &_BACnetAssignedLandingCalls{
+		m.LandingCalls.DeepCopy().(BACnetAssignedLandingCallsLandingCallsList),
+	}
+	return _BACnetAssignedLandingCallsCopy
+}
 
 func (m *_BACnetAssignedLandingCalls) String() string {
 	if m == nil {

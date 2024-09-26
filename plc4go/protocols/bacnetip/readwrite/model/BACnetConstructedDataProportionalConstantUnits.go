@@ -38,6 +38,7 @@ type BACnetConstructedDataProportionalConstantUnits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProportionalConstantUnits struct {
 
 var _ BACnetConstructedDataProportionalConstantUnits = (*_BACnetConstructedDataProportionalConstantUnits)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProportionalConstantUnits)(nil)
+
+// NewBACnetConstructedDataProportionalConstantUnits factory function for _BACnetConstructedDataProportionalConstantUnits
+func NewBACnetConstructedDataProportionalConstantUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstantUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataProportionalConstantUnits must not be nil")
+	}
+	_result := &_BACnetConstructedDataProportionalConstantUnits{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Units:                         units,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProportionalConstantUnits) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProportionalConstantUnits factory function for _BACnetConstructedDataProportionalConstantUnits
-func NewBACnetConstructedDataProportionalConstantUnits(units BACnetEngineeringUnitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstantUnits {
-	if units == nil {
-		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataProportionalConstantUnits must not be nil")
-	}
-	_result := &_BACnetConstructedDataProportionalConstantUnits{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Units:                         units,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProportionalConstantUnits(structType any) BACnetConstructedDataProportionalConstantUnits {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProportionalConstantUnits) SerializeWithWriteBuff
 }
 
 func (m *_BACnetConstructedDataProportionalConstantUnits) IsBACnetConstructedDataProportionalConstantUnits() {
+}
+
+func (m *_BACnetConstructedDataProportionalConstantUnits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProportionalConstantUnits) deepCopy() *_BACnetConstructedDataProportionalConstantUnits {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProportionalConstantUnitsCopy := &_BACnetConstructedDataProportionalConstantUnits{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Units.DeepCopy().(BACnetEngineeringUnitsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProportionalConstantUnitsCopy
 }
 
 func (m *_BACnetConstructedDataProportionalConstantUnits) String() string {

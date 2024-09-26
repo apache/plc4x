@@ -40,6 +40,7 @@ type ApduData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApduData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduData()
 }
@@ -149,67 +150,67 @@ func (m *_ApduData) parse(ctx context.Context, readBuffer utils.ReadBuffer, data
 	var _child ApduData
 	switch {
 	case apciType == 0x0: // ApduDataGroupValueRead
-		if _child, err = (&_ApduDataGroupValueRead{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataGroupValueRead).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataGroupValueRead for type-switch of ApduData")
 		}
 	case apciType == 0x1: // ApduDataGroupValueResponse
-		if _child, err = (&_ApduDataGroupValueResponse{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataGroupValueResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataGroupValueResponse for type-switch of ApduData")
 		}
 	case apciType == 0x2: // ApduDataGroupValueWrite
-		if _child, err = (&_ApduDataGroupValueWrite{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataGroupValueWrite).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataGroupValueWrite for type-switch of ApduData")
 		}
 	case apciType == 0x3: // ApduDataIndividualAddressWrite
-		if _child, err = (&_ApduDataIndividualAddressWrite{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataIndividualAddressWrite).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataIndividualAddressWrite for type-switch of ApduData")
 		}
 	case apciType == 0x4: // ApduDataIndividualAddressRead
-		if _child, err = (&_ApduDataIndividualAddressRead{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataIndividualAddressRead).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataIndividualAddressRead for type-switch of ApduData")
 		}
 	case apciType == 0x5: // ApduDataIndividualAddressResponse
-		if _child, err = (&_ApduDataIndividualAddressResponse{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataIndividualAddressResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataIndividualAddressResponse for type-switch of ApduData")
 		}
 	case apciType == 0x6: // ApduDataAdcRead
-		if _child, err = (&_ApduDataAdcRead{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataAdcRead).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataAdcRead for type-switch of ApduData")
 		}
 	case apciType == 0x7: // ApduDataAdcResponse
-		if _child, err = (&_ApduDataAdcResponse{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataAdcResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataAdcResponse for type-switch of ApduData")
 		}
 	case apciType == 0x8: // ApduDataMemoryRead
-		if _child, err = (&_ApduDataMemoryRead{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataMemoryRead).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataMemoryRead for type-switch of ApduData")
 		}
 	case apciType == 0x9: // ApduDataMemoryResponse
-		if _child, err = (&_ApduDataMemoryResponse{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataMemoryResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataMemoryResponse for type-switch of ApduData")
 		}
 	case apciType == 0xA: // ApduDataMemoryWrite
-		if _child, err = (&_ApduDataMemoryWrite{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataMemoryWrite).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataMemoryWrite for type-switch of ApduData")
 		}
 	case apciType == 0xB: // ApduDataUserMessage
-		if _child, err = (&_ApduDataUserMessage{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataUserMessage).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataUserMessage for type-switch of ApduData")
 		}
 	case apciType == 0xC: // ApduDataDeviceDescriptorRead
-		if _child, err = (&_ApduDataDeviceDescriptorRead{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataDeviceDescriptorRead).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataDeviceDescriptorRead for type-switch of ApduData")
 		}
 	case apciType == 0xD: // ApduDataDeviceDescriptorResponse
-		if _child, err = (&_ApduDataDeviceDescriptorResponse{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataDeviceDescriptorResponse).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataDeviceDescriptorResponse for type-switch of ApduData")
 		}
 	case apciType == 0xE: // ApduDataRestart
-		if _child, err = (&_ApduDataRestart{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataRestart).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataRestart for type-switch of ApduData")
 		}
 	case apciType == 0xF: // ApduDataOther
-		if _child, err = (&_ApduDataOther{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataOther).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataOther for type-switch of ApduData")
 		}
 	default:
@@ -261,3 +262,18 @@ func (m *_ApduData) GetDataLength() uint8 {
 ////
 
 func (m *_ApduData) IsApduData() {}
+
+func (m *_ApduData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduData) deepCopy() *_ApduData {
+	if m == nil {
+		return nil
+	}
+	_ApduDataCopy := &_ApduData{
+		nil, // will be set by child
+		m.DataLength,
+	}
+	return _ApduDataCopy
+}

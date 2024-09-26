@@ -38,6 +38,7 @@ type BACnetConstructedDataDaylightSavingsStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDaylightSavingsStatus returns DaylightSavingsStatus (property field)
 	GetDaylightSavingsStatus() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDaylightSavingsStatus struct {
 
 var _ BACnetConstructedDataDaylightSavingsStatus = (*_BACnetConstructedDataDaylightSavingsStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDaylightSavingsStatus)(nil)
+
+// NewBACnetConstructedDataDaylightSavingsStatus factory function for _BACnetConstructedDataDaylightSavingsStatus
+func NewBACnetConstructedDataDaylightSavingsStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daylightSavingsStatus BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaylightSavingsStatus {
+	if daylightSavingsStatus == nil {
+		panic("daylightSavingsStatus of type BACnetApplicationTagBoolean for BACnetConstructedDataDaylightSavingsStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataDaylightSavingsStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DaylightSavingsStatus:         daylightSavingsStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDaylightSavingsStatus factory function for _BACnetConstructedDataDaylightSavingsStatus
-func NewBACnetConstructedDataDaylightSavingsStatus(daylightSavingsStatus BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaylightSavingsStatus {
-	if daylightSavingsStatus == nil {
-		panic("daylightSavingsStatus of type BACnetApplicationTagBoolean for BACnetConstructedDataDaylightSavingsStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataDaylightSavingsStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DaylightSavingsStatus:         daylightSavingsStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDaylightSavingsStatus(structType any) BACnetConstructedDataDaylightSavingsStatus {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataDaylightSavingsStatus) IsBACnetConstructedDataDaylightSavingsStatus() {
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatus) deepCopy() *_BACnetConstructedDataDaylightSavingsStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDaylightSavingsStatusCopy := &_BACnetConstructedDataDaylightSavingsStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DaylightSavingsStatus.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDaylightSavingsStatusCopy
 }
 
 func (m *_BACnetConstructedDataDaylightSavingsStatus) String() string {

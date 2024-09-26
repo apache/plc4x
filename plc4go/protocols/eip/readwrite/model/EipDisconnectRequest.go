@@ -36,6 +36,7 @@ type EipDisconnectRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsEipDisconnectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipDisconnectRequest()
@@ -48,6 +49,15 @@ type _EipDisconnectRequest struct {
 
 var _ EipDisconnectRequest = (*_EipDisconnectRequest)(nil)
 var _ EipPacketRequirements = (*_EipDisconnectRequest)(nil)
+
+// NewEipDisconnectRequest factory function for _EipDisconnectRequest
+func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipDisconnectRequest {
+	_result := &_EipDisconnectRequest{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_EipDisconnectRequest) GetPacketLength() uint16 {
 
 func (m *_EipDisconnectRequest) GetParent() EipPacketContract {
 	return m.EipPacketContract
-}
-
-// NewEipDisconnectRequest factory function for _EipDisconnectRequest
-func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipDisconnectRequest {
-	_result := &_EipDisconnectRequest{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_EipDisconnectRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_EipDisconnectRequest) IsEipDisconnectRequest() {}
+
+func (m *_EipDisconnectRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipDisconnectRequest) deepCopy() *_EipDisconnectRequest {
+	if m == nil {
+		return nil
+	}
+	_EipDisconnectRequestCopy := &_EipDisconnectRequest{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _EipDisconnectRequestCopy
+}
 
 func (m *_EipDisconnectRequest) String() string {
 	if m == nil {

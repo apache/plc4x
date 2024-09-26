@@ -38,6 +38,7 @@ type BACnetPriorityValueObjectidentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetObjectidentifierValue returns ObjectidentifierValue (property field)
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
@@ -53,6 +54,19 @@ type _BACnetPriorityValueObjectidentifier struct {
 
 var _ BACnetPriorityValueObjectidentifier = (*_BACnetPriorityValueObjectidentifier)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueObjectidentifier)(nil)
+
+// NewBACnetPriorityValueObjectidentifier factory function for _BACnetPriorityValueObjectidentifier
+func NewBACnetPriorityValueObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueObjectidentifier {
+	if objectidentifierValue == nil {
+		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetPriorityValueObjectidentifier must not be nil")
+	}
+	_result := &_BACnetPriorityValueObjectidentifier{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		ObjectidentifierValue:       objectidentifierValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueObjectidentifier) GetObjectidentifierValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueObjectidentifier factory function for _BACnetPriorityValueObjectidentifier
-func NewBACnetPriorityValueObjectidentifier(objectidentifierValue BACnetApplicationTagObjectIdentifier, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueObjectidentifier {
-	if objectidentifierValue == nil {
-		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetPriorityValueObjectidentifier must not be nil")
-	}
-	_result := &_BACnetPriorityValueObjectidentifier{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		ObjectidentifierValue:       objectidentifierValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueObjectidentifier(structType any) BACnetPriorityValueObjectidentifier {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueObjectidentifier) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetPriorityValueObjectidentifier) IsBACnetPriorityValueObjectidentifier() {}
+
+func (m *_BACnetPriorityValueObjectidentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueObjectidentifier) deepCopy() *_BACnetPriorityValueObjectidentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueObjectidentifierCopy := &_BACnetPriorityValueObjectidentifier{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.ObjectidentifierValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueObjectidentifierCopy
+}
 
 func (m *_BACnetPriorityValueObjectidentifier) String() string {
 	if m == nil {

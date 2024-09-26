@@ -38,6 +38,7 @@ type BACnetConstructedDataDutyWindow interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDutyWindow returns DutyWindow (property field)
 	GetDutyWindow() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDutyWindow struct {
 
 var _ BACnetConstructedDataDutyWindow = (*_BACnetConstructedDataDutyWindow)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDutyWindow)(nil)
+
+// NewBACnetConstructedDataDutyWindow factory function for _BACnetConstructedDataDutyWindow
+func NewBACnetConstructedDataDutyWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dutyWindow BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDutyWindow {
+	if dutyWindow == nil {
+		panic("dutyWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDutyWindow must not be nil")
+	}
+	_result := &_BACnetConstructedDataDutyWindow{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DutyWindow:                    dutyWindow,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDutyWindow) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDutyWindow factory function for _BACnetConstructedDataDutyWindow
-func NewBACnetConstructedDataDutyWindow(dutyWindow BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDutyWindow {
-	if dutyWindow == nil {
-		panic("dutyWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDutyWindow must not be nil")
-	}
-	_result := &_BACnetConstructedDataDutyWindow{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DutyWindow:                    dutyWindow,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDutyWindow(structType any) BACnetConstructedDataDutyWindow {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDutyWindow) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataDutyWindow) IsBACnetConstructedDataDutyWindow() {}
+
+func (m *_BACnetConstructedDataDutyWindow) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDutyWindow) deepCopy() *_BACnetConstructedDataDutyWindow {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDutyWindowCopy := &_BACnetConstructedDataDutyWindow{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DutyWindow.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDutyWindowCopy
+}
 
 func (m *_BACnetConstructedDataDutyWindow) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type MonitoredItemNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetClientHandle returns ClientHandle (property field)
 	GetClientHandle() uint32
@@ -56,6 +57,20 @@ type _MonitoredItemNotification struct {
 
 var _ MonitoredItemNotification = (*_MonitoredItemNotification)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemNotification)(nil)
+
+// NewMonitoredItemNotification factory function for _MonitoredItemNotification
+func NewMonitoredItemNotification(clientHandle uint32, value DataValue) *_MonitoredItemNotification {
+	if value == nil {
+		panic("value of type DataValue for MonitoredItemNotification must not be nil")
+	}
+	_result := &_MonitoredItemNotification{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ClientHandle:                      clientHandle,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_MonitoredItemNotification) GetValue() DataValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredItemNotification factory function for _MonitoredItemNotification
-func NewMonitoredItemNotification(clientHandle uint32, value DataValue) *_MonitoredItemNotification {
-	if value == nil {
-		panic("value of type DataValue for MonitoredItemNotification must not be nil")
-	}
-	_result := &_MonitoredItemNotification{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ClientHandle:                      clientHandle,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredItemNotification(structType any) MonitoredItemNotification {
@@ -203,6 +204,23 @@ func (m *_MonitoredItemNotification) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_MonitoredItemNotification) IsMonitoredItemNotification() {}
+
+func (m *_MonitoredItemNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredItemNotification) deepCopy() *_MonitoredItemNotification {
+	if m == nil {
+		return nil
+	}
+	_MonitoredItemNotificationCopy := &_MonitoredItemNotification{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ClientHandle,
+		m.Value.DeepCopy().(DataValue),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoredItemNotificationCopy
+}
 
 func (m *_MonitoredItemNotification) String() string {
 	if m == nil {

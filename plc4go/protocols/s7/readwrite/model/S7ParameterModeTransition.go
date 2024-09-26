@@ -38,6 +38,7 @@ type S7ParameterModeTransition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetMethod returns Method (property field)
 	GetMethod() uint8
@@ -67,6 +68,20 @@ type _S7ParameterModeTransition struct {
 
 var _ S7ParameterModeTransition = (*_S7ParameterModeTransition)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterModeTransition)(nil)
+
+// NewS7ParameterModeTransition factory function for _S7ParameterModeTransition
+func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *_S7ParameterModeTransition {
+	_result := &_S7ParameterModeTransition{
+		S7ParameterContract: NewS7Parameter(),
+		Method:              method,
+		CpuFunctionType:     cpuFunctionType,
+		CpuFunctionGroup:    cpuFunctionGroup,
+		CurrentMode:         currentMode,
+		SequenceNumber:      sequenceNumber,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -119,20 +134,6 @@ func (m *_S7ParameterModeTransition) GetSequenceNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterModeTransition factory function for _S7ParameterModeTransition
-func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *_S7ParameterModeTransition {
-	_result := &_S7ParameterModeTransition{
-		S7ParameterContract: NewS7Parameter(),
-		Method:              method,
-		CpuFunctionType:     cpuFunctionType,
-		CpuFunctionGroup:    cpuFunctionGroup,
-		CurrentMode:         currentMode,
-		SequenceNumber:      sequenceNumber,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterModeTransition(structType any) S7ParameterModeTransition {
@@ -295,6 +296,27 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_S7ParameterModeTransition) IsS7ParameterModeTransition() {}
+
+func (m *_S7ParameterModeTransition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterModeTransition) deepCopy() *_S7ParameterModeTransition {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterModeTransitionCopy := &_S7ParameterModeTransition{
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
+		m.Method,
+		m.CpuFunctionType,
+		m.CpuFunctionGroup,
+		m.CurrentMode,
+		m.SequenceNumber,
+		m.reservedField0,
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterModeTransitionCopy
+}
 
 func (m *_S7ParameterModeTransition) String() string {
 	if m == nil {

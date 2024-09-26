@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
@@ -53,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryTime struct {
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryTime = (*_BACnetFaultParameterFaultExtendedParametersEntryTime)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryTime)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryTime factory function for _BACnetFaultParameterFaultExtendedParametersEntryTime
+func NewBACnetFaultParameterFaultExtendedParametersEntryTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime) *_BACnetFaultParameterFaultExtendedParametersEntryTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetFaultParameterFaultExtendedParametersEntryTime must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		TimeValue: timeValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetTimeValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryTime factory function for _BACnetFaultParameterFaultExtendedParametersEntryTime
-func NewBACnetFaultParameterFaultExtendedParametersEntryTime(timeValue BACnetApplicationTagTime, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryTime {
-	if timeValue == nil {
-		panic("timeValue of type BACnetApplicationTagTime for BACnetFaultParameterFaultExtendedParametersEntryTime must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		TimeValue: timeValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryTime(structType any) BACnetFaultParameterFaultExtendedParametersEntryTime {
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) SerializeWithWri
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) IsBACnetFaultParameterFaultExtendedParametersEntryTime() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryTimeCopy := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryTimeCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) String() string {

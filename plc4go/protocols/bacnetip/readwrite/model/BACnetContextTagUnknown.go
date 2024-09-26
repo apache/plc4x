@@ -38,6 +38,7 @@ type BACnetContextTagUnknown interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetUnknownData returns UnknownData (property field)
 	GetUnknownData() []byte
@@ -56,6 +57,16 @@ type _BACnetContextTagUnknown struct {
 
 var _ BACnetContextTagUnknown = (*_BACnetContextTagUnknown)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagUnknown)(nil)
+
+// NewBACnetContextTagUnknown factory function for _BACnetContextTagUnknown
+func NewBACnetContextTagUnknown(header BACnetTagHeader, unknownData []byte, actualLength uint32, tagNumberArgument uint8) *_BACnetContextTagUnknown {
+	_result := &_BACnetContextTagUnknown{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		UnknownData:              unknownData,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,16 +99,6 @@ func (m *_BACnetContextTagUnknown) GetUnknownData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagUnknown factory function for _BACnetContextTagUnknown
-func NewBACnetContextTagUnknown(unknownData []byte, header BACnetTagHeader, actualLength uint32, tagNumberArgument uint8) *_BACnetContextTagUnknown {
-	_result := &_BACnetContextTagUnknown{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		UnknownData:              unknownData,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagUnknown(structType any) BACnetContextTagUnknown {
@@ -194,6 +195,23 @@ func (m *_BACnetContextTagUnknown) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetContextTagUnknown) IsBACnetContextTagUnknown() {}
+
+func (m *_BACnetContextTagUnknown) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagUnknown) deepCopy() *_BACnetContextTagUnknown {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagUnknownCopy := &_BACnetContextTagUnknown{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.UnknownData),
+		m.ActualLength,
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagUnknownCopy
+}
 
 func (m *_BACnetContextTagUnknown) String() string {
 	if m == nil {

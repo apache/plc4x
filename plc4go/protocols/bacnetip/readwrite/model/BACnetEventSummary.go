@@ -38,6 +38,7 @@ type BACnetEventSummary interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetEventState returns EventState (property field)
@@ -68,6 +69,32 @@ type _BACnetEventSummary struct {
 }
 
 var _ BACnetEventSummary = (*_BACnetEventSummary)(nil)
+
+// NewBACnetEventSummary factory function for _BACnetEventSummary
+func NewBACnetEventSummary(objectIdentifier BACnetContextTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, eventTimestamps BACnetEventTimestampsEnclosed, notifyType BACnetNotifyTypeTagged, eventEnable BACnetEventTransitionBitsTagged, eventPriorities BACnetEventPriorities) *_BACnetEventSummary {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetEventSummary must not be nil")
+	}
+	if eventState == nil {
+		panic("eventState of type BACnetEventStateTagged for BACnetEventSummary must not be nil")
+	}
+	if acknowledgedTransitions == nil {
+		panic("acknowledgedTransitions of type BACnetEventTransitionBitsTagged for BACnetEventSummary must not be nil")
+	}
+	if eventTimestamps == nil {
+		panic("eventTimestamps of type BACnetEventTimestampsEnclosed for BACnetEventSummary must not be nil")
+	}
+	if notifyType == nil {
+		panic("notifyType of type BACnetNotifyTypeTagged for BACnetEventSummary must not be nil")
+	}
+	if eventEnable == nil {
+		panic("eventEnable of type BACnetEventTransitionBitsTagged for BACnetEventSummary must not be nil")
+	}
+	if eventPriorities == nil {
+		panic("eventPriorities of type BACnetEventPriorities for BACnetEventSummary must not be nil")
+	}
+	return &_BACnetEventSummary{ObjectIdentifier: objectIdentifier, EventState: eventState, AcknowledgedTransitions: acknowledgedTransitions, EventTimestamps: eventTimestamps, NotifyType: notifyType, EventEnable: eventEnable, EventPriorities: eventPriorities}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,32 +133,6 @@ func (m *_BACnetEventSummary) GetEventPriorities() BACnetEventPriorities {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventSummary factory function for _BACnetEventSummary
-func NewBACnetEventSummary(objectIdentifier BACnetContextTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, eventTimestamps BACnetEventTimestampsEnclosed, notifyType BACnetNotifyTypeTagged, eventEnable BACnetEventTransitionBitsTagged, eventPriorities BACnetEventPriorities) *_BACnetEventSummary {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetEventSummary must not be nil")
-	}
-	if eventState == nil {
-		panic("eventState of type BACnetEventStateTagged for BACnetEventSummary must not be nil")
-	}
-	if acknowledgedTransitions == nil {
-		panic("acknowledgedTransitions of type BACnetEventTransitionBitsTagged for BACnetEventSummary must not be nil")
-	}
-	if eventTimestamps == nil {
-		panic("eventTimestamps of type BACnetEventTimestampsEnclosed for BACnetEventSummary must not be nil")
-	}
-	if notifyType == nil {
-		panic("notifyType of type BACnetNotifyTypeTagged for BACnetEventSummary must not be nil")
-	}
-	if eventEnable == nil {
-		panic("eventEnable of type BACnetEventTransitionBitsTagged for BACnetEventSummary must not be nil")
-	}
-	if eventPriorities == nil {
-		panic("eventPriorities of type BACnetEventPriorities for BACnetEventSummary must not be nil")
-	}
-	return &_BACnetEventSummary{ObjectIdentifier: objectIdentifier, EventState: eventState, AcknowledgedTransitions: acknowledgedTransitions, EventTimestamps: eventTimestamps, NotifyType: notifyType, EventEnable: eventEnable, EventPriorities: eventPriorities}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventSummary(structType any) BACnetEventSummary {
@@ -307,6 +308,26 @@ func (m *_BACnetEventSummary) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_BACnetEventSummary) IsBACnetEventSummary() {}
+
+func (m *_BACnetEventSummary) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventSummary) deepCopy() *_BACnetEventSummary {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventSummaryCopy := &_BACnetEventSummary{
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.EventState.DeepCopy().(BACnetEventStateTagged),
+		m.AcknowledgedTransitions.DeepCopy().(BACnetEventTransitionBitsTagged),
+		m.EventTimestamps.DeepCopy().(BACnetEventTimestampsEnclosed),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+		m.EventEnable.DeepCopy().(BACnetEventTransitionBitsTagged),
+		m.EventPriorities.DeepCopy().(BACnetEventPriorities),
+	}
+	return _BACnetEventSummaryCopy
+}
 
 func (m *_BACnetEventSummary) String() string {
 	if m == nil {

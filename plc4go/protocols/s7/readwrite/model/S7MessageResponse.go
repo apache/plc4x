@@ -38,6 +38,7 @@ type S7MessageResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Message
 	// GetErrorClass returns ErrorClass (property field)
 	GetErrorClass() uint8
@@ -56,6 +57,17 @@ type _S7MessageResponse struct {
 
 var _ S7MessageResponse = (*_S7MessageResponse)(nil)
 var _ S7MessageRequirements = (*_S7MessageResponse)(nil)
+
+// NewS7MessageResponse factory function for _S7MessageResponse
+func NewS7MessageResponse(tpduReference uint16, parameter S7Parameter, payload S7Payload, errorClass uint8, errorCode uint8) *_S7MessageResponse {
+	_result := &_S7MessageResponse{
+		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
+		ErrorClass:        errorClass,
+		ErrorCode:         errorCode,
+	}
+	_result.S7MessageContract.(*_S7Message)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_S7MessageResponse) GetErrorCode() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7MessageResponse factory function for _S7MessageResponse
-func NewS7MessageResponse(errorClass uint8, errorCode uint8, tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageResponse {
-	_result := &_S7MessageResponse{
-		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
-		ErrorClass:        errorClass,
-		ErrorCode:         errorCode,
-	}
-	_result.S7MessageContract.(*_S7Message)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7MessageResponse(structType any) S7MessageResponse {
@@ -200,6 +201,23 @@ func (m *_S7MessageResponse) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_S7MessageResponse) IsS7MessageResponse() {}
+
+func (m *_S7MessageResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageResponse) deepCopy() *_S7MessageResponse {
+	if m == nil {
+		return nil
+	}
+	_S7MessageResponseCopy := &_S7MessageResponse{
+		m.S7MessageContract.(*_S7Message).deepCopy(),
+		m.ErrorClass,
+		m.ErrorCode,
+	}
+	m.S7MessageContract.(*_S7Message)._SubType = m
+	return _S7MessageResponseCopy
+}
 
 func (m *_S7MessageResponse) String() string {
 	if m == nil {

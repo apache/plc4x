@@ -38,6 +38,7 @@ type BACnetDeviceObjectReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetContextTagObjectIdentifier
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
@@ -53,6 +54,14 @@ type _BACnetDeviceObjectReference struct {
 }
 
 var _ BACnetDeviceObjectReference = (*_BACnetDeviceObjectReference)(nil)
+
+// NewBACnetDeviceObjectReference factory function for _BACnetDeviceObjectReference
+func NewBACnetDeviceObjectReference(deviceIdentifier BACnetContextTagObjectIdentifier, objectIdentifier BACnetContextTagObjectIdentifier) *_BACnetDeviceObjectReference {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetDeviceObjectReference must not be nil")
+	}
+	return &_BACnetDeviceObjectReference{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_BACnetDeviceObjectReference) GetObjectIdentifier() BACnetContextTagObj
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDeviceObjectReference factory function for _BACnetDeviceObjectReference
-func NewBACnetDeviceObjectReference(deviceIdentifier BACnetContextTagObjectIdentifier, objectIdentifier BACnetContextTagObjectIdentifier) *_BACnetDeviceObjectReference {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetDeviceObjectReference must not be nil")
-	}
-	return &_BACnetDeviceObjectReference{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDeviceObjectReference(structType any) BACnetDeviceObjectReference {
@@ -195,6 +196,21 @@ func (m *_BACnetDeviceObjectReference) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetDeviceObjectReference) IsBACnetDeviceObjectReference() {}
+
+func (m *_BACnetDeviceObjectReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDeviceObjectReference) deepCopy() *_BACnetDeviceObjectReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetDeviceObjectReferenceCopy := &_BACnetDeviceObjectReference{
+		m.DeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+	}
+	return _BACnetDeviceObjectReferenceCopy
+}
 
 func (m *_BACnetDeviceObjectReference) String() string {
 	if m == nil {

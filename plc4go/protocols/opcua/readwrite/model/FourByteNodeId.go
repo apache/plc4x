@@ -38,6 +38,7 @@ type FourByteNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint8
 	// GetIdentifier returns Identifier (property field)
@@ -53,6 +54,11 @@ type _FourByteNodeId struct {
 }
 
 var _ FourByteNodeId = (*_FourByteNodeId)(nil)
+
+// NewFourByteNodeId factory function for _FourByteNodeId
+func NewFourByteNodeId(namespaceIndex uint8, identifier uint16) *_FourByteNodeId {
+	return &_FourByteNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +77,6 @@ func (m *_FourByteNodeId) GetIdentifier() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFourByteNodeId factory function for _FourByteNodeId
-func NewFourByteNodeId(namespaceIndex uint8, identifier uint16) *_FourByteNodeId {
-	return &_FourByteNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastFourByteNodeId(structType any) FourByteNodeId {
@@ -186,6 +187,21 @@ func (m *_FourByteNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_FourByteNodeId) IsFourByteNodeId() {}
+
+func (m *_FourByteNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FourByteNodeId) deepCopy() *_FourByteNodeId {
+	if m == nil {
+		return nil
+	}
+	_FourByteNodeIdCopy := &_FourByteNodeId{
+		m.NamespaceIndex,
+		m.Identifier,
+	}
+	return _FourByteNodeIdCopy
+}
 
 func (m *_FourByteNodeId) String() string {
 	if m == nil {

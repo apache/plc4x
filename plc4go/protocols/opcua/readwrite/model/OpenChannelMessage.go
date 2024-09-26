@@ -38,6 +38,7 @@ type OpenChannelMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpenChannelMessage()
 }
@@ -135,11 +136,11 @@ func (m *_OpenChannelMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child OpenChannelMessage
 	switch {
 	case response == bool(false): // OpenChannelMessageRequest
-		if _child, err = (&_OpenChannelMessageRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpenChannelMessageRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpenChannelMessageRequest for type-switch of OpenChannelMessage")
 		}
 	case response == bool(true): // OpenChannelMessageResponse
-		if _child, err = (&_OpenChannelMessageResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpenChannelMessageResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpenChannelMessageResponse for type-switch of OpenChannelMessage")
 		}
 	default:
@@ -177,3 +178,17 @@ func (pm *_OpenChannelMessage) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_OpenChannelMessage) IsOpenChannelMessage() {}
+
+func (m *_OpenChannelMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpenChannelMessage) deepCopy() *_OpenChannelMessage {
+	if m == nil {
+		return nil
+	}
+	_OpenChannelMessageCopy := &_OpenChannelMessage{
+		nil, // will be set by child
+	}
+	return _OpenChannelMessageCopy
+}

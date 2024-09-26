@@ -38,6 +38,7 @@ type BACnetLogDataLogDataEntryFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetFailure returns Failure (property field)
 	GetFailure() ErrorEnclosed
@@ -53,6 +54,19 @@ type _BACnetLogDataLogDataEntryFailure struct {
 
 var _ BACnetLogDataLogDataEntryFailure = (*_BACnetLogDataLogDataEntryFailure)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryFailure)(nil)
+
+// NewBACnetLogDataLogDataEntryFailure factory function for _BACnetLogDataLogDataEntryFailure
+func NewBACnetLogDataLogDataEntryFailure(peekedTagHeader BACnetTagHeader, failure ErrorEnclosed) *_BACnetLogDataLogDataEntryFailure {
+	if failure == nil {
+		panic("failure of type ErrorEnclosed for BACnetLogDataLogDataEntryFailure must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryFailure{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		Failure:                           failure,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogDataLogDataEntryFailure) GetFailure() ErrorEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryFailure factory function for _BACnetLogDataLogDataEntryFailure
-func NewBACnetLogDataLogDataEntryFailure(failure ErrorEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryFailure {
-	if failure == nil {
-		panic("failure of type ErrorEnclosed for BACnetLogDataLogDataEntryFailure must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryFailure{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		Failure:                           failure,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryFailure(structType any) BACnetLogDataLogDataEntryFailure {
@@ -178,6 +179,22 @@ func (m *_BACnetLogDataLogDataEntryFailure) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetLogDataLogDataEntryFailure) IsBACnetLogDataLogDataEntryFailure() {}
+
+func (m *_BACnetLogDataLogDataEntryFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryFailure) deepCopy() *_BACnetLogDataLogDataEntryFailure {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryFailureCopy := &_BACnetLogDataLogDataEntryFailure{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.Failure.DeepCopy().(ErrorEnclosed),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryFailureCopy
+}
 
 func (m *_BACnetLogDataLogDataEntryFailure) String() string {
 	if m == nil {

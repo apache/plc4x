@@ -36,6 +36,7 @@ type MPropWriteReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMPropWriteReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropWriteReq()
@@ -48,6 +49,15 @@ type _MPropWriteReq struct {
 
 var _ MPropWriteReq = (*_MPropWriteReq)(nil)
 var _ CEMIRequirements = (*_MPropWriteReq)(nil)
+
+// NewMPropWriteReq factory function for _MPropWriteReq
+func NewMPropWriteReq(size uint16) *_MPropWriteReq {
+	_result := &_MPropWriteReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_MPropWriteReq) GetMessageCode() uint8 {
 
 func (m *_MPropWriteReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMPropWriteReq factory function for _MPropWriteReq
-func NewMPropWriteReq(size uint16) *_MPropWriteReq {
-	_result := &_MPropWriteReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_MPropWriteReq) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 }
 
 func (m *_MPropWriteReq) IsMPropWriteReq() {}
+
+func (m *_MPropWriteReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropWriteReq) deepCopy() *_MPropWriteReq {
+	if m == nil {
+		return nil
+	}
+	_MPropWriteReqCopy := &_MPropWriteReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropWriteReqCopy
+}
 
 func (m *_MPropWriteReq) String() string {
 	if m == nil {

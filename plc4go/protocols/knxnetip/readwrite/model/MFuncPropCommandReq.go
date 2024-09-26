@@ -36,6 +36,7 @@ type MFuncPropCommandReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMFuncPropCommandReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropCommandReq()
@@ -48,6 +49,15 @@ type _MFuncPropCommandReq struct {
 
 var _ MFuncPropCommandReq = (*_MFuncPropCommandReq)(nil)
 var _ CEMIRequirements = (*_MFuncPropCommandReq)(nil)
+
+// NewMFuncPropCommandReq factory function for _MFuncPropCommandReq
+func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
+	_result := &_MFuncPropCommandReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_MFuncPropCommandReq) GetMessageCode() uint8 {
 
 func (m *_MFuncPropCommandReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMFuncPropCommandReq factory function for _MFuncPropCommandReq
-func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
-	_result := &_MFuncPropCommandReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_MFuncPropCommandReq) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_MFuncPropCommandReq) IsMFuncPropCommandReq() {}
+
+func (m *_MFuncPropCommandReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MFuncPropCommandReq) deepCopy() *_MFuncPropCommandReq {
+	if m == nil {
+		return nil
+	}
+	_MFuncPropCommandReqCopy := &_MFuncPropCommandReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MFuncPropCommandReqCopy
+}
 
 func (m *_MFuncPropCommandReq) String() string {
 	if m == nil {

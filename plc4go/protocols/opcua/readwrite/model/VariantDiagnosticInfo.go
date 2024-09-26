@@ -38,6 +38,7 @@ type VariantDiagnosticInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantDiagnosticInfo struct {
 
 var _ VariantDiagnosticInfo = (*_VariantDiagnosticInfo)(nil)
 var _ VariantRequirements = (*_VariantDiagnosticInfo)(nil)
+
+// NewVariantDiagnosticInfo factory function for _VariantDiagnosticInfo
+func NewVariantDiagnosticInfo(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []DiagnosticInfo) *_VariantDiagnosticInfo {
+	_result := &_VariantDiagnosticInfo{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantDiagnosticInfo) GetValue() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantDiagnosticInfo factory function for _VariantDiagnosticInfo
-func NewVariantDiagnosticInfo(arrayLength *int32, value []DiagnosticInfo, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantDiagnosticInfo {
-	_result := &_VariantDiagnosticInfo{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantDiagnosticInfo(structType any) VariantDiagnosticInfo {
@@ -210,6 +211,23 @@ func (m *_VariantDiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_VariantDiagnosticInfo) IsVariantDiagnosticInfo() {}
+
+func (m *_VariantDiagnosticInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantDiagnosticInfo) deepCopy() *_VariantDiagnosticInfo {
+	if m == nil {
+		return nil
+	}
+	_VariantDiagnosticInfoCopy := &_VariantDiagnosticInfo{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantDiagnosticInfoCopy
+}
 
 func (m *_VariantDiagnosticInfo) String() string {
 	if m == nil {

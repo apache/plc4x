@@ -38,6 +38,7 @@ type BACnetConstructedDataSupportedFormats interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataSupportedFormats struct {
 
 var _ BACnetConstructedDataSupportedFormats = (*_BACnetConstructedDataSupportedFormats)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSupportedFormats)(nil)
+
+// NewBACnetConstructedDataSupportedFormats factory function for _BACnetConstructedDataSupportedFormats
+func NewBACnetConstructedDataSupportedFormats(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, supportedFormats []BACnetAuthenticationFactorFormat, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedFormats {
+	_result := &_BACnetConstructedDataSupportedFormats{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		SupportedFormats:              supportedFormats,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataSupportedFormats) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSupportedFormats factory function for _BACnetConstructedDataSupportedFormats
-func NewBACnetConstructedDataSupportedFormats(numberOfDataElements BACnetApplicationTagUnsignedInteger, supportedFormats []BACnetAuthenticationFactorFormat, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedFormats {
-	_result := &_BACnetConstructedDataSupportedFormats{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		SupportedFormats:              supportedFormats,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSupportedFormats(structType any) BACnetConstructedDataSupportedFormats {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataSupportedFormats) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataSupportedFormats) IsBACnetConstructedDataSupportedFormats() {}
+
+func (m *_BACnetConstructedDataSupportedFormats) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSupportedFormats) deepCopy() *_BACnetConstructedDataSupportedFormats {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSupportedFormatsCopy := &_BACnetConstructedDataSupportedFormats{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetAuthenticationFactorFormat, BACnetAuthenticationFactorFormat](m.SupportedFormats),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSupportedFormatsCopy
+}
 
 func (m *_BACnetConstructedDataSupportedFormats) String() string {
 	if m == nil {

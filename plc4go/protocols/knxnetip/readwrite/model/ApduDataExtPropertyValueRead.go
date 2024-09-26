@@ -38,6 +38,7 @@ type ApduDataExtPropertyValueRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -62,6 +63,19 @@ type _ApduDataExtPropertyValueRead struct {
 
 var _ ApduDataExtPropertyValueRead = (*_ApduDataExtPropertyValueRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueRead)(nil)
+
+// NewApduDataExtPropertyValueRead factory function for _ApduDataExtPropertyValueRead
+func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count uint8, index uint16, length uint8) *_ApduDataExtPropertyValueRead {
+	_result := &_ApduDataExtPropertyValueRead{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Count:               count,
+		Index:               index,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_ApduDataExtPropertyValueRead) GetIndex() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyValueRead factory function for _ApduDataExtPropertyValueRead
-func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count uint8, index uint16, length uint8) *_ApduDataExtPropertyValueRead {
-	_result := &_ApduDataExtPropertyValueRead{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Count:               count,
-		Index:               index,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyValueRead(structType any) ApduDataExtPropertyValueRead {
@@ -242,6 +243,25 @@ func (m *_ApduDataExtPropertyValueRead) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ApduDataExtPropertyValueRead) IsApduDataExtPropertyValueRead() {}
+
+func (m *_ApduDataExtPropertyValueRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtPropertyValueRead) deepCopy() *_ApduDataExtPropertyValueRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtPropertyValueReadCopy := &_ApduDataExtPropertyValueRead{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.ObjectIndex,
+		m.PropertyId,
+		m.Count,
+		m.Index,
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtPropertyValueReadCopy
+}
 
 func (m *_ApduDataExtPropertyValueRead) String() string {
 	if m == nil {

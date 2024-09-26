@@ -38,6 +38,7 @@ type BACnetRecipientProcess interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientEnclosed
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
@@ -53,6 +54,14 @@ type _BACnetRecipientProcess struct {
 }
 
 var _ BACnetRecipientProcess = (*_BACnetRecipientProcess)(nil)
+
+// NewBACnetRecipientProcess factory function for _BACnetRecipientProcess
+func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentifier BACnetContextTagUnsignedInteger) *_BACnetRecipientProcess {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientEnclosed for BACnetRecipientProcess must not be nil")
+	}
+	return &_BACnetRecipientProcess{Recipient: recipient, ProcessIdentifier: processIdentifier}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_BACnetRecipientProcess) GetProcessIdentifier() BACnetContextTagUnsigne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipientProcess factory function for _BACnetRecipientProcess
-func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentifier BACnetContextTagUnsignedInteger) *_BACnetRecipientProcess {
-	if recipient == nil {
-		panic("recipient of type BACnetRecipientEnclosed for BACnetRecipientProcess must not be nil")
-	}
-	return &_BACnetRecipientProcess{Recipient: recipient, ProcessIdentifier: processIdentifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipientProcess(structType any) BACnetRecipientProcess {
@@ -195,6 +196,21 @@ func (m *_BACnetRecipientProcess) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetRecipientProcess) IsBACnetRecipientProcess() {}
+
+func (m *_BACnetRecipientProcess) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipientProcess) deepCopy() *_BACnetRecipientProcess {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientProcessCopy := &_BACnetRecipientProcess{
+		m.Recipient.DeepCopy().(BACnetRecipientEnclosed),
+		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetRecipientProcessCopy
+}
 
 func (m *_BACnetRecipientProcess) String() string {
 	if m == nil {

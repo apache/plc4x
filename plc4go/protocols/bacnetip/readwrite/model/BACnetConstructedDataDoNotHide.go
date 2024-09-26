@@ -38,6 +38,7 @@ type BACnetConstructedDataDoNotHide interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoNotHide returns DoNotHide (property field)
 	GetDoNotHide() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDoNotHide struct {
 
 var _ BACnetConstructedDataDoNotHide = (*_BACnetConstructedDataDoNotHide)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoNotHide)(nil)
+
+// NewBACnetConstructedDataDoNotHide factory function for _BACnetConstructedDataDoNotHide
+func NewBACnetConstructedDataDoNotHide(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doNotHide BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoNotHide {
+	if doNotHide == nil {
+		panic("doNotHide of type BACnetApplicationTagBoolean for BACnetConstructedDataDoNotHide must not be nil")
+	}
+	_result := &_BACnetConstructedDataDoNotHide{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoNotHide:                     doNotHide,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDoNotHide) GetActualValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDoNotHide factory function for _BACnetConstructedDataDoNotHide
-func NewBACnetConstructedDataDoNotHide(doNotHide BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoNotHide {
-	if doNotHide == nil {
-		panic("doNotHide of type BACnetApplicationTagBoolean for BACnetConstructedDataDoNotHide must not be nil")
-	}
-	_result := &_BACnetConstructedDataDoNotHide{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DoNotHide:                     doNotHide,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDoNotHide(structType any) BACnetConstructedDataDoNotHide {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDoNotHide) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataDoNotHide) IsBACnetConstructedDataDoNotHide() {}
+
+func (m *_BACnetConstructedDataDoNotHide) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoNotHide) deepCopy() *_BACnetConstructedDataDoNotHide {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoNotHideCopy := &_BACnetConstructedDataDoNotHide{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DoNotHide.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoNotHideCopy
+}
 
 func (m *_BACnetConstructedDataDoNotHide) String() string {
 	if m == nil {

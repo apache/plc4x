@@ -38,6 +38,7 @@ type BACnetPropertyStatesLiftCarDoorCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLiftCarDoorCommand returns LiftCarDoorCommand (property field)
 	GetLiftCarDoorCommand() BACnetLiftCarDoorCommandTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesLiftCarDoorCommand struct {
 
 var _ BACnetPropertyStatesLiftCarDoorCommand = (*_BACnetPropertyStatesLiftCarDoorCommand)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftCarDoorCommand)(nil)
+
+// NewBACnetPropertyStatesLiftCarDoorCommand factory function for _BACnetPropertyStatesLiftCarDoorCommand
+func NewBACnetPropertyStatesLiftCarDoorCommand(peekedTagHeader BACnetTagHeader, liftCarDoorCommand BACnetLiftCarDoorCommandTagged) *_BACnetPropertyStatesLiftCarDoorCommand {
+	if liftCarDoorCommand == nil {
+		panic("liftCarDoorCommand of type BACnetLiftCarDoorCommandTagged for BACnetPropertyStatesLiftCarDoorCommand must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLiftCarDoorCommand{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftCarDoorCommand:           liftCarDoorCommand,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetLiftCarDoorCommand() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLiftCarDoorCommand factory function for _BACnetPropertyStatesLiftCarDoorCommand
-func NewBACnetPropertyStatesLiftCarDoorCommand(liftCarDoorCommand BACnetLiftCarDoorCommandTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftCarDoorCommand {
-	if liftCarDoorCommand == nil {
-		panic("liftCarDoorCommand of type BACnetLiftCarDoorCommandTagged for BACnetPropertyStatesLiftCarDoorCommand must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLiftCarDoorCommand{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LiftCarDoorCommand:           liftCarDoorCommand,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLiftCarDoorCommand(structType any) BACnetPropertyStatesLiftCarDoorCommand {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetPropertyStatesLiftCarDoorCommand) IsBACnetPropertyStatesLiftCarDoorCommand() {}
+
+func (m *_BACnetPropertyStatesLiftCarDoorCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLiftCarDoorCommand) deepCopy() *_BACnetPropertyStatesLiftCarDoorCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLiftCarDoorCommandCopy := &_BACnetPropertyStatesLiftCarDoorCommand{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LiftCarDoorCommand.DeepCopy().(BACnetLiftCarDoorCommandTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLiftCarDoorCommandCopy
+}
 
 func (m *_BACnetPropertyStatesLiftCarDoorCommand) String() string {
 	if m == nil {

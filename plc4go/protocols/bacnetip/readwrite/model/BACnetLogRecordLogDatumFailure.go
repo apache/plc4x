@@ -38,6 +38,7 @@ type BACnetLogRecordLogDatumFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetFailure returns Failure (property field)
 	GetFailure() ErrorEnclosed
@@ -53,6 +54,19 @@ type _BACnetLogRecordLogDatumFailure struct {
 
 var _ BACnetLogRecordLogDatumFailure = (*_BACnetLogRecordLogDatumFailure)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumFailure)(nil)
+
+// NewBACnetLogRecordLogDatumFailure factory function for _BACnetLogRecordLogDatumFailure
+func NewBACnetLogRecordLogDatumFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failure ErrorEnclosed, tagNumber uint8) *_BACnetLogRecordLogDatumFailure {
+	if failure == nil {
+		panic("failure of type ErrorEnclosed for BACnetLogRecordLogDatumFailure must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumFailure{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		Failure:                         failure,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetLogRecordLogDatumFailure) GetFailure() ErrorEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumFailure factory function for _BACnetLogRecordLogDatumFailure
-func NewBACnetLogRecordLogDatumFailure(failure ErrorEnclosed, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumFailure {
-	if failure == nil {
-		panic("failure of type ErrorEnclosed for BACnetLogRecordLogDatumFailure must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumFailure{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		Failure:                         failure,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumFailure(structType any) BACnetLogRecordLogDatumFailure {
@@ -178,6 +179,22 @@ func (m *_BACnetLogRecordLogDatumFailure) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetLogRecordLogDatumFailure) IsBACnetLogRecordLogDatumFailure() {}
+
+func (m *_BACnetLogRecordLogDatumFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumFailure) deepCopy() *_BACnetLogRecordLogDatumFailure {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumFailureCopy := &_BACnetLogRecordLogDatumFailure{
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
+		m.Failure.DeepCopy().(ErrorEnclosed),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumFailureCopy
+}
 
 func (m *_BACnetLogRecordLogDatumFailure) String() string {
 	if m == nil {

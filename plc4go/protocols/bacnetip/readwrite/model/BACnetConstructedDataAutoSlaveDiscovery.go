@@ -38,6 +38,7 @@ type BACnetConstructedDataAutoSlaveDiscovery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAutoSlaveDiscovery returns AutoSlaveDiscovery (property field)
 	GetAutoSlaveDiscovery() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAutoSlaveDiscovery struct {
 
 var _ BACnetConstructedDataAutoSlaveDiscovery = (*_BACnetConstructedDataAutoSlaveDiscovery)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAutoSlaveDiscovery)(nil)
+
+// NewBACnetConstructedDataAutoSlaveDiscovery factory function for _BACnetConstructedDataAutoSlaveDiscovery
+func NewBACnetConstructedDataAutoSlaveDiscovery(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoSlaveDiscovery BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAutoSlaveDiscovery {
+	if autoSlaveDiscovery == nil {
+		panic("autoSlaveDiscovery of type BACnetApplicationTagBoolean for BACnetConstructedDataAutoSlaveDiscovery must not be nil")
+	}
+	_result := &_BACnetConstructedDataAutoSlaveDiscovery{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AutoSlaveDiscovery:            autoSlaveDiscovery,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAutoSlaveDiscovery factory function for _BACnetConstructedDataAutoSlaveDiscovery
-func NewBACnetConstructedDataAutoSlaveDiscovery(autoSlaveDiscovery BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAutoSlaveDiscovery {
-	if autoSlaveDiscovery == nil {
-		panic("autoSlaveDiscovery of type BACnetApplicationTagBoolean for BACnetConstructedDataAutoSlaveDiscovery must not be nil")
-	}
-	_result := &_BACnetConstructedDataAutoSlaveDiscovery{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AutoSlaveDiscovery:            autoSlaveDiscovery,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAutoSlaveDiscovery(structType any) BACnetConstructedDataAutoSlaveDiscovery {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetConstructedDataAutoSlaveDiscovery) IsBACnetConstructedDataAutoSlaveDiscovery() {}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) deepCopy() *_BACnetConstructedDataAutoSlaveDiscovery {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAutoSlaveDiscoveryCopy := &_BACnetConstructedDataAutoSlaveDiscovery{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AutoSlaveDiscovery.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAutoSlaveDiscoveryCopy
+}
 
 func (m *_BACnetConstructedDataAutoSlaveDiscovery) String() string {
 	if m == nil {

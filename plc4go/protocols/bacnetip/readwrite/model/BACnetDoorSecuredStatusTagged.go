@@ -38,6 +38,7 @@ type BACnetDoorSecuredStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetDoorSecuredStatusTagged struct {
 
 var _ BACnetDoorSecuredStatusTagged = (*_BACnetDoorSecuredStatusTagged)(nil)
 
+// NewBACnetDoorSecuredStatusTagged factory function for _BACnetDoorSecuredStatusTagged
+func NewBACnetDoorSecuredStatusTagged(header BACnetTagHeader, value BACnetDoorSecuredStatus, tagNumber uint8, tagClass TagClass) *_BACnetDoorSecuredStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDoorSecuredStatusTagged must not be nil")
+	}
+	return &_BACnetDoorSecuredStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetDoorSecuredStatusTagged) GetValue() BACnetDoorSecuredStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDoorSecuredStatusTagged factory function for _BACnetDoorSecuredStatusTagged
-func NewBACnetDoorSecuredStatusTagged(header BACnetTagHeader, value BACnetDoorSecuredStatus, tagNumber uint8, tagClass TagClass) *_BACnetDoorSecuredStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDoorSecuredStatusTagged must not be nil")
-	}
-	return &_BACnetDoorSecuredStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDoorSecuredStatusTagged(structType any) BACnetDoorSecuredStatusTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetDoorSecuredStatusTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetDoorSecuredStatusTagged) IsBACnetDoorSecuredStatusTagged() {}
+
+func (m *_BACnetDoorSecuredStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDoorSecuredStatusTagged) deepCopy() *_BACnetDoorSecuredStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDoorSecuredStatusTaggedCopy := &_BACnetDoorSecuredStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDoorSecuredStatusTaggedCopy
+}
 
 func (m *_BACnetDoorSecuredStatusTagged) String() string {
 	if m == nil {

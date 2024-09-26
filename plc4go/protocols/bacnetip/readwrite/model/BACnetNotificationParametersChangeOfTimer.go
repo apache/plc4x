@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfTimer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -74,6 +75,38 @@ type _BACnetNotificationParametersChangeOfTimer struct {
 
 var _ BACnetNotificationParametersChangeOfTimer = (*_BACnetNotificationParametersChangeOfTimer)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfTimer)(nil)
+
+// NewBACnetNotificationParametersChangeOfTimer factory function for _BACnetNotificationParametersChangeOfTimer
+func NewBACnetNotificationParametersChangeOfTimer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, newValue BACnetTimerStateTagged, statusFlags BACnetStatusFlagsTagged, updateTime BACnetDateTimeEnclosed, lastStateChange BACnetTimerTransitionTagged, initialTimeout BACnetContextTagUnsignedInteger, expirationTime BACnetDateTimeEnclosed, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfTimer {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfTimer must not be nil")
+	}
+	if newValue == nil {
+		panic("newValue of type BACnetTimerStateTagged for BACnetNotificationParametersChangeOfTimer must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfTimer must not be nil")
+	}
+	if updateTime == nil {
+		panic("updateTime of type BACnetDateTimeEnclosed for BACnetNotificationParametersChangeOfTimer must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfTimer must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfTimer{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		NewValue:                             newValue,
+		StatusFlags:                          statusFlags,
+		UpdateTime:                           updateTime,
+		LastStateChange:                      lastStateChange,
+		InitialTimeout:                       initialTimeout,
+		ExpirationTime:                       expirationTime,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,38 +163,6 @@ func (m *_BACnetNotificationParametersChangeOfTimer) GetInnerClosingTag() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfTimer factory function for _BACnetNotificationParametersChangeOfTimer
-func NewBACnetNotificationParametersChangeOfTimer(innerOpeningTag BACnetOpeningTag, newValue BACnetTimerStateTagged, statusFlags BACnetStatusFlagsTagged, updateTime BACnetDateTimeEnclosed, lastStateChange BACnetTimerTransitionTagged, initialTimeout BACnetContextTagUnsignedInteger, expirationTime BACnetDateTimeEnclosed, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfTimer {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfTimer must not be nil")
-	}
-	if newValue == nil {
-		panic("newValue of type BACnetTimerStateTagged for BACnetNotificationParametersChangeOfTimer must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfTimer must not be nil")
-	}
-	if updateTime == nil {
-		panic("updateTime of type BACnetDateTimeEnclosed for BACnetNotificationParametersChangeOfTimer must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfTimer must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfTimer{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		NewValue:                             newValue,
-		StatusFlags:                          statusFlags,
-		UpdateTime:                           updateTime,
-		LastStateChange:                      lastStateChange,
-		InitialTimeout:                       initialTimeout,
-		ExpirationTime:                       expirationTime,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfTimer(structType any) BACnetNotificationParametersChangeOfTimer {
@@ -355,6 +356,29 @@ func (m *_BACnetNotificationParametersChangeOfTimer) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetNotificationParametersChangeOfTimer) IsBACnetNotificationParametersChangeOfTimer() {}
+
+func (m *_BACnetNotificationParametersChangeOfTimer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfTimer) deepCopy() *_BACnetNotificationParametersChangeOfTimer {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfTimerCopy := &_BACnetNotificationParametersChangeOfTimer{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.NewValue.DeepCopy().(BACnetTimerStateTagged),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.UpdateTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.LastStateChange.DeepCopy().(BACnetTimerTransitionTagged),
+		m.InitialTimeout.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ExpirationTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersChangeOfTimerCopy
+}
 
 func (m *_BACnetNotificationParametersChangeOfTimer) String() string {
 	if m == nil {

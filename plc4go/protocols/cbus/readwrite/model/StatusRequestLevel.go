@@ -38,6 +38,7 @@ type StatusRequestLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	StatusRequest
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -59,6 +60,17 @@ type _StatusRequestLevel struct {
 
 var _ StatusRequestLevel = (*_StatusRequestLevel)(nil)
 var _ StatusRequestRequirements = (*_StatusRequestLevel)(nil)
+
+// NewStatusRequestLevel factory function for _StatusRequestLevel
+func NewStatusRequestLevel(statusType byte, application ApplicationIdContainer, startingGroupAddressLabel byte) *_StatusRequestLevel {
+	_result := &_StatusRequestLevel{
+		StatusRequestContract:     NewStatusRequest(statusType),
+		Application:               application,
+		StartingGroupAddressLabel: startingGroupAddressLabel,
+	}
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -91,17 +103,6 @@ func (m *_StatusRequestLevel) GetStartingGroupAddressLabel() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusRequestLevel factory function for _StatusRequestLevel
-func NewStatusRequestLevel(application ApplicationIdContainer, startingGroupAddressLabel byte, statusType byte) *_StatusRequestLevel {
-	_result := &_StatusRequestLevel{
-		StatusRequestContract:     NewStatusRequest(statusType),
-		Application:               application,
-		StartingGroupAddressLabel: startingGroupAddressLabel,
-	}
-	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusRequestLevel(structType any) StatusRequestLevel {
@@ -230,6 +231,25 @@ func (m *_StatusRequestLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_StatusRequestLevel) IsStatusRequestLevel() {}
+
+func (m *_StatusRequestLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusRequestLevel) deepCopy() *_StatusRequestLevel {
+	if m == nil {
+		return nil
+	}
+	_StatusRequestLevelCopy := &_StatusRequestLevel{
+		m.StatusRequestContract.(*_StatusRequest).deepCopy(),
+		m.Application,
+		m.StartingGroupAddressLabel,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.StatusRequestContract.(*_StatusRequest)._SubType = m
+	return _StatusRequestLevelCopy
+}
 
 func (m *_StatusRequestLevel) String() string {
 	if m == nil {

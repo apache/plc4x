@@ -38,6 +38,7 @@ type MediaTransportControlDataPauseResume interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetOperation returns Operation (property field)
 	GetOperation() byte
@@ -57,6 +58,16 @@ type _MediaTransportControlDataPauseResume struct {
 
 var _ MediaTransportControlDataPauseResume = (*_MediaTransportControlDataPauseResume)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataPauseResume)(nil)
+
+// NewMediaTransportControlDataPauseResume factory function for _MediaTransportControlDataPauseResume
+func NewMediaTransportControlDataPauseResume(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataPauseResume {
+	_result := &_MediaTransportControlDataPauseResume{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +117,6 @@ func (m *_MediaTransportControlDataPauseResume) GetIsResume() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataPauseResume factory function for _MediaTransportControlDataPauseResume
-func NewMediaTransportControlDataPauseResume(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataPauseResume {
-	_result := &_MediaTransportControlDataPauseResume{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		Operation:                         operation,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataPauseResume(structType any) MediaTransportControlDataPauseResume {
@@ -228,6 +229,22 @@ func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataPauseResume) IsMediaTransportControlDataPauseResume() {}
+
+func (m *_MediaTransportControlDataPauseResume) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataPauseResume) deepCopy() *_MediaTransportControlDataPauseResume {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataPauseResumeCopy := &_MediaTransportControlDataPauseResume{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.Operation,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataPauseResumeCopy
+}
 
 func (m *_MediaTransportControlDataPauseResume) String() string {
 	if m == nil {

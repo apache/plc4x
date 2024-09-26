@@ -38,6 +38,7 @@ type SALDataHeating interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetHeatingData returns HeatingData (property field)
 	GetHeatingData() LightingData
@@ -53,6 +54,19 @@ type _SALDataHeating struct {
 
 var _ SALDataHeating = (*_SALDataHeating)(nil)
 var _ SALDataRequirements = (*_SALDataHeating)(nil)
+
+// NewSALDataHeating factory function for _SALDataHeating
+func NewSALDataHeating(salData SALData, heatingData LightingData) *_SALDataHeating {
+	if heatingData == nil {
+		panic("heatingData of type LightingData for SALDataHeating must not be nil")
+	}
+	_result := &_SALDataHeating{
+		SALDataContract: NewSALData(salData),
+		HeatingData:     heatingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_SALDataHeating) GetHeatingData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataHeating factory function for _SALDataHeating
-func NewSALDataHeating(heatingData LightingData, salData SALData) *_SALDataHeating {
-	if heatingData == nil {
-		panic("heatingData of type LightingData for SALDataHeating must not be nil")
-	}
-	_result := &_SALDataHeating{
-		SALDataContract: NewSALData(salData),
-		HeatingData:     heatingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataHeating(structType any) SALDataHeating {
@@ -182,6 +183,22 @@ func (m *_SALDataHeating) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_SALDataHeating) IsSALDataHeating() {}
+
+func (m *_SALDataHeating) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataHeating) deepCopy() *_SALDataHeating {
+	if m == nil {
+		return nil
+	}
+	_SALDataHeatingCopy := &_SALDataHeating{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.HeatingData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataHeatingCopy
+}
 
 func (m *_SALDataHeating) String() string {
 	if m == nil {

@@ -36,6 +36,7 @@ type MeteringDataMeasureDrinkingWater interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// IsMeteringDataMeasureDrinkingWater is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureDrinkingWater()
@@ -49,6 +50,15 @@ type _MeteringDataMeasureDrinkingWater struct {
 var _ MeteringDataMeasureDrinkingWater = (*_MeteringDataMeasureDrinkingWater)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataMeasureDrinkingWater)(nil)
 
+// NewMeteringDataMeasureDrinkingWater factory function for _MeteringDataMeasureDrinkingWater
+func NewMeteringDataMeasureDrinkingWater(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureDrinkingWater {
+	_result := &_MeteringDataMeasureDrinkingWater{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ MeteringDataRequirements = (*_MeteringDataMeasureDrinkingWater)(nil)
 
 func (m *_MeteringDataMeasureDrinkingWater) GetParent() MeteringDataContract {
 	return m.MeteringDataContract
-}
-
-// NewMeteringDataMeasureDrinkingWater factory function for _MeteringDataMeasureDrinkingWater
-func NewMeteringDataMeasureDrinkingWater(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureDrinkingWater {
-	_result := &_MeteringDataMeasureDrinkingWater{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_MeteringDataMeasureDrinkingWater) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_MeteringDataMeasureDrinkingWater) IsMeteringDataMeasureDrinkingWater() {}
+
+func (m *_MeteringDataMeasureDrinkingWater) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataMeasureDrinkingWater) deepCopy() *_MeteringDataMeasureDrinkingWater {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataMeasureDrinkingWaterCopy := &_MeteringDataMeasureDrinkingWater{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataMeasureDrinkingWaterCopy
+}
 
 func (m *_MeteringDataMeasureDrinkingWater) String() string {
 	if m == nil {

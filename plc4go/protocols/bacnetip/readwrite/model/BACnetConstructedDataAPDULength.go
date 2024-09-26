@@ -38,6 +38,7 @@ type BACnetConstructedDataAPDULength interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetApduLength returns ApduLength (property field)
 	GetApduLength() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAPDULength struct {
 
 var _ BACnetConstructedDataAPDULength = (*_BACnetConstructedDataAPDULength)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAPDULength)(nil)
+
+// NewBACnetConstructedDataAPDULength factory function for _BACnetConstructedDataAPDULength
+func NewBACnetConstructedDataAPDULength(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduLength BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDULength {
+	if apduLength == nil {
+		panic("apduLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDULength must not be nil")
+	}
+	_result := &_BACnetConstructedDataAPDULength{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ApduLength:                    apduLength,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAPDULength) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAPDULength factory function for _BACnetConstructedDataAPDULength
-func NewBACnetConstructedDataAPDULength(apduLength BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDULength {
-	if apduLength == nil {
-		panic("apduLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDULength must not be nil")
-	}
-	_result := &_BACnetConstructedDataAPDULength{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ApduLength:                    apduLength,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAPDULength(structType any) BACnetConstructedDataAPDULength {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAPDULength) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataAPDULength) IsBACnetConstructedDataAPDULength() {}
+
+func (m *_BACnetConstructedDataAPDULength) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAPDULength) deepCopy() *_BACnetConstructedDataAPDULength {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAPDULengthCopy := &_BACnetConstructedDataAPDULength{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ApduLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAPDULengthCopy
+}
 
 func (m *_BACnetConstructedDataAPDULength) String() string {
 	if m == nil {

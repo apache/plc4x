@@ -40,6 +40,7 @@ type MediaTransportControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMediaTransportControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlData()
 }
@@ -72,6 +73,11 @@ type _MediaTransportControlData struct {
 }
 
 var _ MediaTransportControlDataContract = (*_MediaTransportControlData)(nil)
+
+// NewMediaTransportControlData factory function for _MediaTransportControlData
+func NewMediaTransportControlData(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlData {
+	return &_MediaTransportControlData{CommandTypeContainer: commandTypeContainer, MediaLinkGroup: mediaLinkGroup}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,11 +112,6 @@ func (pm *_MediaTransportControlData) GetCommandType() MediaTransportControlComm
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlData factory function for _MediaTransportControlData
-func NewMediaTransportControlData(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlData {
-	return &_MediaTransportControlData{CommandTypeContainer: commandTypeContainer, MediaLinkGroup: mediaLinkGroup}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlData(structType any) MediaTransportControlData {
@@ -210,87 +211,87 @@ func (m *_MediaTransportControlData) parse(ctx context.Context, readBuffer utils
 	var _child MediaTransportControlData
 	switch {
 	case commandType == MediaTransportControlCommandType_STOP: // MediaTransportControlDataStop
-		if _child, err = (&_MediaTransportControlDataStop{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataStop).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataStop for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_PLAY: // MediaTransportControlDataPlay
-		if _child, err = (&_MediaTransportControlDataPlay{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataPlay).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataPlay for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_PAUSE_RESUME: // MediaTransportControlDataPauseResume
-		if _child, err = (&_MediaTransportControlDataPauseResume{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataPauseResume).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataPauseResume for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_SELECT_CATEGORY: // MediaTransportControlDataSetCategory
-		if _child, err = (&_MediaTransportControlDataSetCategory{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataSetCategory).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataSetCategory for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_SELECT_SELECTION: // MediaTransportControlDataSetSelection
-		if _child, err = (&_MediaTransportControlDataSetSelection{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataSetSelection).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataSetSelection for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_SELECT_TRACK: // MediaTransportControlDataSetTrack
-		if _child, err = (&_MediaTransportControlDataSetTrack{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataSetTrack).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataSetTrack for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_SHUFFLE_ON_OFF: // MediaTransportControlDataShuffleOnOff
-		if _child, err = (&_MediaTransportControlDataShuffleOnOff{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataShuffleOnOff).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataShuffleOnOff for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_REPEAT_ON_OFF: // MediaTransportControlDataRepeatOnOff
-		if _child, err = (&_MediaTransportControlDataRepeatOnOff{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataRepeatOnOff).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataRepeatOnOff for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_NEXT_PREVIOUS_CATEGORY: // MediaTransportControlDataNextPreviousCategory
-		if _child, err = (&_MediaTransportControlDataNextPreviousCategory{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataNextPreviousCategory).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataNextPreviousCategory for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_NEXT_PREVIOUS_SELECTION: // MediaTransportControlDataNextPreviousSelection
-		if _child, err = (&_MediaTransportControlDataNextPreviousSelection{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataNextPreviousSelection).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataNextPreviousSelection for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_NEXT_PREVIOUS_TRACK: // MediaTransportControlDataNextPreviousTrack
-		if _child, err = (&_MediaTransportControlDataNextPreviousTrack{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataNextPreviousTrack).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataNextPreviousTrack for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_FAST_FORWARD: // MediaTransportControlDataFastForward
-		if _child, err = (&_MediaTransportControlDataFastForward{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataFastForward).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataFastForward for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_REWIND: // MediaTransportControlDataRewind
-		if _child, err = (&_MediaTransportControlDataRewind{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataRewind).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataRewind for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_SOURCE_POWER_CONTROL: // MediaTransportControlDataSourcePowerControl
-		if _child, err = (&_MediaTransportControlDataSourcePowerControl{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataSourcePowerControl).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataSourcePowerControl for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_TOTAL_TRACKS: // MediaTransportControlDataTotalTracks
-		if _child, err = (&_MediaTransportControlDataTotalTracks{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataTotalTracks).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataTotalTracks for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_STATUS_REQUEST: // MediaTransportControlDataStatusRequest
-		if _child, err = (&_MediaTransportControlDataStatusRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataStatusRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataStatusRequest for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_ENUMERATE_CATEGORIES_SELECTIONS_TRACKS: // MediaTransportControlDataEnumerateCategoriesSelectionTracks
-		if _child, err = (&_MediaTransportControlDataEnumerateCategoriesSelectionTracks{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataEnumerateCategoriesSelectionTracks).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataEnumerateCategoriesSelectionTracks for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_ENUMERATION_SIZE: // MediaTransportControlDataEnumerationsSize
-		if _child, err = (&_MediaTransportControlDataEnumerationsSize{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MediaTransportControlDataEnumerationsSize).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataEnumerationsSize for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_TRACK_NAME: // MediaTransportControlDataTrackName
-		if _child, err = (&_MediaTransportControlDataTrackName{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_MediaTransportControlDataTrackName).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataTrackName for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_SELECTION_NAME: // MediaTransportControlDataSelectionName
-		if _child, err = (&_MediaTransportControlDataSelectionName{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_MediaTransportControlDataSelectionName).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataSelectionName for type-switch of MediaTransportControlData")
 		}
 	case commandType == MediaTransportControlCommandType_CATEGORY_NAME: // MediaTransportControlDataCategoryName
-		if _child, err = (&_MediaTransportControlDataCategoryName{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_MediaTransportControlDataCategoryName).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MediaTransportControlDataCategoryName for type-switch of MediaTransportControlData")
 		}
 	default:
@@ -342,3 +343,19 @@ func (pm *_MediaTransportControlData) serializeParent(ctx context.Context, write
 }
 
 func (m *_MediaTransportControlData) IsMediaTransportControlData() {}
+
+func (m *_MediaTransportControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlData) deepCopy() *_MediaTransportControlData {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataCopy := &_MediaTransportControlData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.MediaLinkGroup,
+	}
+	return _MediaTransportControlDataCopy
+}

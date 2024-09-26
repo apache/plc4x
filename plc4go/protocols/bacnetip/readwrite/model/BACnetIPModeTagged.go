@@ -38,6 +38,7 @@ type BACnetIPModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetIPModeTagged struct {
 
 var _ BACnetIPModeTagged = (*_BACnetIPModeTagged)(nil)
 
+// NewBACnetIPModeTagged factory function for _BACnetIPModeTagged
+func NewBACnetIPModeTagged(header BACnetTagHeader, value BACnetIPMode, tagNumber uint8, tagClass TagClass) *_BACnetIPModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetIPModeTagged must not be nil")
+	}
+	return &_BACnetIPModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetIPModeTagged) GetValue() BACnetIPMode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetIPModeTagged factory function for _BACnetIPModeTagged
-func NewBACnetIPModeTagged(header BACnetTagHeader, value BACnetIPMode, tagNumber uint8, tagClass TagClass) *_BACnetIPModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetIPModeTagged must not be nil")
-	}
-	return &_BACnetIPModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetIPModeTagged(structType any) BACnetIPModeTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetIPModeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetIPModeTagged) IsBACnetIPModeTagged() {}
+
+func (m *_BACnetIPModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetIPModeTagged) deepCopy() *_BACnetIPModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetIPModeTaggedCopy := &_BACnetIPModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetIPModeTaggedCopy
+}
 
 func (m *_BACnetIPModeTagged) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataRecipientList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRecipientList returns RecipientList (property field)
 	GetRecipientList() []BACnetDestination
@@ -53,6 +54,16 @@ type _BACnetConstructedDataRecipientList struct {
 
 var _ BACnetConstructedDataRecipientList = (*_BACnetConstructedDataRecipientList)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRecipientList)(nil)
+
+// NewBACnetConstructedDataRecipientList factory function for _BACnetConstructedDataRecipientList
+func NewBACnetConstructedDataRecipientList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recipientList []BACnetDestination, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecipientList {
+	_result := &_BACnetConstructedDataRecipientList{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RecipientList:                 recipientList,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataRecipientList) GetRecipientList() []BACnetDestina
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRecipientList factory function for _BACnetConstructedDataRecipientList
-func NewBACnetConstructedDataRecipientList(recipientList []BACnetDestination, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecipientList {
-	_result := &_BACnetConstructedDataRecipientList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RecipientList:                 recipientList,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRecipientList(structType any) BACnetConstructedDataRecipientList {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataRecipientList) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataRecipientList) IsBACnetConstructedDataRecipientList() {}
+
+func (m *_BACnetConstructedDataRecipientList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRecipientList) deepCopy() *_BACnetConstructedDataRecipientList {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRecipientListCopy := &_BACnetConstructedDataRecipientList{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDestination, BACnetDestination](m.RecipientList),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRecipientListCopy
+}
 
 func (m *_BACnetConstructedDataRecipientList) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPortPermission interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPort returns Port (property field)
 	GetPort() BACnetContextTagUnsignedInteger
 	// GetEnable returns Enable (property field)
@@ -53,6 +54,14 @@ type _BACnetPortPermission struct {
 }
 
 var _ BACnetPortPermission = (*_BACnetPortPermission)(nil)
+
+// NewBACnetPortPermission factory function for _BACnetPortPermission
+func NewBACnetPortPermission(port BACnetContextTagUnsignedInteger, enable BACnetContextTagBoolean) *_BACnetPortPermission {
+	if port == nil {
+		panic("port of type BACnetContextTagUnsignedInteger for BACnetPortPermission must not be nil")
+	}
+	return &_BACnetPortPermission{Port: port, Enable: enable}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +80,6 @@ func (m *_BACnetPortPermission) GetEnable() BACnetContextTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPortPermission factory function for _BACnetPortPermission
-func NewBACnetPortPermission(port BACnetContextTagUnsignedInteger, enable BACnetContextTagBoolean) *_BACnetPortPermission {
-	if port == nil {
-		panic("port of type BACnetContextTagUnsignedInteger for BACnetPortPermission must not be nil")
-	}
-	return &_BACnetPortPermission{Port: port, Enable: enable}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPortPermission(structType any) BACnetPortPermission {
@@ -195,6 +196,21 @@ func (m *_BACnetPortPermission) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetPortPermission) IsBACnetPortPermission() {}
+
+func (m *_BACnetPortPermission) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPortPermission) deepCopy() *_BACnetPortPermission {
+	if m == nil {
+		return nil
+	}
+	_BACnetPortPermissionCopy := &_BACnetPortPermission{
+		m.Port.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetPortPermissionCopy
+}
 
 func (m *_BACnetPortPermission) String() string {
 	if m == nil {

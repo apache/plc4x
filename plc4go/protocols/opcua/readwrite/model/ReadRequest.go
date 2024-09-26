@@ -38,6 +38,7 @@ type ReadRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _ReadRequest struct {
 
 var _ ReadRequest = (*_ReadRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReadRequest)(nil)
+
+// NewReadRequest factory function for _ReadRequest
+func NewReadRequest(requestHeader ExtensionObjectDefinition, maxAge float64, timestampsToReturn TimestampsToReturn, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_ReadRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ReadRequest must not be nil")
+	}
+	_result := &_ReadRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		MaxAge:                            maxAge,
+		TimestampsToReturn:                timestampsToReturn,
+		NoOfNodesToRead:                   noOfNodesToRead,
+		NodesToRead:                       nodesToRead,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_ReadRequest) GetNodesToRead() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReadRequest factory function for _ReadRequest
-func NewReadRequest(requestHeader ExtensionObjectDefinition, maxAge float64, timestampsToReturn TimestampsToReturn, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_ReadRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ReadRequest must not be nil")
-	}
-	_result := &_ReadRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		MaxAge:                            maxAge,
-		TimestampsToReturn:                timestampsToReturn,
-		NoOfNodesToRead:                   noOfNodesToRead,
-		NodesToRead:                       nodesToRead,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReadRequest(structType any) ReadRequest {
@@ -273,6 +274,26 @@ func (m *_ReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_ReadRequest) IsReadRequest() {}
+
+func (m *_ReadRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReadRequest) deepCopy() *_ReadRequest {
+	if m == nil {
+		return nil
+	}
+	_ReadRequestCopy := &_ReadRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.MaxAge,
+		m.TimestampsToReturn,
+		m.NoOfNodesToRead,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToRead),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReadRequestCopy
+}
 
 func (m *_ReadRequest) String() string {
 	if m == nil {

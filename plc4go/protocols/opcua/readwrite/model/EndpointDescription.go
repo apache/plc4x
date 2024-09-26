@@ -38,6 +38,7 @@ type EndpointDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetEndpointUrl returns EndpointUrl (property field)
 	GetEndpointUrl() PascalString
@@ -77,6 +78,39 @@ type _EndpointDescription struct {
 
 var _ EndpointDescription = (*_EndpointDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointDescription)(nil)
+
+// NewEndpointDescription factory function for _EndpointDescription
+func NewEndpointDescription(endpointUrl PascalString, server ExtensionObjectDefinition, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, noOfUserIdentityTokens int32, userIdentityTokens []ExtensionObjectDefinition, transportProfileUri PascalString, securityLevel uint8) *_EndpointDescription {
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for EndpointDescription must not be nil")
+	}
+	if server == nil {
+		panic("server of type ExtensionObjectDefinition for EndpointDescription must not be nil")
+	}
+	if serverCertificate == nil {
+		panic("serverCertificate of type PascalByteString for EndpointDescription must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for EndpointDescription must not be nil")
+	}
+	if transportProfileUri == nil {
+		panic("transportProfileUri of type PascalString for EndpointDescription must not be nil")
+	}
+	_result := &_EndpointDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		EndpointUrl:                       endpointUrl,
+		Server:                            server,
+		ServerCertificate:                 serverCertificate,
+		SecurityMode:                      securityMode,
+		SecurityPolicyUri:                 securityPolicyUri,
+		NoOfUserIdentityTokens:            noOfUserIdentityTokens,
+		UserIdentityTokens:                userIdentityTokens,
+		TransportProfileUri:               transportProfileUri,
+		SecurityLevel:                     securityLevel,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -141,39 +175,6 @@ func (m *_EndpointDescription) GetSecurityLevel() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEndpointDescription factory function for _EndpointDescription
-func NewEndpointDescription(endpointUrl PascalString, server ExtensionObjectDefinition, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, noOfUserIdentityTokens int32, userIdentityTokens []ExtensionObjectDefinition, transportProfileUri PascalString, securityLevel uint8) *_EndpointDescription {
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for EndpointDescription must not be nil")
-	}
-	if server == nil {
-		panic("server of type ExtensionObjectDefinition for EndpointDescription must not be nil")
-	}
-	if serverCertificate == nil {
-		panic("serverCertificate of type PascalByteString for EndpointDescription must not be nil")
-	}
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for EndpointDescription must not be nil")
-	}
-	if transportProfileUri == nil {
-		panic("transportProfileUri of type PascalString for EndpointDescription must not be nil")
-	}
-	_result := &_EndpointDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		EndpointUrl:                       endpointUrl,
-		Server:                            server,
-		ServerCertificate:                 serverCertificate,
-		SecurityMode:                      securityMode,
-		SecurityPolicyUri:                 securityPolicyUri,
-		NoOfUserIdentityTokens:            noOfUserIdentityTokens,
-		UserIdentityTokens:                userIdentityTokens,
-		TransportProfileUri:               transportProfileUri,
-		SecurityLevel:                     securityLevel,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEndpointDescription(structType any) EndpointDescription {
@@ -369,6 +370,30 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_EndpointDescription) IsEndpointDescription() {}
+
+func (m *_EndpointDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EndpointDescription) deepCopy() *_EndpointDescription {
+	if m == nil {
+		return nil
+	}
+	_EndpointDescriptionCopy := &_EndpointDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.EndpointUrl.DeepCopy().(PascalString),
+		m.Server.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerCertificate.DeepCopy().(PascalByteString),
+		m.SecurityMode,
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.NoOfUserIdentityTokens,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.UserIdentityTokens),
+		m.TransportProfileUri.DeepCopy().(PascalString),
+		m.SecurityLevel,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EndpointDescriptionCopy
+}
 
 func (m *_EndpointDescription) String() string {
 	if m == nil {

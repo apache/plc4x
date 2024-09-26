@@ -38,6 +38,7 @@ type BACnetLiftCarDriveStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetLiftCarDriveStatusTagged struct {
 }
 
 var _ BACnetLiftCarDriveStatusTagged = (*_BACnetLiftCarDriveStatusTagged)(nil)
+
+// NewBACnetLiftCarDriveStatusTagged factory function for _BACnetLiftCarDriveStatusTagged
+func NewBACnetLiftCarDriveStatusTagged(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDriveStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftCarDriveStatusTagged must not be nil")
+	}
+	return &_BACnetLiftCarDriveStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetLiftCarDriveStatusTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftCarDriveStatusTagged factory function for _BACnetLiftCarDriveStatusTagged
-func NewBACnetLiftCarDriveStatusTagged(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDriveStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLiftCarDriveStatusTagged must not be nil")
-	}
-	return &_BACnetLiftCarDriveStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftCarDriveStatusTagged(structType any) BACnetLiftCarDriveStatusTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetLiftCarDriveStatusTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLiftCarDriveStatusTagged) IsBACnetLiftCarDriveStatusTagged() {}
+
+func (m *_BACnetLiftCarDriveStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftCarDriveStatusTagged) deepCopy() *_BACnetLiftCarDriveStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftCarDriveStatusTaggedCopy := &_BACnetLiftCarDriveStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLiftCarDriveStatusTaggedCopy
+}
 
 func (m *_BACnetLiftCarDriveStatusTagged) String() string {
 	if m == nil {

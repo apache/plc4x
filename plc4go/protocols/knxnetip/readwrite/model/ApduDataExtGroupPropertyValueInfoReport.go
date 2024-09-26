@@ -36,6 +36,7 @@ type ApduDataExtGroupPropertyValueInfoReport interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtGroupPropertyValueInfoReport is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtGroupPropertyValueInfoReport()
@@ -48,6 +49,15 @@ type _ApduDataExtGroupPropertyValueInfoReport struct {
 
 var _ ApduDataExtGroupPropertyValueInfoReport = (*_ApduDataExtGroupPropertyValueInfoReport)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtGroupPropertyValueInfoReport)(nil)
+
+// NewApduDataExtGroupPropertyValueInfoReport factory function for _ApduDataExtGroupPropertyValueInfoReport
+func NewApduDataExtGroupPropertyValueInfoReport(length uint8) *_ApduDataExtGroupPropertyValueInfoReport {
+	_result := &_ApduDataExtGroupPropertyValueInfoReport{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtGroupPropertyValueInfoReport) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtGroupPropertyValueInfoReport) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtGroupPropertyValueInfoReport factory function for _ApduDataExtGroupPropertyValueInfoReport
-func NewApduDataExtGroupPropertyValueInfoReport(length uint8) *_ApduDataExtGroupPropertyValueInfoReport {
-	_result := &_ApduDataExtGroupPropertyValueInfoReport{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtGroupPropertyValueInfoReport) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_ApduDataExtGroupPropertyValueInfoReport) IsApduDataExtGroupPropertyValueInfoReport() {}
+
+func (m *_ApduDataExtGroupPropertyValueInfoReport) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtGroupPropertyValueInfoReport) deepCopy() *_ApduDataExtGroupPropertyValueInfoReport {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtGroupPropertyValueInfoReportCopy := &_ApduDataExtGroupPropertyValueInfoReport{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtGroupPropertyValueInfoReportCopy
+}
 
 func (m *_ApduDataExtGroupPropertyValueInfoReport) String() string {
 	if m == nil {

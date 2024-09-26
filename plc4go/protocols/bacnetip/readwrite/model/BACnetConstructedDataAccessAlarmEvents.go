@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessAlarmEvents interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAccessAlarmEvents returns AccessAlarmEvents (property field)
 	GetAccessAlarmEvents() []BACnetAccessEventTagged
@@ -53,6 +54,16 @@ type _BACnetConstructedDataAccessAlarmEvents struct {
 
 var _ BACnetConstructedDataAccessAlarmEvents = (*_BACnetConstructedDataAccessAlarmEvents)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessAlarmEvents)(nil)
+
+// NewBACnetConstructedDataAccessAlarmEvents factory function for _BACnetConstructedDataAccessAlarmEvents
+func NewBACnetConstructedDataAccessAlarmEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessAlarmEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessAlarmEvents {
+	_result := &_BACnetConstructedDataAccessAlarmEvents{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccessAlarmEvents:             accessAlarmEvents,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataAccessAlarmEvents) GetAccessAlarmEvents() []BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessAlarmEvents factory function for _BACnetConstructedDataAccessAlarmEvents
-func NewBACnetConstructedDataAccessAlarmEvents(accessAlarmEvents []BACnetAccessEventTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessAlarmEvents {
-	_result := &_BACnetConstructedDataAccessAlarmEvents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AccessAlarmEvents:             accessAlarmEvents,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessAlarmEvents(structType any) BACnetConstructedDataAccessAlarmEvents {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataAccessAlarmEvents) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetConstructedDataAccessAlarmEvents) IsBACnetConstructedDataAccessAlarmEvents() {}
+
+func (m *_BACnetConstructedDataAccessAlarmEvents) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessAlarmEvents) deepCopy() *_BACnetConstructedDataAccessAlarmEvents {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessAlarmEventsCopy := &_BACnetConstructedDataAccessAlarmEvents{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetAccessEventTagged, BACnetAccessEventTagged](m.AccessAlarmEvents),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessAlarmEventsCopy
+}
 
 func (m *_BACnetConstructedDataAccessAlarmEvents) String() string {
 	if m == nil {

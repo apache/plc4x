@@ -38,6 +38,7 @@ type InstanceSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPathSegmentType returns PathSegmentType (property field)
 	GetPathSegmentType() uint8
 	// GetLogicalSegmentType returns LogicalSegmentType (property field)
@@ -59,6 +60,11 @@ type _InstanceSegment struct {
 }
 
 var _ InstanceSegment = (*_InstanceSegment)(nil)
+
+// NewInstanceSegment factory function for _InstanceSegment
+func NewInstanceSegment(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, instance uint8) *_InstanceSegment {
+	return &_InstanceSegment{PathSegmentType: pathSegmentType, LogicalSegmentType: logicalSegmentType, LogicalSegmentFormat: logicalSegmentFormat, Instance: instance}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +91,6 @@ func (m *_InstanceSegment) GetInstance() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewInstanceSegment factory function for _InstanceSegment
-func NewInstanceSegment(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, instance uint8) *_InstanceSegment {
-	return &_InstanceSegment{PathSegmentType: pathSegmentType, LogicalSegmentType: logicalSegmentType, LogicalSegmentFormat: logicalSegmentFormat, Instance: instance}
-}
 
 // Deprecated: use the interface for direct cast
 func CastInstanceSegment(structType any) InstanceSegment {
@@ -226,6 +227,23 @@ func (m *_InstanceSegment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_InstanceSegment) IsInstanceSegment() {}
+
+func (m *_InstanceSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_InstanceSegment) deepCopy() *_InstanceSegment {
+	if m == nil {
+		return nil
+	}
+	_InstanceSegmentCopy := &_InstanceSegment{
+		m.PathSegmentType,
+		m.LogicalSegmentType,
+		m.LogicalSegmentFormat,
+		m.Instance,
+	}
+	return _InstanceSegmentCopy
+}
 
 func (m *_InstanceSegment) String() string {
 	if m == nil {

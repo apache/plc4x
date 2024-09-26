@@ -38,6 +38,7 @@ type BACnetPropertyStatesLightningTransition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLightningTransition returns LightningTransition (property field)
 	GetLightningTransition() BACnetLightingTransitionTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesLightningTransition struct {
 
 var _ BACnetPropertyStatesLightningTransition = (*_BACnetPropertyStatesLightningTransition)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLightningTransition)(nil)
+
+// NewBACnetPropertyStatesLightningTransition factory function for _BACnetPropertyStatesLightningTransition
+func NewBACnetPropertyStatesLightningTransition(peekedTagHeader BACnetTagHeader, lightningTransition BACnetLightingTransitionTagged) *_BACnetPropertyStatesLightningTransition {
+	if lightningTransition == nil {
+		panic("lightningTransition of type BACnetLightingTransitionTagged for BACnetPropertyStatesLightningTransition must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLightningTransition{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LightningTransition:          lightningTransition,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesLightningTransition) GetLightningTransition() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLightningTransition factory function for _BACnetPropertyStatesLightningTransition
-func NewBACnetPropertyStatesLightningTransition(lightningTransition BACnetLightingTransitionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLightningTransition {
-	if lightningTransition == nil {
-		panic("lightningTransition of type BACnetLightingTransitionTagged for BACnetPropertyStatesLightningTransition must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLightningTransition{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LightningTransition:          lightningTransition,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLightningTransition(structType any) BACnetPropertyStatesLightningTransition {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesLightningTransition) SerializeWithWriteBuffer(ctx 
 }
 
 func (m *_BACnetPropertyStatesLightningTransition) IsBACnetPropertyStatesLightningTransition() {}
+
+func (m *_BACnetPropertyStatesLightningTransition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLightningTransition) deepCopy() *_BACnetPropertyStatesLightningTransition {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLightningTransitionCopy := &_BACnetPropertyStatesLightningTransition{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LightningTransition.DeepCopy().(BACnetLightingTransitionTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLightningTransitionCopy
+}
 
 func (m *_BACnetPropertyStatesLightningTransition) String() string {
 	if m == nil {

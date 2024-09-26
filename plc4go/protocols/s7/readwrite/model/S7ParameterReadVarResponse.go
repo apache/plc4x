@@ -38,6 +38,7 @@ type S7ParameterReadVarResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetNumItems returns NumItems (property field)
 	GetNumItems() uint8
@@ -53,6 +54,16 @@ type _S7ParameterReadVarResponse struct {
 
 var _ S7ParameterReadVarResponse = (*_S7ParameterReadVarResponse)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterReadVarResponse)(nil)
+
+// NewS7ParameterReadVarResponse factory function for _S7ParameterReadVarResponse
+func NewS7ParameterReadVarResponse(numItems uint8) *_S7ParameterReadVarResponse {
+	_result := &_S7ParameterReadVarResponse{
+		S7ParameterContract: NewS7Parameter(),
+		NumItems:            numItems,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_S7ParameterReadVarResponse) GetNumItems() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterReadVarResponse factory function for _S7ParameterReadVarResponse
-func NewS7ParameterReadVarResponse(numItems uint8) *_S7ParameterReadVarResponse {
-	_result := &_S7ParameterReadVarResponse{
-		S7ParameterContract: NewS7Parameter(),
-		NumItems:            numItems,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterReadVarResponse(structType any) S7ParameterReadVarResponse {
@@ -183,6 +184,22 @@ func (m *_S7ParameterReadVarResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_S7ParameterReadVarResponse) IsS7ParameterReadVarResponse() {}
+
+func (m *_S7ParameterReadVarResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterReadVarResponse) deepCopy() *_S7ParameterReadVarResponse {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterReadVarResponseCopy := &_S7ParameterReadVarResponse{
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
+		m.NumItems,
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterReadVarResponseCopy
+}
 
 func (m *_S7ParameterReadVarResponse) String() string {
 	if m == nil {

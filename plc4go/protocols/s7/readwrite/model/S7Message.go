@@ -43,6 +43,7 @@ type S7Message interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7Message is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Message()
 }
@@ -79,6 +80,11 @@ type _S7Message struct {
 
 var _ S7MessageContract = (*_S7Message)(nil)
 
+// NewS7Message factory function for _S7Message
+func NewS7Message(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7Message {
+	return &_S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -113,11 +119,6 @@ func (m *_S7Message) GetProtocolId() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7Message factory function for _S7Message
-func NewS7Message(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7Message {
-	return &_S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7Message(structType any) S7Message {
@@ -248,19 +249,19 @@ func (m *_S7Message) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child S7Message
 	switch {
 	case messageType == 0x01: // S7MessageRequest
-		if _child, err = (&_S7MessageRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageRequest for type-switch of S7Message")
 		}
 	case messageType == 0x02: // S7MessageResponse
-		if _child, err = (&_S7MessageResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageResponse for type-switch of S7Message")
 		}
 	case messageType == 0x03: // S7MessageResponseData
-		if _child, err = (&_S7MessageResponseData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageResponseData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageResponseData for type-switch of S7Message")
 		}
 	case messageType == 0x07: // S7MessageUserData
-		if _child, err = (&_S7MessageUserData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageUserData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageUserData for type-switch of S7Message")
 		}
 	default:
@@ -350,3 +351,21 @@ func (pm *_S7Message) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_S7Message) IsS7Message() {}
+
+func (m *_S7Message) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7Message) deepCopy() *_S7Message {
+	if m == nil {
+		return nil
+	}
+	_S7MessageCopy := &_S7Message{
+		nil, // will be set by child
+		m.TpduReference,
+		m.Parameter.DeepCopy().(S7Parameter),
+		m.Payload.DeepCopy().(S7Payload),
+		m.reservedField0,
+	}
+	return _S7MessageCopy
+}

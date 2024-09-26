@@ -38,6 +38,7 @@ type AdsDiscoveryBlockPassword interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetPassword returns Password (property field)
 	GetPassword() AmsString
@@ -53,6 +54,19 @@ type _AdsDiscoveryBlockPassword struct {
 
 var _ AdsDiscoveryBlockPassword = (*_AdsDiscoveryBlockPassword)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockPassword)(nil)
+
+// NewAdsDiscoveryBlockPassword factory function for _AdsDiscoveryBlockPassword
+func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPassword {
+	if password == nil {
+		panic("password of type AmsString for AdsDiscoveryBlockPassword must not be nil")
+	}
+	_result := &_AdsDiscoveryBlockPassword{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		Password:                  password,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_AdsDiscoveryBlockPassword) GetPassword() AmsString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockPassword factory function for _AdsDiscoveryBlockPassword
-func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPassword {
-	if password == nil {
-		panic("password of type AmsString for AdsDiscoveryBlockPassword must not be nil")
-	}
-	_result := &_AdsDiscoveryBlockPassword{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		Password:                  password,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockPassword(structType any) AdsDiscoveryBlockPassword {
@@ -182,6 +183,22 @@ func (m *_AdsDiscoveryBlockPassword) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_AdsDiscoveryBlockPassword) IsAdsDiscoveryBlockPassword() {}
+
+func (m *_AdsDiscoveryBlockPassword) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockPassword) deepCopy() *_AdsDiscoveryBlockPassword {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockPasswordCopy := &_AdsDiscoveryBlockPassword{
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
+		m.Password.DeepCopy().(AmsString),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockPasswordCopy
+}
 
 func (m *_AdsDiscoveryBlockPassword) String() string {
 	if m == nil {

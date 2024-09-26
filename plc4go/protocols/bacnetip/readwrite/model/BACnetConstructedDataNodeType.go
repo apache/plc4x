@@ -38,6 +38,7 @@ type BACnetConstructedDataNodeType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNodeType returns NodeType (property field)
 	GetNodeType() BACnetNodeTypeTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataNodeType struct {
 
 var _ BACnetConstructedDataNodeType = (*_BACnetConstructedDataNodeType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNodeType)(nil)
+
+// NewBACnetConstructedDataNodeType factory function for _BACnetConstructedDataNodeType
+func NewBACnetConstructedDataNodeType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeType BACnetNodeTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeType {
+	if nodeType == nil {
+		panic("nodeType of type BACnetNodeTypeTagged for BACnetConstructedDataNodeType must not be nil")
+	}
+	_result := &_BACnetConstructedDataNodeType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NodeType:                      nodeType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataNodeType) GetActualValue() BACnetNodeTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNodeType factory function for _BACnetConstructedDataNodeType
-func NewBACnetConstructedDataNodeType(nodeType BACnetNodeTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeType {
-	if nodeType == nil {
-		panic("nodeType of type BACnetNodeTypeTagged for BACnetConstructedDataNodeType must not be nil")
-	}
-	_result := &_BACnetConstructedDataNodeType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NodeType:                      nodeType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNodeType(structType any) BACnetConstructedDataNodeType {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataNodeType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataNodeType) IsBACnetConstructedDataNodeType() {}
+
+func (m *_BACnetConstructedDataNodeType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNodeType) deepCopy() *_BACnetConstructedDataNodeType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNodeTypeCopy := &_BACnetConstructedDataNodeType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NodeType.DeepCopy().(BACnetNodeTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNodeTypeCopy
+}
 
 func (m *_BACnetConstructedDataNodeType) String() string {
 	if m == nil {

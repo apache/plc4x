@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeSynchronizationRecipients interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeSynchronizationRecipients returns TimeSynchronizationRecipients (property field)
 	GetTimeSynchronizationRecipients() []BACnetRecipient
@@ -53,6 +54,16 @@ type _BACnetConstructedDataTimeSynchronizationRecipients struct {
 
 var _ BACnetConstructedDataTimeSynchronizationRecipients = (*_BACnetConstructedDataTimeSynchronizationRecipients)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeSynchronizationRecipients)(nil)
+
+// NewBACnetConstructedDataTimeSynchronizationRecipients factory function for _BACnetConstructedDataTimeSynchronizationRecipients
+func NewBACnetConstructedDataTimeSynchronizationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronizationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationRecipients {
+	_result := &_BACnetConstructedDataTimeSynchronizationRecipients{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeSynchronizationRecipients: timeSynchronizationRecipients,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) GetTimeSynchroniza
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimeSynchronizationRecipients factory function for _BACnetConstructedDataTimeSynchronizationRecipients
-func NewBACnetConstructedDataTimeSynchronizationRecipients(timeSynchronizationRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationRecipients {
-	_result := &_BACnetConstructedDataTimeSynchronizationRecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimeSynchronizationRecipients: timeSynchronizationRecipients,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimeSynchronizationRecipients(structType any) BACnetConstructedDataTimeSynchronizationRecipients {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) SerializeWithWrite
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationRecipients) IsBACnetConstructedDataTimeSynchronizationRecipients() {
+}
+
+func (m *_BACnetConstructedDataTimeSynchronizationRecipients) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeSynchronizationRecipients) deepCopy() *_BACnetConstructedDataTimeSynchronizationRecipients {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeSynchronizationRecipientsCopy := &_BACnetConstructedDataTimeSynchronizationRecipients{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetRecipient, BACnetRecipient](m.TimeSynchronizationRecipients),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeSynchronizationRecipientsCopy
 }
 
 func (m *_BACnetConstructedDataTimeSynchronizationRecipients) String() string {

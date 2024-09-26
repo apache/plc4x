@@ -75,13 +75,13 @@ func TestCreateRequestContextWithInfoCallback(t *testing.T) {
 			args: args{
 				cBusMessage: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
-						nil,
 						0,
 						nil,
 						nil,
 						0,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+						nil,
 						nil,
 					),
 					nil,
@@ -95,18 +95,18 @@ func TestCreateRequestContextWithInfoCallback(t *testing.T) {
 			args: args{
 				cBusMessage: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestDirectCommandAccess(
-						readWriteModel.NewCALDataIdentify(
-							0,
-							0,
-							nil,
-							nil,
-						),
-						nil,
 						0,
 						nil,
 						nil,
 						0,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							0,
+							nil,
+							0,
+							nil,
+						),
+						nil,
 						nil,
 					),
 					nil,
@@ -120,23 +120,23 @@ func TestCreateRequestContextWithInfoCallback(t *testing.T) {
 			args: args{
 				cBusMessage: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestCommand(
-						readWriteModel.NewCBusCommandPointToPoint(
-							readWriteModel.NewCBusPointToPointCommandDirect(
-								readWriteModel.NewUnitAddress(0),
-								0,
-								readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
-								nil,
-							),
-							readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class2, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
-							nil,
-						),
-						nil,
-						nil,
 						0,
 						nil,
 						nil,
 						0,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCBusCommandPointToPoint(
+							readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class2, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
+							readWriteModel.NewCBusPointToPointCommandDirect(
+								0,
+								readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+								readWriteModel.NewUnitAddress(0),
+								nil,
+							),
+							nil,
+						),
+						nil,
+						nil,
 						nil,
 					),
 					nil,
@@ -150,28 +150,28 @@ func TestCreateRequestContextWithInfoCallback(t *testing.T) {
 			args: args{
 				cBusMessage: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestCommand(
-						readWriteModel.NewCBusCommandPointToPoint(
-							readWriteModel.NewCBusPointToPointCommandDirect(
-								readWriteModel.NewUnitAddress(0),
-								0,
-								readWriteModel.NewCALDataIdentify(
-									0,
-									0,
-									nil,
-									nil,
-								),
-								nil,
-							),
-							readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class2, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
-							nil,
-						),
-						nil,
-						nil,
 						0,
 						nil,
 						nil,
 						0,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCBusCommandPointToPoint(
+							readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class2, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
+							readWriteModel.NewCBusPointToPointCommandDirect(
+								0,
+								readWriteModel.NewCALDataIdentify(
+									0,
+									nil,
+									0,
+									nil,
+								),
+								readWriteModel.NewUnitAddress(0),
+								nil,
+							),
+							nil,
+						),
+						nil,
+						nil,
 						nil,
 					),
 					nil,
@@ -185,13 +185,13 @@ func TestCreateRequestContextWithInfoCallback(t *testing.T) {
 			args: args{
 				cBusMessage: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestObsolete(
-						readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
-						nil,
 						0,
 						nil,
 						nil,
 						0,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataReset(readWriteModel.CALCommandTypeContainer_CALCommandReset, nil, nil),
+						nil,
 						nil,
 					),
 					nil,
@@ -205,18 +205,18 @@ func TestCreateRequestContextWithInfoCallback(t *testing.T) {
 			args: args{
 				cBusMessage: readWriteModel.NewCBusMessageToServer(
 					readWriteModel.NewRequestObsolete(
-						readWriteModel.NewCALDataIdentify(
-							0,
-							0,
-							nil,
-							nil,
-						),
-						nil,
 						0,
 						nil,
 						nil,
 						0,
 						readWriteModel.NewRequestTermination(),
+						readWriteModel.NewCALDataIdentify(
+							0,
+							nil,
+							0,
+							nil,
+						),
+						nil,
 						nil,
 					),
 					nil,
@@ -230,9 +230,13 @@ func TestCreateRequestContextWithInfoCallback(t *testing.T) {
 			args: args{
 				cBusMessage: readWriteModel.NewCBusMessageToClient(
 					readWriteModel.NewReplyOrConfirmationConfirmation(
-						readWriteModel.NewConfirmation(readWriteModel.NewAlpha(0), nil, readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL),
-						nil,
 						0,
+						readWriteModel.NewConfirmation(
+							readWriteModel.NewAlpha(0),
+							nil,
+							readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL,
+						),
+						nil,
 						nil,
 						nil,
 					),

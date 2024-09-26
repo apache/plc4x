@@ -40,6 +40,7 @@ type TypeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTypeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTypeId()
 }
@@ -144,23 +145,23 @@ func (m *_TypeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__typ
 	var _child TypeId
 	switch {
 	case id == 0x0000: // NullAddressItem
-		if _child, err = (&_NullAddressItem{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_NullAddressItem).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullAddressItem for type-switch of TypeId")
 		}
 	case id == 0x0100: // ServicesResponse
-		if _child, err = (&_ServicesResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ServicesResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ServicesResponse for type-switch of TypeId")
 		}
 	case id == 0x00A1: // ConnectedAddressItem
-		if _child, err = (&_ConnectedAddressItem{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectedAddressItem).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectedAddressItem for type-switch of TypeId")
 		}
 	case id == 0x00B1: // ConnectedDataItem
-		if _child, err = (&_ConnectedDataItem{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectedDataItem).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectedDataItem for type-switch of TypeId")
 		}
 	case id == 0x00B2: // UnConnectedDataItem
-		if _child, err = (&_UnConnectedDataItem{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_UnConnectedDataItem).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UnConnectedDataItem for type-switch of TypeId")
 		}
 	default:
@@ -202,3 +203,17 @@ func (pm *_TypeId) serializeParent(ctx context.Context, writeBuffer utils.WriteB
 }
 
 func (m *_TypeId) IsTypeId() {}
+
+func (m *_TypeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TypeId) deepCopy() *_TypeId {
+	if m == nil {
+		return nil
+	}
+	_TypeIdCopy := &_TypeId{
+		nil, // will be set by child
+	}
+	return _TypeIdCopy
+}

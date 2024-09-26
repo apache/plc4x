@@ -36,6 +36,7 @@ type TelephonyDataInternetConnectionRequestMade interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// IsTelephonyDataInternetConnectionRequestMade is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataInternetConnectionRequestMade()
@@ -49,6 +50,15 @@ type _TelephonyDataInternetConnectionRequestMade struct {
 var _ TelephonyDataInternetConnectionRequestMade = (*_TelephonyDataInternetConnectionRequestMade)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataInternetConnectionRequestMade)(nil)
 
+// NewTelephonyDataInternetConnectionRequestMade factory function for _TelephonyDataInternetConnectionRequestMade
+func NewTelephonyDataInternetConnectionRequestMade(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataInternetConnectionRequestMade {
+	_result := &_TelephonyDataInternetConnectionRequestMade{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ TelephonyDataRequirements = (*_TelephonyDataInternetConnectionRequestMade)
 
 func (m *_TelephonyDataInternetConnectionRequestMade) GetParent() TelephonyDataContract {
 	return m.TelephonyDataContract
-}
-
-// NewTelephonyDataInternetConnectionRequestMade factory function for _TelephonyDataInternetConnectionRequestMade
-func NewTelephonyDataInternetConnectionRequestMade(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataInternetConnectionRequestMade {
-	_result := &_TelephonyDataInternetConnectionRequestMade{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_TelephonyDataInternetConnectionRequestMade) SerializeWithWriteBuffer(c
 }
 
 func (m *_TelephonyDataInternetConnectionRequestMade) IsTelephonyDataInternetConnectionRequestMade() {
+}
+
+func (m *_TelephonyDataInternetConnectionRequestMade) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataInternetConnectionRequestMade) deepCopy() *_TelephonyDataInternetConnectionRequestMade {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataInternetConnectionRequestMadeCopy := &_TelephonyDataInternetConnectionRequestMade{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataInternetConnectionRequestMadeCopy
 }
 
 func (m *_TelephonyDataInternetConnectionRequestMade) String() string {

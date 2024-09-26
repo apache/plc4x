@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetResult returns Result (property field)
 	GetResult() uint8
@@ -56,6 +57,17 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse struct {
 
 var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, result uint8, reserved01 uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Result:                        result,
+		Reserved01:                    reserved01,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +112,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetReserve
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(result uint8, reserved01 uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Result:                        result,
-		Reserved01:                    reserved01,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(structType any) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
@@ -208,6 +209,23 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) SerializeW
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseCopy := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.Result,
+		m.Reserved01,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) String() string {

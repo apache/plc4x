@@ -38,6 +38,7 @@ type BACnetConstructedDataFileType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFileType returns FileType (property field)
 	GetFileType() BACnetApplicationTagCharacterString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataFileType struct {
 
 var _ BACnetConstructedDataFileType = (*_BACnetConstructedDataFileType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileType)(nil)
+
+// NewBACnetConstructedDataFileType factory function for _BACnetConstructedDataFileType
+func NewBACnetConstructedDataFileType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileType {
+	if fileType == nil {
+		panic("fileType of type BACnetApplicationTagCharacterString for BACnetConstructedDataFileType must not be nil")
+	}
+	_result := &_BACnetConstructedDataFileType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FileType:                      fileType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataFileType) GetActualValue() BACnetApplicationTagCh
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFileType factory function for _BACnetConstructedDataFileType
-func NewBACnetConstructedDataFileType(fileType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileType {
-	if fileType == nil {
-		panic("fileType of type BACnetApplicationTagCharacterString for BACnetConstructedDataFileType must not be nil")
-	}
-	_result := &_BACnetConstructedDataFileType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FileType:                      fileType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFileType(structType any) BACnetConstructedDataFileType {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataFileType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataFileType) IsBACnetConstructedDataFileType() {}
+
+func (m *_BACnetConstructedDataFileType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFileType) deepCopy() *_BACnetConstructedDataFileType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFileTypeCopy := &_BACnetConstructedDataFileType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FileType.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFileTypeCopy
+}
 
 func (m *_BACnetConstructedDataFileType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetTimerStateChangeValueBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetApplicationTagBitString
@@ -53,6 +54,19 @@ type _BACnetTimerStateChangeValueBitString struct {
 
 var _ BACnetTimerStateChangeValueBitString = (*_BACnetTimerStateChangeValueBitString)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueBitString)(nil)
+
+// NewBACnetTimerStateChangeValueBitString factory function for _BACnetTimerStateChangeValueBitString
+func NewBACnetTimerStateChangeValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetTimerStateChangeValueBitString must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueBitString{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		BitStringValue:                      bitStringValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetTimerStateChangeValueBitString) GetBitStringValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueBitString factory function for _BACnetTimerStateChangeValueBitString
-func NewBACnetTimerStateChangeValueBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueBitString {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetTimerStateChangeValueBitString must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueBitString{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		BitStringValue:                      bitStringValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueBitString(structType any) BACnetTimerStateChangeValueBitString {
@@ -178,6 +179,22 @@ func (m *_BACnetTimerStateChangeValueBitString) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetTimerStateChangeValueBitString) IsBACnetTimerStateChangeValueBitString() {}
+
+func (m *_BACnetTimerStateChangeValueBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueBitString) deepCopy() *_BACnetTimerStateChangeValueBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueBitStringCopy := &_BACnetTimerStateChangeValueBitString{
+		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueBitStringCopy
+}
 
 func (m *_BACnetTimerStateChangeValueBitString) String() string {
 	if m == nil {

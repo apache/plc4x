@@ -38,6 +38,7 @@ type Checksum interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() byte
 	// IsChecksum is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -50,6 +51,11 @@ type _Checksum struct {
 }
 
 var _ Checksum = (*_Checksum)(nil)
+
+// NewChecksum factory function for _Checksum
+func NewChecksum(value byte) *_Checksum {
+	return &_Checksum{Value: value}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_Checksum) GetValue() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChecksum factory function for _Checksum
-func NewChecksum(value byte) *_Checksum {
-	return &_Checksum{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastChecksum(structType any) Checksum {
@@ -166,6 +167,20 @@ func (m *_Checksum) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_Checksum) IsChecksum() {}
+
+func (m *_Checksum) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Checksum) deepCopy() *_Checksum {
+	if m == nil {
+		return nil
+	}
+	_ChecksumCopy := &_Checksum{
+		m.Value,
+	}
+	return _ChecksumCopy
+}
 
 func (m *_Checksum) String() string {
 	if m == nil {

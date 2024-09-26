@@ -38,6 +38,7 @@ type BACnetProgramStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetProgramStateTagged struct {
 
 var _ BACnetProgramStateTagged = (*_BACnetProgramStateTagged)(nil)
 
+// NewBACnetProgramStateTagged factory function for _BACnetProgramStateTagged
+func NewBACnetProgramStateTagged(header BACnetTagHeader, value BACnetProgramState, tagNumber uint8, tagClass TagClass) *_BACnetProgramStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProgramStateTagged must not be nil")
+	}
+	return &_BACnetProgramStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetProgramStateTagged) GetValue() BACnetProgramState {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProgramStateTagged factory function for _BACnetProgramStateTagged
-func NewBACnetProgramStateTagged(header BACnetTagHeader, value BACnetProgramState, tagNumber uint8, tagClass TagClass) *_BACnetProgramStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetProgramStateTagged must not be nil")
-	}
-	return &_BACnetProgramStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProgramStateTagged(structType any) BACnetProgramStateTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetProgramStateTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetProgramStateTagged) IsBACnetProgramStateTagged() {}
+
+func (m *_BACnetProgramStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProgramStateTagged) deepCopy() *_BACnetProgramStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetProgramStateTaggedCopy := &_BACnetProgramStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetProgramStateTaggedCopy
+}
 
 func (m *_BACnetProgramStateTagged) String() string {
 	if m == nil {

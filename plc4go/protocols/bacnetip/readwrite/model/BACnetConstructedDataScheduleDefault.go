@@ -38,6 +38,7 @@ type BACnetConstructedDataScheduleDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetScheduleDefault returns ScheduleDefault (property field)
 	GetScheduleDefault() BACnetConstructedDataElement
@@ -55,6 +56,19 @@ type _BACnetConstructedDataScheduleDefault struct {
 
 var _ BACnetConstructedDataScheduleDefault = (*_BACnetConstructedDataScheduleDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScheduleDefault)(nil)
+
+// NewBACnetConstructedDataScheduleDefault factory function for _BACnetConstructedDataScheduleDefault
+func NewBACnetConstructedDataScheduleDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scheduleDefault BACnetConstructedDataElement, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleDefault {
+	if scheduleDefault == nil {
+		panic("scheduleDefault of type BACnetConstructedDataElement for BACnetConstructedDataScheduleDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataScheduleDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ScheduleDefault:               scheduleDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataScheduleDefault) GetActualValue() BACnetConstruct
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataScheduleDefault factory function for _BACnetConstructedDataScheduleDefault
-func NewBACnetConstructedDataScheduleDefault(scheduleDefault BACnetConstructedDataElement, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleDefault {
-	if scheduleDefault == nil {
-		panic("scheduleDefault of type BACnetConstructedDataElement for BACnetConstructedDataScheduleDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataScheduleDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ScheduleDefault:               scheduleDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataScheduleDefault(structType any) BACnetConstructedDataScheduleDefault {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataScheduleDefault) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataScheduleDefault) IsBACnetConstructedDataScheduleDefault() {}
+
+func (m *_BACnetConstructedDataScheduleDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataScheduleDefault) deepCopy() *_BACnetConstructedDataScheduleDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataScheduleDefaultCopy := &_BACnetConstructedDataScheduleDefault{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ScheduleDefault.DeepCopy().(BACnetConstructedDataElement),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataScheduleDefaultCopy
+}
 
 func (m *_BACnetConstructedDataScheduleDefault) String() string {
 	if m == nil {

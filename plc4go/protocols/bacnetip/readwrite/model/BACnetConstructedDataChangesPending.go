@@ -38,6 +38,7 @@ type BACnetConstructedDataChangesPending interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetChangesPending returns ChangesPending (property field)
 	GetChangesPending() BACnetApplicationTagBoolean
@@ -55,6 +56,19 @@ type _BACnetConstructedDataChangesPending struct {
 
 var _ BACnetConstructedDataChangesPending = (*_BACnetConstructedDataChangesPending)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangesPending)(nil)
+
+// NewBACnetConstructedDataChangesPending factory function for _BACnetConstructedDataChangesPending
+func NewBACnetConstructedDataChangesPending(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changesPending BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangesPending {
+	if changesPending == nil {
+		panic("changesPending of type BACnetApplicationTagBoolean for BACnetConstructedDataChangesPending must not be nil")
+	}
+	_result := &_BACnetConstructedDataChangesPending{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ChangesPending:                changesPending,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataChangesPending) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataChangesPending factory function for _BACnetConstructedDataChangesPending
-func NewBACnetConstructedDataChangesPending(changesPending BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangesPending {
-	if changesPending == nil {
-		panic("changesPending of type BACnetApplicationTagBoolean for BACnetConstructedDataChangesPending must not be nil")
-	}
-	_result := &_BACnetConstructedDataChangesPending{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ChangesPending:                changesPending,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataChangesPending(structType any) BACnetConstructedDataChangesPending {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_BACnetConstructedDataChangesPending) IsBACnetConstructedDataChangesPending() {}
+
+func (m *_BACnetConstructedDataChangesPending) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataChangesPending) deepCopy() *_BACnetConstructedDataChangesPending {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataChangesPendingCopy := &_BACnetConstructedDataChangesPending{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ChangesPending.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataChangesPendingCopy
+}
 
 func (m *_BACnetConstructedDataChangesPending) String() string {
 	if m == nil {

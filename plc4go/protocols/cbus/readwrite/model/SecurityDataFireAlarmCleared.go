@@ -36,6 +36,7 @@ type SecurityDataFireAlarmCleared interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataFireAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataFireAlarmCleared()
@@ -49,6 +50,15 @@ type _SecurityDataFireAlarmCleared struct {
 var _ SecurityDataFireAlarmCleared = (*_SecurityDataFireAlarmCleared)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataFireAlarmCleared)(nil)
 
+// NewSecurityDataFireAlarmCleared factory function for _SecurityDataFireAlarmCleared
+func NewSecurityDataFireAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataFireAlarmCleared {
+	_result := &_SecurityDataFireAlarmCleared{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataFireAlarmCleared)(nil)
 
 func (m *_SecurityDataFireAlarmCleared) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataFireAlarmCleared factory function for _SecurityDataFireAlarmCleared
-func NewSecurityDataFireAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataFireAlarmCleared {
-	_result := &_SecurityDataFireAlarmCleared{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataFireAlarmCleared) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SecurityDataFireAlarmCleared) IsSecurityDataFireAlarmCleared() {}
+
+func (m *_SecurityDataFireAlarmCleared) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataFireAlarmCleared) deepCopy() *_SecurityDataFireAlarmCleared {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataFireAlarmClearedCopy := &_SecurityDataFireAlarmCleared{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataFireAlarmClearedCopy
+}
 
 func (m *_SecurityDataFireAlarmCleared) String() string {
 	if m == nil {

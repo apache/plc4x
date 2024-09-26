@@ -38,6 +38,7 @@ type SemanticChangeStructureDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAffected returns Affected (property field)
 	GetAffected() NodeId
@@ -56,6 +57,23 @@ type _SemanticChangeStructureDataType struct {
 
 var _ SemanticChangeStructureDataType = (*_SemanticChangeStructureDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SemanticChangeStructureDataType)(nil)
+
+// NewSemanticChangeStructureDataType factory function for _SemanticChangeStructureDataType
+func NewSemanticChangeStructureDataType(affected NodeId, affectedType NodeId) *_SemanticChangeStructureDataType {
+	if affected == nil {
+		panic("affected of type NodeId for SemanticChangeStructureDataType must not be nil")
+	}
+	if affectedType == nil {
+		panic("affectedType of type NodeId for SemanticChangeStructureDataType must not be nil")
+	}
+	_result := &_SemanticChangeStructureDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Affected:                          affected,
+		AffectedType:                      affectedType,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_SemanticChangeStructureDataType) GetAffectedType() NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSemanticChangeStructureDataType factory function for _SemanticChangeStructureDataType
-func NewSemanticChangeStructureDataType(affected NodeId, affectedType NodeId) *_SemanticChangeStructureDataType {
-	if affected == nil {
-		panic("affected of type NodeId for SemanticChangeStructureDataType must not be nil")
-	}
-	if affectedType == nil {
-		panic("affectedType of type NodeId for SemanticChangeStructureDataType must not be nil")
-	}
-	_result := &_SemanticChangeStructureDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Affected:                          affected,
-		AffectedType:                      affectedType,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSemanticChangeStructureDataType(structType any) SemanticChangeStructureDataType {
@@ -206,6 +207,23 @@ func (m *_SemanticChangeStructureDataType) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_SemanticChangeStructureDataType) IsSemanticChangeStructureDataType() {}
+
+func (m *_SemanticChangeStructureDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SemanticChangeStructureDataType) deepCopy() *_SemanticChangeStructureDataType {
+	if m == nil {
+		return nil
+	}
+	_SemanticChangeStructureDataTypeCopy := &_SemanticChangeStructureDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Affected.DeepCopy().(NodeId),
+		m.AffectedType.DeepCopy().(NodeId),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SemanticChangeStructureDataTypeCopy
+}
 
 func (m *_SemanticChangeStructureDataType) String() string {
 	if m == nil {

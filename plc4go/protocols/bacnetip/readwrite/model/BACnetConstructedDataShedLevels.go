@@ -38,6 +38,7 @@ type BACnetConstructedDataShedLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataShedLevels struct {
 
 var _ BACnetConstructedDataShedLevels = (*_BACnetConstructedDataShedLevels)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataShedLevels)(nil)
+
+// NewBACnetConstructedDataShedLevels factory function for _BACnetConstructedDataShedLevels
+func NewBACnetConstructedDataShedLevels(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, shedLevels []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedLevels {
+	_result := &_BACnetConstructedDataShedLevels{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ShedLevels:                    shedLevels,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataShedLevels) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataShedLevels factory function for _BACnetConstructedDataShedLevels
-func NewBACnetConstructedDataShedLevels(numberOfDataElements BACnetApplicationTagUnsignedInteger, shedLevels []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedLevels {
-	_result := &_BACnetConstructedDataShedLevels{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ShedLevels:                    shedLevels,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataShedLevels(structType any) BACnetConstructedDataShedLevels {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataShedLevels) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataShedLevels) IsBACnetConstructedDataShedLevels() {}
+
+func (m *_BACnetConstructedDataShedLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataShedLevels) deepCopy() *_BACnetConstructedDataShedLevels {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataShedLevelsCopy := &_BACnetConstructedDataShedLevels{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ShedLevels),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataShedLevelsCopy
+}
 
 func (m *_BACnetConstructedDataShedLevels) String() string {
 	if m == nil {

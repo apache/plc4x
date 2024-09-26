@@ -36,6 +36,7 @@ type SecurityDataTamperOn interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataTamperOn is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataTamperOn()
@@ -49,6 +50,15 @@ type _SecurityDataTamperOn struct {
 var _ SecurityDataTamperOn = (*_SecurityDataTamperOn)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataTamperOn)(nil)
 
+// NewSecurityDataTamperOn factory function for _SecurityDataTamperOn
+func NewSecurityDataTamperOn(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataTamperOn {
+	_result := &_SecurityDataTamperOn{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ SecurityDataRequirements = (*_SecurityDataTamperOn)(nil)
 
 func (m *_SecurityDataTamperOn) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataTamperOn factory function for _SecurityDataTamperOn
-func NewSecurityDataTamperOn(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataTamperOn {
-	_result := &_SecurityDataTamperOn{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_SecurityDataTamperOn) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_SecurityDataTamperOn) IsSecurityDataTamperOn() {}
+
+func (m *_SecurityDataTamperOn) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataTamperOn) deepCopy() *_SecurityDataTamperOn {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataTamperOnCopy := &_SecurityDataTamperOn{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataTamperOnCopy
+}
 
 func (m *_SecurityDataTamperOn) String() string {
 	if m == nil {

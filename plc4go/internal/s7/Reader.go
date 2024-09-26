@@ -102,10 +102,11 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 		m.log.Trace().Msg("Assemble paket")
 		// TODO: why do we use a uint16 above and the cotp a uint8?
 		tpktPacket := readWriteModel.NewTPKTPacket(
-			readWriteModel.NewCOTPPacketData(true,
-				uint8(tpduId),
+			readWriteModel.NewCOTPPacketData(
 				nil,
 				s7MessageRequest,
+				true,
+				uint8(tpduId),
 				0,
 			),
 		)

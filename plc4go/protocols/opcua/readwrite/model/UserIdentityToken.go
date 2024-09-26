@@ -38,6 +38,7 @@ type UserIdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetPolicyId returns PolicyId (property field)
 	GetPolicyId() PascalString
@@ -56,6 +57,23 @@ type _UserIdentityToken struct {
 
 var _ UserIdentityToken = (*_UserIdentityToken)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UserIdentityToken)(nil)
+
+// NewUserIdentityToken factory function for _UserIdentityToken
+func NewUserIdentityToken(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) *_UserIdentityToken {
+	if policyId == nil {
+		panic("policyId of type PascalString for UserIdentityToken must not be nil")
+	}
+	if userIdentityTokenDefinition == nil {
+		panic("userIdentityTokenDefinition of type UserIdentityTokenDefinition for UserIdentityToken must not be nil")
+	}
+	_result := &_UserIdentityToken{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+		UserIdentityTokenDefinition:       userIdentityTokenDefinition,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_UserIdentityToken) GetUserIdentityTokenDefinition() UserIdentityTokenD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUserIdentityToken factory function for _UserIdentityToken
-func NewUserIdentityToken(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) *_UserIdentityToken {
-	if policyId == nil {
-		panic("policyId of type PascalString for UserIdentityToken must not be nil")
-	}
-	if userIdentityTokenDefinition == nil {
-		panic("userIdentityTokenDefinition of type UserIdentityTokenDefinition for UserIdentityToken must not be nil")
-	}
-	_result := &_UserIdentityToken{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		PolicyId:                          policyId,
-		UserIdentityTokenDefinition:       userIdentityTokenDefinition,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUserIdentityToken(structType any) UserIdentityToken {
@@ -219,6 +220,23 @@ func (m *_UserIdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_UserIdentityToken) IsUserIdentityToken() {}
+
+func (m *_UserIdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UserIdentityToken) deepCopy() *_UserIdentityToken {
+	if m == nil {
+		return nil
+	}
+	_UserIdentityTokenCopy := &_UserIdentityToken{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.PolicyId.DeepCopy().(PascalString),
+		m.UserIdentityTokenDefinition.DeepCopy().(UserIdentityTokenDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UserIdentityTokenCopy
+}
 
 func (m *_UserIdentityToken) String() string {
 	if m == nil {

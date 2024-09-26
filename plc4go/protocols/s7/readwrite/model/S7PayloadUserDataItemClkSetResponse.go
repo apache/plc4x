@@ -36,6 +36,7 @@ type S7PayloadUserDataItemClkSetResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemClkSetResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemClkSetResponse()
@@ -48,6 +49,15 @@ type _S7PayloadUserDataItemClkSetResponse struct {
 
 var _ S7PayloadUserDataItemClkSetResponse = (*_S7PayloadUserDataItemClkSetResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemClkSetResponse)(nil)
+
+// NewS7PayloadUserDataItemClkSetResponse factory function for _S7PayloadUserDataItemClkSetResponse
+func NewS7PayloadUserDataItemClkSetResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkSetResponse {
+	_result := &_S7PayloadUserDataItemClkSetResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_S7PayloadUserDataItemClkSetResponse) GetCpuSubfunction() uint8 {
 
 func (m *_S7PayloadUserDataItemClkSetResponse) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemClkSetResponse factory function for _S7PayloadUserDataItemClkSetResponse
-func NewS7PayloadUserDataItemClkSetResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkSetResponse {
-	_result := &_S7PayloadUserDataItemClkSetResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemClkSetResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_S7PayloadUserDataItemClkSetResponse) IsS7PayloadUserDataItemClkSetResponse() {}
+
+func (m *_S7PayloadUserDataItemClkSetResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemClkSetResponse) deepCopy() *_S7PayloadUserDataItemClkSetResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemClkSetResponseCopy := &_S7PayloadUserDataItemClkSetResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemClkSetResponseCopy
+}
 
 func (m *_S7PayloadUserDataItemClkSetResponse) String() string {
 	if m == nil {

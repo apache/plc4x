@@ -53,12 +53,8 @@ func TestS7MessageBytes(t *testing.T) {
 			args: args{
 				debuggable: model.NewTPKTPacket(
 					model.NewCOTPPacketData(
-						false,
-						13,
 						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 3)},
 						model.NewS7MessageResponseData(
-							0,
-							0,
 							11,
 							model.NewS7ParameterReadVarResponse(1),
 							model.NewS7PayloadReadVarResponse(
@@ -71,7 +67,11 @@ func TestS7MessageBytes(t *testing.T) {
 								},
 								model.NewS7ParameterReadVarResponse(1),
 							),
+							0,
+							0,
 						),
+						false,
+						13,
 						25,
 					),
 				),
@@ -375,8 +375,6 @@ func TestS7MessageBytes(t *testing.T) {
 			args: args{
 				debuggable: model.NewTPKTPacket(
 					model.NewCOTPPacketData(
-						false,
-						13,
 						[]model.COTPParameter{model.NewCOTPParameterTpduSize(model.COTPTpduSize_SIZE_4096, 3)},
 						model.NewS7MessageRequest(
 							13,
@@ -418,6 +416,8 @@ func TestS7MessageBytes(t *testing.T) {
 									)),
 								})),
 						),
+						false,
+						13,
 						98,
 					),
 				),

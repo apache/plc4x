@@ -40,6 +40,7 @@ type ConnectionResponseDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsConnectionResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlock()
 }
@@ -153,11 +154,11 @@ func (m *_ConnectionResponseDataBlock) parse(ctx context.Context, readBuffer uti
 	var _child ConnectionResponseDataBlock
 	switch {
 	case connectionType == 0x03: // ConnectionResponseDataBlockDeviceManagement
-		if _child, err = (&_ConnectionResponseDataBlockDeviceManagement{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionResponseDataBlockDeviceManagement).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionResponseDataBlockDeviceManagement for type-switch of ConnectionResponseDataBlock")
 		}
 	case connectionType == 0x04: // ConnectionResponseDataBlockTunnelConnection
-		if _child, err = (&_ConnectionResponseDataBlockTunnelConnection{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionResponseDataBlockTunnelConnection).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionResponseDataBlockTunnelConnection for type-switch of ConnectionResponseDataBlock")
 		}
 	default:
@@ -203,3 +204,17 @@ func (pm *_ConnectionResponseDataBlock) serializeParent(ctx context.Context, wri
 }
 
 func (m *_ConnectionResponseDataBlock) IsConnectionResponseDataBlock() {}
+
+func (m *_ConnectionResponseDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionResponseDataBlock) deepCopy() *_ConnectionResponseDataBlock {
+	if m == nil {
+		return nil
+	}
+	_ConnectionResponseDataBlockCopy := &_ConnectionResponseDataBlock{
+		nil, // will be set by child
+	}
+	return _ConnectionResponseDataBlockCopy
+}

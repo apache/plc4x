@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeDelay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeDelay returns TimeDelay (property field)
 	GetTimeDelay() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataTimeDelay struct {
 
 var _ BACnetConstructedDataTimeDelay = (*_BACnetConstructedDataTimeDelay)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeDelay)(nil)
+
+// NewBACnetConstructedDataTimeDelay factory function for _BACnetConstructedDataTimeDelay
+func NewBACnetConstructedDataTimeDelay(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeDelay BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeDelay {
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeDelay must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimeDelay{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeDelay:                     timeDelay,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataTimeDelay) GetActualValue() BACnetApplicationTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimeDelay factory function for _BACnetConstructedDataTimeDelay
-func NewBACnetConstructedDataTimeDelay(timeDelay BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeDelay {
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeDelay must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimeDelay{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimeDelay:                     timeDelay,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimeDelay(structType any) BACnetConstructedDataTimeDelay {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataTimeDelay) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataTimeDelay) IsBACnetConstructedDataTimeDelay() {}
+
+func (m *_BACnetConstructedDataTimeDelay) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeDelay) deepCopy() *_BACnetConstructedDataTimeDelay {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeDelayCopy := &_BACnetConstructedDataTimeDelay{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TimeDelay.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeDelayCopy
+}
 
 func (m *_BACnetConstructedDataTimeDelay) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CloseSessionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -58,6 +59,20 @@ type _CloseSessionRequest struct {
 
 var _ CloseSessionRequest = (*_CloseSessionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionRequest)(nil)
+
+// NewCloseSessionRequest factory function for _CloseSessionRequest
+func NewCloseSessionRequest(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) *_CloseSessionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CloseSessionRequest must not be nil")
+	}
+	_result := &_CloseSessionRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		DeleteSubscriptions:               deleteSubscriptions,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,20 +109,6 @@ func (m *_CloseSessionRequest) GetDeleteSubscriptions() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCloseSessionRequest factory function for _CloseSessionRequest
-func NewCloseSessionRequest(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) *_CloseSessionRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CloseSessionRequest must not be nil")
-	}
-	_result := &_CloseSessionRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		DeleteSubscriptions:               deleteSubscriptions,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCloseSessionRequest(structType any) CloseSessionRequest {
@@ -218,6 +219,24 @@ func (m *_CloseSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_CloseSessionRequest) IsCloseSessionRequest() {}
+
+func (m *_CloseSessionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CloseSessionRequest) deepCopy() *_CloseSessionRequest {
+	if m == nil {
+		return nil
+	}
+	_CloseSessionRequestCopy := &_CloseSessionRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.DeleteSubscriptions,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CloseSessionRequestCopy
+}
 
 func (m *_CloseSessionRequest) String() string {
 	if m == nil {

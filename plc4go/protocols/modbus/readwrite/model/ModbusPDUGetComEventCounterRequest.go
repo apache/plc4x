@@ -36,6 +36,7 @@ type ModbusPDUGetComEventCounterRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// IsModbusPDUGetComEventCounterRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUGetComEventCounterRequest()
@@ -48,6 +49,15 @@ type _ModbusPDUGetComEventCounterRequest struct {
 
 var _ ModbusPDUGetComEventCounterRequest = (*_ModbusPDUGetComEventCounterRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUGetComEventCounterRequest)(nil)
+
+// NewModbusPDUGetComEventCounterRequest factory function for _ModbusPDUGetComEventCounterRequest
+func NewModbusPDUGetComEventCounterRequest() *_ModbusPDUGetComEventCounterRequest {
+	_result := &_ModbusPDUGetComEventCounterRequest{
+		ModbusPDUContract: NewModbusPDU(),
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_ModbusPDUGetComEventCounterRequest) GetResponse() bool {
 
 func (m *_ModbusPDUGetComEventCounterRequest) GetParent() ModbusPDUContract {
 	return m.ModbusPDUContract
-}
-
-// NewModbusPDUGetComEventCounterRequest factory function for _ModbusPDUGetComEventCounterRequest
-func NewModbusPDUGetComEventCounterRequest() *_ModbusPDUGetComEventCounterRequest {
-	_result := &_ModbusPDUGetComEventCounterRequest{
-		ModbusPDUContract: NewModbusPDU(),
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_ModbusPDUGetComEventCounterRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ModbusPDUGetComEventCounterRequest) IsModbusPDUGetComEventCounterRequest() {}
+
+func (m *_ModbusPDUGetComEventCounterRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUGetComEventCounterRequest) deepCopy() *_ModbusPDUGetComEventCounterRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUGetComEventCounterRequestCopy := &_ModbusPDUGetComEventCounterRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUGetComEventCounterRequestCopy
+}
 
 func (m *_ModbusPDUGetComEventCounterRequest) String() string {
 	if m == nil {

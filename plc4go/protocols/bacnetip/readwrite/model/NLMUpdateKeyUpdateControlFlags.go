@@ -38,6 +38,7 @@ type NLMUpdateKeyUpdateControlFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSet1KeyRevisionActivationTimeExpirationTimePresent returns Set1KeyRevisionActivationTimeExpirationTimePresent (property field)
 	GetSet1KeyRevisionActivationTimeExpirationTimePresent() bool
 	// GetSet1KeyCountKeyParametersPresent returns Set1KeyCountKeyParametersPresent (property field)
@@ -71,6 +72,11 @@ type _NLMUpdateKeyUpdateControlFlags struct {
 }
 
 var _ NLMUpdateKeyUpdateControlFlags = (*_NLMUpdateKeyUpdateControlFlags)(nil)
+
+// NewNLMUpdateKeyUpdateControlFlags factory function for _NLMUpdateKeyUpdateControlFlags
+func NewNLMUpdateKeyUpdateControlFlags(set1KeyRevisionActivationTimeExpirationTimePresent bool, set1KeyCountKeyParametersPresent bool, set1ShouldBeCleared bool, set2KeyRevisionActivationTimeExpirationTimePresent bool, set2KeyCountKeyParametersPresent bool, set2ShouldBeCleared bool, moreMessagesToBeExpected bool, removeAllKeys bool) *_NLMUpdateKeyUpdateControlFlags {
+	return &_NLMUpdateKeyUpdateControlFlags{Set1KeyRevisionActivationTimeExpirationTimePresent: set1KeyRevisionActivationTimeExpirationTimePresent, Set1KeyCountKeyParametersPresent: set1KeyCountKeyParametersPresent, Set1ShouldBeCleared: set1ShouldBeCleared, Set2KeyRevisionActivationTimeExpirationTimePresent: set2KeyRevisionActivationTimeExpirationTimePresent, Set2KeyCountKeyParametersPresent: set2KeyCountKeyParametersPresent, Set2ShouldBeCleared: set2ShouldBeCleared, MoreMessagesToBeExpected: moreMessagesToBeExpected, RemoveAllKeys: removeAllKeys}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,11 +119,6 @@ func (m *_NLMUpdateKeyUpdateControlFlags) GetRemoveAllKeys() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMUpdateKeyUpdateControlFlags factory function for _NLMUpdateKeyUpdateControlFlags
-func NewNLMUpdateKeyUpdateControlFlags(set1KeyRevisionActivationTimeExpirationTimePresent bool, set1KeyCountKeyParametersPresent bool, set1ShouldBeCleared bool, set2KeyRevisionActivationTimeExpirationTimePresent bool, set2KeyCountKeyParametersPresent bool, set2ShouldBeCleared bool, moreMessagesToBeExpected bool, removeAllKeys bool) *_NLMUpdateKeyUpdateControlFlags {
-	return &_NLMUpdateKeyUpdateControlFlags{Set1KeyRevisionActivationTimeExpirationTimePresent: set1KeyRevisionActivationTimeExpirationTimePresent, Set1KeyCountKeyParametersPresent: set1KeyCountKeyParametersPresent, Set1ShouldBeCleared: set1ShouldBeCleared, Set2KeyRevisionActivationTimeExpirationTimePresent: set2KeyRevisionActivationTimeExpirationTimePresent, Set2KeyCountKeyParametersPresent: set2KeyCountKeyParametersPresent, Set2ShouldBeCleared: set2ShouldBeCleared, MoreMessagesToBeExpected: moreMessagesToBeExpected, RemoveAllKeys: removeAllKeys}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMUpdateKeyUpdateControlFlags(structType any) NLMUpdateKeyUpdateControlFlags {
@@ -306,6 +307,27 @@ func (m *_NLMUpdateKeyUpdateControlFlags) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_NLMUpdateKeyUpdateControlFlags) IsNLMUpdateKeyUpdateControlFlags() {}
+
+func (m *_NLMUpdateKeyUpdateControlFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMUpdateKeyUpdateControlFlags) deepCopy() *_NLMUpdateKeyUpdateControlFlags {
+	if m == nil {
+		return nil
+	}
+	_NLMUpdateKeyUpdateControlFlagsCopy := &_NLMUpdateKeyUpdateControlFlags{
+		m.Set1KeyRevisionActivationTimeExpirationTimePresent,
+		m.Set1KeyCountKeyParametersPresent,
+		m.Set1ShouldBeCleared,
+		m.Set2KeyRevisionActivationTimeExpirationTimePresent,
+		m.Set2KeyCountKeyParametersPresent,
+		m.Set2ShouldBeCleared,
+		m.MoreMessagesToBeExpected,
+		m.RemoveAllKeys,
+	}
+	return _NLMUpdateKeyUpdateControlFlagsCopy
+}
 
 func (m *_NLMUpdateKeyUpdateControlFlags) String() string {
 	if m == nil {

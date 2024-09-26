@@ -38,6 +38,7 @@ type State interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSIG_8 returns SIG_8 (property field)
 	GetSIG_8() bool
 	// GetSIG_7 returns SIG_7 (property field)
@@ -71,6 +72,11 @@ type _State struct {
 }
 
 var _ State = (*_State)(nil)
+
+// NewState factory function for _State
+func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) *_State {
+	return &_State{SIG_8: SIG_8, SIG_7: SIG_7, SIG_6: SIG_6, SIG_5: SIG_5, SIG_4: SIG_4, SIG_3: SIG_3, SIG_2: SIG_2, SIG_1: SIG_1}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,11 +119,6 @@ func (m *_State) GetSIG_1() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewState factory function for _State
-func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) *_State {
-	return &_State{SIG_8: SIG_8, SIG_7: SIG_7, SIG_6: SIG_6, SIG_5: SIG_5, SIG_4: SIG_4, SIG_3: SIG_3, SIG_2: SIG_2, SIG_1: SIG_1}
-}
 
 // Deprecated: use the interface for direct cast
 func CastState(structType any) State {
@@ -306,6 +307,27 @@ func (m *_State) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 }
 
 func (m *_State) IsState() {}
+
+func (m *_State) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_State) deepCopy() *_State {
+	if m == nil {
+		return nil
+	}
+	_StateCopy := &_State{
+		m.SIG_8,
+		m.SIG_7,
+		m.SIG_6,
+		m.SIG_5,
+		m.SIG_4,
+		m.SIG_3,
+		m.SIG_2,
+		m.SIG_1,
+	}
+	return _StateCopy
+}
 
 func (m *_State) String() string {
 	if m == nil {

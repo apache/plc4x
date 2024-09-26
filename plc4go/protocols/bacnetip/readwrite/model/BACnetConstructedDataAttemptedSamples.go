@@ -38,6 +38,7 @@ type BACnetConstructedDataAttemptedSamples interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAttemptedSamples returns AttemptedSamples (property field)
 	GetAttemptedSamples() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAttemptedSamples struct {
 
 var _ BACnetConstructedDataAttemptedSamples = (*_BACnetConstructedDataAttemptedSamples)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAttemptedSamples)(nil)
+
+// NewBACnetConstructedDataAttemptedSamples factory function for _BACnetConstructedDataAttemptedSamples
+func NewBACnetConstructedDataAttemptedSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, attemptedSamples BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAttemptedSamples {
+	if attemptedSamples == nil {
+		panic("attemptedSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAttemptedSamples must not be nil")
+	}
+	_result := &_BACnetConstructedDataAttemptedSamples{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AttemptedSamples:              attemptedSamples,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAttemptedSamples) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAttemptedSamples factory function for _BACnetConstructedDataAttemptedSamples
-func NewBACnetConstructedDataAttemptedSamples(attemptedSamples BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAttemptedSamples {
-	if attemptedSamples == nil {
-		panic("attemptedSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAttemptedSamples must not be nil")
-	}
-	_result := &_BACnetConstructedDataAttemptedSamples{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AttemptedSamples:              attemptedSamples,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAttemptedSamples(structType any) BACnetConstructedDataAttemptedSamples {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAttemptedSamples) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataAttemptedSamples) IsBACnetConstructedDataAttemptedSamples() {}
+
+func (m *_BACnetConstructedDataAttemptedSamples) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAttemptedSamples) deepCopy() *_BACnetConstructedDataAttemptedSamples {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAttemptedSamplesCopy := &_BACnetConstructedDataAttemptedSamples{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AttemptedSamples.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAttemptedSamplesCopy
+}
 
 func (m *_BACnetConstructedDataAttemptedSamples) String() string {
 	if m == nil {

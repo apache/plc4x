@@ -36,6 +36,7 @@ type ApduDataExtReadRouterMemoryResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtReadRouterMemoryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtReadRouterMemoryResponse()
@@ -48,6 +49,15 @@ type _ApduDataExtReadRouterMemoryResponse struct {
 
 var _ ApduDataExtReadRouterMemoryResponse = (*_ApduDataExtReadRouterMemoryResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtReadRouterMemoryResponse)(nil)
+
+// NewApduDataExtReadRouterMemoryResponse factory function for _ApduDataExtReadRouterMemoryResponse
+func NewApduDataExtReadRouterMemoryResponse(length uint8) *_ApduDataExtReadRouterMemoryResponse {
+	_result := &_ApduDataExtReadRouterMemoryResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtReadRouterMemoryResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtReadRouterMemoryResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtReadRouterMemoryResponse factory function for _ApduDataExtReadRouterMemoryResponse
-func NewApduDataExtReadRouterMemoryResponse(length uint8) *_ApduDataExtReadRouterMemoryResponse {
-	_result := &_ApduDataExtReadRouterMemoryResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtReadRouterMemoryResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ApduDataExtReadRouterMemoryResponse) IsApduDataExtReadRouterMemoryResponse() {}
+
+func (m *_ApduDataExtReadRouterMemoryResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtReadRouterMemoryResponse) deepCopy() *_ApduDataExtReadRouterMemoryResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtReadRouterMemoryResponseCopy := &_ApduDataExtReadRouterMemoryResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtReadRouterMemoryResponseCopy
+}
 
 func (m *_ApduDataExtReadRouterMemoryResponse) String() string {
 	if m == nil {

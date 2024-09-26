@@ -38,6 +38,7 @@ type SubscribeCOVPropertyMultipleError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -56,6 +57,23 @@ type _SubscribeCOVPropertyMultipleError struct {
 
 var _ SubscribeCOVPropertyMultipleError = (*_SubscribeCOVPropertyMultipleError)(nil)
 var _ BACnetErrorRequirements = (*_SubscribeCOVPropertyMultipleError)(nil)
+
+// NewSubscribeCOVPropertyMultipleError factory function for _SubscribeCOVPropertyMultipleError
+func NewSubscribeCOVPropertyMultipleError(errorType ErrorEnclosed, firstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) *_SubscribeCOVPropertyMultipleError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for SubscribeCOVPropertyMultipleError must not be nil")
+	}
+	if firstFailedSubscription == nil {
+		panic("firstFailedSubscription of type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription for SubscribeCOVPropertyMultipleError must not be nil")
+	}
+	_result := &_SubscribeCOVPropertyMultipleError{
+		BACnetErrorContract:     NewBACnetError(),
+		ErrorType:               errorType,
+		FirstFailedSubscription: firstFailedSubscription,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_SubscribeCOVPropertyMultipleError) GetFirstFailedSubscription() Subscr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSubscribeCOVPropertyMultipleError factory function for _SubscribeCOVPropertyMultipleError
-func NewSubscribeCOVPropertyMultipleError(errorType ErrorEnclosed, firstFailedSubscription SubscribeCOVPropertyMultipleErrorFirstFailedSubscription) *_SubscribeCOVPropertyMultipleError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for SubscribeCOVPropertyMultipleError must not be nil")
-	}
-	if firstFailedSubscription == nil {
-		panic("firstFailedSubscription of type SubscribeCOVPropertyMultipleErrorFirstFailedSubscription for SubscribeCOVPropertyMultipleError must not be nil")
-	}
-	_result := &_SubscribeCOVPropertyMultipleError{
-		BACnetErrorContract:     NewBACnetError(),
-		ErrorType:               errorType,
-		FirstFailedSubscription: firstFailedSubscription,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSubscribeCOVPropertyMultipleError(structType any) SubscribeCOVPropertyMultipleError {
@@ -206,6 +207,23 @@ func (m *_SubscribeCOVPropertyMultipleError) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_SubscribeCOVPropertyMultipleError) IsSubscribeCOVPropertyMultipleError() {}
+
+func (m *_SubscribeCOVPropertyMultipleError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscribeCOVPropertyMultipleError) deepCopy() *_SubscribeCOVPropertyMultipleError {
+	if m == nil {
+		return nil
+	}
+	_SubscribeCOVPropertyMultipleErrorCopy := &_SubscribeCOVPropertyMultipleError{
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.FirstFailedSubscription.DeepCopy().(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _SubscribeCOVPropertyMultipleErrorCopy
+}
 
 func (m *_SubscribeCOVPropertyMultipleError) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataCountChangeTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCountChangeTime returns CountChangeTime (property field)
 	GetCountChangeTime() BACnetDateTime
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCountChangeTime struct {
 
 var _ BACnetConstructedDataCountChangeTime = (*_BACnetConstructedDataCountChangeTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCountChangeTime)(nil)
+
+// NewBACnetConstructedDataCountChangeTime factory function for _BACnetConstructedDataCountChangeTime
+func NewBACnetConstructedDataCountChangeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, countChangeTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountChangeTime {
+	if countChangeTime == nil {
+		panic("countChangeTime of type BACnetDateTime for BACnetConstructedDataCountChangeTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataCountChangeTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CountChangeTime:               countChangeTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCountChangeTime) GetActualValue() BACnetDateTime 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCountChangeTime factory function for _BACnetConstructedDataCountChangeTime
-func NewBACnetConstructedDataCountChangeTime(countChangeTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountChangeTime {
-	if countChangeTime == nil {
-		panic("countChangeTime of type BACnetDateTime for BACnetConstructedDataCountChangeTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataCountChangeTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CountChangeTime:               countChangeTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCountChangeTime(structType any) BACnetConstructedDataCountChangeTime {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCountChangeTime) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BACnetConstructedDataCountChangeTime) IsBACnetConstructedDataCountChangeTime() {}
+
+func (m *_BACnetConstructedDataCountChangeTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCountChangeTime) deepCopy() *_BACnetConstructedDataCountChangeTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCountChangeTimeCopy := &_BACnetConstructedDataCountChangeTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CountChangeTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCountChangeTimeCopy
+}
 
 func (m *_BACnetConstructedDataCountChangeTime) String() string {
 	if m == nil {

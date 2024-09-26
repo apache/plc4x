@@ -36,6 +36,7 @@ type BACnetConstructedDataFileAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataFileAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFileAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataFileAll struct {
 
 var _ BACnetConstructedDataFileAll = (*_BACnetConstructedDataFileAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileAll)(nil)
+
+// NewBACnetConstructedDataFileAll factory function for _BACnetConstructedDataFileAll
+func NewBACnetConstructedDataFileAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAll {
+	_result := &_BACnetConstructedDataFileAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataFileAll) GetPropertyIdentifierArgument() BACnetPr
 
 func (m *_BACnetConstructedDataFileAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataFileAll factory function for _BACnetConstructedDataFileAll
-func NewBACnetConstructedDataFileAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAll {
-	_result := &_BACnetConstructedDataFileAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataFileAll) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataFileAll) IsBACnetConstructedDataFileAll() {}
+
+func (m *_BACnetConstructedDataFileAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFileAll) deepCopy() *_BACnetConstructedDataFileAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFileAllCopy := &_BACnetConstructedDataFileAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFileAllCopy
+}
 
 func (m *_BACnetConstructedDataFileAll) String() string {
 	if m == nil {

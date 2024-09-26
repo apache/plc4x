@@ -38,6 +38,7 @@ type CreateSubscriptionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _CreateSubscriptionResponse struct {
 
 var _ CreateSubscriptionResponse = (*_CreateSubscriptionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CreateSubscriptionResponse)(nil)
+
+// NewCreateSubscriptionResponse factory function for _CreateSubscriptionResponse
+func NewCreateSubscriptionResponse(responseHeader ExtensionObjectDefinition, subscriptionId uint32, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_CreateSubscriptionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CreateSubscriptionResponse must not be nil")
+	}
+	_result := &_CreateSubscriptionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		SubscriptionId:                    subscriptionId,
+		RevisedPublishingInterval:         revisedPublishingInterval,
+		RevisedLifetimeCount:              revisedLifetimeCount,
+		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_CreateSubscriptionResponse) GetRevisedMaxKeepAliveCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCreateSubscriptionResponse factory function for _CreateSubscriptionResponse
-func NewCreateSubscriptionResponse(responseHeader ExtensionObjectDefinition, subscriptionId uint32, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_CreateSubscriptionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CreateSubscriptionResponse must not be nil")
-	}
-	_result := &_CreateSubscriptionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		SubscriptionId:                    subscriptionId,
-		RevisedPublishingInterval:         revisedPublishingInterval,
-		RevisedLifetimeCount:              revisedLifetimeCount,
-		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCreateSubscriptionResponse(structType any) CreateSubscriptionResponse {
@@ -266,6 +267,26 @@ func (m *_CreateSubscriptionResponse) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_CreateSubscriptionResponse) IsCreateSubscriptionResponse() {}
+
+func (m *_CreateSubscriptionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CreateSubscriptionResponse) deepCopy() *_CreateSubscriptionResponse {
+	if m == nil {
+		return nil
+	}
+	_CreateSubscriptionResponseCopy := &_CreateSubscriptionResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.RevisedPublishingInterval,
+		m.RevisedLifetimeCount,
+		m.RevisedMaxKeepAliveCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CreateSubscriptionResponseCopy
+}
 
 func (m *_CreateSubscriptionResponse) String() string {
 	if m == nil {

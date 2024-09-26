@@ -36,6 +36,7 @@ type AdsDeviceNotificationResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDeviceNotificationResponse()
@@ -48,6 +49,15 @@ type _AdsDeviceNotificationResponse struct {
 
 var _ AdsDeviceNotificationResponse = (*_AdsDeviceNotificationResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsDeviceNotificationResponse)(nil)
+
+// NewAdsDeviceNotificationResponse factory function for _AdsDeviceNotificationResponse
+func NewAdsDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeviceNotificationResponse {
+	_result := &_AdsDeviceNotificationResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_AdsDeviceNotificationResponse) GetResponse() bool {
 
 func (m *_AdsDeviceNotificationResponse) GetParent() AmsPacketContract {
 	return m.AmsPacketContract
-}
-
-// NewAdsDeviceNotificationResponse factory function for _AdsDeviceNotificationResponse
-func NewAdsDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeviceNotificationResponse {
-	_result := &_AdsDeviceNotificationResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_AdsDeviceNotificationResponse) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_AdsDeviceNotificationResponse) IsAdsDeviceNotificationResponse() {}
+
+func (m *_AdsDeviceNotificationResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDeviceNotificationResponse) deepCopy() *_AdsDeviceNotificationResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsDeviceNotificationResponseCopy := &_AdsDeviceNotificationResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsDeviceNotificationResponseCopy
+}
 
 func (m *_AdsDeviceNotificationResponse) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetDeviceObjectPropertyReferenceEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetValue returns Value (property field)
@@ -60,6 +61,20 @@ type _BACnetDeviceObjectPropertyReferenceEnclosed struct {
 
 var _ BACnetDeviceObjectPropertyReferenceEnclosed = (*_BACnetDeviceObjectPropertyReferenceEnclosed)(nil)
 
+// NewBACnetDeviceObjectPropertyReferenceEnclosed factory function for _BACnetDeviceObjectPropertyReferenceEnclosed
+func NewBACnetDeviceObjectPropertyReferenceEnclosed(openingTag BACnetOpeningTag, value BACnetDeviceObjectPropertyReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDeviceObjectPropertyReferenceEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDeviceObjectPropertyReferenceEnclosed must not be nil")
+	}
+	if value == nil {
+		panic("value of type BACnetDeviceObjectPropertyReference for BACnetDeviceObjectPropertyReferenceEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDeviceObjectPropertyReferenceEnclosed must not be nil")
+	}
+	return &_BACnetDeviceObjectPropertyReferenceEnclosed{OpeningTag: openingTag, Value: value, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +96,6 @@ func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) GetClosingTag() BACnetClo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDeviceObjectPropertyReferenceEnclosed factory function for _BACnetDeviceObjectPropertyReferenceEnclosed
-func NewBACnetDeviceObjectPropertyReferenceEnclosed(openingTag BACnetOpeningTag, value BACnetDeviceObjectPropertyReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDeviceObjectPropertyReferenceEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetDeviceObjectPropertyReferenceEnclosed must not be nil")
-	}
-	if value == nil {
-		panic("value of type BACnetDeviceObjectPropertyReference for BACnetDeviceObjectPropertyReferenceEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetDeviceObjectPropertyReferenceEnclosed must not be nil")
-	}
-	return &_BACnetDeviceObjectPropertyReferenceEnclosed{OpeningTag: openingTag, Value: value, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDeviceObjectPropertyReferenceEnclosed(structType any) BACnetDeviceObjectPropertyReferenceEnclosed {
@@ -228,6 +229,23 @@ func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) IsBACnetDeviceObjectPropertyReferenceEnclosed() {
+}
+
+func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) deepCopy() *_BACnetDeviceObjectPropertyReferenceEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetDeviceObjectPropertyReferenceEnclosedCopy := &_BACnetDeviceObjectPropertyReferenceEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.Value.DeepCopy().(BACnetDeviceObjectPropertyReference),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetDeviceObjectPropertyReferenceEnclosedCopy
 }
 
 func (m *_BACnetDeviceObjectPropertyReferenceEnclosed) String() string {

@@ -38,6 +38,7 @@ type BACnetConstructedDataPower interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPower returns Power (property field)
 	GetPower() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataPower struct {
 
 var _ BACnetConstructedDataPower = (*_BACnetConstructedDataPower)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPower)(nil)
+
+// NewBACnetConstructedDataPower factory function for _BACnetConstructedDataPower
+func NewBACnetConstructedDataPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, power BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPower {
+	if power == nil {
+		panic("power of type BACnetApplicationTagReal for BACnetConstructedDataPower must not be nil")
+	}
+	_result := &_BACnetConstructedDataPower{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Power:                         power,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataPower) GetActualValue() BACnetApplicationTagReal 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPower factory function for _BACnetConstructedDataPower
-func NewBACnetConstructedDataPower(power BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPower {
-	if power == nil {
-		panic("power of type BACnetApplicationTagReal for BACnetConstructedDataPower must not be nil")
-	}
-	_result := &_BACnetConstructedDataPower{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Power:                         power,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPower(structType any) BACnetConstructedDataPower {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPower) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_BACnetConstructedDataPower) IsBACnetConstructedDataPower() {}
+
+func (m *_BACnetConstructedDataPower) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPower) deepCopy() *_BACnetConstructedDataPower {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPowerCopy := &_BACnetConstructedDataPower{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Power.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPowerCopy
+}
 
 func (m *_BACnetConstructedDataPower) String() string {
 	if m == nil {

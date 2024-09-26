@@ -38,6 +38,7 @@ type BACnetConstructedDataCharacterStringValueFaultValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataCharacterStringValueFaultValues struct {
 
 var _ BACnetConstructedDataCharacterStringValueFaultValues = (*_BACnetConstructedDataCharacterStringValueFaultValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCharacterStringValueFaultValues)(nil)
+
+// NewBACnetConstructedDataCharacterStringValueFaultValues factory function for _BACnetConstructedDataCharacterStringValueFaultValues
+func NewBACnetConstructedDataCharacterStringValueFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, faultValues []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValueFaultValues {
+	_result := &_BACnetConstructedDataCharacterStringValueFaultValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		FaultValues:                   faultValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataCharacterStringValueFaultValues) GetZero() uint64
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCharacterStringValueFaultValues factory function for _BACnetConstructedDataCharacterStringValueFaultValues
-func NewBACnetConstructedDataCharacterStringValueFaultValues(numberOfDataElements BACnetApplicationTagUnsignedInteger, faultValues []BACnetOptionalCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValueFaultValues {
-	_result := &_BACnetConstructedDataCharacterStringValueFaultValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		FaultValues:                   faultValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCharacterStringValueFaultValues(structType any) BACnetConstructedDataCharacterStringValueFaultValues {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataCharacterStringValueFaultValues) SerializeWithWri
 }
 
 func (m *_BACnetConstructedDataCharacterStringValueFaultValues) IsBACnetConstructedDataCharacterStringValueFaultValues() {
+}
+
+func (m *_BACnetConstructedDataCharacterStringValueFaultValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCharacterStringValueFaultValues) deepCopy() *_BACnetConstructedDataCharacterStringValueFaultValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCharacterStringValueFaultValuesCopy := &_BACnetConstructedDataCharacterStringValueFaultValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetOptionalCharacterString, BACnetOptionalCharacterString](m.FaultValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCharacterStringValueFaultValuesCopy
 }
 
 func (m *_BACnetConstructedDataCharacterStringValueFaultValues) String() string {

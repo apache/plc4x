@@ -38,6 +38,7 @@ type DeleteMonitoredItemsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -62,6 +63,22 @@ type _DeleteMonitoredItemsRequest struct {
 
 var _ DeleteMonitoredItemsRequest = (*_DeleteMonitoredItemsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteMonitoredItemsRequest)(nil)
+
+// NewDeleteMonitoredItemsRequest factory function for _DeleteMonitoredItemsRequest
+func NewDeleteMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_DeleteMonitoredItemsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteMonitoredItemsRequest must not be nil")
+	}
+	_result := &_DeleteMonitoredItemsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
+		MonitoredItemIds:                  monitoredItemIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,22 +123,6 @@ func (m *_DeleteMonitoredItemsRequest) GetMonitoredItemIds() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteMonitoredItemsRequest factory function for _DeleteMonitoredItemsRequest
-func NewDeleteMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_DeleteMonitoredItemsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for DeleteMonitoredItemsRequest must not be nil")
-	}
-	_result := &_DeleteMonitoredItemsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
-		MonitoredItemIds:                  monitoredItemIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteMonitoredItemsRequest(structType any) DeleteMonitoredItemsRequest {
@@ -247,6 +248,25 @@ func (m *_DeleteMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_DeleteMonitoredItemsRequest) IsDeleteMonitoredItemsRequest() {}
+
+func (m *_DeleteMonitoredItemsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteMonitoredItemsRequest) deepCopy() *_DeleteMonitoredItemsRequest {
+	if m == nil {
+		return nil
+	}
+	_DeleteMonitoredItemsRequestCopy := &_DeleteMonitoredItemsRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SubscriptionId,
+		m.NoOfMonitoredItemIds,
+		utils.DeepCopySlice[uint32, uint32](m.MonitoredItemIds),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteMonitoredItemsRequestCopy
+}
 
 func (m *_DeleteMonitoredItemsRequest) String() string {
 	if m == nil {

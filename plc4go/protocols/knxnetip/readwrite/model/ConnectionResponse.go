@@ -40,6 +40,7 @@ type ConnectionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
@@ -64,6 +65,19 @@ type _ConnectionResponse struct {
 
 var _ ConnectionResponse = (*_ConnectionResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_ConnectionResponse)(nil)
+
+// NewConnectionResponse factory function for _ConnectionResponse
+func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint HPAIDataEndpoint, connectionResponseDataBlock ConnectionResponseDataBlock) *_ConnectionResponse {
+	_result := &_ConnectionResponse{
+		KnxNetIpMessageContract:     NewKnxNetIpMessage(),
+		CommunicationChannelId:      communicationChannelId,
+		Status:                      status,
+		HpaiDataEndpoint:            hpaiDataEndpoint,
+		ConnectionResponseDataBlock: connectionResponseDataBlock,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,19 +122,6 @@ func (m *_ConnectionResponse) GetConnectionResponseDataBlock() ConnectionRespons
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionResponse factory function for _ConnectionResponse
-func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint HPAIDataEndpoint, connectionResponseDataBlock ConnectionResponseDataBlock) *_ConnectionResponse {
-	_result := &_ConnectionResponse{
-		KnxNetIpMessageContract:     NewKnxNetIpMessage(),
-		CommunicationChannelId:      communicationChannelId,
-		Status:                      status,
-		HpaiDataEndpoint:            hpaiDataEndpoint,
-		ConnectionResponseDataBlock: connectionResponseDataBlock,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionResponse(structType any) ConnectionResponse {
@@ -256,6 +257,25 @@ func (m *_ConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_ConnectionResponse) IsConnectionResponse() {}
+
+func (m *_ConnectionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionResponse) deepCopy() *_ConnectionResponse {
+	if m == nil {
+		return nil
+	}
+	_ConnectionResponseCopy := &_ConnectionResponse{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.CommunicationChannelId,
+		m.Status,
+		m.HpaiDataEndpoint.DeepCopy().(HPAIDataEndpoint),
+		m.ConnectionResponseDataBlock.DeepCopy().(ConnectionResponseDataBlock),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _ConnectionResponseCopy
+}
 
 func (m *_ConnectionResponse) String() string {
 	if m == nil {

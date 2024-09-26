@@ -38,6 +38,7 @@ type BACnetConstructedDataUTCOffset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUtcOffset returns UtcOffset (property field)
 	GetUtcOffset() BACnetApplicationTagSignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataUTCOffset struct {
 
 var _ BACnetConstructedDataUTCOffset = (*_BACnetConstructedDataUTCOffset)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUTCOffset)(nil)
+
+// NewBACnetConstructedDataUTCOffset factory function for _BACnetConstructedDataUTCOffset
+func NewBACnetConstructedDataUTCOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcOffset BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
+	if utcOffset == nil {
+		panic("utcOffset of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUTCOffset must not be nil")
+	}
+	_result := &_BACnetConstructedDataUTCOffset{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UtcOffset:                     utcOffset,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataUTCOffset) GetActualValue() BACnetApplicationTagS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUTCOffset factory function for _BACnetConstructedDataUTCOffset
-func NewBACnetConstructedDataUTCOffset(utcOffset BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
-	if utcOffset == nil {
-		panic("utcOffset of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUTCOffset must not be nil")
-	}
-	_result := &_BACnetConstructedDataUTCOffset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UtcOffset:                     utcOffset,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUTCOffset(structType any) BACnetConstructedDataUTCOffset {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataUTCOffset) IsBACnetConstructedDataUTCOffset() {}
+
+func (m *_BACnetConstructedDataUTCOffset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUTCOffset) deepCopy() *_BACnetConstructedDataUTCOffset {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUTCOffsetCopy := &_BACnetConstructedDataUTCOffset{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.UtcOffset.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUTCOffsetCopy
+}
 
 func (m *_BACnetConstructedDataUTCOffset) String() string {
 	if m == nil {

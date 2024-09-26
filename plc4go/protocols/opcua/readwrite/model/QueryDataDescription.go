@@ -38,6 +38,7 @@ type QueryDataDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRelativePath returns RelativePath (property field)
 	GetRelativePath() ExtensionObjectDefinition
@@ -59,6 +60,24 @@ type _QueryDataDescription struct {
 
 var _ QueryDataDescription = (*_QueryDataDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryDataDescription)(nil)
+
+// NewQueryDataDescription factory function for _QueryDataDescription
+func NewQueryDataDescription(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) *_QueryDataDescription {
+	if relativePath == nil {
+		panic("relativePath of type ExtensionObjectDefinition for QueryDataDescription must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for QueryDataDescription must not be nil")
+	}
+	_result := &_QueryDataDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RelativePath:                      relativePath,
+		AttributeId:                       attributeId,
+		IndexRange:                        indexRange,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,24 +118,6 @@ func (m *_QueryDataDescription) GetIndexRange() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryDataDescription factory function for _QueryDataDescription
-func NewQueryDataDescription(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) *_QueryDataDescription {
-	if relativePath == nil {
-		panic("relativePath of type ExtensionObjectDefinition for QueryDataDescription must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for QueryDataDescription must not be nil")
-	}
-	_result := &_QueryDataDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RelativePath:                      relativePath,
-		AttributeId:                       attributeId,
-		IndexRange:                        indexRange,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryDataDescription(structType any) QueryDataDescription {
@@ -227,6 +228,24 @@ func (m *_QueryDataDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_QueryDataDescription) IsQueryDataDescription() {}
+
+func (m *_QueryDataDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryDataDescription) deepCopy() *_QueryDataDescription {
+	if m == nil {
+		return nil
+	}
+	_QueryDataDescriptionCopy := &_QueryDataDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RelativePath.DeepCopy().(ExtensionObjectDefinition),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryDataDescriptionCopy
+}
 
 func (m *_QueryDataDescription) String() string {
 	if m == nil {

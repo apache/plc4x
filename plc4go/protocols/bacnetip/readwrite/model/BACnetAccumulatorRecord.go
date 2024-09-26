@@ -38,6 +38,7 @@ type BACnetAccumulatorRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetPresentValue returns PresentValue (property field)
@@ -59,6 +60,23 @@ type _BACnetAccumulatorRecord struct {
 }
 
 var _ BACnetAccumulatorRecord = (*_BACnetAccumulatorRecord)(nil)
+
+// NewBACnetAccumulatorRecord factory function for _BACnetAccumulatorRecord
+func NewBACnetAccumulatorRecord(timestamp BACnetDateTimeEnclosed, presentValue BACnetContextTagSignedInteger, accumulatedValue BACnetContextTagSignedInteger, accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) *_BACnetAccumulatorRecord {
+	if timestamp == nil {
+		panic("timestamp of type BACnetDateTimeEnclosed for BACnetAccumulatorRecord must not be nil")
+	}
+	if presentValue == nil {
+		panic("presentValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
+	}
+	if accumulatedValue == nil {
+		panic("accumulatedValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
+	}
+	if accumulatorStatus == nil {
+		panic("accumulatorStatus of type BACnetAccumulatorRecordAccumulatorStatusTagged for BACnetAccumulatorRecord must not be nil")
+	}
+	return &_BACnetAccumulatorRecord{Timestamp: timestamp, PresentValue: presentValue, AccumulatedValue: accumulatedValue, AccumulatorStatus: accumulatorStatus}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,23 +103,6 @@ func (m *_BACnetAccumulatorRecord) GetAccumulatorStatus() BACnetAccumulatorRecor
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccumulatorRecord factory function for _BACnetAccumulatorRecord
-func NewBACnetAccumulatorRecord(timestamp BACnetDateTimeEnclosed, presentValue BACnetContextTagSignedInteger, accumulatedValue BACnetContextTagSignedInteger, accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) *_BACnetAccumulatorRecord {
-	if timestamp == nil {
-		panic("timestamp of type BACnetDateTimeEnclosed for BACnetAccumulatorRecord must not be nil")
-	}
-	if presentValue == nil {
-		panic("presentValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
-	}
-	if accumulatedValue == nil {
-		panic("accumulatedValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
-	}
-	if accumulatorStatus == nil {
-		panic("accumulatorStatus of type BACnetAccumulatorRecordAccumulatorStatusTagged for BACnetAccumulatorRecord must not be nil")
-	}
-	return &_BACnetAccumulatorRecord{Timestamp: timestamp, PresentValue: presentValue, AccumulatedValue: accumulatedValue, AccumulatorStatus: accumulatorStatus}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccumulatorRecord(structType any) BACnetAccumulatorRecord {
@@ -238,6 +239,23 @@ func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetAccumulatorRecord) IsBACnetAccumulatorRecord() {}
+
+func (m *_BACnetAccumulatorRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccumulatorRecord) deepCopy() *_BACnetAccumulatorRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccumulatorRecordCopy := &_BACnetAccumulatorRecord{
+		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
+		m.PresentValue.DeepCopy().(BACnetContextTagSignedInteger),
+		m.AccumulatedValue.DeepCopy().(BACnetContextTagSignedInteger),
+		m.AccumulatorStatus.DeepCopy().(BACnetAccumulatorRecordAccumulatorStatusTagged),
+	}
+	return _BACnetAccumulatorRecordCopy
+}
 
 func (m *_BACnetAccumulatorRecord) String() string {
 	if m == nil {

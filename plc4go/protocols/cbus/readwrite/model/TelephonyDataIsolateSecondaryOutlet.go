@@ -38,6 +38,7 @@ type TelephonyDataIsolateSecondaryOutlet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetIsolateStatus returns IsolateStatus (property field)
 	GetIsolateStatus() byte
@@ -57,6 +58,16 @@ type _TelephonyDataIsolateSecondaryOutlet struct {
 
 var _ TelephonyDataIsolateSecondaryOutlet = (*_TelephonyDataIsolateSecondaryOutlet)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataIsolateSecondaryOutlet)(nil)
+
+// NewTelephonyDataIsolateSecondaryOutlet factory function for _TelephonyDataIsolateSecondaryOutlet
+func NewTelephonyDataIsolateSecondaryOutlet(commandTypeContainer TelephonyCommandTypeContainer, argument byte, isolateStatus byte) *_TelephonyDataIsolateSecondaryOutlet {
+	_result := &_TelephonyDataIsolateSecondaryOutlet{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		IsolateStatus:         isolateStatus,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +117,6 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetIsToBeIsolated() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataIsolateSecondaryOutlet factory function for _TelephonyDataIsolateSecondaryOutlet
-func NewTelephonyDataIsolateSecondaryOutlet(isolateStatus byte, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataIsolateSecondaryOutlet {
-	_result := &_TelephonyDataIsolateSecondaryOutlet{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		IsolateStatus:         isolateStatus,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataIsolateSecondaryOutlet(structType any) TelephonyDataIsolateSecondaryOutlet {
@@ -228,6 +229,22 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) IsTelephonyDataIsolateSecondaryOutlet() {}
+
+func (m *_TelephonyDataIsolateSecondaryOutlet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataIsolateSecondaryOutlet) deepCopy() *_TelephonyDataIsolateSecondaryOutlet {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataIsolateSecondaryOutletCopy := &_TelephonyDataIsolateSecondaryOutlet{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+		m.IsolateStatus,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataIsolateSecondaryOutletCopy
+}
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) String() string {
 	if m == nil {

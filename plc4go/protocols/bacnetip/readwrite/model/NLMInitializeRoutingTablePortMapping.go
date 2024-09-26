@@ -38,6 +38,7 @@ type NLMInitializeRoutingTablePortMapping interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
 	// GetPortId returns PortId (property field)
@@ -59,6 +60,11 @@ type _NLMInitializeRoutingTablePortMapping struct {
 }
 
 var _ NLMInitializeRoutingTablePortMapping = (*_NLMInitializeRoutingTablePortMapping)(nil)
+
+// NewNLMInitializeRoutingTablePortMapping factory function for _NLMInitializeRoutingTablePortMapping
+func NewNLMInitializeRoutingTablePortMapping(destinationNetworkAddress uint16, portId uint8, portInfoLength uint8, portInfo []byte) *_NLMInitializeRoutingTablePortMapping {
+	return &_NLMInitializeRoutingTablePortMapping{DestinationNetworkAddress: destinationNetworkAddress, PortId: portId, PortInfoLength: portInfoLength, PortInfo: portInfo}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +91,6 @@ func (m *_NLMInitializeRoutingTablePortMapping) GetPortInfo() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMInitializeRoutingTablePortMapping factory function for _NLMInitializeRoutingTablePortMapping
-func NewNLMInitializeRoutingTablePortMapping(destinationNetworkAddress uint16, portId uint8, portInfoLength uint8, portInfo []byte) *_NLMInitializeRoutingTablePortMapping {
-	return &_NLMInitializeRoutingTablePortMapping{DestinationNetworkAddress: destinationNetworkAddress, PortId: portId, PortInfoLength: portInfoLength, PortInfo: portInfo}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMInitializeRoutingTablePortMapping(structType any) NLMInitializeRoutingTablePortMapping {
@@ -228,6 +229,23 @@ func (m *_NLMInitializeRoutingTablePortMapping) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_NLMInitializeRoutingTablePortMapping) IsNLMInitializeRoutingTablePortMapping() {}
+
+func (m *_NLMInitializeRoutingTablePortMapping) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMInitializeRoutingTablePortMapping) deepCopy() *_NLMInitializeRoutingTablePortMapping {
+	if m == nil {
+		return nil
+	}
+	_NLMInitializeRoutingTablePortMappingCopy := &_NLMInitializeRoutingTablePortMapping{
+		m.DestinationNetworkAddress,
+		m.PortId,
+		m.PortInfoLength,
+		utils.DeepCopySlice[byte, byte](m.PortInfo),
+	}
+	return _NLMInitializeRoutingTablePortMappingCopy
+}
 
 func (m *_NLMInitializeRoutingTablePortMapping) String() string {
 	if m == nil {

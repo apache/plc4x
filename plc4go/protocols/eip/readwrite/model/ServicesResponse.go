@@ -38,6 +38,7 @@ type ServicesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetEncapsulationProtocol returns EncapsulationProtocol (property field)
 	GetEncapsulationProtocol() uint16
@@ -65,6 +66,19 @@ type _ServicesResponse struct {
 
 var _ ServicesResponse = (*_ServicesResponse)(nil)
 var _ TypeIdRequirements = (*_ServicesResponse)(nil)
+
+// NewServicesResponse factory function for _ServicesResponse
+func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) *_ServicesResponse {
+	_result := &_ServicesResponse{
+		TypeIdContract:           NewTypeId(),
+		EncapsulationProtocol:    encapsulationProtocol,
+		SupportsCIPEncapsulation: supportsCIPEncapsulation,
+		SupportsUDP:              supportsUDP,
+		Data:                     data,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,19 +123,6 @@ func (m *_ServicesResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServicesResponse factory function for _ServicesResponse
-func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) *_ServicesResponse {
-	_result := &_ServicesResponse{
-		TypeIdContract:           NewTypeId(),
-		EncapsulationProtocol:    encapsulationProtocol,
-		SupportsCIPEncapsulation: supportsCIPEncapsulation,
-		SupportsUDP:              supportsUDP,
-		Data:                     data,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServicesResponse(structType any) ServicesResponse {
@@ -286,6 +287,27 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_ServicesResponse) IsServicesResponse() {}
+
+func (m *_ServicesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServicesResponse) deepCopy() *_ServicesResponse {
+	if m == nil {
+		return nil
+	}
+	_ServicesResponseCopy := &_ServicesResponse{
+		m.TypeIdContract.(*_TypeId).deepCopy(),
+		m.EncapsulationProtocol,
+		m.SupportsCIPEncapsulation,
+		m.SupportsUDP,
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _ServicesResponseCopy
+}
 
 func (m *_ServicesResponse) String() string {
 	if m == nil {

@@ -42,6 +42,7 @@ type ResponseTermination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsResponseTermination is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsResponseTermination()
 }
@@ -51,6 +52,11 @@ type _ResponseTermination struct {
 }
 
 var _ ResponseTermination = (*_ResponseTermination)(nil)
+
+// NewResponseTermination factory function for _ResponseTermination
+func NewResponseTermination() *_ResponseTermination {
+	return &_ResponseTermination{}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,11 +75,6 @@ func (m *_ResponseTermination) GetLf() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewResponseTermination factory function for _ResponseTermination
-func NewResponseTermination() *_ResponseTermination {
-	return &_ResponseTermination{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastResponseTermination(structType any) ResponseTermination {
@@ -184,6 +185,18 @@ func (m *_ResponseTermination) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_ResponseTermination) IsResponseTermination() {}
+
+func (m *_ResponseTermination) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ResponseTermination) deepCopy() *_ResponseTermination {
+	if m == nil {
+		return nil
+	}
+	_ResponseTerminationCopy := &_ResponseTermination{}
+	return _ResponseTerminationCopy
+}
 
 func (m *_ResponseTermination) String() string {
 	if m == nil {

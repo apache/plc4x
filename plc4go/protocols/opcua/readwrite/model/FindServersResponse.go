@@ -38,6 +38,7 @@ type FindServersResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -59,6 +60,21 @@ type _FindServersResponse struct {
 
 var _ FindServersResponse = (*_FindServersResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersResponse)(nil)
+
+// NewFindServersResponse factory function for _FindServersResponse
+func NewFindServersResponse(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) *_FindServersResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for FindServersResponse must not be nil")
+	}
+	_result := &_FindServersResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfServers:                       noOfServers,
+		Servers:                           servers,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +115,6 @@ func (m *_FindServersResponse) GetServers() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFindServersResponse factory function for _FindServersResponse
-func NewFindServersResponse(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) *_FindServersResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for FindServersResponse must not be nil")
-	}
-	_result := &_FindServersResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfServers:                       noOfServers,
-		Servers:                           servers,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFindServersResponse(structType any) FindServersResponse {
@@ -231,6 +232,24 @@ func (m *_FindServersResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_FindServersResponse) IsFindServersResponse() {}
+
+func (m *_FindServersResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FindServersResponse) deepCopy() *_FindServersResponse {
+	if m == nil {
+		return nil
+	}
+	_FindServersResponseCopy := &_FindServersResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfServers,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Servers),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _FindServersResponseCopy
+}
 
 func (m *_FindServersResponse) String() string {
 	if m == nil {

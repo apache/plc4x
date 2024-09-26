@@ -38,6 +38,7 @@ type DataSetWriterDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -82,6 +83,37 @@ type _DataSetWriterDataType struct {
 
 var _ DataSetWriterDataType = (*_DataSetWriterDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataSetWriterDataType)(nil)
+
+// NewDataSetWriterDataType factory function for _DataSetWriterDataType
+func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) *_DataSetWriterDataType {
+	if name == nil {
+		panic("name of type PascalString for DataSetWriterDataType must not be nil")
+	}
+	if dataSetName == nil {
+		panic("dataSetName of type PascalString for DataSetWriterDataType must not be nil")
+	}
+	if transportSettings == nil {
+		panic("transportSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
+	}
+	if messageSettings == nil {
+		panic("messageSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
+	}
+	_result := &_DataSetWriterDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Enabled:                           enabled,
+		DataSetWriterId:                   dataSetWriterId,
+		DataSetFieldContentMask:           dataSetFieldContentMask,
+		KeyFrameCount:                     keyFrameCount,
+		DataSetName:                       dataSetName,
+		NoOfDataSetWriterProperties:       noOfDataSetWriterProperties,
+		DataSetWriterProperties:           dataSetWriterProperties,
+		TransportSettings:                 transportSettings,
+		MessageSettings:                   messageSettings,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -150,37 +182,6 @@ func (m *_DataSetWriterDataType) GetMessageSettings() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataSetWriterDataType factory function for _DataSetWriterDataType
-func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) *_DataSetWriterDataType {
-	if name == nil {
-		panic("name of type PascalString for DataSetWriterDataType must not be nil")
-	}
-	if dataSetName == nil {
-		panic("dataSetName of type PascalString for DataSetWriterDataType must not be nil")
-	}
-	if transportSettings == nil {
-		panic("transportSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
-	}
-	if messageSettings == nil {
-		panic("messageSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
-	}
-	_result := &_DataSetWriterDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Enabled:                           enabled,
-		DataSetWriterId:                   dataSetWriterId,
-		DataSetFieldContentMask:           dataSetFieldContentMask,
-		KeyFrameCount:                     keyFrameCount,
-		DataSetName:                       dataSetName,
-		NoOfDataSetWriterProperties:       noOfDataSetWriterProperties,
-		DataSetWriterProperties:           dataSetWriterProperties,
-		TransportSettings:                 transportSettings,
-		MessageSettings:                   messageSettings,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataSetWriterDataType(structType any) DataSetWriterDataType {
@@ -402,6 +403,32 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_DataSetWriterDataType) IsDataSetWriterDataType() {}
+
+func (m *_DataSetWriterDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSetWriterDataType) deepCopy() *_DataSetWriterDataType {
+	if m == nil {
+		return nil
+	}
+	_DataSetWriterDataTypeCopy := &_DataSetWriterDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.Enabled,
+		m.DataSetWriterId,
+		m.DataSetFieldContentMask,
+		m.KeyFrameCount,
+		m.DataSetName.DeepCopy().(PascalString),
+		m.NoOfDataSetWriterProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.DataSetWriterProperties),
+		m.TransportSettings.DeepCopy().(ExtensionObject),
+		m.MessageSettings.DeepCopy().(ExtensionObject),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataSetWriterDataTypeCopy
+}
 
 func (m *_DataSetWriterDataType) String() string {
 	if m == nil {

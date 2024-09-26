@@ -38,6 +38,7 @@ type BACnetLifeSafetyStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetLifeSafetyStateTagged struct {
 }
 
 var _ BACnetLifeSafetyStateTagged = (*_BACnetLifeSafetyStateTagged)(nil)
+
+// NewBACnetLifeSafetyStateTagged factory function for _BACnetLifeSafetyStateTagged
+func NewBACnetLifeSafetyStateTagged(header BACnetTagHeader, value BACnetLifeSafetyState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLifeSafetyStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLifeSafetyStateTagged must not be nil")
+	}
+	return &_BACnetLifeSafetyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetLifeSafetyStateTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLifeSafetyStateTagged factory function for _BACnetLifeSafetyStateTagged
-func NewBACnetLifeSafetyStateTagged(header BACnetTagHeader, value BACnetLifeSafetyState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLifeSafetyStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLifeSafetyStateTagged must not be nil")
-	}
-	return &_BACnetLifeSafetyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLifeSafetyStateTagged(structType any) BACnetLifeSafetyStateTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetLifeSafetyStateTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLifeSafetyStateTagged) IsBACnetLifeSafetyStateTagged() {}
+
+func (m *_BACnetLifeSafetyStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLifeSafetyStateTagged) deepCopy() *_BACnetLifeSafetyStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLifeSafetyStateTaggedCopy := &_BACnetLifeSafetyStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLifeSafetyStateTaggedCopy
+}
 
 func (m *_BACnetLifeSafetyStateTagged) String() string {
 	if m == nil {

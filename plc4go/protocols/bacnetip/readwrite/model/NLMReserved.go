@@ -38,6 +38,7 @@ type NLMReserved interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetUnknownBytes returns UnknownBytes (property field)
 	GetUnknownBytes() []byte
@@ -53,6 +54,16 @@ type _NLMReserved struct {
 
 var _ NLMReserved = (*_NLMReserved)(nil)
 var _ NLMRequirements = (*_NLMReserved)(nil)
+
+// NewNLMReserved factory function for _NLMReserved
+func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
+	_result := &_NLMReserved{
+		NLMContract:  NewNLM(apduLength),
+		UnknownBytes: unknownBytes,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_NLMReserved) GetUnknownBytes() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMReserved factory function for _NLMReserved
-func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
-	_result := &_NLMReserved{
-		NLMContract:  NewNLM(apduLength),
-		UnknownBytes: unknownBytes,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMReserved(structType any) NLMReserved {
@@ -181,6 +182,22 @@ func (m *_NLMReserved) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_NLMReserved) IsNLMReserved() {}
+
+func (m *_NLMReserved) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMReserved) deepCopy() *_NLMReserved {
+	if m == nil {
+		return nil
+	}
+	_NLMReservedCopy := &_NLMReserved{
+		m.NLMContract.(*_NLM).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMReservedCopy
+}
 
 func (m *_NLMReserved) String() string {
 	if m == nil {

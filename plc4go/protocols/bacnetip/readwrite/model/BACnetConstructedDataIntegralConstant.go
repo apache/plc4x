@@ -38,6 +38,7 @@ type BACnetConstructedDataIntegralConstant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIntegralConstant returns IntegralConstant (property field)
 	GetIntegralConstant() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataIntegralConstant struct {
 
 var _ BACnetConstructedDataIntegralConstant = (*_BACnetConstructedDataIntegralConstant)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegralConstant)(nil)
+
+// NewBACnetConstructedDataIntegralConstant factory function for _BACnetConstructedDataIntegralConstant
+func NewBACnetConstructedDataIntegralConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integralConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstant {
+	if integralConstant == nil {
+		panic("integralConstant of type BACnetApplicationTagReal for BACnetConstructedDataIntegralConstant must not be nil")
+	}
+	_result := &_BACnetConstructedDataIntegralConstant{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IntegralConstant:              integralConstant,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataIntegralConstant) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIntegralConstant factory function for _BACnetConstructedDataIntegralConstant
-func NewBACnetConstructedDataIntegralConstant(integralConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstant {
-	if integralConstant == nil {
-		panic("integralConstant of type BACnetApplicationTagReal for BACnetConstructedDataIntegralConstant must not be nil")
-	}
-	_result := &_BACnetConstructedDataIntegralConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IntegralConstant:              integralConstant,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIntegralConstant(structType any) BACnetConstructedDataIntegralConstant {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataIntegralConstant) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataIntegralConstant) IsBACnetConstructedDataIntegralConstant() {}
+
+func (m *_BACnetConstructedDataIntegralConstant) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntegralConstant) deepCopy() *_BACnetConstructedDataIntegralConstant {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntegralConstantCopy := &_BACnetConstructedDataIntegralConstant{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.IntegralConstant.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntegralConstantCopy
+}
 
 func (m *_BACnetConstructedDataIntegralConstant) String() string {
 	if m == nil {

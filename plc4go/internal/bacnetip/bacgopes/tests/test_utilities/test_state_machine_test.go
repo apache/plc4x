@@ -47,6 +47,10 @@ type TPDU struct {
 
 var _ PDU = TPDU{}
 
+func (t TPDU) GetLeafName() string {
+	return "TPDU"
+}
+
 func (t TPDU) X() []byte {
 	return t.x
 }

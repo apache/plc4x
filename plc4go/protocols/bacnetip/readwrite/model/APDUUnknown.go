@@ -38,6 +38,7 @@ type APDUUnknown interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetUnknownTypeRest returns UnknownTypeRest (property field)
 	GetUnknownTypeRest() uint8
@@ -56,6 +57,17 @@ type _APDUUnknown struct {
 
 var _ APDUUnknown = (*_APDUUnknown)(nil)
 var _ APDURequirements = (*_APDUUnknown)(nil)
+
+// NewAPDUUnknown factory function for _APDUUnknown
+func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte, apduLength uint16) *_APDUUnknown {
+	_result := &_APDUUnknown{
+		APDUContract:    NewAPDU(apduLength),
+		UnknownTypeRest: unknownTypeRest,
+		UnknownBytes:    unknownBytes,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_APDUUnknown) GetUnknownBytes() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUUnknown factory function for _APDUUnknown
-func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte, apduLength uint16) *_APDUUnknown {
-	_result := &_APDUUnknown{
-		APDUContract:    NewAPDU(apduLength),
-		UnknownTypeRest: unknownTypeRest,
-		UnknownBytes:    unknownBytes,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUUnknown(structType any) APDUUnknown {
@@ -202,6 +203,23 @@ func (m *_APDUUnknown) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_APDUUnknown) IsAPDUUnknown() {}
+
+func (m *_APDUUnknown) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUUnknown) deepCopy() *_APDUUnknown {
+	if m == nil {
+		return nil
+	}
+	_APDUUnknownCopy := &_APDUUnknown{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.UnknownTypeRest,
+		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUUnknownCopy
+}
 
 func (m *_APDUUnknown) String() string {
 	if m == nil {

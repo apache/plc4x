@@ -38,6 +38,7 @@ type KnxGroupAddress2Level interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxGroupAddress
 	// GetMainGroup returns MainGroup (property field)
 	GetMainGroup() uint8
@@ -56,6 +57,17 @@ type _KnxGroupAddress2Level struct {
 
 var _ KnxGroupAddress2Level = (*_KnxGroupAddress2Level)(nil)
 var _ KnxGroupAddressRequirements = (*_KnxGroupAddress2Level)(nil)
+
+// NewKnxGroupAddress2Level factory function for _KnxGroupAddress2Level
+func NewKnxGroupAddress2Level(mainGroup uint8, subGroup uint16) *_KnxGroupAddress2Level {
+	_result := &_KnxGroupAddress2Level{
+		KnxGroupAddressContract: NewKnxGroupAddress(),
+		MainGroup:               mainGroup,
+		SubGroup:                subGroup,
+	}
+	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_KnxGroupAddress2Level) GetSubGroup() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxGroupAddress2Level factory function for _KnxGroupAddress2Level
-func NewKnxGroupAddress2Level(mainGroup uint8, subGroup uint16) *_KnxGroupAddress2Level {
-	_result := &_KnxGroupAddress2Level{
-		KnxGroupAddressContract: NewKnxGroupAddress(),
-		MainGroup:               mainGroup,
-		SubGroup:                subGroup,
-	}
-	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxGroupAddress2Level(structType any) KnxGroupAddress2Level {
@@ -200,6 +201,23 @@ func (m *_KnxGroupAddress2Level) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_KnxGroupAddress2Level) IsKnxGroupAddress2Level() {}
+
+func (m *_KnxGroupAddress2Level) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxGroupAddress2Level) deepCopy() *_KnxGroupAddress2Level {
+	if m == nil {
+		return nil
+	}
+	_KnxGroupAddress2LevelCopy := &_KnxGroupAddress2Level{
+		m.KnxGroupAddressContract.(*_KnxGroupAddress).deepCopy(),
+		m.MainGroup,
+		m.SubGroup,
+	}
+	m.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = m
+	return _KnxGroupAddress2LevelCopy
+}
 
 func (m *_KnxGroupAddress2Level) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type HPAIDataEndpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
@@ -56,6 +57,14 @@ type _HPAIDataEndpoint struct {
 }
 
 var _ HPAIDataEndpoint = (*_HPAIDataEndpoint)(nil)
+
+// NewHPAIDataEndpoint factory function for _HPAIDataEndpoint
+func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDataEndpoint {
+	if ipAddress == nil {
+		panic("ipAddress of type IPAddress for HPAIDataEndpoint must not be nil")
+	}
+	return &_HPAIDataEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +87,6 @@ func (m *_HPAIDataEndpoint) GetIpPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHPAIDataEndpoint factory function for _HPAIDataEndpoint
-func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDataEndpoint {
-	if ipAddress == nil {
-		panic("ipAddress of type IPAddress for HPAIDataEndpoint must not be nil")
-	}
-	return &_HPAIDataEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHPAIDataEndpoint(structType any) HPAIDataEndpoint {
@@ -222,6 +223,22 @@ func (m *_HPAIDataEndpoint) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_HPAIDataEndpoint) IsHPAIDataEndpoint() {}
+
+func (m *_HPAIDataEndpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HPAIDataEndpoint) deepCopy() *_HPAIDataEndpoint {
+	if m == nil {
+		return nil
+	}
+	_HPAIDataEndpointCopy := &_HPAIDataEndpoint{
+		m.HostProtocolCode,
+		m.IpAddress.DeepCopy().(IPAddress),
+		m.IpPort,
+	}
+	return _HPAIDataEndpointCopy
+}
 
 func (m *_HPAIDataEndpoint) String() string {
 	if m == nil {

@@ -40,6 +40,7 @@ type BACnetSpecialEventPeriod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetSpecialEventPeriod is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSpecialEventPeriod()
 }
@@ -70,6 +71,14 @@ type _BACnetSpecialEventPeriod struct {
 
 var _ BACnetSpecialEventPeriodContract = (*_BACnetSpecialEventPeriod)(nil)
 
+// NewBACnetSpecialEventPeriod factory function for _BACnetSpecialEventPeriod
+func NewBACnetSpecialEventPeriod(peekedTagHeader BACnetTagHeader) *_BACnetSpecialEventPeriod {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetSpecialEventPeriod must not be nil")
+	}
+	return &_BACnetSpecialEventPeriod{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetSpecialEventPeriod) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSpecialEventPeriod factory function for _BACnetSpecialEventPeriod
-func NewBACnetSpecialEventPeriod(peekedTagHeader BACnetTagHeader) *_BACnetSpecialEventPeriod {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetSpecialEventPeriod must not be nil")
-	}
-	return &_BACnetSpecialEventPeriod{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSpecialEventPeriod(structType any) BACnetSpecialEventPeriod {
@@ -194,11 +195,11 @@ func (m *_BACnetSpecialEventPeriod) parse(ctx context.Context, readBuffer utils.
 	var _child BACnetSpecialEventPeriod
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetSpecialEventPeriodCalendarEntry
-		if _child, err = (&_BACnetSpecialEventPeriodCalendarEntry{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetSpecialEventPeriodCalendarEntry).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetSpecialEventPeriodCalendarEntry for type-switch of BACnetSpecialEventPeriod")
 		}
 	case peekedTagNumber == uint8(1): // BACnetSpecialEventPeriodCalendarReference
-		if _child, err = (&_BACnetSpecialEventPeriodCalendarReference{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetSpecialEventPeriodCalendarReference).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetSpecialEventPeriodCalendarReference for type-switch of BACnetSpecialEventPeriod")
 		}
 	default:
@@ -242,3 +243,18 @@ func (pm *_BACnetSpecialEventPeriod) serializeParent(ctx context.Context, writeB
 }
 
 func (m *_BACnetSpecialEventPeriod) IsBACnetSpecialEventPeriod() {}
+
+func (m *_BACnetSpecialEventPeriod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSpecialEventPeriod) deepCopy() *_BACnetSpecialEventPeriod {
+	if m == nil {
+		return nil
+	}
+	_BACnetSpecialEventPeriodCopy := &_BACnetSpecialEventPeriod{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetSpecialEventPeriodCopy
+}

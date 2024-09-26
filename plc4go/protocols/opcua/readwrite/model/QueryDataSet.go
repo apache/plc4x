@@ -38,6 +38,7 @@ type QueryDataSet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() ExpandedNodeId
@@ -62,6 +63,25 @@ type _QueryDataSet struct {
 
 var _ QueryDataSet = (*_QueryDataSet)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryDataSet)(nil)
+
+// NewQueryDataSet factory function for _QueryDataSet
+func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
+	if nodeId == nil {
+		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
+	}
+	if typeDefinitionNode == nil {
+		panic("typeDefinitionNode of type ExpandedNodeId for QueryDataSet must not be nil")
+	}
+	_result := &_QueryDataSet{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		TypeDefinitionNode:                typeDefinitionNode,
+		NoOfValues:                        noOfValues,
+		Values:                            values,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +126,6 @@ func (m *_QueryDataSet) GetValues() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryDataSet factory function for _QueryDataSet
-func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
-	if nodeId == nil {
-		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
-	}
-	if typeDefinitionNode == nil {
-		panic("typeDefinitionNode of type ExpandedNodeId for QueryDataSet must not be nil")
-	}
-	_result := &_QueryDataSet{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		TypeDefinitionNode:                typeDefinitionNode,
-		NoOfValues:                        noOfValues,
-		Values:                            values,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryDataSet(structType any) QueryDataSet {
@@ -255,6 +256,25 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_QueryDataSet) IsQueryDataSet() {}
+
+func (m *_QueryDataSet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryDataSet) deepCopy() *_QueryDataSet {
+	if m == nil {
+		return nil
+	}
+	_QueryDataSetCopy := &_QueryDataSet{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(ExpandedNodeId),
+		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
+		m.NoOfValues,
+		utils.DeepCopySlice[Variant, Variant](m.Values),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryDataSetCopy
+}
 
 func (m *_QueryDataSet) String() string {
 	if m == nil {

@@ -37,6 +37,7 @@ type BACnetRejectReasonTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() BACnetRejectReason
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -57,6 +58,11 @@ type _BACnetRejectReasonTagged struct {
 }
 
 var _ BACnetRejectReasonTagged = (*_BACnetRejectReasonTagged)(nil)
+
+// NewBACnetRejectReasonTagged factory function for _BACnetRejectReasonTagged
+func NewBACnetRejectReasonTagged(value BACnetRejectReason, proprietaryValue uint32, actualLength uint32) *_BACnetRejectReasonTagged {
+	return &_BACnetRejectReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,11 +96,6 @@ func (m *_BACnetRejectReasonTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRejectReasonTagged factory function for _BACnetRejectReasonTagged
-func NewBACnetRejectReasonTagged(value BACnetRejectReason, proprietaryValue uint32, actualLength uint32) *_BACnetRejectReasonTagged {
-	return &_BACnetRejectReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRejectReasonTagged(structType any) BACnetRejectReasonTagged {
@@ -231,6 +232,22 @@ func (m *_BACnetRejectReasonTagged) GetActualLength() uint32 {
 ////
 
 func (m *_BACnetRejectReasonTagged) IsBACnetRejectReasonTagged() {}
+
+func (m *_BACnetRejectReasonTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRejectReasonTagged) deepCopy() *_BACnetRejectReasonTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetRejectReasonTaggedCopy := &_BACnetRejectReasonTagged{
+		m.Value,
+		m.ProprietaryValue,
+		m.ActualLength,
+	}
+	return _BACnetRejectReasonTaggedCopy
+}
 
 func (m *_BACnetRejectReasonTagged) String() string {
 	if m == nil {

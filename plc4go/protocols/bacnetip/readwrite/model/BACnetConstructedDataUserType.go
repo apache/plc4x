@@ -38,6 +38,7 @@ type BACnetConstructedDataUserType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUserType returns UserType (property field)
 	GetUserType() BACnetAccessUserTypeTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataUserType struct {
 
 var _ BACnetConstructedDataUserType = (*_BACnetConstructedDataUserType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserType)(nil)
+
+// NewBACnetConstructedDataUserType factory function for _BACnetConstructedDataUserType
+func NewBACnetConstructedDataUserType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userType BACnetAccessUserTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserType {
+	if userType == nil {
+		panic("userType of type BACnetAccessUserTypeTagged for BACnetConstructedDataUserType must not be nil")
+	}
+	_result := &_BACnetConstructedDataUserType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UserType:                      userType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataUserType) GetActualValue() BACnetAccessUserTypeTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUserType factory function for _BACnetConstructedDataUserType
-func NewBACnetConstructedDataUserType(userType BACnetAccessUserTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserType {
-	if userType == nil {
-		panic("userType of type BACnetAccessUserTypeTagged for BACnetConstructedDataUserType must not be nil")
-	}
-	_result := &_BACnetConstructedDataUserType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UserType:                      userType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUserType(structType any) BACnetConstructedDataUserType {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataUserType) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataUserType) IsBACnetConstructedDataUserType() {}
+
+func (m *_BACnetConstructedDataUserType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUserType) deepCopy() *_BACnetConstructedDataUserType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUserTypeCopy := &_BACnetConstructedDataUserType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.UserType.DeepCopy().(BACnetAccessUserTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUserTypeCopy
+}
 
 func (m *_BACnetConstructedDataUserType) String() string {
 	if m == nil {

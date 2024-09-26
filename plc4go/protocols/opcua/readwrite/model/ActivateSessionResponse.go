@@ -38,6 +38,7 @@ type ActivateSessionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -68,6 +69,27 @@ type _ActivateSessionResponse struct {
 
 var _ ActivateSessionResponse = (*_ActivateSessionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ActivateSessionResponse)(nil)
+
+// NewActivateSessionResponse factory function for _ActivateSessionResponse
+func NewActivateSessionResponse(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ActivateSessionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ActivateSessionResponse must not be nil")
+	}
+	if serverNonce == nil {
+		panic("serverNonce of type PascalByteString for ActivateSessionResponse must not be nil")
+	}
+	_result := &_ActivateSessionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		ServerNonce:                       serverNonce,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,27 +142,6 @@ func (m *_ActivateSessionResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewActivateSessionResponse factory function for _ActivateSessionResponse
-func NewActivateSessionResponse(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ActivateSessionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ActivateSessionResponse must not be nil")
-	}
-	if serverNonce == nil {
-		panic("serverNonce of type PascalByteString for ActivateSessionResponse must not be nil")
-	}
-	_result := &_ActivateSessionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		ServerNonce:                       serverNonce,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastActivateSessionResponse(structType any) ActivateSessionResponse {
@@ -304,6 +305,27 @@ func (m *_ActivateSessionResponse) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_ActivateSessionResponse) IsActivateSessionResponse() {}
+
+func (m *_ActivateSessionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ActivateSessionResponse) deepCopy() *_ActivateSessionResponse {
+	if m == nil {
+		return nil
+	}
+	_ActivateSessionResponseCopy := &_ActivateSessionResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerNonce.DeepCopy().(PascalByteString),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ActivateSessionResponseCopy
+}
 
 func (m *_ActivateSessionResponse) String() string {
 	if m == nil {

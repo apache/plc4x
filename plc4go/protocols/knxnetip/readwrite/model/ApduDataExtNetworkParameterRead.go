@@ -36,6 +36,7 @@ type ApduDataExtNetworkParameterRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtNetworkParameterRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtNetworkParameterRead()
@@ -48,6 +49,15 @@ type _ApduDataExtNetworkParameterRead struct {
 
 var _ ApduDataExtNetworkParameterRead = (*_ApduDataExtNetworkParameterRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtNetworkParameterRead)(nil)
+
+// NewApduDataExtNetworkParameterRead factory function for _ApduDataExtNetworkParameterRead
+func NewApduDataExtNetworkParameterRead(length uint8) *_ApduDataExtNetworkParameterRead {
+	_result := &_ApduDataExtNetworkParameterRead{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtNetworkParameterRead) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtNetworkParameterRead) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtNetworkParameterRead factory function for _ApduDataExtNetworkParameterRead
-func NewApduDataExtNetworkParameterRead(length uint8) *_ApduDataExtNetworkParameterRead {
-	_result := &_ApduDataExtNetworkParameterRead{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtNetworkParameterRead) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_ApduDataExtNetworkParameterRead) IsApduDataExtNetworkParameterRead() {}
+
+func (m *_ApduDataExtNetworkParameterRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtNetworkParameterRead) deepCopy() *_ApduDataExtNetworkParameterRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtNetworkParameterReadCopy := &_ApduDataExtNetworkParameterRead{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtNetworkParameterReadCopy
+}
 
 func (m *_ApduDataExtNetworkParameterRead) String() string {
 	if m == nil {

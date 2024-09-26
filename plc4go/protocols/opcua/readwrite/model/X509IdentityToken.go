@@ -38,6 +38,7 @@ type X509IdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	UserIdentityTokenDefinition
 	// GetCertificateData returns CertificateData (property field)
 	GetCertificateData() PascalByteString
@@ -53,6 +54,19 @@ type _X509IdentityToken struct {
 
 var _ X509IdentityToken = (*_X509IdentityToken)(nil)
 var _ UserIdentityTokenDefinitionRequirements = (*_X509IdentityToken)(nil)
+
+// NewX509IdentityToken factory function for _X509IdentityToken
+func NewX509IdentityToken(certificateData PascalByteString) *_X509IdentityToken {
+	if certificateData == nil {
+		panic("certificateData of type PascalByteString for X509IdentityToken must not be nil")
+	}
+	_result := &_X509IdentityToken{
+		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+		CertificateData:                     certificateData,
+	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_X509IdentityToken) GetCertificateData() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewX509IdentityToken factory function for _X509IdentityToken
-func NewX509IdentityToken(certificateData PascalByteString) *_X509IdentityToken {
-	if certificateData == nil {
-		panic("certificateData of type PascalByteString for X509IdentityToken must not be nil")
-	}
-	_result := &_X509IdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-		CertificateData:                     certificateData,
-	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastX509IdentityToken(structType any) X509IdentityToken {
@@ -182,6 +183,22 @@ func (m *_X509IdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_X509IdentityToken) IsX509IdentityToken() {}
+
+func (m *_X509IdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_X509IdentityToken) deepCopy() *_X509IdentityToken {
+	if m == nil {
+		return nil
+	}
+	_X509IdentityTokenCopy := &_X509IdentityToken{
+		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
+		m.CertificateData.DeepCopy().(PascalByteString),
+	}
+	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	return _X509IdentityTokenCopy
+}
 
 func (m *_X509IdentityToken) String() string {
 	if m == nil {

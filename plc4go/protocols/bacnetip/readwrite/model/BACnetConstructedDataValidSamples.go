@@ -38,6 +38,7 @@ type BACnetConstructedDataValidSamples interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetValidSamples returns ValidSamples (property field)
 	GetValidSamples() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataValidSamples struct {
 
 var _ BACnetConstructedDataValidSamples = (*_BACnetConstructedDataValidSamples)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValidSamples)(nil)
+
+// NewBACnetConstructedDataValidSamples factory function for _BACnetConstructedDataValidSamples
+func NewBACnetConstructedDataValidSamples(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, validSamples BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValidSamples {
+	if validSamples == nil {
+		panic("validSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValidSamples must not be nil")
+	}
+	_result := &_BACnetConstructedDataValidSamples{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ValidSamples:                  validSamples,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataValidSamples) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataValidSamples factory function for _BACnetConstructedDataValidSamples
-func NewBACnetConstructedDataValidSamples(validSamples BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValidSamples {
-	if validSamples == nil {
-		panic("validSamples of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValidSamples must not be nil")
-	}
-	_result := &_BACnetConstructedDataValidSamples{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ValidSamples:                  validSamples,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataValidSamples(structType any) BACnetConstructedDataValidSamples {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataValidSamples) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataValidSamples) IsBACnetConstructedDataValidSamples() {}
+
+func (m *_BACnetConstructedDataValidSamples) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataValidSamples) deepCopy() *_BACnetConstructedDataValidSamples {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataValidSamplesCopy := &_BACnetConstructedDataValidSamples{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ValidSamples.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataValidSamplesCopy
+}
 
 func (m *_BACnetConstructedDataValidSamples) String() string {
 	if m == nil {

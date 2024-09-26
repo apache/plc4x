@@ -38,6 +38,7 @@ type BuildInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetProductUri returns ProductUri (property field)
 	GetProductUri() PascalString
@@ -68,6 +69,36 @@ type _BuildInfo struct {
 
 var _ BuildInfo = (*_BuildInfo)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BuildInfo)(nil)
+
+// NewBuildInfo factory function for _BuildInfo
+func NewBuildInfo(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) *_BuildInfo {
+	if productUri == nil {
+		panic("productUri of type PascalString for BuildInfo must not be nil")
+	}
+	if manufacturerName == nil {
+		panic("manufacturerName of type PascalString for BuildInfo must not be nil")
+	}
+	if productName == nil {
+		panic("productName of type PascalString for BuildInfo must not be nil")
+	}
+	if softwareVersion == nil {
+		panic("softwareVersion of type PascalString for BuildInfo must not be nil")
+	}
+	if buildNumber == nil {
+		panic("buildNumber of type PascalString for BuildInfo must not be nil")
+	}
+	_result := &_BuildInfo{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ProductUri:                        productUri,
+		ManufacturerName:                  manufacturerName,
+		ProductName:                       productName,
+		SoftwareVersion:                   softwareVersion,
+		BuildNumber:                       buildNumber,
+		BuildDate:                         buildDate,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,36 +151,6 @@ func (m *_BuildInfo) GetBuildDate() int64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBuildInfo factory function for _BuildInfo
-func NewBuildInfo(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) *_BuildInfo {
-	if productUri == nil {
-		panic("productUri of type PascalString for BuildInfo must not be nil")
-	}
-	if manufacturerName == nil {
-		panic("manufacturerName of type PascalString for BuildInfo must not be nil")
-	}
-	if productName == nil {
-		panic("productName of type PascalString for BuildInfo must not be nil")
-	}
-	if softwareVersion == nil {
-		panic("softwareVersion of type PascalString for BuildInfo must not be nil")
-	}
-	if buildNumber == nil {
-		panic("buildNumber of type PascalString for BuildInfo must not be nil")
-	}
-	_result := &_BuildInfo{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ProductUri:                        productUri,
-		ManufacturerName:                  manufacturerName,
-		ProductName:                       productName,
-		SoftwareVersion:                   softwareVersion,
-		BuildNumber:                       buildNumber,
-		BuildDate:                         buildDate,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBuildInfo(structType any) BuildInfo {
@@ -299,6 +300,27 @@ func (m *_BuildInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_BuildInfo) IsBuildInfo() {}
+
+func (m *_BuildInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BuildInfo) deepCopy() *_BuildInfo {
+	if m == nil {
+		return nil
+	}
+	_BuildInfoCopy := &_BuildInfo{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ProductUri.DeepCopy().(PascalString),
+		m.ManufacturerName.DeepCopy().(PascalString),
+		m.ProductName.DeepCopy().(PascalString),
+		m.SoftwareVersion.DeepCopy().(PascalString),
+		m.BuildNumber.DeepCopy().(PascalString),
+		m.BuildDate,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BuildInfoCopy
+}
 
 func (m *_BuildInfo) String() string {
 	if m == nil {

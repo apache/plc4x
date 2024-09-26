@@ -38,6 +38,7 @@ type HistoryData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfDataValues returns NoOfDataValues (property field)
 	GetNoOfDataValues() int32
@@ -56,6 +57,17 @@ type _HistoryData struct {
 
 var _ HistoryData = (*_HistoryData)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryData)(nil)
+
+// NewHistoryData factory function for _HistoryData
+func NewHistoryData(noOfDataValues int32, dataValues []DataValue) *_HistoryData {
+	_result := &_HistoryData{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfDataValues:                    noOfDataValues,
+		DataValues:                        dataValues,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_HistoryData) GetDataValues() []DataValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryData factory function for _HistoryData
-func NewHistoryData(noOfDataValues int32, dataValues []DataValue) *_HistoryData {
-	_result := &_HistoryData{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfDataValues:                    noOfDataValues,
-		DataValues:                        dataValues,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryData(structType any) HistoryData {
@@ -207,6 +208,23 @@ func (m *_HistoryData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_HistoryData) IsHistoryData() {}
+
+func (m *_HistoryData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryData) deepCopy() *_HistoryData {
+	if m == nil {
+		return nil
+	}
+	_HistoryDataCopy := &_HistoryData{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfDataValues,
+		utils.DeepCopySlice[DataValue, DataValue](m.DataValues),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryDataCopy
+}
 
 func (m *_HistoryData) String() string {
 	if m == nil {

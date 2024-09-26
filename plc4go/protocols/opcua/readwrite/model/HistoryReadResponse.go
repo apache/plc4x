@@ -38,6 +38,7 @@ type HistoryReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _HistoryReadResponse struct {
 
 var _ HistoryReadResponse = (*_HistoryReadResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadResponse)(nil)
+
+// NewHistoryReadResponse factory function for _HistoryReadResponse
+func NewHistoryReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryReadResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for HistoryReadResponse must not be nil")
+	}
+	_result := &_HistoryReadResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_HistoryReadResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryReadResponse factory function for _HistoryReadResponse
-func NewHistoryReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryReadResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for HistoryReadResponse must not be nil")
-	}
-	_result := &_HistoryReadResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryReadResponse(structType any) HistoryReadResponse {
@@ -280,6 +281,26 @@ func (m *_HistoryReadResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_HistoryReadResponse) IsHistoryReadResponse() {}
+
+func (m *_HistoryReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadResponse) deepCopy() *_HistoryReadResponse {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadResponseCopy := &_HistoryReadResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadResponseCopy
+}
 
 func (m *_HistoryReadResponse) String() string {
 	if m == nil {

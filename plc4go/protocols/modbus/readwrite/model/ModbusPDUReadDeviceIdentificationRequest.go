@@ -41,6 +41,7 @@ type ModbusPDUReadDeviceIdentificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetLevel returns Level (property field)
 	GetLevel() ModbusDeviceInformationLevel
@@ -59,6 +60,17 @@ type _ModbusPDUReadDeviceIdentificationRequest struct {
 
 var _ ModbusPDUReadDeviceIdentificationRequest = (*_ModbusPDUReadDeviceIdentificationRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadDeviceIdentificationRequest)(nil)
+
+// NewModbusPDUReadDeviceIdentificationRequest factory function for _ModbusPDUReadDeviceIdentificationRequest
+func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLevel, objectId uint8) *_ModbusPDUReadDeviceIdentificationRequest {
+	_result := &_ModbusPDUReadDeviceIdentificationRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		Level:             level,
+		ObjectId:          objectId,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,17 +128,6 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetMeiType() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadDeviceIdentificationRequest factory function for _ModbusPDUReadDeviceIdentificationRequest
-func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLevel, objectId uint8) *_ModbusPDUReadDeviceIdentificationRequest {
-	_result := &_ModbusPDUReadDeviceIdentificationRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		Level:             level,
-		ObjectId:          objectId,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadDeviceIdentificationRequest(structType any) ModbusPDUReadDeviceIdentificationRequest {
@@ -237,6 +238,23 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) IsModbusPDUReadDeviceIdentificationRequest() {}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequest) deepCopy() *_ModbusPDUReadDeviceIdentificationRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadDeviceIdentificationRequestCopy := &_ModbusPDUReadDeviceIdentificationRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.Level,
+		m.ObjectId,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadDeviceIdentificationRequestCopy
+}
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetLightingInProgressTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -58,6 +59,14 @@ type _BACnetLightingInProgressTagged struct {
 
 var _ BACnetLightingInProgressTagged = (*_BACnetLightingInProgressTagged)(nil)
 
+// NewBACnetLightingInProgressTagged factory function for _BACnetLightingInProgressTagged
+func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLightingInProgress, tagNumber uint8, tagClass TagClass) *_BACnetLightingInProgressTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLightingInProgressTagged must not be nil")
+	}
+	return &_BACnetLightingInProgressTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +84,6 @@ func (m *_BACnetLightingInProgressTagged) GetValue() BACnetLightingInProgress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLightingInProgressTagged factory function for _BACnetLightingInProgressTagged
-func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLightingInProgress, tagNumber uint8, tagClass TagClass) *_BACnetLightingInProgressTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLightingInProgressTagged must not be nil")
-	}
-	return &_BACnetLightingInProgressTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLightingInProgressTagged(structType any) BACnetLightingInProgressTagged {
@@ -216,6 +217,23 @@ func (m *_BACnetLightingInProgressTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetLightingInProgressTagged) IsBACnetLightingInProgressTagged() {}
+
+func (m *_BACnetLightingInProgressTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingInProgressTagged) deepCopy() *_BACnetLightingInProgressTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingInProgressTaggedCopy := &_BACnetLightingInProgressTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLightingInProgressTaggedCopy
+}
 
 func (m *_BACnetLightingInProgressTagged) String() string {
 	if m == nil {

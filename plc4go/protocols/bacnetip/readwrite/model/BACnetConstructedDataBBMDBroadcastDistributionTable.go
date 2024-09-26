@@ -38,6 +38,7 @@ type BACnetConstructedDataBBMDBroadcastDistributionTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBbmdBroadcastDistributionTable returns BbmdBroadcastDistributionTable (property field)
 	GetBbmdBroadcastDistributionTable() []BACnetBDTEntry
@@ -53,6 +54,16 @@ type _BACnetConstructedDataBBMDBroadcastDistributionTable struct {
 
 var _ BACnetConstructedDataBBMDBroadcastDistributionTable = (*_BACnetConstructedDataBBMDBroadcastDistributionTable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDBroadcastDistributionTable)(nil)
+
+// NewBACnetConstructedDataBBMDBroadcastDistributionTable factory function for _BACnetConstructedDataBBMDBroadcastDistributionTable
+func NewBACnetConstructedDataBBMDBroadcastDistributionTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdBroadcastDistributionTable []BACnetBDTEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDBroadcastDistributionTable {
+	_result := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetBbmdBroadcastD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBBMDBroadcastDistributionTable factory function for _BACnetConstructedDataBBMDBroadcastDistributionTable
-func NewBACnetConstructedDataBBMDBroadcastDistributionTable(bbmdBroadcastDistributionTable []BACnetBDTEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDBroadcastDistributionTable {
-	_result := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBBMDBroadcastDistributionTable(structType any) BACnetConstructedDataBBMDBroadcastDistributionTable {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) SerializeWithWrit
 }
 
 func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) IsBACnetConstructedDataBBMDBroadcastDistributionTable() {
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) deepCopy() *_BACnetConstructedDataBBMDBroadcastDistributionTable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBBMDBroadcastDistributionTableCopy := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetBDTEntry, BACnetBDTEntry](m.BbmdBroadcastDistributionTable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBBMDBroadcastDistributionTableCopy
 }
 
 func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) String() string {

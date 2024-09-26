@@ -38,6 +38,7 @@ type BACnetConstructedDataMakingCarCall interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataMakingCarCall struct {
 
 var _ BACnetConstructedDataMakingCarCall = (*_BACnetConstructedDataMakingCarCall)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMakingCarCall)(nil)
+
+// NewBACnetConstructedDataMakingCarCall factory function for _BACnetConstructedDataMakingCarCall
+func NewBACnetConstructedDataMakingCarCall(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, makingCarCall []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMakingCarCall {
+	_result := &_BACnetConstructedDataMakingCarCall{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		MakingCarCall:                 makingCarCall,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataMakingCarCall) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMakingCarCall factory function for _BACnetConstructedDataMakingCarCall
-func NewBACnetConstructedDataMakingCarCall(numberOfDataElements BACnetApplicationTagUnsignedInteger, makingCarCall []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMakingCarCall {
-	_result := &_BACnetConstructedDataMakingCarCall{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		MakingCarCall:                 makingCarCall,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMakingCarCall(structType any) BACnetConstructedDataMakingCarCall {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataMakingCarCall) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataMakingCarCall) IsBACnetConstructedDataMakingCarCall() {}
+
+func (m *_BACnetConstructedDataMakingCarCall) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMakingCarCall) deepCopy() *_BACnetConstructedDataMakingCarCall {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMakingCarCallCopy := &_BACnetConstructedDataMakingCarCall{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.MakingCarCall),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMakingCarCallCopy
+}
 
 func (m *_BACnetConstructedDataMakingCarCall) String() string {
 	if m == nil {

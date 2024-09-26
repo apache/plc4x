@@ -38,6 +38,7 @@ type ComplexNumberType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReal returns Real (property field)
 	GetReal() float32
@@ -56,6 +57,17 @@ type _ComplexNumberType struct {
 
 var _ ComplexNumberType = (*_ComplexNumberType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ComplexNumberType)(nil)
+
+// NewComplexNumberType factory function for _ComplexNumberType
+func NewComplexNumberType(real float32, imaginary float32) *_ComplexNumberType {
+	_result := &_ComplexNumberType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Real:                              real,
+		Imaginary:                         imaginary,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ComplexNumberType) GetImaginary() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewComplexNumberType factory function for _ComplexNumberType
-func NewComplexNumberType(real float32, imaginary float32) *_ComplexNumberType {
-	_result := &_ComplexNumberType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Real:                              real,
-		Imaginary:                         imaginary,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastComplexNumberType(structType any) ComplexNumberType {
@@ -200,6 +201,23 @@ func (m *_ComplexNumberType) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_ComplexNumberType) IsComplexNumberType() {}
+
+func (m *_ComplexNumberType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ComplexNumberType) deepCopy() *_ComplexNumberType {
+	if m == nil {
+		return nil
+	}
+	_ComplexNumberTypeCopy := &_ComplexNumberType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Real,
+		m.Imaginary,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ComplexNumberTypeCopy
+}
 
 func (m *_ComplexNumberType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type DataValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetServerPicosecondsSpecified returns ServerPicosecondsSpecified (property field)
 	GetServerPicosecondsSpecified() bool
 	// GetSourcePicosecondsSpecified returns SourcePicosecondsSpecified (property field)
@@ -85,6 +86,11 @@ type _DataValue struct {
 }
 
 var _ DataValue = (*_DataValue)(nil)
+
+// NewDataValue factory function for _DataValue
+func NewDataValue(serverPicosecondsSpecified bool, sourcePicosecondsSpecified bool, serverTimestampSpecified bool, sourceTimestampSpecified bool, statusCodeSpecified bool, valueSpecified bool, value Variant, statusCode StatusCode, sourceTimestamp *int64, sourcePicoseconds *uint16, serverTimestamp *int64, serverPicoseconds *uint16) *_DataValue {
+	return &_DataValue{ServerPicosecondsSpecified: serverPicosecondsSpecified, SourcePicosecondsSpecified: sourcePicosecondsSpecified, ServerTimestampSpecified: serverTimestampSpecified, SourceTimestampSpecified: sourceTimestampSpecified, StatusCodeSpecified: statusCodeSpecified, ValueSpecified: valueSpecified, Value: value, StatusCode: statusCode, SourceTimestamp: sourceTimestamp, SourcePicoseconds: sourcePicoseconds, ServerTimestamp: serverTimestamp, ServerPicoseconds: serverPicoseconds}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -143,11 +149,6 @@ func (m *_DataValue) GetServerPicoseconds() *uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataValue factory function for _DataValue
-func NewDataValue(serverPicosecondsSpecified bool, sourcePicosecondsSpecified bool, serverTimestampSpecified bool, sourceTimestampSpecified bool, statusCodeSpecified bool, valueSpecified bool, value Variant, statusCode StatusCode, sourceTimestamp *int64, sourcePicoseconds *uint16, serverTimestamp *int64, serverPicoseconds *uint16) *_DataValue {
-	return &_DataValue{ServerPicosecondsSpecified: serverPicosecondsSpecified, SourcePicosecondsSpecified: sourcePicosecondsSpecified, ServerTimestampSpecified: serverTimestampSpecified, SourceTimestampSpecified: sourceTimestampSpecified, StatusCodeSpecified: statusCodeSpecified, ValueSpecified: valueSpecified, Value: value, StatusCode: statusCode, SourceTimestamp: sourceTimestamp, SourcePicoseconds: sourcePicoseconds, ServerTimestamp: serverTimestamp, ServerPicoseconds: serverPicoseconds}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataValue(structType any) DataValue {
@@ -425,6 +426,32 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 }
 
 func (m *_DataValue) IsDataValue() {}
+
+func (m *_DataValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataValue) deepCopy() *_DataValue {
+	if m == nil {
+		return nil
+	}
+	_DataValueCopy := &_DataValue{
+		m.ServerPicosecondsSpecified,
+		m.SourcePicosecondsSpecified,
+		m.ServerTimestampSpecified,
+		m.SourceTimestampSpecified,
+		m.StatusCodeSpecified,
+		m.ValueSpecified,
+		m.Value.DeepCopy().(Variant),
+		m.StatusCode.DeepCopy().(StatusCode),
+		utils.CopyPtr[int64](m.SourceTimestamp),
+		utils.CopyPtr[uint16](m.SourcePicoseconds),
+		utils.CopyPtr[int64](m.ServerTimestamp),
+		utils.CopyPtr[uint16](m.ServerPicoseconds),
+		m.reservedField0,
+	}
+	return _DataValueCopy
+}
 
 func (m *_DataValue) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ServiceCounterDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTotalCount returns TotalCount (property field)
 	GetTotalCount() uint32
@@ -56,6 +57,17 @@ type _ServiceCounterDataType struct {
 
 var _ ServiceCounterDataType = (*_ServiceCounterDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServiceCounterDataType)(nil)
+
+// NewServiceCounterDataType factory function for _ServiceCounterDataType
+func NewServiceCounterDataType(totalCount uint32, errorCount uint32) *_ServiceCounterDataType {
+	_result := &_ServiceCounterDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TotalCount:                        totalCount,
+		ErrorCount:                        errorCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ServiceCounterDataType) GetErrorCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServiceCounterDataType factory function for _ServiceCounterDataType
-func NewServiceCounterDataType(totalCount uint32, errorCount uint32) *_ServiceCounterDataType {
-	_result := &_ServiceCounterDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		TotalCount:                        totalCount,
-		ErrorCount:                        errorCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServiceCounterDataType(structType any) ServiceCounterDataType {
@@ -200,6 +201,23 @@ func (m *_ServiceCounterDataType) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_ServiceCounterDataType) IsServiceCounterDataType() {}
+
+func (m *_ServiceCounterDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServiceCounterDataType) deepCopy() *_ServiceCounterDataType {
+	if m == nil {
+		return nil
+	}
+	_ServiceCounterDataTypeCopy := &_ServiceCounterDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.TotalCount,
+		m.ErrorCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServiceCounterDataTypeCopy
+}
 
 func (m *_ServiceCounterDataType) String() string {
 	if m == nil {

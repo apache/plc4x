@@ -38,6 +38,7 @@ type IdentifyReplyCommandManufacturer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetManufacturerName returns ManufacturerName (property field)
 	GetManufacturerName() string
@@ -53,6 +54,16 @@ type _IdentifyReplyCommandManufacturer struct {
 
 var _ IdentifyReplyCommandManufacturer = (*_IdentifyReplyCommandManufacturer)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandManufacturer)(nil)
+
+// NewIdentifyReplyCommandManufacturer factory function for _IdentifyReplyCommandManufacturer
+func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8) *_IdentifyReplyCommandManufacturer {
+	_result := &_IdentifyReplyCommandManufacturer{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		ManufacturerName:             manufacturerName,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_IdentifyReplyCommandManufacturer) GetManufacturerName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandManufacturer factory function for _IdentifyReplyCommandManufacturer
-func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8) *_IdentifyReplyCommandManufacturer {
-	_result := &_IdentifyReplyCommandManufacturer{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		ManufacturerName:             manufacturerName,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandManufacturer(structType any) IdentifyReplyCommandManufacturer {
@@ -179,6 +180,22 @@ func (m *_IdentifyReplyCommandManufacturer) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_IdentifyReplyCommandManufacturer) IsIdentifyReplyCommandManufacturer() {}
+
+func (m *_IdentifyReplyCommandManufacturer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandManufacturer) deepCopy() *_IdentifyReplyCommandManufacturer {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandManufacturerCopy := &_IdentifyReplyCommandManufacturer{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		m.ManufacturerName,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandManufacturerCopy
+}
 
 func (m *_IdentifyReplyCommandManufacturer) String() string {
 	if m == nil {

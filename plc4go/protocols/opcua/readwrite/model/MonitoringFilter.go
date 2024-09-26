@@ -36,6 +36,7 @@ type MonitoringFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsMonitoringFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoringFilter()
@@ -48,6 +49,15 @@ type _MonitoringFilter struct {
 
 var _ MonitoringFilter = (*_MonitoringFilter)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoringFilter)(nil)
+
+// NewMonitoringFilter factory function for _MonitoringFilter
+func NewMonitoringFilter() *_MonitoringFilter {
+	_result := &_MonitoringFilter{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_MonitoringFilter) GetIdentifier() string {
 
 func (m *_MonitoringFilter) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewMonitoringFilter factory function for _MonitoringFilter
-func NewMonitoringFilter() *_MonitoringFilter {
-	_result := &_MonitoringFilter{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_MonitoringFilter) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_MonitoringFilter) IsMonitoringFilter() {}
+
+func (m *_MonitoringFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoringFilter) deepCopy() *_MonitoringFilter {
+	if m == nil {
+		return nil
+	}
+	_MonitoringFilterCopy := &_MonitoringFilter{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoringFilterCopy
+}
 
 func (m *_MonitoringFilter) String() string {
 	if m == nil {

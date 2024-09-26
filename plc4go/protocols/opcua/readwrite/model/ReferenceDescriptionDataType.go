@@ -38,6 +38,7 @@ type ReferenceDescriptionDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSourceNode returns SourceNode (property field)
 	GetSourceNode() NodeId
@@ -64,6 +65,28 @@ type _ReferenceDescriptionDataType struct {
 
 var _ ReferenceDescriptionDataType = (*_ReferenceDescriptionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReferenceDescriptionDataType)(nil)
+
+// NewReferenceDescriptionDataType factory function for _ReferenceDescriptionDataType
+func NewReferenceDescriptionDataType(sourceNode NodeId, referenceType NodeId, isForward bool, targetNode ExpandedNodeId) *_ReferenceDescriptionDataType {
+	if sourceNode == nil {
+		panic("sourceNode of type NodeId for ReferenceDescriptionDataType must not be nil")
+	}
+	if referenceType == nil {
+		panic("referenceType of type NodeId for ReferenceDescriptionDataType must not be nil")
+	}
+	if targetNode == nil {
+		panic("targetNode of type ExpandedNodeId for ReferenceDescriptionDataType must not be nil")
+	}
+	_result := &_ReferenceDescriptionDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SourceNode:                        sourceNode,
+		ReferenceType:                     referenceType,
+		IsForward:                         isForward,
+		TargetNode:                        targetNode,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,28 +131,6 @@ func (m *_ReferenceDescriptionDataType) GetTargetNode() ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReferenceDescriptionDataType factory function for _ReferenceDescriptionDataType
-func NewReferenceDescriptionDataType(sourceNode NodeId, referenceType NodeId, isForward bool, targetNode ExpandedNodeId) *_ReferenceDescriptionDataType {
-	if sourceNode == nil {
-		panic("sourceNode of type NodeId for ReferenceDescriptionDataType must not be nil")
-	}
-	if referenceType == nil {
-		panic("referenceType of type NodeId for ReferenceDescriptionDataType must not be nil")
-	}
-	if targetNode == nil {
-		panic("targetNode of type ExpandedNodeId for ReferenceDescriptionDataType must not be nil")
-	}
-	_result := &_ReferenceDescriptionDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SourceNode:                        sourceNode,
-		ReferenceType:                     referenceType,
-		IsForward:                         isForward,
-		TargetNode:                        targetNode,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReferenceDescriptionDataType(structType any) ReferenceDescriptionDataType {
@@ -266,6 +267,26 @@ func (m *_ReferenceDescriptionDataType) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ReferenceDescriptionDataType) IsReferenceDescriptionDataType() {}
+
+func (m *_ReferenceDescriptionDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReferenceDescriptionDataType) deepCopy() *_ReferenceDescriptionDataType {
+	if m == nil {
+		return nil
+	}
+	_ReferenceDescriptionDataTypeCopy := &_ReferenceDescriptionDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SourceNode.DeepCopy().(NodeId),
+		m.ReferenceType.DeepCopy().(NodeId),
+		m.IsForward,
+		m.TargetNode.DeepCopy().(ExpandedNodeId),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReferenceDescriptionDataTypeCopy
+}
 
 func (m *_ReferenceDescriptionDataType) String() string {
 	if m == nil {

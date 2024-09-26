@@ -38,6 +38,7 @@ type ParameterValueInterfaceOptions1PowerUpSettings interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() InterfaceOptions1PowerUpSettings
@@ -53,6 +54,19 @@ type _ParameterValueInterfaceOptions1PowerUpSettings struct {
 
 var _ ParameterValueInterfaceOptions1PowerUpSettings = (*_ParameterValueInterfaceOptions1PowerUpSettings)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions1PowerUpSettings)(nil)
+
+// NewParameterValueInterfaceOptions1PowerUpSettings factory function for _ParameterValueInterfaceOptions1PowerUpSettings
+func NewParameterValueInterfaceOptions1PowerUpSettings(value InterfaceOptions1PowerUpSettings, numBytes uint8) *_ParameterValueInterfaceOptions1PowerUpSettings {
+	if value == nil {
+		panic("value of type InterfaceOptions1PowerUpSettings for ParameterValueInterfaceOptions1PowerUpSettings must not be nil")
+	}
+	_result := &_ParameterValueInterfaceOptions1PowerUpSettings{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) GetValue() InterfaceOp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueInterfaceOptions1PowerUpSettings factory function for _ParameterValueInterfaceOptions1PowerUpSettings
-func NewParameterValueInterfaceOptions1PowerUpSettings(value InterfaceOptions1PowerUpSettings, numBytes uint8) *_ParameterValueInterfaceOptions1PowerUpSettings {
-	if value == nil {
-		panic("value of type InterfaceOptions1PowerUpSettings for ParameterValueInterfaceOptions1PowerUpSettings must not be nil")
-	}
-	_result := &_ParameterValueInterfaceOptions1PowerUpSettings{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueInterfaceOptions1PowerUpSettings(structType any) ParameterValueInterfaceOptions1PowerUpSettings {
@@ -187,6 +188,22 @@ func (m *_ParameterValueInterfaceOptions1PowerUpSettings) SerializeWithWriteBuff
 }
 
 func (m *_ParameterValueInterfaceOptions1PowerUpSettings) IsParameterValueInterfaceOptions1PowerUpSettings() {
+}
+
+func (m *_ParameterValueInterfaceOptions1PowerUpSettings) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueInterfaceOptions1PowerUpSettings) deepCopy() *_ParameterValueInterfaceOptions1PowerUpSettings {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueInterfaceOptions1PowerUpSettingsCopy := &_ParameterValueInterfaceOptions1PowerUpSettings{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value.DeepCopy().(InterfaceOptions1PowerUpSettings),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueInterfaceOptions1PowerUpSettingsCopy
 }
 
 func (m *_ParameterValueInterfaceOptions1PowerUpSettings) String() string {

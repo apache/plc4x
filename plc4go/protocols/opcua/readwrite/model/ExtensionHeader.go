@@ -38,6 +38,7 @@ type ExtensionHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetXmlbody returns Xmlbody (property field)
 	GetXmlbody() bool
 	// GetBinaryBody returns BinaryBody (property field)
@@ -56,6 +57,11 @@ type _ExtensionHeader struct {
 
 var _ ExtensionHeader = (*_ExtensionHeader)(nil)
 
+// NewExtensionHeader factory function for _ExtensionHeader
+func NewExtensionHeader(xmlbody bool, binaryBody bool) *_ExtensionHeader {
+	return &_ExtensionHeader{Xmlbody: xmlbody, BinaryBody: binaryBody}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -73,11 +79,6 @@ func (m *_ExtensionHeader) GetBinaryBody() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensionHeader factory function for _ExtensionHeader
-func NewExtensionHeader(xmlbody bool, binaryBody bool) *_ExtensionHeader {
-	return &_ExtensionHeader{Xmlbody: xmlbody, BinaryBody: binaryBody}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensionHeader(structType any) ExtensionHeader {
@@ -201,6 +202,22 @@ func (m *_ExtensionHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_ExtensionHeader) IsExtensionHeader() {}
+
+func (m *_ExtensionHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExtensionHeader) deepCopy() *_ExtensionHeader {
+	if m == nil {
+		return nil
+	}
+	_ExtensionHeaderCopy := &_ExtensionHeader{
+		m.Xmlbody,
+		m.BinaryBody,
+		m.reservedField0,
+	}
+	return _ExtensionHeaderCopy
+}
 
 func (m *_ExtensionHeader) String() string {
 	if m == nil {

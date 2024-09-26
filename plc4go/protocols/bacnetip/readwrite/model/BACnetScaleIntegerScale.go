@@ -38,6 +38,7 @@ type BACnetScaleIntegerScale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetScale
 	// GetIntegerScale returns IntegerScale (property field)
 	GetIntegerScale() BACnetContextTagSignedInteger
@@ -53,6 +54,19 @@ type _BACnetScaleIntegerScale struct {
 
 var _ BACnetScaleIntegerScale = (*_BACnetScaleIntegerScale)(nil)
 var _ BACnetScaleRequirements = (*_BACnetScaleIntegerScale)(nil)
+
+// NewBACnetScaleIntegerScale factory function for _BACnetScaleIntegerScale
+func NewBACnetScaleIntegerScale(peekedTagHeader BACnetTagHeader, integerScale BACnetContextTagSignedInteger) *_BACnetScaleIntegerScale {
+	if integerScale == nil {
+		panic("integerScale of type BACnetContextTagSignedInteger for BACnetScaleIntegerScale must not be nil")
+	}
+	_result := &_BACnetScaleIntegerScale{
+		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
+		IntegerScale:        integerScale,
+	}
+	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetScaleIntegerScale) GetIntegerScale() BACnetContextTagSignedInteg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetScaleIntegerScale factory function for _BACnetScaleIntegerScale
-func NewBACnetScaleIntegerScale(integerScale BACnetContextTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetScaleIntegerScale {
-	if integerScale == nil {
-		panic("integerScale of type BACnetContextTagSignedInteger for BACnetScaleIntegerScale must not be nil")
-	}
-	_result := &_BACnetScaleIntegerScale{
-		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
-		IntegerScale:        integerScale,
-	}
-	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetScaleIntegerScale(structType any) BACnetScaleIntegerScale {
@@ -178,6 +179,22 @@ func (m *_BACnetScaleIntegerScale) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetScaleIntegerScale) IsBACnetScaleIntegerScale() {}
+
+func (m *_BACnetScaleIntegerScale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetScaleIntegerScale) deepCopy() *_BACnetScaleIntegerScale {
+	if m == nil {
+		return nil
+	}
+	_BACnetScaleIntegerScaleCopy := &_BACnetScaleIntegerScale{
+		m.BACnetScaleContract.(*_BACnetScale).deepCopy(),
+		m.IntegerScale.DeepCopy().(BACnetContextTagSignedInteger),
+	}
+	m.BACnetScaleContract.(*_BACnetScale)._SubType = m
+	return _BACnetScaleIntegerScaleCopy
+}
 
 func (m *_BACnetScaleIntegerScale) String() string {
 	if m == nil {

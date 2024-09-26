@@ -38,6 +38,7 @@ type SysexCommandPinStateResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -59,6 +60,18 @@ type _SysexCommandPinStateResponse struct {
 
 var _ SysexCommandPinStateResponse = (*_SysexCommandPinStateResponse)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandPinStateResponse)(nil)
+
+// NewSysexCommandPinStateResponse factory function for _SysexCommandPinStateResponse
+func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *_SysexCommandPinStateResponse {
+	_result := &_SysexCommandPinStateResponse{
+		SysexCommandContract: NewSysexCommand(),
+		Pin:                  pin,
+		PinMode:              pinMode,
+		PinState:             pinState,
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,18 +116,6 @@ func (m *_SysexCommandPinStateResponse) GetPinState() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSysexCommandPinStateResponse factory function for _SysexCommandPinStateResponse
-func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *_SysexCommandPinStateResponse {
-	_result := &_SysexCommandPinStateResponse{
-		SysexCommandContract: NewSysexCommand(),
-		Pin:                  pin,
-		PinMode:              pinMode,
-		PinState:             pinState,
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSysexCommandPinStateResponse(structType any) SysexCommandPinStateResponse {
@@ -225,6 +226,24 @@ func (m *_SysexCommandPinStateResponse) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SysexCommandPinStateResponse) IsSysexCommandPinStateResponse() {}
+
+func (m *_SysexCommandPinStateResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandPinStateResponse) deepCopy() *_SysexCommandPinStateResponse {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandPinStateResponseCopy := &_SysexCommandPinStateResponse{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+		m.Pin,
+		m.PinMode,
+		m.PinState,
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandPinStateResponseCopy
+}
 
 func (m *_SysexCommandPinStateResponse) String() string {
 	if m == nil {

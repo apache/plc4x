@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequestWhoHasObject
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -53,6 +54,19 @@ type _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier struct {
 
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier = (*_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier)(nil)
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectRequirements = (*_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier)(nil)
+
+// NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
+func NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(peekedTagHeader BACnetTagHeader, objectIdentifier BACnetContextTagObjectIdentifier) *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{
+		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
+		ObjectIdentifier: objectIdentifier,
+	}
+	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetObjectIdenti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
-func NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{
-		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
-		ObjectIdentifier: objectIdentifier,
-	}
-	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(structType any) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {
@@ -178,6 +179,22 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) SerializeWithWr
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) IsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) deepCopy() *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierCopy := &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{
+		m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject).deepCopy(),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+	}
+	m.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = m
+	return _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierCopy
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) String() string {

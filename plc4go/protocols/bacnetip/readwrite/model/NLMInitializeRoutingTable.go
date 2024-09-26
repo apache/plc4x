@@ -38,6 +38,7 @@ type NLMInitializeRoutingTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetNumberOfPorts returns NumberOfPorts (property field)
 	GetNumberOfPorts() uint8
@@ -56,6 +57,17 @@ type _NLMInitializeRoutingTable struct {
 
 var _ NLMInitializeRoutingTable = (*_NLMInitializeRoutingTable)(nil)
 var _ NLMRequirements = (*_NLMInitializeRoutingTable)(nil)
+
+// NewNLMInitializeRoutingTable factory function for _NLMInitializeRoutingTable
+func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTable {
+	_result := &_NLMInitializeRoutingTable{
+		NLMContract:   NewNLM(apduLength),
+		NumberOfPorts: numberOfPorts,
+		PortMappings:  portMappings,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_NLMInitializeRoutingTable) GetPortMappings() []NLMInitializeRoutingTab
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMInitializeRoutingTable factory function for _NLMInitializeRoutingTable
-func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTable {
-	_result := &_NLMInitializeRoutingTable{
-		NLMContract:   NewNLM(apduLength),
-		NumberOfPorts: numberOfPorts,
-		PortMappings:  portMappings,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMInitializeRoutingTable(structType any) NLMInitializeRoutingTable {
@@ -207,6 +208,23 @@ func (m *_NLMInitializeRoutingTable) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_NLMInitializeRoutingTable) IsNLMInitializeRoutingTable() {}
+
+func (m *_NLMInitializeRoutingTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMInitializeRoutingTable) deepCopy() *_NLMInitializeRoutingTable {
+	if m == nil {
+		return nil
+	}
+	_NLMInitializeRoutingTableCopy := &_NLMInitializeRoutingTable{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.NumberOfPorts,
+		utils.DeepCopySlice[NLMInitializeRoutingTablePortMapping, NLMInitializeRoutingTablePortMapping](m.PortMappings),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMInitializeRoutingTableCopy
+}
 
 func (m *_NLMInitializeRoutingTable) String() string {
 	if m == nil {

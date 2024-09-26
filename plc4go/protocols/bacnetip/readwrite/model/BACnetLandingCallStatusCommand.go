@@ -40,6 +40,7 @@ type BACnetLandingCallStatusCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetLandingCallStatusCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLandingCallStatusCommand()
 }
@@ -70,6 +71,14 @@ type _BACnetLandingCallStatusCommand struct {
 
 var _ BACnetLandingCallStatusCommandContract = (*_BACnetLandingCallStatusCommand)(nil)
 
+// NewBACnetLandingCallStatusCommand factory function for _BACnetLandingCallStatusCommand
+func NewBACnetLandingCallStatusCommand(peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommand {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetLandingCallStatusCommand must not be nil")
+	}
+	return &_BACnetLandingCallStatusCommand{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetLandingCallStatusCommand) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingCallStatusCommand factory function for _BACnetLandingCallStatusCommand
-func NewBACnetLandingCallStatusCommand(peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommand {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetLandingCallStatusCommand must not be nil")
-	}
-	return &_BACnetLandingCallStatusCommand{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingCallStatusCommand(structType any) BACnetLandingCallStatusCommand {
@@ -189,11 +190,11 @@ func (m *_BACnetLandingCallStatusCommand) parse(ctx context.Context, readBuffer 
 	var _child BACnetLandingCallStatusCommand
 	switch {
 	case peekedTagNumber == uint8(1): // BACnetLandingCallStatusCommandDirection
-		if _child, err = (&_BACnetLandingCallStatusCommandDirection{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetLandingCallStatusCommandDirection).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLandingCallStatusCommandDirection for type-switch of BACnetLandingCallStatusCommand")
 		}
 	case peekedTagNumber == uint8(2): // BACnetLandingCallStatusCommandDestination
-		if _child, err = (&_BACnetLandingCallStatusCommandDestination{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetLandingCallStatusCommandDestination).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLandingCallStatusCommandDestination for type-switch of BACnetLandingCallStatusCommand")
 		}
 	default:
@@ -237,3 +238,18 @@ func (pm *_BACnetLandingCallStatusCommand) serializeParent(ctx context.Context, 
 }
 
 func (m *_BACnetLandingCallStatusCommand) IsBACnetLandingCallStatusCommand() {}
+
+func (m *_BACnetLandingCallStatusCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLandingCallStatusCommand) deepCopy() *_BACnetLandingCallStatusCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetLandingCallStatusCommandCopy := &_BACnetLandingCallStatusCommand{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetLandingCallStatusCommandCopy
+}

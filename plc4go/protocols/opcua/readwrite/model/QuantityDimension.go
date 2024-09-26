@@ -38,6 +38,7 @@ type QuantityDimension interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMassExponent returns MassExponent (property field)
 	GetMassExponent() int8
@@ -74,6 +75,23 @@ type _QuantityDimension struct {
 
 var _ QuantityDimension = (*_QuantityDimension)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QuantityDimension)(nil)
+
+// NewQuantityDimension factory function for _QuantityDimension
+func NewQuantityDimension(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) *_QuantityDimension {
+	_result := &_QuantityDimension{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		MassExponent:                      massExponent,
+		LengthExponent:                    lengthExponent,
+		TimeExponent:                      timeExponent,
+		ElectricCurrentExponent:           electricCurrentExponent,
+		AmountOfSubstanceExponent:         amountOfSubstanceExponent,
+		LuminousIntensityExponent:         luminousIntensityExponent,
+		AbsoluteTemperatureExponent:       absoluteTemperatureExponent,
+		DimensionlessExponent:             dimensionlessExponent,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,23 +152,6 @@ func (m *_QuantityDimension) GetDimensionlessExponent() int8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQuantityDimension factory function for _QuantityDimension
-func NewQuantityDimension(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) *_QuantityDimension {
-	_result := &_QuantityDimension{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		MassExponent:                      massExponent,
-		LengthExponent:                    lengthExponent,
-		TimeExponent:                      timeExponent,
-		ElectricCurrentExponent:           electricCurrentExponent,
-		AmountOfSubstanceExponent:         amountOfSubstanceExponent,
-		LuminousIntensityExponent:         luminousIntensityExponent,
-		AbsoluteTemperatureExponent:       absoluteTemperatureExponent,
-		DimensionlessExponent:             dimensionlessExponent,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQuantityDimension(structType any) QuantityDimension {
@@ -326,6 +327,29 @@ func (m *_QuantityDimension) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_QuantityDimension) IsQuantityDimension() {}
+
+func (m *_QuantityDimension) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QuantityDimension) deepCopy() *_QuantityDimension {
+	if m == nil {
+		return nil
+	}
+	_QuantityDimensionCopy := &_QuantityDimension{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.MassExponent,
+		m.LengthExponent,
+		m.TimeExponent,
+		m.ElectricCurrentExponent,
+		m.AmountOfSubstanceExponent,
+		m.LuminousIntensityExponent,
+		m.AbsoluteTemperatureExponent,
+		m.DimensionlessExponent,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QuantityDimensionCopy
+}
 
 func (m *_QuantityDimension) String() string {
 	if m == nil {

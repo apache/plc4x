@@ -38,6 +38,7 @@ type BACnetTimeStampTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimeStamp
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetContextTagTime
@@ -53,6 +54,19 @@ type _BACnetTimeStampTime struct {
 
 var _ BACnetTimeStampTime = (*_BACnetTimeStampTime)(nil)
 var _ BACnetTimeStampRequirements = (*_BACnetTimeStampTime)(nil)
+
+// NewBACnetTimeStampTime factory function for _BACnetTimeStampTime
+func NewBACnetTimeStampTime(peekedTagHeader BACnetTagHeader, timeValue BACnetContextTagTime) *_BACnetTimeStampTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetContextTagTime for BACnetTimeStampTime must not be nil")
+	}
+	_result := &_BACnetTimeStampTime{
+		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
+		TimeValue:               timeValue,
+	}
+	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetTimeStampTime) GetTimeValue() BACnetContextTagTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimeStampTime factory function for _BACnetTimeStampTime
-func NewBACnetTimeStampTime(timeValue BACnetContextTagTime, peekedTagHeader BACnetTagHeader) *_BACnetTimeStampTime {
-	if timeValue == nil {
-		panic("timeValue of type BACnetContextTagTime for BACnetTimeStampTime must not be nil")
-	}
-	_result := &_BACnetTimeStampTime{
-		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
-		TimeValue:               timeValue,
-	}
-	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimeStampTime(structType any) BACnetTimeStampTime {
@@ -178,6 +179,22 @@ func (m *_BACnetTimeStampTime) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_BACnetTimeStampTime) IsBACnetTimeStampTime() {}
+
+func (m *_BACnetTimeStampTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStampTime) deepCopy() *_BACnetTimeStampTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampTimeCopy := &_BACnetTimeStampTime{
+		m.BACnetTimeStampContract.(*_BACnetTimeStamp).deepCopy(),
+		m.TimeValue.DeepCopy().(BACnetContextTagTime),
+	}
+	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
+	return _BACnetTimeStampTimeCopy
+}
 
 func (m *_BACnetTimeStampTime) String() string {
 	if m == nil {

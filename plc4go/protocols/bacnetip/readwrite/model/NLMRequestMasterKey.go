@@ -38,6 +38,7 @@ type NLMRequestMasterKey interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetNumberOfSupportedKeyAlgorithms returns NumberOfSupportedKeyAlgorithms (property field)
 	GetNumberOfSupportedKeyAlgorithms() uint8
@@ -56,6 +57,17 @@ type _NLMRequestMasterKey struct {
 
 var _ NLMRequestMasterKey = (*_NLMRequestMasterKey)(nil)
 var _ NLMRequirements = (*_NLMRequestMasterKey)(nil)
+
+// NewNLMRequestMasterKey factory function for _NLMRequestMasterKey
+func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte, apduLength uint16) *_NLMRequestMasterKey {
+	_result := &_NLMRequestMasterKey{
+		NLMContract:                      NewNLM(apduLength),
+		NumberOfSupportedKeyAlgorithms:   numberOfSupportedKeyAlgorithms,
+		EncryptionAndSignatureAlgorithms: encryptionAndSignatureAlgorithms,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_NLMRequestMasterKey) GetEncryptionAndSignatureAlgorithms() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRequestMasterKey factory function for _NLMRequestMasterKey
-func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte, apduLength uint16) *_NLMRequestMasterKey {
-	_result := &_NLMRequestMasterKey{
-		NLMContract:                      NewNLM(apduLength),
-		NumberOfSupportedKeyAlgorithms:   numberOfSupportedKeyAlgorithms,
-		EncryptionAndSignatureAlgorithms: encryptionAndSignatureAlgorithms,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRequestMasterKey(structType any) NLMRequestMasterKey {
@@ -202,6 +203,23 @@ func (m *_NLMRequestMasterKey) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NLMRequestMasterKey) IsNLMRequestMasterKey() {}
+
+func (m *_NLMRequestMasterKey) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRequestMasterKey) deepCopy() *_NLMRequestMasterKey {
+	if m == nil {
+		return nil
+	}
+	_NLMRequestMasterKeyCopy := &_NLMRequestMasterKey{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.NumberOfSupportedKeyAlgorithms,
+		utils.DeepCopySlice[byte, byte](m.EncryptionAndSignatureAlgorithms),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRequestMasterKeyCopy
+}
 
 func (m *_NLMRequestMasterKey) String() string {
 	if m == nil {

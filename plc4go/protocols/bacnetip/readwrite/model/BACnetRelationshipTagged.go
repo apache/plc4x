@@ -38,6 +38,7 @@ type BACnetRelationshipTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetRelationshipTagged struct {
 }
 
 var _ BACnetRelationshipTagged = (*_BACnetRelationshipTagged)(nil)
+
+// NewBACnetRelationshipTagged factory function for _BACnetRelationshipTagged
+func NewBACnetRelationshipTagged(header BACnetTagHeader, value BACnetRelationship, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetRelationshipTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetRelationshipTagged must not be nil")
+	}
+	return &_BACnetRelationshipTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetRelationshipTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRelationshipTagged factory function for _BACnetRelationshipTagged
-func NewBACnetRelationshipTagged(header BACnetTagHeader, value BACnetRelationship, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetRelationshipTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetRelationshipTagged must not be nil")
-	}
-	return &_BACnetRelationshipTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRelationshipTagged(structType any) BACnetRelationshipTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetRelationshipTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetRelationshipTagged) IsBACnetRelationshipTagged() {}
+
+func (m *_BACnetRelationshipTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRelationshipTagged) deepCopy() *_BACnetRelationshipTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetRelationshipTaggedCopy := &_BACnetRelationshipTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetRelationshipTaggedCopy
+}
 
 func (m *_BACnetRelationshipTagged) String() string {
 	if m == nil {

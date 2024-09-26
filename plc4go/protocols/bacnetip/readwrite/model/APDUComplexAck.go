@@ -38,6 +38,7 @@ type APDUComplexAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetSegmentedMessage returns SegmentedMessage (property field)
 	GetSegmentedMessage() bool
@@ -80,6 +81,23 @@ type _APDUComplexAck struct {
 
 var _ APDUComplexAck = (*_APDUComplexAck)(nil)
 var _ APDURequirements = (*_APDUComplexAck)(nil)
+
+// NewAPDUComplexAck factory function for _APDUComplexAck
+func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck BACnetServiceAck, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte, apduLength uint16) *_APDUComplexAck {
+	_result := &_APDUComplexAck{
+		APDUContract:         NewAPDU(apduLength),
+		SegmentedMessage:     segmentedMessage,
+		MoreFollows:          moreFollows,
+		OriginalInvokeId:     originalInvokeId,
+		SequenceNumber:       sequenceNumber,
+		ProposedWindowSize:   proposedWindowSize,
+		ServiceAck:           serviceAck,
+		SegmentServiceChoice: segmentServiceChoice,
+		Segment:              segment,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -177,23 +195,6 @@ func (m *_APDUComplexAck) GetSegmentReduction() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUComplexAck factory function for _APDUComplexAck
-func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck BACnetServiceAck, segmentServiceChoice *BACnetConfirmedServiceChoice, segment []byte, apduLength uint16) *_APDUComplexAck {
-	_result := &_APDUComplexAck{
-		APDUContract:         NewAPDU(apduLength),
-		SegmentedMessage:     segmentedMessage,
-		MoreFollows:          moreFollows,
-		OriginalInvokeId:     originalInvokeId,
-		SequenceNumber:       sequenceNumber,
-		ProposedWindowSize:   proposedWindowSize,
-		ServiceAck:           serviceAck,
-		SegmentServiceChoice: segmentServiceChoice,
-		Segment:              segment,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUComplexAck(structType any) APDUComplexAck {
@@ -434,6 +435,30 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_APDUComplexAck) IsAPDUComplexAck() {}
+
+func (m *_APDUComplexAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUComplexAck) deepCopy() *_APDUComplexAck {
+	if m == nil {
+		return nil
+	}
+	_APDUComplexAckCopy := &_APDUComplexAck{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.SegmentedMessage,
+		m.MoreFollows,
+		m.OriginalInvokeId,
+		utils.CopyPtr[uint8](m.SequenceNumber),
+		utils.CopyPtr[uint8](m.ProposedWindowSize),
+		m.ServiceAck.DeepCopy().(BACnetServiceAck),
+		utils.CopyPtr[BACnetConfirmedServiceChoice](m.SegmentServiceChoice),
+		utils.DeepCopySlice[byte, byte](m.Segment),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUComplexAckCopy
+}
 
 func (m *_APDUComplexAck) String() string {
 	if m == nil {

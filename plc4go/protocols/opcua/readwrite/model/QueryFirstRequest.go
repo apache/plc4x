@@ -38,6 +38,7 @@ type QueryFirstRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -71,6 +72,31 @@ type _QueryFirstRequest struct {
 
 var _ QueryFirstRequest = (*_QueryFirstRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryFirstRequest)(nil)
+
+// NewQueryFirstRequest factory function for _QueryFirstRequest
+func NewQueryFirstRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) *_QueryFirstRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	if view == nil {
+		panic("view of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	if filter == nil {
+		panic("filter of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	_result := &_QueryFirstRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		View:                              view,
+		NoOfNodeTypes:                     noOfNodeTypes,
+		NodeTypes:                         nodeTypes,
+		Filter:                            filter,
+		MaxDataSetsToReturn:               maxDataSetsToReturn,
+		MaxReferencesToReturn:             maxReferencesToReturn,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,31 +153,6 @@ func (m *_QueryFirstRequest) GetMaxReferencesToReturn() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryFirstRequest factory function for _QueryFirstRequest
-func NewQueryFirstRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) *_QueryFirstRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
-	}
-	if view == nil {
-		panic("view of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
-	}
-	if filter == nil {
-		panic("filter of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
-	}
-	_result := &_QueryFirstRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		View:                              view,
-		NoOfNodeTypes:                     noOfNodeTypes,
-		NodeTypes:                         nodeTypes,
-		Filter:                            filter,
-		MaxDataSetsToReturn:               maxDataSetsToReturn,
-		MaxReferencesToReturn:             maxReferencesToReturn,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryFirstRequest(structType any) QueryFirstRequest {
@@ -321,6 +322,28 @@ func (m *_QueryFirstRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_QueryFirstRequest) IsQueryFirstRequest() {}
+
+func (m *_QueryFirstRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryFirstRequest) deepCopy() *_QueryFirstRequest {
+	if m == nil {
+		return nil
+	}
+	_QueryFirstRequestCopy := &_QueryFirstRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.View.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodeTypes,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodeTypes),
+		m.Filter.DeepCopy().(ExtensionObjectDefinition),
+		m.MaxDataSetsToReturn,
+		m.MaxReferencesToReturn,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryFirstRequestCopy
+}
 
 func (m *_QueryFirstRequest) String() string {
 	if m == nil {

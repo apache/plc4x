@@ -38,6 +38,7 @@ type NLMDisconnectConnectionToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
@@ -53,6 +54,16 @@ type _NLMDisconnectConnectionToNetwork struct {
 
 var _ NLMDisconnectConnectionToNetwork = (*_NLMDisconnectConnectionToNetwork)(nil)
 var _ NLMRequirements = (*_NLMDisconnectConnectionToNetwork)(nil)
+
+// NewNLMDisconnectConnectionToNetwork factory function for _NLMDisconnectConnectionToNetwork
+func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
+	_result := &_NLMDisconnectConnectionToNetwork{
+		NLMContract:               NewNLM(apduLength),
+		DestinationNetworkAddress: destinationNetworkAddress,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint1
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMDisconnectConnectionToNetwork factory function for _NLMDisconnectConnectionToNetwork
-func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
-	_result := &_NLMDisconnectConnectionToNetwork{
-		NLMContract:               NewNLM(apduLength),
-		DestinationNetworkAddress: destinationNetworkAddress,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMDisconnectConnectionToNetwork(structType any) NLMDisconnectConnectionToNetwork {
@@ -179,6 +180,22 @@ func (m *_NLMDisconnectConnectionToNetwork) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_NLMDisconnectConnectionToNetwork) IsNLMDisconnectConnectionToNetwork() {}
+
+func (m *_NLMDisconnectConnectionToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMDisconnectConnectionToNetwork) deepCopy() *_NLMDisconnectConnectionToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMDisconnectConnectionToNetworkCopy := &_NLMDisconnectConnectionToNetwork{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.DestinationNetworkAddress,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMDisconnectConnectionToNetworkCopy
+}
 
 func (m *_NLMDisconnectConnectionToNetwork) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetPriorityValueUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetPriorityValueUnsigned struct {
 
 var _ BACnetPriorityValueUnsigned = (*_BACnetPriorityValueUnsigned)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueUnsigned)(nil)
+
+// NewBACnetPriorityValueUnsigned factory function for _BACnetPriorityValueUnsigned
+func NewBACnetPriorityValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetPriorityValueUnsigned must not be nil")
+	}
+	_result := &_BACnetPriorityValueUnsigned{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		UnsignedValue:               unsignedValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPriorityValueUnsigned) GetUnsignedValue() BACnetApplicationTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueUnsigned factory function for _BACnetPriorityValueUnsigned
-func NewBACnetPriorityValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueUnsigned {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetPriorityValueUnsigned must not be nil")
-	}
-	_result := &_BACnetPriorityValueUnsigned{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		UnsignedValue:               unsignedValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueUnsigned(structType any) BACnetPriorityValueUnsigned {
@@ -178,6 +179,22 @@ func (m *_BACnetPriorityValueUnsigned) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetPriorityValueUnsigned) IsBACnetPriorityValueUnsigned() {}
+
+func (m *_BACnetPriorityValueUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueUnsigned) deepCopy() *_BACnetPriorityValueUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueUnsignedCopy := &_BACnetPriorityValueUnsigned{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueUnsignedCopy
+}
 
 func (m *_BACnetPriorityValueUnsigned) String() string {
 	if m == nil {

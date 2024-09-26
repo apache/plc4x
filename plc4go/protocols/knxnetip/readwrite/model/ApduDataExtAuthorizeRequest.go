@@ -38,6 +38,7 @@ type ApduDataExtAuthorizeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetLevel returns Level (property field)
 	GetLevel() uint8
@@ -56,6 +57,17 @@ type _ApduDataExtAuthorizeRequest struct {
 
 var _ ApduDataExtAuthorizeRequest = (*_ApduDataExtAuthorizeRequest)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtAuthorizeRequest)(nil)
+
+// NewApduDataExtAuthorizeRequest factory function for _ApduDataExtAuthorizeRequest
+func NewApduDataExtAuthorizeRequest(level uint8, data []byte, length uint8) *_ApduDataExtAuthorizeRequest {
+	_result := &_ApduDataExtAuthorizeRequest{
+		ApduDataExtContract: NewApduDataExt(length),
+		Level:               level,
+		Data:                data,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_ApduDataExtAuthorizeRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtAuthorizeRequest factory function for _ApduDataExtAuthorizeRequest
-func NewApduDataExtAuthorizeRequest(level uint8, data []byte, length uint8) *_ApduDataExtAuthorizeRequest {
-	_result := &_ApduDataExtAuthorizeRequest{
-		ApduDataExtContract: NewApduDataExt(length),
-		Level:               level,
-		Data:                data,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtAuthorizeRequest(structType any) ApduDataExtAuthorizeRequest {
@@ -202,6 +203,23 @@ func (m *_ApduDataExtAuthorizeRequest) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_ApduDataExtAuthorizeRequest) IsApduDataExtAuthorizeRequest() {}
+
+func (m *_ApduDataExtAuthorizeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtAuthorizeRequest) deepCopy() *_ApduDataExtAuthorizeRequest {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtAuthorizeRequestCopy := &_ApduDataExtAuthorizeRequest{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.Level,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtAuthorizeRequestCopy
+}
 
 func (m *_ApduDataExtAuthorizeRequest) String() string {
 	if m == nil {

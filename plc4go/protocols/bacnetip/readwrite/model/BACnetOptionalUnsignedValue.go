@@ -38,6 +38,7 @@ type BACnetOptionalUnsignedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalUnsigned
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetOptionalUnsignedValue struct {
 
 var _ BACnetOptionalUnsignedValue = (*_BACnetOptionalUnsignedValue)(nil)
 var _ BACnetOptionalUnsignedRequirements = (*_BACnetOptionalUnsignedValue)(nil)
+
+// NewBACnetOptionalUnsignedValue factory function for _BACnetOptionalUnsignedValue
+func NewBACnetOptionalUnsignedValue(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetOptionalUnsignedValue {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetOptionalUnsignedValue must not be nil")
+	}
+	_result := &_BACnetOptionalUnsignedValue{
+		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
+		UnsignedValue:                  unsignedValue,
+	}
+	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetOptionalUnsignedValue) GetUnsignedValue() BACnetApplicationTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalUnsignedValue factory function for _BACnetOptionalUnsignedValue
-func NewBACnetOptionalUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsignedValue {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetOptionalUnsignedValue must not be nil")
-	}
-	_result := &_BACnetOptionalUnsignedValue{
-		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
-		UnsignedValue:                  unsignedValue,
-	}
-	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalUnsignedValue(structType any) BACnetOptionalUnsignedValue {
@@ -178,6 +179,22 @@ func (m *_BACnetOptionalUnsignedValue) SerializeWithWriteBuffer(ctx context.Cont
 }
 
 func (m *_BACnetOptionalUnsignedValue) IsBACnetOptionalUnsignedValue() {}
+
+func (m *_BACnetOptionalUnsignedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalUnsignedValue) deepCopy() *_BACnetOptionalUnsignedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalUnsignedValueCopy := &_BACnetOptionalUnsignedValue{
+		m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned).deepCopy(),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = m
+	return _BACnetOptionalUnsignedValueCopy
+}
 
 func (m *_BACnetOptionalUnsignedValue) String() string {
 	if m == nil {

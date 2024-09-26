@@ -38,6 +38,7 @@ type CipConnectedResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -61,6 +62,18 @@ type _CipConnectedResponse struct {
 
 var _ CipConnectedResponse = (*_CipConnectedResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectedResponse)(nil)
+
+// NewCipConnectedResponse factory function for _CipConnectedResponse
+func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected, serviceLen uint16) *_CipConnectedResponse {
+	_result := &_CipConnectedResponse{
+		CipServiceContract:    NewCipService(serviceLen),
+		Status:                status,
+		AdditionalStatusWords: additionalStatusWords,
+		Data:                  data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,18 +122,6 @@ func (m *_CipConnectedResponse) GetData() CIPDataConnected {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectedResponse factory function for _CipConnectedResponse
-func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected, serviceLen uint16) *_CipConnectedResponse {
-	_result := &_CipConnectedResponse{
-		CipServiceContract:    NewCipService(serviceLen),
-		Status:                status,
-		AdditionalStatusWords: additionalStatusWords,
-		Data:                  data,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectedResponse(structType any) CipConnectedResponse {
@@ -250,6 +251,25 @@ func (m *_CipConnectedResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_CipConnectedResponse) IsCipConnectedResponse() {}
+
+func (m *_CipConnectedResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectedResponse) deepCopy() *_CipConnectedResponse {
+	if m == nil {
+		return nil
+	}
+	_CipConnectedResponseCopy := &_CipConnectedResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.Status,
+		m.AdditionalStatusWords,
+		m.Data.DeepCopy().(CIPDataConnected),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectedResponseCopy
+}
 
 func (m *_CipConnectedResponse) String() string {
 	if m == nil {

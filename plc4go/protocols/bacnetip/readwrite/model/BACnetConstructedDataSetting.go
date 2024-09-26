@@ -38,6 +38,7 @@ type BACnetConstructedDataSetting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSetting returns Setting (property field)
 	GetSetting() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataSetting struct {
 
 var _ BACnetConstructedDataSetting = (*_BACnetConstructedDataSetting)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSetting)(nil)
+
+// NewBACnetConstructedDataSetting factory function for _BACnetConstructedDataSetting
+func NewBACnetConstructedDataSetting(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setting BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetting {
+	if setting == nil {
+		panic("setting of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSetting must not be nil")
+	}
+	_result := &_BACnetConstructedDataSetting{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Setting:                       setting,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataSetting) GetActualValue() BACnetApplicationTagUns
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSetting factory function for _BACnetConstructedDataSetting
-func NewBACnetConstructedDataSetting(setting BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetting {
-	if setting == nil {
-		panic("setting of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSetting must not be nil")
-	}
-	_result := &_BACnetConstructedDataSetting{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Setting:                       setting,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSetting(structType any) BACnetConstructedDataSetting {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSetting) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataSetting) IsBACnetConstructedDataSetting() {}
+
+func (m *_BACnetConstructedDataSetting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSetting) deepCopy() *_BACnetConstructedDataSetting {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSettingCopy := &_BACnetConstructedDataSetting{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Setting.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSettingCopy
+}
 
 func (m *_BACnetConstructedDataSetting) String() string {
 	if m == nil {

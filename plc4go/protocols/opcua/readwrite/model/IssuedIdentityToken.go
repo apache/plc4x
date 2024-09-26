@@ -38,6 +38,7 @@ type IssuedIdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	UserIdentityTokenDefinition
 	// GetTokenData returns TokenData (property field)
 	GetTokenData() PascalByteString
@@ -56,6 +57,23 @@ type _IssuedIdentityToken struct {
 
 var _ IssuedIdentityToken = (*_IssuedIdentityToken)(nil)
 var _ UserIdentityTokenDefinitionRequirements = (*_IssuedIdentityToken)(nil)
+
+// NewIssuedIdentityToken factory function for _IssuedIdentityToken
+func NewIssuedIdentityToken(tokenData PascalByteString, encryptionAlgorithm PascalString) *_IssuedIdentityToken {
+	if tokenData == nil {
+		panic("tokenData of type PascalByteString for IssuedIdentityToken must not be nil")
+	}
+	if encryptionAlgorithm == nil {
+		panic("encryptionAlgorithm of type PascalString for IssuedIdentityToken must not be nil")
+	}
+	_result := &_IssuedIdentityToken{
+		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+		TokenData:                           tokenData,
+		EncryptionAlgorithm:                 encryptionAlgorithm,
+	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_IssuedIdentityToken) GetEncryptionAlgorithm() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIssuedIdentityToken factory function for _IssuedIdentityToken
-func NewIssuedIdentityToken(tokenData PascalByteString, encryptionAlgorithm PascalString) *_IssuedIdentityToken {
-	if tokenData == nil {
-		panic("tokenData of type PascalByteString for IssuedIdentityToken must not be nil")
-	}
-	if encryptionAlgorithm == nil {
-		panic("encryptionAlgorithm of type PascalString for IssuedIdentityToken must not be nil")
-	}
-	_result := &_IssuedIdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-		TokenData:                           tokenData,
-		EncryptionAlgorithm:                 encryptionAlgorithm,
-	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIssuedIdentityToken(structType any) IssuedIdentityToken {
@@ -206,6 +207,23 @@ func (m *_IssuedIdentityToken) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_IssuedIdentityToken) IsIssuedIdentityToken() {}
+
+func (m *_IssuedIdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IssuedIdentityToken) deepCopy() *_IssuedIdentityToken {
+	if m == nil {
+		return nil
+	}
+	_IssuedIdentityTokenCopy := &_IssuedIdentityToken{
+		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
+		m.TokenData.DeepCopy().(PascalByteString),
+		m.EncryptionAlgorithm.DeepCopy().(PascalString),
+	}
+	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	return _IssuedIdentityTokenCopy
+}
 
 func (m *_IssuedIdentityToken) String() string {
 	if m == nil {

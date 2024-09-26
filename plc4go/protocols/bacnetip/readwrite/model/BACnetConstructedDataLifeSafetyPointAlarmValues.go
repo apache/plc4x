@@ -38,6 +38,7 @@ type BACnetConstructedDataLifeSafetyPointAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetLifeSafetyStateTagged
@@ -53,6 +54,16 @@ type _BACnetConstructedDataLifeSafetyPointAlarmValues struct {
 
 var _ BACnetConstructedDataLifeSafetyPointAlarmValues = (*_BACnetConstructedDataLifeSafetyPointAlarmValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyPointAlarmValues)(nil)
+
+// NewBACnetConstructedDataLifeSafetyPointAlarmValues factory function for _BACnetConstructedDataLifeSafetyPointAlarmValues
+func NewBACnetConstructedDataLifeSafetyPointAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyPointAlarmValues {
+	_result := &_BACnetConstructedDataLifeSafetyPointAlarmValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AlarmValues:                   alarmValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) GetAlarmValues() []BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLifeSafetyPointAlarmValues factory function for _BACnetConstructedDataLifeSafetyPointAlarmValues
-func NewBACnetConstructedDataLifeSafetyPointAlarmValues(alarmValues []BACnetLifeSafetyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyPointAlarmValues {
-	_result := &_BACnetConstructedDataLifeSafetyPointAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AlarmValues:                   alarmValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLifeSafetyPointAlarmValues(structType any) BACnetConstructedDataLifeSafetyPointAlarmValues {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) SerializeWithWriteBuf
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) IsBACnetConstructedDataLifeSafetyPointAlarmValues() {
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) deepCopy() *_BACnetConstructedDataLifeSafetyPointAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLifeSafetyPointAlarmValuesCopy := &_BACnetConstructedDataLifeSafetyPointAlarmValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLifeSafetyPointAlarmValuesCopy
 }
 
 func (m *_BACnetConstructedDataLifeSafetyPointAlarmValues) String() string {

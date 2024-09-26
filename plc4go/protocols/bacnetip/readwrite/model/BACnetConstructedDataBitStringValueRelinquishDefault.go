@@ -38,6 +38,7 @@ type BACnetConstructedDataBitStringValueRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagBitString
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBitStringValueRelinquishDefault struct {
 
 var _ BACnetConstructedDataBitStringValueRelinquishDefault = (*_BACnetConstructedDataBitStringValueRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitStringValueRelinquishDefault)(nil)
+
+// NewBACnetConstructedDataBitStringValueRelinquishDefault factory function for _BACnetConstructedDataBitStringValueRelinquishDefault
+func NewBACnetConstructedDataBitStringValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagBitString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitStringValueRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagBitString for BACnetConstructedDataBitStringValueRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataBitStringValueRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) GetActualValue()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBitStringValueRelinquishDefault factory function for _BACnetConstructedDataBitStringValueRelinquishDefault
-func NewBACnetConstructedDataBitStringValueRelinquishDefault(relinquishDefault BACnetApplicationTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitStringValueRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetApplicationTagBitString for BACnetConstructedDataBitStringValueRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataBitStringValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBitStringValueRelinquishDefault(structType any) BACnetConstructedDataBitStringValueRelinquishDefault {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) SerializeWithWri
 }
 
 func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) IsBACnetConstructedDataBitStringValueRelinquishDefault() {
+}
+
+func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) deepCopy() *_BACnetConstructedDataBitStringValueRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBitStringValueRelinquishDefaultCopy := &_BACnetConstructedDataBitStringValueRelinquishDefault{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RelinquishDefault.DeepCopy().(BACnetApplicationTagBitString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBitStringValueRelinquishDefaultCopy
 }
 
 func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) String() string {

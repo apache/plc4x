@@ -42,6 +42,7 @@ type EipConnectionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsEipConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipConnectionRequest()
@@ -54,6 +55,15 @@ type _EipConnectionRequest struct {
 
 var _ EipConnectionRequest = (*_EipConnectionRequest)(nil)
 var _ EipPacketRequirements = (*_EipConnectionRequest)(nil)
+
+// NewEipConnectionRequest factory function for _EipConnectionRequest
+func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipConnectionRequest {
+	_result := &_EipConnectionRequest{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -98,15 +108,6 @@ func (m *_EipConnectionRequest) GetFlags() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEipConnectionRequest factory function for _EipConnectionRequest
-func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipConnectionRequest {
-	_result := &_EipConnectionRequest{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEipConnectionRequest(structType any) EipConnectionRequest {
@@ -204,6 +205,21 @@ func (m *_EipConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_EipConnectionRequest) IsEipConnectionRequest() {}
+
+func (m *_EipConnectionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipConnectionRequest) deepCopy() *_EipConnectionRequest {
+	if m == nil {
+		return nil
+	}
+	_EipConnectionRequestCopy := &_EipConnectionRequest{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _EipConnectionRequestCopy
+}
 
 func (m *_EipConnectionRequest) String() string {
 	if m == nil {

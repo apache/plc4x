@@ -38,6 +38,7 @@ type BACnetTimeStampDateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimeStamp
 	// GetDateTimeValue returns DateTimeValue (property field)
 	GetDateTimeValue() BACnetDateTimeEnclosed
@@ -53,6 +54,19 @@ type _BACnetTimeStampDateTime struct {
 
 var _ BACnetTimeStampDateTime = (*_BACnetTimeStampDateTime)(nil)
 var _ BACnetTimeStampRequirements = (*_BACnetTimeStampDateTime)(nil)
+
+// NewBACnetTimeStampDateTime factory function for _BACnetTimeStampDateTime
+func NewBACnetTimeStampDateTime(peekedTagHeader BACnetTagHeader, dateTimeValue BACnetDateTimeEnclosed) *_BACnetTimeStampDateTime {
+	if dateTimeValue == nil {
+		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetTimeStampDateTime must not be nil")
+	}
+	_result := &_BACnetTimeStampDateTime{
+		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
+		DateTimeValue:           dateTimeValue,
+	}
+	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetTimeStampDateTime) GetDateTimeValue() BACnetDateTimeEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimeStampDateTime factory function for _BACnetTimeStampDateTime
-func NewBACnetTimeStampDateTime(dateTimeValue BACnetDateTimeEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetTimeStampDateTime {
-	if dateTimeValue == nil {
-		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetTimeStampDateTime must not be nil")
-	}
-	_result := &_BACnetTimeStampDateTime{
-		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
-		DateTimeValue:           dateTimeValue,
-	}
-	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimeStampDateTime(structType any) BACnetTimeStampDateTime {
@@ -178,6 +179,22 @@ func (m *_BACnetTimeStampDateTime) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetTimeStampDateTime) IsBACnetTimeStampDateTime() {}
+
+func (m *_BACnetTimeStampDateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStampDateTime) deepCopy() *_BACnetTimeStampDateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampDateTimeCopy := &_BACnetTimeStampDateTime{
+		m.BACnetTimeStampContract.(*_BACnetTimeStamp).deepCopy(),
+		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
+	}
+	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m
+	return _BACnetTimeStampDateTimeCopy
+}
 
 func (m *_BACnetTimeStampDateTime) String() string {
 	if m == nil {

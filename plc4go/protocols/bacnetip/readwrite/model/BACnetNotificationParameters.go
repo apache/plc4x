@@ -40,6 +40,7 @@ type BACnetNotificationParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetNotificationParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParameters()
 }
@@ -84,6 +85,20 @@ type _BACnetNotificationParameters struct {
 
 var _ BACnetNotificationParametersContract = (*_BACnetNotificationParameters)(nil)
 
+// NewBACnetNotificationParameters factory function for _BACnetNotificationParameters
+func NewBACnetNotificationParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParameters {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetNotificationParameters must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetNotificationParameters must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetNotificationParameters must not be nil")
+	}
+	return &_BACnetNotificationParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -121,20 +136,6 @@ func (pm *_BACnetNotificationParameters) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParameters factory function for _BACnetNotificationParameters
-func NewBACnetNotificationParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParameters {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetNotificationParameters must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetNotificationParameters must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetNotificationParameters must not be nil")
-	}
-	return &_BACnetNotificationParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParameters(structType any) BACnetNotificationParameters {
@@ -229,83 +230,83 @@ func (m *_BACnetNotificationParameters) parse(ctx context.Context, readBuffer ut
 	var _child BACnetNotificationParameters
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetNotificationParametersChangeOfBitString
-		if _child, err = (&_BACnetNotificationParametersChangeOfBitString{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfBitString).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfBitString for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(1): // BACnetNotificationParametersChangeOfState
-		if _child, err = (&_BACnetNotificationParametersChangeOfState{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfState).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfState for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(2): // BACnetNotificationParametersChangeOfValue
-		if _child, err = (&_BACnetNotificationParametersChangeOfValue{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfValue).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfValue for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(3): // BACnetNotificationParametersCommandFailure
-		if _child, err = (&_BACnetNotificationParametersCommandFailure{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersCommandFailure).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersCommandFailure for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(4): // BACnetNotificationParametersFloatingLimit
-		if _child, err = (&_BACnetNotificationParametersFloatingLimit{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersFloatingLimit).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersFloatingLimit for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(5): // BACnetNotificationParametersOutOfRange
-		if _child, err = (&_BACnetNotificationParametersOutOfRange{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersOutOfRange).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersOutOfRange for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(6): // BACnetNotificationParametersComplexEventType
-		if _child, err = (&_BACnetNotificationParametersComplexEventType{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersComplexEventType).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersComplexEventType for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(8): // BACnetNotificationParametersChangeOfLifeSafety
-		if _child, err = (&_BACnetNotificationParametersChangeOfLifeSafety{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfLifeSafety).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfLifeSafety for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(9): // BACnetNotificationParametersExtended
-		if _child, err = (&_BACnetNotificationParametersExtended{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersExtended).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersExtended for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(10): // BACnetNotificationParametersBufferReady
-		if _child, err = (&_BACnetNotificationParametersBufferReady{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersBufferReady).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersBufferReady for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(11): // BACnetNotificationParametersUnsignedRange
-		if _child, err = (&_BACnetNotificationParametersUnsignedRange{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersUnsignedRange).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersUnsignedRange for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(13): // BACnetNotificationParametersAccessEvent
-		if _child, err = (&_BACnetNotificationParametersAccessEvent{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersAccessEvent).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersAccessEvent for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(14): // BACnetNotificationParametersDoubleOutOfRange
-		if _child, err = (&_BACnetNotificationParametersDoubleOutOfRange{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersDoubleOutOfRange).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersDoubleOutOfRange for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(15): // BACnetNotificationParametersSignedOutOfRange
-		if _child, err = (&_BACnetNotificationParametersSignedOutOfRange{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersSignedOutOfRange).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersSignedOutOfRange for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(16): // BACnetNotificationParametersUnsignedOutOfRange
-		if _child, err = (&_BACnetNotificationParametersUnsignedOutOfRange{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersUnsignedOutOfRange).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersUnsignedOutOfRange for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(17): // BACnetNotificationParametersChangeOfCharacterString
-		if _child, err = (&_BACnetNotificationParametersChangeOfCharacterString{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfCharacterString).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfCharacterString for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(18): // BACnetNotificationParametersChangeOfStatusFlags
-		if _child, err = (&_BACnetNotificationParametersChangeOfStatusFlags{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfStatusFlags).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfStatusFlags for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(19): // BACnetNotificationParametersChangeOfReliability
-		if _child, err = (&_BACnetNotificationParametersChangeOfReliability{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfReliability).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfReliability for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(21): // BACnetNotificationParametersChangeOfDiscreteValue
-		if _child, err = (&_BACnetNotificationParametersChangeOfDiscreteValue{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfDiscreteValue).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfDiscreteValue for type-switch of BACnetNotificationParameters")
 		}
 	case peekedTagNumber == uint8(22): // BACnetNotificationParametersChangeOfTimer
-		if _child, err = (&_BACnetNotificationParametersChangeOfTimer{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfTimer).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfTimer for type-switch of BACnetNotificationParameters")
 		}
 	default:
@@ -376,3 +377,22 @@ func (m *_BACnetNotificationParameters) GetObjectTypeArgument() BACnetObjectType
 ////
 
 func (m *_BACnetNotificationParameters) IsBACnetNotificationParameters() {}
+
+func (m *_BACnetNotificationParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParameters) deepCopy() *_BACnetNotificationParameters {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersCopy := &_BACnetNotificationParameters{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+		m.ObjectTypeArgument,
+	}
+	return _BACnetNotificationParametersCopy
+}

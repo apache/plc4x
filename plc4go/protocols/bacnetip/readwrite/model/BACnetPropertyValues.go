@@ -38,6 +38,7 @@ type BACnetPropertyValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
 	// GetData returns Data (property field)
@@ -61,6 +62,17 @@ type _BACnetPropertyValues struct {
 
 var _ BACnetPropertyValues = (*_BACnetPropertyValues)(nil)
 
+// NewBACnetPropertyValues factory function for _BACnetPropertyValues
+func NewBACnetPropertyValues(innerOpeningTag BACnetOpeningTag, data []BACnetPropertyValue, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetPropertyValues {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetPropertyValues must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetPropertyValues must not be nil")
+	}
+	return &_BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -82,17 +94,6 @@ func (m *_BACnetPropertyValues) GetInnerClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyValues factory function for _BACnetPropertyValues
-func NewBACnetPropertyValues(innerOpeningTag BACnetOpeningTag, data []BACnetPropertyValue, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetPropertyValues {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetPropertyValues must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetPropertyValues must not be nil")
-	}
-	return &_BACnetPropertyValues{InnerOpeningTag: innerOpeningTag, Data: data, InnerClosingTag: innerClosingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyValues(structType any) BACnetPropertyValues {
@@ -233,6 +234,24 @@ func (m *_BACnetPropertyValues) GetObjectTypeArgument() BACnetObjectType {
 ////
 
 func (m *_BACnetPropertyValues) IsBACnetPropertyValues() {}
+
+func (m *_BACnetPropertyValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyValues) deepCopy() *_BACnetPropertyValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyValuesCopy := &_BACnetPropertyValues{
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetPropertyValue, BACnetPropertyValue](m.Data),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+		m.ObjectTypeArgument,
+	}
+	return _BACnetPropertyValuesCopy
+}
 
 func (m *_BACnetPropertyValues) String() string {
 	if m == nil {

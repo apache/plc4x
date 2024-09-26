@@ -38,6 +38,7 @@ type BACnetAccessUserTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetAccessUserTypeTagged struct {
 }
 
 var _ BACnetAccessUserTypeTagged = (*_BACnetAccessUserTypeTagged)(nil)
+
+// NewBACnetAccessUserTypeTagged factory function for _BACnetAccessUserTypeTagged
+func NewBACnetAccessUserTypeTagged(header BACnetTagHeader, value BACnetAccessUserType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessUserTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessUserTypeTagged must not be nil")
+	}
+	return &_BACnetAccessUserTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetAccessUserTypeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessUserTypeTagged factory function for _BACnetAccessUserTypeTagged
-func NewBACnetAccessUserTypeTagged(header BACnetTagHeader, value BACnetAccessUserType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessUserTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessUserTypeTagged must not be nil")
-	}
-	return &_BACnetAccessUserTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessUserTypeTagged(structType any) BACnetAccessUserTypeTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetAccessUserTypeTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetAccessUserTypeTagged) IsBACnetAccessUserTypeTagged() {}
+
+func (m *_BACnetAccessUserTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessUserTypeTagged) deepCopy() *_BACnetAccessUserTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessUserTypeTaggedCopy := &_BACnetAccessUserTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessUserTypeTaggedCopy
+}
 
 func (m *_BACnetAccessUserTypeTagged) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
@@ -53,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryEnumerated struct {
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryEnumerated = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated factory function for _BACnetFaultParameterFaultExtendedParametersEntryEnumerated
+func NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated) *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetFaultParameterFaultExtendedParametersEntryEnumerated must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		EnumeratedValue: enumeratedValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetEnumera
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated factory function for _BACnetFaultParameterFaultExtendedParametersEntryEnumerated
-func NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetFaultParameterFaultExtendedParametersEntryEnumerated must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		EnumeratedValue: enumeratedValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryEnumerated(structType any) BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) SerializeW
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) IsBACnetFaultParameterFaultExtendedParametersEntryEnumerated() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedCopy := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryEnumeratedCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) String() string {

@@ -38,6 +38,7 @@ type BACnetPropertyStatesExtendedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetExtendedValue returns ExtendedValue (property field)
 	GetExtendedValue() BACnetContextTagUnsignedInteger
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesExtendedValue struct {
 
 var _ BACnetPropertyStatesExtendedValue = (*_BACnetPropertyStatesExtendedValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesExtendedValue)(nil)
+
+// NewBACnetPropertyStatesExtendedValue factory function for _BACnetPropertyStatesExtendedValue
+func NewBACnetPropertyStatesExtendedValue(peekedTagHeader BACnetTagHeader, extendedValue BACnetContextTagUnsignedInteger) *_BACnetPropertyStatesExtendedValue {
+	if extendedValue == nil {
+		panic("extendedValue of type BACnetContextTagUnsignedInteger for BACnetPropertyStatesExtendedValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesExtendedValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ExtendedValue:                extendedValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesExtendedValue) GetExtendedValue() BACnetContextTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesExtendedValue factory function for _BACnetPropertyStatesExtendedValue
-func NewBACnetPropertyStatesExtendedValue(extendedValue BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesExtendedValue {
-	if extendedValue == nil {
-		panic("extendedValue of type BACnetContextTagUnsignedInteger for BACnetPropertyStatesExtendedValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesExtendedValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ExtendedValue:                extendedValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesExtendedValue(structType any) BACnetPropertyStatesExtendedValue {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesExtendedValue) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetPropertyStatesExtendedValue) IsBACnetPropertyStatesExtendedValue() {}
+
+func (m *_BACnetPropertyStatesExtendedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesExtendedValue) deepCopy() *_BACnetPropertyStatesExtendedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesExtendedValueCopy := &_BACnetPropertyStatesExtendedValue{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.ExtendedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesExtendedValueCopy
+}
 
 func (m *_BACnetPropertyStatesExtendedValue) String() string {
 	if m == nil {

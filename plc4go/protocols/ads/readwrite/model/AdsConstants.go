@@ -41,6 +41,7 @@ type AdsConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAdsConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsConstants()
 }
@@ -50,6 +51,11 @@ type _AdsConstants struct {
 }
 
 var _ AdsConstants = (*_AdsConstants)(nil)
+
+// NewAdsConstants factory function for _AdsConstants
+func NewAdsConstants() *_AdsConstants {
+	return &_AdsConstants{}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +70,6 @@ func (m *_AdsConstants) GetAdsTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsConstants factory function for _AdsConstants
-func NewAdsConstants() *_AdsConstants {
-	return &_AdsConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsConstants(structType any) AdsConstants {
@@ -166,6 +167,18 @@ func (m *_AdsConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_AdsConstants) IsAdsConstants() {}
+
+func (m *_AdsConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsConstants) deepCopy() *_AdsConstants {
+	if m == nil {
+		return nil
+	}
+	_AdsConstantsCopy := &_AdsConstants{}
+	return _AdsConstantsCopy
+}
 
 func (m *_AdsConstants) String() string {
 	if m == nil {

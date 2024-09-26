@@ -38,6 +38,7 @@ type PortSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PathSegment
 	// GetSegmentType returns SegmentType (property field)
 	GetSegmentType() PortSegmentType
@@ -53,6 +54,19 @@ type _PortSegment struct {
 
 var _ PortSegment = (*_PortSegment)(nil)
 var _ PathSegmentRequirements = (*_PortSegment)(nil)
+
+// NewPortSegment factory function for _PortSegment
+func NewPortSegment(segmentType PortSegmentType) *_PortSegment {
+	if segmentType == nil {
+		panic("segmentType of type PortSegmentType for PortSegment must not be nil")
+	}
+	_result := &_PortSegment{
+		PathSegmentContract: NewPathSegment(),
+		SegmentType:         segmentType,
+	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_PortSegment) GetSegmentType() PortSegmentType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPortSegment factory function for _PortSegment
-func NewPortSegment(segmentType PortSegmentType) *_PortSegment {
-	if segmentType == nil {
-		panic("segmentType of type PortSegmentType for PortSegment must not be nil")
-	}
-	_result := &_PortSegment{
-		PathSegmentContract: NewPathSegment(),
-		SegmentType:         segmentType,
-	}
-	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPortSegment(structType any) PortSegment {
@@ -182,6 +183,22 @@ func (m *_PortSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_PortSegment) IsPortSegment() {}
+
+func (m *_PortSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegment) deepCopy() *_PortSegment {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentCopy := &_PortSegment{
+		m.PathSegmentContract.(*_PathSegment).deepCopy(),
+		m.SegmentType.DeepCopy().(PortSegmentType),
+	}
+	m.PathSegmentContract.(*_PathSegment)._SubType = m
+	return _PortSegmentCopy
+}
 
 func (m *_PortSegment) String() string {
 	if m == nil {

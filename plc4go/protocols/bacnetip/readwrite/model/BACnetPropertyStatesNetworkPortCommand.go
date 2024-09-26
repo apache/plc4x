@@ -38,6 +38,7 @@ type BACnetPropertyStatesNetworkPortCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetNetworkPortCommand returns NetworkPortCommand (property field)
 	GetNetworkPortCommand() BACnetNetworkPortCommandTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesNetworkPortCommand struct {
 
 var _ BACnetPropertyStatesNetworkPortCommand = (*_BACnetPropertyStatesNetworkPortCommand)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNetworkPortCommand)(nil)
+
+// NewBACnetPropertyStatesNetworkPortCommand factory function for _BACnetPropertyStatesNetworkPortCommand
+func NewBACnetPropertyStatesNetworkPortCommand(peekedTagHeader BACnetTagHeader, networkPortCommand BACnetNetworkPortCommandTagged) *_BACnetPropertyStatesNetworkPortCommand {
+	if networkPortCommand == nil {
+		panic("networkPortCommand of type BACnetNetworkPortCommandTagged for BACnetPropertyStatesNetworkPortCommand must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNetworkPortCommand{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NetworkPortCommand:           networkPortCommand,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetNetworkPortCommand() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNetworkPortCommand factory function for _BACnetPropertyStatesNetworkPortCommand
-func NewBACnetPropertyStatesNetworkPortCommand(networkPortCommand BACnetNetworkPortCommandTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNetworkPortCommand {
-	if networkPortCommand == nil {
-		panic("networkPortCommand of type BACnetNetworkPortCommandTagged for BACnetPropertyStatesNetworkPortCommand must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNetworkPortCommand{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NetworkPortCommand:           networkPortCommand,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNetworkPortCommand(structType any) BACnetPropertyStatesNetworkPortCommand {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_BACnetPropertyStatesNetworkPortCommand) IsBACnetPropertyStatesNetworkPortCommand() {}
+
+func (m *_BACnetPropertyStatesNetworkPortCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesNetworkPortCommand) deepCopy() *_BACnetPropertyStatesNetworkPortCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesNetworkPortCommandCopy := &_BACnetPropertyStatesNetworkPortCommand{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.NetworkPortCommand.DeepCopy().(BACnetNetworkPortCommandTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesNetworkPortCommandCopy
+}
 
 func (m *_BACnetPropertyStatesNetworkPortCommand) String() string {
 	if m == nil {

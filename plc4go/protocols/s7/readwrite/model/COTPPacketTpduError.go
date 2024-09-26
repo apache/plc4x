@@ -38,6 +38,7 @@ type COTPPacketTpduError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
@@ -56,6 +57,17 @@ type _COTPPacketTpduError struct {
 
 var _ COTPPacketTpduError = (*_COTPPacketTpduError)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketTpduError)(nil)
+
+// NewCOTPPacketTpduError factory function for _COTPPacketTpduError
+func NewCOTPPacketTpduError(parameters []COTPParameter, payload S7Message, destinationReference uint16, rejectCause uint8, cotpLen uint16) *_COTPPacketTpduError {
+	_result := &_COTPPacketTpduError{
+		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		DestinationReference: destinationReference,
+		RejectCause:          rejectCause,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_COTPPacketTpduError) GetRejectCause() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketTpduError factory function for _COTPPacketTpduError
-func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketTpduError {
-	_result := &_COTPPacketTpduError{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
-		DestinationReference: destinationReference,
-		RejectCause:          rejectCause,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketTpduError(structType any) COTPPacketTpduError {
@@ -200,6 +201,23 @@ func (m *_COTPPacketTpduError) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_COTPPacketTpduError) IsCOTPPacketTpduError() {}
+
+func (m *_COTPPacketTpduError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPPacketTpduError) deepCopy() *_COTPPacketTpduError {
+	if m == nil {
+		return nil
+	}
+	_COTPPacketTpduErrorCopy := &_COTPPacketTpduError{
+		m.COTPPacketContract.(*_COTPPacket).deepCopy(),
+		m.DestinationReference,
+		m.RejectCause,
+	}
+	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	return _COTPPacketTpduErrorCopy
+}
 
 func (m *_COTPPacketTpduError) String() string {
 	if m == nil {

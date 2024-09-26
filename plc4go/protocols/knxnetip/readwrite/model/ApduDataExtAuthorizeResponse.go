@@ -38,6 +38,7 @@ type ApduDataExtAuthorizeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetLevel returns Level (property field)
 	GetLevel() uint8
@@ -53,6 +54,16 @@ type _ApduDataExtAuthorizeResponse struct {
 
 var _ ApduDataExtAuthorizeResponse = (*_ApduDataExtAuthorizeResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtAuthorizeResponse)(nil)
+
+// NewApduDataExtAuthorizeResponse factory function for _ApduDataExtAuthorizeResponse
+func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAuthorizeResponse {
+	_result := &_ApduDataExtAuthorizeResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+		Level:               level,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +96,6 @@ func (m *_ApduDataExtAuthorizeResponse) GetLevel() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtAuthorizeResponse factory function for _ApduDataExtAuthorizeResponse
-func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAuthorizeResponse {
-	_result := &_ApduDataExtAuthorizeResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-		Level:               level,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtAuthorizeResponse(structType any) ApduDataExtAuthorizeResponse {
@@ -179,6 +180,22 @@ func (m *_ApduDataExtAuthorizeResponse) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_ApduDataExtAuthorizeResponse) IsApduDataExtAuthorizeResponse() {}
+
+func (m *_ApduDataExtAuthorizeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtAuthorizeResponse) deepCopy() *_ApduDataExtAuthorizeResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtAuthorizeResponseCopy := &_ApduDataExtAuthorizeResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.Level,
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtAuthorizeResponseCopy
+}
 
 func (m *_ApduDataExtAuthorizeResponse) String() string {
 	if m == nil {

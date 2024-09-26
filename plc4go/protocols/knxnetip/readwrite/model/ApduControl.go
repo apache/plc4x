@@ -40,6 +40,7 @@ type ApduControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApduControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControl()
 }
@@ -144,19 +145,19 @@ func (m *_ApduControl) parse(ctx context.Context, readBuffer utils.ReadBuffer) (
 	var _child ApduControl
 	switch {
 	case controlType == 0x0: // ApduControlConnect
-		if _child, err = (&_ApduControlConnect{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ApduControlConnect).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlConnect for type-switch of ApduControl")
 		}
 	case controlType == 0x1: // ApduControlDisconnect
-		if _child, err = (&_ApduControlDisconnect{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ApduControlDisconnect).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlDisconnect for type-switch of ApduControl")
 		}
 	case controlType == 0x2: // ApduControlAck
-		if _child, err = (&_ApduControlAck{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ApduControlAck).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlAck for type-switch of ApduControl")
 		}
 	case controlType == 0x3: // ApduControlNack
-		if _child, err = (&_ApduControlNack{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ApduControlNack).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlNack for type-switch of ApduControl")
 		}
 	default:
@@ -198,3 +199,17 @@ func (pm *_ApduControl) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_ApduControl) IsApduControl() {}
+
+func (m *_ApduControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControl) deepCopy() *_ApduControl {
+	if m == nil {
+		return nil
+	}
+	_ApduControlCopy := &_ApduControl{
+		nil, // will be set by child
+	}
+	return _ApduControlCopy
+}

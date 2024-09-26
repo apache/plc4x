@@ -38,6 +38,7 @@ type DeleteNodesItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -58,6 +59,20 @@ type _DeleteNodesItem struct {
 
 var _ DeleteNodesItem = (*_DeleteNodesItem)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesItem)(nil)
+
+// NewDeleteNodesItem factory function for _DeleteNodesItem
+func NewDeleteNodesItem(nodeId NodeId, deleteTargetReferences bool) *_DeleteNodesItem {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for DeleteNodesItem must not be nil")
+	}
+	_result := &_DeleteNodesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		DeleteTargetReferences:            deleteTargetReferences,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,20 +109,6 @@ func (m *_DeleteNodesItem) GetDeleteTargetReferences() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteNodesItem factory function for _DeleteNodesItem
-func NewDeleteNodesItem(nodeId NodeId, deleteTargetReferences bool) *_DeleteNodesItem {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for DeleteNodesItem must not be nil")
-	}
-	_result := &_DeleteNodesItem{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		DeleteTargetReferences:            deleteTargetReferences,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteNodesItem(structType any) DeleteNodesItem {
@@ -218,6 +219,24 @@ func (m *_DeleteNodesItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_DeleteNodesItem) IsDeleteNodesItem() {}
+
+func (m *_DeleteNodesItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteNodesItem) deepCopy() *_DeleteNodesItem {
+	if m == nil {
+		return nil
+	}
+	_DeleteNodesItemCopy := &_DeleteNodesItem{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.DeleteTargetReferences,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteNodesItemCopy
+}
 
 func (m *_DeleteNodesItem) String() string {
 	if m == nil {

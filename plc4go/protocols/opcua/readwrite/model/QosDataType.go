@@ -36,6 +36,7 @@ type QosDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsQosDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQosDataType()
@@ -48,6 +49,15 @@ type _QosDataType struct {
 
 var _ QosDataType = (*_QosDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QosDataType)(nil)
+
+// NewQosDataType factory function for _QosDataType
+func NewQosDataType() *_QosDataType {
+	_result := &_QosDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_QosDataType) GetIdentifier() string {
 
 func (m *_QosDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewQosDataType factory function for _QosDataType
-func NewQosDataType() *_QosDataType {
-	_result := &_QosDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_QosDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 }
 
 func (m *_QosDataType) IsQosDataType() {}
+
+func (m *_QosDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QosDataType) deepCopy() *_QosDataType {
+	if m == nil {
+		return nil
+	}
+	_QosDataTypeCopy := &_QosDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QosDataTypeCopy
+}
 
 func (m *_QosDataType) String() string {
 	if m == nil {

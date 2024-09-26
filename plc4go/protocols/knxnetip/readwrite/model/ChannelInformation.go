@@ -38,6 +38,7 @@ type ChannelInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNumChannels returns NumChannels (property field)
 	GetNumChannels() uint8
 	// GetChannelCode returns ChannelCode (property field)
@@ -53,6 +54,11 @@ type _ChannelInformation struct {
 }
 
 var _ ChannelInformation = (*_ChannelInformation)(nil)
+
+// NewChannelInformation factory function for _ChannelInformation
+func NewChannelInformation(numChannels uint8, channelCode uint16) *_ChannelInformation {
+	return &_ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +77,6 @@ func (m *_ChannelInformation) GetChannelCode() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChannelInformation factory function for _ChannelInformation
-func NewChannelInformation(numChannels uint8, channelCode uint16) *_ChannelInformation {
-	return &_ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastChannelInformation(structType any) ChannelInformation {
@@ -186,6 +187,21 @@ func (m *_ChannelInformation) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_ChannelInformation) IsChannelInformation() {}
+
+func (m *_ChannelInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ChannelInformation) deepCopy() *_ChannelInformation {
+	if m == nil {
+		return nil
+	}
+	_ChannelInformationCopy := &_ChannelInformation{
+		m.NumChannels,
+		m.ChannelCode,
+	}
+	return _ChannelInformationCopy
+}
 
 func (m *_ChannelInformation) String() string {
 	if m == nil {

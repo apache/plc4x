@@ -36,6 +36,7 @@ type AccessControlDataRequestToExit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AccessControlData
 	// IsAccessControlDataRequestToExit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataRequestToExit()
@@ -49,6 +50,15 @@ type _AccessControlDataRequestToExit struct {
 var _ AccessControlDataRequestToExit = (*_AccessControlDataRequestToExit)(nil)
 var _ AccessControlDataRequirements = (*_AccessControlDataRequestToExit)(nil)
 
+// NewAccessControlDataRequestToExit factory function for _AccessControlDataRequestToExit
+func NewAccessControlDataRequestToExit(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataRequestToExit {
+	_result := &_AccessControlDataRequestToExit{
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +71,6 @@ var _ AccessControlDataRequirements = (*_AccessControlDataRequestToExit)(nil)
 
 func (m *_AccessControlDataRequestToExit) GetParent() AccessControlDataContract {
 	return m.AccessControlDataContract
-}
-
-// NewAccessControlDataRequestToExit factory function for _AccessControlDataRequestToExit
-func NewAccessControlDataRequestToExit(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataRequestToExit {
-	_result := &_AccessControlDataRequestToExit{
-		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
-	}
-	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -142,6 +143,21 @@ func (m *_AccessControlDataRequestToExit) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_AccessControlDataRequestToExit) IsAccessControlDataRequestToExit() {}
+
+func (m *_AccessControlDataRequestToExit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlDataRequestToExit) deepCopy() *_AccessControlDataRequestToExit {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataRequestToExitCopy := &_AccessControlDataRequestToExit{
+		m.AccessControlDataContract.(*_AccessControlData).deepCopy(),
+	}
+	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
+	return _AccessControlDataRequestToExitCopy
+}
 
 func (m *_AccessControlDataRequestToExit) String() string {
 	if m == nil {

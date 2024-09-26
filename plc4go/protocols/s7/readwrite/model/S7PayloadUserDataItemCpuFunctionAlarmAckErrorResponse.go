@@ -36,6 +36,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse()
@@ -48,6 +49,15 @@ type _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse struct {
 
 var _ S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse = (*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
+func NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) GetCpuSubfuncti
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
-func NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) SerializeWithWr
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse() {
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseCopy := &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseCopy
 }
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) String() string {

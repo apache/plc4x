@@ -38,6 +38,7 @@ type CBusCommandPointToMultiPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusCommand
 	// GetCommand returns Command (property field)
 	GetCommand() CBusPointToMultiPointCommand
@@ -53,6 +54,19 @@ type _CBusCommandPointToMultiPoint struct {
 
 var _ CBusCommandPointToMultiPoint = (*_CBusCommandPointToMultiPoint)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandPointToMultiPoint)(nil)
+
+// NewCBusCommandPointToMultiPoint factory function for _CBusCommandPointToMultiPoint
+func NewCBusCommandPointToMultiPoint(header CBusHeader, command CBusPointToMultiPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToMultiPoint {
+	if command == nil {
+		panic("command of type CBusPointToMultiPointCommand for CBusCommandPointToMultiPoint must not be nil")
+	}
+	_result := &_CBusCommandPointToMultiPoint{
+		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		Command:             command,
+	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_CBusCommandPointToMultiPoint) GetCommand() CBusPointToMultiPointComman
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommandPointToMultiPoint factory function for _CBusCommandPointToMultiPoint
-func NewCBusCommandPointToMultiPoint(command CBusPointToMultiPointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToMultiPoint {
-	if command == nil {
-		panic("command of type CBusPointToMultiPointCommand for CBusCommandPointToMultiPoint must not be nil")
-	}
-	_result := &_CBusCommandPointToMultiPoint{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
-		Command:             command,
-	}
-	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommandPointToMultiPoint(structType any) CBusCommandPointToMultiPoint {
@@ -178,6 +179,22 @@ func (m *_CBusCommandPointToMultiPoint) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_CBusCommandPointToMultiPoint) IsCBusCommandPointToMultiPoint() {}
+
+func (m *_CBusCommandPointToMultiPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusCommandPointToMultiPoint) deepCopy() *_CBusCommandPointToMultiPoint {
+	if m == nil {
+		return nil
+	}
+	_CBusCommandPointToMultiPointCopy := &_CBusCommandPointToMultiPoint{
+		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
+		m.Command.DeepCopy().(CBusPointToMultiPointCommand),
+	}
+	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	return _CBusCommandPointToMultiPointCopy
+}
 
 func (m *_CBusCommandPointToMultiPoint) String() string {
 	if m == nil {

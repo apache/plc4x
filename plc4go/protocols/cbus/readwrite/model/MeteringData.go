@@ -40,6 +40,7 @@ type MeteringData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMeteringData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringData()
 }
@@ -75,6 +76,11 @@ type _MeteringData struct {
 
 var _ MeteringDataContract = (*_MeteringData)(nil)
 
+// NewMeteringData factory function for _MeteringData
+func NewMeteringData(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringData {
+	return &_MeteringData{CommandTypeContainer: commandTypeContainer, Argument: argument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,11 +114,6 @@ func (pm *_MeteringData) GetCommandType() MeteringCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringData factory function for _MeteringData
-func NewMeteringData(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringData {
-	return &_MeteringData{CommandTypeContainer: commandTypeContainer, Argument: argument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringData(structType any) MeteringData {
@@ -212,43 +213,43 @@ func (m *_MeteringData) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var _child MeteringData
 	switch {
 	case commandType == MeteringCommandType_EVENT && argument == 0x01: // MeteringDataMeasureElectricity
-		if _child, err = (&_MeteringDataMeasureElectricity{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataMeasureElectricity).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureElectricity for type-switch of MeteringData")
 		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x02: // MeteringDataMeasureGas
-		if _child, err = (&_MeteringDataMeasureGas{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataMeasureGas).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureGas for type-switch of MeteringData")
 		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x03: // MeteringDataMeasureDrinkingWater
-		if _child, err = (&_MeteringDataMeasureDrinkingWater{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataMeasureDrinkingWater).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureDrinkingWater for type-switch of MeteringData")
 		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x04: // MeteringDataMeasureOtherWater
-		if _child, err = (&_MeteringDataMeasureOtherWater{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataMeasureOtherWater).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureOtherWater for type-switch of MeteringData")
 		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x05: // MeteringDataMeasureOil
-		if _child, err = (&_MeteringDataMeasureOil{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataMeasureOil).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataMeasureOil for type-switch of MeteringData")
 		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x81: // MeteringDataElectricityConsumption
-		if _child, err = (&_MeteringDataElectricityConsumption{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataElectricityConsumption).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataElectricityConsumption for type-switch of MeteringData")
 		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x82: // MeteringDataGasConsumption
-		if _child, err = (&_MeteringDataGasConsumption{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataGasConsumption).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataGasConsumption for type-switch of MeteringData")
 		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x83: // MeteringDataDrinkingWaterConsumption
-		if _child, err = (&_MeteringDataDrinkingWaterConsumption{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataDrinkingWaterConsumption).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataDrinkingWaterConsumption for type-switch of MeteringData")
 		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x84: // MeteringDataOtherWaterConsumption
-		if _child, err = (&_MeteringDataOtherWaterConsumption{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataOtherWaterConsumption).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataOtherWaterConsumption for type-switch of MeteringData")
 		}
 	case commandType == MeteringCommandType_EVENT && argument == 0x85: // MeteringDataOilConsumption
-		if _child, err = (&_MeteringDataOilConsumption{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeteringDataOilConsumption).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeteringDataOilConsumption for type-switch of MeteringData")
 		}
 	default:
@@ -300,3 +301,19 @@ func (pm *_MeteringData) serializeParent(ctx context.Context, writeBuffer utils.
 }
 
 func (m *_MeteringData) IsMeteringData() {}
+
+func (m *_MeteringData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringData) deepCopy() *_MeteringData {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataCopy := &_MeteringData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.Argument,
+	}
+	return _MeteringDataCopy
+}

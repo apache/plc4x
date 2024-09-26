@@ -38,6 +38,7 @@ type ModbusPDUReadFifoQueueRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetFifoPointerAddress returns FifoPointerAddress (property field)
 	GetFifoPointerAddress() uint16
@@ -53,6 +54,16 @@ type _ModbusPDUReadFifoQueueRequest struct {
 
 var _ ModbusPDUReadFifoQueueRequest = (*_ModbusPDUReadFifoQueueRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadFifoQueueRequest)(nil)
+
+// NewModbusPDUReadFifoQueueRequest factory function for _ModbusPDUReadFifoQueueRequest
+func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *_ModbusPDUReadFifoQueueRequest {
+	_result := &_ModbusPDUReadFifoQueueRequest{
+		ModbusPDUContract:  NewModbusPDU(),
+		FifoPointerAddress: fifoPointerAddress,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +104,6 @@ func (m *_ModbusPDUReadFifoQueueRequest) GetFifoPointerAddress() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadFifoQueueRequest factory function for _ModbusPDUReadFifoQueueRequest
-func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *_ModbusPDUReadFifoQueueRequest {
-	_result := &_ModbusPDUReadFifoQueueRequest{
-		ModbusPDUContract:  NewModbusPDU(),
-		FifoPointerAddress: fifoPointerAddress,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadFifoQueueRequest(structType any) ModbusPDUReadFifoQueueRequest {
@@ -187,6 +188,22 @@ func (m *_ModbusPDUReadFifoQueueRequest) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_ModbusPDUReadFifoQueueRequest) IsModbusPDUReadFifoQueueRequest() {}
+
+func (m *_ModbusPDUReadFifoQueueRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFifoQueueRequest) deepCopy() *_ModbusPDUReadFifoQueueRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFifoQueueRequestCopy := &_ModbusPDUReadFifoQueueRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.FifoPointerAddress,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadFifoQueueRequestCopy
+}
 
 func (m *_ModbusPDUReadFifoQueueRequest) String() string {
 	if m == nil {

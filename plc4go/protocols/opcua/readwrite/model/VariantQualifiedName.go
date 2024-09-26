@@ -38,6 +38,7 @@ type VariantQualifiedName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantQualifiedName struct {
 
 var _ VariantQualifiedName = (*_VariantQualifiedName)(nil)
 var _ VariantRequirements = (*_VariantQualifiedName)(nil)
+
+// NewVariantQualifiedName factory function for _VariantQualifiedName
+func NewVariantQualifiedName(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []QualifiedName) *_VariantQualifiedName {
+	_result := &_VariantQualifiedName{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantQualifiedName) GetValue() []QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantQualifiedName factory function for _VariantQualifiedName
-func NewVariantQualifiedName(arrayLength *int32, value []QualifiedName, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantQualifiedName {
-	_result := &_VariantQualifiedName{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantQualifiedName(structType any) VariantQualifiedName {
@@ -210,6 +211,23 @@ func (m *_VariantQualifiedName) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_VariantQualifiedName) IsVariantQualifiedName() {}
+
+func (m *_VariantQualifiedName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantQualifiedName) deepCopy() *_VariantQualifiedName {
+	if m == nil {
+		return nil
+	}
+	_VariantQualifiedNameCopy := &_VariantQualifiedName{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[QualifiedName, QualifiedName](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantQualifiedNameCopy
+}
 
 func (m *_VariantQualifiedName) String() string {
 	if m == nil {

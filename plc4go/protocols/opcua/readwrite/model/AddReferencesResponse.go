@@ -38,6 +38,7 @@ type AddReferencesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,23 @@ type _AddReferencesResponse struct {
 
 var _ AddReferencesResponse = (*_AddReferencesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesResponse)(nil)
+
+// NewAddReferencesResponse factory function for _AddReferencesResponse
+func NewAddReferencesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_AddReferencesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for AddReferencesResponse must not be nil")
+	}
+	_result := &_AddReferencesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +131,6 @@ func (m *_AddReferencesResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddReferencesResponse factory function for _AddReferencesResponse
-func NewAddReferencesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_AddReferencesResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for AddReferencesResponse must not be nil")
-	}
-	_result := &_AddReferencesResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddReferencesResponse(structType any) AddReferencesResponse {
@@ -280,6 +281,26 @@ func (m *_AddReferencesResponse) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_AddReferencesResponse) IsAddReferencesResponse() {}
+
+func (m *_AddReferencesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddReferencesResponse) deepCopy() *_AddReferencesResponse {
+	if m == nil {
+		return nil
+	}
+	_AddReferencesResponseCopy := &_AddReferencesResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddReferencesResponseCopy
+}
 
 func (m *_AddReferencesResponse) String() string {
 	if m == nil {

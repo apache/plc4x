@@ -38,6 +38,7 @@ type CallMethodRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetObjectId returns ObjectId (property field)
 	GetObjectId() NodeId
@@ -62,6 +63,25 @@ type _CallMethodRequest struct {
 
 var _ CallMethodRequest = (*_CallMethodRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallMethodRequest)(nil)
+
+// NewCallMethodRequest factory function for _CallMethodRequest
+func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) *_CallMethodRequest {
+	if objectId == nil {
+		panic("objectId of type NodeId for CallMethodRequest must not be nil")
+	}
+	if methodId == nil {
+		panic("methodId of type NodeId for CallMethodRequest must not be nil")
+	}
+	_result := &_CallMethodRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ObjectId:                          objectId,
+		MethodId:                          methodId,
+		NoOfInputArguments:                noOfInputArguments,
+		InputArguments:                    inputArguments,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +126,6 @@ func (m *_CallMethodRequest) GetInputArguments() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCallMethodRequest factory function for _CallMethodRequest
-func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) *_CallMethodRequest {
-	if objectId == nil {
-		panic("objectId of type NodeId for CallMethodRequest must not be nil")
-	}
-	if methodId == nil {
-		panic("methodId of type NodeId for CallMethodRequest must not be nil")
-	}
-	_result := &_CallMethodRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ObjectId:                          objectId,
-		MethodId:                          methodId,
-		NoOfInputArguments:                noOfInputArguments,
-		InputArguments:                    inputArguments,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCallMethodRequest(structType any) CallMethodRequest {
@@ -255,6 +256,25 @@ func (m *_CallMethodRequest) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_CallMethodRequest) IsCallMethodRequest() {}
+
+func (m *_CallMethodRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CallMethodRequest) deepCopy() *_CallMethodRequest {
+	if m == nil {
+		return nil
+	}
+	_CallMethodRequestCopy := &_CallMethodRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ObjectId.DeepCopy().(NodeId),
+		m.MethodId.DeepCopy().(NodeId),
+		m.NoOfInputArguments,
+		utils.DeepCopySlice[Variant, Variant](m.InputArguments),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CallMethodRequestCopy
+}
 
 func (m *_CallMethodRequest) String() string {
 	if m == nil {

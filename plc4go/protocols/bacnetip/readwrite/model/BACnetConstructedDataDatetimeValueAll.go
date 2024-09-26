@@ -36,6 +36,7 @@ type BACnetConstructedDataDatetimeValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataDatetimeValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDatetimeValueAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataDatetimeValueAll struct {
 
 var _ BACnetConstructedDataDatetimeValueAll = (*_BACnetConstructedDataDatetimeValueAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDatetimeValueAll)(nil)
+
+// NewBACnetConstructedDataDatetimeValueAll factory function for _BACnetConstructedDataDatetimeValueAll
+func NewBACnetConstructedDataDatetimeValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatetimeValueAll {
+	_result := &_BACnetConstructedDataDatetimeValueAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataDatetimeValueAll) GetPropertyIdentifierArgument()
 
 func (m *_BACnetConstructedDataDatetimeValueAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataDatetimeValueAll factory function for _BACnetConstructedDataDatetimeValueAll
-func NewBACnetConstructedDataDatetimeValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatetimeValueAll {
-	_result := &_BACnetConstructedDataDatetimeValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataDatetimeValueAll) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_BACnetConstructedDataDatetimeValueAll) IsBACnetConstructedDataDatetimeValueAll() {}
+
+func (m *_BACnetConstructedDataDatetimeValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDatetimeValueAll) deepCopy() *_BACnetConstructedDataDatetimeValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDatetimeValueAllCopy := &_BACnetConstructedDataDatetimeValueAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDatetimeValueAllCopy
+}
 
 func (m *_BACnetConstructedDataDatetimeValueAll) String() string {
 	if m == nil {

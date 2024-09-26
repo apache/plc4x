@@ -36,6 +36,7 @@ type RsaEncryptedSecret interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsRsaEncryptedSecret is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRsaEncryptedSecret()
 }
@@ -134,6 +135,18 @@ func (m *_RsaEncryptedSecret) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_RsaEncryptedSecret) IsRsaEncryptedSecret() {}
+
+func (m *_RsaEncryptedSecret) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RsaEncryptedSecret) deepCopy() *_RsaEncryptedSecret {
+	if m == nil {
+		return nil
+	}
+	_RsaEncryptedSecretCopy := &_RsaEncryptedSecret{}
+	return _RsaEncryptedSecretCopy
+}
 
 func (m *_RsaEncryptedSecret) String() string {
 	if m == nil {

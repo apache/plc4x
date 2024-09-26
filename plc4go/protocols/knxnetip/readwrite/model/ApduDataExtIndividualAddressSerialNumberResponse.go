@@ -36,6 +36,7 @@ type ApduDataExtIndividualAddressSerialNumberResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtIndividualAddressSerialNumberResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtIndividualAddressSerialNumberResponse()
@@ -48,6 +49,15 @@ type _ApduDataExtIndividualAddressSerialNumberResponse struct {
 
 var _ ApduDataExtIndividualAddressSerialNumberResponse = (*_ApduDataExtIndividualAddressSerialNumberResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtIndividualAddressSerialNumberResponse)(nil)
+
+// NewApduDataExtIndividualAddressSerialNumberResponse factory function for _ApduDataExtIndividualAddressSerialNumberResponse
+func NewApduDataExtIndividualAddressSerialNumberResponse(length uint8) *_ApduDataExtIndividualAddressSerialNumberResponse {
+	_result := &_ApduDataExtIndividualAddressSerialNumberResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtIndividualAddressSerialNumberResponse) GetExtApciType() uin
 
 func (m *_ApduDataExtIndividualAddressSerialNumberResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtIndividualAddressSerialNumberResponse factory function for _ApduDataExtIndividualAddressSerialNumberResponse
-func NewApduDataExtIndividualAddressSerialNumberResponse(length uint8) *_ApduDataExtIndividualAddressSerialNumberResponse {
-	_result := &_ApduDataExtIndividualAddressSerialNumberResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtIndividualAddressSerialNumberResponse) SerializeWithWriteBu
 }
 
 func (m *_ApduDataExtIndividualAddressSerialNumberResponse) IsApduDataExtIndividualAddressSerialNumberResponse() {
+}
+
+func (m *_ApduDataExtIndividualAddressSerialNumberResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtIndividualAddressSerialNumberResponse) deepCopy() *_ApduDataExtIndividualAddressSerialNumberResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtIndividualAddressSerialNumberResponseCopy := &_ApduDataExtIndividualAddressSerialNumberResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtIndividualAddressSerialNumberResponseCopy
 }
 
 func (m *_ApduDataExtIndividualAddressSerialNumberResponse) String() string {

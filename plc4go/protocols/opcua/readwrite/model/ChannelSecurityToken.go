@@ -38,6 +38,7 @@ type ChannelSecurityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetChannelId returns ChannelId (property field)
 	GetChannelId() uint32
@@ -62,6 +63,19 @@ type _ChannelSecurityToken struct {
 
 var _ ChannelSecurityToken = (*_ChannelSecurityToken)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ChannelSecurityToken)(nil)
+
+// NewChannelSecurityToken factory function for _ChannelSecurityToken
+func NewChannelSecurityToken(channelId uint32, tokenId uint32, createdAt int64, revisedLifetime uint32) *_ChannelSecurityToken {
+	_result := &_ChannelSecurityToken{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ChannelId:                         channelId,
+		TokenId:                           tokenId,
+		CreatedAt:                         createdAt,
+		RevisedLifetime:                   revisedLifetime,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_ChannelSecurityToken) GetRevisedLifetime() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChannelSecurityToken factory function for _ChannelSecurityToken
-func NewChannelSecurityToken(channelId uint32, tokenId uint32, createdAt int64, revisedLifetime uint32) *_ChannelSecurityToken {
-	_result := &_ChannelSecurityToken{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ChannelId:                         channelId,
-		TokenId:                           tokenId,
-		CreatedAt:                         createdAt,
-		RevisedLifetime:                   revisedLifetime,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastChannelSecurityToken(structType any) ChannelSecurityToken {
@@ -242,6 +243,25 @@ func (m *_ChannelSecurityToken) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_ChannelSecurityToken) IsChannelSecurityToken() {}
+
+func (m *_ChannelSecurityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ChannelSecurityToken) deepCopy() *_ChannelSecurityToken {
+	if m == nil {
+		return nil
+	}
+	_ChannelSecurityTokenCopy := &_ChannelSecurityToken{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ChannelId,
+		m.TokenId,
+		m.CreatedAt,
+		m.RevisedLifetime,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ChannelSecurityTokenCopy
+}
 
 func (m *_ChannelSecurityToken) String() string {
 	if m == nil {

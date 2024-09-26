@@ -40,6 +40,7 @@ type CALReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReply()
 }
@@ -79,6 +80,14 @@ type _CALReply struct {
 
 var _ CALReplyContract = (*_CALReply)(nil)
 
+// NewCALReply factory function for _CALReply
+func NewCALReply(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReply {
+	if calData == nil {
+		panic("calData of type CALData for CALReply must not be nil")
+	}
+	return &_CALReply{CalType: calType, CalData: calData, CBusOptions: cBusOptions, RequestContext: requestContext}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -96,14 +105,6 @@ func (m *_CALReply) GetCalData() CALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALReply factory function for _CALReply
-func NewCALReply(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReply {
-	if calData == nil {
-		panic("calData of type CALData for CALReply must not be nil")
-	}
-	return &_CALReply{CalType: calType, CalData: calData, CBusOptions: cBusOptions, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALReply(structType any) CALReply {
@@ -181,11 +182,11 @@ func (m *_CALReply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBus
 	var _child CALReply
 	switch {
 	case calType == 0x86: // CALReplyLong
-		if _child, err = (&_CALReplyLong{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_CALReplyLong).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALReplyLong for type-switch of CALReply")
 		}
 	case true: // CALReplyShort
-		if _child, err = (&_CALReplyShort{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_CALReplyShort).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALReplyShort for type-switch of CALReply")
 		}
 	default:
@@ -246,3 +247,21 @@ func (m *_CALReply) GetRequestContext() RequestContext {
 ////
 
 func (m *_CALReply) IsCALReply() {}
+
+func (m *_CALReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALReply) deepCopy() *_CALReply {
+	if m == nil {
+		return nil
+	}
+	_CALReplyCopy := &_CALReply{
+		nil, // will be set by child
+		m.CalType,
+		m.CalData.DeepCopy().(CALData),
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _CALReplyCopy
+}

@@ -36,6 +36,7 @@ type BACnetConstructedDataAccessDoorAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataAccessDoorAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessDoorAll()
@@ -48,6 +49,15 @@ type _BACnetConstructedDataAccessDoorAll struct {
 
 var _ BACnetConstructedDataAccessDoorAll = (*_BACnetConstructedDataAccessDoorAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessDoorAll)(nil)
+
+// NewBACnetConstructedDataAccessDoorAll factory function for _BACnetConstructedDataAccessDoorAll
+func NewBACnetConstructedDataAccessDoorAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorAll {
+	_result := &_BACnetConstructedDataAccessDoorAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_BACnetConstructedDataAccessDoorAll) GetPropertyIdentifierArgument() BA
 
 func (m *_BACnetConstructedDataAccessDoorAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataAccessDoorAll factory function for _BACnetConstructedDataAccessDoorAll
-func NewBACnetConstructedDataAccessDoorAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorAll {
-	_result := &_BACnetConstructedDataAccessDoorAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,6 +156,21 @@ func (m *_BACnetConstructedDataAccessDoorAll) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataAccessDoorAll) IsBACnetConstructedDataAccessDoorAll() {}
+
+func (m *_BACnetConstructedDataAccessDoorAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessDoorAll) deepCopy() *_BACnetConstructedDataAccessDoorAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessDoorAllCopy := &_BACnetConstructedDataAccessDoorAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessDoorAllCopy
+}
 
 func (m *_BACnetConstructedDataAccessDoorAll) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type ComObjectTableRealisationType2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ComObjectTable
 	// GetNumEntries returns NumEntries (property field)
 	GetNumEntries() uint8
@@ -59,6 +60,18 @@ type _ComObjectTableRealisationType2 struct {
 
 var _ ComObjectTableRealisationType2 = (*_ComObjectTableRealisationType2)(nil)
 var _ ComObjectTableRequirements = (*_ComObjectTableRealisationType2)(nil)
+
+// NewComObjectTableRealisationType2 factory function for _ComObjectTableRealisationType2
+func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType2) *_ComObjectTableRealisationType2 {
+	_result := &_ComObjectTableRealisationType2{
+		ComObjectTableContract: NewComObjectTable(),
+		NumEntries:             numEntries,
+		RamFlagsTablePointer:   ramFlagsTablePointer,
+		ComObjectDescriptors:   comObjectDescriptors,
+	}
+	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +112,6 @@ func (m *_ComObjectTableRealisationType2) GetComObjectDescriptors() []GroupObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewComObjectTableRealisationType2 factory function for _ComObjectTableRealisationType2
-func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType2) *_ComObjectTableRealisationType2 {
-	_result := &_ComObjectTableRealisationType2{
-		ComObjectTableContract: NewComObjectTable(),
-		NumEntries:             numEntries,
-		RamFlagsTablePointer:   ramFlagsTablePointer,
-		ComObjectDescriptors:   comObjectDescriptors,
-	}
-	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastComObjectTableRealisationType2(structType any) ComObjectTableRealisationType2 {
@@ -228,6 +229,24 @@ func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_ComObjectTableRealisationType2) IsComObjectTableRealisationType2() {}
+
+func (m *_ComObjectTableRealisationType2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ComObjectTableRealisationType2) deepCopy() *_ComObjectTableRealisationType2 {
+	if m == nil {
+		return nil
+	}
+	_ComObjectTableRealisationType2Copy := &_ComObjectTableRealisationType2{
+		m.ComObjectTableContract.(*_ComObjectTable).deepCopy(),
+		m.NumEntries,
+		m.RamFlagsTablePointer,
+		utils.DeepCopySlice[GroupObjectDescriptorRealisationType2, GroupObjectDescriptorRealisationType2](m.ComObjectDescriptors),
+	}
+	m.ComObjectTableContract.(*_ComObjectTable)._SubType = m
+	return _ComObjectTableRealisationType2Copy
+}
 
 func (m *_ComObjectTableRealisationType2) String() string {
 	if m == nil {

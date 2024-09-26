@@ -38,6 +38,7 @@ type BACnetConstructedDataProtocolLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataProtocolLevel struct {
 
 var _ BACnetConstructedDataProtocolLevel = (*_BACnetConstructedDataProtocolLevel)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolLevel)(nil)
+
+// NewBACnetConstructedDataProtocolLevel factory function for _BACnetConstructedDataProtocolLevel
+func NewBACnetConstructedDataProtocolLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolLevel BACnetProtocolLevelTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolLevel {
+	if protocolLevel == nil {
+		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetConstructedDataProtocolLevel must not be nil")
+	}
+	_result := &_BACnetConstructedDataProtocolLevel{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolLevel:                 protocolLevel,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataProtocolLevel) GetActualValue() BACnetProtocolLev
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProtocolLevel factory function for _BACnetConstructedDataProtocolLevel
-func NewBACnetConstructedDataProtocolLevel(protocolLevel BACnetProtocolLevelTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolLevel {
-	if protocolLevel == nil {
-		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetConstructedDataProtocolLevel must not be nil")
-	}
-	_result := &_BACnetConstructedDataProtocolLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProtocolLevel:                 protocolLevel,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProtocolLevel(structType any) BACnetConstructedDataProtocolLevel {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataProtocolLevel) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_BACnetConstructedDataProtocolLevel) IsBACnetConstructedDataProtocolLevel() {}
+
+func (m *_BACnetConstructedDataProtocolLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProtocolLevel) deepCopy() *_BACnetConstructedDataProtocolLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProtocolLevelCopy := &_BACnetConstructedDataProtocolLevel{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProtocolLevel.DeepCopy().(BACnetProtocolLevelTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProtocolLevelCopy
+}
 
 func (m *_BACnetConstructedDataProtocolLevel) String() string {
 	if m == nil {

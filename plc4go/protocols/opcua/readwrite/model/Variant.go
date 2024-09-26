@@ -40,6 +40,7 @@ type Variant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsVariant is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariant()
 }
@@ -79,6 +80,11 @@ type _Variant struct {
 
 var _ VariantContract = (*_Variant)(nil)
 
+// NewVariant factory function for _Variant
+func NewVariant(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_Variant {
+	return &_Variant{ArrayLengthSpecified: arrayLengthSpecified, ArrayDimensionsSpecified: arrayDimensionsSpecified, NoOfArrayDimensions: noOfArrayDimensions, ArrayDimensions: arrayDimensions}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -104,11 +110,6 @@ func (m *_Variant) GetArrayDimensions() []bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariant factory function for _Variant
-func NewVariant(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_Variant {
-	return &_Variant{ArrayLengthSpecified: arrayLengthSpecified, ArrayDimensionsSpecified: arrayDimensionsSpecified, NoOfArrayDimensions: noOfArrayDimensions, ArrayDimensions: arrayDimensions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariant(structType any) Variant {
@@ -212,107 +213,107 @@ func (m *_Variant) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__va
 	var _child Variant
 	switch {
 	case VariantType == uint8(0): // VariantNull
-		if _child, err = (&_VariantNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_VariantNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantNull for type-switch of Variant")
 		}
 	case VariantType == uint8(1): // VariantBoolean
-		if _child, err = (&_VariantBoolean{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantBoolean).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantBoolean for type-switch of Variant")
 		}
 	case VariantType == uint8(2): // VariantSByte
-		if _child, err = (&_VariantSByte{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantSByte).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantSByte for type-switch of Variant")
 		}
 	case VariantType == uint8(3): // VariantByte
-		if _child, err = (&_VariantByte{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantByte).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantByte for type-switch of Variant")
 		}
 	case VariantType == uint8(4): // VariantInt16
-		if _child, err = (&_VariantInt16{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantInt16).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantInt16 for type-switch of Variant")
 		}
 	case VariantType == uint8(5): // VariantUInt16
-		if _child, err = (&_VariantUInt16{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantUInt16).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantUInt16 for type-switch of Variant")
 		}
 	case VariantType == uint8(6): // VariantInt32
-		if _child, err = (&_VariantInt32{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantInt32).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantInt32 for type-switch of Variant")
 		}
 	case VariantType == uint8(7): // VariantUInt32
-		if _child, err = (&_VariantUInt32{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantUInt32).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantUInt32 for type-switch of Variant")
 		}
 	case VariantType == uint8(8): // VariantInt64
-		if _child, err = (&_VariantInt64{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantInt64).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantInt64 for type-switch of Variant")
 		}
 	case VariantType == uint8(9): // VariantUInt64
-		if _child, err = (&_VariantUInt64{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantUInt64).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantUInt64 for type-switch of Variant")
 		}
 	case VariantType == uint8(10): // VariantFloat
-		if _child, err = (&_VariantFloat{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantFloat).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantFloat for type-switch of Variant")
 		}
 	case VariantType == uint8(11): // VariantDouble
-		if _child, err = (&_VariantDouble{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantDouble).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantDouble for type-switch of Variant")
 		}
 	case VariantType == uint8(12): // VariantString
-		if _child, err = (&_VariantString{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantString).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantString for type-switch of Variant")
 		}
 	case VariantType == uint8(13): // VariantDateTime
-		if _child, err = (&_VariantDateTime{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantDateTime).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantDateTime for type-switch of Variant")
 		}
 	case VariantType == uint8(14): // VariantGuid
-		if _child, err = (&_VariantGuid{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantGuid).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantGuid for type-switch of Variant")
 		}
 	case VariantType == uint8(15): // VariantByteString
-		if _child, err = (&_VariantByteString{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantByteString).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantByteString for type-switch of Variant")
 		}
 	case VariantType == uint8(16): // VariantXmlElement
-		if _child, err = (&_VariantXmlElement{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantXmlElement).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantXmlElement for type-switch of Variant")
 		}
 	case VariantType == uint8(17): // VariantNodeId
-		if _child, err = (&_VariantNodeId{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantNodeId).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantNodeId for type-switch of Variant")
 		}
 	case VariantType == uint8(18): // VariantExpandedNodeId
-		if _child, err = (&_VariantExpandedNodeId{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantExpandedNodeId).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantExpandedNodeId for type-switch of Variant")
 		}
 	case VariantType == uint8(19): // VariantStatusCode
-		if _child, err = (&_VariantStatusCode{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantStatusCode).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantStatusCode for type-switch of Variant")
 		}
 	case VariantType == uint8(20): // VariantQualifiedName
-		if _child, err = (&_VariantQualifiedName{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantQualifiedName).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantQualifiedName for type-switch of Variant")
 		}
 	case VariantType == uint8(21): // VariantLocalizedText
-		if _child, err = (&_VariantLocalizedText{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantLocalizedText).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantLocalizedText for type-switch of Variant")
 		}
 	case VariantType == uint8(22): // VariantExtensionObject
-		if _child, err = (&_VariantExtensionObject{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantExtensionObject).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantExtensionObject for type-switch of Variant")
 		}
 	case VariantType == uint8(23): // VariantDataValue
-		if _child, err = (&_VariantDataValue{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantDataValue).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantDataValue for type-switch of Variant")
 		}
 	case VariantType == uint8(24): // VariantVariant
-		if _child, err = (&_VariantVariant{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantVariant).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantVariant for type-switch of Variant")
 		}
 	case VariantType == uint8(25): // VariantDiagnosticInfo
-		if _child, err = (&_VariantDiagnosticInfo{}).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
+		if _child, err = new(_VariantDiagnosticInfo).parse(ctx, readBuffer, m, arrayLengthSpecified); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VariantDiagnosticInfo for type-switch of Variant")
 		}
 	default:
@@ -383,3 +384,21 @@ func (pm *_Variant) serializeParent(ctx context.Context, writeBuffer utils.Write
 }
 
 func (m *_Variant) IsVariant() {}
+
+func (m *_Variant) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Variant) deepCopy() *_Variant {
+	if m == nil {
+		return nil
+	}
+	_VariantCopy := &_Variant{
+		nil, // will be set by child
+		m.ArrayLengthSpecified,
+		m.ArrayDimensionsSpecified,
+		utils.CopyPtr[int32](m.NoOfArrayDimensions),
+		utils.DeepCopySlice[bool, bool](m.ArrayDimensions),
+	}
+	return _VariantCopy
+}

@@ -38,6 +38,7 @@ type CALDataGetStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -56,6 +57,17 @@ type _CALDataGetStatus struct {
 
 var _ CALDataGetStatus = (*_CALDataGetStatus)(nil)
 var _ CALDataRequirements = (*_CALDataGetStatus)(nil)
+
+// NewCALDataGetStatus factory function for _CALDataGetStatus
+func NewCALDataGetStatus(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8, requestContext RequestContext) *_CALDataGetStatus {
+	_result := &_CALDataGetStatus{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		Count:           count,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +100,6 @@ func (m *_CALDataGetStatus) GetCount() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataGetStatus factory function for _CALDataGetStatus
-func NewCALDataGetStatus(paramNo Parameter, count uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataGetStatus {
-	_result := &_CALDataGetStatus{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		ParamNo:         paramNo,
-		Count:           count,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataGetStatus(structType any) CALDataGetStatus {
@@ -196,6 +197,23 @@ func (m *_CALDataGetStatus) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_CALDataGetStatus) IsCALDataGetStatus() {}
+
+func (m *_CALDataGetStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataGetStatus) deepCopy() *_CALDataGetStatus {
+	if m == nil {
+		return nil
+	}
+	_CALDataGetStatusCopy := &_CALDataGetStatus{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.ParamNo,
+		m.Count,
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataGetStatusCopy
+}
 
 func (m *_CALDataGetStatus) String() string {
 	if m == nil {

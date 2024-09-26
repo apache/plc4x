@@ -38,6 +38,7 @@ type BACnetConstructedDataPolarity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPolarity returns Polarity (property field)
 	GetPolarity() BACnetPolarityTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataPolarity struct {
 
 var _ BACnetConstructedDataPolarity = (*_BACnetConstructedDataPolarity)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPolarity)(nil)
+
+// NewBACnetConstructedDataPolarity factory function for _BACnetConstructedDataPolarity
+func NewBACnetConstructedDataPolarity(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, polarity BACnetPolarityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPolarity {
+	if polarity == nil {
+		panic("polarity of type BACnetPolarityTagged for BACnetConstructedDataPolarity must not be nil")
+	}
+	_result := &_BACnetConstructedDataPolarity{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Polarity:                      polarity,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataPolarity) GetActualValue() BACnetPolarityTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPolarity factory function for _BACnetConstructedDataPolarity
-func NewBACnetConstructedDataPolarity(polarity BACnetPolarityTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPolarity {
-	if polarity == nil {
-		panic("polarity of type BACnetPolarityTagged for BACnetConstructedDataPolarity must not be nil")
-	}
-	_result := &_BACnetConstructedDataPolarity{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Polarity:                      polarity,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPolarity(structType any) BACnetConstructedDataPolarity {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataPolarity) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataPolarity) IsBACnetConstructedDataPolarity() {}
+
+func (m *_BACnetConstructedDataPolarity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPolarity) deepCopy() *_BACnetConstructedDataPolarity {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPolarityCopy := &_BACnetConstructedDataPolarity{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Polarity.DeepCopy().(BACnetPolarityTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPolarityCopy
+}
 
 func (m *_BACnetConstructedDataPolarity) String() string {
 	if m == nil {

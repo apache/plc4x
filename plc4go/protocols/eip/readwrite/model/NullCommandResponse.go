@@ -36,6 +36,7 @@ type NullCommandResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsNullCommandResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullCommandResponse()
@@ -48,6 +49,15 @@ type _NullCommandResponse struct {
 
 var _ NullCommandResponse = (*_NullCommandResponse)(nil)
 var _ EipPacketRequirements = (*_NullCommandResponse)(nil)
+
+// NewNullCommandResponse factory function for _NullCommandResponse
+func NewNullCommandResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_NullCommandResponse {
+	_result := &_NullCommandResponse{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +83,6 @@ func (m *_NullCommandResponse) GetPacketLength() uint16 {
 
 func (m *_NullCommandResponse) GetParent() EipPacketContract {
 	return m.EipPacketContract
-}
-
-// NewNullCommandResponse factory function for _NullCommandResponse
-func NewNullCommandResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_NullCommandResponse {
-	_result := &_NullCommandResponse{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -154,6 +155,21 @@ func (m *_NullCommandResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_NullCommandResponse) IsNullCommandResponse() {}
+
+func (m *_NullCommandResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullCommandResponse) deepCopy() *_NullCommandResponse {
+	if m == nil {
+		return nil
+	}
+	_NullCommandResponseCopy := &_NullCommandResponse{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _NullCommandResponseCopy
+}
 
 func (m *_NullCommandResponse) String() string {
 	if m == nil {

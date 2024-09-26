@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultExtendedParametersEntryNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultExtendedParametersEntry
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -53,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryNull struct {
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryNull = (*_BACnetFaultParameterFaultExtendedParametersEntryNull)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryNull)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryNull factory function for _BACnetFaultParameterFaultExtendedParametersEntryNull
+func NewBACnetFaultParameterFaultExtendedParametersEntryNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetFaultParameterFaultExtendedParametersEntryNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetFaultParameterFaultExtendedParametersEntryNull must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryNull{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		NullValue: nullValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) GetNullValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryNull factory function for _BACnetFaultParameterFaultExtendedParametersEntryNull
-func NewBACnetFaultParameterFaultExtendedParametersEntryNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetFaultParameterFaultExtendedParametersEntryNull must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryNull{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		NullValue: nullValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryNull(structType any) BACnetFaultParameterFaultExtendedParametersEntryNull {
@@ -178,6 +179,22 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) SerializeWithWri
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) IsBACnetFaultParameterFaultExtendedParametersEntryNull() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntryNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryNullCopy := &_BACnetFaultParameterFaultExtendedParametersEntryNull{
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m
+	return _BACnetFaultParameterFaultExtendedParametersEntryNullCopy
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) String() string {

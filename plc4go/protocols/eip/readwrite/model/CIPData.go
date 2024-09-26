@@ -38,6 +38,7 @@ type CIPData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDataType returns DataType (property field)
 	GetDataType() CIPDataTypeCode
 	// GetData returns Data (property field)
@@ -57,6 +58,11 @@ type _CIPData struct {
 
 var _ CIPData = (*_CIPData)(nil)
 
+// NewCIPData factory function for _CIPData
+func NewCIPData(dataType CIPDataTypeCode, data []byte, packetLength uint16) *_CIPData {
+	return &_CIPData{DataType: dataType, Data: data, PacketLength: packetLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -74,11 +80,6 @@ func (m *_CIPData) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPData factory function for _CIPData
-func NewCIPData(dataType CIPDataTypeCode, data []byte, packetLength uint16) *_CIPData {
-	return &_CIPData{DataType: dataType, Data: data, PacketLength: packetLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPData(structType any) CIPData {
@@ -201,6 +202,22 @@ func (m *_CIPData) GetPacketLength() uint16 {
 ////
 
 func (m *_CIPData) IsCIPData() {}
+
+func (m *_CIPData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPData) deepCopy() *_CIPData {
+	if m == nil {
+		return nil
+	}
+	_CIPDataCopy := &_CIPData{
+		m.DataType,
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.PacketLength,
+	}
+	return _CIPDataCopy
+}
 
 func (m *_CIPData) String() string {
 	if m == nil {

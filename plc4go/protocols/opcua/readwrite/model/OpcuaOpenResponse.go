@@ -38,6 +38,7 @@ type OpcuaOpenResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetOpenResponse returns OpenResponse (property field)
 	GetOpenResponse() OpenChannelMessage
@@ -59,6 +60,23 @@ type _OpcuaOpenResponse struct {
 
 var _ OpcuaOpenResponse = (*_OpcuaOpenResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaOpenResponse)(nil)
+
+// NewOpcuaOpenResponse factory function for _OpcuaOpenResponse
+func NewOpcuaOpenResponse(chunk ChunkType, openResponse OpenChannelMessage, message Payload, totalLength uint32) *_OpcuaOpenResponse {
+	if openResponse == nil {
+		panic("openResponse of type OpenChannelMessage for OpcuaOpenResponse must not be nil")
+	}
+	if message == nil {
+		panic("message of type Payload for OpcuaOpenResponse must not be nil")
+	}
+	_result := &_OpcuaOpenResponse{
+		MessagePDUContract: NewMessagePDU(chunk),
+		OpenResponse:       openResponse,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,23 +117,6 @@ func (m *_OpcuaOpenResponse) GetMessage() Payload {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaOpenResponse factory function for _OpcuaOpenResponse
-func NewOpcuaOpenResponse(openResponse OpenChannelMessage, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaOpenResponse {
-	if openResponse == nil {
-		panic("openResponse of type OpenChannelMessage for OpcuaOpenResponse must not be nil")
-	}
-	if message == nil {
-		panic("message of type Payload for OpcuaOpenResponse must not be nil")
-	}
-	_result := &_OpcuaOpenResponse{
-		MessagePDUContract: NewMessagePDU(chunk),
-		OpenResponse:       openResponse,
-		Message:            message,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaOpenResponse(structType any) OpcuaOpenResponse {
@@ -223,6 +224,24 @@ func (m *_OpcuaOpenResponse) GetTotalLength() uint32 {
 ////
 
 func (m *_OpcuaOpenResponse) IsOpcuaOpenResponse() {}
+
+func (m *_OpcuaOpenResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaOpenResponse) deepCopy() *_OpcuaOpenResponse {
+	if m == nil {
+		return nil
+	}
+	_OpcuaOpenResponseCopy := &_OpcuaOpenResponse{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.OpenResponse.DeepCopy().(OpenChannelMessage),
+		m.Message.DeepCopy().(Payload),
+		m.TotalLength,
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaOpenResponseCopy
+}
 
 func (m *_OpcuaOpenResponse) String() string {
 	if m == nil {

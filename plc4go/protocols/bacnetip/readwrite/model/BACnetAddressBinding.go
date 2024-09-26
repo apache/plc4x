@@ -38,6 +38,7 @@ type BACnetAddressBinding interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetDeviceAddress returns DeviceAddress (property field)
@@ -53,6 +54,17 @@ type _BACnetAddressBinding struct {
 }
 
 var _ BACnetAddressBinding = (*_BACnetAddressBinding)(nil)
+
+// NewBACnetAddressBinding factory function for _BACnetAddressBinding
+func NewBACnetAddressBinding(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) *_BACnetAddressBinding {
+	if deviceIdentifier == nil {
+		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetAddressBinding must not be nil")
+	}
+	if deviceAddress == nil {
+		panic("deviceAddress of type BACnetAddress for BACnetAddressBinding must not be nil")
+	}
+	return &_BACnetAddressBinding{DeviceIdentifier: deviceIdentifier, DeviceAddress: deviceAddress}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +83,6 @@ func (m *_BACnetAddressBinding) GetDeviceAddress() BACnetAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAddressBinding factory function for _BACnetAddressBinding
-func NewBACnetAddressBinding(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) *_BACnetAddressBinding {
-	if deviceIdentifier == nil {
-		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetAddressBinding must not be nil")
-	}
-	if deviceAddress == nil {
-		panic("deviceAddress of type BACnetAddress for BACnetAddressBinding must not be nil")
-	}
-	return &_BACnetAddressBinding{DeviceIdentifier: deviceIdentifier, DeviceAddress: deviceAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAddressBinding(structType any) BACnetAddressBinding {
@@ -192,6 +193,21 @@ func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_BACnetAddressBinding) IsBACnetAddressBinding() {}
+
+func (m *_BACnetAddressBinding) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAddressBinding) deepCopy() *_BACnetAddressBinding {
+	if m == nil {
+		return nil
+	}
+	_BACnetAddressBindingCopy := &_BACnetAddressBinding{
+		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.DeviceAddress.DeepCopy().(BACnetAddress),
+	}
+	return _BACnetAddressBindingCopy
+}
 
 func (m *_BACnetAddressBinding) String() string {
 	if m == nil {

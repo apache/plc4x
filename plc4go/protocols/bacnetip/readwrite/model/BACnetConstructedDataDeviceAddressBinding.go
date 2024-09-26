@@ -38,6 +38,7 @@ type BACnetConstructedDataDeviceAddressBinding interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeviceAddressBinding returns DeviceAddressBinding (property field)
 	GetDeviceAddressBinding() []BACnetAddressBinding
@@ -53,6 +54,16 @@ type _BACnetConstructedDataDeviceAddressBinding struct {
 
 var _ BACnetConstructedDataDeviceAddressBinding = (*_BACnetConstructedDataDeviceAddressBinding)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceAddressBinding)(nil)
+
+// NewBACnetConstructedDataDeviceAddressBinding factory function for _BACnetConstructedDataDeviceAddressBinding
+func NewBACnetConstructedDataDeviceAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceAddressBinding {
+	_result := &_BACnetConstructedDataDeviceAddressBinding{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DeviceAddressBinding:          deviceAddressBinding,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) GetDeviceAddressBinding() [
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeviceAddressBinding factory function for _BACnetConstructedDataDeviceAddressBinding
-func NewBACnetConstructedDataDeviceAddressBinding(deviceAddressBinding []BACnetAddressBinding, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceAddressBinding {
-	_result := &_BACnetConstructedDataDeviceAddressBinding{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DeviceAddressBinding:          deviceAddressBinding,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeviceAddressBinding(structType any) BACnetConstructedDataDeviceAddressBinding {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) SerializeWithWriteBuffer(ct
 }
 
 func (m *_BACnetConstructedDataDeviceAddressBinding) IsBACnetConstructedDataDeviceAddressBinding() {}
+
+func (m *_BACnetConstructedDataDeviceAddressBinding) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDeviceAddressBinding) deepCopy() *_BACnetConstructedDataDeviceAddressBinding {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDeviceAddressBindingCopy := &_BACnetConstructedDataDeviceAddressBinding{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetAddressBinding, BACnetAddressBinding](m.DeviceAddressBinding),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDeviceAddressBindingCopy
+}
 
 func (m *_BACnetConstructedDataDeviceAddressBinding) String() string {
 	if m == nil {

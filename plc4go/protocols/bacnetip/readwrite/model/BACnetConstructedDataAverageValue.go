@@ -38,6 +38,7 @@ type BACnetConstructedDataAverageValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAverageValue returns AverageValue (property field)
 	GetAverageValue() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataAverageValue struct {
 
 var _ BACnetConstructedDataAverageValue = (*_BACnetConstructedDataAverageValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAverageValue)(nil)
+
+// NewBACnetConstructedDataAverageValue factory function for _BACnetConstructedDataAverageValue
+func NewBACnetConstructedDataAverageValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, averageValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAverageValue {
+	if averageValue == nil {
+		panic("averageValue of type BACnetApplicationTagReal for BACnetConstructedDataAverageValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAverageValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AverageValue:                  averageValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataAverageValue) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAverageValue factory function for _BACnetConstructedDataAverageValue
-func NewBACnetConstructedDataAverageValue(averageValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAverageValue {
-	if averageValue == nil {
-		panic("averageValue of type BACnetApplicationTagReal for BACnetConstructedDataAverageValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAverageValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AverageValue:                  averageValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAverageValue(structType any) BACnetConstructedDataAverageValue {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataAverageValue) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BACnetConstructedDataAverageValue) IsBACnetConstructedDataAverageValue() {}
+
+func (m *_BACnetConstructedDataAverageValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAverageValue) deepCopy() *_BACnetConstructedDataAverageValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAverageValueCopy := &_BACnetConstructedDataAverageValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AverageValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAverageValueCopy
+}
 
 func (m *_BACnetConstructedDataAverageValue) String() string {
 	if m == nil {

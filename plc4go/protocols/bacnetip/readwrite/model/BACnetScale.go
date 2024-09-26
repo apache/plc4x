@@ -40,6 +40,7 @@ type BACnetScale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetScale is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetScale()
 }
@@ -70,6 +71,14 @@ type _BACnetScale struct {
 
 var _ BACnetScaleContract = (*_BACnetScale)(nil)
 
+// NewBACnetScale factory function for _BACnetScale
+func NewBACnetScale(peekedTagHeader BACnetTagHeader) *_BACnetScale {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetScale must not be nil")
+	}
+	return &_BACnetScale{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetScale) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetScale factory function for _BACnetScale
-func NewBACnetScale(peekedTagHeader BACnetTagHeader) *_BACnetScale {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetScale must not be nil")
-	}
-	return &_BACnetScale{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetScale(structType any) BACnetScale {
@@ -189,11 +190,11 @@ func (m *_BACnetScale) parse(ctx context.Context, readBuffer utils.ReadBuffer) (
 	var _child BACnetScale
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetScaleFloatScale
-		if _child, err = (&_BACnetScaleFloatScale{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetScaleFloatScale).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetScaleFloatScale for type-switch of BACnetScale")
 		}
 	case peekedTagNumber == uint8(1): // BACnetScaleIntegerScale
-		if _child, err = (&_BACnetScaleIntegerScale{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetScaleIntegerScale).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetScaleIntegerScale for type-switch of BACnetScale")
 		}
 	default:
@@ -237,3 +238,18 @@ func (pm *_BACnetScale) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_BACnetScale) IsBACnetScale() {}
+
+func (m *_BACnetScale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetScale) deepCopy() *_BACnetScale {
+	if m == nil {
+		return nil
+	}
+	_BACnetScaleCopy := &_BACnetScale{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetScaleCopy
+}

@@ -38,6 +38,7 @@ type DF1CommandRequestMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1RequestMessage
 	// GetCommand returns Command (property field)
 	GetCommand() DF1RequestCommand
@@ -53,6 +54,19 @@ type _DF1CommandRequestMessage struct {
 
 var _ DF1CommandRequestMessage = (*_DF1CommandRequestMessage)(nil)
 var _ DF1RequestMessageRequirements = (*_DF1CommandRequestMessage)(nil)
+
+// NewDF1CommandRequestMessage factory function for _DF1CommandRequestMessage
+func NewDF1CommandRequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, command DF1RequestCommand) *_DF1CommandRequestMessage {
+	if command == nil {
+		panic("command of type DF1RequestCommand for DF1CommandRequestMessage must not be nil")
+	}
+	_result := &_DF1CommandRequestMessage{
+		DF1RequestMessageContract: NewDF1RequestMessage(destinationAddress, sourceAddress, status, transactionCounter),
+		Command:                   command,
+	}
+	_result.DF1RequestMessageContract.(*_DF1RequestMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +99,6 @@ func (m *_DF1CommandRequestMessage) GetCommand() DF1RequestCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1CommandRequestMessage factory function for _DF1CommandRequestMessage
-func NewDF1CommandRequestMessage(command DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *_DF1CommandRequestMessage {
-	if command == nil {
-		panic("command of type DF1RequestCommand for DF1CommandRequestMessage must not be nil")
-	}
-	_result := &_DF1CommandRequestMessage{
-		DF1RequestMessageContract: NewDF1RequestMessage(destinationAddress, sourceAddress, status, transactionCounter),
-		Command:                   command,
-	}
-	_result.DF1RequestMessageContract.(*_DF1RequestMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1CommandRequestMessage(structType any) DF1CommandRequestMessage {
@@ -182,6 +183,22 @@ func (m *_DF1CommandRequestMessage) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_DF1CommandRequestMessage) IsDF1CommandRequestMessage() {}
+
+func (m *_DF1CommandRequestMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1CommandRequestMessage) deepCopy() *_DF1CommandRequestMessage {
+	if m == nil {
+		return nil
+	}
+	_DF1CommandRequestMessageCopy := &_DF1CommandRequestMessage{
+		m.DF1RequestMessageContract.(*_DF1RequestMessage).deepCopy(),
+		m.Command.DeepCopy().(DF1RequestCommand),
+	}
+	m.DF1RequestMessageContract.(*_DF1RequestMessage)._SubType = m
+	return _DF1CommandRequestMessageCopy
+}
 
 func (m *_DF1CommandRequestMessage) String() string {
 	if m == nil {

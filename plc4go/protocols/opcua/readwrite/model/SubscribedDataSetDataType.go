@@ -36,6 +36,7 @@ type SubscribedDataSetDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsSubscribedDataSetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSubscribedDataSetDataType()
@@ -48,6 +49,15 @@ type _SubscribedDataSetDataType struct {
 
 var _ SubscribedDataSetDataType = (*_SubscribedDataSetDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SubscribedDataSetDataType)(nil)
+
+// NewSubscribedDataSetDataType factory function for _SubscribedDataSetDataType
+func NewSubscribedDataSetDataType() *_SubscribedDataSetDataType {
+	_result := &_SubscribedDataSetDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_SubscribedDataSetDataType) GetIdentifier() string {
 
 func (m *_SubscribedDataSetDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewSubscribedDataSetDataType factory function for _SubscribedDataSetDataType
-func NewSubscribedDataSetDataType() *_SubscribedDataSetDataType {
-	_result := &_SubscribedDataSetDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_SubscribedDataSetDataType) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_SubscribedDataSetDataType) IsSubscribedDataSetDataType() {}
+
+func (m *_SubscribedDataSetDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscribedDataSetDataType) deepCopy() *_SubscribedDataSetDataType {
+	if m == nil {
+		return nil
+	}
+	_SubscribedDataSetDataTypeCopy := &_SubscribedDataSetDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SubscribedDataSetDataTypeCopy
+}
 
 func (m *_SubscribedDataSetDataType) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type BACnetConstructedDataMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMode returns Mode (property field)
 	GetMode() BACnetLifeSafetyModeTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataMode struct {
 
 var _ BACnetConstructedDataMode = (*_BACnetConstructedDataMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMode)(nil)
+
+// NewBACnetConstructedDataMode factory function for _BACnetConstructedDataMode
+func NewBACnetConstructedDataMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, mode BACnetLifeSafetyModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMode {
+	if mode == nil {
+		panic("mode of type BACnetLifeSafetyModeTagged for BACnetConstructedDataMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Mode:                          mode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataMode) GetActualValue() BACnetLifeSafetyModeTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMode factory function for _BACnetConstructedDataMode
-func NewBACnetConstructedDataMode(mode BACnetLifeSafetyModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMode {
-	if mode == nil {
-		panic("mode of type BACnetLifeSafetyModeTagged for BACnetConstructedDataMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Mode:                          mode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMode(structType any) BACnetConstructedDataMode {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMode) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_BACnetConstructedDataMode) IsBACnetConstructedDataMode() {}
+
+func (m *_BACnetConstructedDataMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMode) deepCopy() *_BACnetConstructedDataMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataModeCopy := &_BACnetConstructedDataMode{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Mode.DeepCopy().(BACnetLifeSafetyModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataModeCopy
+}
 
 func (m *_BACnetConstructedDataMode) String() string {
 	if m == nil {

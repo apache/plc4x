@@ -38,6 +38,7 @@ type ModbusPDUWriteMultipleCoilsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
@@ -59,6 +60,18 @@ type _ModbusPDUWriteMultipleCoilsRequest struct {
 
 var _ ModbusPDUWriteMultipleCoilsRequest = (*_ModbusPDUWriteMultipleCoilsRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteMultipleCoilsRequest)(nil)
+
+// NewModbusPDUWriteMultipleCoilsRequest factory function for _ModbusPDUWriteMultipleCoilsRequest
+func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []byte) *_ModbusPDUWriteMultipleCoilsRequest {
+	_result := &_ModbusPDUWriteMultipleCoilsRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		StartingAddress:   startingAddress,
+		Quantity:          quantity,
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,18 +120,6 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteMultipleCoilsRequest factory function for _ModbusPDUWriteMultipleCoilsRequest
-func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []byte) *_ModbusPDUWriteMultipleCoilsRequest {
-	_result := &_ModbusPDUWriteMultipleCoilsRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		StartingAddress:   startingAddress,
-		Quantity:          quantity,
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteMultipleCoilsRequest(structType any) ModbusPDUWriteMultipleCoilsRequest {
@@ -244,6 +245,24 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) SerializeWithWriteBuffer(ctx conte
 }
 
 func (m *_ModbusPDUWriteMultipleCoilsRequest) IsModbusPDUWriteMultipleCoilsRequest() {}
+
+func (m *_ModbusPDUWriteMultipleCoilsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsRequest) deepCopy() *_ModbusPDUWriteMultipleCoilsRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteMultipleCoilsRequestCopy := &_ModbusPDUWriteMultipleCoilsRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.StartingAddress,
+		m.Quantity,
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteMultipleCoilsRequestCopy
+}
 
 func (m *_ModbusPDUWriteMultipleCoilsRequest) String() string {
 	if m == nil {

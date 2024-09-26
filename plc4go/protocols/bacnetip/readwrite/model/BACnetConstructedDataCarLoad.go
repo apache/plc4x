@@ -38,6 +38,7 @@ type BACnetConstructedDataCarLoad interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarLoad returns CarLoad (property field)
 	GetCarLoad() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataCarLoad struct {
 
 var _ BACnetConstructedDataCarLoad = (*_BACnetConstructedDataCarLoad)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarLoad)(nil)
+
+// NewBACnetConstructedDataCarLoad factory function for _BACnetConstructedDataCarLoad
+func NewBACnetConstructedDataCarLoad(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carLoad BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarLoad {
+	if carLoad == nil {
+		panic("carLoad of type BACnetApplicationTagReal for BACnetConstructedDataCarLoad must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarLoad{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarLoad:                       carLoad,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataCarLoad) GetActualValue() BACnetApplicationTagRea
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarLoad factory function for _BACnetConstructedDataCarLoad
-func NewBACnetConstructedDataCarLoad(carLoad BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarLoad {
-	if carLoad == nil {
-		panic("carLoad of type BACnetApplicationTagReal for BACnetConstructedDataCarLoad must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarLoad{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CarLoad:                       carLoad,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarLoad(structType any) BACnetConstructedDataCarLoad {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataCarLoad) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_BACnetConstructedDataCarLoad) IsBACnetConstructedDataCarLoad() {}
+
+func (m *_BACnetConstructedDataCarLoad) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarLoad) deepCopy() *_BACnetConstructedDataCarLoad {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarLoadCopy := &_BACnetConstructedDataCarLoad{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CarLoad.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarLoadCopy
+}
 
 func (m *_BACnetConstructedDataCarLoad) String() string {
 	if m == nil {

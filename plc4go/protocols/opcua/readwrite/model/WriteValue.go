@@ -38,6 +38,7 @@ type WriteValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -62,6 +63,28 @@ type _WriteValue struct {
 
 var _ WriteValue = (*_WriteValue)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_WriteValue)(nil)
+
+// NewWriteValue factory function for _WriteValue
+func NewWriteValue(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) *_WriteValue {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for WriteValue must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for WriteValue must not be nil")
+	}
+	if value == nil {
+		panic("value of type DataValue for WriteValue must not be nil")
+	}
+	_result := &_WriteValue{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		AttributeId:                       attributeId,
+		IndexRange:                        indexRange,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +129,6 @@ func (m *_WriteValue) GetValue() DataValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewWriteValue factory function for _WriteValue
-func NewWriteValue(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) *_WriteValue {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for WriteValue must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for WriteValue must not be nil")
-	}
-	if value == nil {
-		panic("value of type DataValue for WriteValue must not be nil")
-	}
-	_result := &_WriteValue{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		AttributeId:                       attributeId,
-		IndexRange:                        indexRange,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastWriteValue(structType any) WriteValue {
@@ -251,6 +252,25 @@ func (m *_WriteValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 }
 
 func (m *_WriteValue) IsWriteValue() {}
+
+func (m *_WriteValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WriteValue) deepCopy() *_WriteValue {
+	if m == nil {
+		return nil
+	}
+	_WriteValueCopy := &_WriteValue{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+		m.Value.DeepCopy().(DataValue),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _WriteValueCopy
+}
 
 func (m *_WriteValue) String() string {
 	if m == nil {

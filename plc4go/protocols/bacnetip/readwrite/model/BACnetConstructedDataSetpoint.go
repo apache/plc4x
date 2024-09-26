@@ -38,6 +38,7 @@ type BACnetConstructedDataSetpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSetpoint returns Setpoint (property field)
 	GetSetpoint() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataSetpoint struct {
 
 var _ BACnetConstructedDataSetpoint = (*_BACnetConstructedDataSetpoint)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSetpoint)(nil)
+
+// NewBACnetConstructedDataSetpoint factory function for _BACnetConstructedDataSetpoint
+func NewBACnetConstructedDataSetpoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setpoint BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpoint {
+	if setpoint == nil {
+		panic("setpoint of type BACnetApplicationTagReal for BACnetConstructedDataSetpoint must not be nil")
+	}
+	_result := &_BACnetConstructedDataSetpoint{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Setpoint:                      setpoint,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataSetpoint) GetActualValue() BACnetApplicationTagRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSetpoint factory function for _BACnetConstructedDataSetpoint
-func NewBACnetConstructedDataSetpoint(setpoint BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpoint {
-	if setpoint == nil {
-		panic("setpoint of type BACnetApplicationTagReal for BACnetConstructedDataSetpoint must not be nil")
-	}
-	_result := &_BACnetConstructedDataSetpoint{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Setpoint:                      setpoint,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSetpoint(structType any) BACnetConstructedDataSetpoint {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_BACnetConstructedDataSetpoint) IsBACnetConstructedDataSetpoint() {}
+
+func (m *_BACnetConstructedDataSetpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSetpoint) deepCopy() *_BACnetConstructedDataSetpoint {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSetpointCopy := &_BACnetConstructedDataSetpoint{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Setpoint.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSetpointCopy
+}
 
 func (m *_BACnetConstructedDataSetpoint) String() string {
 	if m == nil {

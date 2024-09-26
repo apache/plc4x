@@ -36,6 +36,7 @@ type ImageGIF interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsImageGIF is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsImageGIF()
 }
@@ -134,6 +135,18 @@ func (m *_ImageGIF) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 }
 
 func (m *_ImageGIF) IsImageGIF() {}
+
+func (m *_ImageGIF) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ImageGIF) deepCopy() *_ImageGIF {
+	if m == nil {
+		return nil
+	}
+	_ImageGIFCopy := &_ImageGIF{}
+	return _ImageGIFCopy
+}
 
 func (m *_ImageGIF) String() string {
 	if m == nil {

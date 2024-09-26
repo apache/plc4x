@@ -38,6 +38,7 @@ type MediaTransportControlDataRepeatOnOff interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetRepeatType returns RepeatType (property field)
 	GetRepeatType() byte
@@ -59,6 +60,16 @@ type _MediaTransportControlDataRepeatOnOff struct {
 
 var _ MediaTransportControlDataRepeatOnOff = (*_MediaTransportControlDataRepeatOnOff)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataRepeatOnOff)(nil)
+
+// NewMediaTransportControlDataRepeatOnOff factory function for _MediaTransportControlDataRepeatOnOff
+func NewMediaTransportControlDataRepeatOnOff(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, repeatType byte) *_MediaTransportControlDataRepeatOnOff {
+	_result := &_MediaTransportControlDataRepeatOnOff{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		RepeatType:                        repeatType,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,16 +125,6 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetIsRepeatTracks() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataRepeatOnOff factory function for _MediaTransportControlDataRepeatOnOff
-func NewMediaTransportControlDataRepeatOnOff(repeatType byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataRepeatOnOff {
-	_result := &_MediaTransportControlDataRepeatOnOff{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		RepeatType:                        repeatType,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataRepeatOnOff(structType any) MediaTransportControlDataRepeatOnOff {
@@ -250,6 +251,22 @@ func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MediaTransportControlDataRepeatOnOff) IsMediaTransportControlDataRepeatOnOff() {}
+
+func (m *_MediaTransportControlDataRepeatOnOff) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataRepeatOnOff) deepCopy() *_MediaTransportControlDataRepeatOnOff {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataRepeatOnOffCopy := &_MediaTransportControlDataRepeatOnOff{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.RepeatType,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataRepeatOnOffCopy
+}
 
 func (m *_MediaTransportControlDataRepeatOnOff) String() string {
 	if m == nil {

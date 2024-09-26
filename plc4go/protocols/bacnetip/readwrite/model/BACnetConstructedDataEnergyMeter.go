@@ -38,6 +38,7 @@ type BACnetConstructedDataEnergyMeter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEnergyMeter returns EnergyMeter (property field)
 	GetEnergyMeter() BACnetApplicationTagReal
@@ -55,6 +56,19 @@ type _BACnetConstructedDataEnergyMeter struct {
 
 var _ BACnetConstructedDataEnergyMeter = (*_BACnetConstructedDataEnergyMeter)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEnergyMeter)(nil)
+
+// NewBACnetConstructedDataEnergyMeter factory function for _BACnetConstructedDataEnergyMeter
+func NewBACnetConstructedDataEnergyMeter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, energyMeter BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnergyMeter {
+	if energyMeter == nil {
+		panic("energyMeter of type BACnetApplicationTagReal for BACnetConstructedDataEnergyMeter must not be nil")
+	}
+	_result := &_BACnetConstructedDataEnergyMeter{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EnergyMeter:                   energyMeter,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataEnergyMeter) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEnergyMeter factory function for _BACnetConstructedDataEnergyMeter
-func NewBACnetConstructedDataEnergyMeter(energyMeter BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnergyMeter {
-	if energyMeter == nil {
-		panic("energyMeter of type BACnetApplicationTagReal for BACnetConstructedDataEnergyMeter must not be nil")
-	}
-	_result := &_BACnetConstructedDataEnergyMeter{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EnergyMeter:                   energyMeter,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEnergyMeter(structType any) BACnetConstructedDataEnergyMeter {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataEnergyMeter) IsBACnetConstructedDataEnergyMeter() {}
+
+func (m *_BACnetConstructedDataEnergyMeter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEnergyMeter) deepCopy() *_BACnetConstructedDataEnergyMeter {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEnergyMeterCopy := &_BACnetConstructedDataEnergyMeter{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EnergyMeter.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEnergyMeterCopy
+}
 
 func (m *_BACnetConstructedDataEnergyMeter) String() string {
 	if m == nil {

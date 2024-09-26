@@ -40,6 +40,7 @@ type LevelInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLevelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLevelInformation()
 }
@@ -85,6 +86,11 @@ type _LevelInformation struct {
 }
 
 var _ LevelInformationContract = (*_LevelInformation)(nil)
+
+// NewLevelInformation factory function for _LevelInformation
+func NewLevelInformation(raw uint16) *_LevelInformation {
+	return &_LevelInformation{Raw: raw}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -164,11 +170,6 @@ func (pm *_LevelInformation) GetIsCorrupted() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLevelInformation factory function for _LevelInformation
-func NewLevelInformation(raw uint16) *_LevelInformation {
-	return &_LevelInformation{Raw: raw}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLevelInformation(structType any) LevelInformation {
@@ -307,15 +308,15 @@ func (m *_LevelInformation) parse(ctx context.Context, readBuffer utils.ReadBuff
 	var _child LevelInformation
 	switch {
 	case isAbsent == bool(true): // LevelInformationAbsent
-		if _child, err = (&_LevelInformationAbsent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LevelInformationAbsent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationAbsent for type-switch of LevelInformation")
 		}
 	case 0 == 0 && isCorrupted == bool(true): // LevelInformationCorrupted
-		if _child, err = (&_LevelInformationCorrupted{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LevelInformationCorrupted).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationCorrupted for type-switch of LevelInformation")
 		}
 	case 0 == 0: // LevelInformationNormal
-		if _child, err = (&_LevelInformationNormal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LevelInformationNormal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationNormal for type-switch of LevelInformation")
 		}
 	default:
@@ -401,3 +402,18 @@ func (pm *_LevelInformation) serializeParent(ctx context.Context, writeBuffer ut
 }
 
 func (m *_LevelInformation) IsLevelInformation() {}
+
+func (m *_LevelInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LevelInformation) deepCopy() *_LevelInformation {
+	if m == nil {
+		return nil
+	}
+	_LevelInformationCopy := &_LevelInformation{
+		nil, // will be set by child
+		m.Raw,
+	}
+	return _LevelInformationCopy
+}

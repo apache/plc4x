@@ -38,6 +38,7 @@ type BACnetSilencedStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -62,6 +63,14 @@ type _BACnetSilencedStateTagged struct {
 }
 
 var _ BACnetSilencedStateTagged = (*_BACnetSilencedStateTagged)(nil)
+
+// NewBACnetSilencedStateTagged factory function for _BACnetSilencedStateTagged
+func NewBACnetSilencedStateTagged(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetSilencedStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetSilencedStateTagged must not be nil")
+	}
+	return &_BACnetSilencedStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +108,6 @@ func (m *_BACnetSilencedStateTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSilencedStateTagged factory function for _BACnetSilencedStateTagged
-func NewBACnetSilencedStateTagged(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetSilencedStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetSilencedStateTagged must not be nil")
-	}
-	return &_BACnetSilencedStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSilencedStateTagged(structType any) BACnetSilencedStateTagged {
@@ -269,6 +270,24 @@ func (m *_BACnetSilencedStateTagged) GetTagClass() TagClass {
 ////
 
 func (m *_BACnetSilencedStateTagged) IsBACnetSilencedStateTagged() {}
+
+func (m *_BACnetSilencedStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSilencedStateTagged) deepCopy() *_BACnetSilencedStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetSilencedStateTaggedCopy := &_BACnetSilencedStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetSilencedStateTaggedCopy
+}
 
 func (m *_BACnetSilencedStateTagged) String() string {
 	if m == nil {

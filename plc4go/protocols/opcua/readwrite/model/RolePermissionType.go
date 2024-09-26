@@ -38,6 +38,7 @@ type RolePermissionType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRoleId returns RoleId (property field)
 	GetRoleId() NodeId
@@ -56,6 +57,20 @@ type _RolePermissionType struct {
 
 var _ RolePermissionType = (*_RolePermissionType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RolePermissionType)(nil)
+
+// NewRolePermissionType factory function for _RolePermissionType
+func NewRolePermissionType(roleId NodeId, permissions PermissionType) *_RolePermissionType {
+	if roleId == nil {
+		panic("roleId of type NodeId for RolePermissionType must not be nil")
+	}
+	_result := &_RolePermissionType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RoleId:                            roleId,
+		Permissions:                       permissions,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_RolePermissionType) GetPermissions() PermissionType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRolePermissionType factory function for _RolePermissionType
-func NewRolePermissionType(roleId NodeId, permissions PermissionType) *_RolePermissionType {
-	if roleId == nil {
-		panic("roleId of type NodeId for RolePermissionType must not be nil")
-	}
-	_result := &_RolePermissionType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RoleId:                            roleId,
-		Permissions:                       permissions,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRolePermissionType(structType any) RolePermissionType {
@@ -203,6 +204,23 @@ func (m *_RolePermissionType) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_RolePermissionType) IsRolePermissionType() {}
+
+func (m *_RolePermissionType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RolePermissionType) deepCopy() *_RolePermissionType {
+	if m == nil {
+		return nil
+	}
+	_RolePermissionTypeCopy := &_RolePermissionType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RoleId.DeepCopy().(NodeId),
+		m.Permissions,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RolePermissionTypeCopy
+}
 
 func (m *_RolePermissionType) String() string {
 	if m == nil {

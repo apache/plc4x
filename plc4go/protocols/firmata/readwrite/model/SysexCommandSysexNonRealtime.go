@@ -36,6 +36,7 @@ type SysexCommandSysexNonRealtime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandSysexNonRealtime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandSysexNonRealtime()
@@ -48,6 +49,15 @@ type _SysexCommandSysexNonRealtime struct {
 
 var _ SysexCommandSysexNonRealtime = (*_SysexCommandSysexNonRealtime)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandSysexNonRealtime)(nil)
+
+// NewSysexCommandSysexNonRealtime factory function for _SysexCommandSysexNonRealtime
+func NewSysexCommandSysexNonRealtime() *_SysexCommandSysexNonRealtime {
+	_result := &_SysexCommandSysexNonRealtime{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_SysexCommandSysexNonRealtime) GetResponse() bool {
 
 func (m *_SysexCommandSysexNonRealtime) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandSysexNonRealtime factory function for _SysexCommandSysexNonRealtime
-func NewSysexCommandSysexNonRealtime() *_SysexCommandSysexNonRealtime {
-	_result := &_SysexCommandSysexNonRealtime{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_SysexCommandSysexNonRealtime) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_SysexCommandSysexNonRealtime) IsSysexCommandSysexNonRealtime() {}
+
+func (m *_SysexCommandSysexNonRealtime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandSysexNonRealtime) deepCopy() *_SysexCommandSysexNonRealtime {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandSysexNonRealtimeCopy := &_SysexCommandSysexNonRealtime{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandSysexNonRealtimeCopy
+}
 
 func (m *_SysexCommandSysexNonRealtime) String() string {
 	if m == nil {

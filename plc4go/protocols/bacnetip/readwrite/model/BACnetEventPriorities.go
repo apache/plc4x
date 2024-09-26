@@ -38,6 +38,7 @@ type BACnetEventPriorities interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetToOffnormal returns ToOffnormal (property field)
@@ -65,6 +66,26 @@ type _BACnetEventPriorities struct {
 }
 
 var _ BACnetEventPriorities = (*_BACnetEventPriorities)(nil)
+
+// NewBACnetEventPriorities factory function for _BACnetEventPriorities
+func NewBACnetEventPriorities(openingTag BACnetOpeningTag, toOffnormal BACnetApplicationTagUnsignedInteger, toFault BACnetApplicationTagUnsignedInteger, toNormal BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventPriorities {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventPriorities must not be nil")
+	}
+	if toOffnormal == nil {
+		panic("toOffnormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
+	}
+	if toFault == nil {
+		panic("toFault of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
+	}
+	if toNormal == nil {
+		panic("toNormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventPriorities must not be nil")
+	}
+	return &_BACnetEventPriorities{OpeningTag: openingTag, ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal, ClosingTag: closingTag, TagNumber: tagNumber}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,26 +116,6 @@ func (m *_BACnetEventPriorities) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventPriorities factory function for _BACnetEventPriorities
-func NewBACnetEventPriorities(openingTag BACnetOpeningTag, toOffnormal BACnetApplicationTagUnsignedInteger, toFault BACnetApplicationTagUnsignedInteger, toNormal BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventPriorities {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventPriorities must not be nil")
-	}
-	if toOffnormal == nil {
-		panic("toOffnormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
-	}
-	if toFault == nil {
-		panic("toFault of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
-	}
-	if toNormal == nil {
-		panic("toNormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventPriorities must not be nil")
-	}
-	return &_BACnetEventPriorities{OpeningTag: openingTag, ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventPriorities(structType any) BACnetEventPriorities {
@@ -274,6 +275,25 @@ func (m *_BACnetEventPriorities) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventPriorities) IsBACnetEventPriorities() {}
+
+func (m *_BACnetEventPriorities) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventPriorities) deepCopy() *_BACnetEventPriorities {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventPrioritiesCopy := &_BACnetEventPriorities{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ToOffnormal.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.ToFault.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.ToNormal.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventPrioritiesCopy
+}
 
 func (m *_BACnetEventPriorities) String() string {
 	if m == nil {

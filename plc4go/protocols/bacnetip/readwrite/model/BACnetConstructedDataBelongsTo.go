@@ -38,6 +38,7 @@ type BACnetConstructedDataBelongsTo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBelongsTo returns BelongsTo (property field)
 	GetBelongsTo() BACnetDeviceObjectReference
@@ -55,6 +56,19 @@ type _BACnetConstructedDataBelongsTo struct {
 
 var _ BACnetConstructedDataBelongsTo = (*_BACnetConstructedDataBelongsTo)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBelongsTo)(nil)
+
+// NewBACnetConstructedDataBelongsTo factory function for _BACnetConstructedDataBelongsTo
+func NewBACnetConstructedDataBelongsTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, belongsTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBelongsTo {
+	if belongsTo == nil {
+		panic("belongsTo of type BACnetDeviceObjectReference for BACnetConstructedDataBelongsTo must not be nil")
+	}
+	_result := &_BACnetConstructedDataBelongsTo{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BelongsTo:                     belongsTo,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataBelongsTo) GetActualValue() BACnetDeviceObjectRef
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBelongsTo factory function for _BACnetConstructedDataBelongsTo
-func NewBACnetConstructedDataBelongsTo(belongsTo BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBelongsTo {
-	if belongsTo == nil {
-		panic("belongsTo of type BACnetDeviceObjectReference for BACnetConstructedDataBelongsTo must not be nil")
-	}
-	_result := &_BACnetConstructedDataBelongsTo{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BelongsTo:                     belongsTo,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBelongsTo(structType any) BACnetConstructedDataBelongsTo {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataBelongsTo) SerializeWithWriteBuffer(ctx context.C
 }
 
 func (m *_BACnetConstructedDataBelongsTo) IsBACnetConstructedDataBelongsTo() {}
+
+func (m *_BACnetConstructedDataBelongsTo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBelongsTo) deepCopy() *_BACnetConstructedDataBelongsTo {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBelongsToCopy := &_BACnetConstructedDataBelongsTo{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BelongsTo.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBelongsToCopy
+}
 
 func (m *_BACnetConstructedDataBelongsTo) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type NLMRejectMessageToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetRejectReason returns RejectReason (property field)
 	GetRejectReason() NLMRejectMessageToNetworkRejectReason
@@ -56,6 +57,17 @@ type _NLMRejectMessageToNetwork struct {
 
 var _ NLMRejectMessageToNetwork = (*_NLMRejectMessageToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRejectMessageToNetwork)(nil)
+
+// NewNLMRejectMessageToNetwork factory function for _NLMRejectMessageToNetwork
+func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16, apduLength uint16) *_NLMRejectMessageToNetwork {
+	_result := &_NLMRejectMessageToNetwork{
+		NLMContract:               NewNLM(apduLength),
+		RejectReason:              rejectReason,
+		DestinationNetworkAddress: destinationNetworkAddress,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_NLMRejectMessageToNetwork) GetDestinationNetworkAddress() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRejectMessageToNetwork factory function for _NLMRejectMessageToNetwork
-func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16, apduLength uint16) *_NLMRejectMessageToNetwork {
-	_result := &_NLMRejectMessageToNetwork{
-		NLMContract:               NewNLM(apduLength),
-		RejectReason:              rejectReason,
-		DestinationNetworkAddress: destinationNetworkAddress,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRejectMessageToNetwork(structType any) NLMRejectMessageToNetwork {
@@ -200,6 +201,23 @@ func (m *_NLMRejectMessageToNetwork) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_NLMRejectMessageToNetwork) IsNLMRejectMessageToNetwork() {}
+
+func (m *_NLMRejectMessageToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRejectMessageToNetwork) deepCopy() *_NLMRejectMessageToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMRejectMessageToNetworkCopy := &_NLMRejectMessageToNetwork{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.RejectReason,
+		m.DestinationNetworkAddress,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRejectMessageToNetworkCopy
+}
 
 func (m *_NLMRejectMessageToNetwork) String() string {
 	if m == nil {

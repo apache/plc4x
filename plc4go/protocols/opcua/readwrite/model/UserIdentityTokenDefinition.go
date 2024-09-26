@@ -38,6 +38,7 @@ type UserIdentityTokenDefinition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsUserIdentityTokenDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserIdentityTokenDefinition()
 }
@@ -135,19 +136,19 @@ func (m *_UserIdentityTokenDefinition) parse(ctx context.Context, readBuffer uti
 	var _child UserIdentityTokenDefinition
 	switch {
 	case identifier == "anonymous": // AnonymousIdentityToken
-		if _child, err = (&_AnonymousIdentityToken{}).parse(ctx, readBuffer, m, identifier); err != nil {
+		if _child, err = new(_AnonymousIdentityToken).parse(ctx, readBuffer, m, identifier); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AnonymousIdentityToken for type-switch of UserIdentityTokenDefinition")
 		}
 	case identifier == "username": // UserNameIdentityToken
-		if _child, err = (&_UserNameIdentityToken{}).parse(ctx, readBuffer, m, identifier); err != nil {
+		if _child, err = new(_UserNameIdentityToken).parse(ctx, readBuffer, m, identifier); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UserNameIdentityToken for type-switch of UserIdentityTokenDefinition")
 		}
 	case identifier == "certificate": // X509IdentityToken
-		if _child, err = (&_X509IdentityToken{}).parse(ctx, readBuffer, m, identifier); err != nil {
+		if _child, err = new(_X509IdentityToken).parse(ctx, readBuffer, m, identifier); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type X509IdentityToken for type-switch of UserIdentityTokenDefinition")
 		}
 	case identifier == "identity": // IssuedIdentityToken
-		if _child, err = (&_IssuedIdentityToken{}).parse(ctx, readBuffer, m, identifier); err != nil {
+		if _child, err = new(_IssuedIdentityToken).parse(ctx, readBuffer, m, identifier); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type IssuedIdentityToken for type-switch of UserIdentityTokenDefinition")
 		}
 	default:
@@ -185,3 +186,17 @@ func (pm *_UserIdentityTokenDefinition) serializeParent(ctx context.Context, wri
 }
 
 func (m *_UserIdentityTokenDefinition) IsUserIdentityTokenDefinition() {}
+
+func (m *_UserIdentityTokenDefinition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UserIdentityTokenDefinition) deepCopy() *_UserIdentityTokenDefinition {
+	if m == nil {
+		return nil
+	}
+	_UserIdentityTokenDefinitionCopy := &_UserIdentityTokenDefinition{
+		nil, // will be set by child
+	}
+	return _UserIdentityTokenDefinitionCopy
+}

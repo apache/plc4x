@@ -38,6 +38,7 @@ type BACnetPropertyStatesNetworkNumberQuality interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetNetworkNumberQuality returns NetworkNumberQuality (property field)
 	GetNetworkNumberQuality() BACnetNetworkNumberQualityTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesNetworkNumberQuality struct {
 
 var _ BACnetPropertyStatesNetworkNumberQuality = (*_BACnetPropertyStatesNetworkNumberQuality)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNetworkNumberQuality)(nil)
+
+// NewBACnetPropertyStatesNetworkNumberQuality factory function for _BACnetPropertyStatesNetworkNumberQuality
+func NewBACnetPropertyStatesNetworkNumberQuality(peekedTagHeader BACnetTagHeader, networkNumberQuality BACnetNetworkNumberQualityTagged) *_BACnetPropertyStatesNetworkNumberQuality {
+	if networkNumberQuality == nil {
+		panic("networkNumberQuality of type BACnetNetworkNumberQualityTagged for BACnetPropertyStatesNetworkNumberQuality must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNetworkNumberQuality{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NetworkNumberQuality:         networkNumberQuality,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) GetNetworkNumberQuality() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNetworkNumberQuality factory function for _BACnetPropertyStatesNetworkNumberQuality
-func NewBACnetPropertyStatesNetworkNumberQuality(networkNumberQuality BACnetNetworkNumberQualityTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNetworkNumberQuality {
-	if networkNumberQuality == nil {
-		panic("networkNumberQuality of type BACnetNetworkNumberQualityTagged for BACnetPropertyStatesNetworkNumberQuality must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNetworkNumberQuality{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NetworkNumberQuality:         networkNumberQuality,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNetworkNumberQuality(structType any) BACnetPropertyStatesNetworkNumberQuality {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetPropertyStatesNetworkNumberQuality) IsBACnetPropertyStatesNetworkNumberQuality() {}
+
+func (m *_BACnetPropertyStatesNetworkNumberQuality) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesNetworkNumberQuality) deepCopy() *_BACnetPropertyStatesNetworkNumberQuality {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesNetworkNumberQualityCopy := &_BACnetPropertyStatesNetworkNumberQuality{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.NetworkNumberQuality.DeepCopy().(BACnetNetworkNumberQualityTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesNetworkNumberQualityCopy
+}
 
 func (m *_BACnetPropertyStatesNetworkNumberQuality) String() string {
 	if m == nil {

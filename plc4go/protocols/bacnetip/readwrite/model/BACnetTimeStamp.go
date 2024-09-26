@@ -40,6 +40,7 @@ type BACnetTimeStamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetTimeStamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeStamp()
 }
@@ -70,6 +71,14 @@ type _BACnetTimeStamp struct {
 
 var _ BACnetTimeStampContract = (*_BACnetTimeStamp)(nil)
 
+// NewBACnetTimeStamp factory function for _BACnetTimeStamp
+func NewBACnetTimeStamp(peekedTagHeader BACnetTagHeader) *_BACnetTimeStamp {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetTimeStamp must not be nil")
+	}
+	return &_BACnetTimeStamp{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +108,6 @@ func (pm *_BACnetTimeStamp) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimeStamp factory function for _BACnetTimeStamp
-func NewBACnetTimeStamp(peekedTagHeader BACnetTagHeader) *_BACnetTimeStamp {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetTimeStamp must not be nil")
-	}
-	return &_BACnetTimeStamp{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimeStamp(structType any) BACnetTimeStamp {
@@ -189,15 +190,15 @@ func (m *_BACnetTimeStamp) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetTimeStamp
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetTimeStampTime
-		if _child, err = (&_BACnetTimeStampTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetTimeStampTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimeStampTime for type-switch of BACnetTimeStamp")
 		}
 	case peekedTagNumber == uint8(1): // BACnetTimeStampSequence
-		if _child, err = (&_BACnetTimeStampSequence{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetTimeStampSequence).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimeStampSequence for type-switch of BACnetTimeStamp")
 		}
 	case peekedTagNumber == uint8(2): // BACnetTimeStampDateTime
-		if _child, err = (&_BACnetTimeStampDateTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetTimeStampDateTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimeStampDateTime for type-switch of BACnetTimeStamp")
 		}
 	default:
@@ -241,3 +242,18 @@ func (pm *_BACnetTimeStamp) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetTimeStamp) IsBACnetTimeStamp() {}
+
+func (m *_BACnetTimeStamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStamp) deepCopy() *_BACnetTimeStamp {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampCopy := &_BACnetTimeStamp{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetTimeStampCopy
+}

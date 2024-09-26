@@ -38,6 +38,7 @@ type BACnetConstructedDataDoorStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoorStatus returns DoorStatus (property field)
 	GetDoorStatus() BACnetDoorStatusTagged
@@ -55,6 +56,19 @@ type _BACnetConstructedDataDoorStatus struct {
 
 var _ BACnetConstructedDataDoorStatus = (*_BACnetConstructedDataDoorStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorStatus)(nil)
+
+// NewBACnetConstructedDataDoorStatus factory function for _BACnetConstructedDataDoorStatus
+func NewBACnetConstructedDataDoorStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorStatus BACnetDoorStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorStatus {
+	if doorStatus == nil {
+		panic("doorStatus of type BACnetDoorStatusTagged for BACnetConstructedDataDoorStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataDoorStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorStatus:                    doorStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataDoorStatus) GetActualValue() BACnetDoorStatusTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDoorStatus factory function for _BACnetConstructedDataDoorStatus
-func NewBACnetConstructedDataDoorStatus(doorStatus BACnetDoorStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorStatus {
-	if doorStatus == nil {
-		panic("doorStatus of type BACnetDoorStatusTagged for BACnetConstructedDataDoorStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataDoorStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DoorStatus:                    doorStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDoorStatus(structType any) BACnetConstructedDataDoorStatus {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataDoorStatus) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetConstructedDataDoorStatus) IsBACnetConstructedDataDoorStatus() {}
+
+func (m *_BACnetConstructedDataDoorStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoorStatus) deepCopy() *_BACnetConstructedDataDoorStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoorStatusCopy := &_BACnetConstructedDataDoorStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DoorStatus.DeepCopy().(BACnetDoorStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoorStatusCopy
+}
 
 func (m *_BACnetConstructedDataDoorStatus) String() string {
 	if m == nil {

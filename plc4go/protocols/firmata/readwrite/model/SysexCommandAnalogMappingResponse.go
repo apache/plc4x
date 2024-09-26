@@ -36,6 +36,7 @@ type SysexCommandAnalogMappingResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandAnalogMappingResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandAnalogMappingResponse()
@@ -48,6 +49,15 @@ type _SysexCommandAnalogMappingResponse struct {
 
 var _ SysexCommandAnalogMappingResponse = (*_SysexCommandAnalogMappingResponse)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandAnalogMappingResponse)(nil)
+
+// NewSysexCommandAnalogMappingResponse factory function for _SysexCommandAnalogMappingResponse
+func NewSysexCommandAnalogMappingResponse() *_SysexCommandAnalogMappingResponse {
+	_result := &_SysexCommandAnalogMappingResponse{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +79,6 @@ func (m *_SysexCommandAnalogMappingResponse) GetResponse() bool {
 
 func (m *_SysexCommandAnalogMappingResponse) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandAnalogMappingResponse factory function for _SysexCommandAnalogMappingResponse
-func NewSysexCommandAnalogMappingResponse() *_SysexCommandAnalogMappingResponse {
-	_result := &_SysexCommandAnalogMappingResponse{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -150,6 +151,21 @@ func (m *_SysexCommandAnalogMappingResponse) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_SysexCommandAnalogMappingResponse) IsSysexCommandAnalogMappingResponse() {}
+
+func (m *_SysexCommandAnalogMappingResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandAnalogMappingResponse) deepCopy() *_SysexCommandAnalogMappingResponse {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandAnalogMappingResponseCopy := &_SysexCommandAnalogMappingResponse{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandAnalogMappingResponseCopy
+}
 
 func (m *_SysexCommandAnalogMappingResponse) String() string {
 	if m == nil {

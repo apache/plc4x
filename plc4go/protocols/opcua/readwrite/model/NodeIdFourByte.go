@@ -38,6 +38,7 @@ type NodeIdFourByte interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NodeIdTypeDefinition
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint8
@@ -58,6 +59,17 @@ type _NodeIdFourByte struct {
 
 var _ NodeIdFourByte = (*_NodeIdFourByte)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdFourByte)(nil)
+
+// NewNodeIdFourByte factory function for _NodeIdFourByte
+func NewNodeIdFourByte(namespaceIndex uint8, id uint16) *_NodeIdFourByte {
+	_result := &_NodeIdFourByte{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,17 +121,6 @@ func (m *_NodeIdFourByte) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdFourByte factory function for _NodeIdFourByte
-func NewNodeIdFourByte(namespaceIndex uint8, id uint16) *_NodeIdFourByte {
-	_result := &_NodeIdFourByte{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		NamespaceIndex:               namespaceIndex,
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdFourByte(structType any) NodeIdFourByte {
@@ -231,6 +232,23 @@ func (m *_NodeIdFourByte) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_NodeIdFourByte) IsNodeIdFourByte() {}
+
+func (m *_NodeIdFourByte) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdFourByte) deepCopy() *_NodeIdFourByte {
+	if m == nil {
+		return nil
+	}
+	_NodeIdFourByteCopy := &_NodeIdFourByte{
+		m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).deepCopy(),
+		m.NamespaceIndex,
+		m.Id,
+	}
+	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	return _NodeIdFourByteCopy
+}
 
 func (m *_NodeIdFourByte) String() string {
 	if m == nil {

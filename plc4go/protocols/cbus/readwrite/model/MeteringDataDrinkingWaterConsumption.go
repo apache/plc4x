@@ -38,6 +38,7 @@ type MeteringDataDrinkingWaterConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetKL returns KL (property field)
 	GetKL() uint32
@@ -53,6 +54,16 @@ type _MeteringDataDrinkingWaterConsumption struct {
 
 var _ MeteringDataDrinkingWaterConsumption = (*_MeteringDataDrinkingWaterConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataDrinkingWaterConsumption)(nil)
+
+// NewMeteringDataDrinkingWaterConsumption factory function for _MeteringDataDrinkingWaterConsumption
+func NewMeteringDataDrinkingWaterConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kL uint32) *_MeteringDataDrinkingWaterConsumption {
+	_result := &_MeteringDataDrinkingWaterConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		KL:                   kL,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +92,6 @@ func (m *_MeteringDataDrinkingWaterConsumption) GetKL() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataDrinkingWaterConsumption factory function for _MeteringDataDrinkingWaterConsumption
-func NewMeteringDataDrinkingWaterConsumption(kL uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataDrinkingWaterConsumption {
-	_result := &_MeteringDataDrinkingWaterConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		KL:                   kL,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataDrinkingWaterConsumption(structType any) MeteringDataDrinkingWaterConsumption {
@@ -175,6 +176,22 @@ func (m *_MeteringDataDrinkingWaterConsumption) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_MeteringDataDrinkingWaterConsumption) IsMeteringDataDrinkingWaterConsumption() {}
+
+func (m *_MeteringDataDrinkingWaterConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataDrinkingWaterConsumption) deepCopy() *_MeteringDataDrinkingWaterConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataDrinkingWaterConsumptionCopy := &_MeteringDataDrinkingWaterConsumption{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+		m.KL,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataDrinkingWaterConsumptionCopy
+}
 
 func (m *_MeteringDataDrinkingWaterConsumption) String() string {
 	if m == nil {

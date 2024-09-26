@@ -38,6 +38,7 @@ type VariantBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantBoolean struct {
 
 var _ VariantBoolean = (*_VariantBoolean)(nil)
 var _ VariantRequirements = (*_VariantBoolean)(nil)
+
+// NewVariantBoolean factory function for _VariantBoolean
+func NewVariantBoolean(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []byte) *_VariantBoolean {
+	_result := &_VariantBoolean{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantBoolean) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantBoolean factory function for _VariantBoolean
-func NewVariantBoolean(arrayLength *int32, value []byte, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantBoolean {
-	_result := &_VariantBoolean{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantBoolean(structType any) VariantBoolean {
@@ -205,6 +206,23 @@ func (m *_VariantBoolean) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_VariantBoolean) IsVariantBoolean() {}
+
+func (m *_VariantBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantBoolean) deepCopy() *_VariantBoolean {
+	if m == nil {
+		return nil
+	}
+	_VariantBooleanCopy := &_VariantBoolean{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantBooleanCopy
+}
 
 func (m *_VariantBoolean) String() string {
 	if m == nil {

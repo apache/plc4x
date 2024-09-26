@@ -38,6 +38,7 @@ type BACnetAccessRule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimeRangeSpecifier returns TimeRangeSpecifier (property field)
 	GetTimeRangeSpecifier() BACnetAccessRuleTimeRangeSpecifierTagged
 	// GetTimeRange returns TimeRange (property field)
@@ -62,6 +63,20 @@ type _BACnetAccessRule struct {
 }
 
 var _ BACnetAccessRule = (*_BACnetAccessRule)(nil)
+
+// NewBACnetAccessRule factory function for _BACnetAccessRule
+func NewBACnetAccessRule(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, timeRange BACnetDeviceObjectPropertyReferenceEnclosed, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, location BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) *_BACnetAccessRule {
+	if timeRangeSpecifier == nil {
+		panic("timeRangeSpecifier of type BACnetAccessRuleTimeRangeSpecifierTagged for BACnetAccessRule must not be nil")
+	}
+	if locationSpecifier == nil {
+		panic("locationSpecifier of type BACnetAccessRuleLocationSpecifierTagged for BACnetAccessRule must not be nil")
+	}
+	if enable == nil {
+		panic("enable of type BACnetContextTagBoolean for BACnetAccessRule must not be nil")
+	}
+	return &_BACnetAccessRule{TimeRangeSpecifier: timeRangeSpecifier, TimeRange: timeRange, LocationSpecifier: locationSpecifier, Location: location, Enable: enable}
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +107,6 @@ func (m *_BACnetAccessRule) GetEnable() BACnetContextTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessRule factory function for _BACnetAccessRule
-func NewBACnetAccessRule(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, timeRange BACnetDeviceObjectPropertyReferenceEnclosed, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, location BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) *_BACnetAccessRule {
-	if timeRangeSpecifier == nil {
-		panic("timeRangeSpecifier of type BACnetAccessRuleTimeRangeSpecifierTagged for BACnetAccessRule must not be nil")
-	}
-	if locationSpecifier == nil {
-		panic("locationSpecifier of type BACnetAccessRuleLocationSpecifierTagged for BACnetAccessRule must not be nil")
-	}
-	if enable == nil {
-		panic("enable of type BACnetContextTagBoolean for BACnetAccessRule must not be nil")
-	}
-	return &_BACnetAccessRule{TimeRangeSpecifier: timeRangeSpecifier, TimeRange: timeRange, LocationSpecifier: locationSpecifier, Location: location, Enable: enable}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessRule(structType any) BACnetAccessRule {
@@ -267,6 +268,24 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_BACnetAccessRule) IsBACnetAccessRule() {}
+
+func (m *_BACnetAccessRule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessRule) deepCopy() *_BACnetAccessRule {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessRuleCopy := &_BACnetAccessRule{
+		m.TimeRangeSpecifier.DeepCopy().(BACnetAccessRuleTimeRangeSpecifierTagged),
+		m.TimeRange.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.LocationSpecifier.DeepCopy().(BACnetAccessRuleLocationSpecifierTagged),
+		m.Location.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetAccessRuleCopy
+}
 
 func (m *_BACnetAccessRule) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type CreateSubscriptionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -73,6 +74,25 @@ type _CreateSubscriptionRequest struct {
 
 var _ CreateSubscriptionRequest = (*_CreateSubscriptionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CreateSubscriptionRequest)(nil)
+
+// NewCreateSubscriptionRequest factory function for _CreateSubscriptionRequest
+func NewCreateSubscriptionRequest(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) *_CreateSubscriptionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CreateSubscriptionRequest must not be nil")
+	}
+	_result := &_CreateSubscriptionRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		RequestedPublishingInterval:       requestedPublishingInterval,
+		RequestedLifetimeCount:            requestedLifetimeCount,
+		RequestedMaxKeepAliveCount:        requestedMaxKeepAliveCount,
+		MaxNotificationsPerPublish:        maxNotificationsPerPublish,
+		PublishingEnabled:                 publishingEnabled,
+		Priority:                          priority,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,25 +149,6 @@ func (m *_CreateSubscriptionRequest) GetPriority() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCreateSubscriptionRequest factory function for _CreateSubscriptionRequest
-func NewCreateSubscriptionRequest(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) *_CreateSubscriptionRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CreateSubscriptionRequest must not be nil")
-	}
-	_result := &_CreateSubscriptionRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		RequestedPublishingInterval:       requestedPublishingInterval,
-		RequestedLifetimeCount:            requestedLifetimeCount,
-		RequestedMaxKeepAliveCount:        requestedMaxKeepAliveCount,
-		MaxNotificationsPerPublish:        maxNotificationsPerPublish,
-		PublishingEnabled:                 publishingEnabled,
-		Priority:                          priority,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCreateSubscriptionRequest(structType any) CreateSubscriptionRequest {
@@ -323,6 +324,29 @@ func (m *_CreateSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 }
 
 func (m *_CreateSubscriptionRequest) IsCreateSubscriptionRequest() {}
+
+func (m *_CreateSubscriptionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CreateSubscriptionRequest) deepCopy() *_CreateSubscriptionRequest {
+	if m == nil {
+		return nil
+	}
+	_CreateSubscriptionRequestCopy := &_CreateSubscriptionRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestedPublishingInterval,
+		m.RequestedLifetimeCount,
+		m.RequestedMaxKeepAliveCount,
+		m.MaxNotificationsPerPublish,
+		m.PublishingEnabled,
+		m.Priority,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CreateSubscriptionRequestCopy
+}
 
 func (m *_CreateSubscriptionRequest) String() string {
 	if m == nil {

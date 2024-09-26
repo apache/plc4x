@@ -40,6 +40,7 @@ type DeviceConfigurationAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetDeviceConfigurationAckDataBlock returns DeviceConfigurationAckDataBlock (property field)
 	GetDeviceConfigurationAckDataBlock() DeviceConfigurationAckDataBlock
@@ -55,6 +56,19 @@ type _DeviceConfigurationAck struct {
 
 var _ DeviceConfigurationAck = (*_DeviceConfigurationAck)(nil)
 var _ KnxNetIpMessageRequirements = (*_DeviceConfigurationAck)(nil)
+
+// NewDeviceConfigurationAck factory function for _DeviceConfigurationAck
+func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) *_DeviceConfigurationAck {
+	if deviceConfigurationAckDataBlock == nil {
+		panic("deviceConfigurationAckDataBlock of type DeviceConfigurationAckDataBlock for DeviceConfigurationAck must not be nil")
+	}
+	_result := &_DeviceConfigurationAck{
+		KnxNetIpMessageContract:         NewKnxNetIpMessage(),
+		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +101,6 @@ func (m *_DeviceConfigurationAck) GetDeviceConfigurationAckDataBlock() DeviceCon
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceConfigurationAck factory function for _DeviceConfigurationAck
-func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) *_DeviceConfigurationAck {
-	if deviceConfigurationAckDataBlock == nil {
-		panic("deviceConfigurationAckDataBlock of type DeviceConfigurationAckDataBlock for DeviceConfigurationAck must not be nil")
-	}
-	_result := &_DeviceConfigurationAck{
-		KnxNetIpMessageContract:         NewKnxNetIpMessage(),
-		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceConfigurationAck(structType any) DeviceConfigurationAck {
@@ -184,6 +185,22 @@ func (m *_DeviceConfigurationAck) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_DeviceConfigurationAck) IsDeviceConfigurationAck() {}
+
+func (m *_DeviceConfigurationAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationAck) deepCopy() *_DeviceConfigurationAck {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationAckCopy := &_DeviceConfigurationAck{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.DeviceConfigurationAckDataBlock.DeepCopy().(DeviceConfigurationAckDataBlock),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DeviceConfigurationAckCopy
+}
 
 func (m *_DeviceConfigurationAck) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type StatusResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -56,6 +57,23 @@ type _StatusResult struct {
 
 var _ StatusResult = (*_StatusResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_StatusResult)(nil)
+
+// NewStatusResult factory function for _StatusResult
+func NewStatusResult(statusCode StatusCode, diagnosticInfo DiagnosticInfo) *_StatusResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for StatusResult must not be nil")
+	}
+	if diagnosticInfo == nil {
+		panic("diagnosticInfo of type DiagnosticInfo for StatusResult must not be nil")
+	}
+	_result := &_StatusResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		DiagnosticInfo:                    diagnosticInfo,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +110,6 @@ func (m *_StatusResult) GetDiagnosticInfo() DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusResult factory function for _StatusResult
-func NewStatusResult(statusCode StatusCode, diagnosticInfo DiagnosticInfo) *_StatusResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for StatusResult must not be nil")
-	}
-	if diagnosticInfo == nil {
-		panic("diagnosticInfo of type DiagnosticInfo for StatusResult must not be nil")
-	}
-	_result := &_StatusResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		DiagnosticInfo:                    diagnosticInfo,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusResult(structType any) StatusResult {
@@ -206,6 +207,23 @@ func (m *_StatusResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_StatusResult) IsStatusResult() {}
+
+func (m *_StatusResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusResult) deepCopy() *_StatusResult {
+	if m == nil {
+		return nil
+	}
+	_StatusResultCopy := &_StatusResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.DiagnosticInfo.DeepCopy().(DiagnosticInfo),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _StatusResultCopy
+}
 
 func (m *_StatusResult) String() string {
 	if m == nil {

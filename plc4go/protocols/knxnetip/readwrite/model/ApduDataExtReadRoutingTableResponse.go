@@ -36,6 +36,7 @@ type ApduDataExtReadRoutingTableResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtReadRoutingTableResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtReadRoutingTableResponse()
@@ -48,6 +49,15 @@ type _ApduDataExtReadRoutingTableResponse struct {
 
 var _ ApduDataExtReadRoutingTableResponse = (*_ApduDataExtReadRoutingTableResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtReadRoutingTableResponse)(nil)
+
+// NewApduDataExtReadRoutingTableResponse factory function for _ApduDataExtReadRoutingTableResponse
+func NewApduDataExtReadRoutingTableResponse(length uint8) *_ApduDataExtReadRoutingTableResponse {
+	_result := &_ApduDataExtReadRoutingTableResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_ApduDataExtReadRoutingTableResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtReadRoutingTableResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtReadRoutingTableResponse factory function for _ApduDataExtReadRoutingTableResponse
-func NewApduDataExtReadRoutingTableResponse(length uint8) *_ApduDataExtReadRoutingTableResponse {
-	_result := &_ApduDataExtReadRoutingTableResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_ApduDataExtReadRoutingTableResponse) SerializeWithWriteBuffer(ctx cont
 }
 
 func (m *_ApduDataExtReadRoutingTableResponse) IsApduDataExtReadRoutingTableResponse() {}
+
+func (m *_ApduDataExtReadRoutingTableResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtReadRoutingTableResponse) deepCopy() *_ApduDataExtReadRoutingTableResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtReadRoutingTableResponseCopy := &_ApduDataExtReadRoutingTableResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtReadRoutingTableResponseCopy
+}
 
 func (m *_ApduDataExtReadRoutingTableResponse) String() string {
 	if m == nil {

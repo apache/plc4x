@@ -36,6 +36,7 @@ type MPropInfoInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMPropInfoInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropInfoInd()
@@ -48,6 +49,15 @@ type _MPropInfoInd struct {
 
 var _ MPropInfoInd = (*_MPropInfoInd)(nil)
 var _ CEMIRequirements = (*_MPropInfoInd)(nil)
+
+// NewMPropInfoInd factory function for _MPropInfoInd
+func NewMPropInfoInd(size uint16) *_MPropInfoInd {
+	_result := &_MPropInfoInd{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +75,6 @@ func (m *_MPropInfoInd) GetMessageCode() uint8 {
 
 func (m *_MPropInfoInd) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMPropInfoInd factory function for _MPropInfoInd
-func NewMPropInfoInd(size uint16) *_MPropInfoInd {
-	_result := &_MPropInfoInd{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -146,6 +147,21 @@ func (m *_MPropInfoInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 }
 
 func (m *_MPropInfoInd) IsMPropInfoInd() {}
+
+func (m *_MPropInfoInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropInfoInd) deepCopy() *_MPropInfoInd {
+	if m == nil {
+		return nil
+	}
+	_MPropInfoIndCopy := &_MPropInfoInd{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropInfoIndCopy
+}
 
 func (m *_MPropInfoInd) String() string {
 	if m == nil {

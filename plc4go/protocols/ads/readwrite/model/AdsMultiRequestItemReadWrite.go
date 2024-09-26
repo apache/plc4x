@@ -38,6 +38,7 @@ type AdsMultiRequestItemReadWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsMultiRequestItem
 	// GetItemIndexGroup returns ItemIndexGroup (property field)
 	GetItemIndexGroup() uint32
@@ -62,6 +63,19 @@ type _AdsMultiRequestItemReadWrite struct {
 
 var _ AdsMultiRequestItemReadWrite = (*_AdsMultiRequestItemReadWrite)(nil)
 var _ AdsMultiRequestItemRequirements = (*_AdsMultiRequestItemReadWrite)(nil)
+
+// NewAdsMultiRequestItemReadWrite factory function for _AdsMultiRequestItemReadWrite
+func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) *_AdsMultiRequestItemReadWrite {
+	_result := &_AdsMultiRequestItemReadWrite{
+		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
+		ItemIndexGroup:              itemIndexGroup,
+		ItemIndexOffset:             itemIndexOffset,
+		ItemReadLength:              itemReadLength,
+		ItemWriteLength:             itemWriteLength,
+	}
+	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_AdsMultiRequestItemReadWrite) GetItemWriteLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsMultiRequestItemReadWrite factory function for _AdsMultiRequestItemReadWrite
-func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) *_AdsMultiRequestItemReadWrite {
-	_result := &_AdsMultiRequestItemReadWrite{
-		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
-		ItemIndexGroup:              itemIndexGroup,
-		ItemIndexOffset:             itemIndexOffset,
-		ItemReadLength:              itemReadLength,
-		ItemWriteLength:             itemWriteLength,
-	}
-	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsMultiRequestItemReadWrite(structType any) AdsMultiRequestItemReadWrite {
@@ -242,6 +243,25 @@ func (m *_AdsMultiRequestItemReadWrite) SerializeWithWriteBuffer(ctx context.Con
 }
 
 func (m *_AdsMultiRequestItemReadWrite) IsAdsMultiRequestItemReadWrite() {}
+
+func (m *_AdsMultiRequestItemReadWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsMultiRequestItemReadWrite) deepCopy() *_AdsMultiRequestItemReadWrite {
+	if m == nil {
+		return nil
+	}
+	_AdsMultiRequestItemReadWriteCopy := &_AdsMultiRequestItemReadWrite{
+		m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).deepCopy(),
+		m.ItemIndexGroup,
+		m.ItemIndexOffset,
+		m.ItemReadLength,
+		m.ItemWriteLength,
+	}
+	m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = m
+	return _AdsMultiRequestItemReadWriteCopy
+}
 
 func (m *_AdsMultiRequestItemReadWrite) String() string {
 	if m == nil {

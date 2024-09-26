@@ -38,6 +38,7 @@ type BACnetConstructedDataNegativeAccessRules interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -58,6 +59,17 @@ type _BACnetConstructedDataNegativeAccessRules struct {
 
 var _ BACnetConstructedDataNegativeAccessRules = (*_BACnetConstructedDataNegativeAccessRules)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNegativeAccessRules)(nil)
+
+// NewBACnetConstructedDataNegativeAccessRules factory function for _BACnetConstructedDataNegativeAccessRules
+func NewBACnetConstructedDataNegativeAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, negativeAccessRules []BACnetAccessRule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNegativeAccessRules {
+	_result := &_BACnetConstructedDataNegativeAccessRules{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		NegativeAccessRules:           negativeAccessRules,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +127,6 @@ func (m *_BACnetConstructedDataNegativeAccessRules) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNegativeAccessRules factory function for _BACnetConstructedDataNegativeAccessRules
-func NewBACnetConstructedDataNegativeAccessRules(numberOfDataElements BACnetApplicationTagUnsignedInteger, negativeAccessRules []BACnetAccessRule, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNegativeAccessRules {
-	_result := &_BACnetConstructedDataNegativeAccessRules{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		NegativeAccessRules:           negativeAccessRules,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNegativeAccessRules(structType any) BACnetConstructedDataNegativeAccessRules {
@@ -247,6 +248,23 @@ func (m *_BACnetConstructedDataNegativeAccessRules) SerializeWithWriteBuffer(ctx
 }
 
 func (m *_BACnetConstructedDataNegativeAccessRules) IsBACnetConstructedDataNegativeAccessRules() {}
+
+func (m *_BACnetConstructedDataNegativeAccessRules) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNegativeAccessRules) deepCopy() *_BACnetConstructedDataNegativeAccessRules {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNegativeAccessRulesCopy := &_BACnetConstructedDataNegativeAccessRules{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetAccessRule, BACnetAccessRule](m.NegativeAccessRules),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNegativeAccessRulesCopy
+}
 
 func (m *_BACnetConstructedDataNegativeAccessRules) String() string {
 	if m == nil {

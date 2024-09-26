@@ -38,6 +38,7 @@ type BACnetChannelValueNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
@@ -53,6 +54,19 @@ type _BACnetChannelValueNull struct {
 
 var _ BACnetChannelValueNull = (*_BACnetChannelValueNull)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueNull)(nil)
+
+// NewBACnetChannelValueNull factory function for _BACnetChannelValueNull
+func NewBACnetChannelValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetChannelValueNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetChannelValueNull must not be nil")
+	}
+	_result := &_BACnetChannelValueNull{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		NullValue:                  nullValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetChannelValueNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueNull factory function for _BACnetChannelValueNull
-func NewBACnetChannelValueNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetChannelValueNull must not be nil")
-	}
-	_result := &_BACnetChannelValueNull{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		NullValue:                  nullValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueNull(structType any) BACnetChannelValueNull {
@@ -178,6 +179,22 @@ func (m *_BACnetChannelValueNull) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_BACnetChannelValueNull) IsBACnetChannelValueNull() {}
+
+func (m *_BACnetChannelValueNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueNull) deepCopy() *_BACnetChannelValueNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueNullCopy := &_BACnetChannelValueNull{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueNullCopy
+}
 
 func (m *_BACnetChannelValueNull) String() string {
 	if m == nil {

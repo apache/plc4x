@@ -38,6 +38,7 @@ type BACnetConstructedDataMaxAPDULengthAccepted interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxApduLengthAccepted returns MaxApduLengthAccepted (property field)
 	GetMaxApduLengthAccepted() BACnetApplicationTagUnsignedInteger
@@ -55,6 +56,19 @@ type _BACnetConstructedDataMaxAPDULengthAccepted struct {
 
 var _ BACnetConstructedDataMaxAPDULengthAccepted = (*_BACnetConstructedDataMaxAPDULengthAccepted)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxAPDULengthAccepted)(nil)
+
+// NewBACnetConstructedDataMaxAPDULengthAccepted factory function for _BACnetConstructedDataMaxAPDULengthAccepted
+func NewBACnetConstructedDataMaxAPDULengthAccepted(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxApduLengthAccepted BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxAPDULengthAccepted {
+	if maxApduLengthAccepted == nil {
+		panic("maxApduLengthAccepted of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxAPDULengthAccepted must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaxAPDULengthAccepted{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxApduLengthAccepted:         maxApduLengthAccepted,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +120,6 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaxAPDULengthAccepted factory function for _BACnetConstructedDataMaxAPDULengthAccepted
-func NewBACnetConstructedDataMaxAPDULengthAccepted(maxApduLengthAccepted BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxAPDULengthAccepted {
-	if maxApduLengthAccepted == nil {
-		panic("maxApduLengthAccepted of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxAPDULengthAccepted must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaxAPDULengthAccepted{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxApduLengthAccepted:         maxApduLengthAccepted,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaxAPDULengthAccepted(structType any) BACnetConstructedDataMaxAPDULengthAccepted {
@@ -217,6 +218,22 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) SerializeWithWriteBuffer(c
 }
 
 func (m *_BACnetConstructedDataMaxAPDULengthAccepted) IsBACnetConstructedDataMaxAPDULengthAccepted() {
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) deepCopy() *_BACnetConstructedDataMaxAPDULengthAccepted {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaxAPDULengthAcceptedCopy := &_BACnetConstructedDataMaxAPDULengthAccepted{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MaxApduLengthAccepted.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaxAPDULengthAcceptedCopy
 }
 
 func (m *_BACnetConstructedDataMaxAPDULengthAccepted) String() string {

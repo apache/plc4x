@@ -38,6 +38,7 @@ type BACnetPropertyStatesBackupState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBackupState returns BackupState (property field)
 	GetBackupState() BACnetBackupStateTagged
@@ -53,6 +54,19 @@ type _BACnetPropertyStatesBackupState struct {
 
 var _ BACnetPropertyStatesBackupState = (*_BACnetPropertyStatesBackupState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBackupState)(nil)
+
+// NewBACnetPropertyStatesBackupState factory function for _BACnetPropertyStatesBackupState
+func NewBACnetPropertyStatesBackupState(peekedTagHeader BACnetTagHeader, backupState BACnetBackupStateTagged) *_BACnetPropertyStatesBackupState {
+	if backupState == nil {
+		panic("backupState of type BACnetBackupStateTagged for BACnetPropertyStatesBackupState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBackupState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BackupState:                  backupState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetPropertyStatesBackupState) GetBackupState() BACnetBackupStateTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBackupState factory function for _BACnetPropertyStatesBackupState
-func NewBACnetPropertyStatesBackupState(backupState BACnetBackupStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBackupState {
-	if backupState == nil {
-		panic("backupState of type BACnetBackupStateTagged for BACnetPropertyStatesBackupState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBackupState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BackupState:                  backupState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBackupState(structType any) BACnetPropertyStatesBackupState {
@@ -178,6 +179,22 @@ func (m *_BACnetPropertyStatesBackupState) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_BACnetPropertyStatesBackupState) IsBACnetPropertyStatesBackupState() {}
+
+func (m *_BACnetPropertyStatesBackupState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBackupState) deepCopy() *_BACnetPropertyStatesBackupState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBackupStateCopy := &_BACnetPropertyStatesBackupState{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.BackupState.DeepCopy().(BACnetBackupStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBackupStateCopy
+}
 
 func (m *_BACnetPropertyStatesBackupState) String() string {
 	if m == nil {

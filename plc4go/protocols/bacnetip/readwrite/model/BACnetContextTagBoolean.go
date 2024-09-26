@@ -38,6 +38,7 @@ type BACnetContextTagBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetValue returns Value (property field)
 	GetValue() uint8
@@ -58,6 +59,20 @@ type _BACnetContextTagBoolean struct {
 
 var _ BACnetContextTagBoolean = (*_BACnetContextTagBoolean)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagBoolean)(nil)
+
+// NewBACnetContextTagBoolean factory function for _BACnetContextTagBoolean
+func NewBACnetContextTagBoolean(header BACnetTagHeader, value uint8, payload BACnetTagPayloadBoolean, tagNumberArgument uint8) *_BACnetContextTagBoolean {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBoolean for BACnetContextTagBoolean must not be nil")
+	}
+	_result := &_BACnetContextTagBoolean{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Value:                    value,
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,20 +124,6 @@ func (m *_BACnetContextTagBoolean) GetActualValue() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagBoolean factory function for _BACnetContextTagBoolean
-func NewBACnetContextTagBoolean(value uint8, payload BACnetTagPayloadBoolean, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagBoolean {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBoolean for BACnetContextTagBoolean must not be nil")
-	}
-	_result := &_BACnetContextTagBoolean{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Value:                    value,
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagBoolean(structType any) BACnetContextTagBoolean {
@@ -239,6 +240,23 @@ func (m *_BACnetContextTagBoolean) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetContextTagBoolean) IsBACnetContextTagBoolean() {}
+
+func (m *_BACnetContextTagBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagBoolean) deepCopy() *_BACnetContextTagBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagBooleanCopy := &_BACnetContextTagBoolean{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Value,
+		m.Payload.DeepCopy().(BACnetTagPayloadBoolean),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagBooleanCopy
+}
 
 func (m *_BACnetContextTagBoolean) String() string {
 	if m == nil {

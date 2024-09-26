@@ -38,6 +38,7 @@ type PortSegmentNormal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PortSegmentType
 	// GetPort returns Port (property field)
 	GetPort() uint8
@@ -56,6 +57,17 @@ type _PortSegmentNormal struct {
 
 var _ PortSegmentNormal = (*_PortSegmentNormal)(nil)
 var _ PortSegmentTypeRequirements = (*_PortSegmentNormal)(nil)
+
+// NewPortSegmentNormal factory function for _PortSegmentNormal
+func NewPortSegmentNormal(port uint8, linkAddress uint8) *_PortSegmentNormal {
+	_result := &_PortSegmentNormal{
+		PortSegmentTypeContract: NewPortSegmentType(),
+		Port:                    port,
+		LinkAddress:             linkAddress,
+	}
+	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_PortSegmentNormal) GetLinkAddress() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPortSegmentNormal factory function for _PortSegmentNormal
-func NewPortSegmentNormal(port uint8, linkAddress uint8) *_PortSegmentNormal {
-	_result := &_PortSegmentNormal{
-		PortSegmentTypeContract: NewPortSegmentType(),
-		Port:                    port,
-		LinkAddress:             linkAddress,
-	}
-	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPortSegmentNormal(structType any) PortSegmentNormal {
@@ -200,6 +201,23 @@ func (m *_PortSegmentNormal) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_PortSegmentNormal) IsPortSegmentNormal() {}
+
+func (m *_PortSegmentNormal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegmentNormal) deepCopy() *_PortSegmentNormal {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentNormalCopy := &_PortSegmentNormal{
+		m.PortSegmentTypeContract.(*_PortSegmentType).deepCopy(),
+		m.Port,
+		m.LinkAddress,
+	}
+	m.PortSegmentTypeContract.(*_PortSegmentType)._SubType = m
+	return _PortSegmentNormalCopy
+}
 
 func (m *_PortSegmentNormal) String() string {
 	if m == nil {

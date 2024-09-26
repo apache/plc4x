@@ -38,6 +38,7 @@ type BACnetCalendarEntryDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetCalendarEntry
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetContextTagDate
@@ -53,6 +54,19 @@ type _BACnetCalendarEntryDate struct {
 
 var _ BACnetCalendarEntryDate = (*_BACnetCalendarEntryDate)(nil)
 var _ BACnetCalendarEntryRequirements = (*_BACnetCalendarEntryDate)(nil)
+
+// NewBACnetCalendarEntryDate factory function for _BACnetCalendarEntryDate
+func NewBACnetCalendarEntryDate(peekedTagHeader BACnetTagHeader, dateValue BACnetContextTagDate) *_BACnetCalendarEntryDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetContextTagDate for BACnetCalendarEntryDate must not be nil")
+	}
+	_result := &_BACnetCalendarEntryDate{
+		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
+		DateValue:                   dateValue,
+	}
+	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +95,6 @@ func (m *_BACnetCalendarEntryDate) GetDateValue() BACnetContextTagDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCalendarEntryDate factory function for _BACnetCalendarEntryDate
-func NewBACnetCalendarEntryDate(dateValue BACnetContextTagDate, peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntryDate {
-	if dateValue == nil {
-		panic("dateValue of type BACnetContextTagDate for BACnetCalendarEntryDate must not be nil")
-	}
-	_result := &_BACnetCalendarEntryDate{
-		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
-		DateValue:                   dateValue,
-	}
-	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCalendarEntryDate(structType any) BACnetCalendarEntryDate {
@@ -178,6 +179,22 @@ func (m *_BACnetCalendarEntryDate) SerializeWithWriteBuffer(ctx context.Context,
 }
 
 func (m *_BACnetCalendarEntryDate) IsBACnetCalendarEntryDate() {}
+
+func (m *_BACnetCalendarEntryDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCalendarEntryDate) deepCopy() *_BACnetCalendarEntryDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetCalendarEntryDateCopy := &_BACnetCalendarEntryDate{
+		m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).deepCopy(),
+		m.DateValue.DeepCopy().(BACnetContextTagDate),
+	}
+	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
+	return _BACnetCalendarEntryDateCopy
+}
 
 func (m *_BACnetCalendarEntryDate) String() string {
 	if m == nil {

@@ -38,6 +38,7 @@ type MeasurementDataChannelMeasurementData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeasurementData
 	// GetDeviceId returns DeviceId (property field)
 	GetDeviceId() uint8
@@ -72,6 +73,21 @@ type _MeasurementDataChannelMeasurementData struct {
 
 var _ MeasurementDataChannelMeasurementData = (*_MeasurementDataChannelMeasurementData)(nil)
 var _ MeasurementDataRequirements = (*_MeasurementDataChannelMeasurementData)(nil)
+
+// NewMeasurementDataChannelMeasurementData factory function for _MeasurementDataChannelMeasurementData
+func NewMeasurementDataChannelMeasurementData(commandTypeContainer MeasurementCommandTypeContainer, deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8) *_MeasurementDataChannelMeasurementData {
+	_result := &_MeasurementDataChannelMeasurementData{
+		MeasurementDataContract: NewMeasurementData(commandTypeContainer),
+		DeviceId:                deviceId,
+		Channel:                 channel,
+		Units:                   units,
+		Multiplier:              multiplier,
+		Msb:                     msb,
+		Lsb:                     lsb,
+	}
+	_result.MeasurementDataContract.(*_MeasurementData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -141,21 +157,6 @@ func (m *_MeasurementDataChannelMeasurementData) GetValue() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeasurementDataChannelMeasurementData factory function for _MeasurementDataChannelMeasurementData
-func NewMeasurementDataChannelMeasurementData(deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8, commandTypeContainer MeasurementCommandTypeContainer) *_MeasurementDataChannelMeasurementData {
-	_result := &_MeasurementDataChannelMeasurementData{
-		MeasurementDataContract: NewMeasurementData(commandTypeContainer),
-		DeviceId:                deviceId,
-		Channel:                 channel,
-		Units:                   units,
-		Multiplier:              multiplier,
-		Msb:                     msb,
-		Lsb:                     lsb,
-	}
-	_result.MeasurementDataContract.(*_MeasurementData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeasurementDataChannelMeasurementData(structType any) MeasurementDataChannelMeasurementData {
@@ -333,6 +334,27 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 }
 
 func (m *_MeasurementDataChannelMeasurementData) IsMeasurementDataChannelMeasurementData() {}
+
+func (m *_MeasurementDataChannelMeasurementData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeasurementDataChannelMeasurementData) deepCopy() *_MeasurementDataChannelMeasurementData {
+	if m == nil {
+		return nil
+	}
+	_MeasurementDataChannelMeasurementDataCopy := &_MeasurementDataChannelMeasurementData{
+		m.MeasurementDataContract.(*_MeasurementData).deepCopy(),
+		m.DeviceId,
+		m.Channel,
+		m.Units,
+		m.Multiplier,
+		m.Msb,
+		m.Lsb,
+	}
+	m.MeasurementDataContract.(*_MeasurementData)._SubType = m
+	return _MeasurementDataChannelMeasurementDataCopy
+}
 
 func (m *_MeasurementDataChannelMeasurementData) String() string {
 	if m == nil {

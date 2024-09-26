@@ -40,6 +40,7 @@ type FirmataMessageAnalogIO interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataMessage
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -58,6 +59,17 @@ type _FirmataMessageAnalogIO struct {
 
 var _ FirmataMessageAnalogIO = (*_FirmataMessageAnalogIO)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageAnalogIO)(nil)
+
+// NewFirmataMessageAnalogIO factory function for _FirmataMessageAnalogIO
+func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataMessageAnalogIO {
+	_result := &_FirmataMessageAnalogIO{
+		FirmataMessageContract: NewFirmataMessage(response),
+		Pin:                    pin,
+		Data:                   data,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +106,6 @@ func (m *_FirmataMessageAnalogIO) GetData() []int8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataMessageAnalogIO factory function for _FirmataMessageAnalogIO
-func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataMessageAnalogIO {
-	_result := &_FirmataMessageAnalogIO{
-		FirmataMessageContract: NewFirmataMessage(response),
-		Pin:                    pin,
-		Data:                   data,
-	}
-	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessageAnalogIO(structType any) FirmataMessageAnalogIO {
@@ -204,6 +205,23 @@ func (m *_FirmataMessageAnalogIO) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_FirmataMessageAnalogIO) IsFirmataMessageAnalogIO() {}
+
+func (m *_FirmataMessageAnalogIO) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessageAnalogIO) deepCopy() *_FirmataMessageAnalogIO {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageAnalogIOCopy := &_FirmataMessageAnalogIO{
+		m.FirmataMessageContract.(*_FirmataMessage).deepCopy(),
+		m.Pin,
+		utils.DeepCopySlice[int8, int8](m.Data),
+	}
+	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	return _FirmataMessageAnalogIOCopy
+}
 
 func (m *_FirmataMessageAnalogIO) String() string {
 	if m == nil {

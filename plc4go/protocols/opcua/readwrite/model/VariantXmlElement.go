@@ -38,6 +38,7 @@ type VariantXmlElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -56,6 +57,17 @@ type _VariantXmlElement struct {
 
 var _ VariantXmlElement = (*_VariantXmlElement)(nil)
 var _ VariantRequirements = (*_VariantXmlElement)(nil)
+
+// NewVariantXmlElement factory function for _VariantXmlElement
+func NewVariantXmlElement(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []PascalString) *_VariantXmlElement {
+	_result := &_VariantXmlElement{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_VariantXmlElement) GetValue() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantXmlElement factory function for _VariantXmlElement
-func NewVariantXmlElement(arrayLength *int32, value []PascalString, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantXmlElement {
-	_result := &_VariantXmlElement{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantXmlElement(structType any) VariantXmlElement {
@@ -210,6 +211,23 @@ func (m *_VariantXmlElement) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_VariantXmlElement) IsVariantXmlElement() {}
+
+func (m *_VariantXmlElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantXmlElement) deepCopy() *_VariantXmlElement {
+	if m == nil {
+		return nil
+	}
+	_VariantXmlElementCopy := &_VariantXmlElement{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[PascalString, PascalString](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantXmlElementCopy
+}
 
 func (m *_VariantXmlElement) String() string {
 	if m == nil {

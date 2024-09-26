@@ -38,6 +38,7 @@ type AirConditioningDataZoneHvacPlantStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -65,6 +66,26 @@ type _AirConditioningDataZoneHvacPlantStatus struct {
 
 var _ AirConditioningDataZoneHvacPlantStatus = (*_AirConditioningDataZoneHvacPlantStatus)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataZoneHvacPlantStatus)(nil)
+
+// NewAirConditioningDataZoneHvacPlantStatus factory function for _AirConditioningDataZoneHvacPlantStatus
+func NewAirConditioningDataZoneHvacPlantStatus(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, hvacType HVACType, hvacStatus HVACStatusFlags, hvacErrorCode HVACError) *_AirConditioningDataZoneHvacPlantStatus {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHvacPlantStatus must not be nil")
+	}
+	if hvacStatus == nil {
+		panic("hvacStatus of type HVACStatusFlags for AirConditioningDataZoneHvacPlantStatus must not be nil")
+	}
+	_result := &_AirConditioningDataZoneHvacPlantStatus{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		HvacType:                    hvacType,
+		HvacStatus:                  hvacStatus,
+		HvacErrorCode:               hvacErrorCode,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,26 +130,6 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) GetHvacErrorCode() HVACError {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataZoneHvacPlantStatus factory function for _AirConditioningDataZoneHvacPlantStatus
-func NewAirConditioningDataZoneHvacPlantStatus(zoneGroup byte, zoneList HVACZoneList, hvacType HVACType, hvacStatus HVACStatusFlags, hvacErrorCode HVACError, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataZoneHvacPlantStatus {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHvacPlantStatus must not be nil")
-	}
-	if hvacStatus == nil {
-		panic("hvacStatus of type HVACStatusFlags for AirConditioningDataZoneHvacPlantStatus must not be nil")
-	}
-	_result := &_AirConditioningDataZoneHvacPlantStatus{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		HvacType:                    hvacType,
-		HvacStatus:                  hvacStatus,
-		HvacErrorCode:               hvacErrorCode,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataZoneHvacPlantStatus(structType any) AirConditioningDataZoneHvacPlantStatus {
@@ -265,6 +266,26 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_AirConditioningDataZoneHvacPlantStatus) IsAirConditioningDataZoneHvacPlantStatus() {}
+
+func (m *_AirConditioningDataZoneHvacPlantStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataZoneHvacPlantStatus) deepCopy() *_AirConditioningDataZoneHvacPlantStatus {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataZoneHvacPlantStatusCopy := &_AirConditioningDataZoneHvacPlantStatus{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.HvacType,
+		m.HvacStatus.DeepCopy().(HVACStatusFlags),
+		m.HvacErrorCode,
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataZoneHvacPlantStatusCopy
+}
 
 func (m *_AirConditioningDataZoneHvacPlantStatus) String() string {
 	if m == nil {

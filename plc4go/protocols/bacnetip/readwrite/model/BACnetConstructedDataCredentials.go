@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentials interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCredentials returns Credentials (property field)
 	GetCredentials() []BACnetDeviceObjectReference
@@ -53,6 +54,16 @@ type _BACnetConstructedDataCredentials struct {
 
 var _ BACnetConstructedDataCredentials = (*_BACnetConstructedDataCredentials)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentials)(nil)
+
+// NewBACnetConstructedDataCredentials factory function for _BACnetConstructedDataCredentials
+func NewBACnetConstructedDataCredentials(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentials []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentials {
+	_result := &_BACnetConstructedDataCredentials{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Credentials:                   credentials,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +100,6 @@ func (m *_BACnetConstructedDataCredentials) GetCredentials() []BACnetDeviceObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentials factory function for _BACnetConstructedDataCredentials
-func NewBACnetConstructedDataCredentials(credentials []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentials {
-	_result := &_BACnetConstructedDataCredentials{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Credentials:                   credentials,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentials(structType any) BACnetConstructedDataCredentials {
@@ -187,6 +188,22 @@ func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_BACnetConstructedDataCredentials) IsBACnetConstructedDataCredentials() {}
+
+func (m *_BACnetConstructedDataCredentials) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentials) deepCopy() *_BACnetConstructedDataCredentials {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialsCopy := &_BACnetConstructedDataCredentials{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.Credentials),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialsCopy
+}
 
 func (m *_BACnetConstructedDataCredentials) String() string {
 	if m == nil {

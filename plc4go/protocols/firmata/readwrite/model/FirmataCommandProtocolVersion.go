@@ -38,6 +38,7 @@ type FirmataCommandProtocolVersion interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// GetMajorVersion returns MajorVersion (property field)
 	GetMajorVersion() uint8
@@ -56,6 +57,17 @@ type _FirmataCommandProtocolVersion struct {
 
 var _ FirmataCommandProtocolVersion = (*_FirmataCommandProtocolVersion)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandProtocolVersion)(nil)
+
+// NewFirmataCommandProtocolVersion factory function for _FirmataCommandProtocolVersion
+func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, response bool) *_FirmataCommandProtocolVersion {
+	_result := &_FirmataCommandProtocolVersion{
+		FirmataCommandContract: NewFirmataCommand(response),
+		MajorVersion:           majorVersion,
+		MinorVersion:           minorVersion,
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +104,6 @@ func (m *_FirmataCommandProtocolVersion) GetMinorVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataCommandProtocolVersion factory function for _FirmataCommandProtocolVersion
-func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, response bool) *_FirmataCommandProtocolVersion {
-	_result := &_FirmataCommandProtocolVersion{
-		FirmataCommandContract: NewFirmataCommand(response),
-		MajorVersion:           majorVersion,
-		MinorVersion:           minorVersion,
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommandProtocolVersion(structType any) FirmataCommandProtocolVersion {
@@ -200,6 +201,23 @@ func (m *_FirmataCommandProtocolVersion) SerializeWithWriteBuffer(ctx context.Co
 }
 
 func (m *_FirmataCommandProtocolVersion) IsFirmataCommandProtocolVersion() {}
+
+func (m *_FirmataCommandProtocolVersion) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandProtocolVersion) deepCopy() *_FirmataCommandProtocolVersion {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandProtocolVersionCopy := &_FirmataCommandProtocolVersion{
+		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
+		m.MajorVersion,
+		m.MinorVersion,
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandProtocolVersionCopy
+}
 
 func (m *_FirmataCommandProtocolVersion) String() string {
 	if m == nil {

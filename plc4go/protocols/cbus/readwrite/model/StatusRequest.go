@@ -40,6 +40,7 @@ type StatusRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStatusRequest()
 }
@@ -68,6 +69,11 @@ type _StatusRequest struct {
 
 var _ StatusRequestContract = (*_StatusRequest)(nil)
 
+// NewStatusRequest factory function for _StatusRequest
+func NewStatusRequest(statusType byte) *_StatusRequest {
+	return &_StatusRequest{StatusType: statusType}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +87,6 @@ func (m *_StatusRequest) GetStatusType() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusRequest factory function for _StatusRequest
-func NewStatusRequest(statusType byte) *_StatusRequest {
-	return &_StatusRequest{StatusType: statusType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusRequest(structType any) StatusRequest {
@@ -160,15 +161,15 @@ func (m *_StatusRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer)
 	var _child StatusRequest
 	switch {
 	case statusType == 0x7A: // StatusRequestBinaryState
-		if _child, err = (&_StatusRequestBinaryState{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_StatusRequestBinaryState).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type StatusRequestBinaryState for type-switch of StatusRequest")
 		}
 	case statusType == 0xFA: // StatusRequestBinaryStateDeprecated
-		if _child, err = (&_StatusRequestBinaryStateDeprecated{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_StatusRequestBinaryStateDeprecated).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type StatusRequestBinaryStateDeprecated for type-switch of StatusRequest")
 		}
 	case statusType == 0x73: // StatusRequestLevel
-		if _child, err = (&_StatusRequestLevel{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_StatusRequestLevel).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type StatusRequestLevel for type-switch of StatusRequest")
 		}
 	default:
@@ -206,3 +207,18 @@ func (pm *_StatusRequest) serializeParent(ctx context.Context, writeBuffer utils
 }
 
 func (m *_StatusRequest) IsStatusRequest() {}
+
+func (m *_StatusRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusRequest) deepCopy() *_StatusRequest {
+	if m == nil {
+		return nil
+	}
+	_StatusRequestCopy := &_StatusRequest{
+		nil, // will be set by child
+		m.StatusType,
+	}
+	return _StatusRequestCopy
+}
