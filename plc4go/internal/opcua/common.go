@@ -207,7 +207,7 @@ func readResponse(localLog zerolog.Logger, readRequestIn apiModel.PlcReadRequest
 				array := variant.GetValue()
 				qualifiedNameValues := make([]apiValues.PlcValue, len(array))
 				for i, t := range array {
-					qualifiedNameValues[i] = spiValues.NewPlcSTRING(fmt.Sprintf("ns=%d;s=%s", t.GetNamespaceIndex(), t.GetName().GetStringValue()))
+					qualifiedNameValues[i] = spiValues.NewPlcSTRING(fmt.Sprintf("ns=%d;s=%s", t.GetNamespaceIndex(), *t.GetName().GetStringValue()))
 				}
 				value = spiValues.NewPlcList(qualifiedNameValues)
 			case readWriteModel.VariantExtensionObject:
