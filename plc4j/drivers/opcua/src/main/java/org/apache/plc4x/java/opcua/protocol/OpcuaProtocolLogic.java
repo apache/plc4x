@@ -219,7 +219,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             NodeId nodeId = generateNodeId(tag);
 
             readValueArray.add(new ReadValueId(nodeId,
-                0xD,
+                tag.getAttributeId().getValue(),
                 NULL_STRING,
                 new QualifiedName(0, NULL_STRING)));
         }
@@ -732,7 +732,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             NodeId nodeId = generateNodeId(tag);
 
             writeValueList.add(new WriteValue(nodeId,
-                0xD,
+                tag.getAttributeId().getValue(),
                 NULL_STRING,
                 new DataValue(
                     false,
@@ -781,7 +781,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
         RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> {
-            // bridge(transaction, future, response, error)
             onSubscribeCreateSubscription(cycleTime).thenApply(response -> {
                 long subscriptionId = response.getSubscriptionId();
                 OpcuaSubscriptionHandle handle = new OpcuaSubscriptionHandle(this, tm,
@@ -806,10 +805,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             .whenComplete((response, error) -> bridge(transaction, future, response, error));
         });
         return future;
-    }
-
-    protected void requestSubscriptionPublish() {
-
     }
 
     private CompletableFuture<CreateSubscriptionResponse> onSubscribeCreateSubscription(long cycleTime) {
